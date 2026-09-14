@@ -1,0 +1,35 @@
+{
+  "name": "@proj-aijade/model-substrate",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "L0 model substrate: reproducible, fingerprinted LLM access over Ollama. Sampling parameters are mandatory and every result carries enough metadata to reproduce it bit-for-bit.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "keywords": [
+    "aijade",
+    "substrate",
+    "research",
+    "reproducibility",
+    "ollama"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "verify": "tsx src/cli.ts verify",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

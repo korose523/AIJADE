@@ -1,0 +1,32 @@
+{
+  "apiVersion": "v1",
+  "kind": "manifest.plugin.aijade.moeru.ai",
+  "name": "devtools-sample-plugin",
+  "permissions": {
+    "apis": [
+      {
+        "key": "proj-aijade:plugin-sdk:apis:protocol:capabilities:wait",
+        "actions": ["invoke"]
+      },
+      {
+        "key": "proj-aijade:plugin-sdk:apis:protocol:resources:providers:list-providers",
+        "actions": ["invoke"]
+      }
+    ],
+    "resources": [
+      {
+        "key": "proj-aijade:plugin-sdk:apis:protocol:resources:providers:list-providers",
+        "actions": ["read"]
+      }
+    ],
+    "capabilities": [
+      {
+        "key": "proj-aijade:plugin-sdk:apis:protocol:resources:providers:list-providers",
+        "actions": ["wait"]
+      }
+    ]
+  },
+  "entrypoints": {
+    "electron": "./devtools-sample-plugin.mjs"
+  }
+}

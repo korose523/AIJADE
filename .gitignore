@@ -1,0 +1,214 @@
+.Trash/
+.trash/
+.DS_Store
+
+# Node.js
+node_modules
+# Variants such as node_modules.symlinkfarm.bak are NOT covered by the rule
+# above and were accidentally committed once — ignore every node_modules* form.
+node_modules.*
+
+# Logs
+*.log
+*.logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+.idea
+.temp
+**/temp/
+.claude/worktrees/
+
+# Anything .local, especially for .env.local
+*.local
+# e.g. Claude Code settings.local.json
+*.local.*
+
+# Audio binaries
+*.pcm
+*.wav
+*.ogg
+*.mp3
+
+# Credentials
+cert*/
+*.pem
+*.crt
+*.cer
+*.key
+*.p12
+
+# Test coverage
+coverage/
+
+# Build
+out/
+bundle/
+.flatpak-builder/
+.flatpak-repo/
+*.flatpak
+# WXT specified this too
+*.output
+.vfox.toml
+
+# Vite
+dist
+# Nuxt
+.nuxt
+# vite-plugin-inspect
+.vite-inspect
+.vite-inspect*
+
+# auto import & auto fs based router
+components.d.ts
+**/typed-router.d.ts
+
+# Cache
+.eslintcache
+**/.cache/
+**/.vitepress/cache/
+**/*.tsbuildinfo
+
+# Netlify
+**/.netlify/*
+**/.netlify/functions-serve/*
+
+**/server/public/*
+**/public/assets/js/*
+**/assets/live2d/models/*
+**/assets/vrm/models/*
+
+# Serving fonts locally
+**/public/assets/fonts/
+
+# Code generation
+**/vscode-aijade/src/generated/
+**/vscode-airi/LICENSE
+
+# Make it easy for devenv users to override their local environment.
+# See: https://github.com/moeru-ai/airi/pull/110#discussion_r2024378953
+.direnv
+.pre-commit-config.yaml
+.envrc
+.devenv*
+devenv.*
+
+# Rust
+target/
+crates/*/target/
+
+# turborepo
+.turbo
+
+# WXT
+.wxt
+stats.html
+stats-*.json
+web-ext.config.ts
+
+# Data
+.postgres
+twitter-session.json
+
+# Symlinks created by nix build
+result*
+# Nix develop outputs
+outputs/
+
+# MediaPipe task assets
+packages/model-driver-mediapipe/tasks/assets/*
+
+# Plugins
+plugins/local
+plugins/development
+plugins-local
+plugins-development
+
+apps/stage-pocket/ios/buildServer.json
+apps/stage-pocket/aijade-pocket.jks
+apps/stage-tamagotchi/electron.vite.config.*.mjs
+.docs/superpowers
+
+# Tools - ghfs
+.ghfs/
+
+# Tools - Obsidian
+.obsidian/
+
+docs/ai/context/verifications/
+
+# Optimization assets merged from H: root (Jul 10 session).
+# Python virtual environments are machine-specific (baked absolute paths); never commit.
+/optimization-assets/kimodo_env/
+/optimization-assets/motion_env/
+/optimization-assets/kimodo_src/   # KIMODO is a standalone nested repo (own .git); reference asset, not AIRI source
+/optimization-assets/**/venv/
+/optimization-assets/**/.venv/
+
+# ---- Local runtime services & large model assets (never commit) ----
+.env
+local-llm/
+services/local-llm/
+services/speech/venv/
+services/speech/checkpoints/
+services/speech/__pycache__/
+ollama-models/
+optimization-assets/refs/
+optimization-assets/text_encoders/
+optimization-assets/tmp/
+optimization-assets/tmp_demo/
+optimization-assets/kimodo_test/
+optimization-assets/h/
+optimization-assets/**/*.bin
+optimization-assets/**/*.onnx
+optimization-assets/**/*.safetensors
+optimization-assets/**/*.ckpt
+optimization-assets/**/*.gguf
+
+# llama.cpp native build & GGUF models
+**/bin-llamacpp/
+**/*.gguf
+**/cudart-*.zip
+**/llama-*.zip
+
+# WorkBuddy internal session state (not project source)
+.workbuddy/memory/
+.workbuddy/automations/
+
+# ---- Third-party vendored model assets (14.2 GB; fetch via scripts, never commit) ----
+# `third_party/see-s-through` ships ~13 GB of weights, `third_party/talking-head-anime-4-demo`
+# ~1.2 GB of demo data. Both are downloadable artifacts, not source.
+/third_party/see-s-through/weights/
+/third_party/see-s-through/**/*.bin
+/third_party/see-s-through/**/*.onnx
+/third_party/see-s-through/**/*.pth
+/third_party/see-s-through/**/*.safetensors
+/third_party/see-s-through/**/*.ckpt
+/third_party/talking-head-anime-4-demo/data/
+# ...but keep the small hand-authored character reference images.
+!/third_party/**/jade_maid_refs/
+!/third_party/**/jade_maid_refs/**
+
+# ---- Experiment / research artifacts (regenerable; may contain participant data) ----
+# Telemetry JSONL + CSV exports from @proj-airi/research-telemetry. These can
+# contain interaction logs, so they must never reach a public remote.
+experiments/
+**/experiments/**
+*.jsonl
+results/
+analysis/output/
+# Keep checked-in fixtures that tests depend on.
+!**/__fixtures__/**/*.jsonl
+
+# ---- Local databases & runtime state ----
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+.pgdata/
+redis-data/
+duckdb-data/

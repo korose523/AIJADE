@@ -1,0 +1,43 @@
+{
+  "name": "@proj-aijade/memory-pgvector",
+  "type": "module",
+  "version": "0.10.2",
+  "private": true,
+  "description": "",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/memory-pgvector"
+  },
+  "keywords": [],
+  "exports": {
+    ".": "./src/index.ts",
+    "./engine": "./src/engine/index.ts",
+    "./port": "./src/port.ts",
+    "./performance": "./src/performance/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@guiiai/logg": "catalog:",
+    "@proj-aijade/server-sdk": "workspace:^",
+    "drizzle-orm": "catalog:",
+    "postgres": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

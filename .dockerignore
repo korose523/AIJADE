@@ -1,0 +1,50 @@
+# ---- 依赖与构建产物（宿主机的，绝不进镜像）----
+**/node_modules
+**/dist
+**/out
+**/.turbo
+**/.temp
+**/.cache
+**/build
+**/target
+**/*.tsbuildinfo
+
+# ---- 版本控制与编辑器 ----
+.git
+.github
+.vscode
+.zed
+.cursor
+.agents
+.gemini
+.idea
+
+# ---- 实验产物（宿主机跑的，不进镜像）----
+**/experiments
+packages/research-harness/experiments
+
+# ---- 重资产：模型权重 / 数据集 / 第三方仓库（数十 GB）----
+ollama-models
+third_party
+optimization-assets
+services/local-llm
+**/ollama-models
+**/third_party
+**/optimization-assets
+
+# ---- 与本实验无关的 workspace 部分（只保留 packages 下三个研究包）----
+apps
+plugins
+integrations
+services
+engines
+docs
+examples
+scripts
+
+# ---- 杂项 ----
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example

@@ -1,0 +1,23 @@
+{
+  "name": "@proj-aijade/memory-biomimetic",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "L4 biomimetic long-term memory: episodic store, semantic distillation, and physiological-gated forgetting. The gating ON vs OFF ablation is the experiment.",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "ablation": "tsx eval/run-ablation.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

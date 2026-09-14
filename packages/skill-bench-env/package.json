@@ -1,0 +1,41 @@
+{
+  "name": "@proj-aijade/skill-bench-env",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Deterministic, executable oracle benchmark environment for RQ-C: measuring an autonomous agent's self-verification hallucination rate via a controllable, reproducible ground-truth of program-synthesis tasks.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/skill-bench-env"
+  },
+  "keywords": [
+    "aijade",
+    "skill-bench",
+    "research",
+    "oracle",
+    "self-verification",
+    "rq-c"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

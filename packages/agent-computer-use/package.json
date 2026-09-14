@@ -1,0 +1,42 @@
+{
+  "name": "@proj-aijade/agent-computer-use",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Computer-control capability for AIJADE agents, fusing Hermes Agent's `computer_use` action contract (cua-driver / Windows UI Automation) as an AIJADE-native, agent-callable tool.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/agent-computer-use"
+  },
+  "keywords": [
+    "aijade",
+    "computer-use",
+    "hermes",
+    "agent"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

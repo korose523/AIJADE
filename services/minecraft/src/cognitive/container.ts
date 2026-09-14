@@ -1,0 +1,130 @@
+import type { Logg } from '@guiiai/logg'
+import type { Client } from '@proj-aijade/server-sdk'
+
+import type { AijadeBridge } from '../aijade/aijade-bridge'
+import type { MinecraftContextService } from '../aijade/minecraft-context-service'
+import type { EventBus } from './event-bus'
+import type { RuleEngine } from './perception/rules'
+
+import { useLogg } from '@guiiai/logg'
+import { asClass, asFunction, asValue, createContainer, InjectionMode } from 'awilix'
+
+import { AijadeBridge as AijadeBridgeImpl } from '../aijade/aijade-bridge'
+import { MinecraftContextService as MinecraftContextServiceImpl } from '../aijade/minecraft-context-service'
+import { config } from '../composables/config'
+import { TaskExecutor } from './action/task-executor'
+import { Brain } from './conscious/brain'
+import { LLMAgent } from './conscious/llm-agent'
+import { createEventBus } from './event-bus'
+import { PerceptionPipeline } from './perception/pipeline'
+import { createRuleEngine } from './perception/rules'
+import { ReflexManager } from './reflex/reflex-manager'
+
+export interface ContainerServices {
+  logger: Logg
+  eventBus: EventBus
+  ruleEngine: RuleEngine
+  llmAgent: LLMAgent
+  perceptionPipeline: PerceptionPipeline
+  taskExecutor: TaskExecutor
+  brain: Brain
+  reflexManager: ReflexManager
+  aijadeClient: Client
+  aijadeBridge: AijadeBridge
+  minecraftContextService: MinecraftContextService
+}
+
+export function createAgentContainer(aijadeClient: Client) {
+  const container = createContainer<ContainerServices>({
+    injectionMode: InjectionMode.PROXY,
+    strict: true,
+  })
+
+  // Register services
+  container.register({
+    aijadeClient: asValue(aijadeClient),
+
+    aijadeBridge: asFunction(({ eventBus }: { eventBus: EventBus }) =>
+      new AijadeBridgeImpl(aijadeClient, eventBus),
+    ).singleton(),
+
+    minecraftContextService: asFunction(({ aijadeBridge }) =>
+      new MinecraftContextServiceImpl({
+        aijadeBridge,
+        serverHost: config.bot.host,
+        serverPort: config.bot.port,
+      }),
+    ).singleton(),
+
+    // Create independent logger for each agent
+    logger: asFunction(() => useLogg('agent').useGlobalConfig()).singleton(),
+
+    // Register LLM Agent (xsai-based)
+    llmAgent: asFunction(() => new LLMAgent({
+      baseURL: config.openai.baseUrl,
+      apiKey: config.openai.apiKey,
+      model: config.openai.model,
+    })).singleton(),
+
+    // Register EventBus (cognitive event core)
+    eventBus: asFunction(({ logger }) =>
+      createEventBus({
+        onSubscriberError: ({ event, pattern, error }) => {
+          logger
+            .withFields({
+              eventType: event.type,
+              eventId: event.id,
+              traceId: event.traceId,
+              parentId: event.parentId,
+              pattern,
+            })
+            .errorWithError('EventBus subscriber failed', error)
+        },
+      }),
+    ).singleton(),
+
+    // Register RuleEngine (YAML rules processing)
+    ruleEngine: asFunction(({ eventBus }) => {
+      const engine = createRuleEngine({
+        eventBus,
+        logger: useLogg('ruleEngine').useGlobalConfig(),
+        config: {
+          rulesDir: new URL('./perception/rules', import.meta.url).pathname,
+          slotMs: 20,
+        },
+      })
+      engine.init()
+      return engine
+    }).singleton(),
+
+    perceptionPipeline: asClass(PerceptionPipeline).singleton(),
+
+    // TaskExecutor with logger injection only
+    taskExecutor: asFunction(({ logger }) =>
+      new TaskExecutor({ logger }),
+    ).singleton(),
+
+    brain: asClass(Brain)
+      .singleton()
+      .inject(c => ({
+        eventBus: c.resolve('eventBus'),
+        llmAgent: c.resolve('llmAgent'),
+        reflexManager: c.resolve('reflexManager'),
+        taskExecutor: c.resolve('taskExecutor'),
+        logger: c.resolve('logger'),
+        aijadeBridge: c.resolve('aijadeBridge'),
+        minecraftContextService: c.resolve('minecraftContextService'),
+      })),
+
+    // Reflex Manager (Reactive Layer)
+    reflexManager: asFunction(({ eventBus, taskExecutor, logger }) =>
+      new ReflexManager({
+        eventBus,
+        taskExecutor,
+        logger,
+      }),
+    ).singleton(),
+  })
+
+  return container
+}

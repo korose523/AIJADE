@@ -1,0 +1,335 @@
+{
+  "schema": "aijade.experiment_registry@1",
+  "updatedAt": 1788910987210,
+  "count": 10,
+  "experiments": {
+    "p1-gating-retention-ablation": {
+      "id": "p1-gating-retention-ablation",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "P1: physiological gating ON vs OFF — retention under forgetting horizon",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "gating-ON",
+          "description": "DEFAULT_GATING — important memories kept, trivial pruned at consolidation",
+          "params": {
+            "gating": "DEFAULT_GATING"
+          }
+        },
+        {
+          "name": "gating-OFF",
+          "description": "NO_GATING — no selectivity, important == trivial",
+          "params": {
+            "gating": "NO_GATING"
+          }
+        }
+      ],
+      "metrics": [
+        "retention.important",
+        "retention.trivial",
+        "separationGap.importantMinusTrivial"
+      ],
+      "createdAt": 1788909983182,
+      "notes": "Retention measured at horizons [0,7,30,90,180,365]d. Main contrast = separation gap (important − trivial) under ON vs OFF; ON should be large & positive, OFF ≈ 0."
+    },
+    "p1.5-gating-interference-recall": {
+      "id": "p1.5-gating-interference-recall",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "P1.5: model-free interference characterization — gating ON vs OFF over LoCoMo",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "gating-ON",
+          "description": "DEFAULT_GATING — trivial distractors pruned",
+          "params": {
+            "gating": "DEFAULT_GATING"
+          }
+        },
+        {
+          "name": "gating-OFF",
+          "description": "NO_GATING — trivial distractors retained",
+          "params": {
+            "gating": "NO_GATING"
+          }
+        }
+      ],
+      "metrics": [
+        "recall@K",
+        "distractorLoad@K"
+      ],
+      "createdAt": 1788910088316,
+      "notes": "K ∈ [1,2,3,4,6,8]. recall@K saturates ~1.0 for both; the gating-dependent effect is distractorLoad@K (ON ≈ 0, OFF > 0)."
+    },
+    "h2-gated-forgetting-ablation": {
+      "id": "h2-gated-forgetting-ablation",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "H2 (v3 §9): gated vs uniform vs no forgetting under matched storage budget",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "gated",
+          "description": "DEFAULT_GATING — content-salience-driven durability (important memories decay slower)",
+          "params": {
+            "gating": "DEFAULT_GATING",
+            "forgetting": "DEFAULT_FORGETTING"
+          }
+        },
+        {
+          "name": "uniform",
+          "description": "NO_GATING — identity gate, all durability=1, decay uniform",
+          "params": {
+            "gating": "NO_GATING",
+            "forgetting": "DEFAULT_FORGETTING"
+          }
+        },
+        {
+          "name": "none",
+          "description": "No forgetting (baseDecay=0) — truncation degrades to keep-most-recent",
+          "params": {
+            "gating": "NO_GATING",
+            "forgetting": "baseDecay=0"
+          }
+        }
+      ],
+      "metrics": [
+        "evidenceRecall@K",
+        "gap.gatedMinusUniform"
+      ],
+      "createdAt": 1788910202373,
+      "notes": "Budgets [10%,25%,50%]; horizon +90d; TOP_K=4. Re-frame (commit 0683600): gate is content-salience driven, deterministic per (cond, budget) — former physiological-seed dimension removed. Falsifiable prediction: gated > uniform, gap widens as budget tightens; else v3 §10 P3 fuse-point triggers."
+    },
+    "h2-content-salience-gated": {
+      "id": "h2-content-salience-gated",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "H2 de-oracled: predicted (content) salience gated vs uniform under matched storage",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "gated",
+          "description": "DEFAULT_GATING — content-salience-driven durability",
+          "params": {
+            "gating": "DEFAULT_GATING"
+          }
+        },
+        {
+          "name": "uniform",
+          "description": "NO_GATING — identity gate, uniform decay",
+          "params": {
+            "gating": "NO_GATING"
+          }
+        }
+      ],
+      "metrics": [
+        "predictor.pooledAuc",
+        "evidenceRecall@K",
+        "gap.gatedMinusUniform"
+      ],
+      "createdAt": 1788910355667,
+      "notes": "Reports predictor quality (pooled + per-conversation AUC) and the gated−uniform recall gap under content-salience gating. Re-frame (commit 0683600): oracle/predicted injection and α-mixing are obsolete; both collapse to the same content-salience gate. Falsifiable: gap still > 0 means the gate uses a predictable signal; gap ≈ 0 means the prior H2 gain was oracle leakage (→ v3 §10 fuse-point)."
+    },
+    "h2-a1-v2-predictor-gated": {
+      "id": "h2-a1-v2-predictor-gated",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "H2-A1: v2 predicted content salience (AUC≈0.81) — gated vs uniform under matched storage",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "gated",
+          "description": "DEFAULT_GATING — content-salience-driven durability (predictSalienceV2)",
+          "params": {
+            "gating": "DEFAULT_GATING"
+          }
+        },
+        {
+          "name": "uniform",
+          "description": "NO_GATING — identity gate, uniform decay",
+          "params": {
+            "gating": "NO_GATING"
+          }
+        }
+      ],
+      "metrics": [
+        "predictor.aucPrior",
+        "predictor.aucLocv",
+        "evidenceRecall@K",
+        "gap.gatedMinusUniform"
+      ],
+      "createdAt": 1788910369859,
+      "notes": "Re-runs the H2 fuse-point with the v2 predictor (PRIOR/LOCV AUC reported). Re-frame (commit 0683600): former oracle/prior/locv dopamine-injection modes and gated-varied/fixed mood modes obsolete; collapses to content-salience gated vs NO_GATING uniform. Falsifiable: gap > 0 ⇒ H2 holds, fuse-point does not trigger."
+    },
+    "salience-diagnostic-features": {
+      "id": "salience-diagnostic-features",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "Salience diagnostic: which lexical features separate evidence-bearing turns (oracle-label audit)",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "diagnostic",
+          "description": "Oracle-label single-feature AUC audit to choose predictor features; NOT a published result",
+          "params": {
+            "usesGoldLabels": true
+          }
+        }
+      ],
+      "metrics": [
+        "singleFeature.auc",
+        "positiveRate.byLengthBucket"
+      ],
+      "createdAt": 1788910391260,
+      "notes": "DIAGNOSTIC ONLY — uses gold labels to decide which features to add to the predictor. Any label-tuned feature/weight MUST be re-evaluated under leave-one-conversation cross-validation (LOCV) before publication, or the label leaks back in. Not registered as a result."
+    },
+    "salience-predictor-probe": {
+      "id": "salience-predictor-probe",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "Salience predictor probe: PRIOR (zero-label) vs LOCV AUC, and the learning curve",
+      "version": "0.1.0",
+      "seed": 7,
+      "conditions": [
+        {
+          "name": "PRIOR",
+          "description": "Theoretically-prior weights, zero label contact; scale set by unsupervised statistics",
+          "params": {
+            "usesGoldLabels": false
+          }
+        },
+        {
+          "name": "LOCV",
+          "description": "Leave-one-conversation-out logistic regression (simulates F/U feedback learning weights)",
+          "params": {
+            "usesGoldLabels": false
+          }
+        }
+      ],
+      "metrics": [
+        "prior.auc",
+        "locv.auc",
+        "learningCurve.auc"
+      ],
+      "createdAt": 1788910392663,
+      "notes": "Seed 7 drives the learning-curve random fold splits (mulberry32(7), 20 trials per k). Both estimates are honest (no label-driven weight tuning). Answers A1: feature vs weight sufficiency — LOCV high & PRIOR low ⇒ features suffice, needs feedback; both low ⇒ need a different signal source. Threshold ≈ 0.78."
+    },
+    "salience-nested-cv-audit": {
+      "id": "salience-nested-cv-audit",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "Salience nested-CV audit: leak decomposition (standardize + feature-selection leakage)",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "LOCV-original",
+          "description": "Global standardize + all 13 features, leave-one-conversation-out (replicates probe.ts)"
+        },
+        {
+          "name": "LOCV-trainStd",
+          "description": "Standardize statistics computed on training folds only (fixes standardize leakage)"
+        },
+        {
+          "name": "Nested-Train",
+          "description": "Outer LOCV + inner greedy forward feature selection on 9 train conversations (honest pooled AUC)"
+        }
+      ],
+      "metrics": [
+        "pooledAuc.LOCV-original",
+        "pooledAuc.LOCV-trainStd",
+        "pooledAuc.Nested-Train",
+        "leak.standardize",
+        "leak.featureSelection"
+      ],
+      "createdAt": 1788910464106,
+      "notes": "AUDIT ONLY — quantifies how much of probe.ts LOCV=0.812 is optimistic bias from leakage. All logic copied verbatim from probe.ts for comparability. The Nested-Train pooled AUC is the publishable, honest estimate."
+    },
+    "p1.5-reader-qa-f1": {
+      "id": "p1.5-reader-qa-f1",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "P1.5: LLM reader — downstream QA token-F1 under clean (ON) vs polluted (OFF) context",
+      "version": "0.1.0",
+      "seed": 0,
+      "conditions": [
+        {
+          "name": "gating-ON",
+          "description": "DEFAULT_GATING — distractor-pruned context",
+          "params": {
+            "gating": "DEFAULT_GATING"
+          }
+        },
+        {
+          "name": "gating-OFF",
+          "description": "NO_GATING — polluted context",
+          "params": {
+            "gating": "NO_GATING"
+          }
+        }
+      ],
+      "metrics": [
+        "tokenF1.ON",
+        "tokenF1.OFF",
+        "tokenF1.gap",
+        "determinism.identical"
+      ],
+      "createdAt": 1788910678825,
+      "notes": "Requires local Ollama substrate qwythos:latest in research mode (temperature=0, top_k=1). A determinism pre-flight aborts the run if the substrate is not bit-exact, so numbers are never published unreproducibly. Two probes: controlled distractor-competition benchmark + small LoCoMo slice."
+    },
+    "h5-gated-vs-compression-baseline": {
+      "id": "h5-gated-vs-compression-baseline",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "H5 (v2/P2): content-salience gated memory vs long-context compression baselines (LoCoMo, matched storage budget)",
+      "version": "0.1.0",
+      "seed": 42,
+      "conditions": [
+        {
+          "name": "ours",
+          "description": "Biomimetic gated selective retention — keep top-B episodes by encoded content salience (DEFAULT_GATING)",
+          "params": {
+            "gating": "DEFAULT_GATING",
+            "criterion": "salience"
+          }
+        },
+        {
+          "name": "extractive-compression",
+          "description": "LLM-free global centrality score (0.6·TF-IDF centroid + 0.4·content-salience) top-B (NO_GATING)",
+          "params": {
+            "gating": "NO_GATING",
+            "criterion": "compression"
+          }
+        },
+        {
+          "name": "recency-window",
+          "description": "Keep most-recent B episodes (NO_GATING)",
+          "params": {
+            "gating": "NO_GATING",
+            "criterion": "recency"
+          }
+        },
+        {
+          "name": "random",
+          "description": "Uniform random keep-B, 5 deterministic seeds averaged (NO_GATING)",
+          "params": {
+            "gating": "NO_GATING",
+            "criterion": "random",
+            "seeds": [
+              42,
+              1337,
+              7,
+              11,
+              99
+            ]
+          }
+        }
+      ],
+      "metrics": [
+        "evidenceRecall@4",
+        "tokenF1.full",
+        "answerTokenF1.sampled",
+        "answerJudge.sampled"
+      ],
+      "createdAt": 1788910987210,
+      "notes": "Budgets [10%,25%,50%,100%]; TOP_K=4. (A) Full lexical recall/F1 proxy over all questions. (B) Answer-correctness layer on a sampled subset (~17 q/conv, local qwythos) with token-F1 + LLM-judge — latency-driven sampling, stated as caveat. Falsifiable: ours should beat recency at low budget and converge to ~0 gap as B→1.0; whether ours beats the stronger compression baseline is the core question (not guaranteed)."
+    }
+  }
+}

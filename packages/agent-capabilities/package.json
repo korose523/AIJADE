@@ -1,0 +1,49 @@
+{
+  "name": "@proj-aijade/agent-capabilities",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bridge that fuses skill-forge, continuous-learning and computer-use into AIJADE's chat orchestrator (the same wrapDeps/registerHooks pattern as memory & performance).",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/agent-capabilities"
+  },
+  "keywords": [
+    "aijade",
+    "agent",
+    "skills",
+    "learning"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@proj-aijade/agent-computer-use": "workspace:^",
+    "@proj-aijade/agent-continuous-learning": "workspace:^",
+    "@proj-aijade/agent-llm-client": "workspace:^",
+    "@proj-aijade/agent-skill-forge": "workspace:^",
+    "@proj-aijade/core-agent": "workspace:^",
+    "@proj-aijade/memory-pgvector": "workspace:^",
+    "@proj-aijade/server-sdk": "workspace:^",
+    "nanoid": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

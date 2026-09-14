@@ -1,0 +1,37 @@
+{
+  "name": "@proj-aijade/unocss-preset-fonts",
+  "type": "module",
+  "version": "0.10.2",
+  "description": "Fonts that are not included by Google Fonts, FontSource but open-source used by Project AIJADE",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/moeru-ai/airi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/unocss-preset-fonts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "dev": "pnpm run build",
+    "build": "tsdown"
+  },
+  "peerDependencies": {
+    "@unocss/core": "catalog:",
+    "@unocss/preset-web-fonts": "catalog:unocss-preset-web-fonts-gte-66"
+  },
+  "dependencies": {
+    "@proj-aijade/font-cjkfonts-allseto": "workspace:^",
+    "@proj-aijade/font-departure-mono": "workspace:^",
+    "@proj-aijade/font-xiaolai": "workspace:^"
+  }
+}

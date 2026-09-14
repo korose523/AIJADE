@@ -1,0 +1,45 @@
+{
+  "name": "@proj-aijade/research-harness",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RQ-C 2x2 experiment harness — selfVerification x envFeedback ablation for autonomous skill self-verification, with bootstrap CIs and reproducibility guarantees.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/research-harness"
+  },
+  "keywords": [
+    "aijade",
+    "research",
+    "rq-c",
+    "self-verification",
+    "ablation",
+    "harness"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@proj-aijade/skill-bench-env": "workspace:*",
+    "@proj-aijade/skill-forge-store": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

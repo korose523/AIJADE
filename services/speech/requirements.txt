@@ -1,0 +1,15 @@
+# SenseVoice / FunASR ASR server dependencies
+# Install into a venv that already has PyTorch (CUDA) — the IndexTTS2 venv
+# at D:/项目/index-tts/.venv already provides torch==2.8.0+cu128, so just:
+#   pip install funasr python-multipart
+# If creating a fresh venv instead, also install torch for your CUDA version:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+
+funasr>=1.1.0
+modelscope>=1.18.0
+fastapi
+uvicorn[standard]
+python-multipart
+numpy
+soundfile
+librosa

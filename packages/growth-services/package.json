@@ -1,0 +1,47 @@
+{
+  "name": "@proj-aijade/growth-services",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AIJADE v8 §53.1 product-layer growth services: the autonomous-growth loop (DIVE interest, AEL epistemic learning, transfer, life journal, selective sharing, VSE self-evolution, and PEF persona expression) wired on top of the @proj-aijade/memory-biomimetic research kernel.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/growth-services"
+  },
+  "keywords": [
+    "aijade",
+    "growth",
+    "autonomous-learning",
+    "agent",
+    "v8"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@proj-aijade/agent-llm-client": "workspace:^",
+    "@proj-aijade/memory-biomimetic": "workspace:^",
+    "@proj-aijade/memory-pgvector": "workspace:^",
+    "nanoid": "catalog:",
+    "postgres": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

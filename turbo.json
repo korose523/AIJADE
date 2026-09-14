@@ -1,0 +1,15 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "tasks": {
+    "build": {
+      "outputs": ["dist/**"]
+    },
+    "@proj-aijade/server-schema#build": {
+      "cache": false
+    },
+    "@proj-aijade/electron-vueuse#build": {
+      "dependsOn": ["@proj-aijade/electron-eventa#build"],
+      "outputs": ["dist/**"]
+    }
+  }
+}

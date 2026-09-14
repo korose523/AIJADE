@@ -1,0 +1,41 @@
+{
+  "name": "@proj-aijade/research-telemetry",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Instrumentation layer that turns AIJADE into a research platform: longitudinal turn records, ablation conditions, dynamics parameter sweeps, and analysis-ready CSV/JSONL export.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/research-telemetry"
+  },
+  "keywords": [
+    "aijade",
+    "telemetry",
+    "research",
+    "ablation",
+    "experiment",
+    "persona"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

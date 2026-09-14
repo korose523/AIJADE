@@ -1,0 +1,1299 @@
+{
+  "meta": {
+    "title": "AIJADE 合成纵向基准试点实验（确定性机制级仿真）",
+    "honesty": "确定性机制级仿真：非 LLM 实验、非人类被试实验。人类交互任务尚未开展。",
+    "seed": 1,
+    "scale": {
+      "datasets": 12,
+      "sessionsPerDataset": 20,
+      "statementsPerSession": 8,
+      "windows": 6,
+      "sessionsPerWindow": 40,
+      "contradictionRate": 0.15,
+      "distractorRate": 0.1,
+      "budgetPerDataset": 200,
+      "totalStatements": 1920
+    },
+    "actualRates": {
+      "contradictionRate": 0.1546875,
+      "distractorRate": 0.1
+    },
+    "generatedBy": "AIJADE growth-services pilot runner v1",
+    "note": "结果完全由 seed 决定；相同 seed 重跑结果逐字节一致。"
+  },
+  "configs": [
+    {
+      "id": "B0",
+      "label": "无长期记忆",
+      "focus": "无记忆下界",
+      "mechanism": {
+        "memoryWrite": "none",
+        "endogenousState": false,
+        "dualGraphSeparation": false,
+        "identityConstraint": false,
+        "hacEnabled": false,
+        "dgmEnabled": false,
+        "cdiEnabled": false
+      }
+    },
+    {
+      "id": "B1",
+      "label": "滑动窗口",
+      "focus": "窗口遗忘",
+      "mechanism": {
+        "memoryWrite": "sliding_window",
+        "endogenousState": false,
+        "dualGraphSeparation": false,
+        "identityConstraint": false,
+        "hacEnabled": false,
+        "dgmEnabled": false,
+        "cdiEnabled": false
+      }
+    },
+    {
+      "id": "B2",
+      "label": "向量检索+全写入",
+      "focus": "无预算控制",
+      "mechanism": {
+        "memoryWrite": "vector_allwrite",
+        "endogenousState": false,
+        "dualGraphSeparation": false,
+        "identityConstraint": false,
+        "hacEnabled": false,
+        "dgmEnabled": false,
+        "cdiEnabled": false
+      }
+    },
+    {
+      "id": "B3",
+      "label": "即时重要性阈值",
+      "focus": "HAC 对照",
+      "mechanism": {
+        "memoryWrite": "importance_threshold",
+        "endogenousState": false,
+        "dualGraphSeparation": false,
+        "identityConstraint": false,
+        "hacEnabled": false,
+        "dgmEnabled": false,
+        "cdiEnabled": false
+      }
+    },
+    {
+      "id": "B4",
+      "label": "LLM 反思式记忆",
+      "focus": "反思式对照",
+      "mechanism": {
+        "memoryWrite": "llm_reflection",
+        "endogenousState": false,
+        "dualGraphSeparation": false,
+        "identityConstraint": false,
+        "hacEnabled": false,
+        "dgmEnabled": false,
+        "cdiEnabled": false
+      }
+    },
+    {
+      "id": "B5",
+      "label": "固定预算多类记忆",
+      "focus": "预算对照",
+      "mechanism": {
+        "memoryWrite": "fixed_budget",
+        "endogenousState": false,
+        "dualGraphSeparation": false,
+        "identityConstraint": false,
+        "hacEnabled": false,
+        "dgmEnabled": false,
+        "cdiEnabled": false
+      }
+    },
+    {
+      "id": "A1",
+      "label": "HAC 完整模型",
+      "focus": "完整模型",
+      "mechanism": {
+        "memoryWrite": "hac_gated",
+        "endogenousState": true,
+        "dualGraphSeparation": true,
+        "identityConstraint": true,
+        "hacEnabled": true,
+        "dgmEnabled": true,
+        "cdiEnabled": true
+      }
+    },
+    {
+      "id": "A1-HAC",
+      "label": "A1 去除 HAC（回退固定预算）",
+      "focus": "去除 HAC 成分",
+      "mechanism": {
+        "memoryWrite": "fixed_budget",
+        "endogenousState": false,
+        "dualGraphSeparation": true,
+        "identityConstraint": true,
+        "hacEnabled": false,
+        "dgmEnabled": true,
+        "cdiEnabled": true
+      }
+    },
+    {
+      "id": "A1-DGM",
+      "label": "A1 去除 DGM（双图退化）",
+      "focus": "去除 DGM 成分",
+      "mechanism": {
+        "memoryWrite": "hac_gated",
+        "endogenousState": true,
+        "dualGraphSeparation": false,
+        "identityConstraint": true,
+        "hacEnabled": true,
+        "dgmEnabled": false,
+        "cdiEnabled": true
+      }
+    },
+    {
+      "id": "A1-CDI",
+      "label": "A1 去除 CDI（静态人格）",
+      "focus": "去除 CDI 成分",
+      "mechanism": {
+        "memoryWrite": "hac_gated",
+        "endogenousState": true,
+        "dualGraphSeparation": true,
+        "identityConstraint": false,
+        "hacEnabled": true,
+        "dgmEnabled": true,
+        "cdiEnabled": false
+      }
+    }
+  ],
+  "results": {
+    "fub": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": 0.5,
+        "ci": [
+          0.5,
+          0.5
+        ]
+      },
+      "B2": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B3": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B4": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B5": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-HAC": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-DGM": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-CDI": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      }
+    },
+    "epRate": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": -0.19999999999999998,
+        "ci": [
+          -0.19999999999999998,
+          -0.19999999999999998
+        ]
+      },
+      "B2": {
+        "value": -0.19999999999999998,
+        "ci": [
+          -0.19999999999999998,
+          -0.19999999999999998
+        ]
+      },
+      "B3": {
+        "value": -0.19999999999999998,
+        "ci": [
+          -0.19999999999999998,
+          -0.19999999999999998
+        ]
+      },
+      "B4": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B5": {
+        "value": -0.19999999999999998,
+        "ci": [
+          -0.19999999999999998,
+          -0.19999999999999998
+        ]
+      },
+      "A1": {
+        "value": 0.6551724137931033,
+        "ci": [
+          0.6551724137931033,
+          0.6551724137931033
+        ]
+      },
+      "A1-HAC": {
+        "value": -0.19999999999999998,
+        "ci": [
+          -0.19999999999999998,
+          -0.19999999999999998
+        ]
+      },
+      "A1-DGM": {
+        "value": 0.6551724137931033,
+        "ci": [
+          0.6551724137931033,
+          0.6551724137931033
+        ]
+      },
+      "A1-CDI": {
+        "value": 0.6551724137931033,
+        "ci": [
+          0.6551724137931033,
+          0.6551724137931033
+        ]
+      }
+    },
+    "gc": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": 0.39999999999999997,
+        "ci": [
+          0.39999999999999997,
+          0.39999999999999997
+        ]
+      },
+      "B2": {
+        "value": 0.39999999999999997,
+        "ci": [
+          0.39999999999999997,
+          0.39999999999999997
+        ]
+      },
+      "B3": {
+        "value": 0.39999999999999997,
+        "ci": [
+          0.39999999999999997,
+          0.39999999999999997
+        ]
+      },
+      "B4": {
+        "value": 0.39999999999999997,
+        "ci": [
+          0.39999999999999997,
+          0.39999999999999997
+        ]
+      },
+      "B5": {
+        "value": 0.39999999999999997,
+        "ci": [
+          0.39999999999999997,
+          0.39999999999999997
+        ]
+      },
+      "A1": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-HAC": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-DGM": {
+        "value": 0.39999999999999997,
+        "ci": [
+          0.39999999999999997,
+          0.39999999999999997
+        ]
+      },
+      "A1-CDI": {
+        "value": 0.5999999999999999,
+        "ci": [
+          0.5999999999999999,
+          0.5999999999999999
+        ]
+      }
+    },
+    "precision": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": 0.6607407121759737,
+        "ci": [
+          0.6464392349460738,
+          0.6722854226231556
+        ]
+      },
+      "B2": {
+        "value": 0.8559582922482615,
+        "ci": [
+          0.8507942702167202,
+          0.8601250295474795
+        ]
+      },
+      "B3": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B4": {
+        "value": 0.9537061296245888,
+        "ci": [
+          0.942095994056463,
+          0.9656106632038309
+        ]
+      },
+      "B5": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-HAC": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-DGM": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-CDI": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      }
+    },
+    "recall": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": 0.3262988692367166,
+        "ci": [
+          0.31800115322048544,
+          0.3339049460877468
+        ]
+      },
+      "B2": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B3": {
+        "value": 0.8745623304941098,
+        "ci": [
+          0.8687795770482105,
+          0.8795877288113313
+        ]
+      },
+      "B4": {
+        "value": 0.9121744397973354,
+        "ci": [
+          0.9027084565710343,
+          0.9233004691564474
+        ]
+      },
+      "B5": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-HAC": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-DGM": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-CDI": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      }
+    },
+    "cr": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B2": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B3": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B4": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B5": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "A1": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-HAC": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-DGM": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "A1-CDI": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      }
+    },
+    "fcr": {
+      "B0": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "B1": {
+        "value": 0.5059523809523809,
+        "ci": [
+          0.48346560846560843,
+          0.5297619047619048
+        ]
+      },
+      "B2": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B3": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B4": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "B5": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "A1-HAC": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      },
+      "A1-DGM": {
+        "value": 1,
+        "ci": [
+          1,
+          1
+        ]
+      },
+      "A1-CDI": {
+        "value": 0,
+        "ci": [
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "relativeToB0": {
+    "B1": {
+      "fub": {
+        "value": 0.5,
+        "delta": 0.5,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": -0.19999999999999998,
+        "delta": -0.19999999999999998,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "delta": 0.39999999999999997,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 0.6607407121759737,
+        "delta": 0.6607407121759737,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 0.3262988692367166,
+        "delta": 0.3262988692367166,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "fcr": {
+        "value": 0.5059523809523809,
+        "delta": 0.5059523809523809,
+        "relativePct": null
+      }
+    },
+    "B2": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": -0.19999999999999998,
+        "delta": -0.19999999999999998,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "delta": 0.39999999999999997,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 0.8559582922482615,
+        "delta": 0.8559582922482615,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "fcr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      }
+    },
+    "B3": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": -0.19999999999999998,
+        "delta": -0.19999999999999998,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "delta": 0.39999999999999997,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 0.8745623304941098,
+        "delta": 0.8745623304941098,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "fcr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      }
+    },
+    "B4": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "delta": 0.39999999999999997,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 0.9537061296245888,
+        "delta": 0.9537061296245888,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 0.9121744397973354,
+        "delta": 0.9121744397973354,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "fcr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      }
+    },
+    "B5": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": -0.19999999999999998,
+        "delta": -0.19999999999999998,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "delta": 0.39999999999999997,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "fcr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      }
+    },
+    "A1": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": 0.6551724137931033,
+        "delta": 0.6551724137931033,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "fcr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      }
+    },
+    "A1-HAC": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": -0.19999999999999998,
+        "delta": -0.19999999999999998,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "fcr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      }
+    },
+    "A1-DGM": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": 0.6551724137931033,
+        "delta": 0.6551724137931033,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "delta": 0.39999999999999997,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      },
+      "fcr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      }
+    },
+    "A1-CDI": {
+      "fub": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "epRate": {
+        "value": 0.6551724137931033,
+        "delta": 0.6551724137931033,
+        "relativePct": null
+      },
+      "gc": {
+        "value": 0.5999999999999999,
+        "delta": 0.5999999999999999,
+        "relativePct": null
+      },
+      "precision": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "recall": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "cr": {
+        "value": 1,
+        "delta": 1,
+        "relativePct": null
+      },
+      "fcr": {
+        "value": 0,
+        "delta": 0,
+        "relativePct": 0
+      }
+    }
+  },
+  "effectSizesVsB0": {
+    "fub": {
+      "B1": null,
+      "B2": null,
+      "B3": null,
+      "B4": null,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    },
+    "epRate": {
+      "B1": null,
+      "B2": null,
+      "B3": null,
+      "B4": null,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    },
+    "gc": {
+      "B1": null,
+      "B2": null,
+      "B3": null,
+      "B4": null,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    },
+    "precision": {
+      "B1": 38.9065286688304,
+      "B2": 142.05564087490788,
+      "B3": null,
+      "B4": 60.11786656246414,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    },
+    "recall": {
+      "B1": 32.16773727082317,
+      "B2": null,
+      "B3": 124.06297034626512,
+      "B4": 67.96717263477355,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    },
+    "cr": {
+      "B1": null,
+      "B2": null,
+      "B3": null,
+      "B4": null,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    },
+    "fcr": {
+      "B1": 16.355198579303057,
+      "B2": null,
+      "B3": null,
+      "B4": null,
+      "B5": null,
+      "A1": null,
+      "A1-HAC": null,
+      "A1-DGM": null,
+      "A1-CDI": null
+    }
+  },
+  "bonferroni": {
+    "fub": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": true,
+        "B2": true,
+        "B3": true,
+        "B4": true,
+        "B5": true,
+        "A1": true,
+        "A1-HAC": true,
+        "A1-DGM": true,
+        "A1-CDI": true
+      }
+    },
+    "epRate": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": false,
+        "B2": false,
+        "B3": false,
+        "B4": false,
+        "B5": false,
+        "A1": true,
+        "A1-HAC": false,
+        "A1-DGM": true,
+        "A1-CDI": true
+      }
+    },
+    "gc": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": true,
+        "B2": true,
+        "B3": true,
+        "B4": true,
+        "B5": true,
+        "A1": true,
+        "A1-HAC": true,
+        "A1-DGM": true,
+        "A1-CDI": true
+      }
+    },
+    "precision": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": true,
+        "B2": true,
+        "B3": true,
+        "B4": true,
+        "B5": true,
+        "A1": true,
+        "A1-HAC": true,
+        "A1-DGM": true,
+        "A1-CDI": true
+      }
+    },
+    "recall": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": true,
+        "B2": true,
+        "B3": true,
+        "B4": true,
+        "B5": true,
+        "A1": true,
+        "A1-HAC": true,
+        "A1-DGM": true,
+        "A1-CDI": true
+      }
+    },
+    "cr": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": false,
+        "B2": false,
+        "B3": false,
+        "B4": false,
+        "B5": false,
+        "A1": true,
+        "A1-HAC": true,
+        "A1-DGM": false,
+        "A1-CDI": true
+      }
+    },
+    "fcr": {
+      "correctedAlpha": 0.005555555555555556,
+      "rejected": {
+        "B1": true,
+        "B2": true,
+        "B3": true,
+        "B4": true,
+        "B5": true,
+        "A1": false,
+        "A1-HAC": false,
+        "A1-DGM": true,
+        "A1-CDI": false
+      }
+    }
+  },
+  "ablationDropsVsA1": {
+    "A1-HAC": {
+      "fub": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "epRate": {
+        "value": -0.19999999999999998,
+        "deltaVsA1": -0.8551724137931033,
+        "pctVsA1": -130.5263157894737
+      },
+      "gc": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "precision": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "recall": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "cr": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "fcr": {
+        "value": 0,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      }
+    },
+    "A1-DGM": {
+      "fub": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "epRate": {
+        "value": 0.6551724137931033,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "gc": {
+        "value": 0.39999999999999997,
+        "deltaVsA1": -0.6000000000000001,
+        "pctVsA1": -60.00000000000001
+      },
+      "precision": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "recall": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "cr": {
+        "value": 0,
+        "deltaVsA1": -1,
+        "pctVsA1": -100
+      },
+      "fcr": {
+        "value": 1,
+        "deltaVsA1": 1,
+        "pctVsA1": null
+      }
+    },
+    "A1-CDI": {
+      "fub": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "epRate": {
+        "value": 0.6551724137931033,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "gc": {
+        "value": 0.5999999999999999,
+        "deltaVsA1": -0.40000000000000013,
+        "pctVsA1": -40.000000000000014
+      },
+      "precision": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "recall": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "cr": {
+        "value": 1,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      },
+      "fcr": {
+        "value": 0,
+        "deltaVsA1": 0,
+        "pctVsA1": 0
+      }
+    }
+  }
+}

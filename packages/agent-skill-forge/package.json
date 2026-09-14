@@ -1,0 +1,45 @@
+{
+  "name": "@proj-aijade/agent-skill-forge",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Autonomous skill creation + evolution for AIJADE agents — mirrors Hermes Agent's closed learning loop and the agentskills.io SKILL.md standard.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/agent-skill-forge"
+  },
+  "keywords": [
+    "aijade",
+    "skill",
+    "agent",
+    "learning"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@proj-aijade/agent-llm-client": "workspace:^",
+    "@proj-aijade/skill-forge-store": "workspace:^",
+    "nanoid": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

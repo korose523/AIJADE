@@ -1,0 +1,40 @@
+{
+  "name": "@proj-aijade/skill-forge-store",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Persistent, measurable replacement for the in-memory skill registry: JSONL storage, outcome accounting (precision), skill retirement, and the 2x2 (oracle x self-verification) contingency table for RQ-C.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/skill-forge-store"
+  },
+  "keywords": [
+    "aijade",
+    "skill-forge",
+    "research",
+    "precision",
+    "self-verification"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

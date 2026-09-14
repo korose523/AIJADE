@@ -1,0 +1,24 @@
+# KIMODO offline gesture pipeline — Python environment
+# Create with:  uv venv -p 3.11 kimodo_env
+# Install torch (CUDA):  uv pip install --python kimodo_env/Scripts/python.exe torch torchvision --torch-backend cu128
+# Install kimodo (pure python, skips the C++ MotionCorrection ext):
+#   SKIP_MOTION_CORRECTION_IN_SETUP=1 uv pip install --python kimodo_env/Scripts/python.exe -e <kimodo_repo>
+# Then run:  HF_ENDPOINT=https://hf-mirror.com TEXT_ENCODER_DEVICE=cpu python build_clips.py --generate
+
+numpy>=1.23
+scipy>=1.10
+transformers==5.1.0
+hydra-core>=1.3
+omegaconf>=2.3
+einops>=0.7
+peft>=0.18
+pydantic>=2.0
+filelock>=3.20.3
+boto3
+urllib3>=2.6.3
+packaging>=21.0
+tqdm>=4.0
+pillow>=9.0
+av>=16.1.0
+bvhio
+trimesh>=3.21.7

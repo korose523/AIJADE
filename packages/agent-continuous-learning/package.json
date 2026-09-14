@@ -1,0 +1,48 @@
+{
+  "name": "@proj-aijade/agent-continuous-learning",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Continuous-learning layer for AIJADE agents: 13-dim persona drift (emotion_spirit) + endocrine dynamics (leuke), LPM bounded discourse memory, and feedback-driven skill evolution.",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/agent-continuous-learning"
+  },
+  "keywords": [
+    "aijade",
+    "persona",
+    "memory",
+    "learning",
+    "agent"
+  ],
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@proj-aijade/agent-llm-client": "workspace:^",
+    "@proj-aijade/agent-skill-forge": "workspace:^",
+    "@proj-aijade/memory-pgvector": "workspace:^",
+    "@proj-aijade/research-telemetry": "workspace:^",
+    "nanoid": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

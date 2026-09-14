@@ -1,0 +1,69 @@
+{
+  "name": "@proj-aijade/stage-pages",
+  "type": "module",
+  "private": true,
+  "description": "Shared Pages",
+  "author": {
+    "name": "Moeru AI Project AIJADE Team",
+    "email": "aijade@moeru.ai",
+    "url": "https://github.com/moeru-ai"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeru-ai/airi.git",
+    "directory": "packages/stage-pages"
+  },
+  "exports": {
+    "./*.vue": "./src/*.vue",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@moeru/eventa": "catalog:",
+    "@moeru/std": "catalog:",
+    "@proj-aijade/ccc": "workspace:*",
+    "@proj-aijade/i18n": "workspace:*",
+    "@proj-aijade/server-sdk": "workspace:*",
+    "@proj-aijade/stage-ui": "workspace:*",
+    "@proj-aijade/stage-ui-live2d": "workspace:*",
+    "@proj-aijade/stage-ui-spine": "workspace:*",
+    "@proj-aijade/stage-ui-three": "workspace:*",
+    "@proj-aijade/ui": "workspace:*",
+    "@shopify/draggable": "catalog:",
+    "@stdlib/string-base-kebabcase": "catalog:",
+    "@vueuse/core": "catalog:vueuse-core-14-2-1",
+    "@vueuse/shared": "catalog:",
+    "@xsai-ext/providers": "catalog:",
+    "@xsai/generate-speech": "catalog:",
+    "@xsai/stream-transcription": "catalog:",
+    "animejs": "catalog:",
+    "d3": "catalog:",
+    "dompurify": "catalog:",
+    "nanoid": "catalog:nanoid-5-1-9",
+    "node-vibrant": "catalog:",
+    "pinia": "catalog:",
+    "posthog-js": "catalog:",
+    "reka-ui": "catalog:reka-ui-2-9-6",
+    "splitpanes": "catalog:",
+    "unspeech": "catalog:xsai",
+    "vue": "catalog:",
+    "vue-i18n": "catalog:",
+    "vue-router": "catalog:",
+    "vue-sonner": "catalog:",
+    "xsschema": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@nekopaw/tempora": "catalog:",
+    "@proj-aijade/stage-shared": "workspace:^",
+    "@types/audioworklet": "catalog:",
+    "@types/splitpanes": "catalog:",
+    "@types/three": "catalog:",
+    "@webgpu/types": "catalog:",
+    "unplugin-info": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}
