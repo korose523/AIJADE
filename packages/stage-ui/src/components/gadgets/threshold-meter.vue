@@ -35,10 +35,10 @@ const props = withDefaults(defineProps<Props>(), {
   showHeader: true,
   showLegend: true,
   animationSpeed: 100,
-  belowThresholdClass: 'bg-primary-300 dark:bg-primary-600',
+  belowThresholdClass: 'bg-primary-300 bg-primary-600',
   aboveThresholdClass: 'bg-green-500',
-  thresholdBarClass: 'bg-white dark:bg-neutral-800',
-  inactiveBarClass: 'bg-neutral-300 dark:bg-neutral-600',
+  thresholdBarClass: 'bg-$surface-1 bg-$surface-2',
+  inactiveBarClass: 'bg-$surface-1 bg-$surface-1',
   belowLabel: 'Below',
   aboveLabel: 'Above',
   thresholdLabel: 'Threshold',
@@ -64,14 +64,14 @@ const thresholdBars = computed(() => {
   <div>
     <div v-if="showHeader" class="mb-2 flex items-center justify-between">
       <span class="text-sm font-medium">{{ label }}</span>
-      <span class="text-sm text-neutral-500">
+      <span class="text-sm text-$text-secondary">
         {{ formatValue ? formatValue(value) : `${(value * 100).toFixed(precision)}${unit}` }}
       </span>
     </div>
 
     <!-- Threshold Bars -->
     <div
-      class="flex items-end gap-1 rounded bg-neutral-200/45 p-1 p-1 dark:bg-neutral-700"
+      class="flex items-end gap-1 rounded bg-$surface-1 bg-$surface-3 p-1 p-1"
       :style="{ height: `${height}px` }"
     >
       <div
@@ -92,13 +92,13 @@ const thresholdBars = computed(() => {
       />
     </div>
 
-    <div v-if="showLegend" class="mt-1 flex gap-3 text-xs text-neutral-500">
+    <div v-if="showLegend" class="mt-1 flex gap-3 text-xs text-$text-secondary">
       <span class="flex items-center gap-1">
         <div :class="`inline-block h-0.5lh w-1lh rounded-full ${belowThresholdClass}`" />
         {{ belowLabel }}
       </span>
       <span class="flex items-center gap-1">
-        <div :class="`inline-block h-0.5lh w-1lh rounded-full border border-neutral-400 ${thresholdBarClass}`" />
+        <div :class="`inline-block h-0.5lh w-1lh rounded-full border border-$hairline ${thresholdBarClass}`" />
         {{ thresholdLabel }}
       </span>
       <span class="flex items-center gap-1">

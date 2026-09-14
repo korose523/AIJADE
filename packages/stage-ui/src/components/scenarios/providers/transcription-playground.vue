@@ -152,7 +152,7 @@ const speakingIndicatorClass = computed(() => {
   // Volume-based: simple green/white
   return isSpeaking.value
     ? 'bg-green-500 shadow-lg shadow-green-500/50'
-    : 'bg-white dark:bg-neutral-900 border-2 border-neutral-300 dark:border-neutral-600'
+    : 'bg-$surface-1 bg-$surface-1 border-2 border-$hairline border-$hairline'
 })
 
 onUnmounted(() => {
@@ -162,7 +162,7 @@ onUnmounted(() => {
 
 <template>
   <div w-full pt-1>
-    <h2 class="mb-4 text-lg text-neutral-500 md:text-2xl dark:text-neutral-400" w-full>
+    <h2 class="mb-4 text-lg text-$text-muted text-$text-secondary md:text-2xl" w-full>
       <div class="inline-flex items-center gap-4">
         <TestDummyMarker />
         <div>
@@ -192,8 +192,8 @@ onUnmounted(() => {
     </Button>
 
     <!-- Error message display -->
-    <div v-if="errorMessage" class="mb-4 border border-red-200 rounded-lg bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
-      <div class="flex items-center gap-2 text-red-700 dark:text-red-400">
+    <div v-if="errorMessage" class="mb-4 border border-red-200 border-red-800 rounded-lg bg-red-50 bg-red-900/20 p-3">
+      <div class="flex items-center gap-2 text-red-400 text-red-700">
         <div i-solar:warning-circle-line-duotone class="text-lg" />
         <span class="text-sm font-medium">{{ errorMessage }}</span>
       </div>
@@ -202,7 +202,7 @@ onUnmounted(() => {
     <div>
       <div v-for="(audio, index) in audioURLs" :key="index" class="mb-2">
         <audio :src="audio" controls class="w-full" />
-        <div v-if="transcriptions[index]" class="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+        <div v-if="transcriptions[index]" class="mt-2 text-sm text-$text-muted text-$text-secondary">
           {{ transcriptions[index] }}
         </div>
       </div>

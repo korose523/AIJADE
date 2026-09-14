@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<{
   <div
     class="skeleton"
     :class="props.animation !== 'none' ? `skeleton-${props.animation}` : ''"
-    bg="neutral-200 dark:neutral-800"
+    bg="[var(--surface-2)]"
     overflow="hidden"
   >
     <slot />

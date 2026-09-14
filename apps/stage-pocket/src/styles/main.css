@@ -2,12 +2,6 @@
 @import './transitions.css';
 @import './vue-transitions.css';
 
-:root {
-  --bg-color-light: rgb(255 255 255);
-  --bg-color-dark: rgb(18 18 18);
-  --bg-color: var(--bg-color-light);
-}
-
 /**
   Disable double-tap "zoom" option in browser on touch devices
 
@@ -39,7 +33,6 @@ body:has(.airi-native-transparent-surface),
 }
 
 html.dark {
-  --bg-color: var(--bg-color-dark);
   color-scheme: dark;
 }
 
@@ -48,7 +41,7 @@ html.dark {
 }
 
 #nprogress .bar {
-  background: color-mix(in srgb, oklch(95% var(--chromatic-chroma-900) calc(var(--chromatic-hue) + ${0})) 70%, oklch(50% 0 360));
+  background: color-mix(in srgb, oklch(95% var(--chromatic-chroma-900) calc(var(--chromatic-hue) + 0)) 70%, oklch(50% 0 360));
   opacity: 0.75;
   position: fixed;
   z-index: 1031;
@@ -59,7 +52,7 @@ html.dark {
 }
 
 .dark #nprogress .bar {
-  background: `color-mix(in srgb, oklch(95% var(--chromatic-chroma-900) calc(var(--chromatic-hue) + ${0})) 90%, oklch(90% 0 360))`;
+  background: color-mix(in srgb, oklch(95% var(--chromatic-chroma-900) calc(var(--chromatic-hue) + 0)) 90%, oklch(90% 0 360));
 }
 
 @media (display-mode: standalone) {

@@ -23,7 +23,7 @@ function toggleVisible() {
         class="[&_.provider-icon]:grayscale-100 [&_.provider-icon]:hover:grayscale-0"
         @click="() => slotProps.setVisible(!slotProps.visible) && toggleVisible()"
       >
-        <h2 class="text-lg text-neutral-500 md:text-2xl dark:text-neutral-400">
+        <h2 class="text-lg text-$text-muted text-$text-secondary md:text-2xl">
           <span>{{ title || 'Advanced' }}</span>
         </h2>
         <div transform transition="transform duration-250" :class="{ 'rotate-180': slotProps.visible }">

@@ -35,9 +35,9 @@ export const useLLM = defineStore('llm', () => {
 
   async function stream(model: string, chatProvider: ChatProvider, messages: Message[], options?: StreamOptions) {
     const key = modelKey(model, chatProvider)
-    // TODO(@nekomeowww,@shinohara-rin): we should not register the command callback on every stream anyway...
+    // TODO(@shinohara-rin): we should not register the command callback on every stream anyway...
     const sendSparkCommand = (command: WebSocketEvents['spark:command']) => {
-      // TODO(@nekomeowww): instruct the LLM to understand what destination is.
+      // TODO(AIJADE): instruct the LLM to understand what destination is.
       // Currently without skill like prompt injection, many issues occur.
       // destination mostly are wrong or hallucinated, we need to find a way to make it more reliable.
       //
@@ -91,7 +91,7 @@ export const useLLM = defineStore('llm', () => {
       // when the provider returned the Rust/serde-style "expected a string"
       // 400. We retry once inline so the user's failing turn recovers without
       // requiring them to resend; subsequent calls reuse the cached degrade.
-      // See: https://github.com/moeru-ai/airi/issues/1500
+      // See: https://github.com/korose523/AIJADE/issues/1500
       if (isContentArrayRelatedError(err) && contentArrayCompatibility.value.get(key) !== false) {
         console.warn(`[llm] Auto-disabling content-part arrays for "${key}" and retrying once`)
         contentArrayCompatibility.value.set(key, false)

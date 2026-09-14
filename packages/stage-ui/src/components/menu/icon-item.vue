@@ -12,9 +12,9 @@ defineProps<{
   <RouterLink
     box="border"
     flex="~ row"
-    bg="neutral-50 dark:neutral-900"
-    border="neutral-100 dark:neutral-800/25 hover:primary-500/30 dark:hover:primary-400/30 solid 2"
-    drop-shadow="none hover:[0px_4px_4px_rgba(220,220,220,0.4)] active:[0px_0px_0px_rgba(220,220,220,0.25)] dark:hover:none"
+    bg="$surface-1"
+    border="$hairline"
+    drop-shadow="none hover:[0px_4px_4px_rgba(220,220,220,0.4)] active:[0px_0px_0px_rgba(220,220,220,0.25)] hover:none"
     class="menu-icon-item"
     transition="all ease-in-out duration-400"
     relative w-full items-center overflow-hidden rounded-lg p-5 text-left
@@ -26,7 +26,7 @@ defineProps<{
         {{ title }}
       </div>
       <div
-        text="sm neutral-500 dark:neutral-400"
+        text="$text-secondary"
         class="menu-icon-item-description"
         transition="all ease-in-out duration-400"
       >
@@ -39,7 +39,7 @@ defineProps<{
         transition="all ease-in-out duration-400"
         absolute right-0 size-24
         translate-y-4
-        text="neutral-400/50 dark:neutral-600/50"
+        text="$text-muted"
         :class="[icon]"
       />
     </template>
@@ -56,7 +56,7 @@ defineProps<{
 }
 
 .menu-icon-item::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 dark:from-primary-400/0 dark:to-primary-400/0';
+  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 from-primary-400/0 to-primary-400/0';
   content: '';
   position: absolute;
   inset: 0;
@@ -70,13 +70,13 @@ defineProps<{
 
 .menu-icon-item:hover::before,
 .menu-icon-item._hover::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 1;
 }
 
 .menu-icon-item::after {
-  --at-apply: 'bg-dotted-[neutral-200/60] hover:bg-dotted-[primary-300/50] dark:bg-dotted-[neutral-700/25] dark:hover:bg-dotted-[primary-200/20]';
+  --at-apply: 'bg-dotted-[neutral-200/60] hover:bg-dotted-[primary-300/50] bg-dotted-[neutral-700/25] hover:bg-dotted-[primary-200/20]';
   position: absolute;
   inset: 0;
   z-index: -2;

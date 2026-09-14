@@ -88,7 +88,7 @@ const envOptions = computed(() => [
     icon="i-solar:people-nearby-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
   >
@@ -181,8 +181,8 @@ const envOptions = computed(() => [
           'px-2',
           'pt-2',
           'text-xs',
-          'text-neutral-500',
-          'dark:text-neutral-400',
+          'text-$text-secondary',
+          'text-$text-muted',
         ]"
       >
         Environment
@@ -228,13 +228,13 @@ const envOptions = computed(() => [
     inner-class="text-sm"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
   >
     <Callout :label="t('settings.vrm.scale-and-position.model-info-title')">
       <div>
-        <div class="text-sm text-neutral-600 space-y-1 dark:text-neutral-400">
+        <div class="text-sm text-$text-muted text-$text-secondary space-y-1">
           <div class="flex justify-between">
             <span>{{ t('settings.vrm.scale-and-position.model-info-x') }}</span>
             <span>{{ modelSize.x.toFixed(4) }}</span>
@@ -254,7 +254,7 @@ const envOptions = computed(() => [
       theme="lime"
       label="Tips!"
     >
-      <div class="text-sm text-neutral-600 space-y-1 dark:text-neutral-400">
+      <div class="text-sm text-$text-muted text-$text-secondary space-y-1">
         {{ t('settings.vrm.scale-and-position.tips') }}
       </div>
     </Callout>

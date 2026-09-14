@@ -65,7 +65,7 @@ const routeHeaderMetadata = computed(() => {
   return undefined
 })
 
-const { updateThemeColor } = useThemeColor(themeColorFromValue({ light: 'rgb(255 255 255)', dark: 'rgb(18 18 18)' }))
+const { updateThemeColor } = useThemeColor(themeColorFromValue({ light: 'rgb(243 245 248)', dark: 'rgb(18 18 18)' }))
 watch(dark, () => updateThemeColor(), { immediate: true })
 watch(route, () => updateThemeColor(), { immediate: true })
 onMounted(() => updateThemeColor())

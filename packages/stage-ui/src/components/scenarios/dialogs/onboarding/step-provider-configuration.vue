@@ -220,7 +220,7 @@ initializeForm()
       <button outline-none @click="props.onPrevious">
         <div i-solar:alt-arrow-left-line-duotone h-5 w-5 />
       </button>
-      <h2 class="flex-1 text-center text-xl text-neutral-800 font-semibold md:text-left md:text-2xl dark:text-neutral-100">
+      <h2 class="flex-1 text-center text-xl text-$text-primary text-$text-primary font-semibold md:text-left md:text-2xl">
         {{ t('settings.dialogs.onboarding.configureProvider', { provider: props.selectedProvider?.localizedName }) }}
       </h2>
       <div h-5 w-5 />
@@ -304,7 +304,7 @@ initializeForm()
             <span>{{ t('settings.dialogs.onboarding.validationFailed') }}</span>
             <button
               type="button"
-              class="ml-2 rounded bg-red-100 px-2 py-0.5 text-xs text-red-600 font-medium transition-colors dark:bg-red-800/30 hover:bg-red-200 dark:text-red-300 dark:hover:bg-red-700/40"
+              class="ml-2 rounded bg-red-100 bg-red-800/30 px-2 py-0.5 text-xs text-red-300 text-red-600 font-medium transition-colors hover:bg-red-200 hover:bg-red-700/40"
               @click="handleContinueAnyway"
             >
               {{ t('settings.pages.providers.common.continueAnyway') }}

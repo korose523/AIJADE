@@ -8,19 +8,19 @@ defineProps<{
 <template>
   <div relative overflow-hidden rounded-md>
     <div
-      :class="[barClass ? barClass : 'bg-primary-300 dark:bg-primary-300/50']"
+      :class="[barClass ? barClass : 'bg-[var(--accent)]']"
       absolute h-4 min-w-2 rounded-md will-change-width
       :style="{ width: `${progress}%` }"
       transition="width duration-500 ease-in-out"
     >
       <div
         v-if="progress < 100"
-        absolute inset-0 origin-left rounded-md bg-white
+        absolute inset-0 origin-left rounded-md bg-$surface-1
         class="progress-shine-animation"
       />
     </div>
     <div
-      bg="neutral-100 dark:neutral-900" h-4 w-full rounded-md
+      bg="[var(--surface-3)]" h-4 w-full rounded-md
     />
   </div>
 </template>

@@ -229,7 +229,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     icon="i-solar:scale-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -240,7 +240,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.live2d.scale-and-position.scale') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => scale = 1">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -250,7 +250,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.live2d.scale-and-position.x') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => position.x = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -260,7 +260,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.live2d.scale-and-position.y') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => position.y = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -273,13 +273,13 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     inner-class="text-sm"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
     :expand="false"
   >
-    <p text="neutral-500 dark:neutral-400">
+    <p text="$text-secondary">
       {{ t('settings.live2d.theme-color-from-model.description') }}
     </p>
     <ColorPalette class="mb-4 mt-2" :colors="palette.map(hex => ({ hex, name: hex }))" mx-auto />
@@ -293,7 +293,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     icon="i-solar:face-scan-circle-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -332,7 +332,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     icon="i-solar:settings-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -353,7 +353,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         :y-config="{ min: -100, max: 100, step: 0.01, label: 'Y', formatValue: (val: number) => val?.toFixed(2) }"
       >
         <template #label>
-          <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          <p class="text-xs text-$text-muted text-$text-secondary">
             {{ t('settings.live2d.animation.focus.offset') }}
           </p>
         </template>
@@ -376,7 +376,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div class="flex items-center gap-1 text-sm font-medium">
           {{ t('settings.live2d.animation.blink-mode.title') }}
         </div>
-        <div class="text-xs text-neutral-500 dark:text-neutral-400">
+        <div class="text-xs text-$text-muted text-$text-secondary">
           {{ t('settings.live2d.animation.blink-mode.description') }}
         </div>
       </div>
@@ -401,7 +401,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     icon="i-solar:settings-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -423,7 +423,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
             {{ t('settings.live2d.parameters.fps.title') }}
           </slot>
         </div>
-        <div class="text-xs text-neutral-500 dark:text-neutral-400">
+        <div class="text-xs text-$text-muted text-$text-secondary">
           <slot name="description">
             {{ t('settings.live2d.parameters.fps.description') }}
           </slot>
@@ -456,7 +456,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     </Button>
 
     <!-- Head Rotation -->
-    <div mb-2 mt-4 text-xs text-neutral-500 font-semibold dark:text-neutral-400>
+    <div mb-2 mt-4 text-xs text-$text-muted text-$text-secondary font-semibold>
       Head Rotation
     </div>
     <FieldRange v-model="modelParameters.angleX" as="div" :min="-30" :max="30" :step="0.1" label="Angle X">
@@ -464,7 +464,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Angle X</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.angleX = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -474,7 +474,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Angle Y</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.angleY = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -484,14 +484,14 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Angle Z</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.angleZ = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
     </FieldRange>
 
     <!-- Eyes -->
-    <div mb-2 mt-4 text-xs text-neutral-500 font-semibold dark:text-neutral-400>
+    <div mb-2 mt-4 text-xs text-$text-muted text-$text-secondary font-semibold>
       Eyes
     </div>
     <FieldRange v-model="modelParameters.leftEyeOpen" as="div" :min="0" :max="1" :step="0.01" label="Left Eye Open/Close">
@@ -499,7 +499,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Left Eye Open/Close</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.leftEyeOpen = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -509,7 +509,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Right Eye Open/Close</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.rightEyeOpen = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -519,7 +519,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Left Eye Smiling</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.leftEyeSmile = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -529,14 +529,14 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Right Eye Smiling</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.rightEyeSmile = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
     </FieldRange>
 
     <!-- Eyebrows -->
-    <div mb-2 mt-4 text-xs text-neutral-500 font-semibold dark:text-neutral-400>
+    <div mb-2 mt-4 text-xs text-$text-muted text-$text-secondary font-semibold>
       Eyebrows
     </div>
     <FieldRange v-model="modelParameters.leftEyebrowLR" as="div" :min="-1" :max="1" :step="0.01" label="Left eyebrow Left/Right">
@@ -544,7 +544,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Left eyebrow Left/Right</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.leftEyebrowLR = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -554,7 +554,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Right eyebrow Left/Right</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.rightEyebrowLR = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -564,7 +564,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Left Eyebrow Y</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.leftEyebrowY = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -574,7 +574,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Right Eyebrow Y</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.rightEyebrowY = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -584,7 +584,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Left Eyebrow Angle</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.leftEyebrowAngle = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -594,7 +594,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Right Eyebrow Angle</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.rightEyebrowAngle = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -604,7 +604,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Left Eyebrow Form</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.leftEyebrowForm = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -614,14 +614,14 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Right Eyebrow Form</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.rightEyebrowForm = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
     </FieldRange>
 
     <!-- Mouth -->
-    <div mb-2 mt-4 text-xs text-neutral-500 font-semibold dark:text-neutral-400>
+    <div mb-2 mt-4 text-xs text-$text-muted text-$text-secondary font-semibold>
       Mouth
     </div>
     <FieldRange v-model="modelParameters.mouthOpen" as="div" :min="0" :max="1" :step="0.01" label="Mouth Open/Close">
@@ -629,7 +629,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Mouth Open/Close</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.mouthOpen = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -639,14 +639,14 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Mouth Form</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.mouthForm = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
     </FieldRange>
 
     <!-- Face -->
-    <div mb-2 mt-4 text-xs text-neutral-500 font-semibold dark:text-neutral-400>
+    <div mb-2 mt-4 text-xs text-$text-muted text-$text-secondary font-semibold>
       Face
     </div>
     <FieldRange v-model="modelParameters.cheek" as="div" :min="0" :max="1" :step="0.01" label="Cheek">
@@ -654,14 +654,14 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Cheek</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.cheek = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
     </FieldRange>
 
     <!-- Body -->
-    <div mb-2 mt-4 text-xs text-neutral-500 font-semibold dark:text-neutral-400>
+    <div mb-2 mt-4 text-xs text-$text-muted text-$text-secondary font-semibold>
       Body
     </div>
     <FieldRange v-model="modelParameters.bodyAngleX" as="div" :min="-10" :max="10" :step="0.1" label="Body rotation X">
@@ -669,7 +669,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Body rotation X</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.bodyAngleX = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -679,7 +679,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Body rotation Y</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.bodyAngleY = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -689,7 +689,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Body rotation Z</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.bodyAngleZ = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -699,7 +699,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
         <div flex items-center>
           <div>Breath</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => modelParameters.breath = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -710,21 +710,21 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
     icon="i-solar:face-scan-circle-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
     :expand="false"
   >
     <div flex items-center justify-between>
-      <span text-sm text-neutral-600 dark:text-neutral-400>{{ t('settings.live2d.expressions.override-toggle') }}</span>
+      <span text-sm text-$text-muted text-$text-secondary>{{ t('settings.live2d.expressions.override-toggle') }}</span>
       <Checkbox v-model="live2dExpressionEnabled" />
     </div>
-    <div v-if="!live2dExpressionEnabled" py-2 text-xs text-neutral-500 dark:text-neutral-400>
+    <div v-if="!live2dExpressionEnabled" py-2 text-xs text-$text-muted text-$text-secondary>
       {{ t('settings.live2d.expressions.sdk-preset-preserved-notice') }}
     </div>
     <template v-else-if="expressionGroups.size === 0">
-      <div py-2 text-sm text-neutral-500 dark:text-neutral-400>
+      <div py-2 text-sm text-$text-muted text-$text-secondary>
         {{ t('settings.live2d.expressions.no-expression') }}
       </div>
     </template>
@@ -736,7 +736,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
           :key="groupName"
           flex items-center justify-between
         >
-          <span text-sm text-neutral-700 dark:text-neutral-300>{{ groupName }}</span>
+          <span text-sm text-$text-primary text-$text-primary>{{ groupName }}</span>
           <Checkbox
             :model-value="isGroupActive(group)"
             @update:model-value="expressionStore.toggle(groupName)"
@@ -745,7 +745,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
       </div>
 
       <div mt-4 flex flex-wrap items-center gap-3>
-        <span whitespace-nowrap text-sm text-neutral-600 dark:text-neutral-400>{{ t('settings.live2d.expressions.expose-to-llm-toggle') }}</span>
+        <span whitespace-nowrap text-sm text-$text-muted text-$text-secondary>{{ t('settings.live2d.expressions.expose-to-llm-toggle') }}</span>
         <SelectTab
           :model-value="expressionStore.llmMode"
           :options="llmModeOptions"
@@ -753,18 +753,18 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
           @update:model-value="(v: string) => expressionStore.setLlmMode(v as 'all' | 'none' | 'custom')"
         />
       </div>
-      <span v-if="expressionStore.llmMode !== 'none'" text-xs text-neutral-500 dark:text-neutral-400>
+      <span v-if="expressionStore.llmMode !== 'none'" text-xs text-$text-muted text-$text-secondary>
         {{ t('settings.live2d.expressions.llm-integration-wip') }}
       </span>
 
       <!-- Custom per-expression LLM toggles (only when mode = 'custom') -->
-      <div v-if="expressionStore.llmMode === 'custom'" mt-2 flex flex-col gap-2 border-l-2 border-neutral-200 pl-3 dark:border-neutral-700>
+      <div v-if="expressionStore.llmMode === 'custom'" mt-2 flex flex-col gap-2 border-l-2 border-$hairline border-$hairline pl-3>
         <div
           v-for="[groupName] in expressionGroups"
           :key="`llm-${groupName}`"
           flex items-center justify-between
         >
-          <span text-xs text-neutral-600 dark:text-neutral-400>{{ groupName }}</span>
+          <span text-xs text-$text-muted text-$text-secondary>{{ groupName }}</span>
           <Checkbox
             :model-value="expressionStore.llmExposed.get(groupName) ?? false"
             @update:model-value="(v: boolean) => expressionStore.setLlmExposed(groupName, v)"

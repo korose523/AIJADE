@@ -29,14 +29,14 @@ const edition = isStageTamagotchi()
     :class="[
       'w-fit p-2',
       'flex justify-center md:items-center self-end',
-      'border-2 border-solid border-neutral-100/60 dark:border-neutral-800/30',
-      'bg-neutral-50/70 dark:bg-neutral-800/70',
+      'border-2 border-solid border-$hairline border-$hairline',
+      'bg-$surface-1 bg-$surface-2',
       'backdrop-blur-md',
       'rounded-xl',
     ]"
     @click="show = !show"
   >
-    <div i-solar:info-circle-outline class="size-5" text="neutral-500 dark:neutral-400" />
+    <div i-solar:info-circle-outline class="size-5" text="$text-secondary" />
   </button>
   <AboutDialog v-model="show">
     <AboutContent :subtitle="edition" :build-info="buildInfo" :links="aboutLinks" />

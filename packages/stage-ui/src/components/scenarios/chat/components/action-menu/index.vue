@@ -103,15 +103,15 @@ const forceVisible = computed(() => contextMenuOpen.value || dropdownMenuOpen.va
 
 const contentClasses = [
   'z-10000 min-w-36 rounded-xl p-1 shadow-md outline-none',
-  'border border-neutral-100/70 bg-white/90 text-neutral-700 backdrop-blur-md',
-  'dark:border-neutral-900/80 dark:bg-neutral-900/90 dark:text-neutral-100',
+  'border border-$hairline bg-$surface-1 text-$text-primary backdrop-blur-md',
+  'border-$hairline bg-$surface-1 text-$text-primary',
   'data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade',
   'data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade',
 ]
 
 const itemClasses = [
   'relative flex cursor-pointer select-none items-center gap-2 rounded-lg px-3 py-2 text-sm leading-none outline-none',
-  'data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-50/80 dark:data-[highlighted]:bg-primary-900/40',
+  'data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-50/80 data-[highlighted]:bg-primary-900/40',
   'transition-colors duration-150 ease-in-out',
 ]
 
@@ -347,9 +347,9 @@ watch(isTouching, (val) => {
             <button
               :class="[
                 'h-8 w-8 flex items-center justify-center rounded-lg',
-                'bg-white/85 text-neutral-500 backdrop-blur-sm',
-                'dark:bg-neutral-900/85 dark:text-neutral-300',
-                'transition-colors hover:text-primary-500 dark:hover:text-primary-300',
+                'bg-$surface-1 text-$text-secondary backdrop-blur-sm',
+                'bg-$surface-1 text-$text-primary',
+                'transition-colors hover:text-primary-500 hover:text-primary-300',
               ]"
               :aria-label="menuLabel"
             >
@@ -357,7 +357,7 @@ watch(isTouching, (val) => {
                 :class="[
                   triggerState.icon,
                   'text-base',
-                  triggerState.tone === 'success' ? 'text-emerald-600 dark:text-emerald-300' : '',
+                  triggerState.tone === 'success' ? 'text-emerald-600 text-emerald-300' : '',
                 ]"
               />
             </button>
@@ -378,7 +378,7 @@ watch(isTouching, (val) => {
                 :class="[
                   ...itemClasses,
                   item.danger
-                    ? 'text-red-500 data-[highlighted]:bg-red-50/80 dark:data-[highlighted]:bg-red-950/40'
+                    ? 'text-red-500 data-[highlighted]:bg-red-50/80 data-[highlighted]:bg-red-950/40'
                     : '',
                 ]"
                 @select="() => void handleAction(item.action)"
@@ -404,7 +404,7 @@ watch(isTouching, (val) => {
           :class="[
             ...itemClasses,
             item.danger
-              ? 'text-red-500 data-[highlighted]:bg-red-50/80 dark:data-[highlighted]:bg-red-950/40'
+              ? 'text-red-500 data-[highlighted]:bg-red-50/80 data-[highlighted]:bg-red-950/40'
               : '',
           ]"
           @select="() => void handleAction(item.action)"

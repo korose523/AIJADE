@@ -11,7 +11,7 @@ export interface ServerAuthBootstrapContext {
   }
 }
 
-const SCRIPT_ID = 'airi-server-auth-context'
+const SCRIPT_ID = 'aijade-server-auth-context'
 
 let cachedContext: ServerAuthBootstrapContext | null | undefined
 

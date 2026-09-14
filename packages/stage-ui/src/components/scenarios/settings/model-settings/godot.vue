@@ -219,12 +219,12 @@ const cameraFov = createNumberModel(
     icon="i-solar:camera-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80 dark:bg-black/75',
+      'bg-$surface-1 bg-$scrim',
       'backdrop-blur-lg',
     ]"
   >
     <div :class="['flex items-center justify-between gap-2 px-2 pb-2']">
-      <div :class="['text-xs text-neutral-500 dark:text-neutral-400']">
+      <div :class="['text-xs text-$text-secondary text-$text-muted']">
         {{ snapshotMeta ?? 'No Godot stage view snapshot received' }}
       </div>
     </div>

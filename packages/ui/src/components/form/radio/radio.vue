@@ -20,8 +20,8 @@ const modelValue = defineModel<string>({ required: true })
       'transition-all duration-200 ease-in-out',
       'border-2 border-solid',
       modelValue === value
-        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-900 hover:border-primary-500/30 dark:hover:border-primary-400/30'
-        : 'bg-white dark:bg-neutral-900/20 border-neutral-100 dark:border-neutral-900 hover:border-primary-500/30 dark:hover:border-primary-400/30',
+        ? 'bg-primary-50 bg-primary-900/20 border-primary-100 border-primary-900 hover:border-primary-500/30 hover:border-primary-400/30'
+        : 'bg-$surface-1 bg-$surface-1 border-$hairline border-$hairline hover:border-primary-500/30 hover:border-primary-400/30',
       modelValue === value
         ? 'form_radio-active'
         : '',
@@ -41,15 +41,15 @@ const modelValue = defineModel<string>({ required: true })
         :class="[
           'size-5 border-2 rounded-full transition-colors duration-200',
           modelValue === value
-            ? 'border-primary-500 dark:border-primary-400'
-            : 'border-neutral-300 dark:border-neutral-600',
+            ? 'border-primary-500 border-primary-400'
+            : 'border-$hairline border-$hairline',
         ]"
       >
         <div
           :class="[
             'absolute left-1/2 top-1/2 size-3 rounded-full transition-opacity duration-200 -translate-x-1/2 -translate-y-1/2',
             modelValue === value
-              ? 'opacity-100 bg-primary-500 dark:bg-primary-400'
+              ? 'opacity-100 bg-primary-500 bg-primary-400'
               : 'opacity-0',
           ]"
         />
@@ -61,8 +61,8 @@ const modelValue = defineModel<string>({ required: true })
           :class="[
             'line-clamp-1 font-medium',
             modelValue === value
-              ? 'text-neutral-700 dark:text-neutral-300'
-              : 'text-neutral-700 dark:text-neutral-400',
+              ? 'text-$text-primary text-$text-primary'
+              : 'text-$text-primary text-$text-muted',
           ]"
         >
           {{ title }}
@@ -79,7 +79,7 @@ const modelValue = defineModel<string>({ required: true })
 }
 
 .form_radio::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 dark:from-primary-400/0 dark:to-primary-400/0';
+  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 from-primary-400/0 to-primary-400/0';
   content: '';
   position: absolute;
   inset: 0;
@@ -93,13 +93,13 @@ const modelValue = defineModel<string>({ required: true })
 
 .form_radio:hover::before,
 .form_radio._hover::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 1;
 }
 
 .form_radio-active::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 0.5;
 }

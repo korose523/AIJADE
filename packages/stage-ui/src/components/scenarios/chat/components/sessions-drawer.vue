@@ -222,25 +222,25 @@ watch(showDialog, async (open) => {
     <DialogPortal>
       <DialogOverlay
         :class="[
-          'fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm',
+          'fixed inset-0 z-[9999] bg-$scrim backdrop-blur-sm',
           'data-[state=closed]:animate-fadeOut data-[state=open]:animate-fadeIn',
         ]"
       />
       <DialogContent
         :class="[
-          'fixed left-1/2 top-1/2 z-[9999] max-h-[80dvh] max-w-md w-[92dvw] transform overflow-hidden rounded-2xl bg-white/95 shadow-xl outline-none backdrop-blur-md scrollbar-none -translate-x-1/2 -translate-y-1/2 data-[state=closed]:animate-contentHide data-[state=open]:animate-contentShow dark:bg-neutral-900/90',
+          'fixed left-1/2 top-1/2 z-[9999] max-h-[80dvh] max-w-md w-[92dvw] transform overflow-hidden rounded-2xl bg-$surface-1 shadow-xl outline-none backdrop-blur-md scrollbar-none -translate-x-1/2 -translate-y-1/2 data-[state=closed]:animate-contentHide data-[state=open]:animate-contentShow bg-$surface-1',
         ]"
       >
         <div :class="['flex flex-col h-full max-h-[80dvh]']">
           <div :class="['flex items-center justify-between px-5 pt-5 pb-3']">
-            <DialogTitle :class="['text-base font-medium text-neutral-700 dark:text-neutral-200']">
+            <DialogTitle :class="['text-base font-medium text-$text-primary text-$text-primary']">
               {{ t('stage.chat.sessions.title') }}
             </DialogTitle>
             <button
               :class="[
                 'rounded-lg px-3 py-1.5 text-xs font-medium',
-                'bg-primary-100/60 text-primary-700 dark:bg-primary-900/40 dark:text-primary-200',
-                'hover:bg-primary-200/70 dark:hover:bg-primary-800/50',
+                'bg-primary-100/60 text-primary-700 bg-primary-900/40 text-primary-200',
+                'hover:bg-primary-200/70 hover:bg-primary-800/50',
                 'transition-colors',
               ]"
               :disabled="isCreatingSession"
@@ -250,7 +250,7 @@ watch(showDialog, async (open) => {
             </button>
           </div>
           <div :class="['flex-1 overflow-y-auto px-2 pb-4']">
-            <div v-if="rows.length === 0" :class="['p-6 text-center text-sm text-neutral-500 dark:text-neutral-400']">
+            <div v-if="rows.length === 0" :class="['p-6 text-center text-sm text-$text-secondary text-$text-muted']">
               {{ t('stage.chat.sessions.empty') }}
             </div>
             <div
@@ -260,19 +260,19 @@ watch(showDialog, async (open) => {
                 'group relative w-full rounded-xl mb-1',
                 'transition-colors',
                 row.isActive
-                  ? 'bg-primary-100/70 dark:bg-primary-900/40'
-                  : 'hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60',
+                  ? 'bg-primary-100/70 bg-primary-900/40'
+                  : 'hover:bg-$surface-1 hover:bg-$surface-2',
               ]"
             >
               <button
                 :class="['w-full text-left px-3 py-2.5 outline-none flex flex-col gap-1']"
                 @click="selectSession(row.meta.sessionId)"
               >
-                <div :class="['flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-200']">
+                <div :class="['flex items-center gap-2 text-sm font-medium text-$text-primary text-$text-primary']">
                   <span :class="['truncate flex-1']">{{ row.preview }}</span>
                   <span
                     v-if="row.meta.cloudChatId"
-                    :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300']"
+                    :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-emerald-500/15 text-emerald-700 text-emerald-300']"
                     :title="t('stage.chat.sessions.cloud-badge')"
                   >
                     cloud
@@ -280,7 +280,7 @@ watch(showDialog, async (open) => {
                   <!-- placeholder for trash icon to reserve hit space -->
                   <span :class="['w-7']" />
                 </div>
-                <div :class="['text-[11px] text-neutral-500 dark:text-neutral-400']">
+                <div :class="['text-[11px] text-$text-secondary text-$text-muted']">
                   {{ row.updatedAtLabel }}
                 </div>
               </button>
@@ -288,7 +288,7 @@ watch(showDialog, async (open) => {
                 :class="[
                   'absolute right-2 top-2 h-7 w-7 flex items-center justify-center rounded-md',
                   'opacity-0 group-hover:opacity-100 focus:opacity-100',
-                  'text-neutral-400 hover:text-red-500 hover:bg-red-500/10',
+                  'text-$text-muted hover:text-red-500 hover:bg-red-500/10',
                   'transition-opacity duration-150',
                 ]"
                 :title="t('stage.chat.sessions.delete')"
@@ -312,20 +312,20 @@ watch(showDialog, async (open) => {
           'flex flex-col',
           'h-full max-h-[85%]',
           'rounded-t-[32px] outline-none backdrop-blur-md',
-          'bg-neutral-50/95 dark:bg-neutral-900/95',
+          'bg-$surface-1 bg-$surface-1',
         ]"
         :style="{ paddingBottom: `${Math.max(Number.parseFloat(screenSafeArea.bottom.value.replace('px', '')), 24)}px` }"
       >
-        <DrawerHandle :class="['[div&]:bg-neutral-400 [div&]:dark:bg-neutral-600']" />
+        <DrawerHandle :class="['[div&]:bg-$surface-1 [div&]:bg-$surface-1']" />
         <div :class="['flex items-center justify-between px-4 pt-3 pb-2']">
-          <DrawerTitle :class="['text-base font-medium text-neutral-700 dark:text-neutral-200']">
+          <DrawerTitle :class="['text-base font-medium text-$text-primary text-$text-primary']">
             {{ t('stage.chat.sessions.title') }}
           </DrawerTitle>
           <button
             :class="[
               'rounded-lg px-3 py-1.5 text-xs font-medium',
-              'bg-primary-100/60 text-primary-700 dark:bg-primary-900/40 dark:text-primary-200',
-              'hover:bg-primary-200/70 dark:hover:bg-primary-800/50',
+              'bg-primary-100/60 text-primary-700 bg-primary-900/40 text-primary-200',
+              'hover:bg-primary-200/70 hover:bg-primary-800/50',
               'transition-colors',
             ]"
             :disabled="isCreatingSession"
@@ -335,7 +335,7 @@ watch(showDialog, async (open) => {
           </button>
         </div>
         <div :class="['flex-1 overflow-y-auto px-2 pb-2']">
-          <div v-if="rows.length === 0" :class="['p-6 text-center text-sm text-neutral-500 dark:text-neutral-400']">
+          <div v-if="rows.length === 0" :class="['p-6 text-center text-sm text-$text-secondary text-$text-muted']">
             {{ t('stage.chat.sessions.empty') }}
           </div>
           <div
@@ -345,26 +345,26 @@ watch(showDialog, async (open) => {
               'group relative w-full rounded-xl mb-1',
               'transition-colors',
               row.isActive
-                ? 'bg-primary-100/70 dark:bg-primary-900/40'
-                : 'hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60',
+                ? 'bg-primary-100/70 bg-primary-900/40'
+                : 'hover:bg-$surface-1 hover:bg-$surface-2',
             ]"
           >
             <button
               :class="['w-full text-left px-3 py-3 outline-none flex flex-col gap-1']"
               @click="selectSession(row.meta.sessionId)"
             >
-              <div :class="['flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-200']">
+              <div :class="['flex items-center gap-2 text-sm font-medium text-$text-primary text-$text-primary']">
                 <span :class="['truncate flex-1']">{{ row.preview }}</span>
                 <span
                   v-if="row.meta.cloudChatId"
-                  :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300']"
+                  :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-emerald-500/15 text-emerald-700 text-emerald-300']"
                   :title="t('stage.chat.sessions.cloud-badge')"
                 >
                   cloud
                 </span>
                 <span :class="['w-7']" />
               </div>
-              <div :class="['text-[11px] text-neutral-500 dark:text-neutral-400']">
+              <div :class="['text-[11px] text-$text-secondary text-$text-muted']">
                 {{ row.updatedAtLabel }}
               </div>
             </button>
@@ -372,7 +372,7 @@ watch(showDialog, async (open) => {
               :class="[
                 'absolute right-2 top-2 h-7 w-7 flex items-center justify-center rounded-md',
                 'opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100',
-                'text-neutral-400 hover:text-red-500 hover:bg-red-500/10',
+                'text-$text-muted hover:text-red-500 hover:bg-red-500/10',
                 'transition-opacity duration-150',
               ]"
               :title="t('stage.chat.sessions.delete')"

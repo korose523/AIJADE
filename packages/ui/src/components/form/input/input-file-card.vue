@@ -18,15 +18,15 @@ const slots = useSlots()
       'border-dashed border-2',
       'transition-all duration-300',
       'opacity-95',
-      'hover:scale-100 hover:opacity-100 hover:shadow-md hover:dark:shadow-lg',
+      'hover:scale-100 hover:opacity-100 hover:shadow-md hover:shadow-lg',
     ]"
     :is-not-dragging-classes="[
-      'border-neutral-200 dark:border-neutral-700 hover:border-primary-300 dark:hover:border-primary-700',
-      'bg-white/60 dark:bg-black/30 hover:bg-white/80 dark:hover:bg-black/40',
+      'border-$hairline border-$hairline hover:border-primary-300 hover:border-primary-700',
+      'bg-$surface-1 bg-$scrim hover:bg-$surface-1 hover:bg-$scrim',
     ]"
     :is-dragging-classes="[
-      'border-primary-400 dark:border-primary-600 hover:border-primary-300 dark:hover:border-primary-700',
-      'bg-primary-50/5 dark:bg-primary-900/5',
+      'border-primary-400 border-primary-600 hover:border-primary-300 hover:border-primary-700',
+      'bg-primary-50/5 bg-primary-900/5',
     ]"
     :accept="accept"
     :multiple="multiple"
@@ -37,7 +37,7 @@ const slots = useSlots()
         v-else
         class="flex flex-col items-center"
         :class="[
-          isDragging ? 'text-primary-500 dark:text-primary-400' : 'text-neutral-400 dark:text-neutral-500',
+          isDragging ? 'text-primary-500 text-primary-400' : 'text-$text-muted text-$text-secondary',
         ]"
       >
         <div i-solar:upload-square-line-duotone mb-2 text-5xl />

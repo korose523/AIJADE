@@ -27,7 +27,7 @@ const formattedArgs = computed(() => {
 <template>
   <Collapsible
     :class="[
-      'bg-primary-100/40 dark:bg-primary-900/60 rounded-lg px-1 pb-1 pt-1',
+      'bg-primary-100/40 bg-primary-900/60 rounded-lg px-1 pb-1 pt-1',
       'flex flex-col gap-2 items-start',
     ]"
   >
@@ -61,7 +61,7 @@ const formattedArgs = computed(() => {
     <div
       :class="[
         'rounded-md p-2 w-full',
-        'bg-neutral-100/80 text-sm text-neutral-800 dark:bg-neutral-900/80 dark:text-neutral-200',
+        'bg-$surface-1 text-sm text-$text-primary bg-$surface-1 text-$text-primary',
       ]"
     >
       <template v-if="resultError">

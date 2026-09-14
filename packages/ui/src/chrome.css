@@ -1,0 +1,95 @@
+/**
+ * AIJADE light-futuristic sci-fi chrome.
+ *
+ * Ambient layer shared by every stage app (stage-web / stage-pocket /
+ * stage-tamagotchi / ui-admin). It only consumes the semantic tokens declared
+ * in `fallback.css` — no hardcoded colors. All sci-fi flavour (subtle accent
+ * glow, faint engineering grid, glass surfaces, glow edges) is token-driven so
+ * the dark variant follows automatically through `html.dark` overrides.
+ */
+
+/* Ambient accent glows behind everything. */
+body {
+  color: var(--text-primary);
+  background-color: var(--bg-color);
+  background-image:
+    radial-gradient(1180px 640px at 8% -14%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 60%),
+    radial-gradient(980px 560px at 102% -4%, color-mix(in oklab, var(--accent-soft) 62%, transparent), transparent 56%);
+  background-attachment: fixed;
+}
+
+/* Faint engineering grid, masked to fade toward the bottom. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+  -webkit-mask-image: radial-gradient(125% 120% at 50% -8%, #000 28%, transparent 82%);
+  mask-image: radial-gradient(125% 120% at 50% -8%, #000 28%, transparent 82%);
+}
+
+/* Glassmorphic raised surface. */
+.sci-glass {
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(var(--surface-glass-blur));
+  backdrop-filter: blur(var(--surface-glass-blur));
+  border: 1px solid var(--hairline);
+}
+
+/* Standard floating panel with token shadow + hairline. */
+.sci-panel {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-panel);
+}
+
+/* Stronger floating panel (modals, popovers). */
+.sci-float {
+  background: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--shadow-float);
+}
+
+/* Glowing edge used on key interactive accents. */
+.sci-glow {
+  box-shadow: var(--glow-accent);
+}
+
+/* Hairline divider. */
+.sci-divider {
+  height: 1px;
+  background: var(--hairline);
+  border: 0;
+}
+
+/* Subtle hairline-friendly scrollbars. */
+* {
+  scrollbar-color: var(--hairline-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--hairline-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

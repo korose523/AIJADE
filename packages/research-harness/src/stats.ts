@@ -816,7 +816,7 @@ function wilsonInterval(succ: number, n: number, z: number): [number, number] {
  * Bounds are clamped to [−1, 1], the natural range of a difference of
  * proportions. Returns NaN when either margin is empty (no estimable p).
  *
- * @param confidence nominal level (default 0.95).
+ * Confidence defaults to 0.95 and is taken from `opts.confidence`.
  */
 export function riskDifferenceCI(
   a: number,
@@ -887,4 +887,44 @@ export function minDetectableEffectProportion(
     else hi = mid
   }
   return (lo + hi) / 2
+}
+
+/**
+ * Achieved power of the two-proportion z-test for a *given* effect `delta`
+ * (proportion scale), equal n per cell, baseline `p0`, two-sided `alpha`.
+ *
+ * This is the inverse of {@link minDetectableEffectProportion}: where that
+ * function answers "how small an effect can I still detect at 80% power?",
+ * this one answers "what power do I actually have for an effect of size δ at
+ * my achieved n?". It uses the standard (unpooled, under-H1) two-proportion
+ * power formula:
+ *
+ *   SE = √( p0(1−p0)/n + p1(1−p1)/n ),  p1 = p0 + δ
+ *   z  = (p1 − p0) / SE
+ *   power = Φ(z − z_{α/2})
+ *
+ * @note The review's §1.8 reference values (e.g. Δ=10pp → 0.56/0.74) are
+ * reproduced here from a *derived* formula, NOT hard-coded, because the project
+ * has a history of wrong hand-typed reference numbers. Callers should report
+ * whatever this returns and state the qualitative conclusion ("at the achieved
+ * n the design can only resolve effects of roughly ≥10pp").
+ */
+export function powerForEffectProportion(
+  delta: number,
+  nPerCell: number,
+  opts: { p0?: number, alpha?: number } = {},
+): number {
+  const p0 = opts.p0 ?? 0.5
+  const alpha = opts.alpha ?? 0.05
+  if (nPerCell <= 0)
+    return Number.NaN
+  const p1 = p0 + delta
+  if (p1 <= 0 || p1 >= 1)
+    return Number.NaN
+  const se = Math.sqrt(p0 * (1 - p0) / nPerCell + p1 * (1 - p1) / nPerCell)
+  if (se <= 0)
+    return Number.NaN
+  const z = (p1 - p0) / se
+  const zA = normalQuantile(1 - alpha / 2)
+  return normalCdf(z - zA)
 }

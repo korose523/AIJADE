@@ -130,8 +130,15 @@ export interface PolicyParams {
   reflect?: (content: string) => Promise<string>
 }
 
-/** Build the policy parameters for a Table-3 configuration. */
-export function policyParamsFrom(config: MechanismConfig, budget: number, reflect?: (content: string) => string): PolicyParams {
+/**
+ * Build the policy parameters for a Table-3 configuration.
+ *
+ * `reflect` is **async** because it is fed by `LlmPort.complete`, which returns
+ * `Promise<string>` (see `ports.ts`). The type here previously said `=> string`,
+ * which was the root of the compile failure in this module: the value that
+ * reached `fnv1a` in `admitTrue` was a pending Promise, not the summarised text.
+ */
+export function policyParamsFrom(config: MechanismConfig, budget: number, reflect?: (content: string) => Promise<string>): PolicyParams {
   return {
     strategy: config.memoryWrite,
     dualGraphSeparation: config.dualGraphSeparation,
@@ -172,8 +179,15 @@ export class PolicyStorage implements StoragePort {
     return this.mem
   }
 
-  /** Admission decision for a *true, non-contradiction* write, by strategy. */
-  private admitTrue(meta: MemoryMeta): boolean {
+  /**
+   * Admission decision for a *true, non-contradiction* write, by strategy.
+   *
+   * `async` because the `llm_reflection` strategy must consult the reflection
+   * port, and that port is asynchronous (`LlmPort.complete`). Every other
+   * strategy resolves without touching the port, so the only cost they pay is a
+   * single microtask hop.
+   */
+  private async admitTrue(meta: MemoryMeta): Promise<boolean> {
     switch (this.p.strategy) {
       case 'none':
         return false
@@ -188,7 +202,14 @@ export class PolicyStorage implements StoragePort {
           return true
         if (this.p.reflect) {
           const out = await this.p.reflect(meta.role + meta.stmtId)
-          return fnv1a(out) % 1000 < 300
+          // `fnv1a` returns an 8-character *hex digest*, not a number. Parse it
+          // before the modulus: `"a3f9b2c1" % 1000` coerces to NaN, and
+          // `NaN < 300` is false, which silently rejected every low-importance
+          // statement the B4 `llm_reflection` policy was supposed to admit at
+          // ~30% and turned that baseline into a strict copy of
+          // `importance_threshold`. The digest is a 32-bit unsigned integer, so
+          // `Number.parseInt(..., 16)` is exact (well under 2^53).
+          return Number.parseInt(fnv1a(out), 16) % 1000 < 300
         }
         return false
       }
@@ -239,7 +260,11 @@ export class PolicyStorage implements StoragePort {
     if (!meta.isTrue)
       return this.commit(meta, value)
 
-    if (!this.admitTrue(meta))
+    // NOTE: the `await` is load-bearing. `admitTrue` is async, and `!Promise`
+    // is always `false`, so omitting the await makes the guard below unreachable
+    // and turns every strategy into "admit everything" — a silent no-op that
+    // TypeScript does not flag (negating an object is legal).
+    if (!(await this.admitTrue(meta)))
       return
     this.commit(meta, value)
   }
@@ -315,7 +340,12 @@ export class PolicyStorage implements StoragePort {
   }
 }
 
-/** Convenience: a reflection summariser backed by the deterministic stub LLM. */
-export function makeReflection(llm: LlmPort): (content: string) => string {
+/**
+ * Convenience: a reflection summariser backed by the deterministic stub LLM.
+ *
+ * Returns the LLM promise unchanged — `LlmPort.complete` is asynchronous, so
+ * the summariser is too. `admitTrue` awaits it before hashing.
+ */
+export function makeReflection(llm: LlmPort): (content: string) => Promise<string> {
   return (content: string) => llm.complete(`reflect: ${content}`)
 }

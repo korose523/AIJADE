@@ -155,11 +155,21 @@ function buildRowsLocal(convs: LocomoConversation[], idf: Map<string, number>, n
   return rows
 }
 
-/** 全局 standardize（逐字复刻 probe.ts：把**全语料**都算进去）。 */
+/**
+ * 全局 standardize（逐字复刻 probe.ts：把**全语料**都算进去）。
+ *
+ * 累加器必须从 0 起算。这里曾写作 `fill(1)`，使 sd[j] 恒为
+ * `1 + Σ(x−mean)²` 而非 `Σ(x−mean)²`，于是标准差被整体抬高。后果有二：
+ *  ① 它就不是 probe.ts 的逐字复刻了（probe.ts 用 `fill(0)`），与文档声明不符；
+ *  ② 本文件用它作为"全局标准化（有泄漏）"基线，与"仅训练折标准化"的
+ *     `standardizeStats` 对比——但那两臂本就只该在**数据范围**上不同
+ *     （全语料 vs 训练折）。`fill(1)` 引入了第二个变量（尺度），使这一消融
+ *     无法把差异归因于泄漏。改回 0 后两臂只差数据范围。
+ */
 function standardize(rows: Row[]): { mean: number[], sd: number[] } {
   const dim = rows[0].x.length
   const mean = Array.from({ length: dim }).fill(0)
-  const sd = Array.from({ length: dim }).fill(1)
+  const sd = Array.from({ length: dim }).fill(0)
   for (const r of rows) {
     for (let j = 0; j < dim; j++) mean[j] += r.x[j]
   }

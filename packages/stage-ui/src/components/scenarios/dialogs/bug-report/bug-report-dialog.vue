@@ -99,17 +99,17 @@ function onRequestTriageContext() {
     <DialogPortal>
       <DialogOverlay
         :class="[
-          'fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm',
+          'fixed inset-0 z-[9999] bg-$scrim backdrop-blur-sm',
           'data-[state=closed]:animate-fadeOut data-[state=open]:animate-fadeIn',
         ]"
       />
       <DialogContent
         :class="[
           'fixed left-1/2 top-1/2 z-[9999] max-h-full max-w-2xl w-[92dvw] transform',
-          'flex flex-col overflow-hidden rounded-2xl bg-white p-6 shadow-xl outline-none',
+          'flex flex-col overflow-hidden rounded-2xl bg-$surface-1 p-6 shadow-xl outline-none',
           'backdrop-blur-md -translate-x-1/2 -translate-y-1/2',
           'data-[state=closed]:animate-contentHide data-[state=open]:animate-contentShow',
-          'dark:bg-neutral-900',
+          'bg-$surface-1',
         ]"
       >
         <div
@@ -119,14 +119,14 @@ function onRequestTriageContext() {
         >
           <DialogTitle
             :class="[
-              'text-lg font-semibold text-neutral-900 dark:text-neutral-100',
+              'text-lg font-semibold text-$text-primary text-$text-primary',
             ]"
           >
             {{ resolvedTitle }}
           </DialogTitle>
           <DialogDescription
             :class="[
-              'text-sm text-neutral-600 dark:text-neutral-300',
+              'text-sm text-$text-secondary text-$text-primary',
             ]"
           >
             {{ resolvedSubtitle }}
@@ -154,14 +154,14 @@ function onRequestTriageContext() {
     <DrawerPortal>
       <DrawerOverlay
         :class="[
-          'fixed inset-0 z-1000 bg-black/35 backdrop-blur-sm',
+          'fixed inset-0 z-1000 bg-$scrim backdrop-blur-sm',
         ]"
       />
       <DrawerContent
         :class="[
           'fixed bottom-0 left-0 right-0 z-1000 mt-20 h-full max-h-[90%]',
-          'flex flex-col rounded-t-[32px] bg-neutral-50/95 px-4 pt-4 outline-none',
-          'backdrop-blur-md dark:bg-neutral-900/95',
+          'flex flex-col rounded-t-[32px] bg-$surface-1 px-4 pt-4 outline-none',
+          'backdrop-blur-md bg-$surface-1',
         ]"
         :style="{ paddingBottom: `${Math.max(Number.parseFloat(screenSafeArea.bottom.value.replace('px', '')), 24)}px` }"
       >
@@ -170,7 +170,7 @@ function onRequestTriageContext() {
         </VisuallyHidden>
         <DrawerHandle
           :class="[
-            '[div&]:bg-neutral-400 [div&]:dark:bg-neutral-600',
+            '[div&]:bg-$surface-1 [div&]:bg-$surface-1',
           ]"
         />
 
@@ -181,14 +181,14 @@ function onRequestTriageContext() {
         >
           <div
             :class="[
-              'text-lg font-semibold text-neutral-900 dark:text-neutral-100',
+              'text-lg font-semibold text-$text-primary text-$text-primary',
             ]"
           >
             {{ resolvedTitle }}
           </div>
           <div
             :class="[
-              'text-sm text-neutral-600 dark:text-neutral-300',
+              'text-sm text-$text-secondary text-$text-primary',
             ]"
           >
             {{ resolvedSubtitle }}

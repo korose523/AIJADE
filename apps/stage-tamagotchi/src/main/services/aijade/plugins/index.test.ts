@@ -124,7 +124,7 @@ const pluginManifestFileName = 'plugin.aijade.json'
 async function writeManifest(params: { dir: string, name: string, entrypoint: string }) {
   const manifest = {
     apiVersion: 'v1',
-    kind: 'manifest.plugin.aijade.moeru.ai',
+    kind: 'manifest.plugin.aijade.ai',
     name: params.name,
     permissions: {},
     entrypoints: {
@@ -206,7 +206,7 @@ function createDynamicModuleManifest(entrypoint: string): ManifestV1 {
 
   return {
     apiVersion: 'v1',
-    kind: 'manifest.plugin.aijade.moeru.ai',
+    kind: 'manifest.plugin.aijade.ai',
     name: 'test-dynamic-module',
     permissions,
     entrypoints: {
@@ -220,7 +220,7 @@ function createToolEnabledManifest(entrypoint: string): ManifestV1 {
 
   return {
     apiVersion: 'v1',
-    kind: 'manifest.plugin.aijade.moeru.ai',
+    kind: 'manifest.plugin.aijade.ai',
     name: 'test-plugin-tools',
     permissions: {
       apis: [
@@ -247,7 +247,7 @@ function createToolDrivenGameletManifest(entrypoint: string): ManifestV1 {
 
   return {
     apiVersion: 'v1',
-    kind: 'manifest.plugin.aijade.moeru.ai',
+    kind: 'manifest.plugin.aijade.ai',
     name: 'test-plugin-gamelets',
     permissions: {
       apis: [
@@ -727,7 +727,7 @@ describe('setupPluginHost', () => {
         join(pluginDir, pluginManifestFileName),
         JSON.stringify({
           apiVersion: 'v1',
-          kind: 'manifest.plugin.aijade.moeru.ai',
+          kind: 'manifest.plugin.aijade.ai',
           name: 'aijade-plugin-game-chess',
           permissions: {
             apis: [
@@ -1344,7 +1344,7 @@ describe('setupPluginHost', () => {
     })
     await writeFile(join(pluginDir, pluginManifestFileName), JSON.stringify({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin-widget-asset-url',
       permissions: {
         apis: [

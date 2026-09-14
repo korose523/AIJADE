@@ -183,14 +183,14 @@ watch(sendMode, () => {
       :class="[
         'relative',
         'w-full',
-        'bg-primary-200/20 dark:bg-primary-400/20',
+        'bg-primary-200/20 bg-primary-400/20',
       ]"
     >
       <BasicTextarea
         v-model="messageInput"
         :submit-on-enter="false"
         :placeholder="t('stage.message')"
-        text="primary-600 dark:primary-100  placeholder:primary-500 dark:placeholder:primary-200"
+        text="primary-600 primary-100  placeholder:primary-500 placeholder:primary-200"
         bg="transparent"
         min-h="[100px]" max-h="[300px]" w-full
         rounded-t-xl p-4 font-medium pb="[60px]"
@@ -211,7 +211,7 @@ watch(sendMode, () => {
         <button
           :class="[
             'h-8 w-8 flex items-center justify-center rounded-md outline-none transition-all duration-200 active:scale-95',
-            'text-lg text-neutral-500 dark:text-neutral-400',
+            'text-lg text-$text-secondary text-$text-muted',
           ]"
           title="Conversations"
           @click="sessionsDrawerOpen = true"
@@ -226,7 +226,7 @@ watch(sendMode, () => {
             <button
               :class="[
                 'h-8 w-8 flex items-center justify-center rounded-md outline-none transition-all duration-200 active:scale-95',
-                'text-lg text-neutral-500 dark:text-neutral-400',
+                'text-lg text-$text-secondary text-$text-muted',
               ]"
               :title="t('stage.send-mode.title')"
             >
@@ -239,8 +239,8 @@ watch(sendMode, () => {
               align="start"
               :side-offset="8"
               :class="[
-                'z-50 min-w-[180px] rounded-xl border border-neutral-200/60 bg-neutral-50/90 p-1',
-                'shadow-lg backdrop-blur-md dark:border-neutral-800/30 dark:bg-neutral-900/80',
+                'z-50 min-w-[180px] rounded-xl border border-$hairline bg-$surface-1 p-1',
+                'shadow-lg backdrop-blur-md border-$hairline bg-$surface-1',
                 'flex flex-col gap-1',
               ]"
             >
@@ -249,8 +249,8 @@ watch(sendMode, () => {
                 :key="mode"
                 :class="[
                   'w-full flex cursor-pointer items-center rounded-lg px-3 py-2 text-xs outline-none transition-colors',
-                  'hover:bg-primary-100/60 dark:hover:bg-primary-900/40',
-                  sendMode === mode ? 'bg-primary-100/60 text-primary-600 font-medium dark:bg-primary-900/40 dark:text-primary-300' : 'text-neutral-600 dark:text-neutral-300',
+                  'hover:bg-primary-100/60 hover:bg-primary-900/40',
+                  sendMode === mode ? 'bg-primary-100/60 text-primary-600 font-medium bg-primary-900/40 text-primary-300' : 'text-$text-secondary text-$text-primary',
                 ]"
                 @select="sendMode = mode"
               >
@@ -271,11 +271,11 @@ watch(sendMode, () => {
                 'h-8 w-8 flex items-center justify-center rounded-md outline-none',
                 'transition-all duration-200 active:scale-95',
               ]"
-              text="lg neutral-500 dark:neutral-400"
+              text="$text-secondary"
               :title="t('settings.hearing.title')"
             >
               <Transition name="fade" mode="out-in">
-                <IndicatorMicVolume v-if="enabled" class="h-5 w-5" :color-class="isListening ? undefined : 'text-neutral-500 dark:text-neutral-400'" />
+                <IndicatorMicVolume v-if="enabled" class="h-5 w-5" :color-class="isListening ? undefined : 'text-$text-secondary text-$text-muted'" />
                 <div v-else class="i-ph:microphone-slash h-5 w-5" />
               </Transition>
             </button>
@@ -284,8 +284,8 @@ watch(sendMode, () => {
             side="top"
             :side-offset="8"
             :class="[
-              'w-72 max-w-[18rem] rounded-xl border border-neutral-200/60 bg-neutral-50/90 p-4',
-              'shadow-lg backdrop-blur-md dark:border-neutral-800/30 dark:bg-neutral-900/80',
+              'w-72 max-w-[18rem] rounded-xl border border-$hairline bg-$surface-1 p-4',
+              'shadow-lg backdrop-blur-md border-$hairline bg-$surface-1',
               'flex flex-col gap-3',
             ]"
           >

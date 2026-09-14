@@ -170,7 +170,7 @@ function toggleOpen() {
             <div
               :class="[
                 'size-6 shrink-0',
-                option?.value === activeCardId ? 'i-solar:check-circle-bold-duotone text-primary-500' : option?.icon ?? 'i-solar:emoji-funny-square-broken text-neutral-400',
+                option?.value === activeCardId ? 'i-solar:check-circle-bold-duotone text-primary-500' : option?.icon ?? 'i-solar:emoji-funny-square-broken text-$text-muted',
               ]"
             />
             <span
@@ -178,7 +178,7 @@ function toggleOpen() {
                 'block truncate',
                 'text-sm',
                 'select-none',
-                option ? 'text-neutral-700 dark:text-neutral-200' : 'text-neutral-400 dark:text-neutral-500',
+                option ? 'text-$text-primary text-$text-primary' : 'text-$text-muted text-$text-secondary',
               ]"
             >
               {{ option?.label ?? placeholder }}
@@ -191,7 +191,7 @@ function toggleOpen() {
               v-if="option.icon"
               :class="[
                 'size-5 shrink-0',
-                option.value === activeCardId ? 'text-primary-500' : 'text-neutral-400',
+                option.value === activeCardId ? 'text-primary-500' : 'text-$text-muted',
                 option.icon,
               ]"
             />
@@ -201,7 +201,7 @@ function toggleOpen() {
                 'truncate',
                 'text-sm',
                 'select-none',
-                option.value === activeCardId ? 'text-primary-700 dark:text-primary-300' : '',
+                option.value === activeCardId ? 'text-primary-700 text-primary-300' : '',
               ]"
             >
               {{ option.label }}
@@ -227,7 +227,7 @@ function toggleOpen() {
           <div
             :class="[
               'size-6 shrink-0',
-              option?.value === activeCardId ? 'i-solar:check-circle-bold-duotone text-primary-500' : option?.icon ?? 'i-solar:emoji-funny-square-broken text-neutral-400',
+              option?.value === activeCardId ? 'i-solar:check-circle-bold-duotone text-primary-500' : option?.icon ?? 'i-solar:emoji-funny-square-broken text-$text-muted',
             ]"
           />
           <span
@@ -235,7 +235,7 @@ function toggleOpen() {
               'inline-block w-full flex-1',
               'text-sm',
               'select-none',
-              option ? 'text-neutral-700 dark:text-neutral-200' : 'text-neutral-400 dark:text-neutral-500',
+              option ? 'text-$text-primary text-$text-primary' : 'text-$text-muted text-$text-secondary',
             ]"
           >
             {{ option?.label ?? placeholder }}
@@ -248,7 +248,7 @@ function toggleOpen() {
             v-if="option.icon"
             :class="[
               'size-5 shrink-0',
-              option.value === activeCardId ? 'text-primary-500' : 'text-neutral-400',
+              option.value === activeCardId ? 'text-primary-500' : 'text-$text-muted',
               option.icon,
             ]"
           />
@@ -258,7 +258,7 @@ function toggleOpen() {
               'truncate',
               'text-sm',
               'select-none',
-              option.value === activeCardId ? 'text-primary-700 dark:text-primary-300' : '',
+              option.value === activeCardId ? 'text-primary-700 text-primary-300' : '',
             ]"
           >
             {{ option.label }}
@@ -280,7 +280,7 @@ function toggleOpen() {
         :class="[
           'absolute right-0 z-[10011] w-56 rounded-xl border-2 p-2 shadow-sm backdrop-blur-xl',
           placement === 'up' ? 'bottom-full mb-2 origin-bottom-right' : 'top-full mt-2 origin-top-right',
-          'border-neutral-200 bg-white/95 dark:border-neutral-800 dark:bg-neutral-900/95',
+          'border-$hairline bg-$surface-1 border-$hairline bg-$surface-1',
         ]"
       >
         <div :class="['flex items-center gap-2']">
@@ -291,11 +291,11 @@ function toggleOpen() {
             :placeholder="t('stage.profile-switcher.new-profile-name')"
             :class="[
               'min-w-0 flex-1 rounded-lg border-2 px-2 py-1 text-sm outline-none transition-colors',
-              'bg-neutral-50 text-neutral-800 placeholder:text-neutral-400',
-              'dark:bg-neutral-950 dark:text-neutral-100 dark:placeholder:text-neutral-500',
+              'bg-$surface-1 text-$text-primary placeholder:text-$text-muted',
+              'bg-$surface-1 text-$text-primary placeholder:text-$text-secondary',
               isDuplicateName
-                ? 'border-red-400 dark:border-red-600'
-                : 'border-neutral-100 focus:border-primary-300 dark:border-neutral-900 dark:focus:border-primary-400/50',
+                ? 'border-red-400 border-red-600'
+                : 'border-$hairline focus:border-primary-300 border-$hairline focus:border-primary-400/50',
             ]"
             @keydown.enter="confirmCreate"
             @keydown.escape="cancelCreate"
@@ -304,7 +304,7 @@ function toggleOpen() {
           <button
             :class="[
               'shrink-0 p-1.5 transition',
-              'text-primary-500 hover:text-primary-600 dark:hover:text-primary-400',
+              'text-primary-500 hover:text-primary-600 hover:text-primary-400',
               (newProfileName.trim() && !isDuplicateName) ? '' : 'pointer-events-none opacity-30',
             ]"
             type="button"
@@ -316,7 +316,7 @@ function toggleOpen() {
           <button
             :class="[
               'shrink-0 p-1.5 transition',
-              'text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300',
+              'text-$text-muted hover:text-$text-secondary hover:text-$text-primary',
             ]"
             type="button"
             @click="cancelCreate"

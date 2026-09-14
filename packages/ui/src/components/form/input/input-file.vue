@@ -46,10 +46,10 @@ function onFileChange(event: Event) {
   <label
     :class="[
       'w-full flex cursor-pointer items-center gap-2',
-      'rounded-lg border-2 border-solid border-neutral-100 bg-neutral-50 px-2 py-1 shadow-sm',
+      'rounded-lg border-2 border-solid border-$hairline bg-$surface-1 px-2 py-1 shadow-sm',
       'transition-all duration-200 ease-in-out',
-      'dark:border-neutral-900 dark:bg-neutral-950',
-      'hover:border-primary-300/70 dark:hover:border-primary-700/70',
+      'border-$hairline bg-$surface-1',
+      'hover:border-primary-300/70 hover:border-primary-700/70',
     ]"
   >
     <input
@@ -64,13 +64,13 @@ function onFileChange(event: Event) {
 
     <div
       :class="[
-        'i-solar:upload-square-line-duotone h-5 w-5 shrink-0 text-neutral-500 dark:text-neutral-400',
+        'i-solar:upload-square-line-duotone h-5 w-5 shrink-0 text-$text-secondary text-$text-muted',
       ]"
     />
 
     <div
       :class="[
-        'min-w-0 flex-1 truncate text-sm text-neutral-600 dark:text-neutral-300',
+        'min-w-0 flex-1 truncate text-sm text-$text-secondary text-$text-primary',
       ]"
       :title="fileNames"
     >
@@ -80,8 +80,8 @@ function onFileChange(event: Event) {
     <div
       v-if="previewUrl"
       :class="[
-        'h-8 w-8 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-white',
-        'dark:border-neutral-700 dark:bg-neutral-900',
+        'h-8 w-8 shrink-0 overflow-hidden rounded-md border border-$hairline bg-$surface-1',
+        'border-$hairline bg-$surface-1',
       ]"
     >
       <img

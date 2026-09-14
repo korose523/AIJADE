@@ -27,8 +27,8 @@ const props = defineProps<{
     :text-value="props.option.label"
     :class="[
       'leading-normal rounded-lg grid grid-cols-[1rem_minmax(0,1fr)] items-center gap-2 min-h-8 px-2 relative select-none data-[disabled]:pointer-events-none data-[highlighted]:outline-none',
-      'data-[highlighted]:bg-neutral-100 dark:data-[highlighted]:bg-neutral-800',
-      'text-sm text-neutral-700 dark:text-neutral-200 data-[disabled]:text-neutral-400 dark:data-[disabled]:text-neutral-600',
+      'data-[highlighted]:bg-$surface-1 data-[highlighted]:bg-$surface-2',
+      'text-sm text-$text-primary text-$text-primary data-[disabled]:text-$text-muted data-[disabled]:text-$text-secondary',
       'transition-colors duration-200 ease-in-out',
       props.option.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
     ]"
@@ -77,7 +77,7 @@ const props = defineProps<{
             :class="[
               'line-clamp-2',
               'text-xs',
-              'text-neutral-500 dark:text-neutral-400',
+              'text-$text-secondary text-$text-muted',
             ]"
           >
             {{ props.option.description }}

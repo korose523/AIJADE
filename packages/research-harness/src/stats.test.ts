@@ -18,6 +18,7 @@ import {
   normalSf,
   oddsRatio,
   pooledDifferenceInDifferences,
+  powerForEffectProportion,
   riskDifference,
   riskDifferenceCI,
   twoSidedNormalP,
@@ -224,6 +225,31 @@ describe('minDetectableEffectProportion', () => {
     // Exact two-proportion solve; within 0.5pp of the review's approximate table.
     expect(minDetectableEffectProportion(360) * 100).toBeCloseTo(10.4, 0)
     expect(minDetectableEffectProportion(240) * 100).toBeCloseTo(12.8, 0)
+  })
+})
+
+describe('powerForEffectProportion (derived, not hand-typed)', () => {
+  it('is monotonic in n and bounded in [0,1]', () => {
+    const small = powerForEffectProportion(0.10, 120)
+    const med = powerForEffectProportion(0.10, 240)
+    const large = powerForEffectProportion(0.10, 360)
+    expect(med).toBeGreaterThan(small)
+    expect(large).toBeGreaterThan(med)
+    for (const p of [small, med, large])
+      expect(p).toBeGreaterThanOrEqual(0)
+    expect(large).toBeLessThanOrEqual(1)
+  })
+  it('a 10pp effect at 240/cell has modest power; a 5pp effect is underpowered', () => {
+    // Qualitative check only (the review's exact 0.56/0.74 figures are NOT
+    // trusted — see the project's history of wrong hand-typed reference values).
+    const p10 = powerForEffectProportion(0.10, 240)
+    const p5 = powerForEffectProportion(0.05, 240)
+    expect(p10).toBeGreaterThan(0.5)
+    expect(p10).toBeLessThan(0.7)
+    expect(p5).toBeLessThan(0.24) // design can only resolve ~>=10pp effects
+  })
+  it('returns NaN for degenerate inputs', () => {
+    expect(Number.isNaN(powerForEffectProportion(0.10, 0))).toBe(true)
   })
 })
 

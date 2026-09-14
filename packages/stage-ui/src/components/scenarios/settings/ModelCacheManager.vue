@@ -51,7 +51,7 @@ onMounted(refresh)
     :class="[
       'flex flex-col gap-3',
       'rounded-lg p-4',
-      'border border-solid border-neutral-200 dark:border-neutral-700',
+      'border border-solid border-$hairline border-$hairline',
     ]"
   >
     <div flex items-center justify-between>
@@ -59,7 +59,7 @@ onMounted(refresh)
         <h3 m-0 text-sm font-medium>
           Model Cache
         </h3>
-        <p m-0 text-xs text-neutral-500>
+        <p m-0 text-xs text-$text-secondary>
           Downloaded inference models stored in browser cache
         </p>
       </div>
@@ -68,8 +68,8 @@ onMounted(refresh)
         :class="[
           'rounded-full px-2 py-1',
           'text-xs font-medium',
-          'bg-neutral-100 text-neutral-600',
-          'dark:bg-neutral-800 dark:text-neutral-400',
+          'bg-$surface-1 text-$text-secondary',
+          'bg-$surface-2 text-$text-muted',
         ]"
       >
         {{ formatBytes(cacheSize) }}
@@ -84,7 +84,7 @@ onMounted(refresh)
         :class="[
           'flex items-center justify-between',
           'rounded px-3 py-2 text-sm',
-          'bg-neutral-50 dark:bg-neutral-800/50',
+          'bg-$surface-1 bg-$surface-2',
         ]"
       >
         <span>{{ model.name }}</span>
@@ -92,8 +92,8 @@ onMounted(refresh)
           :class="[
             'rounded-full px-2 py-0.5 text-xs',
             model.cached
-              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-400'
-              : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400',
+              ? 'bg-emerald-100 text-emerald-700 bg-emerald-900/50 text-emerald-400'
+              : 'bg-$surface-1 text-$text-secondary bg-$surface-3 text-$text-muted',
           ]"
         >
           {{ model.cached ? 'Cached' : 'Not cached' }}
@@ -102,7 +102,7 @@ onMounted(refresh)
     </div>
 
     <!-- Loading state -->
-    <div v-else flex items-center gap-2 py-2 text-sm text-neutral-500>
+    <div v-else flex items-center gap-2 py-2 text-sm text-$text-secondary>
       <div i-svg-spinners:ring-resize />
       <span>Checking cache...</span>
     </div>

@@ -28,7 +28,7 @@ const { privacyPolicyUrl } = useAnalytics()
       >
         <div :class="['i-solar:alt-arrow-left-line-duotone', 'h-5', 'w-5']" />
       </button>
-      <h2 :class="['flex-1', 'text-center', 'text-xl', 'text-neutral-800', 'font-semibold', 'md:text-left', 'md:text-2xl', 'dark:text-neutral-100']">
+      <h2 :class="['flex-1', 'text-center', 'text-xl', 'text-$text-primary', 'font-semibold', 'md:text-left', 'md:text-2xl', 'text-$text-primary']">
         {{ t('settings.analytics.notice.title') }}
       </h2>
       <div h-5 w-5 />

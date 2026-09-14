@@ -85,7 +85,7 @@ const EnvSchema = object({
   // browser origin — notably the Electron desktop renderer, which loads from
   // file:// and sends no usable web origin. Web/mobile requests keep returning to
   // their own origin; only origin-less clients fall back to this.
-  WEB_APP_URL: optional(string(), 'https://aijade.moeru.ai'),
+  WEB_APP_URL: optional(string(), 'https://aijade.ai'),
 
   // Comma-separated exact origins (e.g. Capacitor dev server `https://10.x:5273`).
   // Prefer this over broad private-IP regex heuristics in production-like configs.
@@ -124,7 +124,7 @@ const EnvSchema = object({
   // boots without it but those flows will throw at send-time.
   RESEND_API_KEY: optional(string(), ''),
   // From address must be a verified Resend sender (e.g. `noreply@your-domain`).
-  RESEND_FROM_EMAIL: optional(string(), 'noreply@aijade.moeru.ai'),
+  RESEND_FROM_EMAIL: optional(string(), 'noreply@aijade.ai'),
   // Optional friendly name; rendered as `Name <email>` per Resend's RFC 5322 display-name format.
   RESEND_FROM_NAME: optional(string(), 'Project AIJADE'),
 

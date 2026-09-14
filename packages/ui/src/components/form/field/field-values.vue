@@ -38,7 +38,7 @@ function removeItem(index: number) {
           </slot>
           <span v-if="props.required !== false" :class="['text-red-500']">*</span>
         </div>
-        <div :class="['text-nowrap', 'text-xs', 'text-neutral-500', 'dark:text-neutral-400']">
+        <div :class="['text-nowrap', 'text-xs', 'text-$text-secondary', 'text-$text-muted']">
           <slot name="description">
             {{ props.description }}
           </slot>

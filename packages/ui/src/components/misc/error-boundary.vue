@@ -87,10 +87,10 @@ defineExpose({ retry, hasError: () => capturedError.value != null })
       :retry="retry"
     >
       <div :class="['flex flex-col gap-3 p-4 max-w-2xl mx-auto']">
-        <div v-if="props.title" :class="['text-base font-semibold text-red-700 dark:text-red-300']">
+        <div v-if="props.title" :class="['text-base font-semibold text-red-700 text-red-300']">
           {{ props.title }}
         </div>
-        <div v-if="capturedInfo" :class="['text-xs text-neutral-500 dark:text-neutral-400']">
+        <div v-if="capturedInfo" :class="['text-xs text-[var(--text-muted)]']">
           During: {{ capturedInfo }}
         </div>
         <ContainerError
@@ -103,7 +103,7 @@ defineExpose({ retry, hasError: () => capturedError.value != null })
             :class="[
               'px-3 py-1.5 rounded-lg text-sm font-medium',
               'bg-red-100 hover:bg-red-200 text-red-800',
-              'dark:bg-red-900/40 dark:hover:bg-red-900/60 dark:text-red-200',
+              'bg-red-900/40 hover:bg-red-900/60 text-red-200',
               'transition-colors',
             ]"
             @click="retry"

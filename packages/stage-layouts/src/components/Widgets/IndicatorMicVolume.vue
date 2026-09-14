@@ -5,7 +5,7 @@ import { useSettingsAudioDevice } from '@proj-aijade/stage-ui/stores/settings'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, onUnmounted, watch } from 'vue'
 
-const props = withDefaults(defineProps<{ colorClass?: string }>(), { colorClass: 'text-primary-500 dark:text-primary-200' })
+const props = withDefaults(defineProps<{ colorClass?: string }>(), { colorClass: 'text-primary-500 text-primary-200' })
 const settingsAudio = useSettingsAudioDevice()
 const { stream, enabled } = storeToRefs(settingsAudio)
 

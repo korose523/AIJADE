@@ -142,7 +142,7 @@ function handleResetVoiceSettings() {
 
         <!-- Voice settings section -->
         <div flex="~ col gap-6">
-          <h2 class="text-lg text-neutral-500 md:text-2xl dark:text-neutral-400">
+          <h2 class="text-lg text-$text-muted text-$text-secondary md:text-2xl">
             {{ t('settings.pages.providers.common.section.voice.title') }}
           </h2>
           <div flex="~ col gap-4">

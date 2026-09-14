@@ -79,13 +79,13 @@ function onSubmit(payload: BugReportDialogSubmitPayload) {
     <div
       v-if="submittedReport"
       :class="[
-        'rounded-lg border border-neutral-200/80 bg-neutral-50/80 p-3 text-xs',
-        'text-neutral-600 leading-relaxed dark:border-neutral-700/60 dark:bg-neutral-900/50 dark:text-neutral-300',
+        'rounded-lg border border-$hairline bg-$surface-1 p-3 text-xs',
+        'text-$text-secondary leading-relaxed border-$hairline bg-$surface-1 text-$text-primary',
       ]"
     >
       <div
         :class="[
-          'mb-2 text-xs font-semibold text-neutral-800 dark:text-neutral-200',
+          'mb-2 text-xs font-semibold text-$text-primary text-$text-primary',
         ]"
       >
         {{ t('settings.dialogs.bug-report.last-submitted-preview') }}

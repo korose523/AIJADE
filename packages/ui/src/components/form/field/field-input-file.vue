@@ -21,7 +21,7 @@ const modelValue = defineModel<File[] | undefined>({ required: false })
             {{ props.label }}
           </slot>
         </div>
-        <div class="text-xs text-neutral-500 dark:text-neutral-400">
+        <div class="text-xs text-$text-muted text-$text-secondary">
           <slot name="description">
             {{ props.description }}
           </slot>

@@ -5,12 +5,12 @@ This package contains code under two separate licenses:
 ## Original Code (MIT License)
 
 All source code in this package (Vue components, stores, composables, utilities)
-authored by the Moeru AI Project AIJADE Team is licensed under the MIT License:
+authored by the AIJADE Team is licensed under the MIT License:
 
 ```
 MIT License
 
-Copyright (c) 2024-PRESENT Neko Ayaka
+Copyright (c) 2024-PRESENT AIJADE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

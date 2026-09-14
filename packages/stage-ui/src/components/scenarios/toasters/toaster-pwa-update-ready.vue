@@ -28,7 +28,7 @@ function handleNotNow() {
     :class="[
       'px-4 py-3',
       'backdrop-blur-md shadow-md',
-      'bg-neutral-100/80 dark:bg-neutral-800/80',
+      'bg-$surface-1 bg-$surface-2',
       'w-full flex flex-col gap-1 rounded-2xl',
     ]"
   >

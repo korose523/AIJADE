@@ -19,9 +19,9 @@ const backgroundDialogOpen = ref(false)
     <ViewControls />
     <button
       class="max-h-[10lh] min-h-[1lh]"
-      bg="neutral-100 dark:neutral-800"
-      text="lg neutral-500 dark:neutral-400"
-      hover:text="red-500 dark:red-400"
+      bg="$surface-1"
+      text="$text-secondary"
+      hover:text="red-500 red-400"
       flex items-center justify-center rounded-md p-2 outline-none
       transition-colors transition-transform active:scale-95
       @click="cleanupMessages()"
@@ -31,8 +31,8 @@ const backgroundDialogOpen = ref(false)
 
     <button
       class="max-h-[10lh] min-h-[1lh]"
-      bg="neutral-100 dark:neutral-800"
-      text="lg neutral-500 dark:neutral-400"
+      bg="$surface-1"
+      text="$text-secondary"
       flex items-center justify-center rounded-md p-2 outline-none
       transition-colors transition-transform active:scale-95
       @click="() => toggleDark()"
@@ -44,8 +44,8 @@ const backgroundDialogOpen = ref(false)
     </button>
     <button
       class="max-h-[10lh] min-h-[1lh]"
-      bg="neutral-100 dark:neutral-800"
-      text="lg neutral-500 dark:neutral-400"
+      bg="$surface-1"
+      text="$text-secondary"
       flex items-center justify-center rounded-md p-2 outline-none
       transition-colors transition-transform active:scale-95
       title="Background"

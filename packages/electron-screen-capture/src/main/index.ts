@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: Copyright (c) Alec Armbruster, Licensed under MIT License
-// SPDX-FileCopyrightText: Copyright (c) Moeru AI Project AIJADE Team
+// SPDX-FileCopyrightText: Copyright (c) AIJADE Team
 
 import type { Format, LogLevelString } from '@guiiai/logg'
 import type { MutexInterface } from 'async-mutex'
@@ -191,7 +191,7 @@ export function initScreenCaptureForWindow(window: BrowserWindow, options?: Init
   defineInvokeHandler(context, screenCapture.requestMacOSPermission, async () => requestMacOSScreenCapturePermission())
 
   defineInvokeHandler(context, screenCapture.getSources, async (sourcesOptions) => {
-    // NOTICE(@nekomeowww): In probability of 9/10, the window thumbnail is purely empty or black, sources printed and
+    // NOTICE(AIJADE): In probability of 9/10, the window thumbnail is purely empty or black, sources printed and
     // nothing is returned from the desktopCapturer API.
     // NOTICE(@sumimakito): Not only thumbnail is empty, the appIcon could be empty as well with nothing returned.
     // REVIEW(@sumimakito): This has nothing to do with out side, probably related to Electron Bug, you can

@@ -1,7 +1,7 @@
 @import '@proj-aijade/ui/main.css';
 
 :root {
-  --admin-accent: #059669;
+  --admin-accent: var(--accent);
 }
 
 html,
@@ -12,7 +12,8 @@ body,
 }
 
 body {
-  background: #f7f8fa;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
@@ -44,8 +45,8 @@ select {
 }
 
 .admin-sidebar {
-  background: #f4f5f7;
-  border-right: 1px solid #e5e7eb;
+  background: var(--surface-2);
+  border-right: 1px solid var(--hairline);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -58,8 +59,10 @@ select {
 
 .admin-topbar {
   align-items: center;
-  background: rgba(255, 255, 255, 0.86);
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(var(--surface-glass-blur));
+  backdrop-filter: blur(var(--surface-glass-blur));
+  border-bottom: 1px solid var(--hairline);
   display: flex;
   height: 56px;
   justify-content: space-between;
@@ -75,10 +78,11 @@ select {
 
 .quick-action {
   align-items: center;
-  background: #059669;
+  background: var(--accent);
   border: 0;
-  border-radius: 7px;
-  color: white;
+  border-radius: 8px;
+  box-shadow: var(--glow-accent);
+  color: var(--surface-1);
   display: flex;
   font-size: 13px;
   font-weight: 600;
@@ -87,78 +91,91 @@ select {
   justify-content: flex-start;
   margin-top: 12px;
   padding: 0 10px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-action:hover {
+  background: var(--accent-strong);
 }
 
 .nav-item {
   align-items: center;
-  border-radius: 7px;
-  color: #27272a;
+  border-radius: 8px;
+  color: var(--text-secondary);
   display: flex;
   font-size: 13px;
   gap: 9px;
   height: 34px;
   padding: 0 9px;
   text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .nav-item:hover {
-  background: #e9ecef;
+  background: var(--surface-3);
+  color: var(--text-primary);
 }
 
 .nav-item-active {
-  background: #ffffff;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-panel);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .panel {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  box-shadow: var(--shadow-panel);
 }
 
 .metric-card {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbfa 100%);
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  box-shadow: var(--shadow-panel);
   min-height: 132px;
   padding: 20px;
 }
 
 .field {
-  background: #fff;
-  border: 1px solid #dfe3e8;
-  border-radius: 7px;
-  color: #171717;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  color: var(--text-primary);
   min-height: 36px;
   outline: none;
   padding: 0 10px;
   width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .field:focus,
 .textarea:focus {
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.14);
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
 }
 
 .textarea {
-  background: #fff;
-  border: 1px solid #dfe3e8;
-  border-radius: 7px;
-  color: #171717;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  color: var(--text-primary);
   min-height: 112px;
   outline: none;
   padding: 10px;
   resize: vertical;
   width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .btn {
   align-items: center;
-  border: 1px solid #dfe3e8;
-  border-radius: 7px;
+  background: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  color: var(--text-primary);
   display: inline-flex;
   font-size: 13px;
   font-weight: 600;
@@ -166,23 +183,37 @@ select {
   height: 36px;
   justify-content: center;
   padding: 0 12px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:hover {
+  background: var(--surface-2);
 }
 
 .btn-primary {
-  background: #059669;
-  border-color: #059669;
-  color: white;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--surface-1);
+}
+
+.btn-primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
 }
 
 .btn-secondary {
-  background: white;
-  color: #27272a;
+  background: var(--surface-1);
+  color: var(--text-primary);
 }
 
 .btn-danger {
-  background: #fff;
-  border-color: #fecaca;
-  color: #b91c1c;
+  background: var(--surface-1);
+  border-color: color-mix(in oklab, oklch(58% 0.20 25) 45%, transparent);
+  color: oklch(52% 0.20 25);
+}
+
+.btn-danger:hover {
+  background: color-mix(in oklab, oklch(58% 0.20 25) 12%, transparent);
 }
 
 .table {
@@ -192,28 +223,30 @@ select {
 
 .table th,
 .table td {
-  border-bottom: 1px solid #edf0f2;
+  border-bottom: 1px solid var(--hairline);
   padding: 12px 14px;
   text-align: left;
   vertical-align: middle;
 }
 
 .table th {
-  background: #f8fafc;
-  color: #52525b;
+  background: var(--surface-2);
+  color: var(--text-muted);
   font-size: 12px;
   font-weight: 600;
 }
 
 .table td {
-  color: #27272a;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
 .badge {
   align-items: center;
-  border: 1px solid #e5e7eb;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
   border-radius: 999px;
+  color: var(--text-secondary);
   display: inline-flex;
   font-size: 12px;
   font-weight: 600;
@@ -223,20 +256,20 @@ select {
 }
 
 .badge-green {
-  background: #ecfdf5;
-  border-color: #bbf7d0;
-  color: #047857;
+  background: color-mix(in oklab, oklch(72% 0.16 155) 16%, transparent);
+  border-color: color-mix(in oklab, oklch(72% 0.16 155) 38%, transparent);
+  color: oklch(48% 0.14 155);
 }
 
 .badge-amber {
-  background: #fffbeb;
-  border-color: #fde68a;
-  color: #b45309;
+  background: color-mix(in oklab, oklch(80% 0.14 75) 18%, transparent);
+  border-color: color-mix(in oklab, oklch(80% 0.14 75) 42%, transparent);
+  color: oklch(52% 0.14 65);
 }
 
 .empty-state {
   align-items: center;
-  color: #71717a;
+  color: var(--text-muted);
   display: flex;
   flex-direction: column;
   font-size: 14px;
@@ -251,7 +284,7 @@ select {
   }
 
   .admin-sidebar {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--hairline);
     border-right: 0;
     min-height: auto;
   }

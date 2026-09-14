@@ -157,7 +157,7 @@ async function copyContent() {
 <template>
   <div
     :class="[
-      'relative w-full rounded-lg bg-red-50/60 dark:bg-red-950/25 backdrop-blur-md p-1',
+      'relative w-full rounded-lg bg-red-50/60 bg-red-950/25 backdrop-blur-md p-1',
     ]"
   >
     <div :class="['absolute right-2 -translate-x-full top-2 z-10']">
@@ -193,21 +193,21 @@ async function copyContent() {
     >
       <ScrollAreaViewport :class="['h-full w-full']">
         <div :class="['flex flex-col gap-2 p-3 text-xs']">
-          <div v-if="resolvedErrorName || resolvedMessage" :class="['font-mono text-red-700 leading-relaxed dark:text-red-300']">
+          <div v-if="resolvedErrorName || resolvedMessage" :class="['font-mono text-red-700 leading-relaxed text-red-300']">
             {{ resolvedErrorName || 'Error' }}
             <span v-if="resolvedMessage">
               : {{ resolvedMessage }}
             </span>
           </div>
-          <pre v-if="resolvedStack" :class="['whitespace-pre-wrap break-words text-neutral-700 leading-relaxed dark:text-neutral-200']">    {{ resolvedStack }}</pre>
-          <pre v-if="resolvedCause" :class="['whitespace-pre-wrap break-words text-neutral-700 leading-relaxed dark:text-neutral-200']">{{ `Cause:\n${resolvedCause}` }}</pre>
-          <div v-if="!panelContent" :class="['text-neutral-600 dark:text-neutral-300']">
+          <pre v-if="resolvedStack" :class="['whitespace-pre-wrap break-words text-[var(--text-secondary)] leading-relaxed']">    {{ resolvedStack }}</pre>
+          <pre v-if="resolvedCause" :class="['whitespace-pre-wrap break-words text-[var(--text-secondary)] leading-relaxed']">{{ `Cause:\n${resolvedCause}` }}</pre>
+          <div v-if="!panelContent" :class="['text-[var(--text-muted)]']">
             No error details available.
           </div>
         </div>
       </ScrollAreaViewport>
       <ScrollAreaScrollbar orientation="vertical" :class="['w-2 p-0.5']">
-        <ScrollAreaThumb :class="['rounded-full bg-neutral-300/80 dark:bg-neutral-700/80']" />
+        <ScrollAreaThumb :class="['rounded-full bg-[var(--text-muted)]']" />
       </ScrollAreaScrollbar>
       <ScrollAreaCorner />
     </ScrollAreaRoot>

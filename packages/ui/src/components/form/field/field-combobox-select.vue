@@ -46,7 +46,7 @@ const modelValue = defineModel<string>({ required: false })
             {{ props.label }}
           </slot>
         </div>
-        <div :class="['break-words', 'text-xs', 'text-neutral-500', 'dark:text-neutral-400', 'text-left']">
+        <div :class="['break-words', 'text-xs', 'text-$text-secondary', 'text-$text-muted', 'text-left']">
           <slot name="description">
             {{ props.description }}
           </slot>

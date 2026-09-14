@@ -1,1 +1,1 @@
-export const webLive = 'https://airi.moeru.ai/'
+export const webLive = 'https://korose523.github.io/AIJADE/'

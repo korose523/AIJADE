@@ -14,8 +14,8 @@ const props = withDefaults(defineProps<{
   highlight: 'AIJADE',
   subtitle: '',
   links: () => ([
-    { label: 'Home', href: 'https://aijade.moeru.ai/docs/', icon: 'i-solar:home-smile-outline' },
-    { label: 'Documentations', href: 'https://aijade.moeru.ai/docs/en/docs/overview/', icon: 'i-solar:document-add-outline' },
+    { label: 'Home', href: 'https://aijade.ai/docs/', icon: 'i-solar:home-smile-outline' },
+    { label: 'Documentations', href: 'https://aijade.ai/docs/en/docs/overview/', icon: 'i-solar:document-add-outline' },
     { label: 'GitHub', href: 'https://github.com/moeru-ai/airi', icon: 'i-simple-icons:github' },
   ]),
 })
@@ -33,10 +33,10 @@ const hasBuildInfo = computed(() => {
   <div :class="['max-w-[min(960px,calc(100%-2rem))]', 'mx-auto', 'h-full', 'flex', 'flex-col', 'pt-14']">
     <div class="mb-14 text-center font-sans-rounded">
       <div class="text-5xl">
-        <span class="text-neutral-400 dark:text-neutral-100/65">{{ title }}</span>
-        <span class="text-pink-400 dark:text-pink-300/90">&nbsp;{{ highlight }}</span>
+        <span class="text-$text-muted text-$text-primary">{{ title }}</span>
+        <span class="text-pink-300/90 text-pink-400">&nbsp;{{ highlight }}</span>
       </div>
-      <div v-if="subtitle" class="mt-2 text-base text-neutral-500 dark:text-neutral-400">
+      <div v-if="subtitle" class="mt-2 text-base text-$text-muted text-$text-secondary">
         {{ subtitle }}
       </div>
     </div>
@@ -44,12 +44,12 @@ const hasBuildInfo = computed(() => {
     <slot name="before-build-info" />
 
     <div v-if="hasBuildInfo" :class="['flex-1']">
-      <div :class="['text-neutral-500 dark:text-neutral-400']">
+      <div :class="['text-$text-secondary text-$text-muted']">
         Application build information
       </div>
       <div :class="['mt-4', 'grid grid-cols-[120px_1fr]', 'gap-2', 'text-sm']">
         <template v-if="buildInfo?.version">
-          <div :class="['text-neutral-500 dark:text-neutral-400']">
+          <div :class="['text-$text-secondary text-$text-muted']">
             Version
           </div>
           <div :class="['font-mono']">
@@ -57,7 +57,7 @@ const hasBuildInfo = computed(() => {
           </div>
         </template>
         <template v-if="buildInfo?.branch">
-          <div :class="['text-neutral-500 dark:text-neutral-400']">
+          <div :class="['text-$text-secondary text-$text-muted']">
             Branch
           </div>
           <div :class="['font-mono']">
@@ -65,7 +65,7 @@ const hasBuildInfo = computed(() => {
           </div>
         </template>
         <template v-if="buildInfo?.commit">
-          <div :class="['text-neutral-500 dark:text-neutral-400']">
+          <div :class="['text-$text-secondary text-$text-muted']">
             Commit
           </div>
           <div :class="['font-mono']">
@@ -73,7 +73,7 @@ const hasBuildInfo = computed(() => {
           </div>
         </template>
         <template v-if="buildInfo?.builtOn">
-          <div :class="['text-neutral-500 dark:text-neutral-400']">
+          <div :class="['text-$text-secondary text-$text-muted']">
             Built on
           </div>
           <div :class="['font-mono']">
@@ -86,7 +86,7 @@ const hasBuildInfo = computed(() => {
     <slot name="after-build-info" />
 
     <div :class="['my-10']">
-      <div :class="['text-neutral-500 dark:text-neutral-400']">
+      <div :class="['text-$text-secondary text-$text-muted']">
         About
       </div>
       <div :class="['mt-4 flex flex-col gap-2']">
@@ -105,11 +105,11 @@ const hasBuildInfo = computed(() => {
             'focus:outline-none',
             'text-nowrap',
             'text-sm md:text-base',
-            'text-slate-700 dark:text-slate-100',
-            'bg-black/4',
+            'text-$text-primary text-$text-primary',
+            'bg-$scrim',
             'transition-colors transition-transform duration-200 ease-in-out',
-            'hover:bg-black/6',
-            'dark:bg-black/10 dark:hover:bg-white/20',
+            'hover:bg-$scrim',
+            'bg-$scrim hover:bg-$surface-1',
           ]"
           :href="link.href"
           target="_blank"

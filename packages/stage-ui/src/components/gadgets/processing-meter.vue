@@ -65,17 +65,17 @@ const formattedProcessingValue = computed(() => {
 </script>
 
 <template>
-  <div :class="['flex', 'flex-col', 'gap-4', 'rounded-2xl', 'bg-white/70', 'p-4', 'shadow-sm', 'dark:bg-neutral-900/50']">
+  <div :class="['flex', 'flex-col', 'gap-4', 'rounded-2xl', 'bg-$surface-1', 'p-4', 'shadow-sm', 'bg-$surface-1']">
     <div :class="['flex', 'items-center', 'justify-between']">
       <div :class="['flex', 'flex-col', 'gap-1']">
-        <div :class="['text-xs', 'uppercase', 'tracking-wide', 'text-neutral-400']">
+        <div :class="['text-xs', 'uppercase', 'tracking-wide', 'text-$text-muted']">
           {{ title }}
         </div>
-        <div :class="['text-base', 'font-semibold', 'text-neutral-700', 'dark:text-neutral-200']">
+        <div :class="['text-base', 'font-semibold', 'text-$text-primary', 'text-$text-primary']">
           {{ processingLabel }}
         </div>
       </div>
-      <div :class="['text-sm', 'text-neutral-500', 'dark:text-neutral-400']">
+      <div :class="['text-sm', 'text-$text-secondary', 'text-$text-muted']">
         {{ formattedProcessingValue }}
       </div>
     </div>

@@ -159,15 +159,15 @@ function updateCustomValue(value: string) {
       :class="['relative inline-flex w-full flex-shrink-0 items-center']"
     >
       <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-        <div class="i-solar:magnifer-line-duotone text-neutral-500 dark:text-neutral-400" />
+        <div class="i-solar:magnifer-line-duotone text-$text-muted text-$text-secondary" />
       </div>
       <input
         v-model="searchQuery"
         type="search"
         :class="[
-          'w-full rounded-xl border-2 border-solid border-neutral-200 bg-white p-2.5 pl-10 text-sm outline-none',
+          'w-full rounded-xl border-2 border-solid border-$hairline bg-$surface-1 p-2.5 pl-10 text-sm outline-none',
           'transition-all duration-200 ease-in-out',
-          'focus:border-primary-100 dark:border-neutral-800 dark:bg-neutral-900 dark:focus:border-primary-400/50',
+          'focus:border-primary-100 border-$hairline bg-$surface-1 focus:border-primary-400/50',
         ]"
         :placeholder="searchPlaceholder"
       >
@@ -181,7 +181,7 @@ function updateCustomValue(value: string) {
       ]"
     >
       <!-- Search results info -->
-      <div v-if="searchQuery" class="text-sm text-neutral-500 dark:text-neutral-400">
+      <div v-if="searchQuery" class="text-sm text-$text-muted text-$text-secondary">
         {{ searchResultsText.replace('{count}', filteredItems.length.toString()).replace('{total}', items.length.toString()) }}
       </div>
 
@@ -229,7 +229,7 @@ function updateCustomValue(value: string) {
         <div
           v-if="showExpandCollapseBtn"
           :class="[
-            'rounded-xl bg-neutral-100 dark:bg-[rgba(0,0,0,0.3)]',
+            'rounded-xl bg-$surface-1 bg-[rgba(0,0,0,0.3)]',
             isListExpanded ? 'w-full' : 'mt-4 w-full rounded-lg',
             layout.expandWrapper,
           ]"
@@ -239,8 +239,8 @@ function updateCustomValue(value: string) {
               'w-full flex items-center justify-center gap-2 rounded-lg py-2',
               'transition-all duration-200 ease-in-out',
               isListExpanded
-                ? 'bg-primary-500 text-white hover:bg-primary-600'
-                : 'bg-white hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800',
+                ? 'bg-primary-500 text-$text-primary hover:bg-primary-600'
+                : 'bg-$surface-1 hover:bg-$surface-1 bg-$surface-1 hover:bg-$surface-2',
             ]"
             @click="isListExpanded = !isListExpanded"
           >

@@ -309,10 +309,10 @@ export async function buildApp(deps: AppDeps) {
      * the actual product UI instead of the framework's default "404 Not Found".
      */
     .on('GET', '/', c => c.json({
-      service: 'airi-api',
-      message: 'This is the Project AIJADE API server. Visit https://aijade.moeru.ai to use the product, or see the docs at https://aijade.moeru.ai/docs.',
-      docs: 'https://aijade.moeru.ai/docs',
-      ui: 'https://aijade.moeru.ai',
+      service: 'aijade-api',
+      message: 'This is the AIJADE API server. Visit https://aijade.ai to use the product, or see the docs at https://aijade.ai/docs.',
+      docs: 'https://aijade.ai/docs',
+      ui: 'https://aijade.ai',
     }))
 
     /**
@@ -406,8 +406,8 @@ export async function buildApp(deps: AppDeps) {
      */
     .notFound(c => c.json({
       error: 'NOT_FOUND',
-      message: `No route matched ${c.req.method} ${new URL(c.req.url).pathname}. This is the airi-api server; the product UI lives at https://aijade.moeru.ai.`,
-      ui: 'https://aijade.moeru.ai',
+      message: `No route matched ${c.req.method} ${new URL(c.req.url).pathname}. This is the aijade-api server; the product UI lives at https://aijade.ai.`,
+      ui: 'https://aijade.ai',
     }, 404))
 
   return { app: builtApp, injectWebSocket }

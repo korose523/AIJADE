@@ -54,9 +54,9 @@ function handleLocalSetup() {
             'h-8 w-8',
             'flex items-center justify-center',
             'rounded-lg',
-            'text-neutral-500 transition-colors duration-200',
-            'hover:bg-neutral-100/80 hover:text-neutral-700',
-            'dark:text-neutral-400 dark:hover:bg-neutral-800/80 dark:hover:text-neutral-200',
+            'text-$text-secondary transition-colors duration-200',
+            'hover:bg-$surface-1 hover:text-$text-primary',
+            'text-$text-muted hover:bg-$surface-2 hover:text-$text-primary',
           ]"
           :aria-label="t('settings.language.title')"
         >
@@ -69,8 +69,8 @@ function handleLocalSetup() {
             :side-offset="6"
             :class="[
               'z-10000 min-w-36 rounded-xl border p-1 shadow-lg outline-none backdrop-blur-md',
-              'border-neutral-200/80 bg-neutral-100/80 text-neutral-700',
-              'dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:text-neutral-100',
+              'border-$hairline bg-$surface-1 text-$text-primary',
+              'border-$hairline bg-$surface-2 text-$text-primary',
             ]"
           >
             <DropdownMenuItem
@@ -79,9 +79,9 @@ function handleLocalSetup() {
               :class="[
                 'flex cursor-pointer select-none items-center rounded-lg px-3 py-2',
                 'text-sm leading-none outline-none',
-                'data-[highlighted]:bg-primary-50/80 dark:data-[highlighted]:bg-primary-900/40',
+                'data-[highlighted]:bg-primary-50/80 data-[highlighted]:bg-primary-900/40',
                 'transition-colors duration-150 ease-in-out',
-                lang.value === language ? 'text-primary-500 dark:text-primary-300' : '',
+                lang.value === language ? 'text-primary-500 text-primary-300' : '',
               ]"
               @select="() => language = lang.value"
             >
@@ -106,7 +106,7 @@ function handleLocalSetup() {
         :initial="{ opacity: 0, y: 10 }"
         :enter="{ opacity: 1, y: 0 }"
         :duration="500"
-        :class="['mb-0', 'text-3xl', 'text-neutral-800', 'font-bold', 'md:mb-2', 'dark:text-neutral-100']"
+        :class="['mb-0', 'text-3xl', 'text-$text-primary', 'font-bold', 'md:mb-2', 'text-$text-primary']"
       >
         {{ t('settings.dialogs.onboarding.title') }}
       </h2>
@@ -116,7 +116,7 @@ function handleLocalSetup() {
         :enter="{ opacity: 1, y: 0 }"
         :duration="500"
         :delay="100"
-        :class="['text-sm', 'text-neutral-600', 'md:text-lg', 'dark:text-neutral-400']"
+        :class="['text-sm', 'text-$text-secondary', 'md:text-lg', 'text-$text-muted']"
       >
         {{ t('settings.dialogs.onboarding.description') }}
       </p>

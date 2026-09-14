@@ -42,8 +42,8 @@ function handleViewControlsToggle(targetMode: string) {
     </Transition>
     <button
       w-fit flex items-center self-end justify-center justify-self-end rounded-xl p-2 backdrop-blur-md
-      border="2 solid neutral-100/60 dark:neutral-800/30" bg="neutral-50/70 dark:neutral-800/70" title="View"
-      text="neutral-500 dark:neutral-400"
+      border="$hairline" bg="$surface-1" title="View"
+      text="$text-secondary"
       @click="controlEnabled && (controlEnabled.enabled.value = !controlEnabled.enabled.value)"
     >
       <Transition name="fade" mode="out-in">

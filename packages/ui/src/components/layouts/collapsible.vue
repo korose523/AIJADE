@@ -24,7 +24,7 @@ function setVisible(value: boolean) {
   <div>
     <slot name="trigger" v-bind="{ visible, setVisible }">
       <button
-        :class="['sticky top-0 z-10 flex items-center justify-between px2 py1 text-sm backdrop-blur-xl']"
+        :class="['sticky top-0 z-10 flex items-center justify-between px2 py1 text-sm bg-[var(--surface-1)]/80 border-b border-[var(--hairline)] backdrop-blur-xl']"
         @click="visible = !visible"
       >
         <span>

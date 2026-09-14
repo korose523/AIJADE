@@ -229,11 +229,11 @@ async function applySelection(isImport = false) {
             v-for="option in mergedOptions"
             :key="option.id"
             type="button"
-            class="background-option group relative border-2 rounded-xl bg-neutral-100/80 p-2 text-left transition-colors dark:bg-neutral-900/80"
-            :class="[option.id === selectedId ? 'selected border-primary-500/80 shadow-primary-500/10 shadow-lg' : 'border-neutral-200 dark:border-neutral-800']"
+            class="background-option group relative border-2 rounded-xl bg-$surface-1 bg-$surface-1 p-2 text-left transition-colors"
+            :class="[option.id === selectedId ? 'selected border-primary-500/80 shadow-primary-500/10 shadow-lg' : 'border-$hairline border-$hairline']"
             @click="selectedId = option.id"
           >
-            <div class="aspect-video w-full overflow-hidden border border-neutral-200 rounded-lg bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-800/70">
+            <div class="aspect-video w-full overflow-hidden border border-$hairline border-$hairline rounded-lg bg-$surface-1 bg-$surface-2">
               <component
                 :is="option.component"
                 v-if="option.component"
@@ -246,19 +246,19 @@ async function applySelection(isImport = false) {
                 loading="lazy"
                 decoding="async"
               >
-              <div v-else class="h-full w-full flex items-center justify-center text-sm text-neutral-500 dark:text-neutral-400">
+              <div v-else class="h-full w-full flex items-center justify-center text-sm text-$text-muted text-$text-secondary">
                 No preview
               </div>
             </div>
             <div class="mt-2 flex flex-col gap-1">
-              <span class="text-base text-neutral-800 font-medium dark:text-neutral-100">{{ option.label }}</span>
-              <span v-if="option.description" class="text-xs text-neutral-500 dark:text-neutral-400">
+              <span class="text-base text-$text-primary text-$text-primary font-medium">{{ option.label }}</span>
+              <span v-if="option.description" class="text-xs text-$text-muted text-$text-secondary">
                 {{ option.description }}
               </span>
             </div>
             <div
               v-if="option.removable"
-              class="trash-button absolute right-2 top-2 z-10 flex cursor-pointer items-center justify-center rounded-full bg-neutral-200/50 p-1 text-neutral-600 backdrop-blur-md transition-opacity dark:bg-neutral-800/50"
+              class="trash-button absolute right-2 top-2 z-10 flex cursor-pointer items-center justify-center rounded-full bg-$surface-1 bg-$surface-2 p-1 text-$text-secondary backdrop-blur-md transition-opacity"
               :class="[option.id === selectedId ? 'opacity-100' : 'opacity-0']"
               title="Remove background"
               @click.stop="emit('remove', option)"
@@ -270,27 +270,27 @@ async function applySelection(isImport = false) {
 
         <div v-if="allowUpload" class="flex flex-wrap gap-2">
           <BasicInputFile v-model="uploadingFiles" class="cursor-pointer">
-            <div class="upload-button flex items-center gap-2 border border-neutral-300 rounded-lg border-dashed px-3 py-2 text-sm text-neutral-600 transition-colors dark:border-neutral-700 dark:text-neutral-300">
+            <div class="upload-button flex items-center gap-2 border border-$hairline border-$hairline rounded-lg border-dashed px-3 py-2 text-sm text-$text-primary text-$text-secondary transition-colors">
               <div i-solar:add-square-linear />
               <span>Add custom background</span>
             </div>
           </BasicInputFile>
         </div>
 
-        <div class="border border-neutral-200 rounded-xl bg-neutral-50 p-3 dark:border-neutral-800 dark:bg-neutral-900/70">
-          <p class="mb-2 text-sm text-neutral-600 dark:text-neutral-300">
+        <div class="border border-$hairline border-$hairline rounded-xl bg-$surface-1 bg-$surface-1 p-3">
+          <p class="mb-2 text-sm text-$text-primary text-$text-secondary">
             Preview
           </p>
           <label
             v-if="selectedOption?.kind === 'image'"
-            class="flex items-center gap-2 pb-2 text-sm text-neutral-700 dark:text-neutral-200"
+            class="flex items-center gap-2 pb-2 text-sm text-$text-primary text-$text-primary"
           >
             <input v-model="enableBlur" type="checkbox" class="accent-primary-500">
             <span>Blur</span>
           </label>
           <div
             ref="previewRef"
-            class="relative h-48 overflow-hidden border border-neutral-200 rounded-xl bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-800"
+            class="relative h-48 overflow-hidden border border-$hairline border-$hairline rounded-xl bg-$surface-1 bg-$surface-2"
           >
             <div
               class="h-full w-full transition-all duration-300"
@@ -306,7 +306,7 @@ async function applySelection(isImport = false) {
                 :src="getPreviewSrc(selectedOption)"
                 class="h-full w-full object-cover"
               >
-              <div v-else class="h-full w-full flex items-center justify-center text-neutral-500 dark:text-neutral-400">
+              <div v-else class="h-full w-full flex items-center justify-center text-$text-muted text-$text-secondary">
                 Select a background
               </div>
             </div>
@@ -318,7 +318,7 @@ async function applySelection(isImport = false) {
 
     <div class="flex justify-end bg-inherit pt-4">
       <button
-        class="apply-button rounded-lg bg-primary-500 px-4 py-2 text-sm text-white font-medium shadow transition-transform disabled:cursor-not-allowed disabled:opacity-60"
+        class="apply-button rounded-lg bg-primary-500 px-4 py-2 text-sm text-$text-primary font-medium shadow transition-transform disabled:cursor-not-allowed disabled:opacity-60"
         :disabled="!selectedOption || busy"
         @click="() => applySelection()"
       >
@@ -339,11 +339,11 @@ async function applySelection(isImport = false) {
   }
 
   .trash-button:hover {
-    --at-apply: bg-red-500 text-white;
+    --at-apply: bg-red-500 text-$text-primary;
   }
 
   .upload-button:hover {
-    --at-apply: border-primary-400 text-primary-500 dark:border-primary-400 dark:text-primary-400;
+    --at-apply: border-primary-400 text-primary-500 border-primary-400 text-primary-400;
   }
 
   .apply-button:hover:not(:disabled) {

@@ -16,9 +16,9 @@ withDefaults(defineProps<{
     <template #trigger="slotProps">
       <button
         class="w-full flex items-center justify-between rounded-lg px-2 py-1 outline-none transition-all duration-250 ease-in-out"
-        text="neutral-600 dark:neutral-400 sm sm:base"
-        bg="neutral-100 dark:neutral-800"
-        hover="bg-neutral-200 dark:bg-neutral-700"
+        text="$text-secondary"
+        bg="$surface-1"
+        hover="bg-$surface-1 bg-$surface-3"
         @click="slotProps.setVisible(!slotProps.visible)"
       >
         <slot name="title">

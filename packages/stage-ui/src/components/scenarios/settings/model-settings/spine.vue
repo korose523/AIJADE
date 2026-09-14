@@ -97,7 +97,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
     icon="i-solar:scale-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -108,7 +108,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.spine.scale-and-position.scale') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => scale = 1">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -118,7 +118,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.spine.scale-and-position.x') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => position.x = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -128,7 +128,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.spine.scale-and-position.y') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => position.y = 0">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -142,7 +142,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
     inner-class="text-sm"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -159,7 +159,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
     icon="i-solar:play-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -176,7 +176,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.spine.animation.mix-duration') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => spineDefaultMixDuration = 0.2">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -186,7 +186,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.spine.animation.speed') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => animationSpeed = 1">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>
@@ -199,7 +199,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
     icon="i-solar:layers-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -218,7 +218,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
     icon="i-solar:brush-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -237,7 +237,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
     icon="i-solar:settings-bold-duotone"
     :class="[
       'rounded-xl',
-      'bg-white/80  dark:bg-black/75',
+      'bg-$surface-1  bg-$scrim',
       'backdrop-blur-lg',
     ]"
     size="sm"
@@ -254,7 +254,7 @@ function handleSkinSelect(skinName: string | number | undefined) {
         <div flex items-center>
           <div>{{ t('settings.spine.rendering.render-scale') }}</div>
           <button px-2 text-xs outline-none title="Reset value to default" @click="() => spineRenderScale = 1">
-            <div i-solar:forward-linear transform-scale-x--100 text="neutral-500 dark:neutral-400" />
+            <div i-solar:forward-linear transform-scale-x--100 text="$text-secondary" />
           </button>
         </div>
       </template>

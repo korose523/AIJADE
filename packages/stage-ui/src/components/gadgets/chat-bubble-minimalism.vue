@@ -79,8 +79,8 @@ async function scrollToBottom() {
         ...(props.containerClass
           ? (typeof props.containerClass === 'string' ? [props.containerClass] : props.containerClass)
           : [
-            'border-2 border-solid border-neutral-100 dark:border-neutral-900',
-            'bg-white/90 backdrop-blur-md dark:bg-neutral-950/90',
+            'border-2 border-solid border-$hairline border-$hairline',
+            'bg-$surface-1 backdrop-blur-md bg-$surface-1',
             ...(props.containerClassExtra
               ? (typeof props.containerClassExtra === 'string' ? [props.containerClassExtra] : props.containerClassExtra)
               : []),

@@ -65,7 +65,7 @@ export const OIDC_CLIENT_ID_ELECTRON = 'aijade-stage-electron'
 export const OIDC_CLIENT_ID_POCKET = 'aijade-stage-pocket'
 
 const DEFAULT_WEB_REDIRECT_URIS = [
-  'https://aijade.moeru.ai/auth/callback',
+  'https://aijade.ai/auth/callback',
   'http://localhost:5173/auth/callback',
   'http://localhost:4173/auth/callback',
 ]

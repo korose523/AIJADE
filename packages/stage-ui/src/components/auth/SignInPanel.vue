@@ -24,8 +24,8 @@ const emit = defineEmits<{
   select: [provider: OAuthProvider]
 }>()
 
-const termsHref = 'https://aijade.moeru.ai/docs/en/about/terms'
-const privacyHref = 'https://aijade.moeru.ai/docs/en/about/privacy'
+const termsHref = 'https://aijade.ai/docs/en/about/terms'
+const privacyHref = 'https://aijade.ai/docs/en/about/privacy'
 
 const hasProviders = computed(() => props.providers.length > 0)
 
@@ -40,14 +40,14 @@ function handleSelect(provider: OAuthProvider) {
 <template>
   <section
     :class="[
-      'relative overflow-hidden rounded-[2rem] border border-white/60 bg-white/82 p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.45)] backdrop-blur-xl',
-      'dark:border-white/10 dark:bg-neutral-950/82',
+      'relative overflow-hidden rounded-[2rem] border border-$hairline bg-$surface-1 p-6 shadow-[0_24px_80px_-40px_rgba(15,23,42,0.45)] backdrop-blur-xl',
+      'border-$hairline bg-$surface-1',
     ]"
   >
     <div
       :class="[
         'pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-br from-primary-300/35 via-sky-200/20 to-transparent blur-2xl',
-        'dark:from-primary-500/15 dark:via-cyan-500/12',
+        'from-primary-500/15 via-cyan-500/12',
       ]"
     />
 
@@ -58,15 +58,15 @@ function handleSelect(provider: OAuthProvider) {
         </Callout>
 
         <div :class="['space-y-3']">
-          <div :class="['inline-flex h-13 w-13 items-center justify-center rounded-2xl bg-neutral-950 text-xl text-white shadow-lg', 'dark:bg-white dark:text-neutral-950']">
+          <div :class="['inline-flex h-13 w-13 items-center justify-center rounded-2xl bg-$surface-1 text-xl text-$text-primary shadow-lg', 'bg-$surface-1 text-neutral-950']">
             Ai
           </div>
 
           <div :class="['space-y-2']">
-            <h1 :class="['text-balance text-3xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-25']">
+            <h1 :class="['text-balance text-3xl font-semibold tracking-tight text-neutral-950 text-neutral-25']">
               {{ title }}
             </h1>
-            <p :class="['max-w-sm text-sm leading-6 text-neutral-600 dark:text-neutral-300']">
+            <p :class="['max-w-sm text-sm leading-6 text-$text-secondary text-$text-primary']">
               {{ subtitle }}
             </p>
           </div>
@@ -111,13 +111,13 @@ function handleSelect(provider: OAuthProvider) {
         </template>
       </Alert>
 
-      <footer :class="['text-xs leading-5 text-neutral-500 dark:text-neutral-400']">
+      <footer :class="['text-xs leading-5 text-$text-secondary text-$text-muted']">
         By continuing, you agree to our
-        <a :href="termsHref" :class="['font-medium text-neutral-700 underline-offset-4 hover:underline dark:text-neutral-200']">
+        <a :href="termsHref" :class="['font-medium text-$text-primary underline-offset-4 hover:underline text-$text-primary']">
           Terms
         </a>
         and
-        <a :href="privacyHref" :class="['font-medium text-neutral-700 underline-offset-4 hover:underline dark:text-neutral-200']">
+        <a :href="privacyHref" :class="['font-medium text-$text-primary underline-offset-4 hover:underline text-$text-primary']">
           Privacy Policy
         </a>
         .

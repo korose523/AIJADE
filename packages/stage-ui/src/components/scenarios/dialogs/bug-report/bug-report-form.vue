@@ -94,7 +94,7 @@ function onUploadMediaFromLibraryChange(next: boolean) {
       <div
         v-if="uploadMediaFromLibrary && selectedScreenshotCount > 0"
         :class="[
-          'text-xs text-neutral-500 dark:text-neutral-400',
+          'text-xs text-$text-secondary text-$text-muted',
         ]"
       >
         {{ t('settings.dialogs.bug-report.media-files.selected-count', { count: selectedScreenshotCount }) }}

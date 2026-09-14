@@ -49,7 +49,7 @@ describe('seedTrustedClients', () => {
     expect(webClient.public).toBe(true)
     // Includes default URIs + derived from API_SERVER_URL (localhost:3000)
     expect(webClient.redirectUris).toEqual([
-      'https://aijade.moeru.ai/auth/callback',
+      'https://aijade.ai/auth/callback',
       'http://localhost:5173/auth/callback',
       'http://localhost:4173/auth/callback',
       'http://localhost:3000/auth/callback',
@@ -124,7 +124,7 @@ describe('ensureDynamicFirstPartyRedirectUri', () => {
         from: vi.fn(() => ({
           where: vi.fn(() => ({
             limit: vi.fn().mockResolvedValue([
-              { redirectUris: ['https://aijade.moeru.ai/auth/callback'] },
+              { redirectUris: ['https://aijade.ai/auth/callback'] },
             ]),
           })),
         })),
@@ -145,7 +145,7 @@ describe('ensureDynamicFirstPartyRedirectUri', () => {
 
     expect(setCalls).toHaveLength(1)
     expect(setCalls[0].redirectUris).toEqual([
-      'https://aijade.moeru.ai/auth/callback',
+      'https://aijade.ai/auth/callback',
       'https://preview.kwaa.workers.dev/auth/callback',
     ])
     expect(updateWhere).toHaveBeenCalledTimes(1)
@@ -200,7 +200,7 @@ describe('ensureDynamicFirstPartyRedirectUri', () => {
 
     await ensureDynamicFirstPartyRedirectUri(
       db as any,
-      new Request('https://api.aijade.build/api/auth/oauth2/authorize?client_id=aijade-stage-web&redirect_uri=https%3A%2F%2Faijade.moeru.ai%2Fother-path'),
+      new Request('https://api.aijade.build/api/auth/oauth2/authorize?client_id=aijade-stage-web&redirect_uri=https%3A%2F%2Faijade.ai%2Fother-path'),
       [],
     )
 

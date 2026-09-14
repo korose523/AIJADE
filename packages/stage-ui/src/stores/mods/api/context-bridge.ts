@@ -650,7 +650,7 @@ export const useContextBridgeStore = defineStore('mods:api:context-bridge', () =
             messageText = `${overrides.messagePrefix}${text}`
           }
 
-          // TODO(@nekomeowww): This only guard for input:text events handling and doesn't cover the entire ingestion
+          // TODO(AIJADE): This only guard for input:text events handling and doesn't cover the entire ingestion
           // process. Another critical path of spark:notify is affected too, I think for better future development
           // experience, we should discover and find either a leader election or distributed lock solution to
           // coordinate the modules that handles context bridge ingestion across multiple windows/tabs.

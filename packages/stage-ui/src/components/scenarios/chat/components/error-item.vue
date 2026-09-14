@@ -60,14 +60,14 @@ const copyText = computed(() => getChatHistoryItemCopyText(props.message as Chat
             'flex flex-col',
             'min-w-20 rounded-xl',
             'h-unset <sm:h-fit',
-            'shadow-sm shadow-violet-200/50 dark:shadow-none',
-            'bg-violet-100/80 dark:bg-violet-950/80',
+            'shadow-sm shadow-violet-200/50 shadow-none',
+            'bg-violet-100/80 bg-violet-950/80',
             (isStageWeb() || isStageCapacitor()) && props.variant === 'mobile' ? 'select-none sm:select-auto' : '',
           ]"
         >
           <div flex="~ row" gap-2>
             <div flex-1 class="inline <sm:hidden">
-              <span text-sm text="black/60 dark:white/65" font-normal>{{ label }}</span>
+              <span text-sm text="$text-primary/60 $text-primary/65" font-normal>{{ label }}</span>
             </div>
             <div i-solar:danger-triangle-bold-duotone text-violet-500 />
           </div>
@@ -75,7 +75,7 @@ const copyText = computed(() => getChatHistoryItemCopyText(props.message as Chat
           <MarkdownRenderer
             v-else
             :content="message.content"
-            class="whitespace-pre-wrap break-all text-violet-500 dark:text-violet-300"
+            class="whitespace-pre-wrap break-all text-violet-300 text-violet-500"
           />
         </div>
       </template>

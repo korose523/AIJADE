@@ -97,7 +97,7 @@ describe('rQ-C harness — core regression', () => {
     }
   }, 60000)
 
-  it('exposes the new skill-level result fields (B1/B4) and Holm family of 3', async () => {
+  it('exposes the new skill-level result fields (B1/B4) and Holm family of 10', async () => {
     const res = await runExperiment(tinyOpts(42))
     expect(res.analysisUnit).toBe('skill')
     expect(res.nSkills).toBeGreaterThan(0)
@@ -109,6 +109,11 @@ describe('rQ-C harness — core regression', () => {
     expect(res.factorialInteraction).toBeDefined()
     expect(res.effectSizes.oddsRatio).toBeDefined()
     expect(res.multiplicity.method).toBe('holm')
-    expect(res.multiplicity.adjusted).toHaveLength(3)
+    expect(res.multiplicity.adjusted).toHaveLength(10)
+    const labels = res.multiplicity.adjusted.map(s => s.label)
+    expect(labels).toContain('svXef.factorialInteraction')
+    expect(labels).toContain('envFeedback.mcnemar')
+    expect(labels.filter(l => l.startsWith('pairwise.')).length).toBe(6)
+    expect(res.preregistrationDeviation.length).toBeGreaterThan(0) // tinyOpts != PREREGISTRATION
   }, 60000)
 })

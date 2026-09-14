@@ -68,7 +68,17 @@ const ROLE_PROPS: Record<StatementRole, { fv: number, imp: number }> = {
   conflict_late: { fv: 0.65, imp: 0.75 },
   lowfreq_highvalue: { fv: 1.00, imp: 0.95 },
   highfreq_lowvalue: { fv: 0.05, imp: 0.10 },
-  emotion_high_lowfact: { fv: 0.10, imp: 0.15 },
+  // `emotion_high_lowfact` is the one role CDI exists to block (it is the sole
+  // member of DESTABILIZING_ROLES). It must therefore be *attractive* to the
+  // non-CDI gates — high emotional salience (`imp`) — while carrying little
+  // future utility (`fv`). With the old `imp: 0.15` the HAC gate
+  // (`fv >= 0.4 || imp >= 0.7`) and every other baseline gate rejected it
+  // *before* CDI was ever consulted, so enabling or disabling CDI produced
+  // byte-identical results and the Table-3 CDI ablation column was
+  // unidentifiable. High `imp` / low `fv` is also the faithful model of the
+  // threat: high-emotion low-fact content is exactly the material a person is
+  // tempted to consolidate, which is why an identity constraint is needed.
+  emotion_high_lowfact: { fv: 0.10, imp: 0.85 },
   delayed_useful: { fv: 0.95, imp: 0.45 },
   poison: { fv: 0.00, imp: 0.30 },
   relationship_boundary: { fv: 0.70, imp: 0.70 },

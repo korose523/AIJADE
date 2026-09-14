@@ -25,7 +25,7 @@ const modelValue = defineModel<number>({ required: true })
             {{ label }}
           </slot>
         </div>
-        <div :class="['text-xs', 'text-neutral-500', 'dark:text-neutral-400']">
+        <div :class="['text-xs', 'text-$text-secondary', 'text-$text-muted']">
           <slot name="description">
             {{ description }}
           </slot>

@@ -40,7 +40,7 @@ Server 通过 `better-auth` 同时充当**用户认证后端**和 **OIDC Provide
 | `src/routes/oidc/electron-callback.ts` | Electron 回调中继页：服务端 HTML 页面通过 JS fetch() 将 auth code 转发到 Electron 本地 loopback |
 | `src/routes/oidc/token-auth.ts` | Bearer token 辅助路由：`get-session`、`sign-out`、`list-sessions` |
 | `src/utils/sign-in-page.ts` | 渲染 fallback HTML 登录页（Google/GitHub 按钮） |
-| `src/utils/origin.ts` | 可信来源配置：`localhost`、`127.0.0.1`、`aijade.moeru.ai`、`capacitor://localhost` |
+| `src/utils/origin.ts` | 可信来源配置：`localhost`、`127.0.0.1`、`aijade.ai`、`capacitor://localhost` |
 | `src/libs/env.ts` | OIDC 相关环境变量定义（Valibot schema） |
 | `src/libs/request-auth.ts` | 统一鉴权解析：优先读 better-auth session，再回退到受信任 OIDC access token |
 
@@ -59,7 +59,7 @@ Server 通过 `better-auth` 同时充当**用户认证后端**和 **OIDC Provide
 
 | Client | ID 环境变量 | redirect_uri | 类型 |
 |--------|------------|--------------|------|
-| Web | `OIDC_CLIENT_ID_WEB` | `https://aijade.moeru.ai/auth/callback`, `http://localhost:5173/auth/callback` | web |
+| Web | `OIDC_CLIENT_ID_WEB` | `https://aijade.ai/auth/callback`, `http://localhost:5173/auth/callback` | web |
 | Electron | `OIDC_CLIENT_ID_ELECTRON` | `{API_SERVER_URL}/api/auth/oidc/electron-callback`（服务端中继） | native |
 | Mobile | `OIDC_CLIENT_ID_POCKET` | `capacitor://localhost/auth/callback` | native |
 

@@ -18,9 +18,9 @@ const props = defineProps<{
 <template>
   <div
     flex="~ col"
-    bg="neutral-50 dark:neutral-800"
-    border="neutral-100 dark:neutral-800/25 hover:primary-500/30 dark:hover:primary-400/30 solid 2"
-    drop-shadow="none hover:[0px_4px_4px_rgba(220,220,220,0.4)] active:[0px_0px_0px_rgba(220,220,220,0.25)] dark:hover:none"
+    bg="$surface-1"
+    border="$hairline"
+    drop-shadow="none hover:[0px_4px_4px_rgba(220,220,220,0.4)] active:[0px_0px_0px_rgba(220,220,220,0.25)] hover:none"
     class="menu-icon-status-item"
     transition="all ease-in-out duration-400"
     w-full cursor-pointer of-hidden rounded-xl
@@ -28,7 +28,7 @@ const props = defineProps<{
     <RouterLink
       flex="~ row"
       class="menu-icon-status-item-link"
-      bg="white dark:neutral-900"
+      bg="$surface-1"
       transition="all ease-in-out duration-400"
       relative h-full w-full items-center overflow-hidden rounded-lg p-5 text-left
       :to=" props.to"
@@ -42,7 +42,7 @@ const props = defineProps<{
           {{ props.title }}
         </div>
         <div
-          text="sm neutral-500 dark:neutral-400"
+          text="$text-secondary"
           class="menu-icon-status-item-description"
           transition="all ease-in-out duration-400"
         >
@@ -52,19 +52,19 @@ const props = defineProps<{
         <div v-if="props.pricing || props.deployment || props.beginnerRecommended" mt-2 flex flex-wrap gap-1.5>
           <div
             v-if="props.beginnerRecommended"
-            text="[10px] white" rounded-md bg-green-500 px-1.5 py-0.5 font-bold tracking-wider uppercase
+            text="[10px] $text-primary" rounded-md bg-green-500 px-1.5 py-0.5 font-bold tracking-wider uppercase
           >
             {{ $t('settings.pages.providers.labels.recommended') }}
           </div>
           <div
             v-if="props.pricing"
-            text="[10px] neutral-600 dark:neutral-300" border="1 neutral-200 dark:neutral-700" rounded-md px-1.5 py-0.5 font-bold tracking-wider uppercase
+            text="$text-secondary" border="$hairline" rounded-md px-1.5 py-0.5 font-bold tracking-wider uppercase
           >
             {{ $t(`settings.pages.providers.filters.${props.pricing}`) }}
           </div>
           <div
             v-if="props.deployment"
-            text="[10px] neutral-600 dark:neutral-300" border="1 neutral-200 dark:neutral-700" rounded-md px-1.5 py-0.5 font-bold tracking-wider uppercase
+            text="$text-secondary" border="$hairline" rounded-md px-1.5 py-0.5 font-bold tracking-wider uppercase
           >
             {{ $t(`settings.pages.providers.filters.${props.deployment}`) }}
           </div>
@@ -75,7 +75,7 @@ const props = defineProps<{
           class="menu-icon-status-item-icon"
           transition="all ease-in-out duration-400"
           absolute right-0 size-16 translate-y-2
-          text="neutral-400/50 dark:neutral-600/50"
+          text="$text-muted"
           grayscale-100
           :class="props.icon"
         />
@@ -85,7 +85,7 @@ const props = defineProps<{
           class="menu-icon-status-item-icon-color"
           transition="all ease-in-out duration-400"
           absolute right-0 size-16 translate-y-2
-          text="neutral-400/50 dark:neutral-600/50"
+          text="$text-muted"
           grayscale-100
           :class="[props.iconColor]"
         />
@@ -102,7 +102,7 @@ const props = defineProps<{
     </RouterLink>
     <div p-2>
       <div v-if="props.configured" size-4 bg="green-500" rounded-full shadow="lg" />
-      <div v-else size-4 border="2 neutral-200 dark:neutral-700" rounded-full bg="white dark:neutral-900" />
+      <div v-else size-4 border="$hairline" rounded-full bg="$surface-1" />
     </div>
   </div>
 </template>
@@ -114,7 +114,7 @@ const props = defineProps<{
 }
 
 .menu-icon-status-item::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 dark:from-primary-400/0 dark:to-primary-400/0';
+  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 from-primary-400/0 to-primary-400/0';
   content: '';
   position: absolute;
   inset: 0;
@@ -128,13 +128,13 @@ const props = defineProps<{
 
 .menu-icon-status-item:hover::before,
 .menu-icon-status-item._hover::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 50%;
   opacity: 1;
 }
 
 .menu-icon-status-item-link::after {
-  --at-apply: 'bg-dotted-[neutral-200/80] hover:bg-dotted-[primary-300/50] dark:bg-dotted-[neutral-700/40] dark:hover:bg-dotted-[primary-200/20]';
+  --at-apply: 'bg-dotted-[neutral-200/80] hover:bg-dotted-[primary-300/50] bg-dotted-[neutral-700/40] hover:bg-dotted-[primary-200/20]';
   position: absolute;
   inset: 0;
   z-index: -2;

@@ -115,7 +115,7 @@ defineExpose({
 
 <template>
   <div w-full rounded-xl>
-    <h2 class="mb-4 text-lg text-neutral-500 md:text-2xl dark:text-neutral-400" w-full>
+    <h2 class="mb-4 text-lg text-$text-muted text-$text-secondary md:text-2xl" w-full>
       <div class="inline-flex items-center gap-4">
         <TestDummyMarker />
         <div>
@@ -140,9 +140,9 @@ defineExpose({
         <textarea
           v-model="testText"
           :placeholder="t('settings.pages.providers.provider.elevenlabs.playground.fields.field.input.placeholder')"
-          border="neutral-100 dark:neutral-800 solid 2 focus:neutral-200 dark:focus:neutral-700"
+          border="$hairline"
           transition="all duration-250 ease-in-out"
-          bg="neutral-100 dark:neutral-800 focus:neutral-50 dark:focus:neutral-900"
+          bg="$surface-1"
           h-24 w-full rounded-lg px-3 py-2 text-sm outline-none
         />
       </template>
@@ -150,20 +150,20 @@ defineExpose({
         <textarea
           v-model="ssmlText"
           :placeholder="t('settings.pages.modules.speech.sections.section.voice-settings.input-ssml.placeholder')"
-          border="neutral-100 dark:neutral-800 solid 2 focus:neutral-200 dark:focus:neutral-700"
+          border="$hairline"
           transition="all duration-250 ease-in-out"
-          bg="neutral-100 dark:neutral-800 focus:neutral-50 dark:focus:neutral-900"
+          bg="$surface-1"
           h-48 w-full rounded-lg px-3 py-2 text-sm font-mono outline-none
         />
       </template>
 
       <!-- Playground actions -->
       <button
-        border="neutral-800 dark:neutral-200 solid 2" transition="border duration-250 ease-in-out"
-        rounded-lg px-3 text="neutral-100 dark:neutral-900" py-1.5 text-sm
+        border="$hairline" transition="border duration-250 ease-in-out"
+        rounded-lg px-3 text="$text-primary" py-1.5 text-sm
         :disabled="isGenerating || (!testText.trim() && !useSSML) || (useSSML && !ssmlText.trim()) || !apiKeyConfigured"
         :class="{ 'opacity-50 cursor-not-allowed': isGenerating || (!testText.trim() && !useSSML) || (useSSML && !ssmlText.trim()) || !apiKeyConfigured }"
-        bg="neutral-700 dark:neutral-300" @click="handleGenerateTestSpeech"
+        bg="$surface-1" @click="handleGenerateTestSpeech"
       >
         <div flex="~ row" items-center gap-2>
           <div i-solar:play-circle-bold-duotone />

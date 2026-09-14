@@ -117,7 +117,7 @@ const bootMessages = computed<BootMessage[]>(() => [
     withoutTimestamp: true,
   },
   {
-    template: 'Command line: BOOT_IMAGE=/boot/aijade.moeru.ai root=UUID=io.github.moeru-ai.aijade',
+    template: 'Command line: BOOT_IMAGE=/boot/aijade.ai root=UUID=io.github.moeru-ai.aijade',
     typingSpeed: 1,
   },
   {

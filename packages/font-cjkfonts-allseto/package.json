@@ -4,22 +4,31 @@
   "version": "0.10.2",
   "description": "Essential CSS for font, cjkfonts 全瀨體, used by Project AIJADE",
   "author": {
-    "name": "Creators of cjkFonts",
-    "url": "https://cjkfonts.io/"
+    "name": "AIJADE Team"
   },
   "license": "SIL Open Font License",
   "homepage": "https://cjkfonts.io/blog/cjkfonts_allseto",
   "repository": {
     "type": "git",
-    "url": "https://github.com/moeru-ai/airi.git",
+    "url": "https://github.com/korose523/AIJADE.git",
     "directory": "packages/font-cjkfonts-allseto"
   },
   "exports": {
-    ".": { "default": "./dist/index.css" },
-    "./index.css": { "default": "./dist/index.css" },
-    "./files/*": { "default": "./dist/files/*" },
-    "./files/*.ttf": { "default": "./dist/files/*.ttf" },
-    "./*": { "default": "./*.css" }
+    ".": {
+      "default": "./dist/index.css"
+    },
+    "./index.css": {
+      "default": "./dist/index.css"
+    },
+    "./files/*": {
+      "default": "./dist/files/*"
+    },
+    "./files/*.ttf": {
+      "default": "./dist/files/*.ttf"
+    },
+    "./*": {
+      "default": "./*.css"
+    }
   },
   "main": "./dist/index.css",
   "scripts": {

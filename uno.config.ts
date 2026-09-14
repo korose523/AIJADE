@@ -139,10 +139,10 @@ export function sharedUnoConfig() {
       }),
       presetScrollbar(),
       presetChromatic({
-        baseHue: 220.44,
+        baseHue: 202,
         colors: {
           primary: 0,
-          complementary: 180,
+          complementary: 96,
         },
       }) as Preset,
     ],
@@ -197,6 +197,17 @@ export function sharedUnoConfig() {
       }],
 
       [/drag-region/, () => ({ 'app-region': 'drag' })],
+    ],
+    shortcuts: [
+      ['panel', 'bg-[var(--surface-1)] border border-[var(--hairline)] shadow-[var(--shadow-panel)] rounded-xl'],
+      ['panel-inset', 'bg-[var(--surface-2)] border border-[var(--hairline)] rounded-lg'],
+      ['glass-panel', 'bg-[var(--surface-glass)] backdrop-blur-[var(--surface-glass-blur)] border border-[var(--hairline)] rounded-xl shadow-[var(--shadow-panel)]'],
+      ['hud-frame', 'bg-[var(--surface-1)] border border-[var(--hairline)] shadow-[var(--shadow-panel)] rounded-xl relative overflow-hidden outline outline-1 outline-[var(--hairline-strong)] outline-offset-[-1px]'],
+      ['glow-accent', 'shadow-[var(--glow-accent)]'],
+      ['scifi-grid', '[background-image:linear-gradient(to_right,var(--grid-line)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-line)_1px,transparent_1px)] [background-size:var(--grid-size)_var(--grid-size)]'],
+      ['text-hud', 'font-mono text-[var(--text-muted)] tracking-widest uppercase'],
+      ['text-body', 'text-[var(--text-primary)]'],
+      ['text-subtle', 'text-[var(--text-secondary)]'],
     ],
     theme: {
       fontFamily: {

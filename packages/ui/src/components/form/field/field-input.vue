@@ -40,13 +40,13 @@ const modelValue = defineModel<T>({ required: false })
   <div class="max-w-full">
     <label class="flex flex-col gap-4">
       <div>
-        <div class="flex items-center gap-1 text-sm font-medium">
+        <div class="flex items-center gap-1 text-sm text-[var(--text-primary)] font-medium">
           <slot name="label">
             {{ props.label }}
           </slot>
           <span v-if="props.required && !props.hideRequiredMark" class="text-red-500">*</span>
         </div>
-        <div class="text-xs text-neutral-500 dark:text-neutral-400" text-wrap>
+        <div class="text-xs text-[var(--text-muted)]" text-wrap>
           <slot name="description">
             {{ props.description }}
           </slot>
@@ -76,13 +76,13 @@ const modelValue = defineModel<T>({ required: false })
         :required="props.required"
         :class="[
           props.inputClass,
-          'focus:primary-300 dark:focus:primary-400/50 border-2 border-solid border-neutral-100 dark:border-neutral-900',
+          'focus:primary-300 focus:primary-400/50 border-2 border-solid border-$hairline border-$hairline',
           'transition-all duration-200 ease-in-out',
-          'text-disabled:neutral-400 dark:text-disabled:neutral-600',
+          'text-disabled:$text-muted text-disabled:$text-secondary',
           'cursor-disabled:not-allowed',
           'w-full rounded-lg px-2 py-1 text-sm outline-none',
           'shadow-sm',
-          'bg-neutral-50 dark:bg-neutral-950 focus:bg-neutral-50 dark:focus:bg-neutral-900',
+          'bg-$surface-1 bg-$surface-1 focus:bg-$surface-1 focus:bg-$surface-1',
         ]"
       />
     </label>

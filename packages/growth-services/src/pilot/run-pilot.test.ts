@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs'
 
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 
 import { MECHANISM_CONFIGS } from './configs'
 import { runPilot } from './run-pilot'
@@ -36,12 +36,29 @@ describe('runPilot — determinism & structure', () => {
 })
 
 describe('runPilot — faithful Table-3 behaviour (emergent, not hard-coded)', () => {
-  const p = await runPilot(1, false)
+  // `await` is only legal inside an async function, and a `describe` callback is
+  // not one. Hoisting the run into `beforeAll` also keeps this suite to a single
+  // pilot execution instead of one per test.
+  let p!: Awaited<ReturnType<typeof runPilot>>
+  beforeAll(async () => {
+    p = await runPilot(1, false)
+  })
 
-  it('b0 (no memory) is the lower bound: FUB=0, CR=0, FCR=0', () => {
+  // B0 writes nothing that is true (`strategy: 'none'`), so it retains no golden
+  // evidence and no contradiction pair: FUB = 0 and CR = 0.
+  //
+  // Its FCR is **1**, not 0, and that is the intended behaviour rather than a
+  // defect: the dual-graph split is the *only* false-fact filter in this design
+  // (`put()` commits a statement with `isTrue === false` unconditionally unless
+  // `dualGraphSeparation` is on — see the comment there). B0 has DGM off, like
+  // every other baseline, so all 91 poison statements consolidate. This is what
+  // makes the FCR column discriminate A1 (DGM on) from the whole baseline block;
+  // asserting 0 here would have made B0 indistinguishable from the full model on
+  // the very metric the DGM ablation is supposed to move.
+  it('b0 (no memory) retains nothing useful (FUB=0, CR=0) but, lacking a dual graph, consolidates every poison statement (FCR=1)', () => {
     expect(p.results.fub.B0.value).toBe(0)
     expect(p.results.cr.B0.value).toBe(0)
-    expect(p.results.fcr.B0.value).toBe(0)
+    expect(p.results.fcr.B0.value).toBe(1)
   })
 
   it('a1 is the full model: CR=1, FCR=0, FUB≈1, no identity drift (CDI on)', () => {
@@ -75,7 +92,10 @@ describe('runPilot — faithful Table-3 behaviour (emergent, not hard-coded)', (
 })
 
 describe('runPilot — statistics present (incl. new identity metrics)', () => {
-  const p = await runPilot(1, false)
+  let p!: Awaited<ReturnType<typeof runPilot>>
+  beforeAll(async () => {
+    p = await runPilot(1, false)
+  })
   it('reports bootstrap CIs, Cohen d and Bonferroni per metric (memory + identity)', () => {
     for (const key of ['fub', 'epRate', 'gc', 'precision', 'recall', 'cr', 'fcr', 'coreStability', 'identityDrift', 'skillRetention']) {
       expect(p.results[key].A1.ci.length).toBe(2)

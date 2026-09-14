@@ -93,8 +93,8 @@ function togglePlayback() {
     transition="all duration-200 ease-in-out"
     :class="[
       voiceId === props.voice.id
-        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-900 hover:border-primary-500/30 dark:hover:border-primary-400/30'
-        : 'bg-white dark:bg-neutral-900/20 border-neutral-100 dark:border-neutral-900 hover:border-primary-500/30 dark:hover:border-primary-400/30',
+        ? 'bg-primary-50 bg-primary-900/20 border-primary-100 border-primary-900 hover:border-primary-500/30 hover:border-primary-400/30'
+        : 'bg-$surface-1 bg-$surface-1 border-$hairline border-$hairline hover:border-primary-500/30 hover:border-primary-400/30',
       voiceId === props.voice.id
         ? 'form_voice-card-active'
         : '',
@@ -117,15 +117,15 @@ function togglePlayback() {
             class="size-5 border-2 rounded-full transition-colors duration-200"
             :class="[
               voiceId === props.voice.id
-                ? 'border-primary-500 dark:border-primary-400'
-                : 'border-neutral-300 dark:border-neutral-600',
+                ? 'border-primary-500 border-primary-400'
+                : 'border-$hairline border-$hairline',
             ]"
           >
             <div
               class="absolute left-1/2 top-1/2 size-3 rounded-full transition-opacity duration-200 -translate-x-1/2 -translate-y-1/2"
               :class="[
                 voiceId === props.voice.id
-                  ? 'opacity-100 bg-primary-500 dark:bg-primary-400'
+                  ? 'opacity-100 bg-primary-500 bg-primary-400'
                   : 'opacity-0',
               ]"
             />
@@ -139,13 +139,13 @@ function togglePlayback() {
           class="translate-x-[-50%] translate-y-[50%]"
           :class="[
             currentlyPlayingId === voice.id
-              ? 'text-white dark:text-white'
+              ? 'text-$text-primary text-$text-primary'
               : '',
           ]"
           @click="togglePlayback"
         >
-          <div v-if="currentlyPlayingId === voice.id" class="i-solar:pause-circle-bold-duotone text-xl text-neutral-400 dark:text-neutral-500" />
-          <div v-else class="i-solar:play-circle-bold-duotone text-xl text-neutral-400 dark:text-neutral-500" />
+          <div v-if="currentlyPlayingId === voice.id" class="i-solar:pause-circle-bold-duotone text-xl text-$text-muted text-$text-secondary" />
+          <div v-else class="i-solar:play-circle-bold-duotone text-xl text-$text-muted text-$text-secondary" />
         </button>
 
         <!-- Voice info -->
@@ -155,8 +155,8 @@ function togglePlayback() {
               class="line-clamp-1 font-medium"
               :class="[
                 voiceId === voice.id
-                  ? 'text-neutral-700 dark:text-neutral-300'
-                  : 'text-neutral-700 dark:text-neutral-400',
+                  ? 'text-$text-primary text-$text-primary'
+                  : 'text-$text-primary text-$text-muted',
               ]"
             >
               {{ voice.name }}
@@ -171,8 +171,8 @@ function togglePlayback() {
               class="inline-flex items-center rounded-md px-1.5 py-0.5 text-xs"
               :class="[
                 voiceId === voice.id
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                  : 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300',
+                  ? 'bg-primary-100 text-primary-700 bg-primary-900/30 text-primary-400'
+                  : 'bg-$surface-1 text-$text-primary bg-$surface-2 text-$text-primary',
               ]"
             >
               {{ attribute }}
@@ -184,7 +184,7 @@ function togglePlayback() {
             <Input
               v-model="customVoiceName"
               type="text"
-              class="w-full border border-neutral-300 rounded bg-white px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+              class="w-full border border-$hairline border-$hairline rounded bg-$surface-1 bg-$surface-1 px-2 py-1 text-sm"
               :placeholder="customInputPlaceholder"
             />
           </div>
@@ -194,8 +194,8 @@ function togglePlayback() {
             v-if="voice.description" class="line-clamp-2 mt-1 text-xs"
             :class="[
               voiceId === voice.id
-                ? 'text-neutral-600 dark:text-neutral-400'
-                : 'text-neutral-500 dark:text-neutral-500',
+                ? 'text-$text-secondary text-$text-muted'
+                : 'text-$text-secondary text-$text-secondary',
             ]"
           >
             {{ voice.description }}
@@ -221,8 +221,8 @@ function togglePlayback() {
             <AudioSpectrumVisualizer
               :frequencies="frequencies"
               :bars-class="voiceId === voice.id
-                ? 'bg-primary-500 dark:bg-primary-400'
-                : 'bg-neutral-400 dark:bg-neutral-600'"
+                ? 'bg-primary-500 bg-primary-400'
+                : 'bg-$surface-1 bg-$surface-1'"
             />
           </AudioSpectrum>
         </div>
@@ -241,7 +241,7 @@ function togglePlayback() {
 
 .form_voice-card::before {
   pointer-events: none;
-  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 dark:from-primary-400/0 dark:to-primary-400/0';
+  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 from-primary-400/0 to-primary-400/0';
   content: '';
   position: absolute;
   inset: 0;
@@ -254,7 +254,7 @@ function togglePlayback() {
 }
 
 .form_voice-card:hover::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 1;
 }

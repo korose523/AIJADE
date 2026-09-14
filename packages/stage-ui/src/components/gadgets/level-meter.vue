@@ -58,14 +58,14 @@ function getBarColor(_index: number, barLevel: number): string {
   <div>
     <div v-if="showHeader" class="mb-2 flex items-center justify-between">
       <span class="text-sm font-medium">{{ label }}</span>
-      <span class="text-sm text-neutral-500">
+      <span class="text-sm text-$text-secondary">
         {{ formatValue ? formatValue(level) : `${Math.round(level)}${unit}` }}
       </span>
     </div>
 
     <!-- Level Bars -->
     <div
-      class="flex items-end gap-1 rounded bg-neutral-200/45 p-1 dark:bg-neutral-700"
+      class="flex items-end gap-1 rounded bg-$surface-1 bg-$surface-3 p-1"
       :style="{ height: `${height}px` }"
     >
       <div
@@ -73,7 +73,7 @@ function getBarColor(_index: number, barLevel: number): string {
         :key="index"
         class="flex-1 rounded-sm transition-all"
         :class="[
-          bar.active ? getBarColor(index, bar.level) : 'bg-neutral-200 dark:bg-neutral-600',
+          bar.active ? getBarColor(index, bar.level) : 'bg-$surface-1 bg-$surface-1',
           `duration-${animationSpeed}`,
         ]"
         :style="{ height: bar.active ? '100%' : '20%' }"

@@ -35,7 +35,7 @@ const selectedProviderIdModel = computed({
       <button outline-none @click="props.onPrevious">
         <div class="i-solar:alt-arrow-left-line-duotone h-5 w-5" />
       </button>
-      <h2 class="flex-1 text-center text-xl text-neutral-800 font-semibold md:text-left md:text-2xl dark:text-neutral-100">
+      <h2 class="flex-1 text-center text-xl text-$text-primary text-$text-primary font-semibold md:text-left md:text-2xl">
         {{ t('settings.dialogs.onboarding.selectProvider') }}
       </h2>
       <div class="h-5 w-5" />

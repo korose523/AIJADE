@@ -5,7 +5,7 @@ Allow アイリ to talk to you and many other users in Discord voice channels.
 ## Getting started
 
 ```shell
-git clone git@github.com:moeru-ai/aijade.git
+git clone git@github.com:korose523/AIJADE.git
 pnpm i
 ```
 

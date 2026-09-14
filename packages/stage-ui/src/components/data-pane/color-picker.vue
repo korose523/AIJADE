@@ -352,7 +352,7 @@ watch([hue, saturation, value, alphaValue], () => {
     </PopoverTrigger>
     <PopoverPortal>
       <PopoverContent align="start" class="relative z-20">
-        <div class="z-20 mt-2 space-y-2" bg="white/90 dark:neutral-900/90" rounded-xl p-1>
+        <div class="z-20 mt-2 space-y-2" bg="$surface-1" rounded-xl p-1>
           <!-- Color Map -->
           <div class="relative h-48 w-full select-none overflow-hidden rounded-lg">
             <div
@@ -369,7 +369,7 @@ watch([hue, saturation, value, alphaValue], () => {
               <div class="absolute inset-0" style="background: linear-gradient(to bottom, transparent, black);" />
               <!-- Color picker circle -->
               <div
-                class="pointer-events-none absolute h-4 w-4 border-2 border-white rounded-full shadow-lg transition-transform"
+                class="pointer-events-none absolute h-4 w-4 border-2 border-$hairline rounded-full shadow-lg transition-transform"
                 :style="[
                   pickerPosition,
                   {
@@ -392,7 +392,7 @@ watch([hue, saturation, value, alphaValue], () => {
               @touchstart="handleHueStart"
             >
               <div
-                class="pointer-events-none absolute top-0 h-14 w-1 cursor-pointer cursor-col-resize appearance-none bg-white shadow-lg transition-colors,transform,width,height duration-200 hover:h-13 hover:w-2 hover:bg-neutral-800"
+                class="pointer-events-none absolute top-0 h-14 w-1 cursor-pointer cursor-col-resize appearance-none bg-$surface-1 shadow-lg transition-colors,transform,width,height duration-200 hover:h-13 hover:w-2 hover:bg-$surface-2"
                 :style="[
                   huePosition,
                   {
@@ -429,7 +429,7 @@ watch([hue, saturation, value, alphaValue], () => {
               @touchstart="handleAlphaStart"
             >
               <div
-                class="pointer-events-none absolute top-0 h-14 w-1 cursor-pointer cursor-col-resize appearance-none bg-white shadow-lg transition-colors,transform,width,height duration-200 hover:h-13 hover:w-2 hover:bg-neutral-800"
+                class="pointer-events-none absolute top-0 h-14 w-1 cursor-pointer cursor-col-resize appearance-none bg-$surface-1 shadow-lg transition-colors,transform,width,height duration-200 hover:h-13 hover:w-2 hover:bg-$surface-2"
                 :style="[
                   alphaPosition,
                   {
@@ -473,7 +473,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="Math.round(alphaValue * 100)"
                 min="0"
                 max="100"
-                class="w-16 border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="w-16 border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="A%"
                 @input="handleAlphaInput(Number(($event?.target as HTMLInputElement).value))"
               >
@@ -486,7 +486,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="currentColorRgb.r"
                 min="0"
                 max="255"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="R"
                 @input="handleRgbInput('r', Number(($event?.target as HTMLInputElement).value))"
               >
@@ -495,7 +495,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="currentColorRgb.g"
                 min="0"
                 max="255"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="G"
                 @input="handleRgbInput('g', Number(($event?.target as HTMLInputElement).value))"
               >
@@ -504,7 +504,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="currentColorRgb.b"
                 min="0"
                 max="255"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="B"
                 @input="handleRgbInput('b', Number(($event?.target as HTMLInputElement).value))"
               >
@@ -514,7 +514,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="Math.round(alphaValue * 100)"
                 min="0"
                 max="100"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="A%"
                 @input="handleAlphaInput(Number(($event?.target as HTMLInputElement).value))"
               >
@@ -527,7 +527,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="Math.round(hue)"
                 min="0"
                 max="360"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="H°"
                 @input="handleHsvInput('h', Number(($event?.target as HTMLInputElement).value))"
               >
@@ -536,7 +536,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="Math.round(saturation)"
                 min="0"
                 max="100"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="S%"
                 @input="handleHsvInput('s', Number(($event?.target as HTMLInputElement).value))"
               >
@@ -545,7 +545,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="Math.round(value)"
                 min="0"
                 max="100"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="V%"
                 @input="handleHsvInput('v', Number(($event?.target as HTMLInputElement).value))"
               >
@@ -555,7 +555,7 @@ watch([hue, saturation, value, alphaValue], () => {
                 :value="Math.round(alphaValue * 100)"
                 min="0"
                 max="100"
-                class="border border-neutral-200 rounded-lg px-2 py-1 text-sm dark:border-neutral-700"
+                class="border border-$hairline border-$hairline rounded-lg px-2 py-1 text-sm"
                 placeholder="A%"
                 @input="handleAlphaInput(Number(($event?.target as HTMLInputElement).value))"
               >
@@ -577,23 +577,23 @@ data-[data-reka-popper-content-wrapper=""] {
 .hue-slider,
 .alpha-slider {
   &::-webkit-slider-thumb {
-    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-neutral-600 cursor-pointer shadow-lg border-2 border-neutral-500
-      hover: bg-neutral-800 transition-colors,transform,width,height duration-200 cursor-col-resize;
+    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-$surface-1 cursor-pointer shadow-lg border-2 border-$hairline
+      hover: bg-$surface-2 transition-colors,transform,width,height duration-200 cursor-col-resize;
   }
 
   .dark &::-webkit-slider-thumb {
-    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-neutral-100 cursor-pointer shadow-md border-2 border-white
-      hover: bg-neutral-300 transition-colors,transform,width,height duration-200 cursor-col-resize;
+    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-$surface-1 cursor-pointer shadow-md border-2 border-$hairline
+      hover: bg-$surface-1 transition-colors,transform,width,height duration-200 cursor-col-resize;
   }
 
   &::-moz-range-thumb {
-    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-neutral-600 cursor-pointer shadow-lg border-2 border-neutral-500
-      hover: bg-neutral-800 transition-colors,transform,width,height duration-200 cursor-col-resize;
+    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-$surface-1 cursor-pointer shadow-lg border-2 border-$hairline
+      hover: bg-$surface-2 transition-colors,transform,width,height duration-200 cursor-col-resize;
   }
 
   .dark &::-moz-range-thumb {
-    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-neutral-100 cursor-pointer shadow-md border-2 border-white
-      hover: bg-neutral-300 transition-colors,transform,width,height duration-200 cursor-col-resize;
+    --at-apply: w-1 h-12 hover:w-2 hover:h-13 appearance-none rounded-md bg-$surface-1 cursor-pointer shadow-md border-2 border-$hairline
+      hover: bg-$surface-1 transition-colors,transform,width,height duration-200 cursor-col-resize;
   }
 }
 </style>

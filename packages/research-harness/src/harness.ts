@@ -80,6 +80,7 @@ import {
   mulberry32,
   oddsRatio,
   pooledDifferenceInDifferences,
+  powerForEffectProportion,
   riskDifference,
 } from './stats'
 
@@ -104,6 +105,30 @@ export const PREREGISTRATION = {
   pruneMinCalls: 3,
   seed: 42,
 } as const
+
+/**
+ * Compare the actual run parameters against the registered {@link PREREGISTRATION}
+ * protocol. Returns a human-readable list of every deviation (empty when the run
+ * matches the protocol). This is the runtime half of the selective-inference fix
+ * (Blocker B3): a deviation is surfaced loudly, never silent, so the
+ * `envFeedback` effect can never be retro-fitted by re-tuning the design.
+ */
+function validatePreregistration(opts: RunOptions): string[] {
+  const deviations: string[] = []
+  const check = (key: string, actual: number, expected: number) => {
+    if (actual !== expected)
+      deviations.push(`${key}: run=${actual} preregistered=${expected}`)
+  }
+  check('trials', opts.trials, PREREGISTRATION.trials)
+  check('rounds', opts.rounds, PREREGISTRATION.rounds)
+  check('nTasks', opts.nTasks, PREREGISTRATION.nTasks)
+  const pruneThreshold = opts.pruneThreshold ?? PREREGISTRATION.pruneThreshold
+  const pruneMinCalls = opts.pruneMinCalls ?? PREREGISTRATION.pruneMinCalls
+  check('pruneThreshold', pruneThreshold, PREREGISTRATION.pruneThreshold)
+  check('pruneMinCalls', pruneMinCalls, PREREGISTRATION.pruneMinCalls)
+  check('seed', opts.seed, PREREGISTRATION.seed)
+  return deviations
+}
 
 /**
  * Fixed label mixed into the trial-sampling seed so task selection depends on
@@ -189,6 +214,10 @@ export interface PowerDeclaration {
   minDetectableEffectAt80: number
   /** Skills per cell used for the power calculation. */
   nSkillsPerCell: number
+  /** Achieved power for a 10pp effect at the achieved nSkillsPerCell (derived, not hard-coded). */
+  powerAtDelta10pp: number
+  /** Achieved power for a 5pp effect at the achieved nSkillsPerCell (derived). */
+  powerAtDelta5pp: number
 }
 
 export interface ExperimentResult {
@@ -213,6 +242,8 @@ export interface ExperimentResult {
   factorialInteraction: LogOddsInteractionResult
   /** Skill-level chi-square: envFeedback (rows) x outcome (cols). PRIMARY TEST. */
   chiSquare: ChiSquareResult
+  /** Skill-level chi-square: selfVerification (rows) x outcome (cols). Main-effect omnibus. */
+  chiSquareSelfVerification: ChiSquareResult
   /**
    * Execution-level chi-square, retained only for historical comparison /
    * diagnosis. NOT VALID FOR INFERENCE: it counts every execution as
@@ -224,6 +255,12 @@ export interface ExperimentResult {
   mcnemarEnvFeedback: McNemarResult
   /** Declared statistical power for the skill-level design. */
   power: PowerDeclaration
+  /**
+   * Parameters that deviated from {@link PREREGISTRATION} for this run. Empty
+   * when the run matches the registered protocol (fixes the selective-inference
+   * Blocker B3: any deviation is surfaced, never silent).
+   */
+  preregistrationDeviation: string[]
   /**
    * Interaction effect (pooled DiD) on precision — kept as an alias of the old
    *  `diffInDiff` field for backward compatibility; the headline is now
@@ -252,6 +289,15 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
   // estimated on the registered design, not chosen to make an effect appear.
   const pruneMinCalls = opts.pruneMinCalls ?? PREREGISTRATION.pruneMinCalls
   const now = opts.now ?? (() => 0)
+
+  // Selective-inference guard (B3): surface any deviation from the registered
+  // protocol. Non-fatal — the run still proceeds, but the deviation is recorded.
+  const preregistrationDeviation = validatePreregistration(opts)
+  if (preregistrationDeviation.length > 0) {
+    console.info('[preregistration] WARNING: run parameters deviate from PREREGISTRATION.md:')
+    for (const d of preregistrationDeviation)
+      console.info(`  - ${d}`)
+  }
 
   // --- Block design (Blocker B4) -------------------------------------------
   // Tasks are sampled ONCE per trial, indexed only by the trial number. Every
@@ -319,15 +365,22 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
   let onFail = 0
   let offSucc = 0
   let offFail = 0
+  let svOnSucc = 0
+  let svOnFail = 0
+  let svOffSucc = 0
+  let svOffFail = 0
   let nSkills = 0
   let nExecutions = 0
+  const condSuccFail = new Map<string, { succ: number, fail: number }>()
   for (const r of allRecords) {
     nExecutions += r.callCount
     if (r.callCount === 0)
       continue
     nSkills++
     const ok = skillSuccess(r)
-    if (r.envFeedback?.enabled ?? false) {
+    const ef = r.envFeedback?.enabled ?? false
+    const sv = r.selfVerification?.enabled ?? false
+    if (ef) {
       if (ok)
         onSucc++
       else onFail++
@@ -338,8 +391,26 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
     else {
       offFail++
     }
+    if (sv) {
+      if (ok)
+        svOnSucc++
+      else svOnFail++
+    }
+    else if (ok) {
+      svOffSucc++
+    }
+    else {
+      svOffFail++
+    }
+    const id = conditionId({ selfVerification: sv, envFeedback: ef })
+    const e = condSuccFail.get(id) ?? { succ: 0, fail: 0 }
+    if (ok)
+      e.succ++
+    else e.fail++
+    condSuccFail.set(id, e)
   }
   const chiSquare = chiSquare2x2(onSucc, onFail, offSucc, offFail)
+  const chiSquareSelfVerification = chiSquare2x2(svOnSucc, svOnFail, svOffSucc, svOffFail)
 
   // --- Execution-level chi-square (DIAGNOSTIC ONLY) -------------------------
   // Retained for historical comparison. Counts every execution as independent,
@@ -382,14 +453,39 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
   // --- 2x2 factorial interaction (log-odds) --------------------------------
   const factorialInteraction = effectSizes.interactionLogOdds
 
-  // --- Holm correction over the primary inference family --------------------
+  // --- Holm correction over the full primary inference family ---------------
+  // 10 inferences (review §1.6): the two main-effect axis tests serve as the
+  // omnibus, the 6 pairwise condition contrasts are released only after the
+  // relevant axis is read, plus the factorial interaction and the paired
+  // McNemar. All 10 share one Holm step-down so the family-wise error rate is
+  // controlled. Every p below is finite (zero margins return p=1, never NaN),
+  // so no member can silently inflate the correction of the others.
+  const pairwise: { label: string, p: number }[] = []
+  for (let i = 0; i < CONDITIONS.length; i++) {
+    for (let j = i + 1; j < CONDITIONS.length; j++) {
+      const ci = condSuccFail.get(conditionId(CONDITIONS[i])) ?? { succ: 0, fail: 0 }
+      const cj = condSuccFail.get(conditionId(CONDITIONS[j])) ?? { succ: 0, fail: 0 }
+      const cs = chiSquare2x2(ci.succ, ci.fail, cj.succ, cj.fail)
+      pairwise.push({
+        label: `pairwise.${conditionId(CONDITIONS[i])}.vs.${conditionId(CONDITIONS[j])}`,
+        p: cs.p,
+      })
+    }
+  }
+  const family: { label: string, p: number }[] = [
+    { label: 'omnibus.envFeedbackAxis', p: chiSquare.p },
+    { label: 'omnibus.selfVerificationAxis', p: chiSquareSelfVerification.p },
+    { label: 'svXef.factorialInteraction', p: factorialInteraction.p },
+    { label: 'envFeedback.mcnemar', p: mcnemar.p },
+    ...pairwise,
+  ]
   const multiplicity = {
     method: 'holm' as const,
     alpha: 0.05,
     adjusted: holmBonferroni(
-      [chiSquare.p, mcnemar.p, factorialInteraction.p],
+      family.map(f => f.p),
       0.05,
-      ['envFeedback.skillLevelChiSquare', 'envFeedback.mcnemar', 'svXef.factorialInteraction'],
+      family.map(f => f.label),
     ),
   }
 
@@ -397,6 +493,12 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
   const nSkillsPerCell = nSkills > 0 ? Math.round(nSkills / 4) : 0
   const minDetectableEffectAt80 = nSkillsPerCell > 0
     ? minDetectableEffectProportion(nSkillsPerCell) * 100
+    : Number.NaN
+  const powerAtDelta10pp = nSkillsPerCell > 0
+    ? powerForEffectProportion(0.10, nSkillsPerCell)
+    : Number.NaN
+  const powerAtDelta5pp = nSkillsPerCell > 0
+    ? powerForEffectProportion(0.05, nSkillsPerCell)
     : Number.NaN
 
   return {
@@ -411,9 +513,11 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
     multiplicity,
     factorialInteraction,
     chiSquare,
+    chiSquareSelfVerification,
     chiSquareExecutionLevel,
     mcnemarEnvFeedback: mcnemar,
-    power: { minDetectableEffectAt80, nSkillsPerCell },
+    power: { minDetectableEffectAt80, nSkillsPerCell, powerAtDelta10pp, powerAtDelta5pp },
+    preregistrationDeviation,
     diffInDiff,
     cells,
   }

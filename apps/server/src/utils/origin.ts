@@ -12,7 +12,7 @@ function getOriginFromUrl(url: string): string | undefined {
 const TRUSTED_EXACT_ORIGINS = [
   'capacitor://localhost', // Capacitor mobile (iOS)
   'ai.moeru.aijade-pocket://links', // Android deep link
-  'https://aijade.moeru.ai', // Production
+  'https://aijade.ai', // Production
 ]
 
 // NOTICE:

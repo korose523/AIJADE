@@ -39,9 +39,9 @@ const variantClasses: Record<InputVariant, Record<InputTheme, {
     default: {
       default: [
         'w-full rounded-lg px-2 py-1 text-nowrap text-sm outline-none',
-        'bg-neutral-50 dark:bg-neutral-950 focus:bg-neutral-50 dark:focus:bg-neutral-900',
-        'focus:border-primary-300 dark:focus:border-primary-400/50 border-2 border-solid border-neutral-100 dark:border-neutral-900',
-        'text-disabled:neutral-400 dark:text-disabled:neutral-600',
+        'bg-$surface-1 bg-$surface-1 focus:bg-$surface-1 focus:bg-$surface-1',
+        'focus:border-primary-300 focus:border-primary-400/50 border-2 border-solid border-$hairline border-$hairline',
+        'text-disabled:$text-muted text-disabled:$text-secondary',
         'shadow-sm',
       ],
     },
@@ -50,9 +50,9 @@ const variantClasses: Record<InputVariant, Record<InputTheme, {
     default: {
       default: [
         'w-full rounded-lg px-2 py-1 text-nowrap text-sm outline-none',
-        'bg-neutral-50 dark:bg-neutral-950 focus:bg-neutral-50 dark:focus:bg-neutral-900',
-        'focus:border-primary-300 dark:focus:border-primary-400/50 border-2 border-solid border-neutral-100 dark:border-neutral-900',
-        'text-disabled:neutral-400 dark:text-disabled:neutral-600',
+        'bg-$surface-1 bg-$surface-1 focus:bg-$surface-1 focus:bg-$surface-1',
+        'focus:border-primary-300 focus:border-primary-400/50 border-2 border-solid border-$hairline border-$hairline',
+        'text-disabled:$text-muted text-disabled:$text-secondary',
         'shadow-sm',
       ],
     },
@@ -61,9 +61,9 @@ const variantClasses: Record<InputVariant, Record<InputTheme, {
     default: {
       default: [
         'w-full rounded-lg px-2 py-1 text-nowrap text-sm outline-none',
-        'bg-neutral-100 dark:bg-neutral-800 focus:bg-neutral-50 dark:focus:bg-neutral-950',
-        'focus:border-primary-500/30 dark:focus:border-primary-400/50 border-2 border-solid border-neutral-500/5 dark:border-neutral-700/40',
-        'text-disabled:neutral-400 dark:text-disabled:neutral-600',
+        'bg-$surface-1 bg-$surface-2 focus:bg-$surface-1 focus:bg-$surface-1',
+        'focus:border-primary-500/30 focus:border-primary-400/50 border-2 border-solid border-$hairline border-$hairline',
+        'text-disabled:$text-muted text-disabled:$text-secondary',
       ],
     },
   },

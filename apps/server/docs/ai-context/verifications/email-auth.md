@@ -30,7 +30,7 @@ Two follow-up issues surfaced and were fixed in the same session:
 1. **vue-i18n linked-format crash** — placeholder `you@example.com` parsed as a linked-message reference. Escaped to `you{'@'}example.com` in `packages/i18n/src/locales/en/server/auth.yaml`.
 2. **Email link landed on `http://localhost:3000/` (404)** when there was no OIDC context, because Better Auth resolves bare `/` callback against `API_SERVER_URL`. Fixed in `apps/ui-server-auth/src/pages/sign-up.vue` and `sign-in.vue` by passing an absolute UI URL (`${origin}/auth/verify-email?verified=true`) when no OIDC params are present.
 3. **API root + 404 friendliness** — added structured JSON for `GET /` and `notFound()` in `apps/server/src/app.ts` so stale email links / scanners hit a clear pointer instead of hono's default `404 Not Found` HTML.
-   - Verified with `curl http://localhost:3000/` → `200 {"service":"airi-api",...}` and `curl http://localhost:3000/some/random/path` → `404 {"error":"NOT_FOUND",...}`.
+   - Verified with `curl http://localhost:3000/` → `200 {"service":"aijade-api",...}` and `curl http://localhost:3000/some/random/path` → `404 {"error":"NOT_FOUND",...}`.
 
 ### Path 2 — Forgot + reset password (✅ 2026-04-27)
 

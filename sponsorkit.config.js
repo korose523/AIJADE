@@ -49,7 +49,9 @@ const kofiProvider = {
 }
 
 export default defineConfig({
-  providers: ['patreon', 'opencollective', kofiProvider],
+  // Upstream sponsor platforms (patreon/opencollective) removed; project sponsorship is
+  // now directed to https://github.com/sponsors/korose523 (see docs/.vitepress/meta.ts).
+  providers: [kofiProvider],
   renderer: 'tiers',
   width: 960,
   padding: {

@@ -58,7 +58,7 @@ describe('for FileSystemPluginHost', () => {
 
     const pluginDef = await host.loadPluginFor({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin',
       permissions: testPermissions,
       entrypoints: {
@@ -80,7 +80,7 @@ describe('for FileSystemPluginHost', () => {
 
     const pluginDef = await host.loadPluginFor({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin',
       permissions: testPermissions,
       entrypoints: {
@@ -97,7 +97,7 @@ describe('for FileSystemPluginHost', () => {
 
     await expect(host.loadPluginFor({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin',
       permissions: testPermissions,
       entrypoints: {
@@ -110,7 +110,7 @@ describe('for FileSystemPluginHost', () => {
     const host = new FileSystemLoader()
     const baseManifest = {
       apiVersion: 'v1' as const,
-      kind: 'manifest.plugin.aijade.moeru.ai' as const,
+      kind: 'manifest.plugin.aijade.ai' as const,
       name: 'test-plugin',
       permissions: testPermissions,
     }
@@ -158,7 +158,7 @@ describe('for FileSystemPluginHost', () => {
 
     expect(host.resolveEntrypointFor({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin',
       permissions: testPermissions,
       entrypoints: {
@@ -175,7 +175,7 @@ describe('for FileSystemPluginHost', () => {
 
     expect(() => host.resolveEntrypointFor({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin',
       permissions: testPermissions,
       entrypoints: {},
@@ -191,7 +191,7 @@ describe('for PluginHost', () => {
   const customSessionApiPingEventName = 'proj-aijade:plugin-sdk:apis:client:test-session-api:ping'
   const testManifest = {
     apiVersion: 'v1' as const,
-    kind: 'manifest.plugin.aijade.moeru.ai' as const,
+    kind: 'manifest.plugin.aijade.ai' as const,
     name: 'test-plugin',
     permissions: {
       apis: [
@@ -305,7 +305,7 @@ describe('for PluginHost', () => {
 
     const session = await host.load({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin-no-connect',
       permissions: testManifest.permissions,
       entrypoints: {
@@ -937,7 +937,7 @@ describe('for PluginHost', () => {
 
     const pluginDef = await loader.loadPluginFor({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-plugin',
       permissions: testManifest.permissions,
       entrypoints: {
@@ -1131,7 +1131,7 @@ describe('for PluginHost', () => {
 
     const session = await host.start({
       apiVersion: 'v1',
-      kind: 'manifest.plugin.aijade.moeru.ai',
+      kind: 'manifest.plugin.aijade.ai',
       name: 'test-reload-relative-entrypoint',
       permissions: testManifest.permissions,
       entrypoints: {
@@ -1494,7 +1494,7 @@ describe('for PluginHost', () => {
 
     const manifest = {
       apiVersion: 'v1' as const,
-      kind: 'manifest.plugin.aijade.moeru.ai' as const,
+      kind: 'manifest.plugin.aijade.ai' as const,
       name: 'test-plugin-denied-partial',
       permissions: {
         apis: [

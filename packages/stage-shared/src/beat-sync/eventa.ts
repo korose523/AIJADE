@@ -23,7 +23,7 @@ function getBroadcastChannel() {
     _broadcastChannel = new BroadcastChannel('aijade::beat-sync')
     _broadcastChannel.onmessage = () => {
       // TODO: do we need to handle this?
-      // REVIEW(nekomeowww): do we need to handle this?
+      // REVIEW(AIJADE): do we need to handle this?
     }
   }
   return _broadcastChannel

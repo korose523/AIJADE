@@ -6,7 +6,7 @@ import { createOpenAICompatibleValidators } from '../../validators'
 import { defineProvider } from '../registry'
 
 export const OPENROUTER_ATTRIBUTION_HEADERS: Record<string, string> = {
-  'HTTP-Referer': 'https://aijade.moeru.ai/',
+  'HTTP-Referer': 'https://aijade.ai/',
   'X-OpenRouter-Title': 'Project AIJADE',
 }
 

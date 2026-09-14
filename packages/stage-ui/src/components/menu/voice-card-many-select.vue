@@ -319,15 +319,15 @@ const customVoiceName = ref('')
     <!-- Search bar -->
     <div v-if="searchable" class="relative" inline-flex="~" w-full items-center>
       <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-        <div i-solar:magnifer-line-duotone class="text-neutral-500 dark:text-neutral-400" />
+        <div i-solar:magnifer-line-duotone class="text-$text-muted text-$text-secondary" />
       </div>
       <input
         v-model="searchQuery"
         type="search"
         class="w-full rounded-xl p-2.5 pl-10 text-sm outline-none"
-        border="focus:primary-100 dark:focus:primary-400/50 2 solid neutral-200 dark:neutral-800"
+        border="focus:primary-100 focus:primary-400/50 2 solid neutral-200 neutral-800"
         transition="all duration-200 ease-in-out"
-        bg="white dark:neutral-900"
+        bg="white neutral-900"
         :placeholder="searchPlaceholder"
       >
     </div>
@@ -335,7 +335,7 @@ const customVoiceName = ref('')
     <!-- Items list with search results info -->
     <div class="mt-4 space-y-2">
       <!-- Search results info -->
-      <div v-if="searchQuery" class="text-sm text-neutral-500 dark:text-neutral-400">
+      <div v-if="searchQuery" class="text-sm text-$text-muted text-$text-secondary">
         {{ searchResultsText.replace('{count}', filteredVoices.length.toString()).replace('{total}', voices.length.toString()) }}
       </div>
 
@@ -401,7 +401,7 @@ const customVoiceName = ref('')
         <!-- Expand/collapse handle -->
         <div
           v-if="showExpandCollapseBtn"
-          bg="neutral-100 dark:[rgba(0,0,0,0.3)]"
+          bg="neutral-100 [rgba(0,0,0,0.3)]"
           rounded-xl
           :class="[
             isListExpanded ? 'w-full' : 'mt-4 w-full rounded-lg',
@@ -411,7 +411,7 @@ const customVoiceName = ref('')
             w-full
             flex items-center justify-center gap-2 rounded-lg py-2 transition="all duration-200 ease-in-out"
             :class="[
-              isListExpanded ? 'bg-primary-500 hover:bg-primary-600 text-white' : 'bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800',
+              isListExpanded ? 'bg-primary-500 hover:bg-primary-600 text-$text-primary' : 'bg-$surface-1 bg-$surface-1 hover:bg-$surface-1 hover:bg-$surface-2',
             ]"
             @click="isListExpanded = !isListExpanded"
           >
@@ -442,7 +442,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .voice-card::before {
   pointer-events: none;
-  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 dark:from-primary-400/0 dark:to-primary-400/0';
+  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 from-primary-400/0 to-primary-400/0';
   content: '';
   position: absolute;
   inset: 0;
@@ -455,7 +455,7 @@ input[type='search']::-webkit-search-cancel-button {
 }
 
 .voice-card:hover::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 1;
 }

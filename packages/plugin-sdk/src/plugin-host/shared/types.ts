@@ -338,7 +338,7 @@ export interface ManifestV1 {
   /** Manifest schema version expected by the current host implementation. */
   apiVersion: 'v1'
   /** Manifest kind discriminator used to identify AIJADE plugin manifests. */
-  kind: 'manifest.plugin.aijade.moeru.ai'
+  kind: 'manifest.plugin.aijade.ai'
   /** Stable plugin name used for identity generation and display. */
   name: string
   /** Requested permissions that the host will evaluate and grant. */
@@ -379,7 +379,7 @@ const localizableSchema = union([
  */
 export const manifestV1Schema = object({
   apiVersion: literal('v1'),
-  kind: literal('manifest.plugin.aijade.moeru.ai'),
+  kind: literal('manifest.plugin.aijade.ai'),
   name: string(),
   permissions: object({
     apis: optional(array(object({

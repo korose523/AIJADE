@@ -42,8 +42,8 @@ function toggleExpansion() {
     border="2 solid"
     :class="[
       modelValue === value
-        ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-900 hover:border-primary-500/30 dark:hover:border-primary-400/30'
-        : 'bg-white dark:bg-neutral-900/20 border-neutral-100 dark:border-neutral-900 hover:border-primary-500/30 dark:hover:border-primary-400/30',
+        ? 'bg-primary-50 bg-primary-900/20 border-primary-100 border-primary-900 hover:border-primary-500/30 hover:border-primary-400/30'
+        : 'bg-$surface-1 bg-$surface-1 border-$hairline border-$hairline hover:border-primary-500/30 hover:border-primary-400/30',
       modelValue === value
         ? 'form_radio-card-detail-active'
         : '',
@@ -63,15 +63,15 @@ function toggleExpansion() {
         class="size-5 border-2 rounded-full transition-colors duration-200"
         :class="[
           modelValue === value
-            ? 'border-primary-500 dark:border-primary-400'
-            : 'border-neutral-300 dark:border-neutral-600',
+            ? 'border-primary-500 border-primary-400'
+            : 'border-$hairline border-$hairline',
         ]"
       >
         <div
           class="absolute left-1/2 top-1/2 size-3 rounded-full transition-opacity duration-200 -translate-x-1/2 -translate-y-1/2"
           :class="[
             modelValue === value
-              ? 'opacity-100 bg-primary-500 dark:bg-primary-400'
+              ? 'opacity-100 bg-primary-500 bg-primary-400'
               : 'opacity-0',
           ]"
         />
@@ -83,8 +83,8 @@ function toggleExpansion() {
           class="line-clamp-1 font-normal"
           :class="[
             modelValue === value
-              ? 'text-neutral-700 dark:text-neutral-300'
-              : 'text-neutral-700 dark:text-neutral-400',
+              ? 'text-$text-primary text-$text-primary'
+              : 'text-$text-primary text-$text-muted',
           ]"
         >
           {{ title }}
@@ -100,8 +100,8 @@ function toggleExpansion() {
             class="line-clamp-2 cursor-pointer text-xs"
             :class="[
               modelValue === value
-                ? 'text-neutral-600 dark:text-neutral-400'
-                : 'text-neutral-500 dark:text-neutral-500',
+                ? 'text-$text-secondary text-$text-muted'
+                : 'text-$text-secondary text-$text-secondary',
             ]"
             :title="description"
             @click.prevent="toggleExpansion"
@@ -115,8 +115,8 @@ function toggleExpansion() {
             class="cursor-pointer text-xs"
             :class="[
               modelValue === value
-                ? 'text-neutral-600 dark:text-neutral-400'
-                : 'text-neutral-500 dark:text-neutral-500',
+                ? 'text-$text-secondary text-$text-muted'
+                : 'text-$text-secondary text-$text-secondary',
             ]"
             @click.prevent="toggleExpansion"
           >
@@ -127,7 +127,7 @@ function toggleExpansion() {
         <!-- Expand/collapse button for long descriptions -->
         <button
           v-if="showExpandCollapse && description.length > expandCollapseThreshold"
-          class="mt-0.5 inline-flex items-center text-xs text-primary-500 dark:text-primary-600"
+          class="mt-0.5 inline-flex items-center text-xs text-primary-500 text-primary-600"
           @click.prevent="toggleExpansion"
         >
           <span>{{ isExpanded ? 'Show less' : 'Show more' }}</span>
@@ -145,7 +145,7 @@ function toggleExpansion() {
         <Input
           v-model="modelValue"
           type="text"
-          class="w-full border border-neutral-300 rounded bg-white px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+          class="w-full border border-$hairline border-$hairline rounded bg-$surface-1 bg-$surface-1 px-2 py-1 text-sm"
           :placeholder="customInputPlaceholder"
         />
       </div>
@@ -161,7 +161,7 @@ function toggleExpansion() {
 
 .form_radio-card-detail::before {
   pointer-events: none;
-  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 dark:from-primary-400/0 dark:to-primary-400/0';
+  --at-apply: 'bg-gradient-to-r from-primary-500/0 to-primary-500/0 from-primary-400/0 to-primary-400/0';
   content: '';
   position: absolute;
   inset: 0;
@@ -175,13 +175,13 @@ function toggleExpansion() {
 
 .form_radio-card-detail:hover::before,
 .form_radio-card-detail._hover::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 1;
 }
 
 .form_radio-card-detail-active::before {
-  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent dark:from-primary-400/20 dark:via-primary-400/10 dark:to-transparent';
+  --at-apply: 'bg-gradient-to-r from-primary-500/20 via-primary-500/10 to-transparent from-primary-400/20 via-primary-400/10 to-transparent';
   width: 85%;
   opacity: 0.5;
 }

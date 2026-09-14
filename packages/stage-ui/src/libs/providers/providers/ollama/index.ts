@@ -173,7 +173,7 @@ export const providerOllama = defineProvider<OllamaConfig>({
         intervalMs: 15_000,
       },
       connectivityFailureReason: ({ errorMessage }) =>
-        `Failed to reach Ollama server, error: ${errorMessage} occurred.\n\nIf you are using Ollama locally, this is likely the CORS (Cross-Origin Resource Sharing) security issue, where you will need to set OLLAMA_ORIGINS=* or OLLAMA_ORIGINS=https://aijade.moeru.ai,http://localhost environment variable before launching Ollama server to make this work.`,
+        `Failed to reach Ollama server, error: ${errorMessage} occurred.\n\nIf you are using Ollama locally, this is likely the CORS (Cross-Origin Resource Sharing) security issue, where you will need to set OLLAMA_ORIGINS=* or OLLAMA_ORIGINS=https://aijade.ai,http://localhost environment variable before launching Ollama server to make this work.`,
     })!.validateProvider,
   },
   business: ({ t }) => ({

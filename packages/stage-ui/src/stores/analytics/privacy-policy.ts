@@ -14,5 +14,5 @@ export function getAnalyticsPrivacyPolicyUrl(locale?: string): string {
     ? normalizedLocale
     : 'en'
 
-  return `https://aijade.moeru.ai/docs/${docsLocale}/about/privacy`
+  return `https://aijade.ai/docs/${docsLocale}/about/privacy`
 }

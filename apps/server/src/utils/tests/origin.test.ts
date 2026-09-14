@@ -30,12 +30,12 @@ describe('origin utils', () => {
   it('prefers a trusted referer origin', () => {
     const request = new Request('http://localhost/api/v1/stripe/checkout', {
       headers: {
-        referer: 'https://aijade.moeru.ai/settings/flux',
+        referer: 'https://aijade.ai/settings/flux',
         origin: 'https://example.com',
       },
     })
 
-    expect(resolveTrustedRequestOrigin(request)).toBe('https://aijade.moeru.ai')
+    expect(resolveTrustedRequestOrigin(request)).toBe('https://aijade.ai')
   })
 
   it('falls back to a trusted origin header when referer is missing', () => {
@@ -56,10 +56,10 @@ describe('origin utils', () => {
     })
 
     expect(getAuthTrustedOrigins({
-      API_SERVER_URL: 'https://api.aijade.moeru.ai',
+      API_SERVER_URL: 'https://api.aijade.ai',
       ADDITIONAL_TRUSTED_ORIGINS: [],
     }, request)).toEqual([
-      'https://api.aijade.moeru.ai',
+      'https://api.aijade.ai',
       'http://localhost:*',
       'http://127.0.0.1:*',
       'http://localhost:5173',
@@ -67,7 +67,7 @@ describe('origin utils', () => {
   })
 
   describe('resolveCheckoutRedirectBase', () => {
-    const fallback = 'https://aijade.moeru.ai'
+    const fallback = 'https://aijade.ai'
 
     it('prefers the trusted request origin over the fallback', () => {
       const request = new Request('http://localhost/api/v1/stripe/checkout', {
@@ -111,10 +111,10 @@ describe('origin utils', () => {
 
   it('includes ADDITIONAL_TRUSTED_ORIGINS in Better Auth trustedOrigins list', () => {
     expect(getAuthTrustedOrigins({
-      API_SERVER_URL: 'https://api.aijade.moeru.ai',
+      API_SERVER_URL: 'https://api.aijade.ai',
       ADDITIONAL_TRUSTED_ORIGINS: ['https://10.0.0.129:5273'],
     })).toEqual([
-      'https://api.aijade.moeru.ai',
+      'https://api.aijade.ai',
       'https://10.0.0.129:5273',
       'http://localhost:*',
       'http://127.0.0.1:*',

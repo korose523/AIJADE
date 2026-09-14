@@ -45,7 +45,7 @@ defineExpose({
         <div class="h-full w-full bg-transparent" />
       </template>
       <template v-else>
-        <div class="h-full w-full bg-neutral-950" />
+        <div class="h-full w-full bg-$surface-1" />
       </template>
     </div>
 

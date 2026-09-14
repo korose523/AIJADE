@@ -38,6 +38,7 @@ import {
   PREREGISTRATION,
   runExperiment,
 } from './harness'
+import { minDetectableEffectProportion, powerForEffectProportion } from './stats'
 
 interface CliConfig {
   trials: number
@@ -299,6 +300,24 @@ function printSummary(
   lines.push(' Declared power (skill-level, α=0.05, 80% power, p0=0.5)')
   lines.push(`   minDetectableEffectAt80 = ${result.power.minDetectableEffectAt80.toFixed(2)} pp`
     + `  nSkillsPerCell=${result.power.nSkillsPerCell}`)
+  lines.push(`   achieved power: Δ=10pp -> ${result.power.powerAtDelta10pp.toFixed(2)}`
+    + `   Δ=5pp -> ${result.power.powerAtDelta5pp.toFixed(2)}`)
+  lines.push('   Reference grid (derived, not hand-typed — see stats.powerForEffectProportion):')
+  for (const n of [240, 360]) {
+    const mde = minDetectableEffectProportion(n) * 100
+    const p10 = powerForEffectProportion(0.10, n)
+    const p5 = powerForEffectProportion(0.05, n)
+    lines.push(`     n/cell=${n}: MDE=${mde.toFixed(1)}pp  power(Δ10pp)=${p10.toFixed(2)}`
+      + `  power(Δ5pp)=${p5.toFixed(2)}`)
+  }
+  lines.push('   CONCLUSION: at the registered scale the design can only resolve effects of ~>=10pp.')
+
+  if (result.preregistrationDeviation.length > 0) {
+    lines.push('')
+    lines.push(' ⚠ PREREGISTRATION DEVIATION (selective-inference guard, B3):')
+    for (const d of result.preregistrationDeviation)
+      lines.push(`     - ${d}`)
+  }
 
   lines.push('════════════════════════════════════════════════════════════════════')
   lines.push(` artifacts: ${resolve(outDir)}/{trials.jsonl,summary.json}`)
@@ -383,9 +402,17 @@ async function main(): Promise<void> {
     multiplicity: result.multiplicity,
     factorialInteraction: result.factorialInteraction,
     chiSquare: result.chiSquare,
+    chiSquareSelfVerification: result.chiSquareSelfVerification,
     chiSquareExecutionLevel: result.chiSquareExecutionLevel,
     mcnemarEnvFeedback: result.mcnemarEnvFeedback,
     power: result.power,
+    powerReference: [240, 360].map(n => ({
+      nPerCell: n,
+      minDetectableEffectAt80pp: Number((minDetectableEffectProportion(n) * 100).toFixed(2)),
+      powerAtDelta10pp: Number(powerForEffectProportion(0.10, n).toFixed(4)),
+      powerAtDelta5pp: Number(powerForEffectProportion(0.05, n).toFixed(4)),
+    })),
+    preregistrationDeviation: result.preregistrationDeviation,
   }
   writeFileSync(resolve(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`)
 

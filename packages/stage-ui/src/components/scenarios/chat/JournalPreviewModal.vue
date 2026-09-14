@@ -14,33 +14,33 @@ const { closePreview, downloadImage } = store
     <Transition name="modal-fade">
       <div
         v-if="previewModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-$scrim backdrop-blur-sm"
         @click.self="closePreview"
       >
         <div
           :class="[
             'relative mx-4 max-h-[80vh] max-w-md w-full overflow-hidden rounded-2xl',
-            'bg-white shadow-2xl dark:bg-neutral-900',
+            'bg-$surface-1 shadow-2xl bg-$surface-1',
             'animate-scale-in',
           ]"
         >
           <!-- Header -->
-          <div :class="['flex items-center justify-between border-b border-neutral-200/50 px-4 py-3', 'dark:border-neutral-700/50']">
-            <div :class="['flex items-center gap-2 text-sm font-bold', 'text-neutral-800 dark:text-neutral-100']">
+          <div :class="['flex items-center justify-between border-b border-$hairline px-4 py-3', 'border-$hairline']">
+            <div :class="['flex items-center gap-2 text-sm font-bold', 'text-$text-primary text-$text-primary']">
               <div :class="previewModal.type === 'text' ? 'i-solar:notebook-bold-duotone' : 'i-solar:gallery-bold-duotone'" />
               <span class="truncate">{{ previewModal.title }}</span>
             </div>
             <div class="flex items-center gap-1">
               <button
                 v-if="previewModal.type === 'image'"
-                :class="['rounded-full p-1 text-neutral-400 transition-colors', 'hover:bg-neutral-100 hover:text-neutral-600', 'dark:hover:bg-neutral-800 dark:hover:text-neutral-200']"
+                :class="['rounded-full p-1 text-$text-muted transition-colors', 'hover:bg-$surface-1 hover:text-$text-secondary', 'hover:bg-$surface-2 hover:text-$text-primary']"
                 title="Download image"
                 @click="downloadImage(previewModal.content, previewModal.title)"
               >
                 <div i-solar:download-minimalistic-bold-duotone class="text-lg" />
               </button>
               <button
-                :class="['rounded-full p-1 text-neutral-400 transition-colors', 'hover:bg-neutral-100 hover:text-neutral-600', 'dark:hover:bg-neutral-800 dark:hover:text-neutral-200']"
+                :class="['rounded-full p-1 text-$text-muted transition-colors', 'hover:bg-$surface-1 hover:text-$text-secondary', 'hover:bg-$surface-2 hover:text-$text-primary']"
                 @click="closePreview"
               >
                 <div i-solar:close-circle-bold-duotone class="text-lg" />
@@ -52,7 +52,7 @@ const { closePreview, downloadImage } = store
           <div v-if="previewModal.type === 'text'" class="max-h-[60vh] overflow-y-auto px-4 py-3">
             <MarkdownRenderer
               :content="previewModal.content"
-              class="max-w-none prose prose-sm dark:prose-invert"
+              class="max-w-none prose prose-sm prose-invert"
             />
           </div>
           <div v-else class="flex items-center justify-center p-2">

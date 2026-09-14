@@ -412,11 +412,11 @@ async function handleEmailSignUp(event: Event) {
 
     <div :class="['mt-8 text-center text-xs text-gray-400']">
       {{ t('server.auth.signIn.footer.prefix') }}
-      <a href="https://aijade.moeru.ai/docs/en/about/terms" :class="['underline']">
+      <a href="https://aijade.ai/docs/en/about/terms" :class="['underline']">
         {{ t('server.auth.signIn.footer.terms') }}
       </a>
       {{ t('server.auth.signIn.footer.and') }}
-      <a href="https://aijade.moeru.ai/docs/en/about/privacy" :class="['underline']">
+      <a href="https://aijade.ai/docs/en/about/privacy" :class="['underline']">
         {{ t('server.auth.signIn.footer.privacy') }}
       </a>.
     </div>

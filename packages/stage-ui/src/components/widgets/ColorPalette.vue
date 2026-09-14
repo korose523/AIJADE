@@ -27,9 +27,9 @@ const settings = useSettings()
           @click="settings.applyPrimaryColorFrom(hex)"
         />
         <TooltipPortal>
-          <TooltipContent bg="white dark:neutral-800" rounded-lg px-3 py-1.5 text-sm shadow-md>
+          <TooltipContent bg="$surface-1" rounded-lg px-3 py-1.5 text-sm shadow-md>
             {{ name }}
-            <TooltipArrow fill-white dark:fill-neutral-800 />
+            <TooltipArrow fill="$text-primary" />
           </TooltipContent>
         </TooltipPortal>
       </TooltipRoot>

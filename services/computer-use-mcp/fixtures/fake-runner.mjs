@@ -1,7 +1,7 @@
 import { env, exit, stdin, stdout } from 'node:process'
 import { createInterface } from 'node:readline'
 
-// TODO(@nekomeowww): try now to directly embed binary / base64, even tests. `xz` warned us.
+// TODO(AIJADE): try now to directly embed binary / base64, even tests. `xz` warned us.
 const tinyPngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wn8vO0AAAAASUVORK5CYII='
 
 const state = {

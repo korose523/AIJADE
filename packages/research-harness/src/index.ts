@@ -49,6 +49,7 @@ export {
   oddsRatio,
   pooledDifferenceInDifferences,
   pooledPrecision,
+  powerForEffectProportion,
   riskDifference,
   riskDifferenceCI,
   twoSidedNormalP,

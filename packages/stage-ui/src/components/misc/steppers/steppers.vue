@@ -50,9 +50,9 @@ function goToStep(index: number) {
   <div class="w-full font-sans">
     <div
       class="flex flex-col gap-1 overflow-hidden rounded-xl px-4 py-3"
-      bg="white/70 dark:neutral-900/70"
-      border="neutral-100 dark:neutral-800/25 hover:primary-500/30 dark:hover:primary-400/30 solid 2"
-      drop-shadow="none hover:[0px_4px_4px_rgba(220,220,220,0.4)] active:[0px_0px_0px_rgba(220,220,220,0.25)] dark:hover:none"
+      bg="white/70 neutral-900/70"
+      border="neutral-100 neutral-800/25 hover:primary-500/30 hover:primary-400/30 solid 2"
+      drop-shadow="none hover:[0px_4px_4px_rgba(220,220,220,0.4)] active:[0px_0px_0px_rgba(220,220,220,0.25)] hover:none"
       transition="all ease-in-out duration-400"
     >
       <!-- Header Slot -->
@@ -60,7 +60,7 @@ function goToStep(index: number) {
         <slot name="header" />
       </div>
       <div v-else>
-        <p class="text-xs text-neutral-500/50 dark:text-neutral-400">
+        <p class="text-xs text-$text-muted text-$text-secondary">
           Step {{ value + 1 }} of {{ steps.length }}
         </p>
       </div>
@@ -78,14 +78,14 @@ function goToStep(index: number) {
           <slot name="step" :step="step" :index="index" :is-active="index === value">
             <!-- Default step rendering -->
             <div class="flex flex-col gap-1">
-              <p v-if="typeof step === 'object' && step !== null && 'title' in step" class="mb-4 pb-0 pt-0 text-xl text-primary-600 font-normal dark:text-primary-300">
+              <p v-if="typeof step === 'object' && step !== null && 'title' in step" class="mb-4 pb-0 pt-0 text-xl text-primary-300 text-primary-600 font-normal">
                 {{ step.title }}
               </p>
-              <p v-if="typeof step === 'object' && step !== null && 'description' in step" class="text-sm text-neutral-600 dark:text-neutral-300">
+              <p v-if="typeof step === 'object' && step !== null && 'description' in step" class="text-sm text-$text-primary text-$text-secondary">
                 {{ step.description }}
               </p>
               <!-- Fallback if step is not an object with title/description -->
-              <p v-else class="text-sm text-neutral-600 dark:text-neutral-300">
+              <p v-else class="text-sm text-$text-primary text-$text-secondary">
                 {{ step }}
               </p>
             </div>
@@ -109,8 +109,8 @@ function goToStep(index: number) {
               <div
                 class="size-2 cursor-pointer rounded-full transition-all duration-200"
                 :class="[
-                  index === value ? 'bg-primary-500 scale-125' : 'bg-neutral-300 dark:bg-neutral-600 hover:bg-neutral-400',
-                  index < value ? 'bg-primary-300 dark:bg-primary-700 opacity-70' : '',
+                  index === value ? 'bg-primary-500 scale-125' : 'bg-$surface-1 bg-$surface-1 hover:bg-$surface-1',
+                  index < value ? 'bg-primary-300 bg-primary-700 opacity-70' : '',
                 ]"
                 :title="`Step ${index + 1}${typeof step === 'object' && step !== null && 'title' in step ? `: ${step.title}` : ''}`"
                 @click="goToStep(index)"
@@ -124,7 +124,7 @@ function goToStep(index: number) {
           <slot name="back-button" :back="back" :is-disabled="isFirstStep">
             <button
               :disabled="isFirstStep"
-              class="rounded bg-neutral-200 px-3 py-1 text-xs text-neutral-700 disabled:cursor-not-allowed dark:bg-neutral-700 hover:bg-neutral-300 dark:text-neutral-200 disabled:opacity-50 dark:hover:bg-neutral-600"
+              class="rounded bg-$surface-1 bg-$surface-3 px-3 py-1 text-xs text-$text-primary text-$text-primary disabled:cursor-not-allowed hover:bg-$surface-1 hover:bg-$surface-1 disabled:opacity-50"
               @click="back"
             >
               Back
@@ -133,7 +133,7 @@ function goToStep(index: number) {
           <slot name="next-button" :next="next" :is-disabled="false" :is-last="isLastStep">
             <!-- Default next/finish button -->
             <button
-              class="rounded bg-primary-500 px-3 py-1 text-xs text-white disabled:cursor-not-allowed hover:bg-primary-600 disabled:opacity-50"
+              class="rounded bg-primary-500 px-3 py-1 text-xs text-$text-primary disabled:cursor-not-allowed hover:bg-primary-600 disabled:opacity-50"
               @click="next"
             >
               {{ isLastStep ? 'Finish' : 'Next' }}

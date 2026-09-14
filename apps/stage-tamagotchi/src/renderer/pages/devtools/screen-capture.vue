@@ -125,7 +125,7 @@ async function refetchSources() {
 
     sources.value = nextSources.map(source => ({
       ...source,
-      // NOTICE(@nekomeowww): In probability of 9/10, the window thumbnail is purely empty or black, sources printed and
+      // NOTICE(AIJADE): In probability of 9/10, the window thumbnail is purely empty or black, sources printed and
       // nothing is returned from the desktopCapturer API.
       // NOTICE(@sumimakito): Not only thumbnail is empty, the appIcon could be empty as well with nothing returned.
       // REVIEW(@sumimakito): This has nothing to do with our side, probably related to a Electron bug, you can

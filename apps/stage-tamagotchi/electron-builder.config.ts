@@ -111,7 +111,7 @@ export default {
   extraMetadata: {
     name: 'ai.moeru.aijade',
     main: 'out/main/index.js',
-    homepage: 'https://aijade.moeru.ai/docs/',
+    homepage: 'https://aijade.ai/docs/',
     repository: 'https://github.com/moeru-ai/airi',
     license: 'MIT',
   },

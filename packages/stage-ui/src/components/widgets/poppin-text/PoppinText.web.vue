@@ -153,7 +153,7 @@ watch([targets, () => props.animator], ([targets, animator]) => {
       v-for="target in targets"
       :key="target.id"
       ref="elements"
-      class="inline-block whitespace-pre-wrap color-primary-400 dark:color-primary-100"
+      class="inline-block whitespace-pre-wrap color-primary-100 color-primary-400"
       :class="[
         ...(
           typeof props.textClass === 'string'

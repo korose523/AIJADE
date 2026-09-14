@@ -242,14 +242,14 @@ const dataAreaPath = computed(() => {
       <div class="text-sm font-medium">
         {{ title }}
       </div>
-      <div class="text-xs text-neutral-500">
+      <div class="text-xs text-$text-secondary">
         {{ subtitle }}
       </div>
     </div>
 
     <!-- Chart Visualization -->
     <div
-      class="relative overflow-hidden border border-neutral-200 rounded-lg from-neutral-50 to-neutral-100 bg-gradient-to-b dark:border-neutral-800 dark:from-neutral-800 dark:to-neutral-900"
+      class="relative overflow-hidden border border-$hairline border-$hairline rounded-lg from-$surface-1 from-$surface-3 to-$surface-1 to-$surface-3 bg-gradient-to-b"
       :style="{ height: `${chartHeight}px` }"
     >
       <svg class="h-full w-full">
@@ -330,10 +330,10 @@ const dataAreaPath = computed(() => {
       <!-- Floating current value -->
       <div
         v-if="showCurrentValue"
-        class="absolute right-2 top-2 border border-neutral-200 rounded-md bg-white px-2 py-1 shadow-sm transition-all duration-200 dark:border-neutral-700 dark:bg-neutral-800"
-        :class="isActive ? `bg-primary-50 dark:bg-primary-900 border-primary-200 dark:border-primary-800` : ''"
+        class="absolute right-2 top-2 border border-$hairline border-$hairline rounded-md bg-$surface-1 bg-$surface-2 px-2 py-1 shadow-sm transition-all duration-200"
+        :class="isActive ? `bg-primary-50 bg-primary-900 border-primary-200 border-primary-800` : ''"
       >
-        <div class="text-xs font-medium" :class="isActive ? 'text-primary-700 dark:text-primary-300' : 'text-neutral-600 dark:text-neutral-400'">
+        <div class="text-xs font-medium" :class="isActive ? 'text-primary-700 text-primary-300' : 'text-$text-secondary text-$text-muted'">
           {{ formatValue ? formatValue(currentValue) : `${(currentValue * 100).toFixed(precision)}${unit}` }}
         </div>
       </div>
@@ -342,16 +342,16 @@ const dataAreaPath = computed(() => {
       <Transition name="fade">
         <div
           v-if="isActive && showActiveIndicator"
-          class="absolute left-2 top-2 flex items-center gap-1.5 border border-primary-200 rounded-md bg-primary-50 px-2 py-1 dark:border-primary-800 dark:bg-primary-900"
+          class="absolute left-2 top-2 flex items-center gap-1.5 border border-primary-200 border-primary-800 rounded-md bg-primary-50 bg-primary-900 px-2 py-1"
         >
           <div class="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-500" />
-          <span class="text-xs text-primary-700 font-medium dark:text-primary-300">{{ activeLabel }}</span>
+          <span class="text-xs text-primary-300 text-primary-700 font-medium">{{ activeLabel }}</span>
         </div>
       </Transition>
     </div>
 
     <!-- Legend -->
-    <div v-if="showLegend" class="flex flex-wrap items-center justify-between text-xs text-neutral-500">
+    <div v-if="showLegend" class="flex flex-wrap items-center justify-between text-xs text-$text-secondary">
       <div class="flex items-center gap-3">
         <span class="flex items-center gap-1 text-nowrap">
           <div class="h-2 w-2 rounded-full" :style="{ backgroundColor: activeColor }" />

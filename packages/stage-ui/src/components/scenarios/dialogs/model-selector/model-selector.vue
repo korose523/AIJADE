@@ -200,7 +200,7 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
       <div>
         <DropdownMenuRoot>
           <DropdownMenuTrigger
-            bg="neutral-400/20 hover:neutral-400/45 active:neutral-400/60 dark:neutral-700/50 hover:dark:neutral-700/65 active:dark:neutral-700/90"
+            bg="$surface-1"
             flex items-center justify-center gap-1 rounded-lg px-2 py-1 backdrop-blur-sm
             transition="colors duration-200 ease-in-out"
             aria-label="Options for Display Models"
@@ -211,7 +211,7 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
           <DropdownMenuPortal>
             <DropdownMenuContent
               class="will-change-[opacity,transform] z-10000 max-w-45 rounded-lg p-0.5 shadow-md outline-none data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade"
-              bg="neutral-100/50 dark:neutral-950/50"
+              bg="$surface-1"
               transition="colors duration-200 ease-in-out"
               backdrop-blur-sm
               align="end"
@@ -222,8 +222,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 :class="[
                   'data-[disabled]:text-mauve8 relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 leading-none outline-none data-[disabled]:pointer-events-none',
                   'text-base sm:text-sm',
-                  'data-[highlighted]:bg-primary-300/20 dark:data-[highlighted]:bg-primary-100/20',
-                  'data-[highlighted]:text-primary-400 dark:data-[highlighted]:text-primary-200',
+                  'data-[highlighted]:bg-primary-300/20 data-[highlighted]:bg-primary-100/20',
+                  'data-[highlighted]:text-primary-400 data-[highlighted]:text-primary-200',
                 ]"
                 transition="colors duration-200 ease-in-out"
                 @click="live2dDialog.open()"
@@ -234,8 +234,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 :class="[
                   'data-[disabled]:text-mauve8 relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 leading-none outline-none data-[disabled]:pointer-events-none',
                   'text-base sm:text-sm',
-                  'data-[highlighted]:bg-primary-300/20 dark:data-[highlighted]:bg-primary-100/20',
-                  'data-[highlighted]:text-primary-400 dark:data-[highlighted]:text-primary-200',
+                  'data-[highlighted]:bg-primary-300/20 data-[highlighted]:bg-primary-100/20',
+                  'data-[highlighted]:text-primary-400 data-[highlighted]:text-primary-200',
                 ]"
                 transition="colors duration-200 ease-in-out" @click="vrmDialog.open()"
               >
@@ -245,8 +245,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 :class="[
                   'data-[disabled]:text-mauve8 relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 leading-none outline-none data-[disabled]:pointer-events-none',
                   'text-base sm:text-sm',
-                  'data-[highlighted]:bg-primary-300/20 dark:data-[highlighted]:bg-primary-100/20',
-                  'data-[highlighted]:text-primary-400 dark:data-[highlighted]:text-primary-200',
+                  'data-[highlighted]:bg-primary-300/20 data-[highlighted]:bg-primary-100/20',
+                  'data-[highlighted]:text-primary-400 data-[highlighted]:text-primary-200',
                 ]"
                 transition="colors duration-200 ease-in-out" @click="glbDialog.open()"
               >
@@ -256,8 +256,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 :class="[
                   'data-[disabled]:text-mauve8 relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 leading-none outline-none data-[disabled]:pointer-events-none',
                   'text-base sm:text-sm',
-                  'data-[highlighted]:bg-primary-300/20 dark:data-[highlighted]:bg-primary-100/20',
-                  'data-[highlighted]:text-primary-400 dark:data-[highlighted]:text-primary-200',
+                  'data-[highlighted]:bg-primary-300/20 data-[highlighted]:bg-primary-100/20',
+                  'data-[highlighted]:text-primary-400 data-[highlighted]:text-primary-200',
                 ]"
                 transition="colors duration-200 ease-in-out" @click="spineDialog.open()"
               >
@@ -267,8 +267,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 :class="[
                   'data-[disabled]:text-mauve8 relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 leading-none outline-none data-[disabled]:pointer-events-none',
                   'text-base sm:text-sm',
-                  'data-[highlighted]:bg-primary-300/20 dark:data-[highlighted]:bg-primary-100/20',
-                  'data-[highlighted]:text-primary-400 dark:data-[highlighted]:text-primary-200',
+                  'data-[highlighted]:bg-primary-300/20 data-[highlighted]:bg-primary-100/20',
+                  'data-[highlighted]:text-primary-400 data-[highlighted]:text-primary-200',
                 ]"
                 transition="colors duration-200 ease-in-out" @click="inochi2dDialog.open()"
               >
@@ -278,8 +278,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 :class="[
                   'data-[disabled]:text-mauve8 relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 leading-none outline-none data-[disabled]:pointer-events-none',
                   'text-base sm:text-sm',
-                  'data-[highlighted]:bg-primary-300/20 dark:data-[highlighted]:bg-primary-100/20',
-                  'data-[highlighted]:text-primary-400 dark:data-[highlighted]:text-primary-200',
+                  'data-[highlighted]:bg-primary-300/20 data-[highlighted]:bg-primary-100/20',
+                  'data-[highlighted]:text-primary-400 data-[highlighted]:text-primary-200',
                 ]"
                 transition="colors duration-200 ease-in-out" @click="pmxDialog.open()"
               >
@@ -307,9 +307,9 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
             <DropdownMenuRoot>
               <DropdownMenuTrigger
                 :class="[
-                  'bg-neutral-900/20 hover:bg-neutral-900/45 active:bg-neutral-900/60 dark:bg-neutral-950/50 hover:dark:bg-neutral-900/65 active:dark:bg-neutral-900/90',
+                  'bg-$surface-1 hover:bg-$surface-1 active:bg-$surface-1 bg-$surface-1 hover:bg-$surface-1 active:bg-$surface-1',
                 ]"
-                text="white"
+                text="$text-primary"
                 h-7 w-7 flex items-center justify-center rounded-lg backdrop-blur-sm
                 transition="colors duration-200 ease-in-out"
                 aria-label="Options for Display Models"
@@ -319,8 +319,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
               <DropdownMenuPortal>
                 <DropdownMenuContent
                   :class="[
-                    'will-change-[opacity,transform] z-10000 max-w-45 rounded-lg p-0.5 text-white shadow-md outline-none data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade dark:text-black',
-                    'bg-neutral-900/30 dark:bg-neutral-950/50',
+                    'will-change-[opacity,transform] z-10000 max-w-45 rounded-lg p-0.5 text-$text-primary shadow-md outline-none data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade text-$text-primary',
+                    'bg-$surface-1 bg-$surface-1',
                     'backdrop-blur-sm',
                   ]"
                   transition="colors duration-200 ease-in-out"
@@ -331,8 +331,8 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                   <DropdownMenuItem
                     :class="[
                       'relative flex cursor-pointer select-none items-center rounded-md px-3 py-2 text-base leading-none outline-none data-[disabled]:pointer-events-none sm:text-sm',
-                      'data-[highlighted]:bg-red-900/20 dark:data-[highlighted]:bg-red-100/20',
-                      'text-white dark:text-white data-[highlighted]:text-red-200 dark:data-[highlighted]:text-red-200',
+                      'data-[highlighted]:bg-red-900/20 data-[highlighted]:bg-red-100/20',
+                      'text-$text-primary text-$text-primary data-[highlighted]:text-red-200 data-[highlighted]:text-red-200',
                     ]"
                     transition="colors duration-200 ease-in-out"
                   >
@@ -359,7 +359,7 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 highlightDisplayModelCard && highlightDisplayModelCard === model.id ? 'ring-3 ring-primary-400' : 'ring-0 ring-transparent',
               ]"
             >
-            <div v-else bg="neutral-100 dark:neutral-900" relative h-full w-full flex flex-col items-center justify-center gap-2 overflow-hidden rounded-xl :class="[highlightDisplayModelCard && highlightDisplayModelCard === model.id ? 'ring-3 ring-primary-400' : 'ring-0 ring-transparent']" transition="all duration-200 ease-in-out">
+            <div v-else bg="$surface-1" relative h-full w-full flex flex-col items-center justify-center gap-2 overflow-hidden rounded-xl :class="[highlightDisplayModelCard && highlightDisplayModelCard === model.id ? 'ring-3 ring-primary-400' : 'ring-0 ring-transparent']" transition="all duration-200 ease-in-out">
               <div i-solar:question-square-bold-duotone text-4xl opacity-75 />
               <div translate-y="100%" absolute top-0 flex flex-col translate-x--7 rotate-45 scale-250 gap-0 opacity-5>
                 <div text="sm sm:sm" translate-x-7 translate-y--2 text-nowrap>
@@ -383,9 +383,9 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                 class="flex gap-2"
                 auto-resize
               >
-                <EditableArea class="w-[calc(100%-8px-1rem)] dark:text-white">
+                <EditableArea class="w-[calc(100%-8px-1rem)] text-$text-primary">
                   <EditablePreview class="line-clamp-1 w-[calc(100%-8px)] overflow-hidden text-ellipsis" />
-                  <EditableInput class="w-[calc(100%-8px)]! placeholder:text-neutral-700 dark:placeholder:text-neutral-600" />
+                  <EditableInput class="w-[calc(100%-8px)]! placeholder:text-$text-primary placeholder:text-$text-secondary" />
                 </EditableArea>
                 <EditableEditTrigger v-if="!isEditing">
                   <div i-solar:pen-2-line-duotone opacity-50 />
@@ -396,7 +396,7 @@ inochi2dDialog.onChange(handleAddInochi2DModel)
                   </EditableSubmitTrigger>
                 </div>
               </EditableRoot>
-              <div flex items-center gap-1 text="neutral-400 dark:neutral-600">
+              <div flex items-center gap-1 text="$text-muted">
                 <div i-solar:tag-horizontal-bold />
                 <div>{{ mapFormatRenderer[model.format] }}</div>
               </div>

@@ -61,13 +61,13 @@ const rootStyle = computed(() => ({
       'is-interacting',
       'relative', 'flex', 'items-stretch', 'rounded-lg',
       'overflow-hidden',
-      'bg-neutral-400/6 dark:bg-neutral-950/70',
+      'bg-$surface-1 bg-$surface-1',
       'transition-[border-color,box-shadow,opacity] duration-200 ease-out',
       isDisabled
         ? ['cursor-not-allowed', 'opacity-60']
         : ['shadow-[0_14px_50px_-32px_rgba(0,0,0,0.55)]', 'backdrop-blur-sm'],
       // before
-      'before:bg-primary-300/50', 'dark:before:bg-primary-400/50',
+      'before:bg-primary-300/50', 'before:bg-primary-400/50',
       'before:rounded-md', 'sm:before:rounded-lg',
       'before:absolute', 'before:z-0', 'before:content-empty',
       'before:transition-[left,width,opacity,background-color]', 'before:duration-200', 'before:ease',
@@ -90,7 +90,7 @@ const rootStyle = computed(() => ({
         'select-tab__item',
         'relative', 'z-1',
         'flex', 'flex-1', 'items-center', 'justify-center', 'gap-2',
-        'text-center', 'text-neutral-700', 'dark:text-neutral-200', 'font-medium',
+        'text-center', 'text-$text-primary', 'text-$text-primary', 'font-medium',
         'transition-[color,background-color,border-color,transform]', 'duration-200', 'ease-out',
         'focus-visible:border-none', 'focus-visible:outline-none',
         sizeClasses,
@@ -98,9 +98,9 @@ const rootStyle = computed(() => ({
           ? 'pointer-events-none'
           : 'cursor-pointer',
         // checked
-        'data-[state=checked]:text-primary-950', 'dark:data-[state=checked]:text-primary-50',
+        'data-[state=checked]:text-primary-950', 'data-[state=checked]:text-primary-50',
         // unchecked
-        'data-[state=unchecked]:hover:bg-primary-300/20', 'dark:data-[state=unchecked]:hover:bg-primary-400/20', 'data-[state=unchecked]:rounded-lg',
+        'data-[state=unchecked]:hover:bg-primary-300/20', 'data-[state=unchecked]:hover:bg-primary-400/20', 'data-[state=unchecked]:rounded-lg',
       ]"
     >
       <span v-if="option.icon" :class="['size-4 shrink-0 text-current', option.icon]" />

@@ -77,9 +77,9 @@ stdenvNoCC.mkDerivation (final: {
       realtime voice chat, playing Minecraft and Factorio. It can be run in browser or on desktop.
       This is the desktop version.
     '';
-    homepage = "https://github.com/moeru-ai/airi";
-    changelog = "https://github.com/moeru-ai/airi/releases/tag/v${final.version}";
-    # While airi itself is licensed under MIT, it uses the nonfree Cubism SDK. Whether it's
+    homepage = "https://github.com/korose523/AIJADE";
+    changelog = "https://github.com/korose523/AIJADE/releases/tag/v${final.version}";
+    # While AIJADE itself is licensed under MIT, it uses the nonfree Cubism SDK. Whether it's
     # redistributable remains a question, so we say it's not.
     license = lib.licenses.unfree;
     platforms = [

@@ -91,18 +91,18 @@ function toCssSize(value?: string | number): string | undefined {
     <ComboboxAnchor
       :class="[
         'w-full inline-flex items-center justify-between rounded-xl border px-3 leading-none h-9 gap-[5px] outline-none',
-        'text-sm text-neutral-700 dark:text-neutral-200 data-[placeholder]:text-neutral-200',
-        'bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-700',
-        'border-neutral-200 dark:border-neutral-800 border-solid border-2 focus:border-primary-300 dark:focus:border-primary-400/50',
-        'shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-black',
+        'text-sm text-[var(--text-primary)] data-[placeholder]:text-[var(--text-muted)]',
+        'bg-[var(--surface-1)] hover:bg-[var(--surface-2)] hover:bg-[var(--surface-3)]',
+        'border border-solid border-[var(--hairline)] focus:border-[var(--accent)]',
+        'shadow-[var(--shadow-panel)] focus:shadow-[0_0_0_2px_var(--accent)]',
         'transition-colors duration-200 ease-in-out',
-        props.disabled ? 'cursor-not-allowed bg-neutral-100 opacity-60 dark:bg-neutral-900' : 'cursor-pointer',
+        props.disabled ? 'cursor-not-allowed bg-[var(--surface-3)] opacity-60' : 'cursor-pointer',
       ]"
     >
       <ComboboxInput
         :class="[
-          '!bg-transparent outline-none h-full selection:bg-grass5 placeholder-stone-400 w-full',
-          'text-neutral-700 dark:text-neutral-200',
+          '!bg-transparent outline-none h-full selection:bg-grass5 placeholder:text-[var(--text-muted)] w-full',
+          'text-[var(--text-primary)]',
           'transition-colors duration-200 ease-in-out',
         ]"
         :disabled="props.disabled"
@@ -114,7 +114,7 @@ function toCssSize(value?: string | number): string | undefined {
           i-solar:alt-arrow-down-linear
           :class="[
             'h-4 w-4',
-            'text-neutral-700 dark:text-neutral-200',
+            'text-[var(--text-secondary)]',
             'transition-colors duration-200 ease-in-out',
           ]"
         />
@@ -134,10 +134,10 @@ function toCssSize(value?: string | number): string | undefined {
           // Dialog/Drawer are not hidden behind the overlay or dismissed unexpectedly.
           // Read more at: https://github.com/moeru-ai/airi/issues/1136
           'z-[10010]',
-          'w-full overflow-hidden rounded-xl shadow-sm border will-change-[opacity,transform]',
+          'w-full overflow-hidden rounded-xl will-change-[opacity,transform]',
           'data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade',
-          'bg-white dark:bg-neutral-900',
-          'border-neutral-200 dark:border-neutral-800 border-solid border-2 focus:border-neutral-300 dark:focus:border-neutral-600',
+          'glass-panel',
+          'focus:border-[var(--accent)]',
         ]"
         :style="{
           width: toCssSize(props.contentWidth) ?? 'var(--reka-combobox-trigger-width)',
@@ -148,7 +148,7 @@ function toCssSize(value?: string | number): string | undefined {
           <ComboboxEmpty
             :class="[
               'font-medium py-2 px-2',
-              'text-xs text-neutral-700 dark:text-neutral-200',
+              'text-xs text-[var(--text-secondary)]',
               'transition-colors duration-200 ease-in-out',
             ]"
           >
@@ -162,14 +162,14 @@ function toCssSize(value?: string | number): string | undefined {
             <ComboboxGroup :class="['overflow-x-hidden']">
               <ComboboxSeparator
                 v-if="groupIndex !== 0"
-                :class="['m-[5px]', 'h-[1px]', 'bg-neutral-400']"
+                :class="['m-[5px]', 'h-[1px]', 'bg-[var(--hairline)]']"
               />
 
               <ComboboxLabel
                 v-if="group.groupLabel"
                 :class="[
                   'px-[25px] text-xs leading-[25px]',
-                  'text-neutral-500 dark:text-neutral-400',
+                  'text-[var(--text-muted)]',
                   'transition-colors duration-200 ease-in-out',
                 ]"
               >
@@ -184,8 +184,8 @@ function toCssSize(value?: string | number): string | undefined {
                 :disabled="option.disabled"
                 :class="[
                   'leading-normal rounded-lg grid grid-cols-[1rem_minmax(0,1fr)] items-center gap-2 min-h-8 px-2 relative select-none data-[disabled]:pointer-events-none data-[highlighted]:outline-none',
-                  'data-[highlighted]:bg-neutral-100 dark:data-[highlighted]:bg-neutral-800',
-                  'text-sm text-neutral-700 dark:text-neutral-200 data-[disabled]:text-neutral-400 dark:data-[disabled]:text-neutral-600 data-[highlighted]:text-grass1',
+                  'data-[highlighted]:bg-[var(--accent-soft)] data-[highlighted]:bg-[var(--accent-soft)]',
+                  'text-sm text-[var(--text-primary)] data-[disabled]:text-[var(--text-muted)] data-[disabled]:text-[var(--text-muted)] data-[highlighted]:text-[var(--accent-strong)]',
                   'transition-colors duration-200 ease-in-out',
                   option.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
                 ]"
@@ -233,7 +233,7 @@ function toCssSize(value?: string | number): string | undefined {
                         :class="[
                           'line-clamp-2',
                           'text-xs',
-                          'text-neutral-500 dark:text-neutral-400',
+                          'text-[var(--text-muted)]',
                         ]"
                       >
                         {{ option.description }}
