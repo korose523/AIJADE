@@ -11,9 +11,9 @@ const show = ref(false)
 const buildInfo = useBuildInfo()
 
 const aboutLinks = [
-  { label: 'Home', href: 'https://aijade.moeru.ai/docs/', icon: 'i-solar:home-smile-outline' },
-  { label: 'Documentations', href: 'https://aijade.moeru.ai/docs/en/docs/overview/', icon: 'i-solar:document-add-outline' },
-  { label: 'GitHub', href: 'https://github.com/moeru-ai/airi', icon: 'i-simple-icons:github' },
+  { label: 'Home', href: 'https://aijade.ai/docs/', icon: 'i-solar:home-smile-outline' },
+  { label: 'Documentations', href: 'https://aijade.ai/docs/en/docs/overview/', icon: 'i-solar:document-add-outline' },
+  { label: 'GitHub', href: 'https://github.com/korose523/AIJADE', icon: 'i-simple-icons:github' },
 ]
 
 const edition = isStageTamagotchi()

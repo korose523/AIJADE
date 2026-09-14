@@ -16,7 +16,7 @@ import ReleasesList from '../../../../.vitepress/components/ReleasesList.vue'
 
 <ReleasesList type="releases" :limit="5" />
 
-[GitHub で以前のすべてのリリースを見る →](https://github.com/moeru-ai/airi/releases)
+[GitHub で以前のすべてのリリースを見る →](https://github.com/korose523/AIJADE/releases)
 
 ## Nightly をダウンロード
 
@@ -30,4 +30,4 @@ Nightly ビルドは最新の `main` ブランチから生成されます。以�
 
 <ReleasesList type="nightly-builds" :limit="5" />
 
-[Nightly ビルドをダウンロード →](https://github.com/moeru-ai/airi/actions/workflows/release-tamagotchi.yml)
+[Nightly ビルドをダウンロード →](https://github.com/korose523/AIJADE/actions/workflows/release-tamagotchi.yml)

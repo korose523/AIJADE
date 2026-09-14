@@ -16,7 +16,7 @@ import ReleasesList from '../../../../.vitepress/components/ReleasesList.vue'
 
 <ReleasesList type="releases" :limit="5" />
 
-[在 GitHub 上查看所有版本 →](https://github.com/moeru-ai/airi/releases)
+[在 GitHub 上查看所有版本 →](https://github.com/korose523/AIJADE/releases)
 
 ## 下载 Nightly
 
@@ -30,4 +30,4 @@ Nightly 构建从最新的 `main` 分支生成。请从下方链接中选择最�
 
 <ReleasesList type="nightly-builds" :limit="5" />
 
-[下载 Nightly 构建 →](https://github.com/moeru-ai/airi/actions/workflows/release-tamagotchi.yml)
+[下载 Nightly 构建 →](https://github.com/korose523/AIJADE/actions/workflows/release-tamagotchi.yml)

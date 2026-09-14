@@ -54,7 +54,7 @@ Corresponding version: AIJADE-0.10.2
 <a id="chapter-1-installation"></a>
 ## Chapter 1 – Installation
 
-Go to the Project AIJADE GitHub homepage: [moeru-ai/airi](https://github.com/moeru-ai/airi)
+Go to the Project AIJADE GitHub homepage: [moeru-ai/airi](https://github.com/korose523/AIJADE)
 
 Follow these steps:
 

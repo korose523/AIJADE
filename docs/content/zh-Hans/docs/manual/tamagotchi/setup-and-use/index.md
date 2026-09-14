@@ -57,7 +57,7 @@ publishedAtOverride: 2026 年 5 月 11 日 - 下午（北京时间）
 <a id="chapter-1-installation"></a>
 ## 第一章·安装
 
-找到 Project AIJADE GitHub 主页：[moeru-ai/airi](https://github.com/moeru-ai/airi)
+找到 Project AIJADE GitHub 主页：[moeru-ai/airi](https://github.com/korose523/AIJADE)
 
 建议按下面的步骤操作：
 

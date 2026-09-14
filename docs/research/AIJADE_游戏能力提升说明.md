@@ -48,7 +48,7 @@
 
 ## 四、moeru-ai/airi（上游）→ 对齐 Agent 循环与记忆
 
-**项目**：https://github.com/moeru-ai/airi
+**项目**：https://github.com/korose523/AIJADE
 **做法**：上游核心是「感知 → 记忆 → 决策 → 行动」Agent 环 + 记忆缓冲 + 多模型抽象。
 
 **交付**：

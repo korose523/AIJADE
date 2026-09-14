@@ -123,7 +123,7 @@ git rebase main
 
 ## Fork 本项目
 
-请点击 [moeru-ai/airi](https://github.com/moeru-ai/airi) 页面右上角的 **Fork** 按钮来 fork（分叉一个归属于你的账户的副本）本项目。
+请点击 [moeru-ai/airi](https://github.com/korose523/AIJADE) 页面右上角的 **Fork** 按钮来 fork（分叉一个归属于你的账户的副本）本项目。
 
 ## 克隆本项目
 
@@ -224,14 +224,14 @@ git push origin <your-branch-name> -u
 如果这是你第一次贡献本项目，请添加上游（upstream，指向本项目）：
 
 ```shell
-git remote add upstream https://github.com/moeru-ai/airi.git
+git remote add upstream https://github.com/korose523/AIJADE.git
 ```
 
 :::
 
 ## 创建拉取请求（Pull Request）
 
-请前往 [moeru-ai/airi](https://github.com/moeru-ai/airi) 页面：
+请前往 [moeru-ai/airi](https://github.com/korose523/AIJADE) 页面：
 
 * 点击 **Pull requests** 按钮；
 * 再点击 **New pull request** 按钮；

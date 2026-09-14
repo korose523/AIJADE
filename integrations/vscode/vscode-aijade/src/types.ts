@@ -6,9 +6,9 @@ export interface CodingContext {
    * File information
    *
    * @example {
-   *  "path": "/home/neko/Git/github.com/moeru-ai/airi/package.json",
+   *  "path": "/home/neko/Git/github.com/korose523/AIJADE/package.json",
    *  "languageId": "json",
-   *  "fileName": "/home/neko/Git/github.com/moeru-ai/airi/package.json"
+   *  "fileName": "/home/neko/Git/github.com/korose523/AIJADE/package.json"
    * }
    */
   file: {

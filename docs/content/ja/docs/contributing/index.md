@@ -117,7 +117,7 @@ git rebase main
 
 ## このプロジェクトをフォークする
 
-[moeru-ai/airi](https://github.com/moeru-ai/airi) ページの右上にある **Fork** ボタンをクリックしてください。
+[moeru-ai/airi](https://github.com/korose523/AIJADE) ページの右上にある **Fork** ボタンをクリックしてください。
 
 ## クローン
 
@@ -206,14 +206,14 @@ git push origin <your-branch-name> -u
 このプロジェクトへの貢献が初めての場合は、アップストリームリポジトリも追加する必要があります：
 
 ```shell
-git remote add upstream https://github.com/moeru-ai/airi.git
+git remote add upstream https://github.com/korose523/AIJADE.git
 ```
 
 :::
 
 ## プルリクエストの作成
 
-[moeru-ai/airi](https://github.com/moeru-ai/airi) ページに移動し、**Pull requests** タブをクリックし、**New pull request** ボタンをクリックします。**Compare across forks** リンクをクリックし、あなたのフォークリポジトリを選択します。
+[moeru-ai/airi](https://github.com/korose523/AIJADE) ページに移動し、**Pull requests** タブをクリックし、**New pull request** ボタンをクリックします。**Compare across forks** リンクをクリックし、あなたのフォークリポジトリを選択します。
 
 変更を確認し、**Create pull request** ボタンをクリックします。
 

@@ -49,7 +49,7 @@ Web とデスクトップの両方を用意しています。
       <div i-lucide:computer />
     </div>
     <span>デスクトップ</span>
-    <a href="https://github.com/moeru-ai/airi/releases/latest" target="_blank" decoration-none class="text-primary-900 dark:text-primary-400 text-base not-prose bg-primary-400/10 dark:bg-primary-600/10 block px-4 py-2 rounded-lg active:scale-95 transition-all duration-200 ease-in-out">
+    <a href="https://github.com/korose523/AIJADE/releases/latest" target="_blank" decoration-none class="text-primary-900 dark:text-primary-400 text-base not-prose bg-primary-400/10 dark:bg-primary-600/10 block px-4 py-2 rounded-lg active:scale-95 transition-all duration-200 ease-in-out">
       ダウンロード
     </a>
   </div>
