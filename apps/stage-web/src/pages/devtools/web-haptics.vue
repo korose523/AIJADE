@@ -40,8 +40,8 @@ const { trigger, isSupported } = useWebHaptics({
       :class="[
         'inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-500 w-fit',
         isSupported
-          ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-200'
-          : 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/70 dark:bg-amber-950/40 dark:text-amber-200',
+          ? 'border-[color-mix(in_oklab,var(--success)_30%,transparent)] bg-[var(--success-soft)] text-[var(--success)]'
+          : 'border-[color-mix(in_oklab,var(--warning)_30%,transparent)] bg-[var(--warning-soft)] text-[var(--warning)]',
       ]"
     >
       <span :class="[isSupported ? 'i-solar:check-circle-bold-duotone' : 'i-solar:danger-circle-bold-duotone']" />

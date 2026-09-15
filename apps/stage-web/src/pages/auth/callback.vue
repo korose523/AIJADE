@@ -60,7 +60,7 @@ async function handleTryAgain() {
         :class="[
           'w-full rounded-xl p-5',
           'relative overflow-hidden',
-          'bg-orange-50/70 dark:bg-orange-950/30',
+          'bg-[var(--warning-soft)]',
         ]"
       >
         <div :class="['flex items-start gap-3']">
@@ -70,14 +70,14 @@ async function handleTryAgain() {
               'absolute',
               'size-24 flex-shrink-0',
               'right-0 top-0 translate-x-[calc(25%)] translate-y-[-25%]',
-              'i-solar:danger-circle-line-duotone text-orange-500/30 dark:text-orange-200/20',
+              'i-solar:danger-circle-line-duotone text-[var(--warning)] opacity-20',
             ]"
           />
           <div :class="['min-w-0']">
-            <div :class="['text-xl font-semibold text-orange-800 dark:text-orange-200', 'mb-4']">
+            <div :class="['text-xl font-semibold text-[var(--warning)]', 'mb-4']">
               {{ t('server.auth.webCallback.title.errorLabel') }}
             </div>
-            <div :class="['mt-1 text-sm text-orange-700 dark:text-orange-300']">
+            <div :class="['mt-1 text-sm text-[var(--warning)]']">
               {{ error }}
             </div>
           </div>

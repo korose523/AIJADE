@@ -282,7 +282,7 @@ onUnmounted(() => {
           :paused="false"
           @error="console.error"
         />
-        <div v-else p-4 text-sm text-red-500>
+        <div v-else p-4 text-sm text-[var(--danger)]>
           请选择 VRM 模型（当前模型类型不支持）。
         </div>
       </div>

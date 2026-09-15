@@ -201,7 +201,7 @@ function hidePreview() {
     </div>
 
     <!-- Error state -->
-    <div v-else-if="error" rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-200>
+    <div v-else-if="error" rounded-lg bg-[var(--danger-soft)] p-4 text-[var(--danger)]>
       {{ error }}
     </div>
 
