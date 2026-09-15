@@ -20,7 +20,9 @@ const dropdownRef = ref(null)
 // which looks worse than the explicit placeholder we already ship.
 // Reset on URL change so a fixed URL re-attempts loading.
 const avatarLoadError = ref(false)
-watch(userAvatar, () => { avatarLoadError.value = false })
+watch(userAvatar, () => {
+  avatarLoadError.value = false
+})
 
 const formattedCredits = computed(() => credits.value.toLocaleString())
 
@@ -145,10 +147,10 @@ onClickOutside(dropdownRef, () => {
 
           <div class="py-1">
             <button
-              class="group w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-400 text-red-600 transition hover:bg-red-50 hover:bg-red-900/20"
+              class="group w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[var(--danger)] transition hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]"
               @click="signOut"
             >
-              <div class="i-solar:logout-3-bold-duotone text-lg transition group-hover:text-red-400 group-hover:text-red-600" />
+              <div class="i-solar:logout-3-bold-duotone text-lg transition group-hover:text-[var(--danger)]" />
               Sign out
             </button>
           </div>

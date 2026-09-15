@@ -357,7 +357,7 @@ watch(isTouching, (val) => {
                 :class="[
                   triggerState.icon,
                   'text-base',
-                  triggerState.tone === 'success' ? 'text-emerald-600 text-emerald-300' : '',
+                  triggerState.tone === 'success' ? 'text-[var(--success)]' : '',
                 ]"
               />
             </button>
@@ -378,7 +378,7 @@ watch(isTouching, (val) => {
                 :class="[
                   ...itemClasses,
                   item.danger
-                    ? 'text-red-500 data-[highlighted]:bg-red-50/80 data-[highlighted]:bg-red-950/40'
+                    ? 'text-[var(--danger)] data-[highlighted]:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]'
                     : '',
                 ]"
                 @select="() => void handleAction(item.action)"
@@ -404,7 +404,7 @@ watch(isTouching, (val) => {
           :class="[
             ...itemClasses,
             item.danger
-              ? 'text-red-500 data-[highlighted]:bg-red-50/80 data-[highlighted]:bg-red-950/40'
+              ? 'text-[var(--danger)] data-[highlighted]:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]'
               : '',
           ]"
           @select="() => void handleAction(item.action)"

@@ -272,7 +272,7 @@ watch(showDialog, async (open) => {
                   <span :class="['truncate flex-1']">{{ row.preview }}</span>
                   <span
                     v-if="row.meta.cloudChatId"
-                    :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-emerald-500/15 text-emerald-700 text-emerald-300']"
+                    :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-[color-mix(in_oklab,var(--success)_15%,transparent)] text-[var(--success)]']"
                     :title="t('stage.chat.sessions.cloud-badge')"
                   >
                     cloud
@@ -288,7 +288,7 @@ watch(showDialog, async (open) => {
                 :class="[
                   'absolute right-2 top-2 h-7 w-7 flex items-center justify-center rounded-md',
                   'opacity-0 group-hover:opacity-100 focus:opacity-100',
-                  'text-$text-muted hover:text-red-500 hover:bg-red-500/10',
+                  'text-$text-muted hover:text-[var(--danger)] hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]',
                   'transition-opacity duration-150',
                 ]"
                 :title="t('stage.chat.sessions.delete')"
@@ -357,7 +357,7 @@ watch(showDialog, async (open) => {
                 <span :class="['truncate flex-1']">{{ row.preview }}</span>
                 <span
                   v-if="row.meta.cloudChatId"
-                  :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-emerald-500/15 text-emerald-700 text-emerald-300']"
+                  :class="['shrink-0 text-[10px] uppercase tracking-wide rounded px-1.5 py-0.5', 'bg-[color-mix(in_oklab,var(--success)_15%,transparent)] text-[var(--success)]']"
                   :title="t('stage.chat.sessions.cloud-badge')"
                 >
                   cloud
@@ -372,7 +372,7 @@ watch(showDialog, async (open) => {
               :class="[
                 'absolute right-2 top-2 h-7 w-7 flex items-center justify-center rounded-md',
                 'opacity-100 md:opacity-0 md:group-hover:opacity-100 focus:opacity-100',
-                'text-$text-muted hover:text-red-500 hover:bg-red-500/10',
+                'text-$text-muted hover:text-[var(--danger)] hover:bg-[color-mix(in_oklab,var(--danger)_10%,transparent)]',
                 'transition-opacity duration-150',
               ]"
               :title="t('stage.chat.sessions.delete')"

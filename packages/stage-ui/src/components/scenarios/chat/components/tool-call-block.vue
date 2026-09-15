@@ -45,11 +45,11 @@ const formattedArgs = computed(() => {
         />
         <div
           v-else-if="state === 'error'"
-          i-solar:danger-circle-bold-duotone class="mr-1 inline-block text-red-500"
+          i-solar:danger-circle-bold-duotone class="mr-1 inline-block text-[var(--danger)]"
         />
         <div
           v-else-if="state === 'done'"
-          i-solar:check-circle-bold-duotone class="mr-1 inline-block text-emerald-500"
+          i-solar:check-circle-bold-duotone class="mr-1 inline-block text-[var(--success)]"
         />
         <div
           v-else
