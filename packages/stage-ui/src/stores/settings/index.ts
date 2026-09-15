@@ -4,6 +4,7 @@ import { useSettingsAnalytics } from './analytics'
 import { useSettingsControlsIsland } from './controls-island'
 import { useSettingsDeveloper } from './developer'
 import { useSettingsGeneral } from './general'
+import { useSettingsResearch } from './research'
 import { useSettingsSpine } from './spine'
 import { useSettingsStageModel } from './stage-model'
 import { useSettingsTheme } from './theme'
@@ -15,6 +16,7 @@ export * from './beat-sync'
 export * from './controls-island'
 export * from './developer'
 export * from './general'
+export * from './research'
 export * from './spine'
 export * from './stage-model'
 export * from './theme'
@@ -36,6 +38,7 @@ export const useSettings = defineStore('settings', () => {
   const theme = useSettingsTheme()
   const controlsIsland = useSettingsControlsIsland()
   const developer = useSettingsDeveloper()
+  const research = useSettingsResearch()
 
   async function resetState() {
     await stageModel.resetState()
@@ -45,6 +48,7 @@ export const useSettings = defineStore('settings', () => {
     theme.resetState()
     controlsIsland.resetState()
     developer.resetState()
+    research.resetState()
   }
 
   // Extract refs from sub-stores to maintain proper reactivity
@@ -55,6 +59,7 @@ export const useSettings = defineStore('settings', () => {
   const themeRefs = storeToRefs(theme)
   const controlsIslandRefs = storeToRefs(controlsIsland)
   const developerRefs = storeToRefs(developer)
+  const researchRefs = storeToRefs(research)
 
   return {
     // Core settings
@@ -87,6 +92,7 @@ export const useSettings = defineStore('settings', () => {
     alwaysOnTop: controlsIslandRefs.alwaysOnTop,
     controlsIslandIconSize: controlsIslandRefs.controlsIslandIconSize,
     inspectUpdaterDiagnostics: developerRefs.inspectUpdaterDiagnostics,
+    researchTelemetryConsent: researchRefs.researchTelemetryConsent,
 
     // Methods
     setThemeColorsHue: theme.setThemeColorsHue,

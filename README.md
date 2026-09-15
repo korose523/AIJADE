@@ -43,6 +43,13 @@ experiments/   实验产物
 | `packages/growth-services` | 成长服务层 |
 | `packages/model-substrate` | 模型基底抽象 |
 
+**纵向人格轨迹默认不采集（opt-in，合规要求）**：`agent-capabilities` 的 `onPersonaUpdate`
+钩子现通过 `createPersonaTelemetryRecorder()`（由 `agent-continuous-learning` 提供）接入
+`research-telemetry`，用于产出跨会话的纵向人格轨迹数据。该记录**默认关闭**——人格轨迹属于
+人类被试数据，静默采集无法通过 IRB 审查（本研究受韩国《生命伦理与安全法》约束）。开启方式：
+设置项 `settings/research/telemetry-consent`（localStorage，默认 `false`）。**撤回同意不仅停止
+记录，还会清除已记录的数据**；遥测写入失败只会上报 `onError`，绝不中断对话。
+
 **设计原则（实验有效性的前提）**：
 
 1. **操纵必须因果可达** —— 任何被声明的实验因子，必须存在一条从因子到测量结果的因果通路。

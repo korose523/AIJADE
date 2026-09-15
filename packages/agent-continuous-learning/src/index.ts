@@ -39,5 +39,10 @@ export {
   toThreeForce,
 } from './persona'
 export { createLexiconSignalExtractor, createLlmSignalExtractor, extractSignal, type SignalExtractor, type SignalExtractorOptions } from './signal'
-export { toPersonaSnapshot } from './telemetry'
+export {
+  createPersonaTelemetryRecorder,
+  type PersonaTelemetryOptions,
+  type PersonaTelemetryRecorder,
+  toPersonaSnapshot,
+} from './telemetry'
 export * from './types'

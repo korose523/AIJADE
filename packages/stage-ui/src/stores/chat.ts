@@ -6,7 +6,7 @@ import type { Message } from '@xsai/shared-chat'
 
 import type { ChatHistoryItem } from '../types/chat'
 
-import { createAgentCapabilitiesBridge } from '@proj-aijade/agent-capabilities'
+import { createAgentCapabilitiesBridge, createPersonaTelemetryRecorder } from '@proj-aijade/agent-capabilities'
 import {
 
   createComputerUseCapability,
@@ -41,6 +41,7 @@ import { getMcpToolBridge } from './mcp-tool-bridge'
 import { useAijadeCardStore } from './modules/aijade-card'
 import { useAutonomousArtistryStore } from './modules/artistry-autonomous'
 import { useConsciousnessStore } from './modules/consciousness'
+import { useSettingsResearch } from './settings/research'
 
 interface ForkOptions {
   fromSessionId?: string
@@ -221,9 +222,23 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
     return hook ? hook(params) : false
   }
   const computerUse = createComputerUseCapability(computerUseBackend, { approve: computerUseApprover })
+  // Longitudinal persona trajectory (the "data backbone of the dissertation").
+  // The hook has been plumbed through the bridge from the start, but no call site
+  // ever passed a listener, so production never recorded a single turn. Recording
+  // only starts behind an explicit consent flag: a persona trajectory is
+  // human-subjects data, and silent collection would not survive IRB review.
+  // Withdrawing consent also erases what has been recorded (see the recorder).
+  // The store is resolved once here: `useSettingsResearch()` inside the callback
+  // would run outside the setup context on every persona update.
+  const settingsResearch = useSettingsResearch()
+  const personaTelemetry = createPersonaTelemetryRecorder({
+    consent: () => settingsResearch.researchTelemetryConsent,
+    onError: error => console.warn('[research-telemetry]', error),
+  })
   const capabilities = createAgentCapabilitiesBridge({
     llm: capabilitiesLlm,
     computerUse,
+    onPersonaUpdate: personaTelemetry.record,
   })
   // Reactive projection of the continuous-learning persona so UI surfaces
   // (e.g. the desktop-pet mode) can show live mood / intimacy.
