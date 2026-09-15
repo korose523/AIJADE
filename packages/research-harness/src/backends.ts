@@ -26,10 +26,61 @@ import {
 
 import { mulberry32 } from './stats'
 
+/**
+ * Redacted environment-feedback signal handed back to the generator on a retry.
+ *
+ * WHY IT IS REDACTED: the whole measurement rests on the oracle being a
+ * reference standard* the model cannot read. `BenchFailure` carries both
+ * `expected` and `actual`, so forwarding it verbatim would let the model copy
+ * the answer and would invalidate `hallucinationRate` / `missRate`. We therefore
+ * forward only what a real sandbox legitimately exposes — which cases failed,
+ * how many passed, and any error the candidate itself raised — and never the
+ * expected outputs. This preserves the no-leakage invariant that the `verify()`
+ * path also obeys (expected outputs are withheld there too).
+ */
+export interface EnvironmentFeedbackSignal {
+  /** 0-based indices of the test cases the candidate failed. */
+  failedCaseIndices: number[]
+  /** How many cases passed. */
+  passed: number
+  /** Total cases in the task's suite. */
+  total: number
+  /** Error messages raised by the candidate itself (never expected values). */
+  errors: string[]
+}
+
+/**
+ * Context handed to {@link CandidateGenerator.generate} on every call.
+ *
+ * CRITICAL (see the "constructive null design" note in harness.ts): if this
+ * context is ignored, and the backend decodes greedily, then a regeneration is
+ * byte-identical to the first attempt. The envFeedback and selfVerification
+ * manipulations would then have NO causal path to the execution outcome, and all
+ * four 2x2 cells would be forced to the same precision. The generators below
+ * therefore MUST fold this context into the prompt.
+ */
 export interface GenerateContext {
   /** Which attempt at this task this generation is (0-based). */
   attempt: number
-  /** The previous failure detail, if the agent is retrying. */
+  /**
+   * Present iff the `envFeedback` factor is ON and a previous execution failed.
+   * This is the environment's contribution to the closed loop.
+   */
+  envFeedback?: EnvironmentFeedbackSignal
+  /**
+   * Present iff the `selfVerification` factor is ON and the model rejected a
+   * previous candidate. This is the self-verifier's contribution to the loop.
+   */
+  selfCritique?: string
+  /**
+   * The candidate that is being replaced. At `temperature: 0` a 7B model will
+   * happily re-emit its own earlier solution even when the prompt has changed,
+   * which makes the retry inert again by a different route (measured: 2 of 3
+   * retries returned byte-identical code with feedback alone). Showing the model
+   * its own rejected code and forbidding a repeat is what actually moves it.
+   */
+  previousCode?: string
+  /** @deprecated free-text failure detail; superseded by `envFeedback`. */
   previousFailure?: string
 }
 
@@ -78,6 +129,16 @@ export interface MockBackendOptions {
   miss?: number
   /** Seed for the backend's internal PRNG (default derived). */
   seed?: number
+  /**
+   * Probability that a RETRY carrying a feedback signal (environment failure or
+   * self-critique) produces the reference solution. This is the simulation knob
+   * that models "a retry informed by evidence can actually fix the bug".
+   *
+   * It exists because a retry knob of exactly 0 is the *constructive null
+   * design*: if retries can never change the outcome, the envFeedback axis has
+   * no causal path and the 2x2 is guaranteed to be a null. Default 0.7.
+   */
+  pRetrySuccess?: number
 }
 
 /**
@@ -94,11 +155,22 @@ export function createMockBackend(seed: number, opts: MockBackendOptions = {}): 
   const pCorrect = opts.pCorrect ?? 0.5
   const hallucination = opts.hallucination ?? 0.3
   const miss = opts.miss ?? 0.1
+  const pRetrySuccess = opts.pRetrySuccess ?? 0.7
   const rng = mulberry32(seed >>> 0)
+
+  /** True when the caller actually handed the generator a feedback signal. */
+  const hasSignal = (ctx: GenerateContext) =>
+    ctx.envFeedback !== undefined || ctx.selfCritique !== undefined || ctx.previousFailure !== undefined
 
   return {
     name: 'mock',
-    async generate(task, _ctx) {
+    async generate(task, ctx) {
+      // A retry that carries evidence can recover; a retry without evidence is
+      // the null design (identical output, no causal path). Gating recovery on
+      // the *presence of a signal* is what makes the mock a faithful positive
+      // control for the reachability diagnostic.
+      if (ctx.attempt > 0 && hasSignal(ctx) && rng() < pRetrySuccess)
+        return wrapCode(REFERENCE_SOLUTIONS[task.id])
       const roll = rng()
       let code: string
       if (roll < pCorrect) {
@@ -157,6 +229,60 @@ export interface OllamaBackendOptions {
 }
 
 /**
+ * Build the generation prompt as a DETERMINISTIC function of
+ * `(task, ctx)`. Determinism is preserved under `temperature: 0` because the
+ * prompt itself — not the sampler — carries the variation. That is the whole
+ * point: two retries differ only because the *evidence* differs.
+ */
+export function buildGeneratePrompt(task: BenchTask, ctx: GenerateContext): string {
+  const s = ctx.selfCritique
+  const e = ctx.envFeedback
+  const informedRetry = (e !== undefined || s !== undefined || ctx.previousFailure !== undefined) && ctx.attempt > 0
+
+  const lines: string[] = []
+
+  // On an informed retry the evidence comes FIRST and the implementation request
+  // LAST, so the model reads the diagnosis before it starts writing. Putting the
+  // evidence after the code request measurably fails to change the output.
+  if (informedRetry) {
+    lines.push('You are an expert JavaScript programmer fixing a previous failure.')
+    lines.push(`Task: ${task.instruction}`)
+    lines.push('')
+    lines.push('--- WHY THE PREVIOUS ATTEMPT FAILED ---')
+    if (e) {
+      lines.push(`The previous implementation was executed against the task's test suite and FAILED: ${e.passed}/${e.total} cases passed.`)
+      if (e.failedCaseIndices.length > 0)
+        lines.push(`Failing case indices (0-based): ${e.failedCaseIndices.join(', ')}.`)
+      if (e.errors.length > 0)
+        lines.push(`It raised: ${e.errors.join(' | ')}`)
+      lines.push('The expected outputs of the test cases are withheld from you. Diagnose the defect from the case inputs and the failure pattern.')
+    }
+    if (s)
+      lines.push(`Your own verification step REJECTED the previous implementation with this critique: ${s}`)
+    lines.push('')
+    if (ctx.previousCode && ctx.previousCode.trim().length > 0) {
+      lines.push('The rejected implementation, which you MUST NOT repeat:')
+      lines.push('```js')
+      lines.push(ctx.previousCode.trim())
+      lines.push('```')
+      lines.push('')
+    }
+    lines.push('Write a CORRECTED implementation that is materially DIFFERENT from the rejected one.')
+    lines.push('Re-examine the specification and the failing cases; do not just re-emit the same logic with cosmetic edits.')
+  }
+  else {
+    lines.push('You are an expert JavaScript programmer.')
+    lines.push(`Implement the following function. Task: ${task.instruction}`)
+  }
+
+  lines.push('Respond with ONLY a single fenced JavaScript code block (```js ... ```)')
+  lines.push('that defines a function named `solve` (or a single callable expression).')
+  lines.push('Do not include any explanation outside the code block.')
+
+  return lines.join('\n')
+}
+
+/**
  * Ollama backend. Uses the native `fetch` (no new dependencies). Always fails
  * loudly when the server is unreachable or returns a non-OK status, so a missing
  * model can never masquerade as a (wrong) generation.
@@ -169,14 +295,8 @@ export function createOllamaBackend(opts: OllamaBackendOptions): LLMBackend {
 
   return {
     name: 'ollama',
-    async generate(task, _ctx) {
-      const prompt = [
-        'You are an expert JavaScript programmer.',
-        `Implement the following function. Task: ${task.instruction}`,
-        'Respond with ONLY a single fenced JavaScript code block (```js ... ```)',
-        'that defines a function named `solve` (or a single callable expression).',
-        'Do not include any explanation outside the code block.',
-      ].join('\n')
+    async generate(task, ctx) {
+      const prompt = buildGeneratePrompt(task, ctx)
       const content = await chat(baseUrl, model, prompt, timeoutMs, sampling)
       if (!content)
         throw new Error('Ollama generate() returned an empty response')

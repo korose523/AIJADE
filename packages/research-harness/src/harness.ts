@@ -34,6 +34,25 @@
  * (success iff successCount/callCount >= 0.5) and tests at the skill level. The
  * old execution-level chi-square is retained as `chiSquareExecutionLevel` but
  * is explicitly diagnostic-only (see its comment).
+ *
+ * ## Constructive-null bug + guard (found 2026-09-15)
+ *
+ * The 30x5x12 run of 2026-09-14 reported a precision of exactly 11/12 in all
+ * four cells. That is not an empirical null — it is a null BY CONSTRUCTION:
+ *
+ *  - `createOllamaBackend.generate()` took a `GenerateContext` and ignored it;
+ *  - the run used `temperature: 0`, so the same prompt decodes to the same text;
+ *  - hence a regeneration was byte-identical to the candidate it replaced;
+ *  - hence the execution outcome was a pure function of *task identity*
+ *    (5 of 44 tasks failed on every attempt, 39 passed on every attempt),
+ *    and neither `selfVerification` nor `envFeedback` had any causal path to it.
+ *
+ * The fix threads the accumulated evidence (a redacted environment failure
+ * report, and/or the self-verifier's critique) into the generation prompt, so
+ * the prompt — not the sampler — carries the variation while `temperature: 0`
+ * keeps the run reproducible. `detectDegeneracy()` now fails LOUDLY if the four
+ * cells ever come out identical again, so this can never be written up as
+ * "we found no effect".
  */
 
 import type {
@@ -46,7 +65,7 @@ import type {
   SkillRecord,
 } from '@proj-aijade/skill-forge-store'
 
-import type { LLMBackend } from './backends'
+import type { EnvironmentFeedbackSignal, GenerateContext, LLMBackend } from './backends'
 import type {
   ChiSquareResult,
   CI,
@@ -161,6 +180,22 @@ export interface StepRecord {
   skillId: string
   /** Whether this step reused an already-active skill instead of generating one. */
   reused: boolean
+  /**
+   * How many generations this task has already seen in this (condition, trial)
+   * before this step. 0 == first generation. A regeneration with `attempt > 0`
+   * that carries a feedback signal is what makes the loop causally live.
+   */
+  attempt: number
+  /** Whether the generation prompt actually carried environment feedback. */
+  hadEnvFeedback: boolean
+  /** Whether the generation prompt actually carried a self-verification critique. */
+  hadSelfCritique: boolean
+  /**
+   * True when this step generated a replacement for a skill that had been
+   * retired/rejected after failing. This is the population over which
+   * `recoveredRate` is defined.
+   */
+  regeneratedFromFailure: boolean
   /** Model self-verdict at this step (null when selfVerification is OFF, or on reuse). */
   selfVerdict: 'pass' | 'fail' | null
   /** Ground-truth execution outcome. */
@@ -188,10 +223,57 @@ export interface RunOptions {
   onStep?: (step: StepRecord) => void
 }
 
+/**
+ * Loop-liveness accounting for one condition.
+ *
+ * `recoveredRate` is the fraction of regenerations-for-a-failed-task that
+ * actually produced a passing skill. It is the direct evidence that the
+ * manipulation has a causal channel into the outcome.
+ */
+export interface LoopDiagnostics {
+  /** Regenerations that replaced a skill which had been retired/rejected. */
+  regenerations: number
+  /** Of those, how many carried at least one feedback signal into the prompt. */
+  regenerationsWithSignal: number
+  /** Of those, how many produced a skill whose first execution passed. */
+  recoveries: number
+  /** `recoveries / regenerations`, or NaN when there were no regenerations. */
+  recoveredRate: number
+}
+
 export interface ConditionResult {
   condition: Condition
   id: string
   records: SkillRecord[]
+  loop: LoopDiagnostics
+}
+
+/**
+ * Result of the constructive-null guard.
+ *
+ * A 2x2 ablation is only informative if the manipulation can reach the outcome.
+ * When greedy decoding is paired with a prompt-invariant regeneration, every
+ * cell is forced to the same precision and neither main effect nor the
+ * interaction can be non-zero for any sample size. This guard makes that failure
+ * mode LOUD instead of letting it be mistaken for an empirical null result.
+ */
+export interface DegeneracyCheck {
+  /** True when all four cells report exactly the same precision. */
+  allCellsIdenticalPrecision: boolean
+  /** Regenerations pooled across all four conditions. */
+  totalRegenerations: number
+  /** Recoveries pooled across all four conditions. */
+  totalRecoveries: number
+  /** Pooled `recoveries / regenerations`. */
+  recoveredRate: number
+  /**
+   * True when the design has at least one live causal channel:
+   * `allCellsIdenticalPrecision === false` and (when regenerations exist)
+   * `recoveredRate > 0`.
+   */
+  manipulationReachable: boolean
+  /** Human-readable verdict, safe to surface in the run summary. */
+  note: string
 }
 
 export interface CellPrecision {
@@ -261,6 +343,14 @@ export interface ExperimentResult {
    * Blocker B3: any deviation is surfaced, never silent).
    */
   preregistrationDeviation: string[]
+  /**
+   * Constructive-null guard. If `manipulationReachable` is false, the run carries
+   * NO information about the 2x2: the cells were forced identical by the
+   * machinery, not by nature. Such a run must never be reported as "no effect".
+   */
+  degeneracy: DegeneracyCheck
+  /** Per-condition loop-liveness accounting (regenerations / recoveries). */
+  loopDiagnostics: { condition: string, loop: LoopDiagnostics }[]
   /**
    * Interaction effect (pooled DiD) on precision — kept as an alias of the old
    *  `diffInDiff` field for backward compatibility; the headline is now
@@ -412,6 +502,13 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
   const chiSquare = chiSquare2x2(onSucc, onFail, offSucc, offFail)
   const chiSquareSelfVerification = chiSquare2x2(svOnSucc, svOnFail, svOffSucc, svOffFail)
 
+  // --- Constructive-null guard ----------------------------------------------
+  // A 2x2 with four identical cell precisions is a null BY CONSTRUCTION, not by
+  // nature: no effect of any size could have been observed. Detecting it here
+  // means a degenerate run can never be quietly written up as "we found no
+  // effect" (that is precisely how the earlier temperature-0 run was misread).
+  const degeneracy = detectDegeneracy(table, conditions.map(c => ({ condition: c.id, loop: c.loop })))
+
   // --- Execution-level chi-square (DIAGNOSTIC ONLY) -------------------------
   // Retained for historical comparison. Counts every execution as independent,
   // which UNDERSTATES the SE (~1.5x) and makes p spuriously small. Never use it
@@ -518,8 +615,56 @@ export async function runExperiment(opts: RunOptions): Promise<ExperimentResult>
     mcnemarEnvFeedback: mcnemar,
     power: { minDetectableEffectAt80, nSkillsPerCell, powerAtDelta10pp, powerAtDelta5pp },
     preregistrationDeviation,
+    degeneracy,
+    loopDiagnostics: conditions.map(c => ({ condition: c.id, loop: c.loop })),
     diffInDiff,
     cells,
+  }
+}
+
+/**
+ * Detect the constructive-null failure mode.
+ *
+ * The failure mode: under greedy decoding, if the generation prompt does not
+ * depend on the accumulated feedback, a regeneration reproduces the previous
+ * candidate exactly. Then the outcome is a pure function of task identity, every
+ * cell collapses to the same precision, and both factors are causally inert —
+ * regardless of sample size. This function turns that into an explicit,
+ * reportable verdict instead of a silent null.
+ */
+function detectDegeneracy(
+  table: LearningLoopCell[],
+  loops: { condition: string, loop: LoopDiagnostics }[],
+): DegeneracyCheck {
+  const precisions = table.map(c => c.precision).filter(Number.isFinite)
+  const allCellsIdenticalPrecision
+    = precisions.length === 4 && new Set(precisions.map(p => p.toFixed(12))).size === 1
+
+  const totalRegenerations = loops.reduce((a, l) => a + l.loop.regenerations, 0)
+  const totalRecoveries = loops.reduce((a, l) => a + l.loop.recoveries, 0)
+  const recoveredRate = totalRegenerations > 0 ? totalRecoveries / totalRegenerations : Number.NaN
+
+  const loopLive = totalRegenerations === 0 || totalRecoveries > 0
+  const manipulationReachable = !allCellsIdenticalPrecision && loopLive
+
+  let note: string
+  if (manipulationReachable) {
+    note = `reachable: cells differ and ${totalRecoveries}/${totalRegenerations} regenerations recovered`
+  }
+  else if (allCellsIdenticalPrecision) {
+    note = 'NULL BY CONSTRUCTION: all four cells share an identical precision — neither factor has a causal path to the outcome. Do NOT report as "no effect".'
+  }
+  else {
+    note = `INERT LOOP: ${totalRegenerations} regenerations produced 0 recoveries — feedback never changed a candidate. Check that generate() folds GenerateContext into the prompt.`
+  }
+
+  return {
+    allCellsIdenticalPrecision,
+    totalRegenerations,
+    totalRecoveries,
+    recoveredRate,
+    manipulationReachable,
+    note,
   }
 }
 
@@ -569,6 +714,7 @@ async function runCondition(
   trialTasks: BenchTask[][],
 ): Promise<ConditionResult> {
   const records: SkillRecord[] = []
+  const loop: LoopDiagnostics = { regenerations: 0, regenerationsWithSignal: 0, recoveries: 0, recoveredRate: Number.NaN }
   for (let t = 0; t < opts.trials; t++) {
     // Tasks for this trial are FIXED (block design): every condition uses the
     // same `trialTasks[t]`. This function therefore never samples on its own.
@@ -576,11 +722,30 @@ async function runCondition(
     const registry = createSkillRegistry({ store: createMemorySkillStore(), now: opts.now })
     const skillByTask = new Map<string, string>()
 
+    /**
+     * Per-task retry state: the evidence the closed loop has accumulated so far.
+     *
+     * This is the fix for the constructive-null bug. Previously `generate()` was
+     * called with `{ attempt: round }` and the backend ignored it, so under
+     * `temperature: 0` every regeneration was byte-identical to the first attempt
+     * and NEITHER factor could reach the outcome. We now thread the evidence
+     * through, and — crucially — gate its *injection* on the factor flags, so
+     * envFeedback and selfVerification each own a distinct causal channel.
+     */
+    interface RetryState {
+      attempts: number
+      envFeedback?: EnvironmentFeedbackSignal
+      selfCritique?: string
+    }
+    const retry = new Map<string, RetryState>()
+
     for (let round = 0; round < opts.rounds; round++) {
       for (const task of tasks) {
         let skillId = skillByTask.get(task.id)
         let reused = false
         let existing: SkillRecord | undefined
+        /** The prior skill existed but is no longer active => it failed its way out. */
+        let replacedAfterFailure = false
         if (skillId) {
           existing = await registry.get(skillId)
           if (existing && existing.status === 'active') {
@@ -588,6 +753,7 @@ async function runCondition(
           }
           else {
             // retired / rejected / missing -> force a fresh generation this round.
+            replacedAfterFailure = existing !== undefined
             skillId = undefined
             existing = undefined
           }
@@ -595,9 +761,30 @@ async function runCondition(
 
         let codeForExec: string
         let selfVerdict: 'pass' | 'fail' | null = null
+        const st = retry.get(task.id) ?? { attempts: 0 }
+        let hadEnvFeedback = false
+        let hadSelfCritique = false
+        const attemptIndex = st.attempts
 
         if (!skillId) {
-          const candidate = await opts.backend.generate(task, { attempt: round })
+          // Inject ONLY the channels the current condition actually owns. This
+          // is the manipulation: a condition without envFeedback cannot see the
+          // environment's failure report, etc.
+          const envSignal = cond.envFeedback ? st.envFeedback : undefined
+          const critique = cond.selfVerification ? st.selfCritique : undefined
+          hadEnvFeedback = envSignal !== undefined
+          hadSelfCritique = critique !== undefined
+          const ctx: GenerateContext = {
+            attempt: attemptIndex,
+            envFeedback: envSignal,
+            selfCritique: critique,
+            // Shown back only when the condition owns at least one feedback
+            // channel; a retry with no channel stays bit-identical to the
+            // original attempt, which is the inert-loop control.
+            previousCode: (envSignal !== undefined || critique !== undefined) ? st.lastCode : undefined,
+          }
+
+          const candidate = await opts.backend.generate(task, ctx)
           const code = extractCodeBlock(candidate) ?? candidate
           codeForExec = code
           skillId = `${conditionId(cond)}-t${t}-r${round}-${task.id}`
@@ -617,11 +804,16 @@ async function runCondition(
               model: opts.backend.name,
             })
             selfVerdict = v.verdict
+            // Retain the critique so the NEXT generation can act on it.
+            st.selfCritique = v.rationale
           }
           // Register the new skill so subsequent rounds REUSE it (this is what lets
           // callCount accumulate and pruning/retirement fire). Without this the
           // agent would regenerate every round and the env-feedback axis dies.
           skillByTask.set(task.id, skillId)
+          st.attempts = attemptIndex + 1
+          st.lastCode = codeForExec
+          retry.set(task.id, st)
         }
         else {
           // Reuse: keep the prior self-verdict for diagnostics pairing.
@@ -636,8 +828,33 @@ async function runCondition(
           durationMs: Math.round(verdict.durationMs),
         })
 
+        // Accumulate the REDACTED environment signal (never expected outputs) so
+        // the next generation for this task has something to act on. Stored
+        // unconditionally; whether it is *shown* is decided by the factor flag.
+        st.envFeedback = {
+          failedCaseIndices: verdict.failures.map(f => f.index),
+          passed: verdict.passed,
+          total: verdict.total,
+          errors: [
+            ...(verdict.error ? [verdict.error] : []),
+            ...verdict.failures.map(f => f.error).filter((x): x is string => typeof x === 'string'),
+          ].slice(0, 4),
+        }
+        retry.set(task.id, st)
+
         if (cond.envFeedback)
           await registry.pruneLowPrecision(opts.pruneThreshold, opts.pruneMinCalls)
+
+        // Loop accounting: how often does a regeneration for an already-failed
+        // task actually recover? A rate of exactly 0 across many regenerations
+        // is the fingerprint of an INERT loop (see detectDegeneracy).
+        if (!reused && replacedAfterFailure) {
+          loop.regenerations++
+          if (hadEnvFeedback || hadSelfCritique)
+            loop.regenerationsWithSignal++
+          if (verdict.ok)
+            loop.recoveries++
+        }
 
         opts.onStep?.({
           condition: conditionId(cond),
@@ -646,6 +863,10 @@ async function runCondition(
           taskId: task.id,
           skillId,
           reused,
+          attempt: attemptIndex,
+          hadEnvFeedback,
+          hadSelfCritique,
+          regeneratedFromFailure: !reused && replacedAfterFailure,
           selfVerdict,
           execOk: verdict.ok,
           durationMs: Math.round(verdict.durationMs),
@@ -656,7 +877,8 @@ async function runCondition(
     records.push(...(await registry.all()))
   }
 
-  return { condition: cond, id: conditionId(cond), records }
+  loop.recoveredRate = loop.regenerations > 0 ? loop.recoveries / loop.regenerations : Number.NaN
+  return { condition: cond, id: conditionId(cond), records, loop }
 }
 
 /** Small helper re-exported for convenience in tests. */

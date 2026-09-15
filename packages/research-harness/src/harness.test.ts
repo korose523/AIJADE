@@ -117,3 +117,62 @@ describe('rQ-C harness — core regression', () => {
     expect(res.preregistrationDeviation.length).toBeGreaterThan(0) // tinyOpts != PREREGISTRATION
   }, 60000)
 })
+
+/**
+ * Constructive-null guard regression.
+ *
+ * A live loop must be *reachable*: a regeneration that carries the accumulated
+ * evidence has to be able to change the outcome. An intentionally inert backend
+ * (one that ignores its context) must be DETECTED — otherwise a degenerate run
+ * gets misreported as an empirical null.
+ */
+describe('constructive-null guard', () => {
+  it('a context-aware backend yields a reachable loop (regenerations recover)', async () => {
+    const res = await runExperiment({
+      backend: createMockBackend(11, { pCorrect: 0, pRetrySuccess: 0.9, hallucination: 0.3, miss: 0.1 }),
+      trials: 6,
+      rounds: 5,
+      seed: 11,
+      nTasks: 8,
+      pruneThreshold: 0.5,
+      pruneMinCalls: 3,
+      now: () => 0,
+    })
+    expect(res.degeneracy.totalRegenerations).toBeGreaterThan(0)
+    expect(res.degeneracy.totalRecoveries).toBeGreaterThan(0)
+    expect(res.degeneracy.manipulationReachable).toBe(true)
+    // And the env-feedback column must actually be better, not merely different.
+    const envOn = res.table.filter(c => c.envFeedbackEnabled).reduce((a, c) => a + c.precision * c.count, 0)
+    const envOff = res.table.filter(c => !c.envFeedbackEnabled).reduce((a, c) => a + c.precision * c.count, 0)
+    expect(envOn).toBeGreaterThan(envOff)
+  }, 60000)
+
+  it('an inert backend (ignores GenerateContext) is DETECTED, not silently null', async () => {
+    // Reproduces the 2026-09-14 defect exactly: the generator never reads its
+    // context, so every regeneration repeats the previous failing candidate.
+    const inert: LLMBackend = {
+      name: 'inert',
+      async generate() {
+        return '```js\nfunction solve() { return undefined }\n```'
+      },
+      async verify() {
+        return { verdict: 'pass', score: 1, rationale: 'always passes' }
+      },
+    }
+    const res = await runExperiment({
+      backend: inert,
+      trials: 4,
+      rounds: 5,
+      seed: 3,
+      nTasks: 6,
+      pruneThreshold: 0.5,
+      pruneMinCalls: 3,
+      now: () => 0,
+    })
+    expect(res.degeneracy.allCellsIdenticalPrecision).toBe(true)
+    expect(res.degeneracy.totalRegenerations).toBeGreaterThan(0)
+    expect(res.degeneracy.totalRecoveries).toBe(0)
+    expect(res.degeneracy.manipulationReachable).toBe(false)
+    expect(res.degeneracy.note).toContain('NULL BY CONSTRUCTION')
+  }, 60000)
+})

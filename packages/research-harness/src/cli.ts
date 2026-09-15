@@ -312,6 +312,22 @@ function printSummary(
   }
   lines.push('   CONCLUSION: at the registered scale the design can only resolve effects of ~>=10pp.')
 
+  lines.push('')
+  lines.push(' Loop liveness (regeneration -> recovery) — CAUSAL-PATH EVIDENCE')
+  for (const l of result.loopDiagnostics) {
+    lines.push(`   ${l.condition.padEnd(10)} regenerations=${String(l.loop.regenerations).padEnd(5)}`
+      + ` withSignal=${String(l.loop.regenerationsWithSignal).padEnd(5)}`
+      + ` recoveries=${String(l.loop.recoveries).padEnd(5)}`
+      + ` recoveredRate=${Number.isNaN(l.loop.recoveredRate) ? 'n/a' : l.loop.recoveredRate.toFixed(3)}`)
+  }
+  const dg = result.degeneracy
+  lines.push(`   degeneracy: allCellsIdentical=${dg.allCellsIdenticalPrecision}`
+    + ` manipulationReachable=${dg.manipulationReachable}`)
+  lines.push(`   -> ${dg.note}`)
+  if (!dg.manipulationReachable) {
+    lines.push('   ⚠⚠⚠ THIS RUN CARRIES NO INFORMATION ABOUT THE 2x2. Do not report it as a null result.')
+  }
+
   if (result.preregistrationDeviation.length > 0) {
     lines.push('')
     lines.push(' ⚠ PREREGISTRATION DEVIATION (selective-inference guard, B3):')
@@ -413,6 +429,8 @@ async function main(): Promise<void> {
       powerAtDelta5pp: Number(powerForEffectProportion(0.05, n).toFixed(4)),
     })),
     preregistrationDeviation: result.preregistrationDeviation,
+    degeneracy: result.degeneracy,
+    loopDiagnostics: result.loopDiagnostics,
   }
   writeFileSync(resolve(outDir, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`)
 
