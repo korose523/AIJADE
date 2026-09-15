@@ -15,6 +15,31 @@ const B0 = BASELINE_PLANS.find(p => p.id === 'B0')!
 const A1 = BASELINE_PLANS.find(p => p.id === 'A1')!
 const B1 = BASELINE_PLANS.find(p => p.id === 'B1')!
 
+/**
+ * Best-effort, fault-tolerant cleanup of a registry file.
+ *
+ * `rmSync(path, { force: true })` only suppresses ENOENT — in restricted
+ * sandboxes it still throws EPERM / ENOTEMPTY, which would abort the suite.
+ * Cleanup must never fail the tests, so we swallow those codes (a leftover
+ * registry file does not affect any assertion here). Unexpected errors are
+ * still re-thrown so real problems stay visible.
+ */
+function safeRmSync(path: string): void {
+  try {
+    rmSync(path, { force: true, recursive: true })
+  }
+  catch (err) {
+    const code = (err as NodeJS.ErrnoException | undefined)?.code
+    // In restricted sandboxes `rmSync` can still throw EPERM / ENOTEMPTY even
+    // with `force: true` (force only suppresses ENOENT). Cleanup is best-effort
+    // and must never fail the suite, so those codes are swallowed. Unexpected
+    // errors are re-thrown so real problems stay visible.
+    if (code === 'EPERM' || code === 'ENOTEMPTY' || code === 'EACCES')
+      return
+    throw err
+  }
+}
+
 const STATE_KEYS = ['a', 'v', 'd', 'n', 's', 'c', 'b']
 function state(fill: number): Record<string, number> {
   return Object.fromEntries(STATE_KEYS.map(k => [k, fill]))
@@ -90,11 +115,11 @@ describe('§38 intervention API in store (opt-in, H2c-compatible)', () => {
 
   it('optionally registers the intervention as an ExperimentManifest (writes registry)', () => {
     const reg = join(process.cwd(), 'eval', '.store-intervention.registry.json')
-    rmSync(reg, { force: true })
+    safeRmSync(reg)
     const m = new BioticMemory(interventionConfig())
     const r = m.applyIntervention(B0, { registryPath: reg })!
     expect(r.registered?.manifest.id).toBe('intervention:B0')
-    rmSync(reg, { force: true })
+    safeRmSync(reg)
   })
 })
 

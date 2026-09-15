@@ -25,6 +25,31 @@ import {
 
 const REG = join(process.cwd(), 'eval', '.intervention-test.registry.json')
 
+/**
+ * Best-effort, fault-tolerant cleanup of the registry file.
+ *
+ * `rmSync(path, { force: true })` only suppresses ENOENT — in restricted
+ * sandboxes it still throws EPERM / ENOTEMPTY, which would abort the suite.
+ * Cleanup must never fail the tests, so we swallow those codes (the leftover
+ * file does not affect any assertion: the suite writes then re-reads REG).
+ * Unexpected errors are still re-thrown so real problems stay visible.
+ */
+function safeRmSync(path: string): void {
+  try {
+    rmSync(path, { force: true, recursive: true })
+  }
+  catch (err) {
+    const code = (err as NodeJS.ErrnoException | undefined)?.code
+    // In restricted sandboxes `rmSync` can still throw EPERM / ENOTEMPTY even
+    // with `force: true` (force only suppresses ENOENT). Cleanup is best-effort
+    // and must never fail the suite, so those codes are swallowed. Unexpected
+    // errors are re-thrown so real problems stay visible.
+    if (code === 'EPERM' || code === 'ENOTEMPTY' || code === 'EACCES')
+      return
+    throw err
+  }
+}
+
 function plan(over: Partial<InterventionPlan> = {}): InterventionPlan {
   return {
     id: 'test-abl',
@@ -35,8 +60,8 @@ function plan(over: Partial<InterventionPlan> = {}): InterventionPlan {
   }
 }
 
-beforeAll(() => rmSync(REG, { force: true }))
-afterAll(() => rmSync(REG, { force: true }))
+beforeAll(() => safeRmSync(REG))
+afterAll(() => safeRmSync(REG))
 
 describe('iNTERVENTION_POINTS — 单一权威清单', () => {
   it('covers §38.1–38.4 with unique ids and defaults', () => {
