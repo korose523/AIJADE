@@ -82,6 +82,7 @@ import {
   registerExperimentManifest,
   tokenF1,
 } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 /** 预算（占全部 episode 的比例）。 */
 const BUDGETS = [0.10, 0.25, 0.50, 1.00]
@@ -510,7 +511,7 @@ async function main(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const convs = loadLocomo(path)
 
   console.info('=== H5 (v2/P2): 内容显著性门控 vs 长上下文压缩（匹配存储预算, LoCoMo）===')

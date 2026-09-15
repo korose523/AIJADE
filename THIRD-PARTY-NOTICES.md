@@ -59,9 +59,26 @@ SIL OFL 要求：保留版权声明与许可证；**不得单独售卖字体**�
 | 模型 / 资产 | 用途 | 获取方式 | 需声明 |
 |---|---|---|---|
 | `qwen2.5-coder:7b-instruct`（Ollama 分发） | RQ-C 实验的候选生成器与自评估器 | `ollama pull qwen2.5-coder:7b-instruct` | 模型名、参数量、量化版本、分发渠道、**拉取日期** |
+| `qwythos:latest`（Qwen-3.5 系 / 8.95B / Q4_K_M，digest `427145e4e1ab`，Ollama 0.33.3） | 记忆线（P1.5 / H5）的下游阅读器基底 | 本地 Ollama | 同上一行；且 P1.5/H5 报告已记录运行指纹 `96e65707` |
+| **LoCoMo**（Long Conversation Memory，Snap Research） | 记忆线全部外部效度实验的语料（10 对话 / 5882 episode） | `tsx eval/fetch-locomo.ts`（**不入库**，见下） | 语料名称 + 版本/指纹 + 获取日期 |
 | `see-s-through` 系列权重（`.onnx` / `.pth` / `.safetensors`） | 图像分割 / 推理辅助 | 运行时下载（`.gitignore` 已排除） | 上游仓库与许可证 |
 | `talking-head-anime-4-demo` 数据 | 头像动画 | 运行时下载（`.gitignore` 已排除） | 上游仓库与许可证 |
 | TTS / ASR / 声纹模型 | 语音管线 | 见 `packages/audio*`、`packages/model-*` | 逐项登记 |
+
+### LoCoMo：为什么不分发字节，只分发获取脚本
+
+上游 `https://github.com/snap-research/locomo`（`data/locomo10.json`）。本仓库的做法：
+
+- **不分发**：数据集是第三方的，有其自身条款；`packages/memory-biomimetic/eval/data/` 已被 `.gitignore` 排除。
+- **分发获取脚本 + 钉住的指纹**：`eval/fetch-locomo.ts` + `eval/locomo-path.ts` 中的
+  `LOCOMO_SHA256 = 79fa87e9…98ff4`。脚本下载后**强制校验**，不匹配就报错并给出判断流程。
+- **钉指纹的理由**：LoCoMo 上游仍在增补。若不钉住，六个月后重跑会得到不同的 recall@K，
+  而**没有人能区分差异来自方法还是来自语料更新**。对一份以 recall@K 为主指标的论文，这是致命的。
+
+> ⚠️ **历史教训（已修复）**：此前 `eval/` 下 10 个脚本全部硬编码默认路径 `/tmp/locomo10.json`。
+> `/tmp` 不是持久位置，语料丢失后，P1.5 / H2 / H5 / 显著性探针 / 嵌套 CV 审计五条证据链
+> **全部无法重算**，而 `eval/results/` 里的结果报告仍在。现已改为仓库内持久路径 +
+> 环境变量 + 显式参数的三级解析，并在全部落空时给出可执行的补救步骤。
 
 > 📌 **对 RQ-C 论文的直接影响**：实验结论依附于**特定模型的具体权重快照**。
 > `temperature: 0` 只保证同一权重下的解码确定性，**不保证**跨模型版本可比。

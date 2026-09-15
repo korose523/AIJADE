@@ -20,6 +20,7 @@
 import process from 'node:process'
 
 import { buildExperimentManifest, buildMemory, DEFAULT_GATING, loadLocomo, NO_GATING, registerExperimentManifest, retentionCurve } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 const DELTAS = [0, 7, 30, 90, 180, 365]
 
@@ -39,7 +40,7 @@ async function main(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const limit = process.argv[3] ? Number(process.argv[3]) : undefined
 
   const convs = loadLocomo(path)

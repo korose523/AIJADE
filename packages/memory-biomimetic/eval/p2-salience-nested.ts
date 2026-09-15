@@ -28,6 +28,7 @@ import type { LocomoConversation } from '../src/index'
 import process from 'node:process'
 
 import { auc, buildExperimentManifest, loadLocomo, registerExperimentManifest, tokenize } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 // ============================================================ 复刻 probe.ts 的特征与拟合（审计保真，逐字复制）
 
@@ -420,7 +421,7 @@ function main(): void {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const convs = loadLocomo(path)
   const nRows = convs.reduce((s, c) => s + c.episodes.length, 0)
   // 实际正例行数 = 被引用且确实存在的 episode（evidenceIds 中可能含对话里不存在的 phantom id）

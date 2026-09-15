@@ -54,6 +54,7 @@ import {
   registerExperimentManifest,
   tokenF1,
 } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 const MODEL = 'qwythos:latest'
 const BASE_URL = 'http://localhost:11434'
@@ -154,7 +155,7 @@ async function run(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const locomoPath = process.argv[2] ?? '/tmp/locomo10.json'
+  const locomoPath = resolveLocomoPath(process.argv[2]).path
   const substrate = createOllamaSubstrate({ model: MODEL, mode: 'research', baseUrl: BASE_URL, sampling: READER_SAMPLING })
   const distiller = new LexicalDistiller()
 

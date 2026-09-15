@@ -235,3 +235,8 @@ duckdb-data/
 # Timestamped run backups (`trials.jsonl.bak-<epoch>`) are not products.
 *.bak-*
 
+# ---- Third-party research corpora (fetch, never commit) ----
+# LoCoMo is Snap Research's dataset under its own terms; we redistribute the
+# fetch script + pinned sha256, not the bytes. See eval/locomo-path.ts.
+packages/memory-biomimetic/eval/data/
+

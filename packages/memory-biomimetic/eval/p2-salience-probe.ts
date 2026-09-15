@@ -25,6 +25,7 @@ import type { LocomoConversation } from '../src/index'
 import process from 'node:process'
 
 import { auc, buildExperimentManifest, loadLocomo, predictSalience, registerExperimentManifest, tokenize } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 interface Ctx {
   /** 同对话中此前的 turn 文本（因果，不含未来） */
@@ -265,7 +266,7 @@ function main(): void {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const convs = loadLocomo(path)
   const { idf, nDocs } = buildIdf(convs)
   const rows = buildRows(convs, idf, nDocs)

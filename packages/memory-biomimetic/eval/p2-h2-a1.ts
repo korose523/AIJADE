@@ -49,6 +49,7 @@ import {
   scoreFeatures,
   standardizeFeatures,
 } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 type Cond = 'gated' | 'uniform'
 const CONDS: Cond[] = ['gated', 'uniform']
@@ -222,7 +223,7 @@ async function main(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const convs = loadLocomo(path)
 
   console.info('=== H2-A1：v2 预测 salience（内容显著性门控）下的熔断点 ===')

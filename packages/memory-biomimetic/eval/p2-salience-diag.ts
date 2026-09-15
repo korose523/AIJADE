@@ -1,6 +1,7 @@
 import process from 'node:process'
 
 import { auc, buildExperimentManifest, loadLocomo, predictSalience, registerExperimentManifest } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 /**
  * 诊断：什么是"会被问到的句子"？（A1 的第一步）
@@ -29,7 +30,7 @@ registerExperimentManifest(manifest)
 console.info(`experiment registered: ${manifest.schema} ${manifest.id}@${manifest.version} (seed ${manifest.seed}, ${manifest.conditions.length} conditions, ${manifest.metrics.length} metrics)`)
 console.info()
 
-const convs = loadLocomo(process.argv[2] ?? '/tmp/locomo10.json')
+const convs = loadLocomo(resolveLocomoPath(process.argv[2]).path)
 
 let pos = 0
 let neg = 0

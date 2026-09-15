@@ -44,6 +44,7 @@ import {
   registerExperimentManifest,
   retrievalStrength,
 } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 type Cond = 'gated' | 'uniform'
 const CONDS: Cond[] = ['gated', 'uniform']
@@ -174,7 +175,7 @@ async function main(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const convs = loadLocomo(path)
 
   console.info('=== H2 去 oracle 化：预测（内容）salience 下的 gated vs uniform ===')

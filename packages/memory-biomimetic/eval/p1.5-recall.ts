@@ -25,6 +25,7 @@ import process from 'node:process'
  * Usage:  tsx eval/p1.5-recall.ts [path-to-locomo.json] [conversation-limit]
  */
 import { buildExperimentManifest, buildMemory, DEFAULT_GATING, evidenceRecall, loadLocomo, NO_GATING, registerExperimentManifest } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 const KS = [1, 2, 3, 4, 6, 8]
 
@@ -68,7 +69,7 @@ async function main(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const limit = process.argv[3] ? Number(process.argv[3]) : undefined
   const convs = loadLocomo(path)
   const subset = limit ? convs.slice(0, limit) : convs

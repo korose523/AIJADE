@@ -46,6 +46,7 @@ import {
   registerExperimentManifest,
   retrievalStrength,
 } from '../src/index'
+import { resolveLocomoPath } from './locomo-path'
 
 type Cond = 'gated' | 'uniform' | 'none'
 const CONDS: Cond[] = ['gated', 'uniform', 'none']
@@ -191,7 +192,7 @@ async function main(): Promise<void> {
   console.info(`experiment registered: ${m.schema} ${m.id}@${m.version} (seed ${m.seed}, ${m.conditions.length} conditions, ${m.metrics.length} metrics)`)
   console.info()
 
-  const path = process.argv[2] ?? '/tmp/locomo10.json'
+  const path = resolveLocomoPath(process.argv[2]).path
   const limit = process.argv[3] ? Number(process.argv[3]) : undefined
   const convs = loadLocomo(path)
   const subset = limit ? convs.slice(0, limit) : convs
