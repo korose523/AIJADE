@@ -1,0 +1,259 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 1,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:7b-instruct",
+    "rounds": 3,
+    "pCorrect": 0.5,
+    "tasks": 3,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "attemptFix": true,
+    "runner": "run_rqc_custom.mts (non-src diagnostic)"
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "qwen2.5-coder:7b-instruct",
+    "temperature": 0,
+    "seed": 3759066737,
+    "ollamaVersion": "0.34.0"
+  },
+  "analysisUnit": "skill",
+  "nSkills": 12,
+  "nExecutions": 36,
+  "fingerprint": "68c6a12d",
+  "gitHash": "596d681370ebcb044688f3952ea320e97627a8ae",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 3
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 3
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 3
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 3
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 6,
+    "hallucinationRate": 0,
+    "missRate": null,
+    "agreement": 1
+  },
+  "diffInDiff": {
+    "estimate": 0,
+    "ci": {
+      "mean": 0,
+      "lo": 0,
+      "hi": 0
+    },
+    "cellMeans": {
+      "a": 1,
+      "b": 1,
+      "c": 1,
+      "d": 1
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 1,
+    "riskDifference": 0,
+    "cramersV": 0,
+    "cohensH": 0,
+    "interactionLogOdds": {
+      "estimate": 0,
+      "se": 0.6666666666666666,
+      "z": 0,
+      "p": 1
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": 0,
+    "se": 0.6666666666666666,
+    "z": 0,
+    "p": 1
+  },
+  "chiSquare": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        0
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        18,
+        0
+      ],
+      [
+        18,
+        0
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 0,
+    "b": 0,
+    "c": 0,
+    "d": 6,
+    "nPairs": 6,
+    "chiSquare": 0,
+    "pChiSquare": 1,
+    "pExact": null,
+    "p": 1,
+    "usedExact": false
+  },
+  "power": {
+    "minDetectableEffectAt80": 75.28293034999646,
+    "nSkillsPerCell": 3,
+    "powerAtDelta10pp": 0.04339965744440444,
+    "powerAtDelta5pp": 0.03309144566363986
+  }
+}

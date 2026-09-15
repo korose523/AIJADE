@@ -1,0 +1,169 @@
+{
+  "runDir": "/Users/mac/WorkBuddy/2026-09-05-09-12-10/aijade-workspace/packages/research-harness/experiments/rq-c/rq-c-s42-mock-t30-r5",
+  "analysisUnit": "skill",
+  "nSkills": 2199,
+  "nExecutions": 7200,
+  "trialSteps": 7200,
+  "table1_learningLoop": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.49722222222222223,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 536,
+      "precision": 0.6088888888888889,
+      "retiredRate": 0.3283582089552239,
+      "meanCallsPerSkill": 3.3582089552238807
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 599,
+      "precision": 0.6822222222222222,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 3.005008347245409
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 704,
+      "precision": 0.7011111111111111,
+      "retiredRate": 0.12215909090909091,
+      "meanCallsPerSkill": 2.5568181818181817
+    }
+  ],
+  "fig1_precisionCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.49722222222222223,
+        "lo": 0.4444444444444444,
+        "hi": 0.55
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.6088888888888889,
+        "lo": 0.5653147105556658,
+        "hi": 0.6495421587859164
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.6822222222222222,
+        "lo": 0.6406161762457183,
+        "hi": 0.7221289200835309
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.7011111111111111,
+        "lo": 0.6657223796033994,
+        "hi": 0.733960926260953
+      }
+    }
+  ],
+  "table2_effectsHolm": {
+    "effectSizes": {
+      "oddsRatio": 0.9804773245840481,
+      "riskDifference": -0.004928689158733901,
+      "cramersV": 0.003971330196804027,
+      "cohensH": -0.009857629152150604,
+      "interactionLogOdds": {
+        "estimate": -0.17528781483903483,
+        "se": 0.06030300547548723,
+        "z": -2.9067840559006326,
+        "p": 0.0036517862800731216
+      }
+    },
+    "interaction": {
+      "estimate": -0.17528781483903483,
+      "se": 0.06030300547548723,
+      "z": -2.9067840559006326,
+      "p": 0.0036517862800731216
+    },
+    "chiSquare": {
+      "statistic": 0.034681448306972486,
+      "p": 0.8522647734255928,
+      "table": [
+        [
+          621,
+          619
+        ],
+        [
+          485,
+          474
+        ]
+      ],
+      "df": 1
+    },
+    "chiSquareExecutionLevel": {
+      "statistic": 32.35787997526888,
+      "p": 1.2860284392957055e-8,
+      "table": [
+        [
+          2358,
+          1242
+        ],
+        [
+          2123,
+          1477
+        ]
+      ],
+      "df": 1
+    },
+    "mcnemar": {
+      "a": 55,
+      "b": 214,
+      "c": 76,
+      "d": 375,
+      "nPairs": 720,
+      "chiSquare": 64.72068965517241,
+      "pChiSquare": 8.881784197001252e-16,
+      "pExact": null,
+      "p": 8.881784197001252e-16,
+      "usedExact": false
+    },
+    "holm": {
+      "method": "holm",
+      "alpha": 0.05,
+      "adjusted": [
+        {
+          "label": "envFeedback.skillLevelChiSquare",
+          "p": 0.8522647734255928,
+          "adjustedP": 0.8522647734255928,
+          "reject": false
+        },
+        {
+          "label": "envFeedback.mcnemar",
+          "p": 8.881784197001252e-16,
+          "adjustedP": 2.6645352591003757e-15,
+          "reject": true
+        },
+        {
+          "label": "svXef.factorialInteraction",
+          "p": 0.0036517862800731216,
+          "adjustedP": 0.007303572560146243,
+          "reject": true
+        }
+      ]
+    },
+    "power": {
+      "minDetectableEffectAt80": 8.41712110792456,
+      "nSkillsPerCell": 550
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 30,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:7b-instruct",
+    "rounds": 5,
+    "pCorrect": 0.5,
+    "tasks": 12,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable"
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "qwen2.5-coder:7b-instruct",
+    "temperature": 0,
+    "seed": 3759066737,
+    "ollamaVersion": "0.34.0"
+  },
+  "analysisUnit": "skill",
+  "nSkills": 1708,
+  "nExecutions": 7200,
+  "fingerprint": "035fc327",
+  "gitHash": "596d681370ebcb044688f3952ea320e97627a8ae",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9166666666666666,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 390,
+      "precision": 0.9166666666666666,
+      "retiredRate": 0.07692307692307693,
+      "meanCallsPerSkill": 4.615384615384615
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 468,
+      "precision": 0.9166666666666666,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 3.8461538461538463
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 490,
+      "precision": 0.9166666666666666,
+      "retiredRate": 0.044897959183673466,
+      "meanCallsPerSkill": 3.673469387755102
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8861111111111111,
+        "hi": 0.9444444444444444
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8941709111488398,
+        "hi": 0.9371584699453552
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8909195433104631,
+        "hi": 0.940988523449437
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8960591873500525,
+        "hi": 0.9356881006723653
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 958,
+    "hallucinationRate": 0.09593023255813954,
+    "missRate": 0.7037037037037037,
+    "agreement": 0.732776617954071
+  },
+  "diffInDiff": {
+    "estimate": 0,
+    "ci": {
+      "mean": 0,
+      "lo": -0.04813783397754997,
+      "hi": 0.048142754232724905
+    },
+    "cellMeans": {
+      "a": 0.9166666666666666,
+      "b": 0.9166666666666666,
+      "c": 0.9166666666666666,
+      "d": 0.9166666666666666
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 0.6388888888888888,
+    "riskDifference": -0.05252525252525253,
+    "cramersV": 0.07437280471115706,
+    "cohensH": -0.15323381943290526,
+    "interactionLogOdds": {
+      "estimate": 0,
+      "se": 0.04923659639173309,
+      "z": 0,
+      "p": 1
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "envFeedback.skillLevelChiSquare",
+        "p": 0.0021143889361117858,
+        "adjustedP": 0.006343166808335358,
+        "reject": true
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": 0,
+    "se": 0.04923659639173309,
+    "z": 0,
+    "p": 1
+  },
+  "chiSquare": {
+    "statistic": 9.447484449671473,
+    "p": 0.0021143889361117858,
+    "table": [
+      [
+        736,
+        144
+      ],
+      [
+        736,
+        92
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        3300,
+        300
+      ],
+      [
+        3300,
+        300
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 60,
+    "b": 0,
+    "c": 0,
+    "d": 660,
+    "nPairs": 720,
+    "chiSquare": 0,
+    "pChiSquare": 1,
+    "pExact": null,
+    "p": 1,
+    "usedExact": false
+  },
+  "power": {
+    "minDetectableEffectAt80": 9.543073674506648,
+    "nSkillsPerCell": 427
+  }
+}
