@@ -67,6 +67,115 @@ body::before {
   border: 0;
 }
 
+/* ── Token-driven shell primitives (light tech-blue / academic) ──
+   Pure presentation — consume the semantic tokens above. Used by the stage
+   shells and the design-system preview. */
+
+/* App header bar. */
+.sci-header {
+  background: color-mix(in oklab, var(--surface) 88%, transparent);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+}
+
+/* Sidebar / rail. */
+.sci-sidebar {
+  background: var(--surface-sunken);
+  border-right: 1px solid var(--hairline);
+  color: var(--ink);
+}
+
+/* Raised content card. */
+.sci-card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+}
+
+/* Inset / well. */
+.sci-well {
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+}
+
+/* Text / number input. */
+.sci-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--ink);
+  padding: var(--space-2) var(--space-3);
+  font: var(--font-weight-normal) var(--font-size-base) / var(--line-height) var(--font-sans);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.sci-input::placeholder {
+  color: var(--ink-muted);
+}
+.sci-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+/* Primary button. */
+.sci-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--accent);
+  color: oklch(99% 0 0);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  font: var(--font-weight-semibold) var(--font-size-base) / 1 var(--font-sans);
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.sci-btn:hover {
+  background: var(--accent-strong);
+  box-shadow: var(--glow-accent);
+}
+
+/* Soft / secondary button. */
+.sci-btn-soft {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  border: 1px solid color-mix(in oklab, var(--accent) 24%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  font: var(--font-weight-semibold) var(--font-size-base) / 1 var(--font-sans);
+  cursor: pointer;
+}
+
+/* Status badge. */
+.sci-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border-radius: var(--radius-full);
+  padding: 2px var(--space-2);
+  font: var(--font-weight-medium) var(--font-size-xs) / 1 var(--font-sans);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+.sci-badge-success {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.sci-badge-warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.sci-badge-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
 /* Subtle hairline-friendly scrollbars. */
 * {
   scrollbar-color: var(--hairline-strong) transparent;

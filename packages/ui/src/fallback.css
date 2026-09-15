@@ -1,5 +1,34 @@
+/**
+ * AIJADE design tokens — light "tech-blue / academic" system.
+ *
+ * This is the single source of truth for the client visual language. Every
+ * stage app (stage-web / stage-pocket / stage-tamagotchi / ui-admin) and every
+ * UI package consumes these semantic CSS custom properties — no hardcoded
+ * colors in components.
+ *
+ * Naming convention:
+ *   --surface*      backgrounds / elevation
+ *   --ink*          text
+ *   --border*      hairlines / dividers
+ *   --accent*      brand / interactive
+ *   --success/--warning/--danger   semantic status
+ *   --space-*      spacing scale (4px base)
+ *   --radius-*     corner radius scale
+ *   --shadow-*     elevation scale
+ *   --font-*       typography (family / size / weight)
+ *   --grid-*       ambient engineering grid
+ *
+ * Light mode is the default. `html.dark` overrides the same variables so the
+ * dark variant follows automatically.
+ *
+ * Legacy aliases (--surface-1/2/3, --text-*, --hairline*, --bg-color*,
+ * --shadow-panel / --shadow-float) are kept and mapped onto the canonical
+ * tokens so existing chrome.css rules and UnoCSS shortcuts keep working.
+ */
+
 :root {
-  --chromatic-hue: 202;
+  /* ── Chromatic engine (drives --accent and dynamic hue theming) ── */
+  --chromatic-hue: 202;          /* tech-blue */
   --chromatic-chroma: 0.19;
   --chromatic-bri: 1;
   --chromatic-sat: 1;
@@ -15,52 +44,153 @@
   --chromatic-chroma-900: calc(var(--chromatic-chroma) * 0.7);
   --chromatic-chroma-950: calc(var(--chromatic-chroma) * 0.5);
 
-  /* ── Light-sci-fi semantic tokens (light mode is the default) ── */
-  --bg-color-light: oklch(97.2% 0.012 232);
-  --bg-color-dark: oklch(17.5% 0.020 240);
-  --surface-1: oklch(99.4% 0.004 232); /* raised panel */
-  --surface-2: oklch(96.4% 0.010 232); /* inset / secondary panel */
-  --surface-3: oklch(93.8% 0.015 232); /* deepest inset / track */
+  /* ── Surfaces (light) ──
+     Canvas is the lightest; raised cards sit brighter; sunken insets sit darker. */
+  --surface: oklch(97.2% 0.012 232);            /* app canvas / base background */
+  --surface-raised: oklch(99.4% 0.004 232);     /* cards / floating panels */
+  --surface-sunken: oklch(93.8% 0.015 232);      /* insets / tracks / wells */
   --surface-glass: color-mix(in oklab, oklch(99.6% 0.003 232) 68%, transparent);
   --surface-glass-blur: 14px;
-  --hairline: oklch(72% 0.045 232 / 0.30);
-  --hairline-strong: oklch(64% 0.075 232 / 0.48);
-  --text-primary: oklch(24% 0.028 240);
-  --text-secondary: oklch(44% 0.022 238);
-  --text-muted: oklch(60% 0.016 236);
+
+  /* ── Ink (text) ── */
+  --ink: oklch(24% 0.028 240);                   /* primary text */
+  --ink-soft: oklch(44% 0.022 238);              /* secondary text */
+  --ink-muted: oklch(60% 0.016 236);             /* hints / captions */
+
+  /* ── Borders / hairlines ── */
+  --border: oklch(72% 0.045 232 / 0.30);
+  --border-strong: oklch(64% 0.075 232 / 0.48);
+
+  /* ── Accent (tech-blue) ── */
   --accent: oklch(58% 0.155 202);
   --accent-strong: oklch(50% 0.175 202);
   --accent-soft: oklch(94% 0.038 202);
-  --glow-accent: 0 0 22px oklch(70% 0.15 202 / 0.32);
-  --grid-line: oklch(55% 0.055 232 / 0.13);
-  --grid-size: 28px;
-  --scrim: oklch(22% 0.02 240 / 0.42);
-  --shadow-panel: 0 1px 2px oklch(40% 0.04 240 / 0.05), 0 8px 28px oklch(45% 0.05 240 / 0.07);
-  --shadow-float: 0 2px 6px oklch(40% 0.04 240 / 0.07), 0 18px 48px oklch(45% 0.06 240 / 0.12);
 
-  --bg-color: var(--bg-color-light);
+  /* ── Semantic status ── */
+  --success: oklch(58% 0.13 152);
+  --success-soft: oklch(95% 0.045 152);
+  --warning: oklch(72% 0.145 78);
+  --warning-soft: oklch(97% 0.055 78);
+  --danger: oklch(58% 0.18 25);
+  --danger-soft: oklch(96% 0.05 25);
+
+  /* ── Spacing scale (4px base) ── */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── Radius scale ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ── Shadow / elevation scale ── */
+  --shadow-sm: 0 1px 2px oklch(40% 0.04 240 / 0.06);
+  --shadow-md: 0 1px 2px oklch(40% 0.04 240 / 0.05), 0 8px 28px oklch(45% 0.05 240 / 0.07);
+  --shadow-lg: 0 2px 6px oklch(40% 0.04 240 / 0.07), 0 18px 48px oklch(45% 0.06 240 / 0.12);
+
+  /* ── Typography ── */
+  --font-sans: "DM Sans Variant", "DM Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: "DM Serif Display", ui-serif, Georgia, serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height: 1.55;
+
+  /* ── Ambient engineering grid + glow (kept subtle for an academic feel) ── */
+  --grid-line: oklch(55% 0.055 232 / 0.08);
+  --grid-size: 28px;
+  --glow-accent: 0 0 18px oklch(70% 0.15 202 / 0.22);
+  --scrim: oklch(22% 0.02 240 / 0.42);
+
+  /* ── Legacy aliases (do not use in new code; kept for compatibility) ── */
+  --bg-color-light: var(--surface);
+  --bg-color-dark: oklch(17.5% 0.020 240);
+  --surface-1: var(--surface-raised);
+  --surface-2: oklch(96.4% 0.010 232);
+  --surface-3: var(--surface-sunken);
+  --hairline: var(--border);
+  --hairline-strong: var(--border-strong);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-muted);
+  --shadow-panel: var(--shadow-md);
+  --shadow-float: var(--shadow-lg);
+
+  --bg-color: var(--surface);
 }
 
 html.dark {
-  --surface-1: oklch(22.4% 0.024 240);
-  --surface-2: oklch(19.6% 0.022 240);
-  --surface-3: oklch(16.8% 0.020 240);
+  /* Surfaces */
+  --surface: oklch(17.5% 0.020 240);
+  --surface-raised: oklch(22.4% 0.024 240);
+  --surface-sunken: oklch(16.8% 0.020 240);
   --surface-glass: color-mix(in oklab, oklch(23% 0.026 240) 62%, transparent);
-  --hairline: oklch(62% 0.06 232 / 0.26);
-  --hairline-strong: oklch(72% 0.10 202 / 0.42);
-  --text-primary: oklch(95% 0.012 232);
-  --text-secondary: oklch(80% 0.020 234);
-  --text-muted: oklch(64% 0.020 236);
+
+  /* Ink */
+  --ink: oklch(95% 0.012 232);
+  --ink-soft: oklch(80% 0.020 234);
+  --ink-muted: oklch(64% 0.020 236);
+
+  /* Borders */
+  --border: oklch(62% 0.06 232 / 0.26);
+  --border-strong: oklch(72% 0.10 202 / 0.42);
+
+  /* Accent */
   --accent: oklch(78% 0.135 200);
   --accent-strong: oklch(85% 0.145 198);
   --accent-soft: oklch(28% 0.050 202);
-  --glow-accent: 0 0 26px oklch(72% 0.16 200 / 0.40);
-  --grid-line: oklch(78% 0.06 232 / 0.10);
-  --scrim: oklch(10% 0.01 240 / 0.58);
-  --shadow-panel: 0 1px 2px oklch(0% 0 0 / 0.30), 0 8px 28px oklch(0% 0 0 / 0.38);
-  --shadow-float: 0 2px 8px oklch(0% 0 0 / 0.34), 0 20px 52px oklch(0% 0 0 / 0.46);
 
-  --bg-color: var(--bg-color-dark);
+  /* Semantic status (dark) */
+  --success: oklch(72% 0.13 152);
+  --success-soft: oklch(28% 0.06 152);
+  --warning: oklch(82% 0.13 78);
+  --warning-soft: oklch(30% 0.07 78);
+  --danger: oklch(70% 0.17 25);
+  --danger-soft: oklch(30% 0.08 25);
+
+  /* Grid + glow */
+  --grid-line: oklch(78% 0.06 232 / 0.10);
+  --glow-accent: 0 0 22px oklch(72% 0.16 200 / 0.40);
+  --scrim: oklch(10% 0.01 240 / 0.58);
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.28);
+  --shadow-md: 0 1px 2px oklch(0% 0 0 / 0.30), 0 8px 28px oklch(0% 0 0 / 0.38);
+  --shadow-lg: 0 2px 8px oklch(0% 0 0 / 0.34), 0 20px 52px oklch(0% 0 0 / 0.46);
+
+  /* Legacy aliases */
+  --bg-color-dark: var(--surface);
+  --surface-1: var(--surface-raised);
+  --surface-2: oklch(19.6% 0.022 240);
+  --surface-3: var(--surface-sunken);
+  --hairline: var(--border);
+  --hairline-strong: var(--border-strong);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
+  --text-muted: var(--ink-muted);
+  --shadow-panel: var(--shadow-md);
+  --shadow-float: var(--shadow-lg);
+
+  --bg-color: var(--surface);
   color-scheme: dark;
 }
 
