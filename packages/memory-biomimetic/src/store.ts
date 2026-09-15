@@ -32,13 +32,25 @@ import { HacController, mulberry32 } from './hac'
 import { DEFAULT_CDI_CONFIG, feedbackToIdentityCandidate, IdentityController, snapshotToIdentityEvidence } from './identity'
 import { DEFAULT_SWITCHES, bypassOf as interventionBypassOf, isEnabled as interventionIsEnabled, registerIntervention, resolveIntervention } from './intervention'
 import { applyRetrievalNoise, deriveGateFromContent, derivePresentationModulation } from './plasticity'
-import { detectConflict, jaccard, scoreCandidate } from './retrieval'
+import { collapseDuplicateContent, detectConflict, jaccard, scoreCandidate, scoreCandidatesStandardized } from './retrieval'
 import { predictSalienceV2, SALIENCE_FEATURES, salienceFeatureVector } from './salience'
 import { buildLexicalIndex, tokenize } from './sim'
 import { DEFAULT_BELIEF_CONFIG, DEFAULT_MEMORY_CONFIG, isRetrievableStatus, NEUTRAL_AFFECT, NEUTRAL_PHYSIOLOGY_V3 } from './types'
 
 /** Content salience above this is treated as a "salient" memory worth keeping. */
 const SALIENCE_THRESHOLD = 0.5
+
+/**
+ * How many top-ranked candidates are scanned for R-conflicts (see `retrieve`).
+ *
+ * Deliberately a **constant**, not `topK`: the penalty a candidate receives must
+ * not depend on how many the caller asked for, otherwise `retrieve(q, 4)` is not
+ * a prefix of `retrieve(q, 8)` and recall@1/2/4/8 are not comparable. It is also
+ * bounded because pairwise conflict detection is O(n²) — scanning the whole pool
+ * (~12k candidates on LoCoMo) is not affordable, and is not needed: conflicts
+ * only matter near the retrieval cutoff.
+ */
+const CONFLICT_RERANK_POOL = 150
 
 function clamp01(x: number): number {
   return Math.min(1, Math.max(0, x))
@@ -827,6 +839,11 @@ export class BioticMemory {
     const g = this.config.gating
     const w = this.config.weights
     const conflictPenalty = this.config.conflictPenalty ?? 0.5
+    // Read defensively (`??`) so snapshot configs written before these fields
+    // existed still rehydrate: absent means "corrected behaviour", which is what
+    // a store constructed today would have.
+    const scoreMode = this.config.retrievalScoreMode ?? 'standardized'
+    const dedupeByContentEnabled = this.config.dedupeByContent ?? true
     const now = this.nowMs
 
     // v2 / P2：记忆门控由内容显著性驱动（deriveGateFromContent），不再由 this.mood。
@@ -901,22 +918,53 @@ export class BioticMemory {
         )),
     ]
 
-    const scored: ScoredInternal[] = items.map((it) => {
-      const sim = idx.cosine(qVec, it.id)
-      const strength = retrievalStrength(
+    // ── Content deduplication ─────────────────────────────────────────────
+    // `LexicalDistiller` emits one fact per episode with byte-identical content,
+    // so without this every piece of evidence occupies two ranks and every
+    // recall@K is really recall@K/2. See `collapseDuplicateContent`.
+    const dedup = dedupeByContentEnabled
+      ? collapseDuplicateContent(items)
+      : { kept: items, absorbed: new Map<string, string[]>() }
+    const ranked = dedup.kept
+
+    // ── Component extraction (pool-wide, hence K-independent) ─────────────
+    const rows = ranked.map(it => ({
+      similarity: idx.cosine(qVec, it.id),
+      strengthRaw: retrievalStrength(
         { createdAt: it.createdAt, accessCount: it.accessCount, baseStrength: it.baseStrength, durability: it.durability },
         now,
         f,
         g,
         it.salience,
-      )
-      const ageNorm = Math.max(0, now - it.createdAt) / f.ageScaleMs
-      const recency = 1 / (1 + ageNorm)
-      const context = jaccard(queryTags, it.contextTags)
-      // affect term is presentation-only — pass 0 so it never biases the memory score.
-      const { score, parts } = scoreCandidate(sim, strength, recency, context, 0, w)
+      ),
+      // affect term is presentation-only — 0 so it never biases the memory score.
+      affect: 0,
+      recency: 1 / (1 + Math.max(0, now - it.createdAt) / f.ageScaleMs),
+      context: jaccard(queryTags, it.contextTags),
+    }))
+    // `'standardized'` z-scores each component across this pool; the weights are
+    // untouched. `'additive'` is the legacy raw sum, kept for reproduction.
+    const standardized = scoreMode === 'standardized'
+      ? scoreCandidatesStandardized(rows, w)
+      : null
+
+    const scored: ScoredInternal[] = ranked.map((it, i) => {
       const gate = deriveGateFromContent({ salience: it.salience, socialSalience: it.socialSalience, novelty: it.novelty })
-      let noisy = applyRetrievalNoise(score, it.id, gate.retrievalNoise)
+      let base: number
+      let parts: ScoredCandidate['parts']
+      if (standardized) {
+        base = standardized[i].score
+        parts = { ...standardized[i].rawParts, z: standardized[i].z }
+      }
+      else {
+        const legacy = scoreCandidate(rows[i].similarity, rows[i].strengthRaw, rows[i].recency, rows[i].context, rows[i].affect, w)
+        base = legacy.score
+        parts = legacy.parts
+      }
+      const absorbedIds = dedup.absorbed.get(it.id)
+      if (absorbedIds)
+        parts = { ...parts, deduplicatedIds: absorbedIds }
+      let noisy = applyRetrievalNoise(base, it.id, gate.retrievalNoise)
       if (this.hac) {
         // v7 §9.5 — cognitive-load-driven retrieval degradation: a *cost* that
         // grows with load c_t, making HAC falsifiable (not a gain knob).
@@ -935,11 +983,16 @@ export class BioticMemory {
       }
     })
 
-    // R-conflict penalty (spec §3): among the top-K, detect pairs sharing a key
-    // entity with opposing polarity; penalise the OLDER + lower-durability loser.
+    // R-conflict penalty (spec §3): detect pairs sharing a key entity with
+    // opposing polarity; penalise the OLDER + lower-durability loser.
     // "冲突时以新近 + 高巩固强度者为准，保留旧版本供审计" —— 双份都留在 store，只罚分。
+    //
+    // The scanned head is a *constant* under the corrected scoring, so the
+    // penalty a candidate receives cannot depend on `topK`. `'additive'` keeps
+    // the legacy K-dependent head purely so pre-fix numbers reproduce exactly.
+    const penaltyHead = standardized ? CONFLICT_RERANK_POOL : topK
     scored.sort((a, b) => b.score - a.score)
-    const top = scored.slice(0, topK)
+    const top = scored.slice(0, penaltyHead)
     for (let i = 0; i < top.length; i++) {
       for (let j = i + 1; j < top.length; j++) {
         if (!detectConflict(top[i].content, top[j].content))

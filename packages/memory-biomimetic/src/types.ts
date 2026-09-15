@@ -328,6 +328,12 @@ export const DEFAULT_RETRIEVAL_WEIGHTS: RetrievalWeights = {
 }
 
 /**
+ * How the four retrieval components are combined before weighting. See
+ * {@link MemoryConfig.retrievalScoreMode}.
+ */
+export type RetrievalScoreMode = 'additive' | 'standardized'
+
+/**
  * Belief-graph thresholds (v7 §10.2; contract #5 `BeliefRevision`).
  *
  * Every threshold is configurable precisely so it can be ablated.
@@ -361,6 +367,33 @@ export interface MemoryConfig {
   consolidateThreshold: number
   /** Hard floor below which a memory is treated as inaccessible. */
   retrievalFloor: number
+  /**
+   * How the four retrieval components are combined before weighting.
+   *
+   * - `'standardized'` (default) — each component is z-scored **within the
+   *   candidate pool** and only then weighted; see
+   *   `scoreCandidatesStandardized` in `retrieval.ts`.
+   * - `'additive'` — the legacy raw weighted sum, kept so previously published
+   *   numbers stay reproducible. It also retains the legacy K-dependent
+   *   R-conflict reranking, because the two only diverge together in practice.
+   *
+   * Why this exists: on real corpora the components are **not** on comparable
+   * scales (a sparse TF-IDF cosine between a short query and a long utterance
+   * lands around 0.05–0.2, while the saturated strength and recency terms sit
+   * near 0.5–1.0). A raw weighted sum therefore does not express the weights as
+   * importance at all — it silently hands the ranking to whichever component
+   * happens to occupy the widest absolute range. Standardising first makes the
+   * weights mean what they were always documented to mean, **without changing
+   * any weight value**.
+   */
+  retrievalScoreMode: RetrievalScoreMode
+  /**
+   * Collapse candidates whose whitespace-normalised content is identical,
+   * keeping the `episode` for provenance. `LexicalDistiller` emits one fact per
+   * episode carrying byte-identical content, so with this disabled every piece
+   * of evidence occupies two ranks and `recall@K` is really `recall@K/2`.
+   */
+  dedupeByContent: boolean
   /**
    * L3 presentation layer. When `enabled` is false, the hormone-driven
    * `PresentationModulation` is forced to neutral and has **no** effect on memory
@@ -443,6 +476,8 @@ export const DEFAULT_MEMORY_CONFIG: MemoryConfig = {
   weights: { ...DEFAULT_RETRIEVAL_WEIGHTS },
   consolidateThreshold: 8,
   retrievalFloor: 0.02,
+  retrievalScoreMode: 'standardized',
+  dedupeByContent: true,
   physiology: { enabled: true },
   conflictPenalty: 0.5,
   belief: { ...DEFAULT_BELIEF_CONFIG },
@@ -470,6 +505,23 @@ export interface ScoredCandidate {
     noise?: number
     /** True if this candidate was penalised as the *loser* of an R-conflict. */
     conflict?: boolean
+    /**
+     * `'standardized'` mode only — the z-scored component values that were
+     * actually weighted. The sibling scalars above stay **raw** so a surprising
+     * retrieval can be read from either side of the standardisation.
+     */
+    z?: {
+      similarity: number
+      strength: number
+      recency: number
+      context: number
+    }
+    /**
+     * Ids collapsed into this candidate by content deduplication. The collapsed
+     * memories remain in the store for audit; they are only excluded from
+     * ranking.
+     */
+    deduplicatedIds?: string[]
   }
 }
 
