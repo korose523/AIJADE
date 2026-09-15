@@ -59,6 +59,26 @@ const props = withDefaults(defineProps<{
 
 const componentState = defineModel<'pending' | 'loading' | 'mounted'>('state', { default: 'pending' })
 
+/**
+ * Model load failures used to end at `console.error`, so a broken or missing
+ * model looked identical to "still loading". Surface them instead.
+ */
+const modelErrorMessage = ref<string>()
+
+function onModelError(error: unknown) {
+  console.error('[Stage] model failed to load', error)
+
+  if (error instanceof Error && error.message) {
+    modelErrorMessage.value = error.message
+    return
+  }
+  if (typeof error === 'string' && error) {
+    modelErrorMessage.value = error
+    return
+  }
+  modelErrorMessage.value = '模型加载失败，请检查模型文件是否存在、格式是否受支持。'
+}
+
 const { getDb } = useDuckDb()
 // const transformersProvider = createTransformers({ embedWorkerURL })
 
@@ -76,6 +96,12 @@ const {
   themeColorsHueDynamic,
 
 } = storeToRefs(settingsStore)
+
+// A previous failure must not linger once the user picks a different model.
+watch(stageModelSelectedUrl, () => {
+  modelErrorMessage.value = undefined
+})
+
 const {
   live2dShadowEnabled,
   live2dMaxFps,
@@ -918,6 +944,24 @@ defineExpose({
     />
 
     <div relative h-full w-full>
+      <!-- Model load failure. Rendered over the stage because a failed model
+           leaves the canvas empty, which is otherwise indistinguishable from
+           "still loading". -->
+      <div
+        v-if="modelErrorMessage"
+
+        pointer-events-none absolute left-0 top-0 z-20 h-full w-full flex items-start justify-center p-4
+      >
+        <Callout
+          v-if="modelErrorMessage"
+          class="pointer-events-auto max-w-md"
+          theme="orange"
+          label="模型加载失败"
+        >
+          <p>{{ modelErrorMessage }}</p>
+        </Callout>
+      </div>
+
       <Live2DScene
         v-if="stageModelRenderer === 'live2d' && showStage"
         ref="live2dSceneRef"
@@ -937,7 +981,7 @@ defineExpose({
         :live2d-render-scale="live2dRenderScale"
       />
       <ThreeScene
-        v-if="stageModelRenderer === 'vrm' && showStage"
+        v-if="(stageModelRenderer === 'vrm' || stageModelRenderer === 'mmd') && showStage"
         ref="vrmViewerRef"
         v-model:state="componentState"
         min-w="50% <lg:full" min-h="100 sm:100" h-full w-full flex-1
@@ -950,7 +994,7 @@ defineExpose({
         :show-axes="stageViewControlsEnabled"
         :enable-orbit-controls="props.enableOrbitControls"
         :current-audio-source="currentAudioSource"
-        @error="console.error"
+        @error="onModelError"
       />
       <SpineScene
         v-if="stageModelRenderer === 'spine' && showStage"

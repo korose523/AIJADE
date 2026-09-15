@@ -736,7 +736,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
           :key="groupName"
           flex items-center justify-between
         >
-          <span text-sm text-$text-primary text-$text-primary>{{ groupName }}</span>
+          <span text-sm text-$text-primary>{{ groupName }}</span>
           <Checkbox
             :model-value="isGroupActive(group)"
             @update:model-value="expressionStore.toggle(groupName)"
@@ -758,7 +758,7 @@ function handleMotionSelect(selectedMotionPath: string | number | undefined) {
       </span>
 
       <!-- Custom per-expression LLM toggles (only when mode = 'custom') -->
-      <div v-if="expressionStore.llmMode === 'custom'" mt-2 flex flex-col gap-2 border-l-2 border-$hairline border-$hairline pl-3>
+      <div v-if="expressionStore.llmMode === 'custom'" mt-2 flex flex-col gap-2 border-l-2 border-$hairline pl-3>
         <div
           v-for="[groupName] in expressionGroups"
           :key="`llm-${groupName}`"

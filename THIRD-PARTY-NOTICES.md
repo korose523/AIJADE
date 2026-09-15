@@ -57,7 +57,7 @@ SIL OFL 要求：保留版权声明与许可证；**不得单独售卖字体**�
 | 格式 | 依赖包 / SDK | 许可证 | 引入方式 | 备注 |
 |---|---|---|---|---|
 | VRM | `@pixiv/three-vrm`、`@pixiv/three-vrm-core`、`@pixiv/three-vrm-animation` | MIT | pnpm catalog 依赖，`packages/stage-ui-three` | 已在库使用；许可宽松 |
-| MMD（.pmx/.pmd、.vmd） | `three-stdlib`（`three-stdlib/loaders/MMDLoader`） | MIT | pnpm catalog 依赖，`packages/stage-ui-three` | **2026-09-16 前该依赖未安装**，导致 PMX 加载器运行时静默失败、从未接通 |
+| MMD（.pmx/.pmd、.vmd） | `three-stdlib` 2.36.1（`MMDLoader` + 其动画构建器） | MIT | pnpm catalog 依赖，`packages/stage-ui-three`；**必须从包根导入**（`import { MMDLoader } from 'three-stdlib'`）——该包的 `exports` 只发布根入口，`three-stdlib/loaders/MMDLoader` 子路径在 `moduleResolution: Bundler` 下无法解析 | 2026-09-16 前该依赖**未安装**，PMX 加载器运行时静默返回 `undefined`、从未接通；现已安装并接线 |
 | Live2D（.moc3） | `pixi-live2d-display` | MIT | pnpm catalog 依赖，`packages/stage-ui-live2d` | 仅封装层；**必须配合下述 Cubism Core 才能运行** |
 
 #### ⚠️ Live2D Cubism Core —— 专有许可，与 MIT 不同（重点）

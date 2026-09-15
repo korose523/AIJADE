@@ -24,7 +24,8 @@ const { sceneMutationLocked } = storeToRefs(useModelStore())
 const activeRenderer = computed<'live2d' | 'vrm' | null>(() => {
   if (stageModelRenderer.value === 'live2d')
     return 'live2d'
-  if (stageModelRenderer.value === 'vrm')
+  // MMD renders through the same three.js scene, so it uses the VRM controls.
+  if (stageModelRenderer.value === 'vrm' || stageModelRenderer.value === 'mmd')
     return 'vrm'
   return null
 })

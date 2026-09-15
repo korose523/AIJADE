@@ -12,7 +12,9 @@ const { viewControlsEnabled: threeSliderCtrlEnabled, viewControlMode: threeCtrlM
 const controlEnabled = computed(() => {
   if (stageModelRenderer.value === 'live2d')
     return { enabled: l2dViewCtrlEnabled, mode: l2dCtrlMode, supported: l2dSupportedCtrl, conf: l2dCtrlConf, reset: l2dSet }
-  if (stageModelRenderer.value === 'vrm')
+  // MMD shares the three.js camera-control store with VRM — both render through
+  // ThreeScene, so the same orbit/zoom controls apply.
+  if (stageModelRenderer.value === 'vrm' || stageModelRenderer.value === 'mmd')
     return { enabled: threeSliderCtrlEnabled, mode: threeCtrlMode, supported: threeSupportedControl, conf: threeCtrlConf, reset: threeSet }
   return null
 })

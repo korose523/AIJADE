@@ -47,12 +47,23 @@ import {
 } from '../trace'
 import { OrbitControls } from './Controls'
 import { SkyBox } from './Environment'
-import { VRMModel } from './Model'
+import { MMDModel, VRMModel } from './Model'
 
 const props = withDefaults(defineProps<{
   currentAudioSource?: AudioBufferSourceNode
   cursorPosition?: { x: number, y: number }
   modelSrc?: string
+  /**
+   * Which loader to route `modelSrc` to. Inferred from the file extension when
+   * omitted.
+   *
+   * This exists because PMX/PMD models were previously routed to the VRM
+   * renderer, which cannot parse them — the format was selectable in the UI and
+   * then silently failed.
+   */
+  modelFormat?: 'vrm' | 'mmd'
+  /** URL of a `.vmd` motion file to play on an MMD model. */
+  motionSrc?: string
   skyBoxSrc?: string
   /**
    * Enables user-driven OrbitControls camera rotation and zoom.
@@ -160,6 +171,17 @@ const {
 type VrmFrameRuntimeHook = (vrm: VRM, delta: number) => void
 
 const modelRef = ref<InstanceType<typeof VRMModel>>()
+const mmdModelRef = ref<InstanceType<typeof MMDModel>>()
+
+/**
+ * Route the model source to the loader that can actually parse it.
+ * `.pmx` / `.pmd` are MMD; everything else is handed to the VRM/GLB path.
+ */
+const modelKind = computed<'vrm' | 'mmd'>(() => {
+  if (props.modelFormat)
+    return props.modelFormat
+  return /\.(pmx|pmd)(\?|#|$)/i.test(props.modelSrc ?? '') ? 'mmd' : 'vrm'
+})
 const vrmFrameRuntimeHook = shallowRef<VrmFrameRuntimeHook>()
 
 const camera = shallowRef(new PerspectiveCamera())
@@ -580,7 +602,11 @@ watch(() => props.modelSrc, (modelSrc) => {
   setScenePhaseWithTrace(resolveScenePhaseAfterBinding(), 'props:model-src')
 }, { immediate: true })
 
-watch(modelRef, (next, prev) => {
+// Whichever model component is mounted depends on the format, so the subtree
+// traces and phase bookkeeping follow the active one rather than a fixed ref.
+const activeModelRef = computed(() => modelKind.value === 'mmd' ? mmdModelRef.value : modelRef.value)
+
+watch(activeModelRef, (next, prev) => {
   if (!prev && next)
     emitSceneSubtreeTrace('modelRef', 'attached')
 
@@ -705,6 +731,12 @@ watch(directionalLightRotation, (newRotation) => {
 
 defineExpose({
   setExpression: (expression: string, intensity = 1) => {
+    if (modelKind.value === 'mmd') {
+      // MMD has no VRM expression presets; expressions are morph targets, so
+      // the requested name is applied as a morph weight directly.
+      mmdModelRef.value?.setMorph(expression, intensity)
+      return
+    }
     modelRef.value?.setExpression(expression, intensity)
   },
   // NOTICE: External runtime hooks are intentionally separate from internal VRM model hooks.
@@ -719,7 +751,7 @@ defineExpose({
   },
   camera: () => camera.value,
   renderer: () => tresContextRef.value?.renderer.instance,
-  scene: () => modelRef.value?.scene,
+  scene: () => modelKind.value === 'mmd' ? mmdModelRef.value?.scene : modelRef.value?.scene,
   readRenderTargetRegionAtClientPoint,
   captureFrame: async () => {
     if (!tresContextRef.value)
@@ -789,7 +821,20 @@ defineExpose({
           <HueSaturationPmndrs v-bind="effectProps" />
         </EffectComposerPmndrs>
       </Suspense>
+      <MMDModel
+        v-if="modelKind === 'mmd'"
+        ref="mmdModelRef"
+        :model-src="props.modelSrc"
+        :motion-src="props.motionSrc"
+        :paused="props.paused"
+        :model-rotation-y="modelRotationY"
+        @loading-progress="(val: number) => emit('loadModelProgress', val)"
+        @load-start="onVRMModelLoadStart"
+        @error="onVRMModelError"
+        @loaded="onVRMModelLoaded"
+      />
       <VRMModel
+        v-else
         ref="modelRef"
         :current-audio-source="props.currentAudioSource"
         :cursor-position="props.cursorPosition"

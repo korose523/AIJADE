@@ -7,7 +7,7 @@ import { computed, watch } from 'vue'
 
 import { DisplayModelFormat, useDisplayModelsStore } from '../display-models'
 
-export type StageModelRenderer = 'live2d' | 'vrm' | 'spine' | 'inochi2d' | 'godot' | 'disabled' | undefined
+export type StageModelRenderer = 'live2d' | 'vrm' | 'mmd' | 'spine' | 'inochi2d' | 'godot' | 'disabled' | undefined
 type BuiltInStageModelRenderer = Exclude<StageModelRenderer, 'godot'>
 
 export const useSettingsStageModel = defineStore('settings-stage-model', () => {
@@ -42,6 +42,11 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
     stageModelSelectedUrl.value = nextUrl
   }
 
+  /**
+   * Exported so the format→renderer routing can be asserted directly. PMX/PMD
+   * being routed to the VRM renderer is the exact bug that made MMD models
+   * selectable but never renderable, so it needs a test, not just a comment.
+   */
   function resolveBuiltInStageModelRenderer(model?: DisplayModel): BuiltInStageModelRenderer {
     if (!model) {
       return 'disabled'
@@ -52,10 +57,14 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
         return 'live2d'
       case DisplayModelFormat.VRM:
       case DisplayModelFormat.GLB:
+        return 'vrm'
+      // PMX/PMD are MMD, not VRM. They used to be routed to the VRM renderer,
+      // which does not understand the format, so selecting one produced a
+      // loading state that never resolved instead of a usable avatar.
       case DisplayModelFormat.PMXZip:
       case DisplayModelFormat.PMXDirectory:
       case DisplayModelFormat.PMD:
-        return 'vrm'
+        return 'mmd'
       case DisplayModelFormat.SpineZip:
         return 'spine'
       case DisplayModelFormat.Inochi2d:
@@ -153,6 +162,7 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
     stageViewControlsEnabled,
 
     initializeStageModel,
+    resolveBuiltInStageModelRenderer,
     restoreBuiltInStageModelRenderer,
     setStageModelRenderer,
     updateStageModel,
