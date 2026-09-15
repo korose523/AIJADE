@@ -35,6 +35,7 @@
 
 import type { Belief, EvidenceEntry } from './belief'
 import type { RiskLevel } from './events'
+import type { PgcState4, StimulusFeature, Tau } from './pgc-state'
 import type { PlasticityGate } from './plasticity'
 
 import { pgcWritePlanReadyEvent as pgcWritePlanReadyEventSchema } from './events'
@@ -91,6 +92,15 @@ export interface PgcReadContext {
    */
   evidence_records?: EvidenceEntry[]
   beliefs?: Belief[]
+  /**
+   * v6 四维内生状态 s_t = [a, c, d, f]（可选）。**提供后走 v6 门控**；不提供则保持
+   * 既有纯证据阈值策略不变（向后兼容，478 个既有测试不受影响）。v6 是叠加层，不是替换。
+   */
+  pgc_v6_state?: PgcState4
+  /**
+   * v6 刺激特征（可选，随状态一起提供，仅用于审计/可解释性；门控本身只消费 s_t）。
+   */
+  pgc_v6_stimulus_features?: Partial<Record<StimulusFeature, number>>
 }
 
 // ============================================================================
@@ -170,6 +180,79 @@ export function resolvePgcPolicy(version: string): PgcPolicy {
 }
 
 // ============================================================================
+// v6 四维内生状态 → 写入门控（第 4 份规范参数）
+// ============================================================================
+//
+// 这些机制此前只停留在文档规范，未在代码实现。本段首次把 v6 的 τ 映射、参数基线与
+// 门控决策顺序落成真实代码。参数取"第 4 份规范"：第 1 份四种 τ 的 w 上限全部低于
+// commit 阈值（构造性零，永远无法 commit），第 4 份四种 τ 的 w 上限均为 1.0，可 commit。
+
+/** memory_kind（5 个，代码真源）→ τ（4 种）。注意 `skill` 在作者的映射表里被漏掉，这里显式覆盖。 */
+export const TAU_BY_MEMORY_KIND: Record<MemoryKind, Tau> = {
+  episodic: 'episodic',
+  persona: 'affective',
+  skill: 'procedural',
+  long_term: 'semantic',
+  knowledge_card: 'semantic',
+}
+
+/** 各 τ 的基线 rho0。 */
+export const PGC_V6_RHO0_BY_TAU: Record<Tau, number> = {
+  episodic: 0.70,
+  affective: 0.75,
+  procedural: 0.65,
+  semantic: 0.60,
+}
+
+/** 疲劳抑制系数 κ。 */
+export const PGC_V6_KAPPA_FATIGUE = 1.25
+
+/** 各 τ 的刺激权重 α（行=状态维 a,c,d,f）。dot = α·s。 */
+export const PGC_V6_ALPHA_BY_TAU: Record<Tau, PgcState4> = {
+  episodic: { a: 0.90, c: 0.10, d: 0.00, f: -0.20 },
+  affective: { a: 0.20, c: 0.80, d: 0.05, f: -0.15 },
+  procedural: { a: 0.10, c: -0.10, d: 0.85, f: -0.25 },
+  semantic: { a: 0.60, c: 0.05, d: 0.10, f: -0.10 },
+}
+
+export type ContradictionLevel = 'low' | 'medium' | 'high'
+
+export interface PgcV6DecisionPolicy {
+  contradiction: { high_severity_reject: boolean }
+  severity_to_action: { low: PgcDecision, medium: PgcDecision, high: PgcDecision }
+  thresholds: { commit_min_w: number, throttle_min_w: number }
+  fatigue_defer: { if_fatigue_gt: number, defer_w_threshold: number }
+  final_intensity_mapping: { mode: 'identity' }
+  /** 把数值矛盾严重度映射到 low/medium/high 的阈值（半开区间 [0,medium_from) low 等）。 */
+  severity_bands: { medium_from: number, high_from: number }
+}
+
+export const DEFAULT_PGC_V6_POLICY: PgcV6DecisionPolicy = {
+  contradiction: { high_severity_reject: true },
+  severity_to_action: { low: 'throttle', medium: 'throttle', high: 'reject' },
+  thresholds: { commit_min_w: 0.55, throttle_min_w: 0.30 },
+  fatigue_defer: { if_fatigue_gt: 0.70, defer_w_threshold: 0.45 },
+  final_intensity_mapping: { mode: 'identity' },
+  severity_bands: { medium_from: 0.33, high_from: 0.66 },
+}
+
+/** v6 门控写进快照与审计的中间量（规范第 4 份要求 replay minimums 含 computed_w）。 */
+export interface PgcV6State {
+  tau: Tau
+  s: PgcState4
+  rho0: number
+  kappa: number
+  /** dot = α·s。 */
+  dot: number
+  /** w_raw = rho0·(1+dot)·(1-κ·f)，未 clip。 */
+  w_prime: number
+  /** w = clip(w_raw, 0, 1)。 */
+  w: number
+  fatigue_deferred: boolean
+  contradiction_level: ContradictionLevel
+}
+
+// ============================================================================
 // 输出类型
 // ============================================================================
 
@@ -189,6 +272,13 @@ export interface PgcStateComponents {
 export interface PgcStateSnapshot {
   pgc_state_id: string
   components: PgcStateComponents
+  /**
+   * 规范第 4 份要求的 replay minimums 之一：审计必须能回溯到产生该决策的 pgc_policy_version。
+   * 旧证据阈值策略与 v6 门控都填这里，便于统一回放。（可选以兼容不含版本的旧快照构造。）
+   */
+  pgc_policy_version?: string
+  /** v6 四维状态门控结果（仅在提供 v6 状态时填充；不含时走既有纯证据阈值策略）。 */
+  v6?: PgcV6State
 }
 
 export interface PgcWritePlanEntry {
@@ -323,6 +413,97 @@ function expectedTestsFor(decision: PgcDecision, reasonCodes: PgcReasonCode[]): 
   return ['defer_until_more_evidence']
 }
 
+// ============================================================================
+// v6 写入门控：w(m, s_t) 与决策顺序
+// ============================================================================
+
+/**
+ * 计算 v6 提交权重 w(m, s_t)。
+ *
+ *     tau  = TAU_BY_MEMORY_KIND[memory_kind]
+ *     rho0 = rho0_by_tau[tau]
+ *     dot  = α.a·s.a + α.c·s.c + α.d·s.d + α.f·s.f
+ *     w_raw = rho0 · (1 + dot) · (1 - κ·s.f)
+ *     w = clip(w_raw, 0, 1)
+ */
+export function computeV6CommitmentWeight(
+  memory_kind: MemoryKind,
+  s: PgcState4,
+  policy: PgcV6DecisionPolicy = DEFAULT_PGC_V6_POLICY,
+): { tau: Tau, rho0: number, kappa: number, dot: number, w_prime: number, w: number } {
+  const tau = TAU_BY_MEMORY_KIND[memory_kind]
+  const rho0 = PGC_V6_RHO0_BY_TAU[tau]
+  const alpha = PGC_V6_ALPHA_BY_TAU[tau]
+  const dot = alpha.a * s.a + alpha.c * s.c + alpha.d * s.d + alpha.f * s.f
+  const w_prime = rho0 * (1 + dot) * (1 - PGC_V6_KAPPA_FATIGUE * s.f)
+  const w = Math.min(1, Math.max(0, w_prime))
+  void policy // 参数基线已内联为常量；policy 预留给未来把 α/κ/rho0 也参数化。
+  return { tau, rho0, kappa: PGC_V6_KAPPA_FATIGUE, dot, w_prime, w }
+}
+
+/** 把数值矛盾严重度映射到 low/medium/high。 */
+export function contradictionLevelFromSeverity(
+  severity: number,
+  policy: PgcV6DecisionPolicy = DEFAULT_PGC_V6_POLICY,
+): ContradictionLevel {
+  if (severity >= policy.severity_bands.high_from)
+    return 'high'
+  if (severity >= policy.severity_bands.medium_from)
+    return 'medium'
+  return 'low'
+}
+
+/**
+ * 应用 v6 决策顺序（严格照规范）：
+ *
+ *     if contradiction_level == 'high'            -> reject
+ *     else if s.f > 0.70 && w >= 0.45             -> defer
+ *     else if w >= 0.55                           -> commit
+ *     else if w >= 0.30                           -> throttle
+ *     else                                        -> reject
+ *
+ * `final_intensity = w`（final_intensity_mapping.mode = 'identity'）。
+ */
+export function applyV6Decision(
+  w: number,
+  s: PgcState4,
+  contradictionLevel: ContradictionLevel,
+  policy: PgcV6DecisionPolicy = DEFAULT_PGC_V6_POLICY,
+): { decision: PgcDecision, reason_codes: PgcReasonCode[], fatigue_deferred: boolean } {
+  const reason_codes: PgcReasonCode[] = []
+  let decision: PgcDecision
+  let fatigue_deferred = false
+
+  // 1) 高严重度矛盾优先于一切（即使 w=1）。
+  if (policy.contradiction.high_severity_reject && contradictionLevel === 'high') {
+    reason_codes.push('contradiction_detected')
+    decision = policy.severity_to_action.high
+  }
+  // 2) 疲劳高且仍有较强提交意愿 ⇒ 延迟到离线巩固复审（而非直接 commit）。
+  else if (s.f > policy.fatigue_defer.if_fatigue_gt && w >= policy.fatigue_defer.defer_w_threshold) {
+    reason_codes.push('deferred_pending_review')
+    decision = 'defer'
+    fatigue_deferred = true
+  }
+  // 3) 达到 commit 阈值。
+  else if (w >= policy.thresholds.commit_min_w) {
+    reason_codes.push('sufficient_evidence')
+    decision = 'commit'
+  }
+  // 4) 达到 throttle 阈值。
+  else if (w >= policy.thresholds.throttle_min_w) {
+    reason_codes.push('throttled_high_intensity')
+    decision = 'throttle'
+  }
+  // 5) 不足 ⇒ reject。
+  else {
+    reason_codes.push('low_evidence')
+    decision = 'reject'
+  }
+
+  return { decision, reason_codes, fatigue_deferred }
+}
+
 /**
  * 对单个候选做 PGC 决策。纯函数：相同输入 ⇒ 相同输出（确定性，利于复现/回放）。
  */
@@ -350,7 +531,37 @@ export function decideCandidate(
     persona_shift_risk: personaRisk,
   }
   const pgc_state_id = `pgc_${cand.memory_write_id}_${policy.version}`
-  const snapshot: PgcStateSnapshot = { pgc_state_id, components }
+
+  // ---- v6 门控分支：仅当 read context 提供四维状态 s_t 时走 v6；否则走既有纯证据阈值策略 ----
+  if (ctx.pgc_v6_state) {
+    const s = ctx.pgc_v6_state
+    const { tau, rho0, kappa, dot, w_prime, w } = computeV6CommitmentWeight(cand.memory_kind, s, DEFAULT_PGC_V6_POLICY)
+    const level = contradictionLevelFromSeverity(contraSeverity)
+    const { decision, reason_codes, fatigue_deferred } = applyV6Decision(w, s, level, DEFAULT_PGC_V6_POLICY)
+    const v6: PgcV6State = {
+      tau,
+      s: { ...s },
+      rho0,
+      kappa,
+      dot,
+      w_prime,
+      w,
+      fatigue_deferred,
+      contradiction_level: level,
+    }
+    const snapshot: PgcStateSnapshot = { pgc_state_id, components, pgc_policy_version: policy.version, v6 }
+    // final_intensity = w（final_intensity_mapping.mode = 'identity'）。
+    return {
+      memory_write_id: cand.memory_write_id,
+      decision,
+      final_intensity: w,
+      reason_codes,
+      expected_tests: expectedTestsFor(decision, reason_codes),
+      pgc_state_snapshot: snapshot,
+    }
+  }
+
+  const snapshot: PgcStateSnapshot = { pgc_state_id, components, pgc_policy_version: policy.version }
 
   const reason_codes: PgcReasonCode[] = []
   let decision: PgcDecision
