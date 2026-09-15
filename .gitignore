@@ -203,6 +203,22 @@ analysis/output/
 # Keep checked-in fixtures that tests depend on.
 !**/__fixtures__/**/*.jsonl
 
+# ---- EXCEPTION: preregistered study artifacts are primary evidence ----
+# The rules above exist to keep telemetry (which can carry human interaction
+# logs) off public remotes. The RQ-C skill-forge protocol has NO human
+# participants: candidates are LLM-generated and graded by a deterministic
+# sandbox oracle. So the privacy rationale does not apply, while the
+# reproducibility obligation does — a results chapter whose raw trials are
+# unpublished cannot be reviewed or recomputed by a referee.
+# Scope is deliberately narrow: only the preregistered protocol directories.
+!packages/research-harness/experiments/
+!packages/research-harness/experiments/**
+!packages/research-harness/experiments/rq-c/**
+# The preserved degenerate run is kept ON PURPOSE: it is the evidence that the
+# 2026-09-14 "null" was a null by construction, not an empirical finding.
+!packages/research-harness/experiments/rq-c/**/*.jsonl
+!packages/research-harness/experiments/rq-c/**/*.json
+
 # ---- Local databases & runtime state ----
 *.db
 *.db-wal
@@ -212,3 +228,10 @@ analysis/output/
 .pgdata/
 redis-data/
 duckdb-data/
+
+# ---- Local test residue & run backups ----
+# Per-test registries written next to the real ones by the vitest suite.
+**/eval/.*.registry.json
+# Timestamped run backups (`trials.jsonl.bak-<epoch>`) are not products.
+*.bak-*
+

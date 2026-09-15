@@ -1,162 +1,138 @@
-<picture>
-  <source
-    width="100%"
-    srcset="./docs/content/public/banner-dark-1280x640.avif"
-    media="(prefers-color-scheme: dark)"
-  />
-  <source
-    width="100%"
-    srcset="./docs/content/public/banner-light-1280x640.avif"
-    media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
-  />
-  <img width="250" src="./docs/content/public/banner-light-1280x640.avif" />
-</picture>
+# AIJADE
 
-<h1 align="center">AIJADE</h1>
+> LLM 驱动的虚拟角色平台 —— **附仿生记忆与技能成长研究内核**
+>
+> monorepo · web / desktop / mobile · TypeScript · pnpm + turbo
 
-<p align="center">An LLM-powered virtual character that runs in your browser, on your desktop, and in your pocket.</p>
-
-<p align="center">
-  <a href="./docs/README.zh-CN.md">简体中文</a> ·
-  <a href="./docs/README.ja-JP.md">日本語</a> ·
-  <a href="./docs/README.ko-KR.md">한국어</a> ·
-  <a href="./docs/README.ru-RU.md">Русский</a> ·
-  <a href="./docs/README.vi.md">Tiếng Việt</a> ·
-  <a href="./docs/README.fr.md">Français</a>
-</p>
-
-<p align="center">
-  <a href="./LICENSE"><img src="https://img.shields.io/github/license/korose523/AIJADE.svg?style=flat&colorA=080f12&colorB=1fa669"></a>
-  <a href="./package.json"><img src="https://img.shields.io/badge/node-%3E%3D22-1fa669.svg?style=flat&colorA=080f12&colorB=1fa669"></a>
-  <a href="./package.json"><img src="https://img.shields.io/badge/pnpm-10.33.0-1fa669.svg?style=flat&colorA=080f12&colorB=1fa669"></a>
-</p>
+[简体中文](#aijade-是什么) · [English](#what-is-aijade) · [溯源](#溯源与许可) · [研究](#研究内核)
 
 ---
 
-## What it is
+## AIJADE 是什么
 
-AIJADE is an open-source virtual character platform. Give it an LLM provider and a character, and you get a companion that talks, listens, remembers and has a face — one codebase with three front-ends sharing the same character engine.
+AIJADE 是一个跨端虚拟角色平台：浏览器、桌面（Electron / Tauri）、移动端（Capacitor / PWA）与
+即时通讯侧（Telegram / Discord / Minecraft 等）均可承载同一个角色。
 
-It is not a chat wrapper around a single model. The interesting part is everything around the model: a voice pipeline that runs end to end, a 3D character that reacts to internal state, a memory layer that survives across sessions, and an agent layer that can learn new skills from conversation.
+它与通用"AI 陪伴应用"的区别在于**平台之下有一层可测量的研究内核**：角色的记忆不是无差别的向量库，
+而是一套受生物启发的读写、巩固与身份约束机制；角色的技能不是静态提示词，而是可执行、可被环境
+反馈剪枝的技能条目。这层内核是本仓库的原创贡献，也是相关论文的实验对象。
 
-## Platforms
+```
+apps/          stage-web · stage-tamagotchi · stage-pocket · ui-admin · ui-server-auth · component-calling · server
+packages/      平台包（stage-* / ui* / core-* / server-* / plugin-*）+ 研究内核（见下）
+services/      computer-use-mcp · speech · discord-bot · telegram-bot · minecraft · satori-bot · twitter-services
+plugins/       aijade-plugin-{bilibili-laplace, claude-code, game-chess, homeassistant, web-extension, xiaomi}
+engines/       stage-tamagotchi-godot
+experiments/   实验产物
+```
 
-| Front-end | Target | Directory |
-| --- | --- | --- |
-| **Web** | Any modern browser | [`apps/stage-web`](./apps/stage-web) |
-| **Desktop** | Windows / macOS / Linux (Electron) | [`apps/stage-tamagotchi`](./apps/stage-tamagotchi) |
-| **Mobile** | iOS / Android | [`apps/stage-pocket`](./apps/stage-pocket) |
-| **Server** | Node.js service, admin and auth UIs | [`apps/server`](./apps/server), [`apps/ui-admin`](./apps/ui-admin), [`apps/ui-server-auth`](./apps/ui-server-auth) |
+---
 
-All three character front-ends mount the same shared UI layer, [`packages/stage-ui`](./packages/stage-ui), so a character built once behaves the same everywhere.
+## 研究内核
 
-## Highlights
+| 包 | 职责 |
+|---|---|
+| `packages/memory-biomimetic` | 仿生记忆内核：DGM 双图记忆、HAC 稳态预测式巩固、CDI 受约束身份演化、显著度预测与生命周期管理 |
+| `packages/research-harness` | 实验装置：2×2 析因设计、区组化任务分配、退化守卫、统计管线（BCa bootstrap / Holm / DiD / McNemar） |
+| `packages/skill-bench-env` | 可执行技能基准环境 + 无泄漏沙箱 oracle |
+| `packages/skill-forge-store` | 技能库持久化与学习闭环单元 |
+| `packages/agent-skill-forge` | 技能锻造：候选生成 → 自评 → 环境反馈 → 剪枝 |
+| `packages/agent-capabilities` | 人格演化 / 技能锻造的编排入口 |
+| `packages/agent-continuous-learning` | 持续学习循环 |
+| `packages/research-telemetry` | 实验遥测采集 |
+| `packages/growth-services` | 成长服务层 |
+| `packages/model-substrate` | 模型基底抽象 |
 
-**Character and stage**
-- VRM model rendering with `lookAt`, expressions and blend shapes ([`packages/stage-ui-three`](./packages/stage-ui-three)), plus Live2D and Spine support
-- MMD / PMX / PMD import, GLB / glTF fallback, and motion synthesis blending
-- Desktop-pet mode: the Electron window itself becomes a transparent, frameless, always-on-top pet — draggable, with mood and intimacy rendered from live internal state
-- Hologram mode for transparent projection setups
+**设计原则（实验有效性的前提）**：
 
-**Voice**
-- Full-duplex speech: ASR in, TTS out, behind a single entry point
-- Multiple TTS engines (local Kokoro, zero-shot IndexTTS2, CosyVoice adapters) behind one interface
-- Emotion-aware synthesis, and listening-side emotion detection for the user's tone
-- Wake-word detection and a hands-free smart-speaker pipeline (wake → VAD → ASR → LLM → TTS)
+1. **操纵必须因果可达** —— 任何被声明的实验因子，必须存在一条从因子到测量结果的因果通路。
+   若某因子在实现上无法影响输出，则该设计是"构造性零"，任何主效应/交互在数学上不可能被检出。
+   实现层面有 `detectDegeneracy()` 守卫强制报警（详见 `research-harness` 文件头）。
+2. **分析单元 = 技能，而非执行** —— 一个被复用 N 轮的技能与自身完全相关（ρ=1）。
+   把每次执行当作独立伯努利试验会把标准误低估约 1.5× 并造出虚假显著。
+3. **确定性优先** —— 实验在 `temperature: 0` 下运行；输出的多样性来源应放在**提示词**里，
+   而不是采样器里，否则结果不可复现。
+4. **无泄漏** —— 沙箱 oracle 反馈可暴露"哪一例失败"，**绝不**暴露期望输出。
 
-**Mind**
-- Pluggable memory backends, including a Postgres/pgvector store ([`packages/memory-pgvector`](./packages/memory-pgvector))
-- Biomimetic dual-graph memory for episodic experience and evidence-sourced beliefs ([`packages/memory-biomimetic`](./packages/memory-biomimetic))
-- Continuous persona drift driven by affect dynamics, so mood is genuinely stateful rather than scripted
+---
 
-**Agent layer**
-- Automatic skill creation: detect a teachable moment in conversation, generate a skill, validate and register it ([`packages/agent-skill-forge`](./packages/agent-skill-forge))
-- Continuous learning with feedback loops that let registered skills evolve ([`packages/agent-continuous-learning`](./packages/agent-continuous-learning))
-- Computer use with a dry-run backend by default and an MCP seam for real control ([`packages/agent-computer-use`](./packages/agent-computer-use))
-- One bridge that wires all of the above into the chat orchestrator ([`packages/agent-capabilities`](./packages/agent-capabilities))
-
-**Ecosystem**
-- A plugin SDK with a typed protocol ([`packages/plugin-sdk`](./packages/plugin-sdk), [`packages/plugin-protocol`](./packages/plugin-protocol)) and shipped plugins for smart home, media, chess, coding agents and the browser
-- Chat platform bridges: Discord, Telegram, Satori, Twitter
-- A Minecraft service and a computer-use MCP server under [`services/`](./services)
-- An optional Godot-based engine experiment under [`engines/`](./engines)
-
-## Tech stack
-
-| | Version |
-| --- | --- |
-| Node.js | `>=22.0.0` |
-| pnpm | `10.33.0` (pinned via `packageManager`) |
-| Vue | `3.5.32` |
-| Vite | `8.0.8` |
-| TypeScript | `5.9.3` |
-| Electron | `41.2.1` |
-| Pinia | `3.0.4` |
-| Vue Router | `5.0.4` |
-| UnoCSS | `66.6.8` |
-| Vitest | `4.1.4` |
-| Turbo | `2.9.6` |
-| tsdown | `0.21.9` |
-| oxlint | `1.60.0` |
-
-A pnpm workspace monorepo managed with Turborepo. Dependency versions are pinned through catalogs in [`pnpm-workspace.yaml`](./pnpm-workspace.yaml).
-
-## Getting started
-
-Requires **Node.js ≥ 22** and **pnpm 10.33.0** (`corepack enable` picks up the pinned version).
+## 快速开始
 
 ```bash
+# 环境：Node ≥ 22 · pnpm 10.x
 pnpm install
+
+pnpm dev:web            # 浏览器端主界面
+pnpm dev:tamagotchi     # 桌面宠物（Electron）
+pnpm dev:server-auth    # 鉴权服务
+pnpm dev:admin          # 管理后台
+pnpm build              # 全量构建
+pnpm test:run           # 全量测试（vitest）
+pnpm lint               # 代码检查
 ```
 
-`postinstall` builds the workspace packages, so the first install takes a while.
-
-### Run
+### 运行研究实验（需要本地 ollama）
 
 ```bash
-pnpm dev                  # web client
-pnpm dev:tamagotchi       # desktop app (Electron)
-pnpm dev:pocket:android   # mobile, Android
-pnpm dev:pocket:ios       # mobile, iOS
-pnpm dev:server           # backend runtime
-pnpm dev:docs             # documentation site
+# 1) 准备模型
+ollama pull qwen2.5-coder:7b-instruct
+
+# 2) 重试活性探针（验证"因子 → 输出"因果通路是否真的活着）
+pnpm --filter @proj-aijade/research-harness exec tsx scripts/retry-liveness-probe.mts
+
+# 3) 全量预注册实验（trials=30 / rounds=5 / tasks=12 / seed=42）
+pnpm --filter @proj-aijade/research-harness exec tsx src/cli.ts \
+  --trials 30 --seed 42 --backend ollama \
+  --model qwen2.5-coder:7b-instruct --rounds 5 --tasks 12 \
+  --out experiments/rq-c
 ```
 
-### Build
+> ⚠️ 全量运行需数小时。**先跑第 2 步**：若探针显示"重试输出与上次逐字节相同"，
+> 说明因果通路已死，此时跑全量只会得到构造性零。
 
-```bash
-pnpm build                # all packages and apps
-pnpm build:web            # web client only
-pnpm build:tamagotchi     # desktop app only
-pnpm build:packages       # workspace packages only
-```
+---
 
-### Check
+## 研究合规与治理
 
-```bash
-pnpm typecheck            # typecheck all packages and apps
-pnpm lint                 # oxlint + eslint via moeru-lint
-pnpm test:run             # unit, visual and UI test suites
-```
+| 文件 | 作用 |
+|---|---|
+| [`PROVENANCE.md`](./PROVENANCE.md) | 与上游 Project AIRI 的衍生关系、许可义务履行状态、原创贡献边界 |
+| [`THIRD-PARTY-NOTICES.md`](./THIRD-PARTY-NOTICES.md) | 第三方代码 / 资产 / 模型权重的许可与归属 |
+| [`AI-ASSISTED-DEVELOPMENT.md`](./AI-ASSISTED-DEVELOPMENT.md) | AI 辅助开发披露（中 / 韩 / ACM 三种口径） |
+| [`LICENSE`](./LICENSE) | MIT，含上游版权声明 |
 
-## Repository layout
+**投稿前必须确认**：`AI-ASSISTED-DEVELOPMENT.md` §4 使用记录表已由作者本人填写真实情况，
+且无任何 AI 生成数据被当作实验结果。
 
-```
-apps/         front-ends and their backends (web, desktop, mobile, server, admin)
-packages/     shared libraries — UI, character, memory, agent, model, audio, tooling
-services/     side services (speech, computer-use MCP, chat bridges, Minecraft)
-plugins/      first-party plugins built on the plugin SDK
-engines/      alternative engine experiments
-docs/         documentation site, product docs and research notes
-```
+---
 
-## Documentation
+## 溯源与许可
 
-- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — how the system fits together
-- [`docs/FEATURES.md`](./docs/FEATURES.md) — feature inventory
-- [`docs/AGENT_CAPABILITIES.md`](./docs/AGENT_CAPABILITIES.md) — the agent capability layer
-- [`docs/COMPUTER_USE_INTEGRATION.md`](./docs/COMPUTER_USE_INTEGRATION.md) — computer-use integration
+本仓库是 **[Project AIRI](https://github.com/moeru-ai/airi)** 的衍生作品，上游采用 MIT 许可
+（`Copyright (c) 2024-PRESENT Neko Ayaka`）。
 
-## License
+- 平台层（`stage-*` / `ui*` / `core-*` / `server-*` / `plugin-*` / `services/*` / `engines/*`）
+  **继承自上游**，本仓库主要是改名与品牌化，**不主张原创**。
+- 研究内核（见上表）为 AIJADE 原创新增，是论文贡献主体。
 
-[MIT](./LICENSE).
+详细边界、待核实项与核查方法见 [`PROVENANCE.md`](./PROVENANCE.md)。
+
+> 📌 上游的 VitePress 文档站（原 `docs/`，约 320 个文件）已在本仓库移除：
+> 其内容面向上游品牌且已与当前代码基脱节，保留会构成对读者的误导。
+> 上游文档请访问上游仓库。AIJADE 自身的开发笔记位于仓库外的文档集。
+
+---
+
+## What is AIJADE
+
+A cross-platform LLM virtual-character platform (web / desktop / mobile / IM bots) with a
+**measurable research core**: biomimetic memory (dual-graph memory, homeostatic
+consolidation, constrained identity evolution) and executable, environment-pruned skill
+forging. The platform layer is inherited from Project AIRI; the research kernel is original.
+
+---
+
+## 免责声明
+
+本项目仅供研究与学习用途。角色形象、语音、字体等第三方资产的商业使用请自行确认授权。
+平台内所有由 LLM 生成的内容均为模型输出，不代表本项目立场。
