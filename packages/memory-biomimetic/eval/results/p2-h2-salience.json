@@ -1,0 +1,72 @@
+{
+  "experiment": "H2 de-oracled: predicted (content) salience gated vs uniform",
+  "corpus": "/tmp/locomo10.json",
+  "conversations": 10,
+  "horizonDays": 90,
+  "budgets": [
+    0.1,
+    0.25,
+    0.5
+  ],
+  "topK": 4,
+  "predictor": {
+    "pooledAuc": 0.644705076579715,
+    "perConversationAuc": [
+      0.6223907671276092,
+      0.5699092970521542,
+      0.6657272196261682,
+      0.5884125216530561,
+      0.6831577845982143,
+      0.7021424234538989,
+      0.5786137859746477,
+      0.6751775271512114,
+      0.6449742917632826,
+      0.6803906317517933
+    ]
+  },
+  "results": {
+    "gated": {
+      "0.1": [
+        0.15680933284312637
+      ],
+      "0.25": [
+        0.2623389377337916
+      ],
+      "0.5": [
+        0.37812025688281187
+      ]
+    },
+    "uniform": {
+      "0.1": [
+        0.05372583911100559
+      ],
+      "0.25": [
+        0.13326442971145394
+      ],
+      "0.5": [
+        0.23853544070340033
+      ]
+    }
+  },
+  "summary": [
+    {
+      "budget": 0.1,
+      "gated": 0.15680933284312637,
+      "uniform": 0.05372583911100559,
+      "gap": 0.10308349373212078
+    },
+    {
+      "budget": 0.25,
+      "gated": 0.2623389377337916,
+      "uniform": 0.13326442971145394,
+      "gap": 0.12907450802233764
+    },
+    {
+      "budget": 0.5,
+      "gated": 0.37812025688281187,
+      "uniform": 0.23853544070340033,
+      "gap": 0.13958481617941154
+    }
+  ],
+  "note": "After re-frame (commit 0683600) the store computes content salience internally, so the oracle-vs-predicted distinction and the α-mixing sensitivity block are obsolete (both collapse to the same content-salience gate). The re-runnable core is content-salience gated vs NO_GATING uniform."
+}

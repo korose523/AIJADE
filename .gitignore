@@ -219,6 +219,18 @@ analysis/output/
 !packages/research-harness/experiments/rq-c/**/*.jsonl
 !packages/research-harness/experiments/rq-c/**/*.json
 
+# Same argument, applied to the memory-biomimetic ablation chain. Its pipeline is
+# a deterministic lexical TF-IDF model: no LLM, no human participants, and the
+# corpus is a public dataset pinned by sha256 in eval/locomo-path.ts. The privacy
+# rationale for ignoring `results/` therefore does not apply, while the
+# reproducibility obligation very much does — these JSON files ARE the numbers
+# quoted in 03_审查报告/AIJADE_记忆线复现性核查报告.md, and a referee cannot
+# review a claim whose raw measurement was never published.
+!packages/memory-biomimetic/eval/results/
+!packages/memory-biomimetic/eval/results/**
+!packages/memory-biomimetic/eval/results/*.json
+!packages/memory-biomimetic/eval/results/*.md
+
 # ---- Local databases & runtime state ----
 *.db
 *.db-wal

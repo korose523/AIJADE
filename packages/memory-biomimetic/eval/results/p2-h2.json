@@ -1,0 +1,72 @@
+{
+  "experiment": "H2 (v3 §9): gated vs uniform vs no forgetting under matched storage budget",
+  "corpus": "/tmp/locomo10.json",
+  "conversations": 10,
+  "horizonDays": 90,
+  "budgets": [
+    0.1,
+    0.25,
+    0.5
+  ],
+  "topK": 4,
+  "metric": "evidenceRecall@K after budget truncation",
+  "perSeed": {
+    "0.1": {
+      "gated": [
+        0.15680933284312637
+      ],
+      "uniform": [
+        0.05372583911100559
+      ],
+      "none": [
+        0.053065227876065935
+      ]
+    },
+    "0.25": {
+      "gated": [
+        0.2623389377337916
+      ],
+      "uniform": [
+        0.13326442971145394
+      ],
+      "none": [
+        0.13641655758678128
+      ]
+    },
+    "0.5": {
+      "gated": [
+        0.37812025688281187
+      ],
+      "uniform": [
+        0.23853544070340033
+      ],
+      "none": [
+        0.24482971358309163
+      ]
+    }
+  },
+  "summary": [
+    {
+      "budget": 0.1,
+      "gated": 0.15680933284312637,
+      "uniform": 0.05372583911100559,
+      "none": 0.053065227876065935,
+      "gapGatedUniform": 0.10308349373212078
+    },
+    {
+      "budget": 0.25,
+      "gated": 0.2623389377337916,
+      "uniform": 0.13326442971145394,
+      "none": 0.13641655758678128,
+      "gapGatedUniform": 0.12907450802233764
+    },
+    {
+      "budget": 0.5,
+      "gated": 0.37812025688281187,
+      "uniform": 0.23853544070340033,
+      "none": 0.24482971358309163,
+      "gapGatedUniform": 0.13958481617941154
+    }
+  ],
+  "caveat": "After the re-frame (commit 0683600) the gate is driven by content salience (predictSalienceV2), not by an oracle label or by physiology. The measured gating benefit is therefore conditional on the predicted-salience signal being available; p2-h2-salience.ts re-tests the mechanism with the predicted signal. Retention is now deterministic per (cond, budget) — the former physiological-seed dimension is gone (physiology only modulates presentation)."
+}

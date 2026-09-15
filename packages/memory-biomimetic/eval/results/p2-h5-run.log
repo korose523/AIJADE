@@ -1,0 +1,82 @@
+=== H5 (v2/P2): 内容显著性门控 vs 长上下文压缩（匹配存储预算, LoCoMo）===
+corpus        : /tmp/locomo10.json
+conversations : 10
+budgets       : 10%, 25%, 50%, 100%
+topK          : 4
+metric        : evidenceRecall@4 (src/locomo) + token-F1 (src/sim) [FULL set]
+ours gate     : DEFAULT_GATING {"kSalience":0.8,"kSocial":0.5,"kNovelty":0.3}
+baselines     : extractive-compression (centroid+salience, PRIM) + recency window (SECONDARY) + random (5 seeds)
+
+--- (B) answer-correctness layer: sampled LLM generation via local qwythos ---
+  answer budget     : 25% (memory-constrained)
+  sample/conversation: 3 (~30 total)
+  model             : qwythos:latest @ http://localhost:11434/api/generate
+
+--- evidenceRecall@4 (mean±std over 10 conversations; gap = ours − baseline) ---
+  budget |   ours    | compress  |  gap(c)  |  recency  |  gap(r)  |  random   |  gap(rnd)
+    10%  | 0.115±0.055 | 0.097±0.046 | +0.019 | 0.028±0.014 | +0.087 | 0.047±0.009 | +0.068
+    25%  | 0.065±0.063 | 0.080±0.068 | -0.015 | 0.045±0.018 | +0.020 | 0.044±0.019 | +0.021
+    50%  | 0.063±0.031 | 0.047±0.030 | +0.017 | 0.057±0.029 | +0.006 | 0.048±0.004 | +0.015
+   100%  | 0.059±0.031 | 0.067±0.036 | -0.008 | 0.067±0.036 | -0.008 | 0.067±0.000 | -0.008
+
+--- token-F1@4 (mean±std over 10 conversations; gap = ours − baseline) ---
+  budget |   ours    | compress  |  gap(c)  |  recency  |  gap(r)  |  random   |  gap(rnd)
+    10%  | 0.113±0.026 | 0.121±0.025 | -0.008 | 0.079±0.015 | +0.034 | 0.095±0.008 | +0.018
+    25%  | 0.090±0.026 | 0.113±0.038 | -0.024 | 0.087±0.016 | +0.003 | 0.090±0.009 | -0.001
+    50%  | 0.092±0.024 | 0.089±0.020 | +0.003 | 0.089±0.016 | +0.003 | 0.088±0.003 | +0.004
+   100%  | 0.090±0.019 | 0.092±0.018 | -0.002 | 0.092±0.018 | -0.002 | 0.092±0.000 | -0.002
+
+--- sanity ---
+  B=1.00 ours−compression gap (recall) = -0.008 (期望 ≈ 0：全量保留使选择无意义)
+  B=0.10 ours−compression gap (recall) = +0.019 (ours vs 更硬基线，可正可负)
+  B=0.10 ours−recency gap (recall)     = +0.087 (期望 ≥ 0：显著性保留更优)
+
+--- (B) answer layer: generating answers via qwythos (this is slow; ~170 sampled questions × 2 systems) ---
+  conv conv-26: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@165 (conv-26): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@165 (conv-26): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.032 judge=0.750 | compression(n=2) ans-f1=0.032 judge=0.750
+  conv conv-30: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@87 (conv-30): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@87 (conv-30): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.029 judge=0.250 | compression(n=2) ans-f1=0.030 judge=0.500
+  conv conv-41: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@160 (conv-41): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@160 (conv-41): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.000 judge=0.500 | compression(n=2) ans-f1=0.000 judge=0.500
+  conv conv-42: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@216 (conv-42): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@216 (conv-42): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.000 judge=0.500 | compression(n=2) ans-f1=0.000 judge=0.500
+  conv conv-43: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@201 (conv-43): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@201 (conv-43): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.000 judge=0.750 | compression(n=2) ans-f1=0.000 judge=0.750
+  conv conv-44: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@131 (conv-44): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@131 (conv-44): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.000 judge=0.750 | compression(n=2) ans-f1=0.000 judge=0.750
+  conv conv-47: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@158 (conv-47): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@158 (conv-47): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.034 judge=0.750 | compression(n=2) ans-f1=0.038 judge=0.750
+  conv conv-48: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@199 (conv-48): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@199 (conv-48): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.000 judge=0.250 | compression(n=2) ans-f1=0.000 judge=0.750
+  conv conv-49: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@163 (conv-49): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@163 (conv-49): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.031 judge=0.500 | compression(n=2) ans-f1=0.031 judge=0.500
+  conv conv-50: building ours@25% + compression@25% ...
+  [answer-layer] ours skip Q@170 (conv-50): Cannot read properties of undefined (reading 'toLowerCase')
+  [answer-layer] compression skip Q@170 (conv-50): Cannot read properties of undefined (reading 'toLowerCase')
+    ours(n=2) ans-f1=0.000 judge=0.750 | compression(n=2) ans-f1=0.000 judge=0.750
+
+--- (B) answer layer summary (sampled, local qwythos) ---
+  sampleN           : 20
+  ours       ans-tokenF1=0.013±0.026  judge=0.575±0.294
+  compression ans-tokenF1=0.013±0.027  judge=0.650±0.235
+  gap(ours−comp)    : tokenF1=-0.000  judge=-0.075
+
+artifacts written: eval/results/p2-h5.json , eval/results/p2-h5-report.md

@@ -1,0 +1,62 @@
+{
+  "experiment": "H2-A1: v2 predicted content salience (AUC 0.81) — gated (content-salience) vs uniform under matched storage",
+  "corpus": "/tmp/locomo10.json",
+  "conversations": 10,
+  "horizonDays": 90,
+  "budgets": [
+    0.1,
+    0.25,
+    0.5
+  ],
+  "topK": 4,
+  "predictor": {
+    "aucPrior": 0.7692812016579479,
+    "aucLocv": 0.8115384827336458,
+    "threshold": 0.78
+  },
+  "results": {
+    "gated": {
+      "0.1": [
+        0.15680933284312637
+      ],
+      "0.25": [
+        0.2623389377337916
+      ],
+      "0.5": [
+        0.37812025688281187
+      ]
+    },
+    "uniform": {
+      "0.1": [
+        0.05372583911100559
+      ],
+      "0.25": [
+        0.13326442971145394
+      ],
+      "0.5": [
+        0.23853544070340033
+      ]
+    }
+  },
+  "summary": [
+    {
+      "budget": 0.1,
+      "gated": 0.15680933284312637,
+      "uniform": 0.05372583911100559,
+      "gap": 0.10308349373212078
+    },
+    {
+      "budget": 0.25,
+      "gated": 0.2623389377337916,
+      "uniform": 0.13326442971145394,
+      "gap": 0.12907450802233764
+    },
+    {
+      "budget": 0.5,
+      "gated": 0.37812025688281187,
+      "uniform": 0.23853544070340033,
+      "gap": 0.13958481617941154
+    }
+  ],
+  "note": "After re-frame (commit 0683600) the gate is content-salience driven; the former oracle/prior/locv dopamine-injection modes and gated-varied/gated-fixed mood modes are obsolete (encode computes salience internally; physiology no longer gates retention). This run collapses to the re-runnable core: content-salience gated vs NO_GATING uniform."
+}
