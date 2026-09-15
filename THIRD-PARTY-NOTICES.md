@@ -50,6 +50,32 @@ SIL OFL 要求：保留版权声明与许可证；**不得单独售卖字体**�
 > ⚠️ Spine 运行时（Esoteric Software）有**独立的商业授权条款**，与 OSI 许可证不同。
 > 详见 `packages/stage-ui-spine/LICENSE.md`。任何对外分发前必须确认 Spine 授权范围。
 
+### 2.3 Avatar 模型格式渲染 SDK（2026-09-16 补登）
+
+本项目的三种 Avatar 模型格式分别依赖以下第三方 SDK。**此前本文件对它们零记录，属登记遗漏。**
+
+| 格式 | 依赖包 / SDK | 许可证 | 引入方式 | 备注 |
+|---|---|---|---|---|
+| VRM | `@pixiv/three-vrm`、`@pixiv/three-vrm-core`、`@pixiv/three-vrm-animation` | MIT | pnpm catalog 依赖，`packages/stage-ui-three` | 已在库使用；许可宽松 |
+| MMD（.pmx/.pmd、.vmd） | `three-stdlib`（`three-stdlib/loaders/MMDLoader`） | MIT | pnpm catalog 依赖，`packages/stage-ui-three` | **2026-09-16 前该依赖未安装**，导致 PMX 加载器运行时静默失败、从未接通 |
+| Live2D（.moc3） | `pixi-live2d-display` | MIT | pnpm catalog 依赖，`packages/stage-ui-live2d` | 仅封装层；**必须配合下述 Cubism Core 才能运行** |
+
+#### ⚠️ Live2D Cubism Core —— 专有许可，与 MIT 不同（重点）
+
+| 项 | 内容 |
+|---|---|
+| SDK | Live2D Cubism Core for Web（`CubismSdkForWeb-5-r.3`） |
+| **许可证** | **Live2D Proprietary Software License（专有）**，**不是** MIT / 非 OSI 许可 |
+| 协议正文 | [英文](https://www.live2d.com/eula/live2d-proprietary-software-license-agreement_en.html) · [日文](https://www.live2d.com/eula/live2d-proprietary-software-license-agreement_jp.html) · [中文](https://www.live2d.com/eula/live2d-proprietary-software-license-agreement_cn.html) |
+| 引入方式 | 由 `apps/stage-web/index.html` 与 `apps/stage-tamagotchi/src/renderer/index.html` 以 `<script src="/assets/js/CubismSdkForWeb-5-r.3/Core/live2dcubismcore.min.js">` 加载 |
+| **可再分发文件**（SDK 自带 `Core/RedistributableFiles.txt`） | 仅 `live2dcubismcore.d.ts`、`live2dcubismcore.js`、`live2dcubismcore.min.js` 三项。**当前只加载 `.min.js`，在可再分发范围内** |
+| 在库状态 | 存放于 `apps/stage-web/.cache/`，被 `.gitignore:71` 的 `**/.cache/` 覆盖 ⇒ **未进入 git**，但会进入构建产物 |
+
+**风险与待办**：
+1. 构建产物（`apps/stage-web/dist/`、`apps/stage-tamagotchi/out/`）**包含 Cubism Core**，对外分发即构成再分发，须确认符合 Live2D 专有许可条款。
+2. SDK 位于被 gitignore 的 `.cache/`，**全新克隆不会包含它** ⇒ Live2D 功能会静默失效。必须在加载失败时给出清晰的用户可见提示，不能白屏。
+3. 论文投稿涉及软件分发时，须在 "Implementation Details" 中声明 Cubism Core 的专有许可身份。
+
 ---
 
 ## 3. 运行时会拉取、不在库分发的第三方模型与权重
