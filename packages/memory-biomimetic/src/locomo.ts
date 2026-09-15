@@ -164,11 +164,41 @@ export function loadLocomo(path: string): LocomoConversation[] {
   return raw.map(parseConversation)
 }
 
+/**
+ * 实验专用选项 —— 让「显著性来源」与「剪枝开关」成为可独立操纵的维度。
+ *
+ * 引入理由：`DEFAULT_GATING` 同时打开了两个**本应分开考察**的机制
+ *   ① 编码期的显著性 → durability/decay 重加权（连续、影响排序）
+ *   ② consolidate 的选择性剪枝（离散、影响池子成员）
+ * `diag-prune-accounting.ts` 已测出 ② 在本语料上几乎惰性（剪 4/5882，证据零损失），
+ * 但"几乎惰性"不等于"零"；要**证明**符号反转出自 ①，必须能把 ② 关掉重跑。
+ */
+export interface BuildMemoryOptions {
+  /**
+   * 覆盖单条 episode 的显著性。返回 `undefined` 表示该条走预测器。
+   * 用于 oracle（证据=1/其余=0）与 shuffled（保边际、打乱指派）对照。
+   */
+  salienceOf?: (episode: { id: string, content: string }) => number | undefined
+  /** 显式指定 consolidate 是否做选择性剪枝；缺省沿用 gating 推导。 */
+  selectiveConsolidation?: boolean
+  /**
+   * 剪枝**保留比例**（0–1）。给定时启用**排名制**保留策略：保留显著性最高的前
+   * `keepFraction` 比例，而不是沿用绝对阈值 `salience > 0.5`。
+   *
+   * 为什么要这个开关：绝对阈值让"保留多少"由预测器的输出尺度隐含决定，
+   * 而 `predictSalienceV2` 的分数几乎恒为正 ⇒ 阈值判定几乎永不触发，
+   * 剪枝通道形同关闭（见 `eval/diag-oracle-vs-predicted-salience.ts`）。
+   * 给定 keepFraction 后，压缩率变成**显式**的实验变量。
+   */
+  keepFraction?: number
+}
+
 /** Build a memory instance for one conversation under a given gating config. */
 export async function buildMemory(
   conv: LocomoConversation,
   gating: GatingCoefficients,
   distiller: Distiller = new LexicalDistiller(),
+  opts: BuildMemoryOptions = {},
 ): Promise<BioticMemory> {
   const config: MemoryConfig = { ...DEFAULT_MEMORY_CONFIG, gating }
   const mem = new BioticMemory(config, conv.endTs)
@@ -179,9 +209,13 @@ export async function buildMemory(
       createdAt: ep.createdAt,
       context: ep.context,
       baseStrength: ep.baseStrength,
+      salienceOverride: opts.salienceOf?.({ id: ep.id, content: ep.content }),
     })
   }
-  await mem.consolidate(distiller)
+  await mem.consolidate(distiller, {
+    selective: opts.selectiveConsolidation,
+    keepFraction: opts.keepFraction,
+  })
   return mem
 }
 

@@ -65,6 +65,16 @@ export interface EncodeInput {
   baseStrength?: number
   /** Optional affect snapshot at encoding; defaults to neutral. */
   affect?: AffectiveSnapshot
+  /**
+   * 实验专用：**覆盖**该条记忆的显著性，跳过 `predictSalienceV2`。
+   *
+   * 存在的唯一理由是让「oracle 显著性 vs 预测显著性」（以及打乱显著性）这两类对照
+   * 能走**完全相同**的 encode / consolidate / retrieve 路径 —— 否则差异可能来自
+   * 预测器调用本身，而不是显著性取值。生产路径不传此字段，行为与从前逐位相同。
+   *
+   * 取值会被 clamp 到 [0,1]。`undefined` 表示"用预测器"。
+   */
+  salienceOverride?: number
 }
 
 interface RetrievalItem {
@@ -201,8 +211,10 @@ export class BioticMemory {
    */
   encode(input: EncodeInput): Episode {
     const ctx = { priors: [] as string[], idf: new Map<string, number>(), nDocs: 1 }
-    const pred = predictSalienceV2(input.content, ctx)
-    const salience = clamp01(sigmoid(pred.score))
+    // 显著性来源：实验注入（oracle / 打乱）优先，否则走 v2 预测器。
+    const salience = input.salienceOverride !== undefined
+      ? clamp01(input.salienceOverride)
+      : clamp01(sigmoid(predictSalienceV2(input.content, ctx).score))
     const socialSalience = this.deriveSocialSalience(input.content)
     const novIdx = SALIENCE_FEATURES.findIndex(f => f.name === 'noveltyIdf')
     const novFeat = novIdx >= 0 ? salienceFeatureVector(input.content, ctx)[novIdx] : 0.5
@@ -713,35 +725,64 @@ export class BioticMemory {
   /**
    * Distill episodes into semantic facts.
    *
-   * Consolidation is *selective* when content gating is active: only episodes
-   * whose encoded **content salience** exceeds `SALIENCE_THRESHOLD` are distilled;
-   * the rest are pruned (marked forgotten). This is the interference-driven
-   * forgetting that protects capacity for what matters. Under NO_GATING every
-   * coefficient is 0, so `selective` is false and the branch degenerates to
-   * "distill everything" — nothing is pruned.
+   * Consolidation is *selective* when content gating is active; the rest are
+   * pruned (marked forgotten). This is the interference-driven forgetting that
+   * protects capacity for what matters. Under NO_GATING every coefficient is 0,
+   * so `selective` is false and the branch degenerates to "distill everything" —
+   * nothing is pruned.
+   *
+   * **保留策略（两种，实验可切换）**
+   * - `absolute`（默认，历史行为）：保留 `salience > SALIENCE_THRESHOLD`（0.5）。
+   *   缺陷：`salience = sigmoid(predictorScore)` 以 0.5 为中心，判定退化为
+   *   "预测器分数 > 0"。实测 `predictSalienceV2` 的分数几乎恒为正，
+   *   于是该通道几乎**永不触发**（LoCoMo 全量仅剪 4/5882）——
+   *   一个整机制被一个未校准的常数关掉了。见 `eval/diag-oracle-vs-predicted-salience.ts`。
+   * - `quantile`（`opts.keepFraction` 给定时启用）：按 salience **排名**保留前
+   *   `keepFraction` 比例。把"保留多少"从预测器的输出尺度里解放出来，
+   *   使压缩率可**显式指定**（与 H5 的存储预算设定同源）。
    */
   async consolidate(
     distiller: Distiller = new LexicalDistiller(),
+    opts: { selective?: boolean, keepFraction?: number } = {},
   ): Promise<{ facts: SemanticFact[], consumed: string[], skipped: { episodeIds: string[], reason: string }[] }> {
     const pending = this.episodes.filter(e => !e.consolidated && !e.forgotten)
     if (pending.length < this.config.consolidateThreshold)
       return { facts: [], consumed: [], skipped: [] }
     const g = this.config.gating
-    const selective = g.kSalience !== 0 || g.kSocial !== 0
-    const selected = selective
-      ? pending.filter(e => e.encoding.salience > SALIENCE_THRESHOLD)
-      : pending
+    // opts.selective 可**显式**覆盖选择性剪枝，用于把"剪枝"与"检索期重加权"
+    // 这两个混在 DEFAULT_GATING 里的维度解耦（见 eval/diag-oracle-vs-predicted-salience.ts）。
+    const selective = opts.selective ?? (g.kSalience !== 0 || g.kSocial !== 0)
+
+    let keepIds: Set<string> | null = null
+    if (selective) {
+      if (opts.keepFraction !== undefined) {
+        const k = Math.max(1, Math.min(pending.length, Math.round(pending.length * clamp01(opts.keepFraction))))
+        const ranked = [...pending].sort((a, b) => b.encoding.salience - a.encoding.salience).slice(0, k)
+        keepIds = new Set(ranked.map(e => e.id))
+      }
+      else {
+        keepIds = new Set(pending.filter(e => e.encoding.salience > SALIENCE_THRESHOLD).map(e => e.id))
+      }
+    }
+
+    // 保持 pending 的原始顺序，使 fact id 与既有一致（排名只决定"留谁"，不决定顺序）。
+    const selected = keepIds ? pending.filter(e => keepIds.has(e.id)) : pending
     const facts = await distiller.distill(selected)
     this.facts.push(...facts)
     for (const e of selected) e.consolidated = true
-    const pruned = pending.filter(e => !selected.includes(e))
+    const pruned = keepIds ? pending.filter(e => !keepIds.has(e.id)) : []
     for (const e of pruned) e.forgotten = true
     this.index = undefined
     this.flush()
     return {
       facts,
       consumed: selected.map(e => e.id),
-      skipped: pruned.map(e => ({ episodeIds: [e.id], reason: 'not selected by content-salience gating (pruned)' })),
+      skipped: pruned.map(e => ({
+        episodeIds: [e.id],
+        reason: keepIds && opts.keepFraction !== undefined
+          ? `outranked under quantile retention (keepFraction=${opts.keepFraction})`
+          : 'not selected by content-salience gating (pruned)',
+      })),
     }
   }
 
