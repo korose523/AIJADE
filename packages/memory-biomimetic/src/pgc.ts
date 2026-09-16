@@ -196,6 +196,33 @@ export const TAU_BY_MEMORY_KIND: Record<MemoryKind, Tau> = {
   knowledge_card: 'semantic',
 }
 
+/**
+ * 论文/展示层的 4 类标签（τ 的文本别名）。
+ *
+ * ⚠️ 这是 τ → 标签的**重命名**，不是第二套分类：4 个标签与 4 个 τ 一一对应。
+ * 因此必须由 `TAU_BY_MEMORY_KIND` 派生（见 `displayLabelForMemoryKind`），
+ * 不得手写「MemoryKind → 标签」的第二张表，否则 `long_term` 与 `knowledge_card`
+ * 压缩到同一类这条关系会在两处漂移。
+ */
+export type TauDisplayLabel = 'episode' | 'emotion' | 'skill' | 'knowledge'
+
+/** τ → 展示标签（仅改写文本，不做反向映射、不改枚举）。 */
+export const TAU_DISPLAY_LABEL: Record<Tau, TauDisplayLabel> = {
+  episodic: 'episode',
+  affective: 'emotion',
+  procedural: 'skill',
+  semantic: 'knowledge',
+}
+
+/**
+ * 由唯一真源派生的展示标签：`RENAME[TAU_BY_MEMORY_KIND[kind]]`。
+ *
+ * 5 个 memory_kind → 4 个标签（`long_term` 与 `knowledge_card` 同为 `knowledge`）。
+ */
+export function displayLabelForMemoryKind(kind: MemoryKind): TauDisplayLabel {
+  return TAU_DISPLAY_LABEL[TAU_BY_MEMORY_KIND[kind]]
+}
+
 /** 各 τ 的基线 rho0。 */
 export const PGC_V6_RHO0_BY_TAU: Record<Tau, number> = {
   episodic: 0.70,

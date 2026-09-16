@@ -12,7 +12,7 @@ import type { PgcState4, Tau } from './pgc-state'
 
 import { describe, expect, it } from 'vitest'
 
-import { applyV6Decision, computeV6CommitmentWeight, computeV6WMaxBounds, contradictionLevelFromSeverity, decideCandidate, DEFAULT_PGC_POLICY_V1, deriveV6CommitVerdict, PGC_V6_PARAMS_CASE4, PGC_V6_TAU_CASE_ID, TAU_BY_MEMORY_KIND } from './pgc'
+import { applyV6Decision, computeV6CommitmentWeight, computeV6WMaxBounds, contradictionLevelFromSeverity, decideCandidate, DEFAULT_PGC_POLICY_V1, deriveV6CommitVerdict, displayLabelForMemoryKind, PGC_V6_PARAMS_CASE4, PGC_V6_TAU_CASE_ID, TAU_BY_MEMORY_KIND, TAU_DISPLAY_LABEL } from './pgc'
 import { gateRetrieval, RETRIEVAL_NOISE } from './pgc-retrieval'
 import { createPgcStateIntegrator, DEFAULT_PGC_STATE_SPEC, evaluateStimulus } from './pgc-state'
 
@@ -520,5 +520,32 @@ describe('v6 — 基线 4 可达性与 defer 不可达', () => {
     const r = decideCandidate(cand, ctx, DEFAULT_PGC_POLICY_V1)
     expect(r.pgc_state_snapshot.v6!.tau).toBe('semantic')
     expect(PGC_V6_TAU_CASE_ID).toBe(4)
+  })
+})
+
+// ===========================================================================
+// 16) τ 展示标签必须是派生，而不是第二张手写表
+// ===========================================================================
+
+describe('v6 — 展示标签由 TAU_BY_MEMORY_KIND 派生', () => {
+  const allKinds = ['long_term', 'persona', 'skill', 'episodic', 'knowledge_card'] as const
+
+  it('恒等于 RENAME[TAU_BY_MEMORY_KIND[kind]]（手写第二张表即失败）', () => {
+    for (const kind of allKinds)
+      expect(displayLabelForMemoryKind(kind)).toBe(TAU_DISPLAY_LABEL[TAU_BY_MEMORY_KIND[kind]])
+  })
+
+  it('5 个 memory_kind 压缩到 4 个标签，且 long_term 与 knowledge_card 同类', () => {
+    const labels = allKinds.map(k => displayLabelForMemoryKind(k))
+    expect(new Set(labels).size).toBe(4)
+    // 这条多对一是 v1 的 4 值重定义会毁掉的关系，必须锁住
+    expect(displayLabelForMemoryKind('long_term')).toBe('knowledge')
+    expect(displayLabelForMemoryKind('knowledge_card')).toBe('knowledge')
+  })
+
+  it('展示标签与 τ 一一对应（4 个 τ ↔ 4 个标签）', () => {
+    const taus = ['episodic', 'affective', 'procedural', 'semantic'] as const
+    expect(Object.keys(TAU_DISPLAY_LABEL).sort()).toEqual([...taus].sort())
+    expect(new Set(Object.values(TAU_DISPLAY_LABEL)).size).toBe(4)
   })
 })
