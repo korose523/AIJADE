@@ -387,6 +387,71 @@ function bruteForceWMax(params: PgcV6Params, tau: Tau): number {
   return Math.min(1, Math.max(0, max))
 }
 
+/** 固定 f，暴力扫描 a/c/d 三维，校验「给定疲劳下的上界」是否真的成立。 */
+function bruteForceWMaxAtF(params: PgcV6Params, tau: Tau, f: number): number {
+  const rho0 = params.rho0_by_tau[tau]
+  const al = params.alpha_by_tau[tau]
+  const kappa = params.kappa
+  let max = -Infinity
+  for (let a = 0; a <= 1.0001; a += 0.02) {
+    for (let c = 0; c <= 1.0001; c += 0.02) {
+      for (let d = 0; d <= 1.0001; d += 0.02) {
+        const w = rho0 * (1 + al.a * a + al.c * c + al.d * d + al.f * f) * (1 - kappa * f)
+        if (w > max)
+          max = w
+      }
+    }
+  }
+  return Math.min(1, Math.max(0, max))
+}
+
+// ===========================================================================
+// w_max_at_f 必须在整个 f∈[0,1] 上都是上界（含 f > 1/κ 的负乘子区）
+// ===========================================================================
+
+describe('v6 — w_max_at_f 是全 f 区间上的上界', () => {
+  const taus: Tau[] = ['episodic', 'affective', 'procedural', 'semantic']
+
+  it('case4（κ=1.25 ⇒ 1/κ=0.8）在 f>0.8 的负乘子区仍不低估', () => {
+    for (const tau of taus) {
+      for (const f of [0, 0.5, 0.7, 0.8, 0.85, 0.9, 1.0]) {
+        const { w_max_at_f } = computeV6WMaxBounds(tau, PGC_V6_PARAMS_CASE4, f)
+        expect(w_max_at_f!).toBeGreaterThanOrEqual(bruteForceWMaxAtF(PGC_V6_PARAMS_CASE4, tau, f) - 1e-9)
+      }
+    }
+  })
+
+  it('case1 在全区间不低估', () => {
+    for (const tau of taus) {
+      for (const f of [0, 0.5, 0.7, 0.8, 0.9, 1.0]) {
+        const { w_max_at_f } = computeV6WMaxBounds(tau, PGC_V6_PARAMS_CASE1, f)
+        expect(w_max_at_f!).toBeGreaterThanOrEqual(bruteForceWMaxAtF(PGC_V6_PARAMS_CASE1, tau, f) - 1e-9)
+      }
+    }
+  })
+
+  // 回归锁：负乘子区若退回「恒取 Σmax」，下面会低估到 0（真上界 0.0199~0.0875）。
+  // 该区间正是高疲劳诊断区，上界失效等于守卫自己失效且无人察觉。
+  it('负乘子区（f > 1/κ）：只取 Σmax 会低估 —— 合成参数回归锁', () => {
+    const synthetic: PgcV6Params = {
+      rho0_by_tau: { episodic: 0.7, affective: 0.7, procedural: 0.7, semantic: 0.7 },
+      kappa: 1.25,
+      alpha_by_tau: {
+        episodic: { a: -1.2, c: 0, d: 0, f: -0.3 },
+        affective: { a: -1.2, c: 0, d: 0, f: -0.3 },
+        procedural: { a: -1.2, c: 0, d: 0, f: -0.3 },
+        semantic: { a: -1.2, c: 0, d: 0, f: -0.3 },
+      },
+    }
+    for (const f of [0.85, 0.9, 1.0]) {
+      const { w_max_at_f } = computeV6WMaxBounds('episodic', synthetic, f)
+      const brute = bruteForceWMaxAtF(synthetic, 'episodic', f)
+      expect(brute).toBeGreaterThan(0)
+      expect(w_max_at_f!).toBeCloseTo(brute, 3)
+    }
+  })
+})
+
 describe('v6 — 闭式 w_max 与暴力扫描一致', () => {
   const cases: { name: string, params: PgcV6Params, expected: Record<Tau, number> }[] = [
     { name: 'case1', params: PGC_V6_PARAMS_CASE1, expected: { episodic: 0.44, affective: 0.533, procedural: 0.468, semantic: 0.23 } },

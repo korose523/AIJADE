@@ -557,13 +557,16 @@ export function applyV6Decision(
  * 闭式计算 v6 提交权重 w 的上界。
  *
  * w_raw = ρ₀(1 + α·s)(1 - κ·f)，s∈[0,1]^4。因 a/c/d 与 f 解耦：
- *   base = 1 + max(α.a,0) + max(α.c,0) + max(α.d,0)        // 对给定 f，a/c/d 独立取极值
- *   g(f) = (base + α.f·f)(1 - κ·f)                          // f 的二次函数
- *        = A·f² + B·f + C，其中 A = -α.f·κ, B = α.f - base·κ, C = base
- *   候选 f ∈ {0, 1, -B/(2A) 若 A≠0 且落在 (0,1)}（二次函数在 [0,1] 上的极值只可能在端点或
- *   唯一内点临界点）。
+ *   baseMax = 1 + max(α.a,0) + max(α.c,0) + max(α.d,0)      // 全取正项角点
+ *   baseMin = 1 + min(α.a,0) + min(α.c,0) + min(α.d,0)      // 全取负项角点
+ *   g(f) = max( (baseMax + α.f·f)(1 - κ·f),
+ *               (baseMin + α.f·f)(1 - κ·f) )                // f 的上包络
+ *   候选 f ∈ {0, 1, 各二次函数的顶点（若 A≠0 且落在 (0,1)}）
  *   w_max_global   = clip(ρ₀ · max g(f), 0, 1)
  *   w_max_at_f(f)  = clip(ρ₀ · g(f), 0, 1)                  // 给定当前疲劳的上界
+ *
+ * ⚠️ 只取 baseMax 会在 (1-κ·f) < 0（即 f > 1/κ）时低估——负乘子下最优角点是 baseMin。
+ * 该区间正是高疲劳诊断区，故必须取两角点乘积的较大者，否则「上界」语义不成立。
  *
  * 入参 `params` 携带 ρ0/κ/α；生产路径传 `PGC_V6_PARAMS_CASE4`，测试可传第 1 份 fixture。
  */
@@ -575,15 +578,28 @@ export function computeV6WMaxBounds(
   const rho0 = params.rho0_by_tau[tau]
   const alpha = params.alpha_by_tau[tau]
   const kappa = params.kappa
-  const base = 1 + Math.max(alpha.a, 0) + Math.max(alpha.c, 0) + Math.max(alpha.d, 0)
   const af = alpha.f
-  const g = (fv: number) => (base + af * fv) * (1 - kappa * fv)
+  // a/c/d 在 (1 + Σ α_i·s_i) 里各自独立且线性 ⇒ 极值只在两个角点：
+  //   baseMax = 1 + Σ max(α_i, 0)（全取正项）
+  //   baseMin = 1 + Σ min(α_i, 0)（全取负项）
+  // 乘子 (1-κf) > 0 时 baseMax 给出最大乘积；乘子 < 0 时反过来由 baseMin 给出。
+  // ⇒ 取两个角点乘积的较大者，才能对任意 κ/α 都保持「上界」语义。
+  // （只用 baseMax 会在 f > 1/κ 时低估，而该区间正是高疲劳诊断区。）
+  const baseMax = 1 + Math.max(alpha.a, 0) + Math.max(alpha.c, 0) + Math.max(alpha.d, 0)
+  const baseMin = 1 + Math.min(alpha.a, 0) + Math.min(alpha.c, 0) + Math.min(alpha.d, 0)
+  const g = (fv: number) => {
+    const k = 1 - kappa * fv
+    return Math.max((baseMax + af * fv) * k, (baseMin + af * fv) * k)
+  }
+  // g 是两个二次函数的上包络 ⇒ 候选点 = 端点 + 两个二次函数各自的顶点。
   const candidates = [0, 1]
   if (af !== 0) {
     const A = -af * kappa
-    const vertex = -((af - base * kappa)) / (2 * A)
-    if (vertex > 0 && vertex < 1)
-      candidates.push(vertex)
+    for (const base of [baseMax, baseMin]) {
+      const vertex = -((af - base * kappa)) / (2 * A)
+      if (vertex > 0 && vertex < 1)
+        candidates.push(vertex)
+    }
   }
   let gMax = -Infinity
   for (const fv of candidates)
