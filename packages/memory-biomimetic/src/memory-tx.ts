@@ -18,7 +18,8 @@
  */
 
 import type { AijadeEvent, RiskLevel } from './events'
-import type { MemoryKind, PgcWritePlanEntry } from './pgc'
+import type { CommitReason, MemoryKind, PgcWritePlanEntry } from './pgc'
+import type { Tau } from './pgc-state'
 import type { GatingCoefficients } from './types'
 import type {
   AuditLogEntryRow,
@@ -28,6 +29,7 @@ import type {
 
 import { memoryTxCommittedEvent } from './events'
 import { durability } from './gating'
+import { DEFAULT_PGC_V6_POLICY, PGC_V6_TAU_CASE_ID } from './pgc'
 import { NO_GATING } from './types'
 import { contentHash } from './v9-hash'
 
@@ -78,21 +80,54 @@ export interface MemoryTxInput {
 // 输出类型
 // ============================================================================
 
+/**
+ * 每一次写入尝试的门控审计（commit/throttle/defer/reject 全覆盖，不另开并行数组）。
+ *
+ * 核心语义：`memory_version_id` 在此**显式为 null**（而非「不在 committed[] 里」的隐含缺席），
+ * 让「没落库」成为可断言的事实。无 v6 状态时 `tau === null`（沿用旧证据阈值策略，v6 诊断项置 null）。
+ */
+export interface MemoryWriteGatingAudit {
+  memory_write_id: string
+  /** 当前在用的基线编号（4 = 第 4 份参数）；无 v6 状态时为 null。 */
+  tau_case_id: number | null
+  tau: Tau | null
+  /** commit 阈值 θ（文档值 0.55）。 */
+  theta_commit_threshold: number
+  /** 闭式全局上界；无 v6 状态时为 null。 */
+  w_max_global: number | null
+  /** 给定当前疲劳的上界；无 v6 状态时为 null。 */
+  w_max_at_f: number | null
+  /** 本次提交权重 w；无 v6 状态时为 null。 */
+  w: number | null
+  /** 本次写入是否可能 commit（v6 诊断，区分「状态不好」与「参数不可能」）；无 v6 状态时 null。 */
+  commit_possible: boolean | null
+  commit_reason: CommitReason | null
+  /** 确实产生的版本 id；未落库（被拒/节流/推迟）时为 null。 */
+  memory_version_id: string | null
+  content_hash: string | null
+}
+
 export interface CommittedMemory {
   memory_item_id: string
   memory_version_id: string
   memory_write_id: string
+  /** 门控审计：committed 时 memory_version_id 等于本条目。 */
+  gating: MemoryWriteGatingAudit
 }
 
 export interface ThrottledMemory {
   memory_write_id: string
   decision: 'throttle' | 'defer'
+  /** 门控审计：throttle/defer 均不落库，gating.memory_version_id === null。 */
+  gating: MemoryWriteGatingAudit
 }
 
 export interface RejectedMemory {
   memory_write_id: string
   decision: 'reject'
   reason: string
+  /** 门控审计：rejected 不落库，gating.memory_version_id === null。 */
+  gating: MemoryWriteGatingAudit
 }
 
 export interface TxResult {
@@ -120,6 +155,49 @@ function assertEvidenceChain(packId: string, evidenceIds: string[]): void {
     throw new Error('[memory-tx] evidence_pack_id 缺失：违反「每条 memory_version 必须带证据包」约束')
   if (!Array.isArray(evidenceIds) || evidenceIds.length === 0)
     throw new Error('[memory-tx] evidence_ids 为空：违反「每条 memory_version 必须带证据链」约束')
+}
+
+/**
+ * 构造单次写入尝试的门控审计。v6 路径从 `planEntry.pgc_state_snapshot.v6` 取 τ/w/w_max/判定；
+ * 无 v6 状态（旧证据阈值策略）时仅填 `tau: null` 与版本/哈希，`commit_possible`/`commit_reason`
+ * 等 v6 诊断项置 null。`memory_version_id` / `content_hash` 由调用方按本次实际落库情况填入
+ * （未落库即 null——把「缺席」变成显式断言）。
+ */
+function buildGatingAudit(
+  memoryWriteId: string,
+  planEntry: PgcWritePlanEntry | undefined,
+  memoryVersionId: string | null,
+  contentHash: string | null,
+): MemoryWriteGatingAudit {
+  const v6 = planEntry?.pgc_state_snapshot.v6
+  if (!v6) {
+    return {
+      memory_write_id: memoryWriteId,
+      tau_case_id: null,
+      tau: null,
+      theta_commit_threshold: DEFAULT_PGC_V6_POLICY.thresholds.commit_min_w,
+      w_max_global: null,
+      w_max_at_f: null,
+      w: null,
+      commit_possible: null,
+      commit_reason: null,
+      memory_version_id: memoryVersionId,
+      content_hash: contentHash,
+    }
+  }
+  return {
+    memory_write_id: memoryWriteId,
+    tau_case_id: PGC_V6_TAU_CASE_ID,
+    tau: v6.tau,
+    theta_commit_threshold: DEFAULT_PGC_V6_POLICY.thresholds.commit_min_w,
+    w_max_global: v6.w_max_global,
+    w_max_at_f: v6.w_max_at_f,
+    w: v6.w,
+    commit_possible: v6.commit_possible,
+    commit_reason: v6.commit_reason,
+    memory_version_id: memoryVersionId,
+    content_hash: contentHash,
+  }
 }
 
 export class MemoryTxEngine {
@@ -172,15 +250,16 @@ export class MemoryTxEngine {
 
     // 1) 按 PGC write_plan 分类候选。
     for (const p of input.memory_payloads) {
-      const decision = plan.get(p.memory_write_id)?.decision
+      const entry = plan.get(p.memory_write_id)
+      const decision = entry?.decision
       if (decision === 'commit') {
         // 进入提交候选集，稍后做证据校验
       }
       else if (decision === 'throttle' || decision === 'defer') {
-        throttled.push({ memory_write_id: p.memory_write_id, decision })
+        throttled.push({ memory_write_id: p.memory_write_id, decision, gating: buildGatingAudit(p.memory_write_id, entry, null, null) })
       }
       else {
-        rejected.push({ memory_write_id: p.memory_write_id, decision: 'reject', reason: decision ? 'pgc_rejected' : 'no_write_plan' })
+        rejected.push({ memory_write_id: p.memory_write_id, decision: 'reject', reason: decision ? 'pgc_rejected' : 'no_write_plan', gating: buildGatingAudit(p.memory_write_id, entry, null, null) })
       }
     }
 
@@ -190,7 +269,7 @@ export class MemoryTxEngine {
     const validCommits: MemoryPayload[] = []
     for (const p of commitCandidates) {
       if (!p.evidence_pack_id || p.evidence_ids.length === 0) {
-        rejected.push({ memory_write_id: p.memory_write_id, decision: 'reject', reason: 'no_evidence' })
+        rejected.push({ memory_write_id: p.memory_write_id, decision: 'reject', reason: 'no_evidence', gating: buildGatingAudit(p.memory_write_id, plan.get(p.memory_write_id), null, null) })
       }
       else {
         validCommits.push(p)
@@ -202,14 +281,14 @@ export class MemoryTxEngine {
     if (validCommits.length > input.tx_policy.max_writes) {
       const excess = validCommits.slice(input.tx_policy.max_writes)
       for (const e of excess)
-        rejected.push({ memory_write_id: e.memory_write_id, decision: 'reject', reason: 'tx_max_writes_exceeded' })
+        rejected.push({ memory_write_id: e.memory_write_id, decision: 'reject', reason: 'tx_max_writes_exceeded', gating: buildGatingAudit(e.memory_write_id, plan.get(e.memory_write_id), null, null) })
       commitFinal = validCommits.slice(0, input.tx_policy.max_writes)
     }
 
     // 4) bundle 原子性：任一提交候选因证据/上限失败 ⇒ 全部回滚（none committed）。
     if (input.tx_policy.atomicity === 'bundle' && rejected.length > 0) {
       for (const p of commitFinal)
-        rejected.push({ memory_write_id: p.memory_write_id, decision: 'reject', reason: 'bundle_rolled_back' })
+        rejected.push({ memory_write_id: p.memory_write_id, decision: 'reject', reason: 'bundle_rolled_back', gating: buildGatingAudit(p.memory_write_id, plan.get(p.memory_write_id), null, null) })
       commitFinal = []
     }
 
@@ -254,7 +333,12 @@ export class MemoryTxEngine {
         afterHash: contentHashSha256,
         at: now,
       })
-      committed.push({ memory_item_id: itemId, memory_version_id: versionId, memory_write_id: p.memory_write_id })
+      committed.push({
+        memory_item_id: itemId,
+        memory_version_id: versionId,
+        memory_write_id: p.memory_write_id,
+        gating: buildGatingAudit(p.memory_write_id, planEntry, versionId, contentHashSha256),
+      })
     }
 
     const status: TxResult['status']

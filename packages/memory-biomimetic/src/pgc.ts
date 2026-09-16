@@ -236,6 +236,43 @@ export const DEFAULT_PGC_V6_POLICY: PgcV6DecisionPolicy = {
   severity_bands: { medium_from: 0.33, high_from: 0.66 },
 }
 
+/**
+ * v6 参数包（ρ0 / κ / α）。与阈值策略 `PgcV6DecisionPolicy` 分离，便于在**测试**里注入
+ * 第 1 份参数（构造性零）作为 fixture，而不让它进入生产路径。生产路径只用 `PGC_V6_PARAMS_CASE4`。
+ */
+export interface PgcV6Params {
+  rho0_by_tau: Record<Tau, number>
+  kappa: number
+  alpha_by_tau: Record<Tau, PgcState4>
+}
+
+/** 当前生产基线：第 4 份参数（case id = 4）。 */
+export const PGC_V6_PARAMS_CASE4: PgcV6Params = {
+  rho0_by_tau: PGC_V6_RHO0_BY_TAU,
+  kappa: PGC_V6_KAPPA_FATIGUE,
+  alpha_by_tau: PGC_V6_ALPHA_BY_TAU,
+}
+
+/** 当前在用的基线编号（用于审计回放：哪套参数产出了这次决策）。 */
+export const PGC_V6_TAU_CASE_ID = 4
+
+/**
+ * commit 判定原因（按诊断优先级排序，见 `deriveV6CommitVerdict`）：
+ * 1. `w_max_below_theta`  — 基线层面构造性零（最重要，必须能触发）
+ * 2. `contradiction_high` — 高严重度矛盾
+ * 3. `evidence_insufficient` — 证据不足（沿用现有阈值策略）
+ * 4. `fatigue_deferred` — 疲劳推迟（defer ≠ reject，语义是推迟到离线巩固）
+ * 5. `w_below_theta` — 状态依赖的不足
+ * 6. `committed`
+ */
+export type CommitReason
+  = | 'w_max_below_theta'
+    | 'contradiction_high'
+    | 'evidence_insufficient'
+    | 'fatigue_deferred'
+    | 'w_below_theta'
+    | 'committed'
+
 /** v6 门控写进快照与审计的中间量（规范第 4 份要求 replay minimums 含 computed_w）。 */
 export interface PgcV6State {
   tau: Tau
@@ -248,6 +285,14 @@ export interface PgcV6State {
   w_prime: number
   /** w = clip(w_raw, 0, 1)。 */
   w: number
+  /** 闭式上界：全局 w_max（与当前疲劳无关）。 */
+  w_max_global: number
+  /** 闭式上界：给定当前疲劳 f_t 的 w_max。 */
+  w_max_at_f: number
+  /** 本次写入是否可能 commit（诊断项，区分「状态不好」与「参数不可能」）。 */
+  commit_possible: boolean
+  /** 见 `CommitReason`。 */
+  commit_reason: CommitReason
   fatigue_deferred: boolean
   contradiction_level: ContradictionLevel
 }
@@ -504,6 +549,86 @@ export function applyV6Decision(
   return { decision, reason_codes, fatigue_deferred }
 }
 
+// ============================================================================
+// v6 闭式 w_max 上界 + commit 判定（构造性零显式化）
+// ============================================================================
+
+/**
+ * 闭式计算 v6 提交权重 w 的上界。
+ *
+ * w_raw = ρ₀(1 + α·s)(1 - κ·f)，s∈[0,1]^4。因 a/c/d 与 f 解耦：
+ *   base = 1 + max(α.a,0) + max(α.c,0) + max(α.d,0)        // 对给定 f，a/c/d 独立取极值
+ *   g(f) = (base + α.f·f)(1 - κ·f)                          // f 的二次函数
+ *        = A·f² + B·f + C，其中 A = -α.f·κ, B = α.f - base·κ, C = base
+ *   候选 f ∈ {0, 1, -B/(2A) 若 A≠0 且落在 (0,1)}（二次函数在 [0,1] 上的极值只可能在端点或
+ *   唯一内点临界点）。
+ *   w_max_global   = clip(ρ₀ · max g(f), 0, 1)
+ *   w_max_at_f(f)  = clip(ρ₀ · g(f), 0, 1)                  // 给定当前疲劳的上界
+ *
+ * 入参 `params` 携带 ρ0/κ/α；生产路径传 `PGC_V6_PARAMS_CASE4`，测试可传第 1 份 fixture。
+ */
+export function computeV6WMaxBounds(
+  tau: Tau,
+  params: PgcV6Params = PGC_V6_PARAMS_CASE4,
+  f?: number,
+): { w_max_global: number, w_max_at_f: number | null } {
+  const rho0 = params.rho0_by_tau[tau]
+  const alpha = params.alpha_by_tau[tau]
+  const kappa = params.kappa
+  const base = 1 + Math.max(alpha.a, 0) + Math.max(alpha.c, 0) + Math.max(alpha.d, 0)
+  const af = alpha.f
+  const g = (fv: number) => (base + af * fv) * (1 - kappa * fv)
+  const candidates = [0, 1]
+  if (af !== 0) {
+    const A = -af * kappa
+    const vertex = -((af - base * kappa)) / (2 * A)
+    if (vertex > 0 && vertex < 1)
+      candidates.push(vertex)
+  }
+  let gMax = -Infinity
+  for (const fv of candidates)
+    gMax = Math.max(gMax, g(fv))
+  const w_max_global = Math.min(1, Math.max(0, rho0 * gMax))
+  const w_max_at_f = f === undefined ? null : Math.min(1, Math.max(0, rho0 * g(f)))
+  return { w_max_global, w_max_at_f }
+}
+
+/**
+ * 推导 commit 判定（诊断项，非逻辑门控）：
+ *
+ *   commit_possible ≡ (w_max_global ≥ θ) ∧ (contradiction_level ≠ 'high')
+ *                     ∧ (证据充分) ∧ (w ≥ θ)
+ *
+ * `commit_reason` 按下方顺序取第一个命中者（区分「这次状态不好」与「这套参数根本不可能」）：
+ *   1. w_max_below_theta  — 基线层面构造性零（最重要）
+ *   2. contradiction_high
+ *   3. evidence_insufficient
+ *   4. fatigue_deferred   — 注意 defer ≠ reject
+ *   5. w_below_theta
+ *   6. committed
+ */
+export function deriveV6CommitVerdict(args: {
+  w_max_global: number
+  contradiction_level: ContradictionLevel
+  evidence_sufficient: boolean
+  decision: PgcDecision
+  w: number
+  theta?: number
+}): { commit_possible: boolean, commit_reason: CommitReason } {
+  const theta = args.theta ?? DEFAULT_PGC_V6_POLICY.thresholds.commit_min_w
+  if (args.w_max_global < theta)
+    return { commit_possible: false, commit_reason: 'w_max_below_theta' }
+  if (args.contradiction_level === 'high')
+    return { commit_possible: false, commit_reason: 'contradiction_high' }
+  if (!args.evidence_sufficient)
+    return { commit_possible: false, commit_reason: 'evidence_insufficient' }
+  if (args.decision === 'defer')
+    return { commit_possible: false, commit_reason: 'fatigue_deferred' }
+  if (args.w < theta)
+    return { commit_possible: false, commit_reason: 'w_below_theta' }
+  return { commit_possible: true, commit_reason: 'committed' }
+}
+
 /**
  * 对单个候选做 PGC 决策。纯函数：相同输入 ⇒ 相同输出（确定性，利于复现/回放）。
  */
@@ -536,8 +661,18 @@ export function decideCandidate(
   if (ctx.pgc_v6_state) {
     const s = ctx.pgc_v6_state
     const { tau, rho0, kappa, dot, w_prime, w } = computeV6CommitmentWeight(cand.memory_kind, s, DEFAULT_PGC_V6_POLICY)
+    const { w_max_global, w_max_at_f } = computeV6WMaxBounds(tau, PGC_V6_PARAMS_CASE4, s.f)
     const level = contradictionLevelFromSeverity(contraSeverity)
     const { decision, reason_codes, fatigue_deferred } = applyV6Decision(w, s, level, DEFAULT_PGC_V6_POLICY)
+    const hasEvidence = cand.evidence_ids.length > 0
+    const evidence_sufficient = hasEvidence && evStrength >= 1
+    const { commit_possible, commit_reason } = deriveV6CommitVerdict({
+      w_max_global,
+      contradiction_level: level,
+      evidence_sufficient,
+      decision,
+      w,
+    })
     const v6: PgcV6State = {
       tau,
       s: { ...s },
@@ -546,6 +681,10 @@ export function decideCandidate(
       dot,
       w_prime,
       w,
+      w_max_global,
+      w_max_at_f: w_max_at_f ?? w_max_global,
+      commit_possible,
+      commit_reason,
       fatigue_deferred,
       contradiction_level: level,
     }

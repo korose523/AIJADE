@@ -7,19 +7,12 @@
  */
 
 import type { Belief } from './belief'
-import type { MemoryKind, PgcCandidateWrite, PgcReadContext } from './pgc'
+import type { MemoryKind, PgcCandidateWrite, PgcReadContext, PgcV6Params } from './pgc'
 import type { PgcState4, Tau } from './pgc-state'
 
 import { describe, expect, it } from 'vitest'
 
-import {
-  applyV6Decision,
-  computeV6CommitmentWeight,
-  contradictionLevelFromSeverity,
-  decideCandidate,
-  DEFAULT_PGC_POLICY_V1,
-  TAU_BY_MEMORY_KIND,
-} from './pgc'
+import { applyV6Decision, computeV6CommitmentWeight, computeV6WMaxBounds, contradictionLevelFromSeverity, decideCandidate, DEFAULT_PGC_POLICY_V1, deriveV6CommitVerdict, PGC_V6_PARAMS_CASE4, PGC_V6_TAU_CASE_ID, TAU_BY_MEMORY_KIND } from './pgc'
 import { gateRetrieval, RETRIEVAL_NOISE } from './pgc-retrieval'
 import { createPgcStateIntegrator, DEFAULT_PGC_STATE_SPEC, evaluateStimulus } from './pgc-state'
 
@@ -354,5 +347,113 @@ describe('v6 — 离线巩固触发', () => {
   it('idle 充足但 f 未超阈值 ⇒ 不触发', () => {
     const integ = createPgcStateIntegrator({ a: 0.5, c: 0.5, d: 0.5, f: 0.5 })
     expect(integ.maybeTriggerOfflineConsolidation(400)).toBe(false)
+  })
+})
+
+// ===========================================================================
+// 13) 闭式 w_max 上界（构造性零显式化）
+// ===========================================================================
+
+/** 第 1 份参数（构造性零）：只作测试 fixture，不进生产路径。 */
+const PGC_V6_PARAMS_CASE1: PgcV6Params = {
+  rho0_by_tau: { episodic: 0.22, affective: 0.26, procedural: 0.24, semantic: 0.20 },
+  kappa: 0.85,
+  alpha_by_tau: {
+    episodic: { a: 0.95, c: -0.10, d: 0.05, f: 0 },
+    affective: { a: 0.10, c: 0.95, d: 0, f: -0.05 },
+    procedural: { a: 0, c: -0.05, d: 0.95, f: 0 },
+    semantic: { a: 0.15, c: -0.05, d: 0, f: 0.05 },
+  },
+}
+
+/** 暴力扫描（步长 0.02，四维）求 w_max，与闭式结果交叉验证。 */
+function bruteForceWMax(params: PgcV6Params, tau: Tau): number {
+  const rho0 = params.rho0_by_tau[tau]
+  const al = params.alpha_by_tau[tau]
+  const kappa = params.kappa
+  let max = -Infinity
+  for (let a = 0; a <= 1.0001; a += 0.02) {
+    for (let c = 0; c <= 1.0001; c += 0.02) {
+      for (let d = 0; d <= 1.0001; d += 0.02) {
+        for (let f = 0; f <= 1.0001; f += 0.02) {
+          const dot = al.a * a + al.c * c + al.d * d + al.f * f
+          const w = rho0 * (1 + dot) * (1 - kappa * f)
+          if (w > max)
+            max = w
+        }
+      }
+    }
+  }
+  return Math.min(1, Math.max(0, max))
+}
+
+describe('v6 — 闭式 w_max 与暴力扫描一致', () => {
+  const cases: { name: string, params: PgcV6Params, expected: Record<Tau, number> }[] = [
+    { name: 'case1', params: PGC_V6_PARAMS_CASE1, expected: { episodic: 0.44, affective: 0.533, procedural: 0.468, semantic: 0.23 } },
+    { name: 'case4', params: PGC_V6_PARAMS_CASE4, expected: { episodic: 1.0, affective: 1.0, procedural: 1.0, semantic: 1.0 } },
+  ]
+  const taus: Tau[] = ['episodic', 'affective', 'procedural', 'semantic']
+
+  for (const cs of cases) {
+    for (const tau of taus) {
+      it(`${cs.name} ${tau}: 闭式 w_max == 文档值(${cs.expected[tau]}) 且 == 暴力扫描`, () => {
+        const { w_max_global } = computeV6WMaxBounds(tau, cs.params)
+        expect(w_max_global).toBeCloseTo(cs.expected[tau], 4)
+        expect(w_max_global).toBeCloseTo(bruteForceWMax(cs.params, tau), 6)
+      })
+    }
+  }
+})
+
+// ===========================================================================
+// 14) 构造性零锁死：基线 1 永远不可 commit
+// ===========================================================================
+
+describe('v6 — 基线 1 锁死（w_max_below_theta 必触发）', () => {
+  const taus: Tau[] = ['episodic', 'affective', 'procedural', 'semantic']
+
+  it('四种 τ 全部 commit_possible=false 且 commit_reason=w_max_below_theta', () => {
+    for (const tau of taus) {
+      const { w_max_global } = computeV6WMaxBounds(tau, PGC_V6_PARAMS_CASE1)
+      expect(w_max_global).toBeLessThan(0.55)
+      const { commit_possible, commit_reason } = deriveV6CommitVerdict({
+        w_max_global,
+        contradiction_level: 'low',
+        evidence_sufficient: true,
+        decision: 'commit',
+        w: 1,
+      })
+      expect(commit_possible).toBe(false)
+      expect(commit_reason).toBe('w_max_below_theta')
+    }
+  })
+})
+
+// ===========================================================================
+// 15) 基线 4 可达 + f=0.70 的 defer 不可达（可观测）
+// ===========================================================================
+
+describe('v6 — 基线 4 可达性与 defer 不可达', () => {
+  it('基线 4，f=0、a=c=d=1：commit_possible=true、commit_reason=committed', () => {
+    const cand: PgcCandidateWrite = { ...withEvidence, memory_kind: 'long_term' }
+    const ctx = baseContext({ pgc_v6_state: { a: 1, c: 1, d: 1, f: 0 } })
+    const r = decideCandidate(cand, ctx, DEFAULT_PGC_POLICY_V1)
+    expect(r.pgc_state_snapshot.v6!.commit_possible).toBe(true)
+    expect(r.pgc_state_snapshot.v6!.commit_reason).toBe('committed')
+  })
+
+  it('基线 4，f=0.70，episodic 的 w_max_at_f ≈ 0.1628 且 < defer 门槛 0.45（defer 不可达）', () => {
+    const { w_max_at_f } = computeV6WMaxBounds('episodic', PGC_V6_PARAMS_CASE4, 0.70)
+    expect(w_max_at_f).not.toBeNull()
+    expect(w_max_at_f!).toBeCloseTo(0.1628, 4)
+    expect(w_max_at_f!).toBeLessThan(0.45)
+  })
+
+  it('tau_case_id === 4 被记录', () => {
+    const cand: PgcCandidateWrite = { ...withEvidence, memory_kind: 'long_term' }
+    const ctx = baseContext({ pgc_v6_state: { a: 1, c: 1, d: 1, f: 0 } })
+    const r = decideCandidate(cand, ctx, DEFAULT_PGC_POLICY_V1)
+    expect(r.pgc_state_snapshot.v6!.tau).toBe('semantic')
+    expect(PGC_V6_TAU_CASE_ID).toBe(4)
   })
 })
