@@ -18,6 +18,7 @@
     "db:push": "pnpm run apply:env -- drizzle-kit push",
     "verify:v9-events": "tsx scripts/verify-v9-events.ts",
     "verify:v9-events-http": "tsx scripts/verify-v9-events-http.ts",
+    "accept:v9-render-loop": "pnpm run apply:env -- tsx scripts/accept-v9-render-loop.ts",
     "otel:dashboards": "tsx otel/grafana/dashboards/build.ts"
   },
   "dependencies": {
