@@ -46,19 +46,55 @@ export type AijadeEventEnvelope = z.infer<typeof eventEnvelopeSchema>
 // Topic payload schemas
 // ============================================================================
 
+/**
+ * 一个**已被界定（bounded）**的学习任务的启动请求。
+ *
+ * 为什么 `resource_budget` 与 `stop_conditions` 是**必填**：v8 §48.2 要求「每个学习任务
+ * 必须在开始前被界定」且「禁止无终点浏览」。把它们设成必填，是让"无预算 / 无停止条件
+ * 的请求"**不可表达**，而不是靠调用方自觉——于是"有请求必有界"由 schema 保证，可以在
+ * 事件日志上直接审计（这正是事件层存在的意义）。
+ *
+ * 语义边界：`resource_budget` 与 `stop_conditions` 是**发出时刻的不可变快照**，活真源仍是
+ * `contracts-v8.LearningQuest`（由 `validateLearningQuest` 校验）。此处记录快照是为了让
+ * 回放/审计不必回查可变的 quest 行，而不是制造第二套活真源。
+ *
+ * 命名约定：本文件 payload 用 snake_case（与既有 topic 一致）；`contracts-v8.ts` 侧用
+ * camelCase。这个差异是有意的，不要"统一"掉。
+ */
 export const activeLearningRequestedSchema = z.object({
   session_id: z.string(),
   trace_id: z.string(),
   requested_at: z.number().int().nonnegative(),
   target: z.string().optional(),
+  /** 指向 `contracts-v8.LearningQuest.id`（活真源）。 */
+  quest_ref: z.string().min(1),
+  /** 资源预算快照，必须 allocated ≥ spent（v8 §48.2）。 */
+  resource_budget: z.object({
+    allocated: z.number().nonnegative(),
+    spent: z.number().nonnegative(),
+    unit: z.enum(['queries', 'minutes', 'usd', 'tokens']),
+  }).refine(b => b.spent <= b.allocated, {
+    message: 'resource_budget.spent 不得超过 allocated（v8 §48.2 预算必须可界定）',
+  }),
+  /** 停止条件，必须非空（v8 §48.2 禁止无终点浏览）。 */
+  stop_conditions: z.array(z.string().min(1)).min(1),
 })
 export type ActiveLearningRequestedPayload = z.infer<typeof activeLearningRequestedSchema>
 
+/**
+ * 学习任务**走完流水线**的完成回执。
+ *
+ * 只在 quest 真正走完时发（`ael.ts` 的完成边），**不**在 `FAILED` / `ABANDONED` 时发——
+ * 把"完成"与"中止"分开，否则这个事件名会说谎，下游也就无法用"有 completed"当作
+ * 学习量已产出的证据。
+ */
 export const activeLearningCompletedSchema = z.object({
   session_id: z.string(),
   trace_id: z.string(),
   completed_at: z.number().int().nonnegative(),
   result_ref: z.string().optional(),
+  /** 与 `requested` 同源，使请求/完成可在日志里配对。 */
+  quest_ref: z.string().min(1),
 })
 export type ActiveLearningCompletedPayload = z.infer<typeof activeLearningCompletedSchema>
 
@@ -86,9 +122,26 @@ export const memoryTxCommittedSchema = z.object({
 })
 export type MemoryTxCommittedPayload = z.infer<typeof memoryTxCommittedSchema>
 
+/**
+ * 人格表现层的渲染请求（内核 → 具身侧）。与 `lpm.render_ready` 构成请求/回执对。
+ *
+ * 两个引用都是**必填**，理由是 v8 §52.5「身份连续性可审计」：
+ * - `persona_snapshot_ref` 与 `contracts-v8.PerformanceIntent.personaSnapshotRef` **同源同值**。
+ *   人格快照只在记忆提交之后才存在（v9 §6.1 因果链：PGC/MemoryTx → 长期记忆 → PersonalityLPM），
+ *   所以"先渲染再补身份"这种顺序在契约上就被排除掉。
+ * - `intent_ref` 是本次请求对应的 `PerformanceIntent.id`。有了它，具身侧回的
+ *   `lpm.render_ready.render_ref` 才能回指到"究竟渲染了哪一次意图"，否则那条回执无法与
+ *   请求配对，链条在审计上是断的。
+ *
+ * 更名为 `persona_snapshot_ref`（原字段为可选 `persona_ref`）：后者语义含糊且可省略，
+ * 与 §52.5 冲突，故不保留为第二个字段以免出现两套引用写法。
+ */
 export const personaRenderRequestedSchema = z.object({
   session_id: z.string(),
-  persona_ref: z.string().optional(),
+  /** 引用人格快照（同 `PerformanceIntent.personaSnapshotRef`，§52.5）。 */
+  persona_snapshot_ref: z.string().min(1),
+  /** 本次请求对应的 `PerformanceIntent.id`，使 `lpm.render_ready` 可回指。 */
+  intent_ref: z.string().min(1),
 })
 export type PersonaRenderRequestedPayload = z.infer<typeof personaRenderRequestedSchema>
 

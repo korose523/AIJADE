@@ -1,4 +1,7 @@
 import type { PerformanceIntent } from './contracts-v8'
+import type { RiskLevel } from './events'
+
+import { personaRenderRequestedEvent } from './events'
 
 /**
  * v8 §52 — PEF: Persona–Expression Field (人格—表现场).
@@ -339,6 +342,55 @@ export function buildPerformanceIntent(
     sceneContext: input.sceneContext,
     duration,
   }
+}
+
+// ---------------------------------------------------------------------------
+// §52.5 — 渲染请求事件（内核 → 具身侧）
+// ---------------------------------------------------------------------------
+
+/** `build*Event` 的信封入参形态（与 weave.ts / pgc.ts / ael.ts 保持一致）。 */
+interface PersonaRenderEnvelope {
+  event_id: string
+  trace_id: string
+  correlation_id: string
+  timestamp: number
+  producer: string
+  idempotency_key: string
+  replay_mode: 'live' | 'replay'
+  risk_level: RiskLevel
+}
+
+/**
+ * 把一次 `PerformanceIntent` 包成 `aijade.persona.render_requested`（已 zod 校验）。
+ *
+ * **入参故意收 `PerformanceIntent` 而不是裸字符串**——这使"引用悬空"在结构上不可能：
+ * `PerformanceIntent` 只能由 `buildPerformanceIntent` 产出，而后者**强制要求**
+ * `personaSnapshotRef`（§52.5 身份连续性）。于是"还没有人格快照就请求渲染"这种顺序
+ * 无法被表达出来，与 v9 §6.1 的因果链（PGC/MemoryTx → 长期记忆 → PersonalityLPM → 具身输出）
+ * 自动对齐，不需要调用方记得遵守。
+ *
+ * 这里**不**再跑一遍 `validatePerformanceIntent`：本事件的 schema 已经把
+ * `persona_snapshot_ref` / `intent_ref` 约束为 `.min(1)`，多一道不同失败模式的检查反而会
+ * 制造第二个判据。（对比 `ael.ts` 则必须调 `validateLearningQuest`——因为 §48.2 的规则集
+ * 无法用 payload schema 表达。）
+ *
+ * 与 `lpm.render_ready` 的关系：本事件带出的 `intent_ref` 就是对方 `render_ref` 的回指目标，
+ * 两者配对后"请求了哪一次意图 / 实际渲染了哪一次"在日志里可对齐。
+ */
+export function buildPersonaRenderRequestedEvent(
+  intent: PerformanceIntent,
+  sessionId: string,
+  envelope: PersonaRenderEnvelope,
+) {
+  return personaRenderRequestedEvent.parse({
+    ...envelope,
+    topic: 'aijade.persona.render_requested' as const,
+    payload: {
+      session_id: sessionId,
+      persona_snapshot_ref: intent.personaSnapshotRef,
+      intent_ref: intent.id,
+    },
+  })
 }
 
 // ---------------------------------------------------------------------------

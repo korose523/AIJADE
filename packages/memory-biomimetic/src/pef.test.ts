@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import { validatePerformanceIntent } from './contracts-v8'
+import { AIJADE_TOPICS, safeParseAijadeEvent } from './events'
 import {
   buildPerformanceIntent,
+  buildPersonaRenderRequestedEvent,
   clampExpression,
   DEFAULT_CONSISTENCY_THRESHOLDS,
   deriveChannels,
@@ -271,5 +273,67 @@ describe('identityConsistencyCheck (§52.5)', () => {
     expect(v.ok).toBe(false)
     const lenient = identityConsistencyCheck({ prosodyDrift: 0.2 })
     expect(lenient.ok).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// §52.5 — 渲染请求事件（内核 → 具身侧）
+// ---------------------------------------------------------------------------
+
+const ENVELOPE = {
+  event_id: 'evt_pef_1',
+  trace_id: 'tr_pef_1',
+  correlation_id: 'cor_pef_1',
+  timestamp: 1_700_000_000_000,
+  producer: 'pef',
+  idempotency_key: 'idem_pef_1',
+  replay_mode: 'live' as const,
+  risk_level: 'low' as const,
+}
+
+function intent(over: Partial<{ id: string, personaSnapshotRef: string }> = {}) {
+  return buildPerformanceIntent(
+    { dialogueAct: 'inform' },
+    {
+      id: over.id ?? 'pi_1',
+      agentId: 'agent-1',
+      userScope: 'user-1',
+      personaSnapshotRef: over.personaSnapshotRef ?? 'ps_1',
+    },
+    ENVELOPE.timestamp,
+    800,
+  )
+}
+
+describe('pEF — persona.render_requested 构造', () => {
+  it('合法意图 ⇒ 合法事件，且 topic 属于登记集合', () => {
+    const ev = buildPersonaRenderRequestedEvent(intent(), 'session-1', ENVELOPE)
+    expect(ev.topic).toBe('aijade.persona.render_requested')
+    expect((AIJADE_TOPICS as readonly string[]).includes(ev.topic)).toBe(true)
+    expect(safeParseAijadeEvent(ev).success).toBe(true)
+  })
+
+  it('persona_snapshot_ref 与 PerformanceIntent 同源同值（§52.5 可审计）', () => {
+    const i = intent({ personaSnapshotRef: 'ps_abc' })
+    const ev = buildPersonaRenderRequestedEvent(i, 'session-1', ENVELOPE)
+    const p = ev.payload as Record<string, unknown>
+    expect(p.persona_snapshot_ref).toBe(i.personaSnapshotRef)
+    expect(p.persona_snapshot_ref).toBe('ps_abc')
+  })
+
+  it('intent_ref 就是意图 id，使 lpm.render_ready.render_ref 可回指', () => {
+    const i = intent({ id: 'pi_xyz' })
+    const ev = buildPersonaRenderRequestedEvent(i, 'session-1', ENVELOPE)
+    expect((ev.payload as Record<string, unknown>).intent_ref).toBe('pi_xyz')
+  })
+
+  it('空 personaSnapshotRef ⇒ 抛错（结构上排除「先渲染再补身份」）', () => {
+    expect(() => buildPersonaRenderRequestedEvent(intent({ personaSnapshotRef: '' }), 'session-1', ENVELOPE)).toThrow()
+  })
+
+  it('事件不携带 expression/通道参数（那些属于 PerformanceIntent 本体）', () => {
+    const ev = buildPersonaRenderRequestedEvent(intent(), 'session-1', ENVELOPE)
+    const p = ev.payload as Record<string, unknown>
+    expect(Object.keys(p).sort()).toEqual(['intent_ref', 'persona_snapshot_ref', 'session_id'])
   })
 })

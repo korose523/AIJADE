@@ -1,4 +1,8 @@
-import type { SourceRecord } from './contracts-v8'
+import type { LearningQuest, SourceRecord } from './contracts-v8'
+import type { RiskLevel } from './events'
+
+import { validateLearningQuest } from './contracts-v8'
+import { activeLearningCompletedEvent, activeLearningRequestedEvent } from './events'
 
 /**
  * v8 §48 — AEL: Autonomous Epistemic Learning.
@@ -111,6 +115,122 @@ export function transitionQuest(state: QuestState, event: QuestEvent): QuestStat
     case 'abandon':
       return { stage: 'ABANDONED' }
   }
+}
+
+// ---------------------------------------------------------------------------
+// §48.2 — lifecycle edges → 统一事件协议（v9 §3）
+// ---------------------------------------------------------------------------
+
+/**
+ * `active_learning.requested` 的**唯一**发射边：离开 `SCOPE_AND_BUDGET`。
+ *
+ * 为什么是这条边（对"进入 FORM_QUESTION / 两处都发 / 只在 SCOPE_AND_BUDGET 发"三选的定论）：
+ * - 在 `FORM_QUESTION` 发（无论一次还是两次）：此刻 quest 尚无 `resourceBudget` /
+ *   `stopConditions`，事件字段要么缺失、要么只能编造，直接违反 v8 §48.2「每个学习任务必须
+ *   在开始前被界定」以及仓库"不得编造数据"的红线。
+ * - 在 `SCOPE_AND_BUDGET` **进入**时发：同一问题——预算是该阶段**期间**才落定的，
+ *   进入瞬间它还不成立。
+ * - 在 `SCOPE_AND_BUDGET → PLAN_SOURCES` 发：预算刚落地、取数尚未开始，正是
+ *   "开始前已被界定"。**这是定义域上唯一自洽的边。**
+ *
+ * 实现层面的原因：`transitionQuest` 是纯函数（返回下一个 state），"进入/退出某阶段"
+ * 在代码里都只能表现为 from→to 这条边，所以发射点必须按边判定。见 `shouldRequestActiveLearning`。
+ */
+export const ACTIVE_LEARNING_REQUEST_EDGE = {
+  from: 'SCOPE_AND_BUDGET',
+  to: 'PLAN_SOURCES',
+} as const satisfies { from: QuestPipelineStage, to: QuestPipelineStage }
+
+/**
+ * 请求边判定：只有 `SCOPE_AND_BUDGET → PLAN_SOURCES` 返回 true。
+ * 单条边 = 单次发射，因此同一 quest 在一次流水线里不会重复发请求，也就不会撞
+ * `events.idempotency_key` 的唯一约束。
+ */
+export function shouldRequestActiveLearning(from: QuestStage, to: QuestStage | null): boolean {
+  return to !== null && from === ACTIVE_LEARNING_REQUEST_EDGE.from && to === ACTIVE_LEARNING_REQUEST_EDGE.to
+}
+
+/**
+ * 完成边判定：`REFLECT` 上 `advance` 返回 `null`——`transitionQuest` 自己把这个 null 定义为
+ * "没有下一阶段，即任务完成"（见该函数 doc comment）。这里复用它，而不是另造一个 `DONE`
+ * 状态，好让"完成"的判据只有一处真源。
+ *
+ * `fail` / `abandon` **不算完成**：它们是各自独立的终端态，若也算 completed，事件名就会说谎，
+ * 下游也无法再用"存在 completed"当作"学习已产出"的证据。
+ */
+export function shouldCompleteActiveLearning(from: QuestStage, to: QuestStage | null): boolean {
+  return to === null && from === 'REFLECT'
+}
+
+/** `build*Event` 的信封入参形态（与 weave.ts / pgc.ts 的同名参数保持一致）。 */
+interface LifecycleEnvelope {
+  event_id: string
+  trace_id: string
+  correlation_id: string
+  timestamp: number
+  producer: string
+  idempotency_key: string
+  replay_mode: 'live' | 'replay'
+  risk_level: RiskLevel
+}
+
+/**
+ * 把一个**已界定**的 quest 包成 `aijade.active_learning.requested`（已 zod 校验）。
+ *
+ * 先过 `validateLearningQuest` 再构造：不满足 §48.2（无停止条件 / `spent > allocated` /
+ * 缺 `experimentManifestRef`）的 quest 会**抛错**，而不是发出一条不可审计的请求。
+ * 抛错而非静默返回 null，与 `schema.parse` 的行为一致，让误用声张。
+ *
+ * `sessionId` 显式传入而**不**用 `quest.userScope` 顶替：`LearningQuest` 契约里只有
+ * `agentId` / `userScope`，没有 session 概念，两者生命周期不同，混用会让后续按 session
+ * 归档的事件对不上。
+ */
+export function buildActiveLearningRequestedEvent(
+  quest: LearningQuest,
+  sessionId: string,
+  envelope: LifecycleEnvelope,
+) {
+  const verdict = validateLearningQuest(quest)
+  if (!verdict.ok)
+    throw new Error(`active_learning.requested 被拒：quest 未满足 v8 §48.2 界定要求 — ${verdict.reason}`)
+
+  return activeLearningRequestedEvent.parse({
+    ...envelope,
+    topic: 'aijade.active_learning.requested' as const,
+    payload: {
+      session_id: sessionId,
+      trace_id: envelope.trace_id,
+      requested_at: envelope.timestamp,
+      target: quest.researchQuestion,
+      quest_ref: quest.id,
+      resource_budget: {
+        allocated: quest.resourceBudget.allocated,
+        spent: quest.resourceBudget.spent,
+        unit: quest.resourceBudget.unit,
+      },
+      stop_conditions: [...quest.stopConditions],
+    },
+  })
+}
+
+/** 把走完流水线的 quest 包成 `aijade.active_learning.completed`（已 zod 校验）。 */
+export function buildActiveLearningCompletedEvent(
+  quest: LearningQuest,
+  sessionId: string,
+  envelope: LifecycleEnvelope,
+  resultRef?: string,
+) {
+  return activeLearningCompletedEvent.parse({
+    ...envelope,
+    topic: 'aijade.active_learning.completed' as const,
+    payload: {
+      session_id: sessionId,
+      trace_id: envelope.trace_id,
+      completed_at: envelope.timestamp,
+      quest_ref: quest.id,
+      ...(resultRef === undefined ? {} : { result_ref: resultRef }),
+    },
+  })
 }
 
 // ---------------------------------------------------------------------------
@@ -230,7 +350,11 @@ export function sharedOriginClusters(sources: SourceRecord[]): string[][] {
   const n = sources.length
   const parent = Array.from({ length: n }, (_, i) => i)
   const find = (x: number): number => (parent[x] === x ? x : (parent[x] = find(parent[x])))
-  const union = (a: number, b: number) => { parent[find(a)] = find(b) }
+  // 既有代码的纯格式修正：单行内含 2 条语句会触 style/max-statements-per-line
+  // （该错误在本次改动之前就存在，非本轮引入）。
+  const union = (a: number, b: number) => {
+    parent[find(a)] = find(b)
+  }
 
   for (let i = 0; i < n; i++) {
     for (let j = i + 1; j < n; j++) {

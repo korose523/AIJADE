@@ -1,9 +1,12 @@
 import type { QuestState } from './ael'
-import type { SourceRecord } from './contracts-v8'
+import type { LearningQuest, SourceRecord } from './contracts-v8'
 
 import { describe, expect, it } from 'vitest'
 
 import {
+  ACTIVE_LEARNING_REQUEST_EDGE,
+  buildActiveLearningCompletedEvent,
+  buildActiveLearningRequestedEvent,
   canBeIndependentEvidence,
   canBeSystemInstruction,
   evidenceConfidence,
@@ -11,8 +14,11 @@ import {
   planSources,
   QUEST_PIPELINE,
   sharedOriginClusters,
+  shouldCompleteActiveLearning,
+  shouldRequestActiveLearning,
   transitionQuest,
 } from './ael'
+import { AIJADE_TOPICS, safeParseAijadeEvent } from './events'
 
 function src(id: string, over: Partial<SourceRecord> = {}): SourceRecord {
   return {
@@ -141,5 +147,175 @@ describe('aEL — shared-origin detection (§48.4)', () => {
     const b = src('b', { contentHash: 'x' })
     const clusters = sharedOriginClusters([a, b])
     expect(clusters.some(cl => cl.includes('a') && cl.includes('b'))).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// §48.2 lifecycle edges → 统一事件（v9 §3）
+// ---------------------------------------------------------------------------
+
+function quest(over: Partial<LearningQuest> = {}): LearningQuest {
+  return {
+    id: 'q1',
+    schema: 'aijade.learning_quest@1',
+    agentId: 'agent-1',
+    userScope: 'user-1',
+    interestThreadRef: 'it1',
+    researchQuestion: 'PGC 消融是否改变 recall@K？',
+    operationalDefinition: '同一语料下 K=10 的命中率差',
+    priorBeliefs: [],
+    expectedInformationGain: 0.5,
+    sourcePlan: { questionType: 'academic', sourceTypes: ['paper'], maxSources: 5 },
+    resourceBudget: { allocated: 10, spent: 0, unit: 'queries' },
+    privacyClass: 'public',
+    stopConditions: ['信息增益低于阈值'],
+    successCriteria: ['结论可复现'],
+    deliverables: ['claim_map'],
+    experimentManifestRef: 'em1',
+    status: 'active',
+    createdAt: 1,
+    ...over,
+  }
+}
+
+const ENVELOPE = {
+  event_id: 'evt_ael_1',
+  trace_id: 'tr_ael_1',
+  correlation_id: 'cor_ael_1',
+  timestamp: 1_700_000_000_000,
+  producer: 'ael',
+  idempotency_key: 'idem_ael_1',
+  replay_mode: 'live' as const,
+  risk_level: 'low' as const,
+}
+
+describe('aEL — 请求边/完成边判定', () => {
+  it('只有 SCOPE_AND_BUDGET → PLAN_SOURCES 是请求边', () => {
+    expect(shouldRequestActiveLearning('SCOPE_AND_BUDGET', 'PLAN_SOURCES')).toBe(true)
+  })
+
+  it('进入 SCOPE_AND_BUDGET 不算请求边（此刻预算尚未落定）', () => {
+    expect(shouldRequestActiveLearning('FORM_QUESTION', 'SCOPE_AND_BUDGET')).toBe(false)
+  })
+
+  it('fORM_QUESTION 上不发（此刻没有资源预算/停止条件）', () => {
+    expect(shouldRequestActiveLearning('OBSERVE', 'FORM_QUESTION')).toBe(false)
+  })
+
+  it('请求边常量本身指向预算阶段之后的第一次推进', () => {
+    expect(ACTIVE_LEARNING_REQUEST_EDGE.from).toBe('SCOPE_AND_BUDGET')
+    expect(ACTIVE_LEARNING_REQUEST_EDGE.to).toBe('PLAN_SOURCES')
+    expect(QUEST_PIPELINE.indexOf(ACTIVE_LEARNING_REQUEST_EDGE.to))
+      .toBe(QUEST_PIPELINE.indexOf(ACTIVE_LEARNING_REQUEST_EDGE.from) + 1)
+  })
+
+  it('完成边 = REFLECT 上 advance 返回 null（由 transitionQuest 自己定义）', () => {
+    expect(shouldCompleteActiveLearning('REFLECT', null)).toBe(true)
+    expect(shouldCompleteActiveLearning('REFLECT', 'SHARE_OR_INCUBATE')).toBe(false)
+  })
+
+  it('fail / abandon 不算完成（否则事件名会说谎）', () => {
+    expect(shouldCompleteActiveLearning('FAILED', null)).toBe(false)
+    expect(shouldCompleteActiveLearning('ABANDONED', null)).toBe(false)
+  })
+
+  it('完整走一遍流水线：requested 恰好 1 次、completed 恰好 1 次', () => {
+    let s: QuestState = { stage: 'OBSERVE' }
+    let requested = 0
+    let completed = 0
+    for (let guard = 0; guard < QUEST_PIPELINE.length + 4; guard++) {
+      const next = transitionQuest(s, 'advance')
+      const to = next === null ? null : next.stage
+      if (shouldRequestActiveLearning(s.stage, to))
+        requested++
+      if (shouldCompleteActiveLearning(s.stage, to))
+        completed++
+      if (next === null)
+        break
+      s = next
+    }
+    expect(requested).toBe(1)
+    expect(completed).toBe(1)
+  })
+
+  it('在预算阶段 pause/resume 一次不会重复发射', () => {
+    let s: QuestState = { stage: 'FORM_QUESTION' }
+    let requested = 0
+    // 推进到 SCOPE_AND_BUDGET
+    let next = transitionQuest(s, 'advance')!
+    expect(next.stage).toBe('SCOPE_AND_BUDGET')
+    s = next
+    // 暂停再恢复（回到同一阶段）
+    const paused = transitionQuest(s, 'pause')!
+    s = transitionQuest(paused, 'resume')!
+    expect(s.stage).toBe('SCOPE_AND_BUDGET')
+    // 再推进：这才第一次也是唯一一次穿过请求边
+    next = transitionQuest(s, 'advance')!
+    if (shouldRequestActiveLearning(s.stage, next.stage))
+      requested++
+    // 继续走完，看是否再触发
+    s = next
+    for (let guard = 0; guard < QUEST_PIPELINE.length + 4; guard++) {
+      const n = transitionQuest(s, 'advance')
+      if (shouldRequestActiveLearning(s.stage, n === null ? null : n.stage))
+        requested++
+      if (n === null)
+        break
+      s = n
+    }
+    expect(requested).toBe(1)
+  })
+})
+
+describe('aEL — 事件构造（先校验后发射）', () => {
+  it('合法 quest ⇒ 产出合法事件，topic 属于登记集合', () => {
+    const ev = buildActiveLearningRequestedEvent(quest(), 'session-1', ENVELOPE)
+    expect(ev.topic).toBe('aijade.active_learning.requested')
+    expect((AIJADE_TOPICS as readonly string[]).includes(ev.topic)).toBe(true)
+    expect(safeParseAijadeEvent(ev).success).toBe(true)
+  })
+
+  it('payload 携带 §48.2 的预算与停止条件，且可回指 quest', () => {
+    const ev = buildActiveLearningRequestedEvent(quest(), 'session-1', ENVELOPE)
+    const p = ev.payload as Record<string, unknown>
+    expect(p.quest_ref).toBe('q1')
+    expect(p.session_id).toBe('session-1')
+    expect(p.stop_conditions).toEqual(['信息增益低于阈值'])
+    expect(p.resource_budget).toEqual({ allocated: 10, spent: 0, unit: 'queries' })
+  })
+
+  it('requested_at 取自信封 timestamp（不另取时钟 ⇒ 可回放）', () => {
+    const ev = buildActiveLearningRequestedEvent(quest(), 'session-1', ENVELOPE)
+    expect((ev.payload as { requested_at: number }).requested_at).toBe(ENVELOPE.timestamp)
+  })
+
+  it('无停止条件 ⇒ 抛错，而不是发出不可审计的请求', () => {
+    expect(() => buildActiveLearningRequestedEvent(quest({ stopConditions: [] }), 'session-1', ENVELOPE)).toThrow(/§48.2/)
+  })
+
+  it('预算超额（spent > allocated）⇒ 抛错', () => {
+    expect(() => buildActiveLearningRequestedEvent(
+      quest({ resourceBudget: { allocated: 5, spent: 6, unit: 'queries' } }),
+      'session-1',
+      ENVELOPE,
+    )).toThrow(/§48.2/)
+  })
+
+  it('缺 experimentManifestRef ⇒ 抛错（§48.2 可复现性要求）', () => {
+    expect(() => buildActiveLearningRequestedEvent(quest({ experimentManifestRef: '' }), 'session-1', ENVELOPE)).toThrow(/§48.2/)
+  })
+
+  it('completed 事件与 requested 同 quest_ref，可配对', () => {
+    const ev = buildActiveLearningCompletedEvent(quest(), 'session-1', ENVELOPE)
+    expect(ev.topic).toBe('aijade.active_learning.completed')
+    expect((ev.payload as Record<string, unknown>).quest_ref).toBe('q1')
+    expect(safeParseAijadeEvent(ev).success).toBe(true)
+  })
+
+  it('completed 的 result_ref 只在提供时出现（不伪造占位值）', () => {
+    const without = buildActiveLearningCompletedEvent(quest(), 'session-1', ENVELOPE)
+    expect('result_ref' in (without.payload as Record<string, unknown>)).toBe(false)
+    const withRef = buildActiveLearningCompletedEvent(quest(), 'session-1', ENVELOPE, 'ka_1')
+    expect((withRef.payload as Record<string, unknown>).result_ref).toBe('ka_1')
   })
 })
