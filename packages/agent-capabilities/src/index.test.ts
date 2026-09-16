@@ -60,4 +60,26 @@ describe('agent capabilities bridge', () => {
     expect(captured).toBeTypeOf('function')
     expect(() => captured!()).not.toThrow()
   })
+
+  it('emits its injected context message under the agent:capabilities contextId', () => {
+    const bridge = createAgentCapabilitiesBridge({
+      llm: fakeLLM(),
+      // Production (stage-ui chat store) wires a real computer-control
+      // capability, so the injected text surfaces the `computer_use` hint.
+      computerUse: {} as never,
+      autoCreateSkills: false,
+    })
+
+    const wrapped = bridge.wrapDeps({ runtimeContextProviders: [] } as unknown as ChatOrchestratorRuntimeDeps)
+    const provider = wrapped.runtimeContextProviders?.at(-1)
+    expect(provider).toBeTypeOf('function')
+    const ctx = provider!()
+    expect(ctx).not.toBeNull()
+    // The stable contextId is what downstream context-store ingestion keys on.
+    // Pinning it here guards against an accidental rename regressing the
+    // stage-ui contract (which had been asserting on a non-capabilities count).
+    expect(ctx!.contextId).toBe('agent:capabilities')
+    expect(ctx!.strategy).toBe(ContextUpdateStrategy.ReplaceSelf)
+    expect(ctx!.text).toContain('computer_use')
+  })
 })

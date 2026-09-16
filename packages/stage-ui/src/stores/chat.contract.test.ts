@@ -144,6 +144,40 @@ vi.mock('./modules/artistry-autonomous', () => ({
   }),
 }))
 
+// Hermetic isolation of the external `@proj-aijade/agent-capabilities`
+// collaborator. In production this bridge registers its own runtime context
+// provider (contextId `agent:capabilities`) and a longitudinal-persona
+// telemetry recorder. Those are real production behaviors, pinned by the
+// package's own tests — but this contract suite is about the orchestrator's
+// hook order and per-configured-provider ingestion, so we must not let the
+// bridge's own ingestion leak into `ingestContextMessage` here. The mock
+// mirrors only the members `chat.ts` actually consumes: `learning.getPersona`,
+// `wrapDeps` (identity — keeps the orchestrator's own providers intact) and
+// `registerHooks` (no-op).
+vi.mock('@proj-aijade/agent-capabilities', () => {
+  const learning = { getPersona: vi.fn(() => ({})) }
+  return {
+    createAgentCapabilitiesBridge: vi.fn(() => ({
+      skillForge: { registry: { list: () => [] } },
+      learning,
+      computerUse: undefined,
+      wrapDeps: (deps: any) => deps,
+      registerHooks: vi.fn(),
+    })),
+    createPersonaTelemetryRecorder: vi.fn(() => ({ record: vi.fn() })),
+  }
+})
+
+// `chat.ts` resolves the research-consent store once at setup to feed the
+// telemetry recorder's `consent` callback. The recorder itself is mocked
+// above (its callback is never invoked here), but we still isolate the store
+// so this contract test doesn't depend on research-store internals.
+vi.mock('./settings/research', () => ({
+  useSettingsResearch: () => ({
+    researchTelemetryConsent: false,
+  }),
+}))
+
 const provider = {
   chat: () => ({ baseURL: 'https://example.com/' }),
 } as unknown as ChatProvider
