@@ -6,6 +6,7 @@ import { defineStore } from 'pinia'
 import { computed, watch } from 'vue'
 
 import { DisplayModelFormat, useDisplayModelsStore } from '../display-models'
+import { resolveAssetVersionHash } from '../../utils/asset-identity'
 
 export type StageModelRenderer = 'live2d' | 'vrm' | 'mmd' | 'spine' | 'inochi2d' | 'godot' | 'disabled' | undefined
 type BuiltInStageModelRenderer = Exclude<StageModelRenderer, 'godot'>
@@ -26,6 +27,13 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
   const stageModelSelectedUrl = refManualReset<string | undefined>(undefined)
   const stageModelRenderer = refManualReset<StageModelRenderer>(undefined)
   const stageModelBuiltInRenderer = refManualReset<BuiltInStageModelRenderer>(undefined)
+  /**
+   * Deterministic version hash of the currently selected display model's asset.
+   * Optional because the asset hash is only known after an async resolve; before
+   * the first `updateStageModel` completes it is `undefined`. Mirrors the other
+   * `refManualReset` state so `resetState()` can clear it.
+   */
+  const stageModelAssetVersionHash = refManualReset<string | undefined>(undefined)
 
   const stageViewControlsEnabled = refManualReset<boolean>(false)
 
@@ -119,6 +127,16 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
     }
 
     stageModelSelectedDisplayModel.value = model
+
+    // Resolve the asset version hash for audit. The hash resolve is async, so we
+    // must re-check the race guard afterwards: a newer selection may have
+    // superseded this request while the hash was being computed, and we must not
+    // overwrite the newer hash with this stale one. This mirrors the existing
+    // `requestId !== stageModelUpdateSequence` guards above.
+    const assetVersionHash = await resolveAssetVersionHash(model)
+    if (requestId !== stageModelUpdateSequence)
+      return
+    stageModelAssetVersionHash.value = assetVersionHash
   }
 
   function setStageModelRenderer(renderer: StageModelRenderer) {
@@ -149,6 +167,7 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
     stageModelSelectedUrl.reset()
     stageModelRenderer.reset()
     stageModelBuiltInRenderer.reset()
+    stageModelAssetVersionHash.reset()
     stageViewControlsEnabled.reset()
 
     await updateStageModel()
@@ -159,6 +178,7 @@ export const useSettingsStageModel = defineStore('settings-stage-model', () => {
     stageModelSelected,
     stageModelSelectedUrl,
     stageModelSelectedDisplayModel,
+    stageModelAssetVersionHash,
     stageViewControlsEnabled,
 
     initializeStageModel,

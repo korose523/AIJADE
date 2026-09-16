@@ -5,6 +5,8 @@ import { nanoid } from 'nanoid'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+import { resolveAssetVersionHash } from '../utils/asset-identity'
+
 export enum DisplayModelFormat {
   Live2dZip = 'live2d-zip',
   Live2dDirectory = 'live2d-directory',
@@ -39,6 +41,13 @@ export interface DisplayModelFile {
   name: string
   previewImage?: string
   importedAt: number
+  /**
+   * Deterministic version hash of the model asset (content hash for files,
+   * reference hash for urls). Optional so that pre-existing IndexedDB records
+   * and the in-module preset array (which are populated without a hash at load
+   * time) remain valid; it is filled lazily via `getDisplayModelAssetVersionHash`.
+   */
+  assetVersionHash?: string
 }
 
 export interface DisplayModelURL {
@@ -49,6 +58,11 @@ export interface DisplayModelURL {
   name: string
   previewImage?: string
   importedAt: number
+  /**
+   * Deterministic version hash of the model asset (reference hash for urls).
+   * Optional for the same backward-compatibility reason as `DisplayModelFile`.
+   */
+  assetVersionHash?: string
 }
 
 const displayModelsPresets: DisplayModel[] = [
@@ -139,6 +153,11 @@ export const useDisplayModelsStore = defineStore('display-models', () => {
       // The renderer draws a first-frame static preview; no placeholder generation here.
     }
 
+    // Compute the asset version hash and persist it together with the record, so
+    // a model is always auditable once it lands in IndexedDB. Keep this before
+    // the awaited `localforage.setItem` below (see the NOTICE on that call).
+    newDisplayModel.assetVersionHash = await resolveAssetVersionHash(newDisplayModel)
+
     displayModels.value.unshift(newDisplayModel)
 
     // NOTICE:
@@ -152,6 +171,21 @@ export const useDisplayModelsStore = defineStore('display-models', () => {
       .catch(err => console.error(err))
 
     return newDisplayModel
+  }
+
+  /**
+   * Lazily resolve and cache the asset version hash for any display model by id.
+   *
+   * The preset array is populated at module load *without* a hash (we must not
+   * make that array async), so the hash is computed on demand here — going
+   * through `getDisplayModel` and `resolveAssetVersionHash` (which memoises by
+   * `id` + a cheap change token). Returns `undefined` if the model is unknown.
+   */
+  async function getDisplayModelAssetVersionHash(id: string): Promise<string | undefined> {
+    const model = await getDisplayModel(id)
+    if (!model)
+      return undefined
+    return resolveAssetVersionHash(model)
   }
 
   async function renameDisplayModel(id: string, name: string) {
@@ -213,6 +247,7 @@ export const useDisplayModelsStore = defineStore('display-models', () => {
     initialize,
     loadDisplayModelsFromIndexedDB,
     getDisplayModel,
+    getDisplayModelAssetVersionHash,
     addDisplayModel,
     renameDisplayModel,
     removeDisplayModel,

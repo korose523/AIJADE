@@ -5,6 +5,8 @@ import type { AijadeExtension } from '@proj-aijade/stage-ui/stores/modules/aijad
 import kebabcase from '@stdlib/string-base-kebabcase'
 
 import { DEFAULT_ARTISTRY_WIDGET_INSTRUCTION } from '@proj-aijade/stage-ui/constants/prompts/artistry-instruction'
+import type { ExpressionCueId } from '@proj-aijade/stage-ui/constants/expression-grammar'
+import type { PersonalityLpm } from '@proj-aijade/stage-ui/constants/personality-lpm'
 import { useDisplayModelsStore } from '@proj-aijade/stage-ui/stores/display-models'
 import { useAijadeCardStore } from '@proj-aijade/stage-ui/stores/modules/aijade-card'
 import { useArtistryStore } from '@proj-aijade/stage-ui/stores/modules/artistry'
@@ -26,6 +28,7 @@ import { computed, ref, toRaw, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import CardCreationTabArtistry from './tabs/CardCreationTabArtistry.vue'
+import CardCreationTabPersona from './tabs/CardCreationTabPersona.vue'
 
 interface Props {
   modelValue: boolean
@@ -90,6 +93,10 @@ const selectedArtistrySpawnMode = ref<'bg' | 'widget' | 'inline' | 'bg_widget'>(
 const selectedArtistryAutonomousEnabled = ref<boolean>(false)
 const selectedArtistryAutonomousThreshold = ref<number>(70)
 const selectedArtistryConfigStr = ref<string>('{\n  \n}')
+
+// Persona configuration (超人格 LPM + 表情线索语法)
+const selectedPersonality = ref<PersonalityLpm | undefined>(undefined)
+const selectedExpressionGrammar = ref<ExpressionCueId[] | undefined>(undefined)
 
 // Computed: available display model options
 const displayModelOptions = computed(() =>
@@ -225,6 +232,7 @@ const activeTabId = ref('')
 const tabs: Tab[] = [
   { id: 'identity', label: t('settings.pages.card.creation.identity'), icon: 'i-solar:emoji-funny-square-bold-duotone' },
   { id: 'behavior', label: t('settings.pages.card.creation.behavior'), icon: 'i-solar:chat-round-line-bold-duotone' },
+  { id: 'persona', label: t('settings.pages.card.persona.title'), icon: 'i-solar:heart-pulse-bold-duotone' },
   { id: 'modules', label: t('settings.pages.card.modules'), icon: 'i-solar:widget-4-bold-duotone' },
   { id: 'artistry', label: t('settings.pages.modules.artistry.title'), icon: 'i-solar:gallery-bold-duotone' },
   { id: 'settings', label: t('settings.pages.card.creation.settings'), icon: 'i-solar:settings-bold-duotone' },
@@ -364,6 +372,10 @@ function saveCard(card: Card): boolean {
             autonomousEnabled: selectedArtistryAutonomousEnabled.value,
             autonomousThreshold: selectedArtistryAutonomousThreshold.value,
           },
+          // 超人格 LPM 与表情线索语法：用户没设过就是 undefined，不发明默认值
+          // （resolveAijadeExtension 会在别处补默认）。缺失即 `undefined`。
+          personality: selectedPersonality.value ?? undefined,
+          expressionGrammar: selectedExpressionGrammar.value ?? undefined,
         },
         agents: {},
       } as AijadeExtension,
@@ -407,6 +419,11 @@ function initializeCard(): Card {
   selectedArtistrySpawnMode.value = (artistrySettings as any)?.spawnMode || 'bg_widget'
   selectedArtistryAutonomousEnabled.value = (artistrySettings as any)?.autonomousEnabled ?? false
   selectedArtistryAutonomousThreshold.value = (artistrySettings as any)?.autonomousThreshold ?? 70
+
+  // Persona: keep `undefined` for legacy cards so we don't force-write a default
+  // into the card unless the user actually changes something in the Persona tab.
+  selectedPersonality.value = aijadeExt?.modules?.personality ?? undefined
+  selectedExpressionGrammar.value = aijadeExt?.modules?.expressionGrammar ?? undefined
 
   try {
     selectedArtistryConfigStr.value = artistrySettings?.options ? JSON.stringify(artistrySettings.options, null, 2) : '{\n  \n}'
@@ -553,6 +570,12 @@ function getDefaultPlaceholder(defaultValue: string | undefined): string {
               <FieldValues v-model="cardGreetings" :label="t('settings.pages.card.creation.greetings')" :description="t('settings.pages.card.creation.fields_info.greetings')" />
             </div>
           </div>
+          <!-- Persona -->
+          <CardCreationTabPersona
+            v-else-if="activeTab === 'persona'"
+            v-model:selected-personality="selectedPersonality"
+            v-model:selected-expression-grammar="selectedExpressionGrammar"
+          />
           <!-- Modules -->
           <div v-else-if="activeTab === 'modules'" class="tab-content ml-auto mr-auto w-95%">
             <p class="mb-3">

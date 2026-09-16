@@ -318,6 +318,39 @@ pages:
     drop_here: Déposer pour téléverser
     create_card: Créer une nouvelle carte
     edit_card: Modifier la carte
+    persona:
+      title: Superpersona
+      dwell: Maintien
+      not_computed: Pas encore calculé
+      asset_format: Format du modèle
+      asset_hash: Identité de la ressource
+      sections:
+        lpm: Dimensions de la superpersona
+        lpm_hint: Six dimensions continues qui régissent le ton et le rythme de rendu. Les valeurs proviennent du document de conception, non d'un calibrage empirique.
+        grammar: Grammaire des indices d'expression
+        grammar_hint: Des règles fixes plutôt qu'une fluctuation aléatoire — un signal précis déclenche un indice précis.
+        asset: Identité de la ressource du modèle
+        asset_hint: Lecture seule. Permet de retrouver avec quelle ressource de modèle cette performance a été rendue.
+      dims:
+        languageTone: Ton du langage
+        expressivenessBudget: Budget expressif
+        riskTruthfulness: Risque et véracité
+        autonomyRespect: Respect de l'autonomie
+        replayability: Reproductibilité
+        curiosityLimits: Limites de la curiosité
+      grammar:
+        confirm_smile:
+          label: Sourire de confirmation
+          trigger: Se déclenche lorsque l'utilisateur rapporte une action ou un retour vérifiable — « vous l'avez fait », et non une flatterie.
+        gaze_down:
+          label: Regard baissé bref
+          trigger: Se déclenche sur une entrée mêlant émotion et faits, ou en cas d'ambiguïté — séparer les deux couches avant de répondre.
+        measure_blink:
+          label: Clignement de mesure
+          trigger: Se déclenche à l'entrée dans une phase d'explication ou de planification ; les clignements s'espacent et la respiration se stabilise.
+        head_tilt:
+          label: Inclinaison de la tête
+          trigger: Se déclenche sur une information non monotone, anormale ou contradictoire — marque un point de divergence dans les données.
     creation:
       identity: Identité
       name: Nom

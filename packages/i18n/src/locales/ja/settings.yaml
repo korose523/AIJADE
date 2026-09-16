@@ -318,6 +318,39 @@ pages:
     drop_here: アップロードするにはここにドラッグ
     create_card: 新しいカードを作成
     edit_card: カードを編集
+    persona:
+      title: 超人格
+      dwell: 保持時間
+      not_computed: 未計算
+      asset_format: モデル形式
+      asset_hash: アセット同一性
+      sections:
+        lpm: 超人格の次元
+        lpm_hint: 語調と描画リズムを駆動する 6 つの連続次元。値は設計文書によるもので、実測校正値ではありません。
+        grammar: 表情キュー文法
+        grammar_hint: ランダムな揺らぎではなく固定規則——特定の信号が特定のキューを発火します。
+        asset: モデルアセット同一性
+        asset_hint: 読み取り専用。この表現がどのモデルアセットで描画されたかを追跡できます。
+      dims:
+        languageTone: 言語の温度
+        expressivenessBudget: 表現予算
+        riskTruthfulness: リスクと誠実さ
+        autonomyRespect: 自律性の尊重
+        replayability: 再現可能性
+        curiosityLimits: 好奇心の境界
+      grammar:
+        confirm_smile:
+          label: 確認の微笑み
+          trigger: ユーザーが検証可能な行動やフィードバックを示したときに発火。「できましたね」という確認であり、ご機嫌取りではありません。
+        gaze_down:
+          label: 短い視線落とし
+          trigger: 感情と事実が混ざった入力や曖昧さがあるときに発火。応答の前に二層を分けます。
+        measure_blink:
+          label: 計量の瞬き
+          trigger: 説明や計画の段階に入るときに発火。瞬きの間隔がやや伸び、呼吸が落ち着きます。
+        head_tilt:
+          label: 首をかしげる
+          trigger: 非単調・異常・矛盾した情報が来たときに発火。データの不一致点に気づいたことを示します。
     creation:
       identity: 識別子
       name: 名前

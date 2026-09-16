@@ -318,6 +318,39 @@ pages:
     drop_here: 放开以上传文件
     create_card: 创建新角色卡
     edit_card: 卡片编辑
+    persona:
+      title: 超人格
+      dwell: 停留
+      not_computed: 尚未计算
+      asset_format: 模型格式
+      asset_hash: 资产身份
+      sections:
+        lpm: 超人格维度
+        lpm_hint: 六个连续维度，驱动文本语气与渲染节律。取值来自设计文档，非实测标定。
+        grammar: 表情线索语法
+        grammar_hint: 固定规则而非随机抖动——特定信号触发特定表情线索。
+        asset: 模型资产身份
+        asset_hint: 只读。用于回溯这次表现是用哪个模型资产渲染的。
+      dims:
+        languageTone: 语言温度
+        expressivenessBudget: 表达预算
+        riskTruthfulness: 风险与真实度
+        autonomyRespect: 自主尊重
+        replayability: 可回放性
+        curiosityLimits: 好奇边界
+      grammar:
+        confirm_smile:
+          label: 确认式微笑
+          trigger: 当用户给出可验证的行动或反馈时触发，表示"我确认你做到了"，而非讨好。
+        gaze_down:
+          label: 短促眼神下移
+          trigger: 当出现情绪与事实混合输入、或存在理解歧义时触发，表示先分层再回应。
+        measure_blink:
+          label: 量度式眨眼
+          trigger: 进入解释或计划阶段时触发，眨眼间隔略增、呼吸变稳，表示在认真计算。
+        head_tilt:
+          label: 歪头
+          trigger: 当用户提供非单调、反常或矛盾信息时触发，表示注意到了数据分歧点。
     creation:
       identity: 身份
       name: 名字

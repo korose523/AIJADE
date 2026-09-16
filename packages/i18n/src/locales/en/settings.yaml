@@ -332,6 +332,39 @@ pages:
     drop_here: Drop to upload
     create_card: Create a new Card
     edit_card: Edit Card
+    persona:
+      title: Persona
+      dwell: Dwell
+      not_computed: Not computed yet
+      asset_format: Model format
+      asset_hash: Asset identity
+      sections:
+        lpm: Superpersona dimensions
+        lpm_hint: Six continuous dimensions driving tone and rendering rhythm. Values come from the design document, not empirical calibration.
+        grammar: Expression cue grammar
+        grammar_hint: Fixed rules rather than random jitter — a specific signal triggers a specific cue.
+        asset: Model asset identity
+        asset_hint: Read-only. Lets you trace which model asset produced this performance.
+      dims:
+        languageTone: Language Tone
+        expressivenessBudget: Expressiveness Budget
+        riskTruthfulness: Risk & Truthfulness
+        autonomyRespect: Autonomy Respect
+        replayability: Replayability
+        curiosityLimits: Curiosity Limits
+      grammar:
+        confirm_smile:
+          label: Confirm Smile
+          trigger: Triggers when the user reports a verifiable action or feedback — "you did it", not flattery.
+        gaze_down:
+          label: Gaze Down
+          trigger: Triggers on mixed emotion-and-fact input or ambiguity — separating the two layers before responding.
+        measure_blink:
+          label: Measure Blink
+          trigger: Triggers when entering an explanation or planning stage; blinks slow slightly and breathing steadies.
+        head_tilt:
+          label: Head Tilt
+          trigger: Triggers on non-monotonic, anomalous or contradictory input — marking a disagreement point in the data.
     creation:
       identity: Identity
       name: Name

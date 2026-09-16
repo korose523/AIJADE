@@ -318,6 +318,39 @@ pages:
     drop_here: 放開以上傳檔案
     create_card: 建立新角色卡
     edit_card: 編輯卡片
+    persona:
+      title: 超人格
+      dwell: 停留
+      not_computed: 尚未計算
+      asset_format: 模型格式
+      asset_hash: 資產身分
+      sections:
+        lpm: 超人格維度
+        lpm_hint: 六個連續維度，驅動文本語氣與渲染節律。取值來自設計文件，非實測標定。
+        grammar: 表情線索語法
+        grammar_hint: 固定規則而非隨機抖動——特定訊號觸發特定表情線索。
+        asset: 模型資產身分
+        asset_hint: 唯讀。用於回溯這次表現是用哪個模型資產渲染的。
+      dims:
+        languageTone: 語言溫度
+        expressivenessBudget: 表達預算
+        riskTruthfulness: 風險與真實度
+        autonomyRespect: 自主尊重
+        replayability: 可回放性
+        curiosityLimits: 好奇邊界
+      grammar:
+        confirm_smile:
+          label: 確認式微笑
+          trigger: 當使用者給出可驗證的行動或回饋時觸發，表示「我確認你做到了」，而非討好。
+        gaze_down:
+          label: 短促眼神下移
+          trigger: 當出現情緒與事實混合輸入、或存在理解歧義時觸發，表示先分層再回應。
+        measure_blink:
+          label: 量度式眨眼
+          trigger: 進入解釋或計畫階段時觸發，眨眼間隔略增、呼吸變穩，表示在認真計算。
+        head_tilt:
+          label: 歪頭
+          trigger: 當使用者提供非單調、反常或矛盾資訊時觸發，表示注意到了資料分歧點。
     creation:
       identity: 身分
       name: 名字

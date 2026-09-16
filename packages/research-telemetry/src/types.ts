@@ -222,6 +222,71 @@ export interface TurnRecord {
 
   /** Free-form hook for experiment-specific columns. */
   metadata?: Record<string, unknown>
+
+  /**
+   * Audit record of the render that produced (or accompanied) this turn.
+   *
+   * Optional because not every turn implies a render — a text-only turn may
+   * carry no `render` at all. When present it is the concrete landing spot for
+   * the design doc's `applied_params_hash` / `asset_version_hash`, so a render
+   * is reproducible and attributable post-hoc.
+   */
+  render?: RenderAuditEntry
+}
+
+// ---------------------------------------------------------------------------
+// Render audit (the "what was actually written to a render" record)
+// ---------------------------------------------------------------------------
+
+/**
+ * Deterministic identity of the rendered model asset.
+ *
+ * `assetVersionHash` comes from the stage side (see
+ * `@proj-aijade/stage-ui` `resolveAssetVersionHash`): it is a content hash for
+ * file models and a *reference* hash (url + format) for url models.
+ */
+export interface AssetIdentity {
+  /** Deterministic hash of the rendered model asset's content or reference. */
+  assetVersionHash: string
+  format: string
+  displayModelId: string
+  renderer: string
+}
+
+/**
+ * One auditable record of a single render: exactly which parameters were
+ * actually written to the model, plus the asset identity, so a render is
+ * reproducible and attributable. This is the concrete landing spot for the
+ * design doc's `applied_params_hash` / `asset_version_hash`.
+ *
+ * The kernel-side provenance fields (`pgcStateId`, `evidencePackId`,
+ * `contradictionGate`, `tick`, `seed`) are optional: the stage/ui producers can
+ * build a complete entry from their own knowledge, but the deeper kernel
+ * provenance is only available when the v9-kernel supplies it. Each optional
+ * field documents *why* it may be absent.
+ */
+export interface RenderAuditEntry {
+  sessionId: string
+  turnIndex: number
+  timestamp: number
+  wallClock: string
+  renderer: string
+  displayModelId: string
+  assetVersionHash: string
+  appliedParamsHash: string
+  /** 实际写入模型的 通道名→数值 映射 */
+  appliedParams: Record<string, number>
+  // 以下为内核侧溯源，只有内核提供时才存在
+  /** Kernel-side PGC state id. Optional: only the v9-kernel producer emits it; stage/ui producers have no such id. */
+  pgcStateId?: string
+  /** Kernel evidence-pack id. Optional: only the kernel attaches an evidence pack; UI-side audit entries carry none. */
+  evidencePackId?: string
+  /** Contradiction-gate verdict. Optional: only set when the kernel's contradiction gate actually ran; non-kernel renderers never produce it. */
+  contradictionGate?: 'reject' | 'clamp' | 'allow'
+  /** Kernel simulation tick. Optional: only meaningful for kernel-driven renders; UI renderers have no tick. */
+  tick?: number
+  /** Kernel RNG seed. Optional: only the kernel provides the seed it sampled from; UI-side entries have none. */
+  seed?: number
 }
 
 // ---------------------------------------------------------------------------

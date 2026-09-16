@@ -318,6 +318,39 @@ pages:
     drop_here: 여기로 끌어서 업로드
     create_card: 새로운 카드 만들기
     edit_card: 카드 편집
+    persona:
+      title: 초인격
+      dwell: 유지 시간
+      not_computed: 아직 계산되지 않음
+      asset_format: 모델 형식
+      asset_hash: 자산 정체성
+      sections:
+        lpm: 초인격 차원
+        lpm_hint: 어조와 렌더링 리듬을 구동하는 6개 연속 차원. 값은 설계 문서에서 온 것이며 실측 보정치가 아닙니다.
+        grammar: 표정 단서 문법
+        grammar_hint: 무작위 흔들림이 아닌 고정 규칙 — 특정 신호가 특정 단서를 발동합니다.
+        asset: 모델 자산 정체성
+        asset_hint: 읽기 전용. 이 표현이 어떤 모델 자산으로 렌더링되었는지 추적합니다.
+      dims:
+        languageTone: 언어 온도
+        expressivenessBudget: 표현 예산
+        riskTruthfulness: 위험과 진실성
+        autonomyRespect: 자율성 존중
+        replayability: 재생 가능성
+        curiosityLimits: 호기심 경계
+      grammar:
+        confirm_smile:
+          label: 확인의 미소
+          trigger: 사용자가 검증 가능한 행동이나 피드백을 제시할 때 발동합니다. 아첨이 아니라 "해내셨네요"라는 확인입니다.
+        gaze_down:
+          label: 짧은 시선 내리기
+          trigger: 감정과 사실이 섞인 입력이나 모호함이 있을 때 발동합니다. 응답 전에 두 층을 분리합니다.
+        measure_blink:
+          label: 헤아리는 눈깜빡임
+          trigger: 설명이나 계획 단계에 들어갈 때 발동합니다. 눈깜빡임 간격이 조금 길어지고 호흡이 안정됩니다.
+        head_tilt:
+          label: 고개 갸우뚱
+          trigger: 비단조적이거나 반례적·모순된 정보가 들어올 때 발동합니다. 데이터의 불일치 지점을 알아차렸음을 나타냅니다.
     creation:
       identity: 기본 사
       name: 이름

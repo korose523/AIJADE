@@ -318,6 +318,39 @@ pages:
     drop_here: Suelta para subir
     create_card: Crear una nueva Tarjeta
     edit_card: Modificar tarjeta
+    persona:
+      title: Superpersona
+      dwell: Permanencia
+      not_computed: Aún no calculado
+      asset_format: Formato del modelo
+      asset_hash: Identidad del recurso
+      sections:
+        lpm: Dimensiones de superpersona
+        lpm_hint: Seis dimensiones continuas que gobiernan el tono y el ritmo de renderizado. Los valores provienen del documento de diseño, no de una calibración empírica.
+        grammar: Gramática de claves expresivas
+        grammar_hint: Reglas fijas en lugar de fluctuación aleatoria — una señal concreta activa una clave concreta.
+        asset: Identidad del recurso del modelo
+        asset_hint: Solo lectura. Permite rastrear con qué recurso de modelo se renderizó esta actuación.
+      dims:
+        languageTone: Tono del lenguaje
+        expressivenessBudget: Presupuesto expresivo
+        riskTruthfulness: Riesgo y veracidad
+        autonomyRespect: Respeto a la autonomía
+        replayability: Reproducibilidad
+        curiosityLimits: Límites de la curiosidad
+      grammar:
+        confirm_smile:
+          label: Sonrisa de confirmación
+          trigger: Se activa cuando el usuario aporta una acción o retroalimentación verificable — "lo hiciste", no halago.
+        gaze_down:
+          label: Mirada baja breve
+          trigger: Se activa ante entradas que mezclan emoción y hechos, o ante ambigüedad — separa ambas capas antes de responder.
+        measure_blink:
+          label: Parpadeo de medición
+          trigger: Se activa al entrar en una fase de explicación o planificación; el parpadeo se espacia y la respiración se estabiliza.
+        head_tilt:
+          label: Inclinación de cabeza
+          trigger: Se activa ante información no monótona, anómala o contradictoria — marca un punto de discrepancia en los datos.
     creation:
       identity: Identidad
       name: Nombre

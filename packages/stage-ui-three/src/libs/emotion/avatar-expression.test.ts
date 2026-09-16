@@ -179,3 +179,52 @@ describe('personaToIdleBias (Neuro-Sama / z-waif autonomous core)', () => {
     expect(personaToIdleBias(warm)).toEqual(personaToIdleBias(warm))
   })
 })
+
+describe('IdleSpontaneousController determinism (replay contract)', () => {
+  const POOL = ['wave', 'nod', 'agree', 'think', 'shrug', 'point'] as const
+
+  /** Drive a controller over a fixed silence timeline; collect fired gestures. */
+  function run(seed: number, timeline: { now: number, silence: boolean }[]): string[] {
+    const c = new IdleSpontaneousController({ pool: [...POOL], idleThresholdMs: 100, cooldownMs: 100, seed })
+    const gestures: string[] = []
+    for (const { now, silence } of timeline)
+      c.tick(now, silence, g => gestures.push(g))
+    return gestures
+  }
+
+  /** Long, realistic timeline: silent except for a 1s active burst every 5s. */
+  function makeTimeline(): { now: number, silence: boolean }[] {
+    const tl: { now: number, silence: boolean }[] = []
+    for (let t = 0; t < 60000; t += 100)
+      tl.push({ now: t, silence: (t % 5000) >= 1000 })
+    return tl
+  }
+
+  it('same seed + same tick sequence -> identical gesture sequence', () => {
+    const tl = makeTimeline()
+    expect(run(42, tl)).toEqual(run(42, tl))
+  })
+
+  it('different seed -> different gesture sequence, and always in-pool', () => {
+    const tl = makeTimeline()
+    const a = run(42, tl)
+    const b = run(43, tl)
+    expect(a).not.toEqual(b)
+    for (const g of a)
+      expect(POOL).toContain(g)
+  })
+
+  it('reset() does not reseed — a timeline that resets replays identically', () => {
+    const tl = makeTimeline()
+    const c1 = new IdleSpontaneousController({ pool: [...POOL], idleThresholdMs: 100, cooldownMs: 100, seed: 7 })
+    const c2 = new IdleSpontaneousController({ pool: [...POOL], idleThresholdMs: 100, cooldownMs: 100, seed: 7 })
+    const g1: string[] = []
+    const g2: string[] = []
+    for (const { now, silence } of tl) {
+      if (now === 20000) { c1.reset(); c2.reset() } // identical reset point in both runs
+      c1.tick(now, silence, g => g1.push(g))
+      c2.tick(now, silence, g => g2.push(g))
+    }
+    expect(g1).toEqual(g2)
+  })
+})

@@ -18,6 +18,11 @@
 
 import type { PerformanceEmotion } from '@proj-aijade/memory-pgvector/performance'
 
+// Deterministic PRNG + helpers shared with the rest of stage-ui-three's
+// presentation layer. We deliberately use the local copy (not the research
+// kernel) — see libs/determinism.ts for the rationale.
+import { clamp01, hashStringToSeed, mulberry32, pickSeeded } from '../determinism'
+
 /** VRM's built-in expression presets we drive. */
 export type VrmExpressionPreset
   = | 'neutral'
@@ -102,10 +107,6 @@ export const EMOTION_ALIASES: Record<string, VrmExpressionPreset> = {
   confused: 'surprised',
   curious: 'surprised',
   wonder: 'surprised',
-}
-
-function clamp01(x: number): number {
-  return Math.max(0, Math.min(1, x))
 }
 
 /**
@@ -310,7 +311,24 @@ export interface IdleSpontaneousOptions {
   idleThresholdMs?: number
   /** Refractory window after a trigger (prevents spamming). */
   cooldownMs?: number
+  /**
+   * Optional PRNG seed for the gesture picker. NEW — additive, does not change
+   * any existing call signature. When omitted, a *fixed module constant*
+   * (`IDLE_SPONTANEOUS_DEFAULT_SEED`) is used so the same tick timeline replays
+   * bit-identically. Pass a `sessionId`-derived seed if you want each session to
+   * differ while staying reproducible within that session.
+   */
+  seed?: number
 }
+
+/**
+ * Fixed default seed for {@link IdleSpontaneousController}.
+ *
+ * A *constant* (not derived from time/entropy) is required so that the same
+ * tick timeline replays to the exact same gesture sequence — bit-identical, as
+ * the project's "render is replayable" design goal demands.
+ */
+const IDLE_SPONTANEOUS_DEFAULT_SEED = hashStringToSeed('aijade:idle-spontaneous')
 
 /**
  * Silence-clock with refractory cooldown (from leuke's silence_loop).
@@ -324,6 +342,12 @@ export class IdleSpontaneousController {
   private pool: string[]
   private readonly threshold: number
   private readonly cooldown: number
+  /**
+   * Deterministic gesture picker. Created ONCE in the constructor and consumed
+   * monotonically as ticks happen. It is intentionally NOT reseeded by
+   * {@link reset} — see that method's doc for why.
+   */
+  private readonly rng: () => number
 
   constructor(opts: IdleSpontaneousOptions = {}) {
     this.pool = opts.pool && opts.pool.length
@@ -331,6 +355,9 @@ export class IdleSpontaneousController {
       : ['think', 'nod', 'shrug']
     this.threshold = opts.idleThresholdMs ?? 4500
     this.cooldown = opts.cooldownMs ?? 9000
+    // Seed the RNG exactly once. The default is a fixed constant so replay is
+    // bit-identical; callers wanting per-session variety pass an explicit seed.
+    this.rng = mulberry32(opts.seed ?? IDLE_SPONTANEOUS_DEFAULT_SEED)
   }
 
   tick(now: number, isSilence: boolean, trigger: (gesture: string) => void): void {
@@ -343,11 +370,21 @@ export class IdleSpontaneousController {
     const sinceTrigger = now - this.lastTrigger
     if (elapsed >= this.threshold && sinceTrigger >= this.cooldown) {
       this.lastTrigger = now
-      const g = this.pool[Math.floor(Math.random() * this.pool.length)]
+      const g = pickSeeded(this.rng, this.pool)
       trigger(g)
     }
   }
 
+  /**
+   * Reset the silence clock when the user becomes active again.
+   *
+   * REPLAY CONTRACT — do NOT reseed here. The gesture stream is created once in
+   * the constructor and consumed monotonically as ticks happen. If `reset()`
+   * reseeded, the gesture chosen after a silence break would depend on how many
+   * resets occurred (not on the true consumption order), and the same tick
+   * timeline would no longer replay bit-identically. Only `silenceStart` /
+   * `lastTrigger` are cleared; `this.rng` is left untouched on purpose.
+   */
   reset(): void {
     this.silenceStart = null
     this.lastTrigger = -Infinity

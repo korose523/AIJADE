@@ -11,6 +11,10 @@ import { ref } from 'vue'
 import { useVRMLoader } from './loader'
 import { randomSaccadeInterval } from './utils/eye-motions'
 
+// Deterministic PRNG helpers for the presentation layer (local copy — see
+// libs/determinism.ts for why we don't depend on the research kernel).
+import { hashStringToSeed, mulberry32 } from '../../libs/determinism'
+
 export interface GLTFUserdata extends Record<string, any> {
   vrmAnimations: VRMAnimation[]
 }
@@ -87,10 +91,25 @@ export function reAnchorRootPositionTrack(clip: AnimationClip, _vrm: VRMCore) {
   })
 }
 
-export function useBlink() {
+/**
+ * Fixed default seed for {@link useBlink}.
+ *
+ * A *constant* (not derived from time/entropy) so that the same run replays
+ * bit-identically — the project's "render is replayable" design goal. Callers
+ * that want each session to differ (while staying reproducible within that
+ * session) must pass an explicit `seed` derived from a session id, or an
+ * explicit `rng`. The default is intentionally shared/fixed; do not make it
+ * time-based or the blink schedule will no longer be reproducible.
+ */
+const BLINK_DEFAULT_SEED = hashStringToSeed('aijade:blink')
+
+export function useBlink(options?: { seed?: number, rng?: () => number }) {
   /**
    * Eye blinking animation
    */
+  // Deterministic randomness source. Prefer an injected `rng`; otherwise derive
+  // one from the (fixed) default seed so replay is bit-identical.
+  const rng = options?.rng ?? mulberry32(options?.seed ?? BLINK_DEFAULT_SEED)
   const isBlinking = ref(false)
   const blinkProgress = ref(0)
   const timeSinceLastBlink = ref(0)
@@ -108,10 +127,10 @@ export function useBlink() {
 
   function scheduleNextBlink() {
     const span = (MAX_BLINK_INTERVAL - MIN_BLINK_INTERVAL) * (engaged.value ? ENGAGED_INTERVAL_FACTOR : 1) / rateScale.value
-    nextBlinkTime.value = Math.random() * span + MIN_BLINK_INTERVAL
+    nextBlinkTime.value = rng() * span + MIN_BLINK_INTERVAL
   }
 
-  const nextBlinkTime = ref(Math.random() * (MAX_BLINK_INTERVAL - MIN_BLINK_INTERVAL) + MIN_BLINK_INTERVAL)
+  const nextBlinkTime = ref(rng() * (MAX_BLINK_INTERVAL - MIN_BLINK_INTERVAL) + MIN_BLINK_INTERVAL)
 
   /** LPM-style performance hook: stretch blink interval while the avatar is engaged. */
   function setEngaged(e: boolean) {

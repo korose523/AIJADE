@@ -78,6 +78,12 @@ export {
 } from './sweep'
 
 export type { SweepAxis, SweepPoint } from './sweep'
+export {
+  buildRenderAuditEntry,
+  fingerprintAppliedParams,
+} from './render-audit'
+
+export type { AssetIdentity, RenderAuditEntry } from './types'
 export type { AblationCondition } from './types'
 
 export { FULL_ABLATION } from './types'
