@@ -1,7 +1,7 @@
 import type { PerformanceIntent } from './contracts-v8'
 import type { RiskLevel } from './events'
 
-import { personaRenderRequestedEvent } from './events'
+import { lpmRenderReadyEvent, personaRenderRequestedEvent } from './events'
 
 /**
  * v8 §52 — PEF: Persona–Expression Field (人格—表现场).
@@ -389,6 +389,70 @@ export function buildPersonaRenderRequestedEvent(
       session_id: sessionId,
       persona_snapshot_ref: intent.personaSnapshotRef,
       intent_ref: intent.id,
+    },
+  })
+}
+
+/**
+ * 把一次渲染的**实写参数**包成 `aijade.lpm.render_ready`（已 zod 校验）—— 请求/回执对的回执端。
+ *
+ * ## 为什么入参是 `appliedParamsHash` 字符串，而不是 `appliedParams` map
+ *
+ * `memory-biomimetic` 是**零依赖叶子包**，不能 import 指纹实现（
+ * `@proj-aijade/research-telemetry` 的 `fingerprintAppliedParams`——它同样必须保持零依赖）。
+ * 所以"map → 规范化文本"这一步由**持有 map 的那一侧**（渲染器回执 + 编排层）完成，
+ * 本 builder 只消费其产物。这样叶子的零依赖不变量不被破坏，代价是两侧必须用同一套编码 ——
+ * 该一致性由两侧各自钉住的**同一组字面量**保证（跨边界一致性锁，沿
+ * `stage-ui-three/libs/determinism.ts` 里 mulberry32 的先例）。
+ *
+ * ## 为什么入参是 `renderRef` 而不是由本函数铸造
+ *
+ * `render_ref` 是**回指身份**，只有持有轮界的编排层（`stage-ui` 的
+ * `createPerformanceBridge`，它拥有 `onMessageSendStarted` / `onStreamEnd`）才知道
+ * "这是哪一轮请求"。渲染器只看得见 `PerformanceState`，让它推断身份就是在编造。
+ *
+ * ## 空回执的处理
+ *
+ * `applied_params_hash` 在 schema 里是 `.min(1)`，而规范化文本对空 map 返回 `''`。
+ * 所以"什么都没写"在契约上**不可表达** —— 这是有意的：没有写入就没有渲染发生，
+ * 发一条空回执只会让下游把"渲染了但忘了记录"误读成"渲染了且参数为空"。
+ * **宁可没有事件，也不要一条说谎的事件。** 本函数因此对空串抛出**带语义的错误**
+ * （schema 自己也会拒，但它的报错是 `too_small`，读不出"为什么"）。
+ *
+ * ## ⚠️ 当前状态：零调用方
+ *
+ * 全仓目前**没有任何调用点**。它存在的意义是让回执端有一个标准实现，供
+ * `growth-services`（唯一能合法 import 本包的产品层）在接线时复用。
+ * 在接线完成之前，**不得**把它当作"链路已闭环"的证据。
+ */
+export function buildLpmRenderReadyEvent(
+  input: {
+    sessionId: string
+    /** 回指身份：本轮回执所消费的请求身份（= 请求端 `intent_ref`）。 */
+    renderRef: string
+    /** 实写参数的规范化文本，由 `fingerprintAppliedParams` 同构实现产出。 */
+    appliedParamsHash: string
+    /** 模型资产身份；异步解析，可能尚未就绪，故可选。空串会被降级为缺省。 */
+    assetVersionHash?: string
+  },
+  envelope: PersonaRenderEnvelope,
+) {
+  if (input.appliedParamsHash === '') {
+    throw new Error(
+      'lpm.render_ready 拒绝发出：appliedParamsHash 为空串 ⇒ 本轮没有任何通道被写入，'
+      + '即没有渲染发生。契约中 applied_params_hash 为 .min(1)，"什么都没写"不可表达；'
+      + '此时应当不发事件，而不是发一条空回执（见 events.ts 中该 schema 的说明）。',
+    )
+  }
+  return lpmRenderReadyEvent.parse({
+    ...envelope,
+    topic: 'aijade.lpm.render_ready' as const,
+    payload: {
+      session_id: input.sessionId,
+      render_ref: input.renderRef,
+      applied_params_hash: input.appliedParamsHash,
+      // 空串会伪装成"已计算"，故显式降级为缺省而不是原样透传。
+      ...(input.assetVersionHash ? { asset_version_hash: input.assetVersionHash } : {}),
     },
   })
 }

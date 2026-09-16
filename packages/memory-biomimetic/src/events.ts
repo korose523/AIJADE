@@ -145,9 +145,33 @@ export const personaRenderRequestedSchema = z.object({
 })
 export type PersonaRenderRequestedPayload = z.infer<typeof personaRenderRequestedSchema>
 
+/**
+ * 人格表现层的**渲染回执**（具身侧 → 内核）。与 `persona.render_requested` 构成请求/回执对。
+ *
+ * 三个字段各承担一件事，**刻意不合并**：
+ *
+ * - `render_ref` —— **回指身份**。本轮回执所消费的那次请求身份，使回执与请求能一一配对。
+ *   必填且 `.min(1)`：若允许缺省或空串，"回执"就退化成一行无法配对的噪声 ——
+ *   而 `personaRenderRequestedSchema` 里声称的配对能力（见上）也就不可执行了。
+ * - `applied_params_hash` —— **内容身份**。由 `fingerprintAppliedParams` 产出的规范化
+ *   「实写通道→值」文本（键排序、`key=value`、数值定点格式化）。它的用途是回答
+ *   "同一次输入是否真的写了同样的参数"，供 CBR 逐位对照。
+ *   ⚠️ 它不是密码学摘要，且**空 map 时是空串**。所以它 `.min(1)` 的代价是：
+ *   **"什么都没写"必须不发事件，而不是发一条空回执**（由 `buildLpmRenderReadyEvent` 强制）。
+ *   与 `render_ref` 必须分开：身份在确定性回放下仍唯一，而内容指纹在低基数参数下
+ *   **必然重复**，把两者合成一个字段会静默把两轮当成一轮。
+ * - `asset_version_hash` —— **模型资产身份**。可选，因为它是异步解析出来的
+ *   （`stage-ui` 的 `stageModelAssetVersionHash`），渲染发生时可能尚未就绪。
+ *   允许 `undefined`，但**不允许空串** —— 空串会伪装成"已计算"。
+ *
+ * 命名沿用本文件的 snake_case 约定（见 `activeLearningRequestedSchema` 上方说明）；
+ * 遥测侧的 `RenderAuditEntry` 用 camelCase，两者是**同一个概念的两个边界**，不要互抄。
+ */
 export const lpmRenderReadySchema = z.object({
-  session_id: z.string(),
-  render_ref: z.string().optional(),
+  session_id: z.string().min(1),
+  render_ref: z.string().min(1),
+  applied_params_hash: z.string().min(1),
+  asset_version_hash: z.string().min(1).optional(),
 })
 export type LpmRenderReadyPayload = z.infer<typeof lpmRenderReadySchema>
 

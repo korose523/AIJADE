@@ -254,6 +254,20 @@ export interface AssetIdentity {
 }
 
 /**
+ * 实际写入渲染模型的「通道名 → 值」映射。
+ *
+ * 为什么值类型是标量**联合**而不是只有 `number`：表现层真实写入的通道分三类，
+ * 只有第一类是数值 ——
+ * 1. **数值型**：情绪强度 `emotion.intensity`、眨眼速率倍率 `blink.rateScale`
+ * 2. **类别型**：表情预设名 `emotion.preset`、注视方向 `gaze.dir`、手势名 `gesture`
+ * 3. **开关型**：是否进入接话状态 `blink.engaged`
+ *
+ * 若强行只收 `number`，就必须给后两类编造虚假数值编码 —— 那会让"记录到底写了什么"
+ * 这件事本身失真，而这份记录的全部意义恰恰是可复现。
+ */
+export type AppliedParams = Record<string, number | string | boolean>
+
+/**
  * One auditable record of a single render: exactly which parameters were
  * actually written to the model, plus the asset identity, so a render is
  * reproducible and attributable. This is the concrete landing spot for the
@@ -273,9 +287,16 @@ export interface RenderAuditEntry {
   renderer: string
   displayModelId: string
   assetVersionHash: string
+  /**
+   * 规范化的「实写通道→值」文本形式（由 `fingerprintAppliedParams` 产出）。
+   *
+   * ⚠️ 它不是密码学摘要：本仓库的房规是**键排序后的 `key=value` 串**（见
+   * `render-audit.ts` 的文件头注释）。所以它可能较长，且**空 map 时是 `''`**。
+   * 名字里的 "hash" 沿用设计稿口径；语义以 `render-audit.ts` 为准。
+   */
   appliedParamsHash: string
-  /** 实际写入模型的 通道名→数值 映射 */
-  appliedParams: Record<string, number>
+  /** 实际写入模型的 通道名→值 映射（数值/类别/开关三类通道混存，见 {@link AppliedParams}）。 */
+  appliedParams: AppliedParams
   // 以下为内核侧溯源，只有内核提供时才存在
   /** Kernel-side PGC state id. Optional: only the v9-kernel producer emits it; stage/ui producers have no such id. */
   pgcStateId?: string

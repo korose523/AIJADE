@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
-
 import type { RenderAuditEntry } from './types'
+
+import { describe, expect, it } from 'vitest'
 
 import { buildRenderAuditEntry, fingerprintAppliedParams } from './render-audit'
 
@@ -21,6 +21,48 @@ describe('fingerprintAppliedParams', () => {
     const empty = fingerprintAppliedParams({})
     expect(empty).toBe('')
     expect(empty).toBe(fingerprintAppliedParams({}))
+  })
+
+  it('tags non-numeric channels so the three real channel kinds stay distinguishable', () => {
+    expect(fingerprintAppliedParams({ 'emotion.preset': 'happy' })).toBe('emotion.preset=s:happy')
+    expect(fingerprintAppliedParams({ 'blink.engaged': true })).toBe('blink.engaged=b:1')
+    expect(fingerprintAppliedParams({ 'blink.engaged': false })).toBe('blink.engaged=b:0')
+  })
+
+  it('cannot collide across value types (string "0.5" is not the number 0.5)', () => {
+    expect(fingerprintAppliedParams({ x: '0.5' })).not.toBe(fingerprintAppliedParams({ x: 0.5 }))
+    expect(fingerprintAppliedParams({ x: 'true' })).not.toBe(fingerprintAppliedParams({ x: true }))
+  })
+
+  /**
+   * 向后兼容锁：数值通道**不带 tag**，所以仅含数值的指纹与本次"支持非数值通道"改动之前
+   * 逐位一致。任何给数值加前缀的改动都会让这条变红 —— 那会静默改写已落库指纹的含义。
+   */
+  it('numeric-only fingerprints are unchanged by the non-numeric widening', () => {
+    expect(fingerprintAppliedParams({ b: 1.25, a: 0.4 })).toBe('a=0.4|b=1.25')
+  })
+
+  /**
+   * 跨边界一致性锁（golden vector）。
+   *
+   * 表现层（`@proj-aijade/stage-ui` 的 `utils/render-receipt.ts`）**不能** import 本包
+   * （会把 `node:fs` 拖进浏览器包），所以它对编码做了有意重复实现。这条字面量在
+   * `render-receipt.test.ts` 里被钉了**同一个值**：任一侧改了编码而另一侧不改，
+   * 两个测试必有一个变红，`lpm.render_ready.applied_params_hash` 也就不会悄悄对不上。
+   * 沿 `stage-ui-three/libs/determinism.ts` 里 mulberry32 跨实现锁的既有房规。
+   *
+   * 该字面量是用本实现**实跑**出来的，不是手写的。
+   */
+  it('pins the cross-boundary golden vector (mirrored in stage-ui render-receipt.test.ts)', () => {
+    const vector = {
+      'emotion.preset': 'happy',
+      'emotion.intensity': 0.4,
+      'blink.engaged': true,
+      'blink.rateScale': 1.25,
+      'gaze.dir': 'down',
+    }
+    expect(fingerprintAppliedParams(vector))
+      .toBe('blink.engaged=b:1|blink.rateScale=1.25|emotion.intensity=0.4|emotion.preset=s:happy|gaze.dir=s:down')
   })
 })
 

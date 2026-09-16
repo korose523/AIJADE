@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  AIJADE_TOPICS,
   aijadeEventSchema,
   eventEnvelopeSchema,
   memoryTxCommittedEvent,
@@ -71,7 +72,7 @@ describe('topic schema — 判别联合', () => {
       { topic: 'aijade.pgc.write_plan_ready', payload: { pgc_state_id: 'p', write_plan_size: 1, policy_version: 'v1' } },
       { topic: 'aijade.memory_tx.committed', payload: { tx_id: 'x', trace_id: 't', committed_count: 1, rejected_count: 0, throttled_count: 0 } },
       { topic: 'aijade.persona.render_requested', payload: { session_id: 's', persona_snapshot_ref: 'ps1', intent_ref: 'pi1' } },
-      { topic: 'aijade.lpm.render_ready', payload: { session_id: 's' } },
+      { topic: 'aijade.lpm.render_ready', payload: { session_id: 's', render_ref: 'rr1', applied_params_hash: 'h1' } },
     ]
     for (const t of topics) {
       const r = aijadeEventSchema.safeParse({ ...baseEnvelope(), topic: t.topic, payload: t.payload })
@@ -142,5 +143,64 @@ describe('渲染请求 — §52.5 引用必填', () => {
 
   it('已废弃的旧字段名 persona_ref 不再被接受', () => {
     expect(parseRenderRequested({ session_id: 's', persona_ref: 'ps1' }).success).toBe(false)
+  })
+})
+
+describe('渲染回执 — 身份/内容职责分离，且不可退化', () => {
+  const validReady = {
+    session_id: 's',
+    render_ref: 'rr1',
+    applied_params_hash: 'emotion.intensity=0.4|emotion.preset=s:happy',
+  }
+
+  function parseRenderReady(payload: Record<string, unknown>) {
+    return safeParseAijadeEvent({ ...baseEnvelope(), topic: 'aijade.lpm.render_ready', payload })
+  }
+
+  it('基线：合法回执被接受', () => {
+    expect(parseRenderReady(validReady).success).toBe(true)
+  })
+
+  it('render_ref 为空串 ⇒ 拒绝（否则回执无法与请求配对）', () => {
+    expect(parseRenderReady({ ...validReady, render_ref: '' }).success).toBe(false)
+  })
+
+  it('缺 render_ref ⇒ 拒绝（旧 optional 契约的回退锁）', () => {
+    const { render_ref: _drop, ...rest } = validReady
+    expect(parseRenderReady(rest).success).toBe(false)
+  })
+
+  it('缺 applied_params_hash ⇒ 拒绝（回执必须能证明写了什么）', () => {
+    const { applied_params_hash: _drop, ...rest } = validReady
+    expect(parseRenderReady(rest).success).toBe(false)
+  })
+
+  it('applied_params_hash 为空串 ⇒ 拒绝（"什么都没写"不得表达为一条空回执）', () => {
+    expect(parseRenderReady({ ...validReady, applied_params_hash: '' }).success).toBe(false)
+  })
+
+  it('asset_version_hash 缺省可接受（异步解析可能未就绪）', () => {
+    expect(parseRenderReady({ ...validReady, asset_version_hash: undefined }).success).toBe(true)
+  })
+
+  it('asset_version_hash 为空串 ⇒ 拒绝（空串会伪装成"已计算"）', () => {
+    expect(parseRenderReady({ ...validReady, asset_version_hash: '' }).success).toBe(false)
+  })
+
+  it('跨边界字面量锁：topic 与字段名被钉死（表现层镜像同组字面量）', () => {
+    // 这组字面量在 `@proj-aijade/stage-ui` 的 `utils/render-receipt.test.ts` 里被同样钉了一遍。
+    // 表现层不能 import 本包（会违反三层隔离），所以两侧靠"有意重复 + 字面量锁"防分叉 ——
+    // 任一侧改名而另一侧不改，两个测试里必有一个变红。沿 `stage-ui-three/libs/determinism.ts`
+    // 里 mulberry32 跨实现锁的既有房规。
+    expect(AIJADE_TOPICS).toContain('aijade.lpm.render_ready')
+
+    const r = parseRenderReady({ ...validReady, asset_version_hash: 'a1' })
+    expect(r.success).toBe(true)
+    expect(Object.keys((r as { data: { payload: Record<string, unknown> } }).data.payload).sort()).toEqual([
+      'applied_params_hash',
+      'asset_version_hash',
+      'render_ref',
+      'session_id',
+    ])
   })
 })

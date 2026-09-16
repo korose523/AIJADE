@@ -50,40 +50,40 @@ export {
 
 export type { SeriesSummary } from './export'
 export {
+  buildRenderAuditEntry,
+  fingerprintAppliedParams,
+} from './render-audit'
+
+export {
   ExperimentSessionRunner,
   startSession,
 } from './session'
-
 export type {
   RecordTurnInput,
   StartSessionOptions,
 } from './session'
+
 export {
   createDefaultStorage,
   createFileStorage,
   createIndexedDbStorage,
   createMemoryStorage,
 } from './storage'
-
 export type {
   FileStorageOptions,
   IndexedDbStorageOptions,
   TelemetryStorage,
 } from './storage'
+
 export {
   defaultRelaxationSweep,
   fingerprintParameters,
   sweepAxis,
   sweepGrid,
 } from './sweep'
-
 export type { SweepAxis, SweepPoint } from './sweep'
-export {
-  buildRenderAuditEntry,
-  fingerprintAppliedParams,
-} from './render-audit'
 
-export type { AssetIdentity, RenderAuditEntry } from './types'
+export type { AppliedParams, AssetIdentity, RenderAuditEntry } from './types'
 export type { AblationCondition } from './types'
 
 export { FULL_ABLATION } from './types'

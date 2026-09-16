@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { validatePerformanceIntent } from './contracts-v8'
 import { AIJADE_TOPICS, safeParseAijadeEvent } from './events'
 import {
+  buildLpmRenderReadyEvent,
   buildPerformanceIntent,
   buildPersonaRenderRequestedEvent,
   clampExpression,
@@ -335,5 +336,83 @@ describe('pEF — persona.render_requested 构造', () => {
     const ev = buildPersonaRenderRequestedEvent(intent(), 'session-1', ENVELOPE)
     const p = ev.payload as Record<string, unknown>
     expect(Object.keys(p).sort()).toEqual(['intent_ref', 'persona_snapshot_ref', 'session_id'])
+  })
+})
+
+describe('pEF — lpm.render_ready 构造（请求/回执对的回执端）', () => {
+  const APPLIED = 'emotion.intensity=0.4|emotion.preset=s:happy'
+
+  it('合法回执 ⇒ 合法事件，且 topic 属于登记集合', () => {
+    const ev = buildLpmRenderReadyEvent(
+      { sessionId: 'session-1', renderRef: 'pi_1', appliedParamsHash: APPLIED },
+      ENVELOPE,
+    )
+    expect(ev.topic).toBe('aijade.lpm.render_ready')
+    expect((AIJADE_TOPICS as readonly string[]).includes(ev.topic)).toBe(true)
+    expect(safeParseAijadeEvent(ev).success).toBe(true)
+  })
+
+  it('render_ref 与请求端 intent_ref 同源同值，使回执可回指（配对不靠推断）', () => {
+    const req = buildPersonaRenderRequestedEvent(intent({ id: 'pi_pair' }), 'session-1', ENVELOPE)
+    const intentRef = (req.payload as Record<string, unknown>).intent_ref
+    const ready = buildLpmRenderReadyEvent(
+      { sessionId: 'session-1', renderRef: intentRef as string, appliedParamsHash: APPLIED },
+      ENVELOPE,
+    )
+    expect((ready.payload as Record<string, unknown>).render_ref).toBe(intentRef)
+    expect((ready.payload as Record<string, unknown>).render_ref).toBe('pi_pair')
+  })
+
+  it('applied_params_hash 原样透传，不被本函数改写', () => {
+    const ev = buildLpmRenderReadyEvent(
+      { sessionId: 's', renderRef: 'rr', appliedParamsHash: APPLIED },
+      ENVELOPE,
+    )
+    expect((ev.payload as Record<string, unknown>).applied_params_hash).toBe(APPLIED)
+  })
+
+  it('空 appliedParamsHash ⇒ 抛错，且错误说明"什么都没写"（不是泛泛的校验失败）', () => {
+    expect(() =>
+      buildLpmRenderReadyEvent({ sessionId: 's', renderRef: 'rr', appliedParamsHash: '' }, ENVELOPE),
+    ).toThrow(/没有渲染发生|不可表达/)
+  })
+
+  it('assetVersionHash 缺省 ⇒ payload 不含该键（而非 undefined 键）', () => {
+    const ev = buildLpmRenderReadyEvent({ sessionId: 's', renderRef: 'rr', appliedParamsHash: APPLIED }, ENVELOPE)
+    const p = ev.payload as Record<string, unknown>
+    expect('asset_version_hash' in p).toBe(false)
+    expect(Object.keys(p).sort()).toEqual(['applied_params_hash', 'render_ref', 'session_id'])
+  })
+
+  it('assetVersionHash 为空串 ⇒ 降级为缺省（空串不得伪装成"已计算"）', () => {
+    const ev = buildLpmRenderReadyEvent(
+      { sessionId: 's', renderRef: 'rr', appliedParamsHash: APPLIED, assetVersionHash: '' },
+      ENVELOPE,
+    )
+    expect('asset_version_hash' in (ev.payload as Record<string, unknown>)).toBe(false)
+  })
+
+  it('assetVersionHash 有值 ⇒ 原样带出，且键集合固定为四个', () => {
+    const ev = buildLpmRenderReadyEvent(
+      { sessionId: 's', renderRef: 'rr', appliedParamsHash: APPLIED, assetVersionHash: 'avh_1' },
+      ENVELOPE,
+    )
+    const p = ev.payload as Record<string, unknown>
+    expect(p.asset_version_hash).toBe('avh_1')
+    expect(Object.keys(p).sort()).toEqual([
+      'applied_params_hash',
+      'asset_version_hash',
+      'render_ref',
+      'session_id',
+    ])
+  })
+
+  it('空 sessionId / 空 renderRef ⇒ 抛错（身份不可为空白）', () => {
+    expect(() =>
+      buildLpmRenderReadyEvent({ sessionId: '', renderRef: 'rr', appliedParamsHash: APPLIED }, ENVELOPE),
+    ).toThrow()
+    expect(() =>
+      buildLpmRenderReadyEvent({ sessionId: 's', renderRef: '', appliedParamsHash: APPLIED }, ENVELOPE),
+    ).toThrow()
   })
 })
