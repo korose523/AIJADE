@@ -202,3 +202,65 @@ describe('createPerformanceBridge.recordAppliedParams (render receipt)', () => {
     expect(onRenderReceipt).not.toHaveBeenCalled()
   })
 })
+
+describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', () => {
+  it('emits persona.render_requested on send-start and lpm.render_ready on render, sharing one trace_id', () => {
+    const reportEvent = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      onRenderReceipt: vi.fn(),
+      reportEvent,
+    })
+    const deps = bridge.wrapDeps(noopDeps)
+    deps.onMessageSendStarted!({} as any)
+
+    // 请求侧：persona.render_requested，铸造 trace_id。
+    expect(reportEvent).toHaveBeenCalledTimes(1)
+    const reqCall = reportEvent.mock.calls[0][0]
+    expect(reqCall.topic).toBe('aijade.persona.render_requested')
+    expect(reqCall.trace_id).toBeTruthy()
+    expect(reqCall.idempotency_key).toBe('s1#1#request')
+
+    // 回执侧：lpm.render_ready，复用同一 trace_id（配对校验的关键）。
+    bridge.recordAppliedParams({ 'emotion.preset': 'happy', 'emotion.intensity': 0.5 })
+    expect(reportEvent).toHaveBeenCalledTimes(2)
+    const readyCall = reportEvent.mock.calls[1][0]
+    expect(readyCall.topic).toBe('aijade.lpm.render_ready')
+    expect(readyCall.trace_id).toBe(reqCall.trace_id)
+    expect(readyCall.correlation_id).toBe(reqCall.trace_id)
+    expect(readyCall.idempotency_key).toBe('s1#s1#render:1')
+    expect(readyCall.payload.applied_params_hash).toBe(
+      fingerprintAppliedParams({ 'emotion.preset': 'happy', 'emotion.intensity': 0.5 }),
+    )
+  })
+
+  it('does NOT emit when there is no active session (cannot mint a stable trace)', () => {
+    const reportEvent = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => undefined,
+      reportEvent,
+    })
+    bridge.wrapDeps(noopDeps).onMessageSendStarted!({} as any)
+    expect(reportEvent).not.toHaveBeenCalled()
+  })
+
+  it('reuses the trace_id across turns so each render pairs with its own request', () => {
+    const reportEvent = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      reportEvent,
+    })
+    const deps = bridge.wrapDeps(noopDeps)
+    // Turn 1
+    deps.onMessageSendStarted!({} as any)
+    const trace1 = reportEvent.mock.calls[0][0].trace_id
+    bridge.recordAppliedParams({ 'emotion.preset': 'happy' })
+    expect(reportEvent.mock.calls[1][0].trace_id).toBe(trace1)
+    // Turn 2 — new trace, must differ from turn 1.
+    deps.onMessageSendStarted!({} as any)
+    const trace2 = reportEvent.mock.calls[2][0].trace_id
+    expect(trace2).not.toBe(trace1)
+    bridge.recordAppliedParams({ 'emotion.preset': 'sad' })
+    expect(reportEvent.mock.calls[3][0].trace_id).toBe(trace2)
+  })
+})

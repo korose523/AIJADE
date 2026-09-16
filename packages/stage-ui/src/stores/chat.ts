@@ -30,6 +30,7 @@ import { useAnalytics } from '../composables'
 import { activeTurnSpan, startSpan } from '../composables/use-io-tracer'
 import { extractMessageText, isCloudSyncableMessage } from '../libs/chat-sync'
 import { systemPromptEmotionSupplement } from '../libs/speech/speech-facade'
+import { reportV9Event } from '../libs/v9-event-reporter'
 import { createMinecraftContext } from './chat/context-providers'
 import { useChatContextStore } from './chat/context-store'
 import { createMemoryBridge, createPerformanceBridge } from './chat/memory-performance'
@@ -163,10 +164,10 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
   const performanceDirector = createPerformanceDirector()
   const performanceState = ref<PerformanceState>(performanceDirector.snapshot())
   // 最后一条 `aijade.lpm.render_ready` 回执。随 store 一起暴露，供产品层接线/审计读取。
-  // ⚠️ 本 store **不**在此调用 `lpmRenderReadyEvent.parse(...)` 真正发出事件：
-  // `stage-ui` 不依赖 `@proj-aijade/memory-biomimetic`（加它会破坏三层隔离），而事件
-  // 信封/发布逻辑属于产品层接线 —— 那是另一件事，不在本任务范围内。调用方不要误以为
-  // `lastRenderReceipt` 的更新就已把回执发出去了。
+  // Step B 起，回执**已经**真正发往服务端事件总线（见下方 `reportEvent: reportV9Event`）：
+  // 请求侧的 `aijade.persona.render_requested` 在 `onMessageSendStarted` 铸 trace，
+  // 回执侧的 `aijade.lpm.render_ready` 复用同 trace 与其配对。仍**不** import 内核
+  // （`@proj-aijade/memory-biomimetic`）—— 信封只是普通 JSON，跨边界靠字面量锁保持一致。
   const lastRenderReceipt = ref<LpmRenderReadyReceipt | undefined>(undefined)
   // 模型资产身份 store（只在 setup 里解析一次）。`stageModelAssetVersionHash` 是已
   // async 解析过的值，可能 undefined，下面只同步读取，不 await。
@@ -180,6 +181,9 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
     getAssetVersionHash: () => stageModel.stageModelAssetVersionHash,
     // 回执组装成功即存为"最后一条"，供产品层接线消费。
     onRenderReceipt: (receipt) => { lastRenderReceipt.value = receipt },
+    // Step B 闭环：把 persona.render_requested / lpm.render_ready 两个事件发往
+    // 服务端事件总线（HTTP POST，fire-and-forget，失败只日志不抛）。
+    reportEvent: reportV9Event,
   })
   // The performance bridge owns a self-driven 100ms tick loop; tear it down with the
   // store so HMR reloads don't accumulate duplicate timers (which would double-emit).

@@ -22,17 +22,12 @@ import type { ChatOrchestratorRuntime, ChatOrchestratorRuntimeDeps, ContextMessa
 import type { PerformanceDirector, PerformanceEmotion, PerformanceState } from '@proj-aijade/memory-pgvector/performance'
 import type { MemoryPort } from '@proj-aijade/memory-pgvector/port'
 
-import type { AppliedParams, LpmRenderReadyReceipt } from '../../utils/render-receipt'
+import type { AppliedParams, LpmRenderReadyReceipt, V9EventEnvelope } from '../../utils/render-receipt'
 
 import { ContextUpdateStrategy } from '@proj-aijade/server-sdk'
 import { nanoid } from 'nanoid'
 
-import {
-
-  buildRenderReceipt,
-
-  mintRenderRef,
-} from '../../utils/render-receipt'
+import { buildRenderReceipt, LPM_RENDER_READY_TOPIC, mintRenderRef, PERSONA_RENDER_REQUESTED_TOPIC } from '../../utils/render-receipt'
 
 const MEMORY_CONTEXT_ID = 'memory:recall'
 
@@ -113,6 +108,11 @@ export function createPerformanceBridge(
     getAssetVersionHash?: () => string | undefined
     /** 回执组装成功后的回调（由编排层注入，例如存进 store）。undefined 则仅静默跳过。 */
     onRenderReceipt?: (receipt: LpmRenderReadyReceipt) => void
+    /**
+     * v9 事件上报器（由编排层注入，例如 `reportV9Event`）。undefined 则表现层只本地组装回执、
+     * 不向服务端事件总线发事件——保持"零接线也能跑"的降级语义。Step B 闭环靠它接通。
+     */
+    reportEvent?: (event: V9EventEnvelope) => void
   },
 ) {
   // 轮界计数：每次 `onMessageSendStarted` 进入新一轮。渲染发生在流式过程中，
@@ -121,6 +121,10 @@ export function createPerformanceBridge(
   const getSessionId = options?.getSessionId
   const getAssetVersionHash = options?.getAssetVersionHash
   const onRenderReceipt = options?.onRenderReceipt
+  const reportEvent = options?.reportEvent
+  // 本轮 trace：由 persona.render_requested 铸造，lpm.render_ready 复用它才能与请求配对。
+  let activeTraceId: string | undefined
+  let activeCorrelationId: string | undefined
 
   function wrapDeps(deps: ChatOrchestratorRuntimeDeps): ChatOrchestratorRuntimeDeps {
     return {
@@ -130,6 +134,31 @@ export function createPerformanceBridge(
         director.enterListen()
         onState(director.snapshot())
         turnSeq++
+        // 铸造本轮 trace 并发出 persona.render_requested（Step B 请求侧）。
+        // trace_id 与 correlation_id 同源：请求是 trace 的根，关联指向自身。
+        // turnSeq 已在上方递增，故幂等键用 s#turnSeq#request，与渲染侧 s#s#render:N 区分。
+        // 无活跃 session 时无法铸造稳定 trace，静默跳过（与渲染侧同语义，不伪造）。
+        const sessionId = getSessionId?.()
+        if (sessionId && reportEvent) {
+          activeTraceId = nanoid()
+          activeCorrelationId = activeTraceId
+          reportEvent({
+            event_id: nanoid(),
+            trace_id: activeTraceId,
+            correlation_id: activeCorrelationId,
+            timestamp: Date.now(),
+            producer: 'stage-ui',
+            // 幂等键：session#turnSeq#request（同一次请求重复上报必然同键）。
+            idempotency_key: `${sessionId}#${turnSeq}#request`,
+            replay_mode: 'live',
+            risk_level: 'low',
+            topic: PERSONA_RENDER_REQUESTED_TOPIC,
+            payload: {
+              session_id: sessionId,
+              request_ref: activeTraceId,
+            },
+          })
+        }
       },
     }
   }
@@ -180,6 +209,29 @@ export function createPerformanceBridge(
     // buildRenderReceipt 在 appliedParams 为空时返回 undefined（合法跳过，非错误）。
     if (receipt)
       onRenderReceipt?.(receipt)
+    // 把回执真正发往服务端事件总线（Step B 闭环）。复用本轮的 trace_id 才能与
+    // persona.render_requested 配对；若没有（渲染发生在 send-start 之前）则跳过，
+    // 不伪造 trace。
+    if (receipt && activeTraceId) {
+      reportEvent?.({
+        event_id: nanoid(),
+        trace_id: activeTraceId,
+        correlation_id: activeCorrelationId ?? activeTraceId,
+        timestamp: Date.now(),
+        producer: 'stage-ui',
+        // 幂等键 = session#render_ref（同一次渲染的重复上报必然同键）。
+        idempotency_key: `${sessionId}#${receipt.render_ref}`,
+        replay_mode: 'live',
+        risk_level: 'low',
+        topic: LPM_RENDER_READY_TOPIC,
+        payload: {
+          session_id: receipt.session_id,
+          render_ref: receipt.render_ref,
+          applied_params_hash: receipt.applied_params_hash,
+          ...(receipt.asset_version_hash ? { asset_version_hash: receipt.asset_version_hash } : {}),
+        },
+      })
+    }
     return receipt
   }
 

@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:push": "pnpm run apply:env -- drizzle-kit push",
+    "verify:v9-events": "tsx scripts/verify-v9-events.ts",
     "otel:dashboards": "tsx otel/grafana/dashboards/build.ts"
   },
   "dependencies": {

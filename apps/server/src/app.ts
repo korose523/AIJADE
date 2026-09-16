@@ -21,6 +21,7 @@ import type { ProviderService } from './services/domain/providers'
 import type { RequestLogService } from './services/domain/request-log'
 import type { StripeService } from './services/domain/stripe'
 import type { UserDeletionService } from './services/domain/user-deletion'
+import type { V9EventService } from './services/domain/v9-events'
 import type { HonoEnv } from './types/hono'
 import type { EnvelopeCrypto } from './utils/envelope-crypto'
 
@@ -65,6 +66,7 @@ import { createFluxRoutes } from './routes/flux'
 import { createV1Routes } from './routes/openai/v1'
 import { createProviderRoutes } from './routes/providers'
 import { createStripeRoutes } from './routes/stripe'
+import { createV9EventsRoutes } from './routes/v9/events'
 import { createConfigKVService } from './services/adapters/config-kv'
 import { createEmailService } from './services/adapters/email'
 import { createPostHogClient } from './services/adapters/posthog'
@@ -83,6 +85,7 @@ import { createProviderService } from './services/domain/providers'
 import { createRequestLogService } from './services/domain/request-log'
 import { createStripeService } from './services/domain/stripe'
 import { createUserDeletionService } from './services/domain/user-deletion'
+import { createV9EventService } from './services/domain/v9-events'
 import { createEnvelopeCrypto } from './utils/envelope-crypto'
 import { ApiError, createInternalError } from './utils/error'
 import { nanoid } from './utils/id'
@@ -104,6 +107,7 @@ interface AppDeps {
   ttsMeter: FluxMeter
   requestLogService: RequestLogService
   productEventService: ProductEventService
+  v9EventService: V9EventService
   configKV: ConfigKVService
   envelopeCrypto: EnvelopeCrypto
   redis: Redis
@@ -349,6 +353,14 @@ export async function buildApp(deps: AppDeps) {
     .route('/api/v1/chats', createChatRoutes(deps.chatService))
 
     /**
+     * v9 event bus ingestion (Step B). The browser (`stage-ui`) posts the
+     * `persona.render_requested` / `lpm.render_ready` envelopes here; the sink
+     * upserts them into the generic `v9_events` table with idempotent semantics
+     * keyed by `idempotency_key`.
+     */
+    .route('/api/v1/v9/events', createV9EventsRoutes(deps.v9EventService))
+
+    /**
      * V1 OpenAI-compatible and audio routes. The factory returns two
      * sibling routers because the audio surface deliberately lives outside
      * `/openai/` — its `/voices`, `/voices/streaming`, and `/models`
@@ -548,6 +560,14 @@ export async function createApp() {
     build: ({ dependsOn }) => createProductEventService(dependsOn.db, dependsOn.otel?.product),
   })
 
+  // v9 unified event bus sink (Step B). Kernel-free on purpose: it validates with a
+  // local valibot schema that mirrors the kernel contract, never importing
+  // `@proj-aijade/memory-biomimetic` (three-layer isolation).
+  const v9EventService = injeca.provide('services:v9Events', {
+    dependsOn: { db },
+    build: ({ dependsOn }) => createV9EventService(dependsOn.db),
+  })
+
   const characterService = injeca.provide('services:characters', {
     dependsOn: { db, otel },
     build: ({ dependsOn }) => createCharacterService(dependsOn.db, dependsOn.otel?.engagement),
@@ -718,6 +738,7 @@ export async function createApp() {
     fluxTransactionService,
     requestLogService,
     productEventService,
+    v9EventService,
     stripeService,
     billingService,
     adminFluxGrantsService,
@@ -766,6 +787,7 @@ export async function createApp() {
     ttsMeter: resolved.ttsMeter,
     requestLogService: resolved.requestLogService,
     productEventService: resolved.productEventService,
+    v9EventService: resolved.v9EventService,
     configKV: resolved.configKV,
     envelopeCrypto: resolved.envelopeCrypto,
     redis: resolved.redis,

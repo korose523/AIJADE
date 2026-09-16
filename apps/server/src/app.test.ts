@@ -55,6 +55,9 @@ function createTestDeps() {
       track: vi.fn(async () => undefined),
       countDistinctUsersByFeature: vi.fn(async () => []),
     },
+    // v9 event sink (Step B). These tests only exercise the well-known metadata
+    // routes, so the sink is never invoked — a typed stub is enough.
+    v9EventService: { appendEvent: vi.fn(async () => ({ row: {}, deduped: false })) } as any,
     configKV: {
       getOrThrow: vi.fn(async (key: string) => {
         switch (key) {

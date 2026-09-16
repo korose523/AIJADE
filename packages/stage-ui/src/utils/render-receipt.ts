@@ -85,6 +85,9 @@ export function fingerprintAppliedParams(params: AppliedParams): string {
 /** 回执 topic。与内核 `events.ts` 的登记值一致，由 `render-receipt.test.ts` 的字面量锁守住。 */
 export const LPM_RENDER_READY_TOPIC = 'aijade.lpm.render_ready' as const
 
+/** 请求侧 topic。与内核 `events.ts` 的登记值一致。 */
+export const PERSONA_RENDER_REQUESTED_TOPIC = 'aijade.persona.render_requested' as const
+
 /**
  * 回执 payload 的**本地** schema，与内核 `lpmRenderReadySchema` 逐字段同构
  * （snake_case；`asset_version_hash` 可缺省但不可为空串）。
@@ -147,4 +150,26 @@ export function buildRenderReceipt(input: {
     // 空串会伪装成"已计算"，故显式降级为缺省而不是原样透传。
     ...(input.assetVersionHash ? { asset_version_hash: input.assetVersionHash } : {}),
   })
+}
+
+/**
+ * v9 事件信封的**传输形态**（普通 JSON）。与内核 `events.ts` 的 `eventEnvelopeSchema`
+ * 逐字段同构；表现层只发普通 JSON，**不 import 内核**（三层隔离，见 Step B 设计稿 §2）。
+ *
+ * 放在本文件（浏览器安全、零内核依赖）是为了让 `memory-performance.ts` 能以
+ * `import type` 引用它而不必拉入 `libs/v9-event-reporter.ts` 的浏览器依赖
+ * （`authedFetch` / `SERVER_URL`），从而保持单测干净。
+ */
+export interface V9EventEnvelope {
+  event_id: string
+  trace_id: string
+  correlation_id: string
+  /** unix ms */
+  timestamp: number
+  producer: string
+  idempotency_key: string
+  replay_mode: 'live' | 'replay'
+  risk_level: 'low' | 'medium' | 'high'
+  topic: string
+  payload: Record<string, unknown>
 }
