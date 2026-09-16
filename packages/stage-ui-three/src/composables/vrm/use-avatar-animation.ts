@@ -19,6 +19,7 @@
 import type { VRM } from '@pixiv/three-vrm'
 import type { PerformanceEmotion, PerformanceState } from '@proj-aijade/memory-pgvector/performance'
 import type { AnimationAction, AnimationClip, AnimationMixer } from 'three'
+import type { InjectionKey } from 'vue'
 
 import type { PAD, PersonaSignal } from '../../libs/emotion/avatar-expression'
 import type { MotionEntry, MotionFusionLibrary } from '../../libs/motion-fusion'
@@ -35,6 +36,29 @@ import {
 } from '../../libs/emotion/avatar-expression'
 import { personaToMotionIntent } from '../../libs/motion-fusion'
 import { AnimationStateMachine } from './animation-state-machine'
+
+/**
+ * 本地声明的"实写通道→值"映射，与 `@proj-aijade/stage-ui` 的 `AppliedParams`
+ *（`stage-ui/src/utils/render-receipt.ts`）**同构但刻意不跨包导入**。
+ *
+ * 不能从 `stage-ui` 直接 `import`：依赖方向是 `stage-ui` ⊃ `stage-ui-three`
+ *（`stage-ui/package.json` 把 `@proj-aijade/stage-ui-three` 列为依赖），反向导入会
+ * 形成循环依赖。本文件只负责"如实汇报到底向渲染模型写了什么"；真正的规范化、
+ * 指纹与回执组装都在 `stage-ui` 的 `render-receipt.ts` 做，所以这里只需这一种最小形状。
+ */
+export type AppliedParams = Record<string, number | string | boolean>
+
+/**
+ * 跨层"实写参数汇集"注入槽。由编排层（`Stage.vue`）`provide`，由深层渲染组件
+ * （`VRMModel.vue`）`inject`。
+ *
+ * 之所以用 provide/inject 而非逐层 `defineEmits` 转发：本仓已有 `InjectionKey`
+ * 跨层通信先例（`ToasterRootInjectionKey`、`chatScrollContainerKey`、`chromaticHue` 等），
+ * 且 provide/inject 能穿透中间的 `ThreeScene.vue` 而无需改动它。缺失注入时渲染组件
+ * 须静默降级为 no-op —— 预览页 / 测试里单独使用 `VRMModel` 不应因没有上层消费者而报错。
+ */
+export const appliedParamsSinkKey: InjectionKey<(params: AppliedParams) => void>
+  = Symbol('@proj-aijade/stage-ui-three/applied-params-sink')
 
 /** PerformanceEmotion → VRM emote preset (keys match useVRMEmote's emotionStates). */
 const EMOTION_TO_VRM: Record<PerformanceEmotion, string> = {
@@ -106,8 +130,24 @@ export function useAvatarAnimation(
   persona?: PersonaSignal,
   /** Merged KIMODO + HY-Motion persona-fusable motion library. */
   motionLibrary?: MotionFusionLibrary,
+  /**
+   * 可选回调：每次 `applyPerformance` 真正向渲染模型写入后，把本轮实写的通道→值映射
+   * 上报。`onAppliedParams` 放在参数表**末尾**，是因为调用方按位置传参，追加末尾不会
+   * 破坏任何既有调用方。缺失时 `applyPerformance` 仍返回本轮 map（只是不上报）。
+   */
+  onAppliedParams?: (params: AppliedParams) => void,
 ) {
   const sm = new AnimationStateMachine()
+
+  /**
+   * 本轮 `applyPerformance` 实际写入渲染模型的通道→值映射。在 `applyPerformance` 开头
+   * 重置为新的空 map（**不跨调用累积**），所有"真正调用渲染 API"的点旁向它写键。
+   * 它是闭包变量，被下方 `applyEmotion` / `sm.onGesture` / `playMotionEntry` 等同步回调
+   * 共享——这些回调只在一次 `applyPerformance` 的同步执行内被触发，故不会串台。
+   * 声明位置必须早于 `playMotionEntry` / `sm.onGesture`（二者定义在前、运行时才被调用），
+   * 否则 `ts/no-use-before-define` 会报错。
+   */
+  let appliedParams: AppliedParams = {}
 
   const clipMap = new Map<string, AnimationClip>()
   for (const clip of clips)
@@ -176,6 +216,8 @@ export function useAvatarAnimation(
     else
       action.fadeIn(0.3)
     gestureAction = action
+    // 真正播放了一个 body clip（手势/动作），记录被写入的手势名。
+    appliedParams.gesture = entry.name
     return true
   }
 
@@ -197,15 +239,26 @@ export function useAvatarAnimation(
 
   sm.onGesture = ({ gesture, active }) => {
     if (!active || !gesture) {
+      // endGesture 路径：只停止一个正在播放的 clip，本身不写入任何新通道。
+      // 按"只记录真实写入"的原则，这里**不**写入 `gesture` 键 —— 本轮 map 中缺失
+      // `gesture` 即表示"本帧没有手势写入"，清除语义由键的缺失来表达（而非写一个哨兵值）。
       stopGestureClip()
       return
     }
     // Prefer a real offline body clip; fall back to an emote pulse if none exists.
     const played = playGestureClip(gesture)
+    // 无论播放了 body clip 还是回落到表情脉冲，都把"被写入的手势名"记下来。
+    appliedParams.gesture = gesture
     if (!played) {
       const expr = GESTURE_TO_VRM_EMOTE[gesture]
-      if (expr && emote?.setEmotionWithResetAfter)
+      if (expr && emote?.setEmotionWithResetAfter) {
         emote.setEmotionWithResetAfter(expr, 2500)
+        // setEmotionWithResetAfter 的缺省 intensity 为 1（见 useVRMEmote 签名
+        // `setEmotionWithResetAfter(emotionName, ms, intensity = 1)`），这里如实记录
+        // 该实际取值，而非编造一个。
+        appliedParams['emotion.preset'] = expr
+        appliedParams['emotion.intensity'] = 1
+      }
     }
   }
 
@@ -221,7 +274,15 @@ export function useAvatarAnimation(
     lastEmotion = emotion
     // Normalize to a known VRM preset (arbitrary LLM labels -> valid preset).
     const preset = normalizeEmotionLabel(EMOTION_TO_VRM[emotion] ?? 'neutral')
-    emote?.setEmotion(preset, emotionIntensity(emotion))
+    const intensity = emotionIntensity(emotion)
+    emote?.setEmotion(preset, intensity)
+    // 只在**真正调用 setEmotion** 时记录：上面的 short-circuit（`emotion === lastEmotion`）
+    // 已经挡住了「意图相同但没写入」的情形；`emote` 为 undefined 时压根没有写入，也不记录
+    // （「没有写入就没有记录」）。若在意图处记录，会谎报「写了一次」。
+    if (emote) {
+      appliedParams['emotion.preset'] = preset
+      appliedParams['emotion.intensity'] = intensity
+    }
   }
 
   /**
@@ -235,7 +296,9 @@ export function useAvatarAnimation(
    * This is the "super-personified" core — the body literally expresses the
    * avatar's internal relationship + hormonal state, not a fixed random pool.
    */
-  function applyPerformance(state: PerformanceState): void {
+  function applyPerformance(state: PerformanceState): AppliedParams {
+    // 每次调用都从新的空 map 开始（**不跨调用累积**），只装本轮真正写入的通道。
+    appliedParams = {}
     const userSpeaking = state.state === 'speak'
 
     if (userSpeaking) {
@@ -267,13 +330,28 @@ export function useAvatarAnimation(
           else if (g)
             sm.playGesture(g) // no clip → fall back to an emote pulse
           // Face: subtle persona emotion drift (fires only at trigger → no jitter).
-          if (bias.emotion)
-            emote?.setEmotionWithResetAfter?.(normalizeEmotionLabel(EMOTION_TO_VRM[bias.emotion] ?? 'neutral'), 2500, 0.3)
+          if (bias.emotion) {
+            const preset = normalizeEmotionLabel(EMOTION_TO_VRM[bias.emotion] ?? 'neutral')
+            emote?.setEmotionWithResetAfter?.(preset, 2500, 0.3)
+            // intensity 是显式的 0.3；`emote` 不存在时压根没写入，不记录。
+            if (emote) {
+              appliedParams['emotion.preset'] = preset
+              appliedParams['emotion.intensity'] = 0.3
+            }
+          }
           // Gaze: persona gaze bias (fires only at trigger → no jitter).
-          if (bias.gazeBias)
+          if (bias.gazeBias) {
             onGaze?.(bias.gazeBias)
+            // 只在方向非 null 时记录（null ⇒ 清除方向，没有方向被写入）。
+            appliedParams['gaze.dir'] = bias.gazeBias
+          }
         })
-        blink?.setRateScale?.(bias.blinkRateScale)
+        // setRateScale 是可选方法：只在实现存在（调用真的发生）时才记录，
+        // 否则会谎报一次从未发生的写入并污染 applied_params_hash（与 emotion 同口径）。
+        if (blink?.setRateScale) {
+          blink.setRateScale(bias.blinkRateScale)
+          appliedParams['blink.rateScale'] = bias.blinkRateScale
+        }
       }
       else {
         idleCtrl.tick(now, true, (g) => {
@@ -297,14 +375,27 @@ export function useAvatarAnimation(
     const engaged = userSpeaking
     if (engaged !== lastEngaged) {
       lastEngaged = engaged
-      blink?.setEngaged(engaged)
+      // setEngaged 是可选方法：只在实现存在（调用真的发生）时才记录，
+      // 否则会谎报一次从未发生的写入（与 emotion 同口径）。
+      if (blink?.setEngaged) {
+        blink.setEngaged(engaged)
+        appliedParams['blink.engaged'] = engaged
+      }
     }
     // A `gaze` marker (e.g. <|gaze: left|>) nudges the look-at target; the Vue
     // layer maps it to vrm.lookAt via `onGaze`.
     if (state.gaze !== lastGaze) {
       lastGaze = state.gaze
-      onGaze?.(state.gaze ?? null)
+      const gazeDir = state.gaze ?? null
+      onGaze?.(gazeDir)
+      // 只在方向非 null 时记录（null ⇒ 清除方向，没有方向被写入）。
+      if (gazeDir)
+        appliedParams['gaze.dir'] = gazeDir
     }
+
+    // 如实上报本轮实写的通道→值映射，并返回它（调用方与回执链路都依赖这个返回值）。
+    onAppliedParams?.(appliedParams)
+    return appliedParams
   }
 
   return {

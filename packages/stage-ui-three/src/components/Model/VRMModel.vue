@@ -48,6 +48,7 @@ import {
 } from 'three'
 import {
   computed,
+  inject,
   onMounted,
   onUnmounted,
   ref,
@@ -78,7 +79,7 @@ import { loadVrm } from '../../composables/vrm/core'
 import { useVRMEmote } from '../../composables/vrm/expression'
 import { resolveInternalVrmHooks } from '../../composables/vrm/internal-hooks'
 import { useVRMLipSync } from '../../composables/vrm/lip-sync'
-import { useAvatarAnimation } from '../../composables/vrm/use-avatar-animation'
+import { appliedParamsSinkKey, useAvatarAnimation } from '../../composables/vrm/use-avatar-animation'
 import { gazeDirectionToOffset } from '../../libs/emotion/avatar-expression'
 // Offline-generated body-motion clips (KIMODO / HY-Motion) loaded as a fused library.
 import { loadMotionLibrary, OFFLINE_GESTURE_SOURCES } from '../../libs/kimodo-gestures'
@@ -186,6 +187,13 @@ const {
 
   camera,
 } = toRefs(props)
+
+/**
+ * 跨层"实写参数汇集"注入槽（由编排层 `Stage.vue` `provide`）。
+ * 缺省值为 no-op：预览页 / 测试里单独使用 `VRMModel` 时，没有上层编排消费者，
+ * 这里必须静默降级而不是抛错（见 `appliedParamsSinkKey` 注释与任务要求）。
+ */
+const recordAppliedParams = inject(appliedParamsSinkKey, () => {})
 
 // Model and scene ref
 const { renderer, scene } = useTresContext()
@@ -1068,6 +1076,7 @@ onMounted(async () => {
         applyGaze, // performance-cue gaze → look-at target
         props.persona, // persona-aware autonomous idle behavior
         motionLibrary.value, // fused KIMODO×HY-Motion persona library
+        recordAppliedParams, // 把本轮实写通道→值映射上报给编排层（回执链路）
       )
     }
     else {

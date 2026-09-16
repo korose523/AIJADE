@@ -1,6 +1,9 @@
+import type { AppliedParams } from '../../utils/render-receipt'
+
 import { ContextUpdateStrategy } from '@proj-aijade/server-sdk'
 import { describe, expect, it, vi } from 'vitest'
 
+import { fingerprintAppliedParams } from '../../utils/render-receipt'
 import { createMemoryBridge, createPerformanceBridge } from './memory-performance'
 
 // ---------------------------------------------------------------------------
@@ -27,6 +30,9 @@ function makeDirector() {
     onToken: vi.fn((_t: string) => calls.push('onToken')),
     applyMarkers: vi.fn((_t: string) => calls.push('applyMarkers')),
     onTurnEnd: vi.fn(() => calls.push('onTurnEnd')),
+    // 真实的 PerformanceDirector 有 tick()（被 bridge 的自驱 100ms 定时器调用）。
+    // 缺省会导致定时器在测试结束后异步抛出 "tick is not a function"，使整个进程崩溃。
+    tick: vi.fn(() => calls.push('tick')),
     snapshot: vi.fn(() => ({ state: 'listen' as const, emotion: 'neutral' as const, relationDelta: 0 })),
   }
 }
@@ -134,5 +140,65 @@ describe('createPerformanceBridge', () => {
     deps.onMessageSendStarted!({} as any)
     expect(prior).toHaveBeenCalled()
     expect(director.enterListen).toHaveBeenCalled()
+  })
+})
+
+describe('createPerformanceBridge.recordAppliedParams (render receipt)', () => {
+  it('(a) empty params → undefined and onRenderReceipt NOT called', () => {
+    const onRenderReceipt = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      onRenderReceipt,
+    })
+    const receipt = bridge.recordAppliedParams({})
+    expect(receipt).toBeUndefined()
+    expect(onRenderReceipt).not.toHaveBeenCalled()
+  })
+
+  it('(b) writes → receipt with incrementing render_ref and hash == fingerprint', () => {
+    const onRenderReceipt = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      onRenderReceipt,
+    })
+    const deps = bridge.wrapDeps(noopDeps)
+    // Two send-starts → turnSeq becomes 2.
+    deps.onMessageSendStarted!({} as any)
+    deps.onMessageSendStarted!({} as any)
+
+    const map: AppliedParams = { 'emotion.preset': 'happy', 'emotion.intensity': 0.5 }
+    const r1 = bridge.recordAppliedParams(map)
+    expect(r1).toBeDefined()
+    expect(r1!.render_ref).toBe('s1#render:2')
+    expect(r1!.applied_params_hash).toBe(fingerprintAppliedParams(map))
+    expect(onRenderReceipt).toHaveBeenCalledWith(r1)
+
+    // Another send-start → turnSeq becomes 3; render_ref must advance.
+    deps.onMessageSendStarted!({} as any)
+    const r2 = bridge.recordAppliedParams(map)
+    expect(r2!.render_ref).toBe('s1#render:3')
+    expect(r2!.render_ref).not.toBe(r1!.render_ref)
+  })
+
+  it('(c) assetVersionHash undefined → receipt omits asset_version_hash', () => {
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      getAssetVersionHash: () => undefined,
+    })
+    bridge.wrapDeps(noopDeps).onMessageSendStarted!({} as any)
+    const r = bridge.recordAppliedParams({ 'emotion.preset': 'happy' })
+    expect(r).toBeDefined()
+    expect('asset_version_hash' in r!).toBe(false)
+  })
+
+  it('no active session → silently skipped (cannot mint a stable render_ref)', () => {
+    const onRenderReceipt = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => undefined,
+      onRenderReceipt,
+    })
+    bridge.wrapDeps(noopDeps).onMessageSendStarted!({} as any)
+    expect(bridge.recordAppliedParams({ 'emotion.preset': 'happy' })).toBeUndefined()
+    expect(onRenderReceipt).not.toHaveBeenCalled()
   })
 })

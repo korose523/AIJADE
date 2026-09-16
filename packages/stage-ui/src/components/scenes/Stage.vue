@@ -15,6 +15,7 @@ import { Live2DScene, useLive2dParams } from '@proj-aijade/stage-ui-live2d'
 import { SpineScene } from '@proj-aijade/stage-ui-spine'
 import { ThreeScene } from '@proj-aijade/stage-ui-three'
 import { animations } from '@proj-aijade/stage-ui-three/assets/vrm'
+import { appliedParamsSinkKey } from '@proj-aijade/stage-ui-three/composables/vrm'
 import { createQueue } from '@proj-aijade/stream-kit'
 import { Callout } from '@proj-aijade/ui'
 import { useBroadcastChannel } from '@vueuse/core'
@@ -23,7 +24,7 @@ import { useBroadcastChannel } from '@vueuse/core'
 // import { embed } from '@xsai/embed'
 import { generateSpeech } from '@xsai/generate-speech'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, provide, ref, watch } from 'vue'
 
 import ExpressionStatusOverlay from './ExpressionStatusOverlay.vue'
 import Inochi2dModel from './models/Inochi2dModel.vue'
@@ -118,7 +119,14 @@ const { mouthOpenSize, nowSpeaking } = storeToRefs(useSpeakingStore())
 const { audioContext } = useAudioContext()
 const currentAudioSource = ref<AudioBufferSourceNode>()
 
-const { onBeforeMessageComposed, onBeforeSend, onTokenLiteral, onTokenSpecial, onStreamEnd, onAssistantResponseEnd, performanceState, personaState } = useChatOrchestratorStore()
+const chatOrchestratorStore = useChatOrchestratorStore()
+const { onBeforeMessageComposed, onBeforeSend, onTokenLiteral, onTokenSpecial, onStreamEnd, onAssistantResponseEnd, performanceState, personaState } = chatOrchestratorStore
+// 跨层 provide：把深层 `VRMModel` 在 `applyPerformance` 里上报的实写参数汇集到编排层
+// （组装 `aijade.lpm.render_ready` 回执）。渲染组件缺失该注入时静默 no-op，故预览页 /
+// 测试里单独使用 `VRMModel` 不会因没有上层消费者而报错。用 provide/inject 而非逐层
+// emit 转发，是因为本仓已有 `InjectionKey` 跨层通信先例（ToasterRootInjectionKey 等），
+// 且能穿透中间的 `ThreeScene.vue` 而无需改动它。
+provide(appliedParamsSinkKey, params => chatOrchestratorStore.recordAppliedParams(params))
 const chatHookCleanups: Array<() => void> = []
 // WORKAROUND: clear previous handlers on unmount to avoid duplicate calls when this component remounts.
 //             We keep per-hook disposers instead of wiping the global chat hooks to play nicely with

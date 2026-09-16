@@ -5,6 +5,7 @@ import type { ChatProvider } from '@xsai-ext/providers/utils'
 import type { Message } from '@xsai/shared-chat'
 
 import type { ChatHistoryItem } from '../types/chat'
+import type { LpmRenderReadyReceipt } from '../utils/render-receipt'
 
 import { createAgentCapabilitiesBridge, createPersonaTelemetryRecorder } from '@proj-aijade/agent-capabilities'
 import {
@@ -42,6 +43,7 @@ import { useAijadeCardStore } from './modules/aijade-card'
 import { useAutonomousArtistryStore } from './modules/artistry-autonomous'
 import { useConsciousnessStore } from './modules/consciousness'
 import { useSettingsResearch } from './settings/research'
+import { useSettingsStageModel } from './settings/stage-model'
 
 interface ForkOptions {
   fromSessionId?: string
@@ -160,8 +162,24 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
   const memoryBridge = createMemoryBridge(memoryPort)
   const performanceDirector = createPerformanceDirector()
   const performanceState = ref<PerformanceState>(performanceDirector.snapshot())
+  // 最后一条 `aijade.lpm.render_ready` 回执。随 store 一起暴露，供产品层接线/审计读取。
+  // ⚠️ 本 store **不**在此调用 `lpmRenderReadyEvent.parse(...)` 真正发出事件：
+  // `stage-ui` 不依赖 `@proj-aijade/memory-biomimetic`（加它会破坏三层隔离），而事件
+  // 信封/发布逻辑属于产品层接线 —— 那是另一件事，不在本任务范围内。调用方不要误以为
+  // `lastRenderReceipt` 的更新就已把回执发出去了。
+  const lastRenderReceipt = ref<LpmRenderReadyReceipt | undefined>(undefined)
+  // 模型资产身份 store（只在 setup 里解析一次）。`stageModelAssetVersionHash` 是已
+  // async 解析过的值，可能 undefined，下面只同步读取，不 await。
+  const stageModel = useSettingsStageModel()
   const performanceBridge = createPerformanceBridge(performanceDirector, (s) => {
     performanceState.value = s
+  }, {
+    // session id 由编排层持有，这里同步读取当前活跃 session。
+    getSessionId: () => activeSessionId.value,
+    // 资产身份来自 settings store；Pinia 已解包，直接是 `string | undefined`（异步解析过，可能 undefined）。
+    getAssetVersionHash: () => stageModel.stageModelAssetVersionHash,
+    // 回执组装成功即存为"最后一条"，供产品层接线消费。
+    onRenderReceipt: (receipt) => { lastRenderReceipt.value = receipt },
   })
   // The performance bridge owns a self-driven 100ms tick loop; tear it down with the
   // store so HMR reloads don't accumulate duplicate timers (which would double-emit).
@@ -396,6 +414,10 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
     performanceState,
     /** LPM dual-stream "listen audio branch" entry — wired from the hearing pipeline (ASR emotion + mic RMS). */
     feedUserAudio: performanceBridge.feedUserAudio,
+    /** 把渲染器本轮实写的参数汇总成 `aijade.lpm.render_ready` 回执（由 VRMModel 的 onAppliedParams 经跨层注入槽调用）。 */
+    recordAppliedParams: performanceBridge.recordAppliedParams,
+    /** 最后一条已组装的渲染回执（事件真正发出属产品层接线，见上方注释）。 */
+    lastRenderReceipt,
 
     capabilities,
     personaState,
