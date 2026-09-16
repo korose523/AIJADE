@@ -5,8 +5,14 @@ import type { HonoEnv } from '../src/types/hono'
  *
  * 与 `verify-v9-events.ts`（只测 service）互补：本脚本走**真实 HTTP 路径**——
  * 真实路由工厂 `createV9EventsRoutes`（含 `.use('*', authGuard)` 与内部 `.post('/')`）
- * + 真实 valibot 边界校验 + 真实 service + **真实 Postgres**（pglite 即 Postgres 引擎），
- * 用的是浏览器实际会发的两个信封，最后跑用户指定的两条验收 SQL。
+ * + 真实 valibot 边界校验（envelope **+ 逐 topic payload**）+ 真实 service
+ * + **真实 Postgres**（pglite 即 Postgres 引擎），最后跑用户指定的验收 SQL。
+ *
+ * ⚠️ 关于"浏览器实际会发的信封"：早期本脚本声称用的是浏览器实际发的两个信封，
+ * 但那正是问题所在 —— 浏览器发的 `persona.render_requested` payload 是
+ * `{ session_id, request_ref: <trace_id> }`，不符合内核契约（应为
+ * `persona_snapshot_ref` + `intent_ref`）。因为当时 payload 透传，它照样 201 入库。
+ * 现在本脚本改用**合规形状**，并新增第 6 节把那个漂移形状钉成"必须 400 且不得落库"。
  *
  * ⚠️ 诚实边界（必读）：
  * - 本机的**运行时数据库不存在**：`.env.local` 指向 `localhost:5432`（连接被拒），
@@ -123,6 +129,13 @@ async function main() {
   }
 
   const TRACE = 'trace-e2e-happy'
+  // ⚠️ 这里的 payload 形状必须**镜像内核** `memory-biomimetic/src/events.ts`：
+  // `persona.render_requested` 要 `persona_snapshot_ref` + `intent_ref`，不是 `request_ref`。
+  // 早期本文件抄了 UI 那套漂移形状（`{ session_id, request_ref: <trace_id> }`），
+  // 结果"配对成功"其实是在一条**没有人格快照、没有 Intent 可回指**的链上成立 ——
+  // 即"配对成功 ≠ 因果成立"。此处改为合规形状并让 render_ref 真正回指 intent_ref。
+  const PERSONA_SNAPSHOT_REF = 'ps1'
+  const INTENT_REF = 'pi1'
   const requestEnvelope: Envelope = {
     event_id: 'r1',
     trace_id: TRACE,
@@ -133,7 +146,11 @@ async function main() {
     replay_mode: 'live',
     risk_level: 'low',
     topic: 'aijade.persona.render_requested',
-    payload: { session_id: 's1', request_ref: TRACE },
+    payload: {
+      session_id: 's1',
+      persona_snapshot_ref: PERSONA_SNAPSHOT_REF,
+      intent_ref: INTENT_REF,
+    },
   }
   const readyEnvelope: Envelope = {
     event_id: 'e1',
@@ -147,7 +164,7 @@ async function main() {
     topic: 'aijade.lpm.render_ready',
     payload: {
       session_id: 's1',
-      render_ref: 's1#render:1',
+      render_ref: INTENT_REF,
       applied_params_hash: 'emotion.intensity=0.5|emotion.preset=s:happy',
     },
   }
@@ -188,6 +205,55 @@ async function main() {
   })
   assert(orphan.body.pairingMissing === true, 'orphan render_ready must be flagged pairingMissing')
   console.info('ok  orphan render_ready -> pairingMissing=true (audit gap recorded)')
+
+  // ========================================================================
+  // 6) 逐 topic 语义校验：契约漂移 / 缺字段 / 空串 / 未知字段 一律 400 且**不落库**
+  //    这一节存在的理由：payload 曾经是 `record(string(), unknown)` 透传，
+  //    于是 UI 的 `request_ref` 漂移形状照样 201 入库，"配对成功"却因果不成立。
+  // ========================================================================
+  const before = await client.query<{ n: number }>(`SELECT COUNT(*)::int AS n FROM "events"`)
+  const rowsBefore = before.rows[0].n
+
+  interface NegativeCase { name: string, envelope: Partial<Envelope> & Record<string, unknown> }
+  const negatives: NegativeCase[] = [
+    {
+      name: 'persona.render_requested：UI 曾发的漂移形状 { request_ref }',
+      envelope: { ...requestEnvelope, event_id: 'n1', idempotency_key: 'n1', payload: { session_id: 's1', request_ref: TRACE } },
+    },
+    {
+      name: 'persona.render_requested：缺 persona_snapshot_ref',
+      envelope: { ...requestEnvelope, event_id: 'n2', idempotency_key: 'n2', payload: { session_id: 's1', intent_ref: 'pi1' } },
+    },
+    {
+      name: 'persona.render_requested：intent_ref 为空串',
+      envelope: { ...requestEnvelope, event_id: 'n3', idempotency_key: 'n3', payload: { session_id: 's1', persona_snapshot_ref: 'ps1', intent_ref: '' } },
+    },
+    {
+      name: 'lpm.render_ready：缺 render_ref（回执无法回指意图）',
+      envelope: { ...readyEnvelope, event_id: 'n4', idempotency_key: 'n4', payload: { session_id: 's1', applied_params_hash: 'x=y' } },
+    },
+    {
+      name: 'lpm.render_ready：applied_params_hash 为空串（"什么都没写"不能发空回执）',
+      envelope: { ...readyEnvelope, event_id: 'n5', idempotency_key: 'n5', payload: { session_id: 's1', render_ref: 'pi1', applied_params_hash: '' } },
+    },
+    {
+      name: 'lpm.render_ready：额外未知字段（严格校验，防止靠加字段绕过契约）',
+      envelope: { ...readyEnvelope, event_id: 'n6', idempotency_key: 'n6', payload: { session_id: 's1', render_ref: 'pi1', applied_params_hash: 'x=y', surprise: 1 } },
+    },
+  ]
+
+  for (const n of negatives) {
+    const res = await post(n.envelope)
+    assert(res.status === 400, `[${n.name}] must be 400, got ${res.status} ${JSON.stringify(res.body)}`)
+    console.info(`ok  ${n.name} -> 400`)
+  }
+
+  const after = await client.query<{ n: number }>(`SELECT COUNT(*)::int AS n FROM "events"`)
+  assert(
+    after.rows[0].n === rowsBefore,
+    `rejected events must NOT be persisted: rows ${rowsBefore} -> ${after.rows[0].n}`,
+  )
+  console.info(`ok  被拒的事件未落库（events 行数保持 ${rowsBefore}）`)
 
   // ========================================================================
   // 用户指定的两条验收查询（原样 SQL，直接打在真实 Postgres 上）
