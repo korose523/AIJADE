@@ -136,6 +136,10 @@ const providersStore = useProvidersStore()
 useAuthProviderSync()
 const live2dStore = useLive2dParams()
 const showStage = ref(true)
+// Over-persona voice loop: the latest detected emotion is replayed into the
+// TTS engine so the *voice* (not just the avatar face) expresses persona feeling.
+// 声明位置必须早于首次使用（下方 act 处理器里的赋值），否则 ts/no-use-before-define 报错。
+const currentTtsEmotionName = ref<string | null>(null)
 const viewUpdateCleanups: Array<() => void> = []
 
 // Caption + Presentation broadcast channels
@@ -345,10 +349,6 @@ const playbackManager = createPlaybackManager<AudioBuffer>({
   overflowPolicy: 'queue',
   ownerOverflowPolicy: 'steal-oldest',
 })
-
-// Over-persona voice loop: the latest detected emotion is replayed into the
-// TTS engine so the *voice* (not just the avatar face) expresses persona feeling.
-const currentTtsEmotionName = ref<string | null>(null)
 
 const speechPipeline = createSpeechPipeline<AudioBuffer>({
   tts: async (request, signal) => {
