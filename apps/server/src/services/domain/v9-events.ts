@@ -19,11 +19,19 @@ export interface V9EventInput {
   /** unix ms */
   timestamp: number
   producer: string
-  origin_device?: string
-  privacy_level?: 0 | 1 | 2 | 3
-  evidence_refs?: string[]
-  causal_context_refs?: string[]
-  risk_score?: number
+  /**
+   * 观察/传输上下文。**必填**（与内核信封、HTTP 边界同集）。
+   *
+   * 这里原本是 `origin_device?` / `privacy_level?` … 可选，并在落库时用
+   * `input.origin_device ?? input.producer` 之类的兜底**合成**缺失值：那会把 `producer`
+   * 当设备名写进 `origin_device` 列 —— 一个凭空造出来的"设备"。既然内核信封与边界
+   * schema 都已要求这 5 个字段，这一层就没有理由再允许缺省；缺省只会掩盖调用方漏传。
+   */
+  origin_device: string
+  privacy_level: 0 | 1 | 2 | 3
+  evidence_refs: string[]
+  causal_context_refs: string[]
+  risk_score: number
   idempotency_key: string
   replay_mode: 'live' | 'replay'
   risk_level: 'low' | 'medium' | 'high'
@@ -241,11 +249,13 @@ export function createV9EventService(db: Database): V9EventService {
           correlationId: input.correlation_id,
           timestamp: new Date(input.timestamp),
           producer: input.producer,
-          originDevice: input.origin_device ?? input.producer,
-          privacyLevel: input.privacy_level ?? 1,
-          evidenceRefs: input.evidence_refs ?? [],
-          causalContextRefs: input.causal_context_refs ?? [input.trace_id],
-          riskScore: input.risk_score ?? 0,
+          // 直接采用调用方给的真实观察上下文，**不做兜底合成** —— 兜底会把漏传静默变成
+          // 一个看起来合法的假值（例如把 producer 当设备名）。类型上已是必填，故此处无 `??`。
+          originDevice: input.origin_device,
+          privacyLevel: input.privacy_level,
+          evidenceRefs: input.evidence_refs,
+          causalContextRefs: input.causal_context_refs,
+          riskScore: input.risk_score,
           topic: input.topic,
           payload: input.payload,
           idempotencyKey: input.idempotency_key,

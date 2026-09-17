@@ -9,8 +9,8 @@
 
 import type {
   AijadeEvent,
+  AijadeEventEnvelope,
   RiskLevel,
-  V10EventEnvelope,
 } from './events'
 import type { MemoryPayload, MemoryTxInput, TxResult } from './memory-tx'
 import type { StimulusFeature } from './pgc-state'
@@ -257,17 +257,30 @@ export class V9CausalRuntime {
       pgc_write_plan: decision.write_plan,
       memory_payloads: [payload],
       tx_policy: { atomicity: 'per_write', max_writes: 1 },
+      // 真实的观察上下文（设备 / 隐私 / 连续风险分）在此唯一可得，故在此注入；
+      // 不下沉到引擎里靠默认值，也不留给服务端落库时合成。
+      envelope_context: {
+        origin_device: input.originDevice,
+        privacy_level: input.privacyLevel,
+        risk_score: clampRisk(input.riskScore),
+        evidence_refs: [packId, chunkId],
+      },
     }
     const engine = new MemoryTxEngine()
     const tx = engine.commit(txInput)
     const weave = buildWeave(engine, tx.tx_id, { include_pgc_snapshot: true, include_claim_ids: true })
 
-    const envelope = {
+    const envelope: AijadeEventEnvelope = {
       event_id: id('evt', input.eventId),
       trace_id: input.traceId,
       correlation_id: input.correlationId,
       timestamp: input.timestamp,
       producer: 'v9-causal-runtime',
+      origin_device: input.originDevice,
+      privacy_level: input.privacyLevel,
+      evidence_refs: [packId, chunkId],
+      causal_context_refs: [input.traceId],
+      risk_score: clampRisk(input.riskScore),
       idempotency_key: id('runtime', input.eventId),
       replay_mode: 'live' as const,
       risk_level: payload.normalized_payload.attributes.risk_level ?? 'low',
@@ -399,17 +412,28 @@ export class V9CausalRuntime {
       pgc_write_plan: decision.write_plan,
       memory_payloads: [payload],
       tx_policy: { atomicity: 'per_write', max_writes: 1 },
+      envelope_context: {
+        origin_device: input.originDevice,
+        privacy_level: input.privacyLevel,
+        risk_score: clampRisk(input.riskScore),
+        evidence_refs: [packId, chunkId],
+      },
     }
     const engine = new MemoryTxEngine()
     const tx = engine.commit(txInput)
     const weave = buildWeave(engine, tx.tx_id, { include_pgc_snapshot: true, include_claim_ids: true })
 
-    const envelope: V10EventEnvelope = {
+    const envelope: AijadeEventEnvelope = {
       event_id: id('evt', input.eventId),
       trace_id: input.traceId,
       correlation_id: input.correlationId,
       timestamp: input.timestamp,
       producer: 'v9-causal-runtime',
+      origin_device: input.originDevice,
+      privacy_level: input.privacyLevel,
+      evidence_refs: [packId, chunkId],
+      causal_context_refs: [input.traceId],
+      risk_score: clampRisk(input.riskScore),
       idempotency_key: id('runtime', input.eventId),
       replay_mode: 'live',
       risk_level: payload.normalized_payload.attributes.risk_level ?? 'low',
@@ -449,6 +473,11 @@ export class V9CausalRuntime {
       correlation_id: envelope.correlation_id,
       timestamp: envelope.timestamp,
       producer: envelope.producer,
+      origin_device: envelope.origin_device,
+      privacy_level: envelope.privacy_level,
+      evidence_refs: envelope.evidence_refs,
+      causal_context_refs: envelope.causal_context_refs,
+      risk_score: envelope.risk_score,
       idempotency_key: envelope.idempotency_key,
       replay_mode: envelope.replay_mode,
       risk_level: envelope.risk_level,

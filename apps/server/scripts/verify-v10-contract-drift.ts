@@ -38,7 +38,7 @@ import type { HonoEnv } from '../src/types/hono'
 import process from 'node:process'
 
 import { PGlite } from '@electric-sql/pglite'
-import { assertV10RequiredFields, AIJADE_TOPICS as KERNEL_TOPICS, safeParseAijadeEvent } from '@proj-aijade/memory-biomimetic'
+import { assertV10RequiredFields, envelopeSchema as KERNEL_ENVELOPE_SCHEMA, AIJADE_TOPICS as KERNEL_TOPICS, safeParseAijadeEvent } from '@proj-aijade/memory-biomimetic'
 import { drizzle } from 'drizzle-orm/pglite'
 import { Hono } from 'hono'
 
@@ -108,6 +108,29 @@ function surprise() {
 const SEED_RENDER_REF = 'seed-render-ref'
 const SEED_APPLIED_HASH = 'seed-applied-hash'
 const SEED_ASSET_HASH = 'seed-asset-hash'
+
+/**
+ * 信封的 13 个必需字段，逐字对应内核 `events.ts` 的 `envelopeFields` 与边界
+ * `v9EventEnvelopeSchema`。两边都必须正好是这一组（多一个少一个即失败）。
+ */
+const ENVELOPE_REQUIRED_FIELDS = [
+  'event_id',
+  'trace_id',
+  'correlation_id',
+  'timestamp',
+  'producer',
+  'origin_device',
+  'privacy_level',
+  'evidence_refs',
+  'causal_context_refs',
+  'risk_score',
+  'idempotency_key',
+  'replay_mode',
+  'risk_level',
+]
+
+/** v10 可选字段：v9 生产者可省，`aijade.video.*` / `aijade.learning.*` 必给。 */
+const ENVELOPE_OPTIONAL_FIELDS = ['tick', 'causality', 'core_state_node']
 
 const FIXTURES: Fixture[] = [
   {
@@ -359,30 +382,23 @@ function serverEnvelope(fixture: Fixture, i: number, payload: Record<string, unk
 }
 
 /**
- * 投影成内核信封形状。内核信封用 `producer`，**没有** `origin_device` / `privacy_level` /
- * `evidence_refs` / `causal_context_refs` / `risk_score`（那是服务端信封字段，属另一待决事项），
- * 故这里显式只挑内核认识的那些键，而不是把服务端信封原样丢进去。
+ * 内核信封 = 服务端信封的**同一组字段**（单源），所以这里**原样透传**，不再做任何投影。
+ *
+ * 这里原本显式把 `origin_device` / `privacy_level` / `evidence_refs` / `causal_context_refs`
+ * / `risk_score` 挑掉，理由写的是"内核信封没有那 5 个字段"。而那个理由**本身就是被验证的
+ * 漂移**：内核当时只有 8 个字段，于是内核工厂产出的信封根本投不到事件总线（必被 400 拒），
+ * 服务端落库侧只好自行合成缺失的 5 个（把真实设备名覆写成 `'v9-runtime'`、把连续
+ * `riskScore` 压回 3 级带宽）。
+ *
+ * 把漂移写进验证器是最坏的一种失败模式：验证器会替两端各自"补齐"，于是两侧永远测不出不一致。
+ * 现在两侧同集，同一个对象同时喂给两端 —— 任何一侧少一个字段，都会立刻在对面暴露出来。
  */
 function kernelEnvelope(env: Record<string, unknown>): Record<string, unknown> {
-  return {
-    event_id: env.event_id,
-    trace_id: env.trace_id,
-    correlation_id: env.correlation_id,
-    timestamp: env.timestamp,
-    producer: env.producer,
-    idempotency_key: env.idempotency_key,
-    replay_mode: env.replay_mode,
-    risk_level: env.risk_level,
-    ...(env.tick === undefined ? {} : { tick: env.tick }),
-    ...(env.causality === undefined ? {} : { causality: env.causality }),
-    topic: env.topic,
-    payload: env.payload,
-  }
+  return env
 }
 
 function kernelAccepts(env: Record<string, unknown>): boolean {
-  const parsed = safeParseAijadeEvent(kernelEnvelope(env))
-  return parsed.success
+  return safeParseAijadeEvent(kernelEnvelope(env)).success
 }
 
 interface Leg {
@@ -451,6 +467,36 @@ async function runMatrix(leg: Leg): Promise<void> {
       )
     }
   }
+
+  // ---- 信封字段集两端同集（这正是此前 8 vs 13 漂移的判据） ----
+  //
+  // 为什么单独做这一节：topic 级的负例只变异 **payload**，永远测不出"信封少字段"。
+  // 而信封少字段恰恰是本项目真实发生过的漂移，且症状是**单向**的 ——
+  // 内核能构造、边界必拒，于是"内核合法产出"在总线上根本不存在。
+  // 这里逐字段把必需项抽掉，要求两端**同时**拒绝：只在一端拒绝不足以称为同集。
+  for (const field of ENVELOPE_REQUIRED_FIELDS) {
+    const i = 900 + ENVELOPE_REQUIRED_FIELDS.indexOf(field)
+    const fixture = FIXTURES[0]
+    const env = serverEnvelope(fixture, i, fixture.payload(i))
+    delete env[field]
+
+    const before = await leg.countRows()
+    const res = await leg.post(env)
+    const after = await leg.countRows()
+
+    check(!kernelAccepts(env), `[kernel] envelope missing "${field}": must be rejected`)
+    check(res.status === 400, `[http] envelope missing "${field}": must be 400 (got ${res.status})`)
+    check(after.events === before.events, `[no-write] envelope missing "${field}": events unchanged (${before.events} -> ${after.events})`)
+  }
+
+  // 反向对照：3 个 v10 可选字段**确实可省**，否则上面的"必需"断言可能只是"什么都拒"。
+  for (const field of ENVELOPE_OPTIONAL_FIELDS) {
+    const i = 950 + ENVELOPE_OPTIONAL_FIELDS.indexOf(field)
+    const fixture = FIXTURES[0]
+    const env = serverEnvelope(fixture, i, fixture.payload(i))
+    delete env[field]
+    check(kernelAccepts(env), `[kernel] envelope without optional "${field}": must still be accepted`)
+  }
 }
 
 async function main(): Promise<void> {
@@ -467,6 +513,14 @@ async function main(): Promise<void> {
   const onlyKernel = [...kernelSet].filter(t => !serverSet.has(t))
   const onlyServer = [...serverSet].filter(t => !kernelSet.has(t))
   check(onlyKernel.length === 0 && onlyServer.length === 0, `kernel/server topic sets agree (kernel-only: ${onlyKernel.join(', ') || 'none'}; server-only: ${onlyServer.join(', ') || 'none'})`)
+
+  // ---- 内核信封 schema 声明的字段集必须正好是这 13 + 3（静态侧） ----
+  // 行为侧（逐字段抽掉 → 两端都必须拒）在 runMatrix 里对每条腿各跑一遍。
+  const kernelFieldNames = Object.keys(KERNEL_ENVELOPE_SCHEMA.shape).sort()
+  check(
+    kernelFieldNames.join(',') === [...ENVELOPE_REQUIRED_FIELDS, ...ENVELOPE_OPTIONAL_FIELDS].sort().join(','),
+    `kernel envelope declares exactly ${ENVELOPE_REQUIRED_FIELDS.length} required + ${ENVELOPE_OPTIONAL_FIELDS.length} optional fields (got: ${kernelFieldNames.join(', ')})`,
+  )
 
   // ---- PGlite 腿 ----
   const client = new PGlite()

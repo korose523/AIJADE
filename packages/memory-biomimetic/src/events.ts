@@ -12,25 +12,55 @@
  * 网络/跨进程边界，必须在边界处校验，不能信赖调用方的类型。
  */
 
-import type { CoreStateNode } from './core-state-node'
-
 import { z } from 'zod'
+
+import { CORE_STATE_NODES } from './core-state-node'
 
 /** 风险等级：写入门控用它给记忆写做路由/审计分级。 */
 export const riskLevelSchema = z.enum(['low', 'medium', 'high'])
 export type RiskLevel = z.infer<typeof riskLevelSchema>
 
+/** 隐私分级 0..3。与边界 `apps/server/src/routes/v9/schema.ts` 的 `picklist([0, 1, 2, 3])` 同域。 */
+export const privacyLevelSchema = z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)])
+export type PrivacyLevel = z.infer<typeof privacyLevelSchema>
+
 /** live=真实发生；replay=回放/校验。回放一致性校验只允许 replay_mode='replay' 进入。 */
 export const replayModeSchema = z.enum(['live', 'replay'])
 export type ReplayMode = z.infer<typeof replayModeSchema>
 
-/** 信封字段（除 topic/payload 外的所有字段）。被每个 topic 事件复用。 */
+/**
+ * 信封字段（除 topic/payload 外的所有字段）。被每个 topic 事件复用。
+ *
+ * ## 单源：这 13 个字段就是 HTTP 边界要求的那一组
+ *
+ * 这里定义的字段与边界 `apps/server/src/routes/v9/schema.ts` 的 `v9EventEnvelopeSchema`
+ * **逐字段同集**。此前内核信封只有 8 个字段、边界要求 13 个，后果是双向的：
+ * 1. 内核工厂产出的信封**无法投递到事件总线**（必被边界 400 拒），v10 契约实际是单向的；
+ * 2. 服务端落库侧只好自行**合成**缺失的 5 个字段 —— 把真实 `originDevice` 覆写成字面量
+ *    `'v9-runtime'`、把连续的 `riskScore` 压回 3 级带宽（`high→1 / medium→0.5 / low→0`）。
+ *    也就是说**真实信息在传递中被丢弃并被近似值替代**，而这正是 v10 §14.1 禁止清单里
+ *    「伪造因果关键字段」的同型问题。
+ *
+ * 现在两侧以同一组字段为准，`apps/server/scripts/verify-v10-contract-drift.ts` 会**逐字段**
+ * 断言两侧同集（缺一个即失败），使这个漂移不可能静默复发。
+ */
 const envelopeFields = {
   event_id: z.string().min(1),
   trace_id: z.string().min(1),
   correlation_id: z.string().min(1),
   timestamp: z.number().int().nonnegative(),
   producer: z.string().min(1),
+  /**
+   * 观察/传输上下文。这 5 项**必须由生产者按真实输入填**，不得由下游合成：
+   * `origin_device` 是产出事件的那台设备；`privacy_level` 是该次观察的隐私分级；
+   * `risk_score` 是**连续**风险分（不是 3 级带宽）；`evidence_refs` 是本次事件引用的
+   * 证据行 id；`causal_context_refs` 是因果上下文（当前取 trace 维度）。
+   */
+  origin_device: z.string().min(1),
+  privacy_level: privacyLevelSchema,
+  evidence_refs: z.array(z.string()),
+  causal_context_refs: z.array(z.string()),
+  risk_score: z.number().min(0).max(1),
   idempotency_key: z.string().min(1),
   replay_mode: replayModeSchema,
   risk_level: riskLevelSchema,
@@ -39,20 +69,31 @@ const envelopeFields = {
    * `aijade.video.*` / `aijade.learning.*` 前缀的生产者【必须】提供，
    * 由 {@link assertV10RequiredFields} 强制 —— 镜像服务端
    * `v9EventEnvelopeSchema.tick` 与 `v10EventFieldsSchema.causality` 的拆分
-   *（`apps/server/src/routes/v9/schema.ts:77-104`）。
-   * 注意：本内核信封不引入 `origin_device` / `privacy_level` / `evidence_refs` /
-   * `causal_context_refs` / `risk_score`（那是服务端信封的字段，属另一待决事项），
-   * 本次只补 `tick` / `causality` 两项。
+   *（`apps/server/src/routes/v9/schema.ts`）。
    */
   tick: z.number().int().nonnegative().optional(),
   causality: z.object({ inputHash: z.string().min(1) }).optional(),
   /**
-   * v10 内生状态节点（可选，v9 可省，v10 必给）。由 {@link deriveCoreStateNode}
+   * v10 内生状态节点（可选，v9 可省，v10 必给）。由 `deriveCoreStateNode`
    * 依事件 topic + 真实控制流事实（是否真实落库）推导；是「关键事件 → S0..S8」映射的
    * 落点，回放侧可据此复算并检出漂移。沿用 `tick`/`causality` 的「可选 + 注释」风格。
    */
-  core_state_node: z.string().regex(/^S[0-8]$/).optional(),
+  core_state_node: z.enum(CORE_STATE_NODES).optional(),
 } as const
+
+/**
+ * 统一信封：除 `topic` / `payload` 外的**全部**字段。
+ *
+ * **类型由 schema 推断而来**（不是手抄接口）—— 这是本文件刻意的做法：信封形状一度在
+ * 6 处各写一遍（`pgc.ts` / `weave.ts` / `pef.ts` / `ael.ts` / `events.ts` / `memory-tx.ts`），
+ * 手抄的接口既不参与运行时校验，也不会随 schema 一起改，正是漂移的温床。
+ * 现在唯一的真源是 {@link envelopeFields}，类型与校验同源，无法各自演化。
+ */
+
+/** 信封的运行时校验（与 {@link AijadeEventEnvelope} 同源）。 */
+export const envelopeSchema = z.object(envelopeFields)
+
+export type AijadeEventEnvelope = z.infer<typeof envelopeSchema>
 
 /** 统一事件信封（topic 与 payload 为 unknown 的宽松形态，供总线透传）。 */
 export const eventEnvelopeSchema = z.object({
@@ -60,7 +101,6 @@ export const eventEnvelopeSchema = z.object({
   topic: z.string().min(1),
   payload: z.unknown(),
 })
-export type AijadeEventEnvelope = z.infer<typeof eventEnvelopeSchema>
 
 // ============================================================================
 // Topic payload schemas
@@ -352,21 +392,13 @@ export function assertV10RequiredFields(event: AijadeEvent): void {
   }
 }
 
-/** v10 工厂统一的信封形态（在 v9 信封基础上允许可选的 tick / causality）。 */
-export interface V10EventEnvelope {
-  event_id: string
-  trace_id: string
-  correlation_id: string
-  timestamp: number
-  producer: string
-  idempotency_key: string
-  replay_mode: 'live' | 'replay'
-  risk_level: RiskLevel
-  tick?: number
-  causality?: { inputHash: string }
-  /** v10 内生状态节点（S0..S8），由 `deriveCoreStateNode` 决定。 */
-  core_state_node?: CoreStateNode
-}
+/**
+ * @deprecated 信封只有**一个**形状，已并入 {@link AijadeEventEnvelope}。
+ * 保留别名只为不打断既有 import（`v9-runtime.ts`）；新代码请直接用
+ * `AijadeEventEnvelope`，不要再区分「v9 信封 / v10 信封」——那个区分正是
+ * 内核 8 字段 vs 边界 13 字段漂移的来源。
+ */
+export type V10EventEnvelope = AijadeEventEnvelope
 
 function buildV10Event(
   eventSchema: z.ZodTypeAny,

@@ -17,7 +17,7 @@
  * - `pgc.ts` 的 `PgcWritePlanEntry`：输入直接消费 PGC 的 write_plan，不重定义决策类型。
  */
 
-import type { AijadeEvent, RiskLevel } from './events'
+import type { AijadeEvent, PrivacyLevel, RiskLevel } from './events'
 import type { CommitReason, MemoryKind, PgcWritePlanEntry } from './pgc'
 import type { Tau } from './pgc-state'
 import type { GatingCoefficients } from './types'
@@ -65,6 +65,28 @@ export interface TxPolicy {
   max_writes: number
 }
 
+/**
+ * 信封的**观察/传输上下文**：这条事件是在哪台设备、什么隐私级别、多大风险下被观察到的。
+ *
+ * 为什么单独抽出来而不是并进 `MemoryTxInput` 的语义字段：这 5 项描述的是**事件如何被观察**，
+ * 不是**事务写了什么**。它们只能由运行时（真正持有观察上下文的那一层）提供，引擎自己
+ * 无从得知 —— 引擎内部凭空造一个设备名，就是 v10 §14.1 禁止的「伪造因果关键字段」。
+ *
+ * `evidence_refs` / `causal_context_refs` 留空时由引擎按**自己输入里的真实值**派生
+ * （证据链来自 `memory_payloads`，因果上下文取 `trace_id`），不需要调用方重复填写。
+ */
+export interface MemoryTxEnvelopeContext {
+  /** 产出事件的设备/进程标识。**不要**填"占位符"，填不出真实值就别传这个对象。 */
+  origin_device: string
+  privacy_level: PrivacyLevel
+  /** 连续风险分 [0,1]，不是 3 级带宽。 */
+  risk_score: number
+  /** 因果上下文引用；缺省取 `[input.trace_id]`。 */
+  causal_context_refs?: string[]
+  /** 证据引用；缺省由本 tx 的 payload 证据链派生。 */
+  evidence_refs?: string[]
+}
+
 export interface MemoryTxInput {
   session_id: string
   trace_id: string
@@ -74,7 +96,21 @@ export interface MemoryTxInput {
   tx_policy: TxPolicy
   /** 幂等键；缺省用 trace_id+session_id 推导（同一 tx 重复提交幂等）。 */
   tx_id?: string
+  /**
+   * 观察/传输上下文。运行时路径**必须**传真实值（见 `V9CausalRuntime`）。
+   *
+   * 缺省时的语义是**「本层没有观察上下文」**，而不是"风险为 0 / 设备未知"：此时
+   * `origin_device` 会被填成 `'kernel:memory-tx'`（**字面标明是引擎层**，不冒充设备），
+   * `privacy_level=0` / `risk_score=0` 表示这层不掌握该信息。这条路径只应出现在**引擎的
+   * 隔离单测**里；一旦事件要上总线，就必须由运行时补上真实值 ——
+   * `v9-runtime.test.ts` 有一条断言专门证明运行时产出的 `origin_device` / `risk_score`
+   * 是输入的真实值、不是这里的占位值。
+   */
+  envelope_context?: MemoryTxEnvelopeContext
 }
+
+/** 无观察上下文时的层内署名（**不是**设备名，故意长得不像设备名）。 */
+const UNCONTEXTED_ORIGIN = 'kernel:memory-tx'
 
 // ============================================================================
 // 输出类型
@@ -349,12 +385,25 @@ export class MemoryTxEngine {
           : 'partial'
 
     // 6) 发出已校验事件（aijade.memory_tx.committed），idempotency_key = txId。
+    //
+    // 信封的 5 个观察/传输字段：能由本层真实派生的就派生（证据引用来自本 tx 的 payload
+    // 证据链、因果上下文取 trace_id），派生不出的（设备 / 隐私分级 / 风险分）才向调用方
+    // 索取；缺上下文时用品名标注本层，**不冒充**真实设备（详见 MemoryTxInput.envelope_context）。
+    const envelopeContext = input.envelope_context
+    const derivedEvidenceRefs = [...new Set(
+      input.memory_payloads.flatMap(p => [p.evidence_pack_id, ...p.evidence_ids]).filter(Boolean),
+    )]
     const committedEvent = memoryTxCommittedEvent.parse({
       event_id: makeId('evt', txId, 'committed'),
       trace_id: input.trace_id,
       correlation_id: input.trace_id,
       timestamp: now,
       producer: 'memory-tx',
+      origin_device: envelopeContext?.origin_device ?? UNCONTEXTED_ORIGIN,
+      privacy_level: envelopeContext?.privacy_level ?? 0,
+      evidence_refs: envelopeContext?.evidence_refs ?? derivedEvidenceRefs,
+      causal_context_refs: envelopeContext?.causal_context_refs ?? [input.trace_id],
+      risk_score: envelopeContext?.risk_score ?? 0,
       idempotency_key: txId,
       replay_mode: 'live',
       risk_level: committed.some(c => this.versions.get(c.memory_version_id)?.riskLevel === 'high') ? 'high' : 'low',

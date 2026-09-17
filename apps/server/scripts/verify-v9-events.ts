@@ -37,11 +37,19 @@ async function main() {
       "correlation_id" text NOT NULL,
       "timestamp" timestamp NOT NULL,
       "producer" text NOT NULL,
+      "origin_device" text NOT NULL,
+      "privacy_level" integer NOT NULL,
+      "evidence_refs" text[] NOT NULL DEFAULT '{}',
+      "causal_context_refs" text[] NOT NULL DEFAULT '{}',
+      "risk_score" real NOT NULL DEFAULT 0,
       "topic" text NOT NULL,
       "payload" jsonb,
       "idempotency_key" text NOT NULL UNIQUE,
       "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-      "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high'))
+      "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
+      "tick" integer,
+      "causality" jsonb,
+      "core_state_node" text
     );
     CREATE TABLE "audit_log_entries" (
       "id" text PRIMARY KEY,
@@ -52,10 +60,33 @@ async function main() {
       "after_hash" text,
       "at" timestamp NOT NULL
     );
+    CREATE TABLE "render_traces" (
+      "id" text PRIMARY KEY,
+      "session_id" text NOT NULL,
+      "trace_id" text NOT NULL,
+      "correlation_id" text NOT NULL,
+      "event_id" text NOT NULL,
+      "persona_snapshot_ref" text,
+      "intent_ref" text,
+      "render_ref" text,
+      "applied_params_hash" text,
+      "asset_version_hash" text,
+      "created_at" timestamp NOT NULL DEFAULT NOW(),
+      "updated_at" timestamp NOT NULL DEFAULT NOW()
+    );
   `)
 
   const svc = createV9EventService(db as any)
   const trace = 'trace-1'
+
+  // 信封的观察/传输上下文：内核信封与 HTTP 边界都要求这 5 个字段必填，故此处如实给出。
+  const OBS = {
+    origin_device: 'script:verify-v9-events',
+    privacy_level: 1 as const,
+    evidence_refs: [] as string[],
+    causal_context_refs: [trace],
+    risk_score: 0,
+  }
 
   // 1) 正常闭环：同 trace 下先 request 后 ready，配对成功。
   await svc.appendEvent({
@@ -64,6 +95,7 @@ async function main() {
     correlation_id: trace,
     timestamp: Date.now(),
     producer: 'stage-ui',
+    ...OBS,
     idempotency_key: 's1#1#request',
     replay_mode: 'live',
     risk_level: 'low',
@@ -76,6 +108,7 @@ async function main() {
     correlation_id: trace,
     timestamp: Date.now(),
     producer: 'stage-ui',
+    ...OBS,
     idempotency_key: 's1#s1#render:1',
     replay_mode: 'live',
     risk_level: 'low',
@@ -92,6 +125,7 @@ async function main() {
     correlation_id: trace,
     timestamp: Date.now(),
     producer: 'stage-ui',
+    ...OBS,
     idempotency_key: 's1#s1#render:1',
     replay_mode: 'live',
     risk_level: 'low',
@@ -109,6 +143,7 @@ async function main() {
     correlation_id: 'trace-orphan',
     timestamp: Date.now(),
     producer: 'stage-ui',
+    ...OBS,
     idempotency_key: 's9#s9#render:1',
     replay_mode: 'live',
     risk_level: 'low',

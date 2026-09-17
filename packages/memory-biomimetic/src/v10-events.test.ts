@@ -62,6 +62,12 @@ const v10Envelope = {
   correlation_id: 'cor_1',
   timestamp: 1_700_000_000_000,
   producer: 'kernel',
+  // 信封的观察/传输字段是**必填**的（与 HTTP 边界同集），测试里如实给出。
+  origin_device: 'test-device',
+  privacy_level: 1 as const,
+  evidence_refs: [],
+  causal_context_refs: ['tr_1'],
+  risk_score: 0,
   idempotency_key: 'idem_1',
   replay_mode: 'live' as const,
   risk_level: 'low' as const,

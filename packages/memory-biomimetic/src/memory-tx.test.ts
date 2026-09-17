@@ -202,3 +202,55 @@ describe('memoryTx — 分类与上限', () => {
     expect((r.events[0].payload as { committed_count: number }).committed_count).toBe(1)
   })
 })
+
+/**
+ * 信封的观察/传输字段：引擎**自己造不出**设备/隐私/风险分，所以要么由调用方给，要么如实
+ * 说明「本层不知道」。这组测试把那条缺省路径**固定成规格**，避免它退化成"看起来像真实数据"
+ * 的默认值。
+ */
+describe('memoryTx — 信封观察上下文（缺省即如实标注本层，不冒充设备）', () => {
+  it('未提供 envelope_context ⇒ origin_device 标注引擎层、不是设备名；风险分不冒充已知', () => {
+    const engine = new MemoryTxEngine()
+    const r = engine.commit({
+      session_id: 's_ctx',
+      trace_id: 't_ctx',
+      tx_id: 'tx_ctx_absent',
+      pgc_write_plan: [plan('mw_ctx', 'commit')],
+      memory_payloads: [payload('mw_ctx', 'pack_ctx', ['ev_ctx'])],
+      tx_policy: perWrite,
+    })
+    const env = r.events[0]
+    expect(env.origin_device).toBe('kernel:memory-tx')
+    expect(env.privacy_level).toBe(0)
+    expect(env.risk_score).toBe(0)
+    // 能由本层真实派生的两项仍然派生（不是空数组、也不是编造）。
+    expect(env.causal_context_refs).toEqual(['t_ctx'])
+    expect(env.evidence_refs).toEqual(expect.arrayContaining(['pack_ctx', 'ev_ctx']))
+  })
+
+  it('提供 envelope_context ⇒ 逐字段采用真实值（含连续风险分，不被压成 3 级带宽）', () => {
+    const engine = new MemoryTxEngine()
+    const r = engine.commit({
+      session_id: 's_ctx',
+      trace_id: 't_ctx2',
+      tx_id: 'tx_ctx_present',
+      pgc_write_plan: [plan('mw_ctx2', 'commit')],
+      memory_payloads: [payload('mw_ctx2', 'pack_ctx2', ['ev_ctx2'])],
+      tx_policy: perWrite,
+      envelope_context: {
+        origin_device: 'pixel-9-pro',
+        privacy_level: 3,
+        risk_score: 0.42,
+        causal_context_refs: ['trace:ctx2'],
+        evidence_refs: ['explicit-ev'],
+      },
+    })
+    const env = r.events[0]
+    expect(env.origin_device).toBe('pixel-9-pro')
+    expect(env.privacy_level).toBe(3)
+    // 连续值原样保留：这是"服务端曾把 0.42 压回 3 级带宽"那个缺陷的反向断言。
+    expect(env.risk_score).toBeCloseTo(0.42, 10)
+    expect(env.causal_context_refs).toEqual(['trace:ctx2'])
+    expect(env.evidence_refs).toEqual(['explicit-ev'])
+  })
+})

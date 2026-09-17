@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   AIJADE_TOPICS,
   aijadeEventSchema,
+  envelopeSchema,
   eventEnvelopeSchema,
   memoryTxCommittedEvent,
   safeParseAijadeEvent,
@@ -15,6 +16,12 @@ function baseEnvelope(over: Record<string, unknown> = {}) {
     correlation_id: 'cor_1',
     timestamp: 1_700_000_000_000,
     producer: 'memory-tx',
+    // 观察/传输字段：与 HTTP 边界同集，**必填**（不是可选项）。
+    origin_device: 'test-device',
+    privacy_level: 1,
+    evidence_refs: [],
+    causal_context_refs: ['tr_1'],
+    risk_score: 0,
     idempotency_key: 'idem_1',
     replay_mode: 'live',
     risk_level: 'low',
@@ -36,6 +43,62 @@ describe('事件信封 — 统一契约', () => {
   it('非法 risk_level / replay_mode ⇒ 拒绝', () => {
     expect(eventEnvelopeSchema.safeParse({ ...baseEnvelope(), risk_level: 'critical' }).success).toBe(false)
     expect(eventEnvelopeSchema.safeParse({ ...baseEnvelope(), replay_mode: 'maybe' }).success).toBe(false)
+  })
+})
+
+/**
+ * 漂移守卫：内核信封与 HTTP 边界信封**必须是同一组字段**。
+ *
+ * 背景（这条守卫要防的正是它）：内核一度只有 8 个字段、边界要求 13 个，于是内核工厂产出的
+ * 信封**根本投递不到事件总线**（必被 400 拒），而服务端落库侧只好自行合成缺失的 5 个 ——
+ * 把真实 `originDevice` 覆写成字面量 `'v9-runtime'`、把连续的 `riskScore` 压回 3 级带宽。
+ * 现在这组名字被钉死在这里：任何一侧多一个/少一个字段，都会在**本仓**或
+ * `apps/server/scripts/verify-v10-contract-drift.ts` 的跨端同集断言上立刻变红。
+ */
+describe('事件信封 — 字段集与边界同集（漂移守卫）', () => {
+  /** 边界 `v9EventEnvelopeSchema` 要求的 13 个字段，逐字对应。 */
+  const REQUIRED = [
+    'event_id',
+    'trace_id',
+    'correlation_id',
+    'timestamp',
+    'producer',
+    'origin_device',
+    'privacy_level',
+    'evidence_refs',
+    'causal_context_refs',
+    'risk_score',
+    'idempotency_key',
+    'replay_mode',
+    'risk_level',
+  ]
+
+  /** v10 可选字段：v9 生产者可省，`aijade.video.*` / `aijade.learning.*` 必给。 */
+  const OPTIONAL = ['tick', 'causality', 'core_state_node']
+
+  it('schema 的字段集合恰好是 13 必需 + 3 可选（多一个少一个都失败）', () => {
+    expect(Object.keys(envelopeSchema.shape).sort()).toEqual([...REQUIRED, ...OPTIONAL].sort())
+  })
+
+  it('13 个必需字段逐个缺失都必须被拒（含 5 个观察/传输字段）', () => {
+    // 注意用 `envelopeSchema`（仅信封）而不是 `eventEnvelopeSchema`（信封 + topic + payload）：
+    // 后者在缺 topic/payload 时**也会**失败，会让「缺失某字段必须被拒」变成恒真断言。
+    for (const field of REQUIRED) {
+      const r = envelopeSchema.safeParse({ ...baseEnvelope(), [field]: undefined })
+      expect(r.success, `缺失 ${field} 必须被拒`).toBe(false)
+    }
+  })
+
+  it('3 个 v10 可选字段确实可省（与上面的「必需」形成对照，证明断言不是恒真）', () => {
+    const r = envelopeSchema.safeParse(baseEnvelope())
+    expect(r.success).toBe(true)
+  })
+
+  it('观察/传输字段不接受空串与越界值（不是「有键即通过」）', () => {
+    expect(envelopeSchema.safeParse({ ...baseEnvelope(), origin_device: '' }).success).toBe(false)
+    expect(envelopeSchema.safeParse({ ...baseEnvelope(), privacy_level: 4 }).success).toBe(false)
+    expect(envelopeSchema.safeParse({ ...baseEnvelope(), risk_score: 1.5 }).success).toBe(false)
+    expect(envelopeSchema.safeParse({ ...baseEnvelope(), risk_score: -0.1 }).success).toBe(false)
   })
 })
 

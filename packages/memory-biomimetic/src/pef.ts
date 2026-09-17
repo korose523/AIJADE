@@ -1,5 +1,5 @@
 import type { PerformanceIntent } from './contracts-v8'
-import type { RiskLevel } from './events'
+import type { AijadeEventEnvelope } from './events'
 
 import { lpmRenderReadyEvent, personaRenderRequestedEvent } from './events'
 
@@ -348,17 +348,15 @@ export function buildPerformanceIntent(
 // §52.5 — 渲染请求事件（内核 → 具身侧）
 // ---------------------------------------------------------------------------
 
-/** `build*Event` 的信封入参形态（与 weave.ts / pgc.ts / ael.ts 保持一致）。 */
-interface PersonaRenderEnvelope {
-  event_id: string
-  trace_id: string
-  correlation_id: string
-  timestamp: number
-  producer: string
-  idempotency_key: string
-  replay_mode: 'live' | 'replay'
-  risk_level: RiskLevel
-}
+/**
+ * `build*Event` 的信封入参形态 = 内核唯一信封类型 {@link AijadeEventEnvelope}。
+ *
+ * 以前这里手抄了一份 8 字段的接口（`weave.ts` / `pgc.ts` / `ael.ts` 各抄一份）。手抄的那份
+ * 既不参与运行时校验，也不会随 `events.ts` 的 schema 一起改，所以一旦边界加字段，这四处
+ * 会静默落后 —— 这正是「内核 8 字段 vs 边界 13 字段」漂移的成因。现在只保留一个别名，
+ * 让「信封形状」在全仓只有一个定义。
+ */
+type PersonaRenderEnvelope = AijadeEventEnvelope
 
 /**
  * 把一次 `PerformanceIntent` 包成 `aijade.persona.render_requested`（已 zod 校验）。

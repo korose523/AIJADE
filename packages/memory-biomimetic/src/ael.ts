@@ -1,5 +1,5 @@
 import type { LearningQuest, SourceRecord } from './contracts-v8'
-import type { RiskLevel } from './events'
+import type { AijadeEventEnvelope } from './events'
 
 import { validateLearningQuest } from './contracts-v8'
 import { activeLearningCompletedEvent, activeLearningRequestedEvent } from './events'
@@ -162,17 +162,11 @@ export function shouldCompleteActiveLearning(from: QuestStage, to: QuestStage | 
   return to === null && from === 'REFLECT'
 }
 
-/** `build*Event` 的信封入参形态（与 weave.ts / pgc.ts 的同名参数保持一致）。 */
-interface LifecycleEnvelope {
-  event_id: string
-  trace_id: string
-  correlation_id: string
-  timestamp: number
-  producer: string
-  idempotency_key: string
-  replay_mode: 'live' | 'replay'
-  risk_level: RiskLevel
-}
+/**
+ * `build*Event` 的信封入参形态 = 内核唯一信封类型 {@link AijadeEventEnvelope}。
+ * 以前这里手抄了一份 8 字段接口，现改为单一真源（理由同 `pef.ts` 的同名别名）。
+ */
+type LifecycleEnvelope = AijadeEventEnvelope
 
 /**
  * 把一个**已界定**的 quest 包成 `aijade.active_learning.requested`（已 zod 校验）。

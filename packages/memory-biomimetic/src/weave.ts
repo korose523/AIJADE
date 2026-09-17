@@ -18,7 +18,7 @@
  * 再造一套 Evidence/Claim 真源。
  */
 
-import type { RiskLevel } from './events'
+import type { AijadeEventEnvelope } from './events'
 import type { MemoryTxEngine } from './memory-tx'
 import type { EvidenceWeaveRow } from './v9-schema'
 
@@ -96,7 +96,7 @@ export function toWeaveRow(result: WeaveResult, createdAt = Date.now()): Evidenc
 /** 把织层包成 aijade.evidence.weave_candidate_ready 事件（已 zod 校验）。 */
 export function buildEvidenceWeaveCandidateReadyEvent(
   result: WeaveResult,
-  envelope: { event_id: string, trace_id: string, correlation_id: string, timestamp: number, producer: string, idempotency_key: string, replay_mode: 'live' | 'replay', risk_level: RiskLevel },
+  envelope: AijadeEventEnvelope,
 ) {
   return evidenceWeaveCandidateReadyEvent.parse({
     ...envelope,

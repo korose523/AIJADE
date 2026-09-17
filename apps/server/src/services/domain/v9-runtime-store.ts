@@ -125,11 +125,18 @@ export function createV9RuntimeStore(db: Database): V9RuntimeStore {
               correlationId: event.correlation_id,
               timestamp: new Date(event.timestamp),
               producer: event.producer,
-              originDevice: 'v9-runtime',
-              privacyLevel: 1,
-              evidenceRefs: [],
-              causalContextRefs: [event.trace_id],
-              riskScore: event.risk_level === 'high' ? 1 : event.risk_level === 'medium' ? 0.5 : 0,
+              // 观察/传输上下文**来自内核信封**，不在这里合成。
+              //
+              // 这里原本写死 `originDevice: 'v9-runtime'`、`privacyLevel: 1`、`evidenceRefs: []`、
+              // 并用 `risk_level` 的 3 级带宽反推 `riskScore`（high→1 / medium→0.5 / low→0）。
+              // 后果是**真实信息在落库时被丢弃并替换成近似值**：运行时的真实设备名没了，
+              // 连续的 riskScore（例如 0.42）被压回 0/0.5/1。这正是 v10 §14.1 禁止清单里
+              // 「伪造因果关键字段」的同型问题。内核现在把 13 个信封字段全部给出，落库直接采用。
+              originDevice: event.origin_device,
+              privacyLevel: event.privacy_level,
+              evidenceRefs: event.evidence_refs,
+              causalContextRefs: event.causal_context_refs,
+              riskScore: event.risk_score,
               topic: event.topic,
               payload: event.payload,
               idempotencyKey: event.idempotency_key,

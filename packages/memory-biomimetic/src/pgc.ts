@@ -34,7 +34,7 @@
  */
 
 import type { Belief, EvidenceEntry } from './belief'
-import type { RiskLevel } from './events'
+import type { AijadeEventEnvelope } from './events'
 import type { PgcState4, StimulusFeature, Tau } from './pgc-state'
 import type { PlasticityGate } from './plasticity'
 
@@ -830,7 +830,7 @@ export function decidePgc(input: PgcInput): PgcDecisionResult {
 /** 便利：把 PGC 决策包成一个合法事件（aijade.pgc.write_plan_ready），供流水线串联。 */
 export function buildPgcWritePlanReadyEvent(
   decision: PgcDecisionResult,
-  envelope: { event_id: string, trace_id: string, correlation_id: string, timestamp: number, producer: string, idempotency_key: string, replay_mode: 'live' | 'replay', risk_level: RiskLevel },
+  envelope: AijadeEventEnvelope,
 ) {
   return pgcWritePlanReadyEventSchema.parse({
     ...envelope,
