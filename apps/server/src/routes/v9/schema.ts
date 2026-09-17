@@ -1,10 +1,10 @@
 import {
   array,
   integer,
+  maxValue,
   minLength,
   minValue,
   number,
-  object,
   optional,
   picklist,
   pipe,
@@ -55,27 +55,53 @@ export const AIJADE_TOPICS = [
   'aijade.memory_tx.committed',
   'aijade.persona.render_requested',
   'aijade.lpm.render_ready',
+  'aijade.video.observation.webpage_text',
+  'aijade.video.observation.video_transcript',
+  'aijade.learning.proposed.shadow_params',
+  'aijade.learning.proposed.evidence',
+  'aijade.learning.constraint.opinion_evaluation',
 ] as const
 
 export type AijadeTopic = (typeof AIJADE_TOPICS)[number]
 
-export const v9EventEnvelopeSchema = object({
+const nonNegInt = pipe(number(), integer(), minValue(0))
+
+/**
+ * v10 protocol additions. Kept optional so existing v9 producers can migrate
+ * without changing the v9 endpoint; v10 producers must send both fields.
+ */
+const v10CausalitySchema = strictObject({
+  inputHash: pipe(string(), minLength(1)),
+})
+
+export const v9EventEnvelopeSchema = strictObject({
   event_id: pipe(string(), minLength(1)),
   trace_id: pipe(string(), minLength(1)),
   correlation_id: pipe(string(), minLength(1)),
   /** 内核信封用 number（unix ms）。服务端只做非负整数校验，再 `new Date()` 落库。 */
   timestamp: pipe(number(), integer(), minValue(0)),
   producer: pipe(string(), minLength(1)),
+  origin_device: pipe(string(), minLength(1)),
+  privacy_level: picklist([0, 1, 2, 3]),
+  evidence_refs: array(string()),
+  causal_context_refs: array(string()),
+  risk_score: pipe(number(), minValue(0), maxValue(1)),
   /** 幂等键：承担去重，不是 event_id（event_id 只保证全局不撞）。 */
   idempotency_key: pipe(string(), minLength(1)),
   replay_mode: picklist(['live', 'replay']),
   risk_level: picklist(['low', 'medium', 'high']),
+  /** v10 deterministic ordering and input provenance (optional for v9 clients). */
+  tick: optional(nonNegInt),
+  causality: optional(v10CausalitySchema),
   topic: picklist(AIJADE_TOPICS),
   /** 不再透传：命中 topic 后由 {@link V9_PAYLOAD_SCHEMAS} 做语义校验。 */
   payload: record(string(), vUnknown()),
 })
 
-const nonNegInt = pipe(number(), integer(), minValue(0))
+export const v10EventFieldsSchema = strictObject({
+  tick: nonNegInt,
+  causality: v10CausalitySchema,
+})
 
 /** 每个 topic 的 payload schema —— 字段名与必填性镜像内核 `events.ts`。 */
 export const V9_PAYLOAD_SCHEMAS = {
@@ -143,8 +169,55 @@ export const V9_PAYLOAD_SCHEMAS = {
     session_id: pipe(string(), minLength(1)),
     render_ref: pipe(string(), minLength(1)),
     applied_params_hash: pipe(string(), minLength(1)),
-    /** 可选但**不允许空串**：空串会伪装成"已计算"。 */
-    asset_version_hash: optional(pipe(string(), minLength(1))),
+    asset_version_hash: pipe(string(), minLength(1)),
+  }),
+  'aijade.video.observation.webpage_text': strictObject({
+    source_url: pipe(string(), minLength(1)),
+    content_hash: pipe(string(), minLength(1)),
+    spans: pipe(array(strictObject({
+      start_offset: nonNegInt,
+      end_offset: nonNegInt,
+      label: optional(pipe(string(), minLength(1))),
+    })), minLength(1)),
+    observation_text: pipe(string(), minLength(1)),
+  }),
+  'aijade.video.observation.video_transcript': strictObject({
+    video_id: pipe(string(), minLength(1)),
+    transcript_hash: pipe(string(), minLength(1)),
+    time_spans: pipe(array(strictObject({
+      start_ms: nonNegInt,
+      end_ms: nonNegInt,
+      text: pipe(string(), minLength(1)),
+    })), minLength(1)),
+    caption_text: pipe(string(), minLength(1)),
+  }),
+  'aijade.learning.proposed.shadow_params': strictObject({
+    session_id: pipe(string(), minLength(1)),
+    proposal_id: pipe(string(), minLength(1)),
+    render_ref: pipe(string(), minLength(1)),
+    applied_params_hash: pipe(string(), minLength(1)),
+    asset_version_hash: pipe(string(), minLength(1)),
+    input_hash: pipe(string(), minLength(1)),
+    candidate_params: record(string(), vUnknown()),
+    confidence: pipe(number(), minValue(0), maxValue(1)),
+  }),
+  'aijade.learning.proposed.evidence': strictObject({
+    session_id: pipe(string(), minLength(1)),
+    proposal_id: pipe(string(), minLength(1)),
+    render_ref: pipe(string(), minLength(1)),
+    applied_params_hash: pipe(string(), minLength(1)),
+    asset_version_hash: pipe(string(), minLength(1)),
+    evidence_hash: pipe(string(), minLength(1)),
+    claim_text: pipe(string(), minLength(1)),
+    confidence: pipe(number(), minValue(0), maxValue(1)),
+  }),
+  'aijade.learning.constraint.opinion_evaluation': strictObject({
+    evaluation_target: pipe(string(), minLength(1)),
+    claims: pipe(array(strictObject({
+      claim_text: pipe(string(), minLength(1)),
+      confidence: pipe(number(), minValue(0), maxValue(1)),
+    })), minLength(1)),
+    uncertainty_notes: pipe(string(), minLength(1)),
   }),
 } as const satisfies Record<AijadeTopic, unknown>
 
@@ -152,3 +225,18 @@ export const V9_PAYLOAD_SCHEMAS = {
 export const V9_TOPICS_WITHOUT_PAYLOAD_SCHEMA = AIJADE_TOPICS.filter(
   t => !(t in V9_PAYLOAD_SCHEMAS),
 )
+
+export const v9PerceptionSchema = strictObject({
+  event_id: pipe(string(), minLength(1)),
+  session_id: pipe(string(), minLength(1)),
+  trace_id: pipe(string(), minLength(1)),
+  correlation_id: pipe(string(), minLength(1)),
+  timestamp: pipe(number(), integer(), minValue(0)),
+  origin_device: pipe(string(), minLength(1)),
+  privacy_level: picklist([0, 1, 2, 3]),
+  risk_score: pipe(number(), minValue(0)),
+  source: pipe(string(), minLength(1)),
+  content: pipe(string(), minLength(1)),
+  stimulus_features: optional(record(string(), number())),
+  risk_level: optional(picklist(['low', 'medium', 'high'])),
+})

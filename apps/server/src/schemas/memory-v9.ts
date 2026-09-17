@@ -14,7 +14,7 @@
  * - `memory_versions.memory_tx_id` → 引用 `memory_txs`（版本只由已提交事务产生）。
  */
 
-import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { integer, jsonb, pgTable, real, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { nanoid } from '../utils/id'
 
@@ -51,6 +51,11 @@ export const v9Events = pgTable(
     correlationId: text('correlation_id').notNull(),
     timestamp: timestamp('timestamp').notNull(),
     producer: text('producer').notNull(),
+    originDevice: text('origin_device').notNull(),
+    privacyLevel: integer('privacy_level').notNull(),
+    evidenceRefs: text('evidence_refs').array().notNull().default([]),
+    causalContextRefs: text('causal_context_refs').array().notNull().default([]),
+    riskScore: real('risk_score').notNull().default(0),
     topic: text('topic').notNull(),
     payload: jsonb('payload'),
     /**
@@ -60,6 +65,28 @@ export const v9Events = pgTable(
     idempotencyKey: text('idempotency_key').notNull().unique(),
     replayMode: text('replay_mode', { enum: ['live', 'replay'] }).notNull(),
     riskLevel: text('risk_level', { enum: ['low', 'medium', 'high'] }).notNull(),
+    /** v10 protocol fields; nullable while v9 producers migrate. */
+    tick: integer('tick'),
+    causality: jsonb('causality').$type<{ inputHash: string }>(),
+  },
+)
+
+// render traces projection --------------------------------------------------
+export const v9RenderTraces = pgTable(
+  'render_traces',
+  {
+    id: text('id').primaryKey().$defaultFn(() => nanoid()),
+    sessionId: text('session_id').notNull(),
+    traceId: text('trace_id').notNull(),
+    correlationId: text('correlation_id').notNull(),
+    eventId: text('event_id').notNull(),
+    personaSnapshotRef: text('persona_snapshot_ref'),
+    intentRef: text('intent_ref'),
+    renderRef: text('render_ref'),
+    appliedParamsHash: text('applied_params_hash'),
+    assetVersionHash: text('asset_version_hash'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
 )
 
@@ -111,8 +138,11 @@ export const v9PgcStates = pgTable(
   'pgc_states',
   {
     id: text('id').primaryKey(),
+    sessionId: text('session_id').notNull(),
+    traceId: text('trace_id').notNull(),
     policyVersion: text('policy_version').notNull(),
     components: jsonb('components').notNull(),
+    v6State: jsonb('v6_state').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
 )
@@ -155,9 +185,9 @@ export const v9MemoryVersions = pgTable(
     memoryKind: text('memory_kind', { enum: ['long_term', 'persona', 'skill', 'episodic', 'knowledge_card'] }).notNull(),
     /** 内容规范化后的 sha256（回放/去重）。非空。 */
     contentHashSha256: text('content_hash_sha256').notNull(),
-    evidencePackId: text('evidence_pack_id').notNull(),
+    evidencePackId: text('evidence_pack_id').notNull().references(() => v9EvidencePacks.id, { onDelete: 'restrict' }),
     evidenceIds: text('evidence_ids').array().notNull(),
-    pgcStateId: text('pgc_state_id').notNull(),
+    pgcStateId: text('pgc_state_id').notNull().references(() => v9PgcStates.id, { onDelete: 'restrict' }),
     intensity: text('intensity').notNull(),
     durability: text('durability').notNull(),
     riskLevel: text('risk_level', { enum: ['low', 'medium', 'high'] }),
@@ -170,7 +200,7 @@ export const v9EvidenceWeaves = pgTable(
   'evidence_weaves',
   {
     id: text('id').primaryKey(),
-    txId: text('tx_id').notNull(),
+    txId: text('tx_id').notNull().references(() => v9MemoryTxs.id, { onDelete: 'cascade' }),
     graphHash: text('graph_hash').notNull(),
     spec: jsonb('spec').notNull(),
     links: jsonb('links').notNull(),
