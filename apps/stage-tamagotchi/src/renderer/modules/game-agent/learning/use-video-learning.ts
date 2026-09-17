@@ -1,6 +1,7 @@
 import type { GameFrame, GameProfile } from '../types'
 import type { LearningEpisode, LearningKeyframe, VideoSourceKind } from './types'
 
+import { reportV9Perception } from '@proj-aijade/stage-ui/libs/v9-event-reporter'
 /**
  * 视频学习 —— 让 AIJADE 通过"看视频"涨经验。
  *
@@ -23,6 +24,7 @@ export interface VideoLearningDeps {
   captureObsFrame?: () => Promise<GameFrame | null>
   /** 让视觉模型描述一帧 */
   captionFrame?: (frame: GameFrame) => Promise<{ caption?: string, structured?: Record<string, unknown> }>
+  reportPerception?: typeof reportV9Perception
 }
 
 export function useVideoLearning(deps: VideoLearningDeps) {
@@ -57,6 +59,9 @@ export function useVideoLearning(deps: VideoLearningDeps) {
   let obsTimer: ReturnType<typeof setInterval> | null = null
   let obsStartedAt = 0
   let selectedObjectUrl: string | null = null
+  const sessionId = globalThis.crypto?.randomUUID?.() ?? `video-${Date.now()}`
+  let learningTraceId = ''
+  const report = deps.reportPerception ?? reportV9Perception
 
   function pushLog(msg: string) {
     logs.value.push(`[${new Date().toLocaleTimeString()}] ${msg}`)
@@ -98,6 +103,27 @@ export function useVideoLearning(deps: VideoLearningDeps) {
     }
   }
 
+  function reportFrame(input: { timestamp: number, frame: GameFrame, caption?: string, source: string }) {
+    const content = input.caption?.trim() || `frame ${input.frame.width}x${input.frame.height} @ ${input.frame.timestamp}ms`
+    report({
+      event_id: `${learningTraceId || sessionId}:${input.timestamp}:${input.frame.timestamp}`,
+      session_id: sessionId,
+      trace_id: learningTraceId || sessionId,
+      correlation_id: learningTraceId || sessionId,
+      timestamp: input.timestamp,
+      origin_device: 'stage-tamagotchi',
+      privacy_level: 1,
+      risk_score: 0,
+      source: input.source,
+      content,
+      stimulus_features: {
+        width: input.frame.width,
+        height: input.frame.height,
+        timestamp_ms: input.frame.timestamp,
+      },
+    })
+  }
+
   /** 离线视频：seek 抽帧，可快进 */
   async function learnOffline(src: string, isObjectUrl: boolean) {
     const meta = await extractor.load(src, isObjectUrl)
@@ -122,6 +148,12 @@ export function useVideoLearning(deps: VideoLearningDeps) {
         const frame = await extractor.grabAt(t)
         lastFrame.value = frame
         const desc = await describe(frame)
+        reportFrame({
+          timestamp: Date.now(),
+          frame,
+          caption: desc.caption,
+          source: kind.value === 'file' ? 'video:file' : 'video:url',
+        })
         collected.push({
           t: Math.round(t * 1000),
           thumbnail: frame.dataUrl,
@@ -156,6 +188,12 @@ export function useVideoLearning(deps: VideoLearningDeps) {
           return
         lastFrame.value = frame
         const desc = await describe(frame)
+        reportFrame({
+          timestamp: Date.now(),
+          frame,
+          caption: desc.caption,
+          source: 'video:obs',
+        })
         const kf: LearningKeyframe = {
           t: Date.now() - obsStartedAt,
           thumbnail: frame.dataUrl,
@@ -181,6 +219,7 @@ export function useVideoLearning(deps: VideoLearningDeps) {
       return
     error.value = ''
     cancelled = false
+    learningTraceId = globalThis.crypto?.randomUUID?.() ?? `video-run-${Date.now()}`
     processed.value = 0
     progress.value = 0
     keyframes.value = []
@@ -192,6 +231,7 @@ export function useVideoLearning(deps: VideoLearningDeps) {
         learnLive()
         return
       }
+
       if (kind.value === 'file') {
         if (!selectedObjectUrl)
           throw new Error('请先选择本地视频文件')

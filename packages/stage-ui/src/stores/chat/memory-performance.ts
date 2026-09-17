@@ -106,6 +106,10 @@ export function createPerformanceBridge(
      * （资产哈希尚未就绪），`buildRenderReceipt` 会据此降级为缺省。
      */
     getAssetVersionHash?: () => string | undefined
+    /** Current persisted persona snapshot used to create the performance intent. */
+    getPersonaSnapshotRef?: () => string | undefined
+    /** The PerformanceIntent id for the current turn. */
+    getIntentRef?: () => string | undefined
     /** 回执组装成功后的回调（由编排层注入，例如存进 store）。undefined 则仅静默跳过。 */
     onRenderReceipt?: (receipt: LpmRenderReadyReceipt) => void
     /**
@@ -139,6 +143,8 @@ export function createPerformanceBridge(
         // turnSeq 已在上方递增，故幂等键用 s#turnSeq#request，与渲染侧 s#s#render:N 区分。
         // 无活跃 session 时无法铸造稳定 trace，静默跳过（与渲染侧同语义，不伪造）。
         const sessionId = getSessionId?.()
+        const personaSnapshotRef = options?.getPersonaSnapshotRef?.() ?? `${sessionId}:persona`
+        const intentRef = options?.getIntentRef?.() ?? `${sessionId}:intent:${turnSeq}`
         if (sessionId && reportEvent) {
           activeTraceId = nanoid()
           activeCorrelationId = activeTraceId
@@ -148,6 +154,12 @@ export function createPerformanceBridge(
             correlation_id: activeCorrelationId,
             timestamp: Date.now(),
             producer: 'stage-ui',
+            origin_device: 'browser',
+            privacy_level: 1,
+            evidence_refs: [],
+            causal_context_refs: [activeTraceId],
+            risk_score: 0,
+            // The request itself is the root of this causal trace.
             // 幂等键：session#turnSeq#request（同一次请求重复上报必然同键）。
             idempotency_key: `${sessionId}#${turnSeq}#request`,
             replay_mode: 'live',
@@ -155,7 +167,8 @@ export function createPerformanceBridge(
             topic: PERSONA_RENDER_REQUESTED_TOPIC,
             payload: {
               session_id: sessionId,
-              request_ref: activeTraceId,
+              persona_snapshot_ref: personaSnapshotRef,
+              intent_ref: intentRef,
             },
           })
         }
@@ -219,6 +232,11 @@ export function createPerformanceBridge(
         correlation_id: activeCorrelationId ?? activeTraceId,
         timestamp: Date.now(),
         producer: 'stage-ui',
+        origin_device: 'browser',
+        privacy_level: 1,
+        evidence_refs: [],
+        causal_context_refs: [activeTraceId, receipt.render_ref],
+        risk_score: 0,
         // 幂等键 = session#render_ref（同一次渲染的重复上报必然同键）。
         idempotency_key: `${sessionId}#${receipt.render_ref}`,
         replay_mode: 'live',

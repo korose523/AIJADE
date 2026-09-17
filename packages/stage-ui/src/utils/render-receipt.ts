@@ -167,6 +167,11 @@ export interface V9EventEnvelope {
   /** unix ms */
   timestamp: number
   producer: string
+  origin_device?: string
+  privacy_level?: 0 | 1 | 2 | 3
+  evidence_refs?: string[]
+  causal_context_refs?: string[]
+  risk_score?: number
   idempotency_key: string
   replay_mode: 'live' | 'replay'
   risk_level: 'low' | 'medium' | 'high'

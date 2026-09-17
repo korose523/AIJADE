@@ -3,7 +3,7 @@ import type { V9EventEnvelope } from '../utils/render-receipt'
 import { describe, expect, it, vi } from 'vitest'
 
 import { authedFetch } from './auth-fetch'
-import { reportV9Event, V9_EVENTS_ENDPOINT } from './v9-event-reporter'
+import { reportV9Event, reportV9Perception, V9_EVENTS_ENDPOINT, V9_PERCEPTION_ENDPOINT } from './v9-event-reporter'
 
 // 隔离 authedFetch：只验证"发出去了什么"，不触发真实网络 / Pinia / localStorage。
 vi.mock('./auth-fetch', () => ({
@@ -76,5 +76,36 @@ describe('reportV9Event', () => {
     })).not.toThrow()
 
     await new Promise(r => setTimeout(r, 0))
+  })
+})
+
+describe('reportV9Perception', () => {
+  it('posts the complete trace/session/privacy envelope without exposing media bytes', async () => {
+    reportV9Perception({
+      event_id: 'audio:e1',
+      session_id: 'session-1',
+      trace_id: 'trace-1',
+      correlation_id: 'correlation-1',
+      timestamp: 123,
+      origin_device: 'stage-ui',
+      privacy_level: 2,
+      risk_score: 0,
+      source: 'audio:microphone',
+      content: '{"mime_type":"audio/wav","bytes":42}',
+      stimulus_features: { bytes: 42 },
+      risk_level: 'low',
+    })
+    await new Promise(r => setTimeout(r, 0))
+
+    const [url, init] = (authedFetch as any).mock.calls.at(-1) as [string, RequestInit]
+    expect(url).toBe(V9_PERCEPTION_ENDPOINT)
+    expect(JSON.parse(init.body as string)).toMatchObject({
+      session_id: 'session-1',
+      trace_id: 'trace-1',
+      correlation_id: 'correlation-1',
+      privacy_level: 2,
+      source: 'audio:microphone',
+      stimulus_features: { bytes: 42 },
+    })
   })
 })

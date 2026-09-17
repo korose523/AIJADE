@@ -30,7 +30,7 @@ import { useAnalytics } from '../composables'
 import { activeTurnSpan, startSpan } from '../composables/use-io-tracer'
 import { extractMessageText, isCloudSyncableMessage } from '../libs/chat-sync'
 import { systemPromptEmotionSupplement } from '../libs/speech/speech-facade'
-import { reportV9Event } from '../libs/v9-event-reporter'
+import { reportV9Event, reportV9Perception } from '../libs/v9-event-reporter'
 import { createMinecraftContext } from './chat/context-providers'
 import { useChatContextStore } from './chat/context-store'
 import { createMemoryBridge, createPerformanceBridge } from './chat/memory-performance'
@@ -327,6 +327,19 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
     onLifecycle: record => contextObservability.recordLifecycle(record),
     onPromptProjection: payload => contextObservability.capturePromptProjection(payload),
     onUserMessageAppended: ({ sessionId, message, messageText }) => {
+      const traceId = `${sessionId}:${message.id}`
+      reportV9Perception({
+        event_id: message.id,
+        session_id: sessionId,
+        trace_id: traceId,
+        correlation_id: traceId,
+        timestamp: Date.now(),
+        origin_device: 'browser',
+        privacy_level: 1,
+        risk_score: 0,
+        source: 'chat:user',
+        content: messageText,
+      })
       if (isCloudSyncableMessage(message)) {
         void chatSession.pushMessageToCloud(sessionId, {
           id: message.id,

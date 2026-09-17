@@ -18,6 +18,7 @@ import { SERVER_URL } from './server'
  *   `ON CONFLICT DO NOTHING` 去重，这里无需复杂重试。
  */
 export const V9_EVENTS_ENDPOINT = `${SERVER_URL}/api/v1/v9/events`
+export const V9_PERCEPTION_ENDPOINT = `${SERVER_URL}/api/v1/v9/perception`
 
 export function reportV9Event(envelope: V9EventEnvelope): void {
   void authedFetch(V9_EVENTS_ENDPOINT, {
@@ -31,5 +32,33 @@ export function reportV9Event(envelope: V9EventEnvelope): void {
     }
   }).catch((err) => {
     console.warn('[v9-event-reporter] failed to report event', err)
+  })
+}
+
+export interface V9PerceptionInput {
+  event_id: string
+  session_id: string
+  trace_id: string
+  correlation_id: string
+  timestamp: number
+  origin_device: string
+  privacy_level: 0 | 1 | 2 | 3
+  risk_score: number
+  source: string
+  content: string
+  stimulus_features?: Record<string, number>
+  risk_level?: 'low' | 'medium' | 'high'
+}
+
+export function reportV9Perception(input: V9PerceptionInput): void {
+  void authedFetch(V9_PERCEPTION_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  }).then((res) => {
+    if (!res.ok)
+      console.warn(`[v9-event-reporter] perception rejected: status=${res.status}`)
+  }).catch((err) => {
+    console.warn('[v9-event-reporter] failed to report perception', err)
   })
 }
