@@ -49,6 +49,77 @@ describe('v10 evidence reduction', () => {
       text: 'caption',
     })).toBeNull()
   })
+
+  it('does not add session_id when none is provided (caller always supplies one in production)', () => {
+    const event = reducePageToEvidence({
+      site: 'youtube',
+      url: 'https://example.test/article',
+      title: 'A title',
+      description: 'A summary',
+    })
+    expect(event?.payload).not.toHaveProperty('session_id')
+  })
+})
+
+describe('v10 evidence session_id injection', () => {
+  const SESSION = 'install-id-abc-123'
+
+  it('reducePageToEvidence embeds the provided session_id', () => {
+    const event = reducePageToEvidence({
+      site: 'youtube',
+      url: 'https://example.test/article',
+      title: 'A title',
+      description: 'A summary',
+    }, { sessionId: SESSION })
+    expect(event?.payload.session_id).toBe(SESSION)
+  })
+
+  it('reduceSubtitleToEvidence embeds the provided session_id', () => {
+    const event = reduceSubtitleToEvidence({
+      site: 'youtube',
+      url: 'https://youtube.test/watch?v=abc',
+      videoId: 'abc',
+      text: '  hello   world ',
+    }, { sessionId: SESSION })
+    expect(event?.payload.session_id).toBe(SESSION)
+  })
+
+  it('summarizePageToEvidence embeds the provided session_id', async () => {
+    const llm: LlmCall = async () => ({ summary: 'The page is about AI.', key_points: [], confidence: 0.9 })
+    const event = await summarizePageToEvidence({
+      site: 'youtube',
+      url: 'https://example.test/article',
+      title: 'A title',
+      description: 'A summary',
+    }, llm, { sessionId: SESSION })
+    expect(event?.payload.session_id).toBe(SESSION)
+  })
+
+  it('summarizeSubtitleToEvidence embeds the provided session_id', async () => {
+    const llm: LlmCall = async () => ({ summary: 'Caption summary.', key_points: [], confidence: 0.7 })
+    const event = await summarizeSubtitleToEvidence({
+      site: 'youtube',
+      url: 'https://youtube.test/watch?v=abc',
+      videoId: 'abc',
+      text: '  hello   world ',
+    }, llm, { sessionId: SESSION })
+    expect(event?.payload.session_id).toBe(SESSION)
+  })
+
+  it('evaluatePageOpinion payload never carries session_id (different topic, no such field)', async () => {
+    const llm: LlmCall = async () => ({
+      claims: [{ claim_text: 'A claim', confidence: 0.8 }],
+      uncertainty_notes: 'Confidence limited by missing sources.',
+    })
+    const result = await evaluatePageOpinion({
+      site: 'youtube',
+      url: 'https://example.test/article',
+      title: 'A title',
+      description: 'A summary',
+    }, llm)
+    expect(result?.topic).toBe('aijade.learning.constraint.opinion_evaluation')
+    expect(result?.payload).not.toHaveProperty('session_id')
+  })
 })
 
 describe('v10 evidence LLM paths', () => {

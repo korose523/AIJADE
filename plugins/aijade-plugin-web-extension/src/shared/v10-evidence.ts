@@ -22,6 +22,16 @@ function normalize(value: string): string {
   return value.replace(/\s+/g, ' ').trim()
 }
 
+/**
+ * 归约器保持"纯函数、不读全局状态"：会话身份由调用方显式注入，而非在归约器内部 await storage。
+ * `sessionId` 来自 storage.getOrCreateInstallId()（扩展级持久化安装 id），写入 payload 的
+ * `session_id`——与 client.ts 中 `advanceTick(sessionId)` 的 tick 会话键为**同一身份**（真实不变量）。
+ * 契约要求 `session_id` 非空；调用方（client.ts）始终传入，本处仅在提供时写入。
+ */
+export interface ReduceOptions {
+  sessionId?: string
+}
+
 export function stableHash(value: string): string {
   let hash = 2166136261
   for (let index = 0; index < value.length; index++) {
@@ -31,7 +41,7 @@ export function stableHash(value: string): string {
   return `fnv1a:${(hash >>> 0).toString(16).padStart(8, '0')}`
 }
 
-export function reducePageToEvidence(page: PageContextPayload): V10EvidenceEvent | null {
+export function reducePageToEvidence(page: PageContextPayload, opts?: ReduceOptions): V10EvidenceEvent | null {
   const text = normalize([page.title, page.description].filter(Boolean).join('. '))
   if (!text || !page.url)
     return null
@@ -44,11 +54,12 @@ export function reducePageToEvidence(page: PageContextPayload): V10EvidenceEvent
       content_hash: stableHash(text),
       spans: [{ start_offset: 0, end_offset: text.length, label: 'page-summary' }],
       observation_text: text,
+      ...(opts?.sessionId ? { session_id: opts.sessionId } : {}),
     },
   }
 }
 
-export function reduceSubtitleToEvidence(subtitle: SubtitlePayload): V10EvidenceEvent | null {
+export function reduceSubtitleToEvidence(subtitle: SubtitlePayload, opts?: ReduceOptions): V10EvidenceEvent | null {
   const text = normalize(subtitle.text)
   if (!text || !subtitle.videoId)
     return null
@@ -63,6 +74,7 @@ export function reduceSubtitleToEvidence(subtitle: SubtitlePayload): V10Evidence
       transcript_hash: stableHash(text),
       time_spans: [{ start_ms: startMs, end_ms: endMs, text }],
       caption_text: text,
+      ...(opts?.sessionId ? { session_id: opts.sessionId } : {}),
     },
   }
 }
@@ -113,7 +125,7 @@ function toValidClaims(output: LlmOutput): { claim_text: string, confidence: num
  *
  * 任何失败（LLM 抛错 / 返回不可解析 / summary 为空）⇒ 返回 `null`（不产出事件）。
  */
-export async function summarizePageToEvidence(page: PageContextPayload, llm: LlmCall): Promise<V10EvidenceEvent | null> {
+export async function summarizePageToEvidence(page: PageContextPayload, llm: LlmCall, opts?: ReduceOptions): Promise<V10EvidenceEvent | null> {
   const inputText = normalize([page.title, page.description].filter(Boolean).join('. '))
   if (!inputText || !page.url)
     return null
@@ -144,6 +156,7 @@ export async function summarizePageToEvidence(page: PageContextPayload, llm: Llm
       content_hash: contentHash,
       spans: [{ start_offset: 0, end_offset: observationText.length, label: 'llm-summary' }],
       observation_text: observationText,
+      ...(opts?.sessionId ? { session_id: opts.sessionId } : {}),
     },
   }
 }
@@ -153,7 +166,7 @@ export async function summarizePageToEvidence(page: PageContextPayload, llm: Llm
  * `aijade.video.observation.video_transcript` 证据。
  * `transcript_hash` 同样对实际写入的 `caption_text` 计算。
  */
-export async function summarizeSubtitleToEvidence(subtitle: SubtitlePayload, llm: LlmCall): Promise<V10EvidenceEvent | null> {
+export async function summarizeSubtitleToEvidence(subtitle: SubtitlePayload, llm: LlmCall, opts?: ReduceOptions): Promise<V10EvidenceEvent | null> {
   const inputText = normalize(subtitle.text)
   if (!inputText || !subtitle.videoId)
     return null
@@ -184,6 +197,7 @@ export async function summarizeSubtitleToEvidence(subtitle: SubtitlePayload, llm
       transcript_hash: transcriptHash,
       time_spans: [{ start_ms: startMs, end_ms: endMs, text: observationText }],
       caption_text: observationText,
+      ...(opts?.sessionId ? { session_id: opts.sessionId } : {}),
     },
   }
 }

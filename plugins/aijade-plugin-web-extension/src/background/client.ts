@@ -14,12 +14,19 @@ import { resolveApiToken } from '../shared/credentials'
 import { summarize } from '../shared/llm'
 import { reducePageToEvidence, reduceSubtitleToEvidence, summarizePageToEvidence, summarizeSubtitleToEvidence } from '../shared/v10-evidence'
 import { buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
-import { advanceTick } from './storage'
+import { advanceTick, getOrCreateInstallId } from './storage'
 
 const PLUGIN_NAME = 'proj-aijade:plugin-web-extension'
 
-/** 每会话 tick 的存储键（v10 事件确定性排序用）。当前扩展整体作为一个上报会话。 */
-const V9_TICK_SESSION = 'web-extension'
+/**
+ * v10 事件的「会话身份」：扩展级持久化安装 id（见 storage.getOrCreateInstallId）。
+ *
+ * 真实不变量：本 `sessionId` **同时**用作两处——
+ *   1. `advanceTick(sessionId)` 的 tick 会话键（v10 事件确定性排序，跨 SW 重启不回退）；
+ *   2. 观察 payload 的 `session_id`（由 v10-evidence 归约器注入，值等于本 id）。
+ * 二者为同一身份，故服务端可把「哪个 tick 序列」「哪条观察」归并到同一个扩展安装实例，
+ * 这正是 A 路（纯视频输入）"观察归属哪个会话"的落点——不再是硬编码的 'web-extension' 占位串。
+ */
 
 export interface ClientState {
   client: Client | null
@@ -168,7 +175,7 @@ function sendSparkNotify(state: ClientState, data: { headline: string, note?: st
  * - `restBaseUrl` 未配置时直接跳过并记录 debug 日志（"零接线也能跑"降级语义）。
  * - tick 由 `advanceTick` 注入并持久化（每会话单调递增，跨 SW 重启不回退）。
  */
-async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: ExtensionSettings) {
+async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: ExtensionSettings, sessionId: string) {
   if (!evidence)
     return
 
@@ -178,7 +185,8 @@ async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: 
   }
 
   try {
-    const tick = await advanceTick(V9_TICK_SESSION)
+    // 与 payload 里的 `session_id` 同一身份（见文件顶部不变量注释）。advanceTick 语义不变：先读 → +1 → 写回。
+    const tick = await advanceTick(sessionId)
     const envelope = buildV9EventEnvelope({ evidence, tick })
     // 与 LLM 通道共用同一凭据真源（见 credentials.ts）。
     const result = await postV9Event(settings.restBaseUrl, envelope, {
@@ -209,9 +217,10 @@ export async function handlePageContext(state: ClientState, settings: ExtensionS
 
   // 归约一次，WS 与 REST 复用同一结果（保证 hash 一致）。
   // 优先尝试 LLM 摘要路径；失败（网络/鉴权/计费/解析）则回退确定性 reduce* 兜底。
-  let v10Evidence = reducePageToEvidence(payload)
+  const sessionId = await getOrCreateInstallId()
+  let v10Evidence = reducePageToEvidence(payload, { sessionId })
   try {
-    const llmEvidence = await summarizePageToEvidence(payload, makeLlm(settings))
+    const llmEvidence = await summarizePageToEvidence(payload, makeLlm(settings), { sessionId })
     if (llmEvidence) {
       v10Evidence = llmEvidence
       console.debug('[v10-evidence] 使用 LLM 摘要路径（page）')
@@ -240,7 +249,7 @@ export async function handlePageContext(state: ClientState, settings: ExtensionS
     },
   })
   // REST 通道：独立于 WS，各自 try/catch。
-  await reportV9Observation(v10Evidence, settings)
+  await reportV9Observation(v10Evidence, settings, sessionId)
 }
 
 export function handleVideoContext(
@@ -317,9 +326,10 @@ export async function handleSubtitle(state: ClientState, settings: ExtensionSett
 
   // 归约一次，WS 与 REST 复用同一结果（保证 hash 一致）。
   // 优先尝试 LLM 摘要路径；失败则回退确定性 reduce* 兜底（与 page 路径一致）。
-  let v10Evidence = reduceSubtitleToEvidence(payload)
+  const sessionId = await getOrCreateInstallId()
+  let v10Evidence = reduceSubtitleToEvidence(payload, { sessionId })
   try {
-    const llmEvidence = await summarizeSubtitleToEvidence(payload, makeLlm(settings))
+    const llmEvidence = await summarizeSubtitleToEvidence(payload, makeLlm(settings), { sessionId })
     if (llmEvidence) {
       v10Evidence = llmEvidence
       console.debug('[v10-evidence] 使用 LLM 摘要路径（subtitle）')
@@ -350,5 +360,5 @@ export async function handleSubtitle(state: ClientState, settings: ExtensionSett
     },
   })
   // REST 通道：独立于 WS，各自 try/catch。
-  await reportV9Observation(v10Evidence, settings)
+  await reportV9Observation(v10Evidence, settings, sessionId)
 }

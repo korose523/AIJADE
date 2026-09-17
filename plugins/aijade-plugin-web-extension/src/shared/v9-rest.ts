@@ -61,7 +61,7 @@ export interface PostV9EventResult {
   reason?: 'unauthorized_missing' | 'unauthorized_rejected'
 }
 
-function uuid(): string {
+export function uuid(): string {
   const c = globalThis.crypto
   // `crypto.randomUUID` 需要安全上下文（https / localhost / 扩展 SW 均满足）。
   // 回退：纯浏览器可用的 v4 近似，仅用于 event_id/trace_id/correlation_id，
