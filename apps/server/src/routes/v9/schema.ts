@@ -115,8 +115,8 @@ export const v9ReplaySchema = strictObject({
 /** 每个 topic 的 payload schema —— 字段名与必填性镜像内核 `events.ts`。 */
 export const V9_PAYLOAD_SCHEMAS = {
   'aijade.active_learning.requested': strictObject({
-    session_id: string(),
-    trace_id: string(),
+    session_id: pipe(string(), minLength(1)),
+    trace_id: pipe(string(), minLength(1)),
     requested_at: nonNegInt,
     target: optional(string()),
     /** 指向 `contracts-v8.LearningQuest.id`，使预算/停止条件可回查到活真源。 */
@@ -130,27 +130,32 @@ export const V9_PAYLOAD_SCHEMAS = {
     stop_conditions: pipe(array(pipe(string(), minLength(1))), minLength(1)),
   }),
   'aijade.active_learning.completed': strictObject({
-    session_id: string(),
-    trace_id: string(),
+    session_id: pipe(string(), minLength(1)),
+    trace_id: pipe(string(), minLength(1)),
     completed_at: nonNegInt,
     result_ref: optional(string()),
     /** 与 requested 同源，使请求/完成可在日志里配对。 */
     quest_ref: pipe(string(), minLength(1)),
   }),
+  /**
+   * `graph_hash` 是证据图的内容身份（`graphHash()` 的 sha256 hex），真实生产者恒非空。
+   * 此处**必须** `minLength(1)`：空串曾被接受并落库（见 `verify-v10-contract-drift.ts`
+   * 的 `blank graph_hash` 负例），等于允许一条没有图的织网 —— v10 §11.1 要求空串一律 400。
+   */
   'aijade.evidence.weave_candidate_ready': strictObject({
-    tx_id: string(),
-    weave_id: string(),
-    graph_hash: string(),
-    candidate_memory_write_ids: array(string()),
+    tx_id: pipe(string(), minLength(1)),
+    weave_id: pipe(string(), minLength(1)),
+    graph_hash: pipe(string(), minLength(1)),
+    candidate_memory_write_ids: array(pipe(string(), minLength(1))),
   }),
   'aijade.pgc.write_plan_ready': strictObject({
-    pgc_state_id: string(),
+    pgc_state_id: pipe(string(), minLength(1)),
     write_plan_size: nonNegInt,
-    policy_version: string(),
+    policy_version: pipe(string(), minLength(1)),
   }),
   'aijade.memory_tx.committed': strictObject({
-    tx_id: string(),
-    trace_id: string(),
+    tx_id: pipe(string(), minLength(1)),
+    trace_id: pipe(string(), minLength(1)),
     committed_count: nonNegInt,
     rejected_count: nonNegInt,
     throttled_count: nonNegInt,
@@ -165,7 +170,7 @@ export const V9_PAYLOAD_SCHEMAS = {
    * 那时同 trace 配对只是噪音。故二者均必填非空。
    */
   'aijade.persona.render_requested': strictObject({
-    session_id: string(),
+    session_id: pipe(string(), minLength(1)),
     persona_snapshot_ref: pipe(string(), minLength(1)),
     intent_ref: pipe(string(), minLength(1)),
   }),
@@ -173,12 +178,18 @@ export const V9_PAYLOAD_SCHEMAS = {
    * 回执侧三字段各司其职，**刻意不合并**：身份 / 内容指纹 / 资产版本。
    * `applied_params_hash` 要求非空 —— 空 map 时应"不发事件"，
    * 而不是发一条空回执（由内核 `buildLpmRenderReadyEvent` 强制）。
+   *
+   * `asset_version_hash` 是 **optional 而非必填**，与内核 `lpmRenderReadySchema` 同口径：
+   * 它是异步解析出来的（`stage-ui` 的 `stageModelAssetVersionHash`），渲染发生时可能尚未就绪，
+   * 内核侧会把它显式降级为"不带该键"。若边界强制必填，一条合法的回执会被 400 丢掉，
+   * 而请求侧 `persona.render_requested` 已落库 ⇒ 配对缺口被凭空制造出来。
+   * 注意"可选"不等于"可空"：给了就必须非空。
    */
   'aijade.lpm.render_ready': strictObject({
     session_id: pipe(string(), minLength(1)),
     render_ref: pipe(string(), minLength(1)),
     applied_params_hash: pipe(string(), minLength(1)),
-    asset_version_hash: pipe(string(), minLength(1)),
+    asset_version_hash: optional(pipe(string(), minLength(1))),
   }),
   'aijade.video.observation.webpage_text': strictObject({
     source_url: pipe(string(), minLength(1)),

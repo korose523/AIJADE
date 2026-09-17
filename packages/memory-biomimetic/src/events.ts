@@ -81,9 +81,9 @@ export type AijadeEventEnvelope = z.infer<typeof eventEnvelopeSchema>
  * 命名约定：本文件 payload 用 snake_case（与既有 topic 一致）；`contracts-v8.ts` 侧用
  * camelCase。这个差异是有意的，不要"统一"掉。
  */
-export const activeLearningRequestedSchema = z.object({
-  session_id: z.string(),
-  trace_id: z.string(),
+export const activeLearningRequestedSchema = z.strictObject({
+  session_id: z.string().min(1),
+  trace_id: z.string().min(1),
   requested_at: z.number().int().nonnegative(),
   target: z.string().optional(),
   /** 指向 `contracts-v8.LearningQuest.id`（活真源）。 */
@@ -108,9 +108,9 @@ export type ActiveLearningRequestedPayload = z.infer<typeof activeLearningReques
  * 把"完成"与"中止"分开，否则这个事件名会说谎，下游也就无法用"有 completed"当作
  * 学习量已产出的证据。
  */
-export const activeLearningCompletedSchema = z.object({
-  session_id: z.string(),
-  trace_id: z.string(),
+export const activeLearningCompletedSchema = z.strictObject({
+  session_id: z.string().min(1),
+  trace_id: z.string().min(1),
   completed_at: z.number().int().nonnegative(),
   result_ref: z.string().optional(),
   /** 与 `requested` 同源，使请求/完成可在日志里配对。 */
@@ -118,24 +118,29 @@ export const activeLearningCompletedSchema = z.object({
 })
 export type ActiveLearningCompletedPayload = z.infer<typeof activeLearningCompletedSchema>
 
-export const evidenceWeaveCandidateReadySchema = z.object({
-  tx_id: z.string(),
-  weave_id: z.string(),
-  graph_hash: z.string(),
-  candidate_memory_write_ids: z.array(z.string()),
+export const evidenceWeaveCandidateReadySchema = z.strictObject({
+  /** 事务身份。空串会被服务端 400 拒（v10 §11.1「必填字段为空串 → 400」），故此处同口径。 */
+  tx_id: z.string().min(1),
+  weave_id: z.string().min(1),
+  /**
+   * 证据图的内容身份（`graphHash()` 产出的 sha256 hex）。真实生产者恒非空 ——
+   * 允许空串等于允许一条"没有图的织网"，回放一致性校验会因此失去可比对象。
+   */
+  graph_hash: z.string().min(1),
+  candidate_memory_write_ids: z.array(z.string().min(1)),
 })
 export type EvidenceWeaveCandidateReadyPayload = z.infer<typeof evidenceWeaveCandidateReadySchema>
 
-export const pgcWritePlanReadySchema = z.object({
-  pgc_state_id: z.string(),
+export const pgcWritePlanReadySchema = z.strictObject({
+  pgc_state_id: z.string().min(1),
   write_plan_size: z.number().int().nonnegative(),
-  policy_version: z.string(),
+  policy_version: z.string().min(1),
 })
 export type PgcWritePlanReadyPayload = z.infer<typeof pgcWritePlanReadySchema>
 
-export const memoryTxCommittedSchema = z.object({
-  tx_id: z.string(),
-  trace_id: z.string(),
+export const memoryTxCommittedSchema = z.strictObject({
+  tx_id: z.string().min(1),
+  trace_id: z.string().min(1),
   committed_count: z.number().int().nonnegative(),
   rejected_count: z.number().int().nonnegative(),
   throttled_count: z.number().int().nonnegative(),
@@ -156,8 +161,8 @@ export type MemoryTxCommittedPayload = z.infer<typeof memoryTxCommittedSchema>
  * 更名为 `persona_snapshot_ref`（原字段为可选 `persona_ref`）：后者语义含糊且可省略，
  * 与 §52.5 冲突，故不保留为第二个字段以免出现两套引用写法。
  */
-export const personaRenderRequestedSchema = z.object({
-  session_id: z.string(),
+export const personaRenderRequestedSchema = z.strictObject({
+  session_id: z.string().min(1),
   /** 引用人格快照（同 `PerformanceIntent.personaSnapshotRef`，§52.5）。 */
   persona_snapshot_ref: z.string().min(1),
   /** 本次请求对应的 `PerformanceIntent.id`，使 `lpm.render_ready` 可回指。 */
@@ -187,10 +192,15 @@ export type PersonaRenderRequestedPayload = z.infer<typeof personaRenderRequeste
  * 命名沿用本文件的 snake_case 约定（见 `activeLearningRequestedSchema` 上方说明）；
  * 遥测侧的 `RenderAuditEntry` 用 camelCase，两者是**同一个概念的两个边界**，不要互抄。
  */
-export const lpmRenderReadySchema = z.object({
+export const lpmRenderReadySchema = z.strictObject({
   session_id: z.string().min(1),
   render_ref: z.string().min(1),
   applied_params_hash: z.string().min(1),
+  /**
+   * 可选（不是"可以空"）：它在 `pef.buildLpmRenderReadyEvent` 里被显式降级 —— 空串会伪装成
+   * "已计算"，故只在非空时才带上该键。HTTP 边界必须采用**同一可选性**，否则一条合法的
+   * 回执（资产版本尚未异步解析出来）会在边界被 400 丢掉，而内核侧却认为它可以发出。
+   */
   asset_version_hash: z.string().min(1).optional(),
 })
 export type LpmRenderReadyPayload = z.infer<typeof lpmRenderReadySchema>
