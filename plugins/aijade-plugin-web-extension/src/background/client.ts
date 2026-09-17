@@ -1,6 +1,7 @@
 import type { ContextUpdate } from '@proj-aijade/server-sdk'
 
 import type { ExtensionSettings, ExtensionStatus, PageContextPayload, SubtitlePayload, VideoContextPayload } from '../shared/types'
+import type { V10EvidenceEvent } from '../shared/v10-evidence'
 
 import { Client, ContextUpdateStrategy } from '@proj-aijade/server-sdk'
 import { nanoid } from 'nanoid'
@@ -8,8 +9,13 @@ import { nanoid } from 'nanoid'
 import packageJSON from '../../package.json'
 
 import { reducePageToEvidence, reduceSubtitleToEvidence } from '../shared/v10-evidence'
+import { buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
+import { advanceTick } from './storage'
 
 const PLUGIN_NAME = 'proj-aijade:plugin-web-extension'
+
+/** 每会话 tick 的存储键（v10 事件确定性排序用）。当前扩展整体作为一个上报会话。 */
+const V9_TICK_SESSION = 'web-extension'
 
 export interface ClientState {
   client: Client | null
@@ -137,19 +143,55 @@ function sendSparkNotify(state: ClientState, data: { headline: string, note?: st
   })
 }
 
-export function handlePageContext(state: ClientState, settings: ExtensionSettings, payload: PageContextPayload) {
+/**
+ * 走 v10 REST 事件上报通道上报一次观察事件（独立于 WS 路径）。
+ *
+ * - 复用调用方已算好的同一个 `v10Evidence`（不重新归约，hash 才一致）。
+ * - REST 失败**不得**影响 WS 路径：各自独立 try/catch；本函数内部所有异常都被吞掉并打日志。
+ * - `restBaseUrl` 未配置时直接跳过并记录 debug 日志（"零接线也能跑"降级语义）。
+ * - tick 由 `advanceTick` 注入并持久化（每会话单调递增，跨 SW 重启不回退）。
+ */
+async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: ExtensionSettings) {
+  if (!evidence)
+    return
+
+  if (!settings.restBaseUrl) {
+    console.debug('[v9-rest] restBaseUrl 未配置，跳过 REST 上报')
+    return
+  }
+
+  try {
+    const tick = await advanceTick(V9_TICK_SESSION)
+    const envelope = buildV9EventEnvelope({ evidence, tick })
+    const result = await postV9Event(settings.restBaseUrl, envelope, {
+      token: settings.bearerToken || undefined,
+    })
+    if (result.ok)
+      console.debug(`[v9-rest] 已上报 ${evidence.topic} tick=${tick} deduped=${result.deduped}`)
+    else
+      console.warn(`[v9-rest] REST 上报失败 (status ${result.status}): ${result.error}`)
+  }
+  catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.warn(`[v9-rest] REST 上报异常: ${message}`)
+  }
+}
+
+export async function handlePageContext(state: ClientState, settings: ExtensionSettings, payload: PageContextPayload) {
   state.lastPage = payload
 
   if (!settings.enabled || !settings.sendPageContext)
     return
 
+  // 归约一次，WS 与 REST 复用同一结果（保证 hash 一致）。
+  const v10Evidence = reducePageToEvidence(payload)
   sendContextUpdate(state, {
     strategy: ContextUpdateStrategy.ReplaceSelf,
     lane: 'web:page',
     text: `User is browsing: ${payload.title} (${payload.url}).`,
     metadata: {
       source: 'web-extension',
-      v10Evidence: reducePageToEvidence(payload),
+      v10Evidence,
       site: payload.site,
       url: payload.url,
       title: payload.title,
@@ -157,6 +199,8 @@ export function handlePageContext(state: ClientState, settings: ExtensionSetting
       language: payload.language,
     },
   })
+  // REST 通道：独立于 WS，各自 try/catch。
+  await reportV9Observation(v10Evidence, settings)
 }
 
 export function handleVideoContext(
@@ -166,6 +210,11 @@ export function handleVideoContext(
   options?: { notify?: boolean },
 ) {
   state.lastVideo = payload
+
+  // 注：video（观看中）这条 sendContextUpdate 路径**没有**对应的 v10 观察 evidence
+  // 形状——服务端 `AIJADE_TOPICS` 里 `aijade.video.*` 只定义了
+  // `observation.webpage_text` 与 `observation.video_transcript` 两个 topic，
+  // 分别由 page / subtitle 归约产出。故本路径不走 REST 上报，避免捏造无契约的 payload。
 
   if (!settings.enabled || !settings.sendVideoContext)
     return
@@ -220,19 +269,21 @@ export function handleVideoContext(
   })
 }
 
-export function handleSubtitle(state: ClientState, settings: ExtensionSettings, payload: SubtitlePayload) {
+export async function handleSubtitle(state: ClientState, settings: ExtensionSettings, payload: SubtitlePayload) {
   state.lastSubtitle = payload
 
   if (!settings.enabled || !settings.sendSubtitles)
     return
 
+  // 归约一次，WS 与 REST 复用同一结果（保证 hash 一致）。
+  const v10Evidence = reduceSubtitleToEvidence(payload)
   sendContextUpdate(state, {
     strategy: ContextUpdateStrategy.ReplaceSelf,
     lane: 'web:subtitle',
     text: `Subtitle: ${payload.text}`,
     metadata: {
       source: 'web-extension',
-      v10Evidence: reduceSubtitleToEvidence(payload),
+      v10Evidence,
       site: payload.site,
       url: payload.url,
       title: payload.title,
@@ -243,4 +294,6 @@ export function handleSubtitle(state: ClientState, settings: ExtensionSettings, 
       isAuto: payload.isAuto,
     },
   })
+  // REST 通道：独立于 WS，各自 try/catch。
+  await reportV9Observation(v10Evidence, settings)
 }

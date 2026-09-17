@@ -56,6 +56,18 @@ export type ContentToBackgroundMessage
 export interface ExtensionSettings {
   wsUrl: string
   token: string
+  /**
+   * v10 REST 事件上报通道的 base URL（不含路径），打到 `POST /api/v1/v9/events`。
+   * 默认从 `wsUrl` 推导同源 HTTP 地址（见 `constants.ts` 的 `DEFAULT_REST_BASE_URL`）。
+   */
+  restBaseUrl: string
+  /**
+   * REST 端点鉴权用的 Bearer token（better-auth）。
+   * 注意：与 WS 的模块 token 语义不同——REST 端点要的是 better-auth 会话
+   * （cookie，靠 `credentials:'include'`）或 Bearer token；两者都没有时服务端
+   * `authGuard` 返回 401，这是**预期失败而非 bug**。留空则只靠 cookie。
+   */
+  bearerToken: string
   enabled: boolean
   sendPageContext: boolean
   sendVideoContext: boolean

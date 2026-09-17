@@ -15,6 +15,8 @@ export const usePopupStore = createGlobalState(() => {
   const form = reactive<ExtensionSettings>({
     wsUrl: '',
     token: '',
+    restBaseUrl: '',
+    bearerToken: '',
     enabled: true,
     sendPageContext: true,
     sendVideoContext: true,
