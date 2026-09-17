@@ -148,6 +148,43 @@ export interface CandidateVersion {
   rollbackAvailable: boolean
 }
 
+/** Identity used to keep a VSE canary assignment stable across requests. */
+export interface VseRoutingIdentity {
+  userId?: string
+  sessionId?: string
+}
+
+/**
+ * A routing decision made at a service entry point. `bucket` is in [0, 1), so
+ * comparing it with a release's canary ratio is deterministic and portable.
+ */
+export interface VseRouteDecision {
+  traceId: string
+  releaseId?: string
+  version?: string
+  bucket: number
+  canaryRatio: number
+  eligible: boolean
+  identityKind: 'user' | 'session'
+}
+
+/** Stable FNV-1a bucket; no runtime randomness means retries keep their lane. */
+export function stableVseBucket(identity: VseRoutingIdentity, namespace = 'aijade-vse'): number {
+  const value = identity.userId?.trim()
+    ? `user:${identity.userId.trim()}`
+    : identity.sessionId?.trim()
+      ? `session:${identity.sessionId.trim()}`
+      : ''
+  if (!value)
+    throw new Error('VSE routing requires a userId or sessionId')
+  let hash = 2166136261
+  for (const byte of new TextEncoder().encode(`${namespace}:${value}`)) {
+    hash ^= byte
+    hash = Math.imul(hash, 16777619) >>> 0
+  }
+  return hash / 0x1_0000_0000
+}
+
 export interface EvolutionWeights {
   alphaLatency: number
   betaCost: number

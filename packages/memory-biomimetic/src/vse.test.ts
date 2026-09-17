@@ -11,6 +11,7 @@ import {
   nextEvolutionStage,
   satisfiesEvolutionConstraints,
   selectCandidateVersion,
+  stableVseBucket,
 } from './vse'
 
 function pack(over: Partial<EvaluationEvidencePack> = {}): EvaluationEvidencePack {
@@ -25,6 +26,18 @@ function pack(over: Partial<EvaluationEvidencePack> = {}): EvaluationEvidencePac
 }
 
 describe('vSE — grading & automation ceiling (§51.1)', () => {
+  it('keeps user assignments stable and prefers user identity over session identity', () => {
+    const userBucket = stableVseBucket({ userId: 'user-1', sessionId: 'session-a' })
+    expect(stableVseBucket({ userId: 'user-1', sessionId: 'session-b' })).toBe(userBucket)
+    expect(stableVseBucket({ sessionId: 'session-a' })).not.toBe(userBucket)
+    expect(userBucket).toBeGreaterThanOrEqual(0)
+    expect(userBucket).toBeLessThan(1)
+  })
+
+  it('requires a real user or session identity for routing', () => {
+    expect(() => stableVseBucket({})).toThrow(/userId or sessionId/)
+  })
+
   it('e0 auto, E2 sandbox+sign, E3 full test, E4 human review, E5 forbidden', () => {
     expect(automationAllowed('E0')).toBe('auto')
     expect(automationAllowed('E2')).toBe('sandbox_sign_gray')
