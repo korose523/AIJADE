@@ -28,7 +28,7 @@ describe('computerUseParamsSchema', () => {
 })
 
 describe('computer-use capability (dry-run backend)', () => {
-  const cap = createComputerUseCapability(createDryRunBackend())
+  const cap = createComputerUseCapability(createDryRunBackend(), { capabilityToken: 'test-token' })
 
   it('exposes the tool schema for agent discovery', () => {
     expect((cap.toolSchema.name as string)).toBe('computer_use')
@@ -44,17 +44,24 @@ describe('computer-use capability (dry-run backend)', () => {
     const res = await cap.call({ action: 'not-a-real-action' as never })
     expect(res.ok).toBe(false)
   })
+
+  it('explicitly rejects calls without a capability token', async () => {
+    const cap = createComputerUseCapability(createDryRunBackend())
+    const res = await cap.call({ action: 'capture' })
+    expect(res.ok).toBe(false)
+    expect(res.summary).toContain('missing capability token')
+  })
 })
 
 describe('approval gate (fail-closed on non-safe actions)', () => {
   it('allows read-only actions without an approver', async () => {
-    const cap = createComputerUseCapability(createDryRunBackend())
+    const cap = createComputerUseCapability(createDryRunBackend(), { capabilityToken: 'test-token' })
     const res = await cap.call({ action: 'list_apps' })
     expect(res.ok).toBe(true)
   })
 
   it('blocks non-safe actions when no approver is supplied', async () => {
-    const cap = createComputerUseCapability(createDryRunBackend())
+    const cap = createComputerUseCapability(createDryRunBackend(), { capabilityToken: 'test-token' })
     const res = await cap.call({ action: 'click', element: 3 })
     expect(res.ok).toBe(false)
     expect(res.summary).toContain('requires approval')
@@ -62,7 +69,7 @@ describe('approval gate (fail-closed on non-safe actions)', () => {
 
   it('defers to the approver for non-safe actions', async () => {
     const approve = vi.fn().mockResolvedValue(true)
-    const cap = createComputerUseCapability(createDryRunBackend(), { approve })
+    const cap = createComputerUseCapability(createDryRunBackend(), { approve, capabilityToken: 'test-token' })
     const res = await cap.call({ action: 'type', text: 'hello' })
     expect(approve).toHaveBeenCalledOnce()
     expect(res.ok).toBe(true)
@@ -70,7 +77,7 @@ describe('approval gate (fail-closed on non-safe actions)', () => {
 
   it('blocks when the approver returns false', async () => {
     const approve = vi.fn().mockResolvedValue(false)
-    const cap = createComputerUseCapability(createDryRunBackend(), { approve })
+    const cap = createComputerUseCapability(createDryRunBackend(), { approve, capabilityToken: 'test-token' })
     const res = await cap.call({ action: 'key', keys: 'cmd+s' })
     expect(res.ok).toBe(false)
     expect(res.summary).toContain('requires approval')
@@ -88,8 +95,11 @@ describe('createComputerUseMcpTransport (real backend)', () => {
       isError: false,
     })
     const transport = createComputerUseMcpTransport(fakeClient(callTool))
-    const res = await transport.request('list_apps', { action: 'list_apps' })
-    expect(callTool).toHaveBeenCalledWith('computer_use::computer_use', { action: 'list_apps' })
+    const res = await transport.request('list_apps', { action: 'list_apps', capabilityToken: 'test-token' })
+    expect(callTool).toHaveBeenCalledWith('computer_use::computer_use', {
+      action: 'list_apps',
+      capability_token: 'test-token',
+    })
     expect(res.ok).toBe(true)
     expect(res.safe).toBe(true)
     expect(res.data).toEqual({ apps: ['Code', 'Ollama'] })
@@ -98,15 +108,28 @@ describe('createComputerUseMcpTransport (real backend)', () => {
   it('honors a custom server name', async () => {
     const callTool = vi.fn().mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] })
     const transport = createComputerUseMcpTransport(fakeClient(callTool), 'hermes')
-    await transport.request('capture', { action: 'capture', mode: 'vision' })
-    expect(callTool).toHaveBeenCalledWith('hermes::computer_use', { action: 'capture', mode: 'vision' })
+    await transport.request('capture', { action: 'capture', mode: 'vision', capabilityToken: 'test-token' })
+    expect(callTool).toHaveBeenCalledWith('hermes::computer_use', {
+      action: 'capture',
+      mode: 'vision',
+      capability_token: 'test-token',
+    })
   })
 
   it('propagates backend errors as not-ok', async () => {
     const callTool = vi.fn().mockResolvedValue({ isError: true, content: [{ type: 'text', text: 'boom' }] })
     const transport = createComputerUseMcpTransport(fakeClient(callTool))
-    const res = await transport.request('click', { action: 'click', element: 1 })
+    const res = await transport.request('click', { action: 'click', element: 1, capabilityToken: 'test-token' })
     expect(res.ok).toBe(false)
     expect(res.summary).toContain('boom')
+  })
+
+  it('rejects a missing token before calling MCP', async () => {
+    const callTool = vi.fn()
+    const transport = createComputerUseMcpTransport(fakeClient(callTool))
+    const res = await transport.request('capture', { action: 'capture' })
+    expect(res.ok).toBe(false)
+    expect(res.summary).toContain('missing capability token')
+    expect(callTool).not.toHaveBeenCalled()
   })
 })

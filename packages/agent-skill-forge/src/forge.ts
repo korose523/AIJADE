@@ -18,7 +18,7 @@ import {
   buildTeachableMomentPrompt,
   buildValidationPrompt,
 } from './prompts'
-import { createSkillRegistry } from './registry'
+import { createPersistentSkillRegistry, createSkillRegistry } from './registry'
 import { skillGenerationSchema } from './schema'
 
 const logger = createLogger('agent-skill-forge')
@@ -68,7 +68,10 @@ function historyToString(history: ChatMessage[]): string {
 
 export function createSkillForge(options: SkillForgeOptions): SkillForge {
   const { llm, sandbox } = options
-  const registry = options.registry ?? createSkillRegistry()
+  const registry = options.registry
+    ?? (options.skillLibraryPath
+      ? createPersistentSkillRegistry([], { file: options.skillLibraryPath })
+      : createSkillRegistry())
 
   async function detectTeachableMoment(history: ChatMessage[]): Promise<SkillDraft | null> {
     const historyText = historyToString(history)

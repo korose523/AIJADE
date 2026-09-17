@@ -51,6 +51,11 @@ export type ScrollDirection = typeof SCROLL_DIRECTIONS[number]
 
 export interface ComputerUseParams {
   action: ComputerUseAction
+  /**
+   * Runtime-only authorization credential. This is deliberately absent from
+   * COMPUTER_USE_TOOL_SCHEMA: the model must never be able to invent it.
+   */
+  capabilityToken?: string
   mode?: CaptureMode
   app?: string
   max_elements?: number
@@ -108,7 +113,7 @@ export const computerUseParamsSchema = z.object({
   seconds: z.number().optional(),
   raise_window: z.boolean().optional(),
   capture_after: z.boolean().optional(),
-})
+}).passthrough()
 
 /**
  * The OpenAI function-calling JSON schema for `computer_use`, ready to register

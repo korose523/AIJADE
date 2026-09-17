@@ -82,7 +82,19 @@ export function createComputerUseMcpTransport(
 ): ComputerUseTransport {
   return {
     async request(action, params) {
-      const raw = await client.callTool(`${serverName}::computer_use`, params as unknown as Record<string, unknown>)
+      const token = params.capabilityToken
+      if (!token?.trim()) {
+        return {
+          ok: false,
+          safe: SAFE_ACTIONS.has(action),
+          summary: 'denied: missing capability token',
+        }
+      }
+      const { capabilityToken, ...arguments_ } = params
+      const raw = await client.callTool(`${serverName}::computer_use`, {
+        ...arguments_,
+        capability_token: capabilityToken,
+      } as unknown as Record<string, unknown>)
       return mapMcpResult(action, raw)
     },
   }
@@ -94,15 +106,31 @@ export function createComputerUseMcpTransport(
  */
 export function buildHermesMcpCall(params: ComputerUseParams): {
   method: 'tools/call'
-  params: { name: 'computer_use', arguments: ComputerUseParams }
+  params: { name: 'computer_use', arguments: Record<string, unknown> }
 } {
-  return { method: 'tools/call', params: { name: 'computer_use', arguments: params } }
+  if (!params.capabilityToken?.trim())
+    throw new Error('missing capability token')
+  const { capabilityToken, ...arguments_ } = params
+  return {
+    method: 'tools/call',
+    params: {
+      name: 'computer_use',
+      arguments: { ...arguments_, capability_token: capabilityToken },
+    },
+  }
 }
 
 /** Wrap an external transport as an AIJADE {@link ComputerUseBackend}. */
 export function createHermesBackend(transport: ComputerUseTransport): ComputerUseBackend {
   return {
     async execute(params: ComputerUseParams): Promise<ComputerUseResult> {
+      if (!params.capabilityToken?.trim()) {
+        return {
+          ok: false,
+          safe: SAFE_ACTIONS.has(params.action),
+          summary: 'denied: missing capability token',
+        }
+      }
       try {
         return await transport.request(params.action, params)
       }

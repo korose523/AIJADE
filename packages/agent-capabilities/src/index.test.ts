@@ -4,7 +4,7 @@ import type { ChatOrchestratorRuntime, ChatOrchestratorRuntimeDeps } from '@proj
 
 import { createSkillForge, defineSkill } from '@proj-aijade/agent-skill-forge'
 import { ContextUpdateStrategy } from '@proj-aijade/server-sdk'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { createAgentCapabilitiesBridge } from './index'
 
@@ -81,5 +81,20 @@ describe('agent capabilities bridge', () => {
     expect(ctx!.contextId).toBe('agent:capabilities')
     expect(ctx!.strategy).toBe(ContextUpdateStrategy.ReplaceSelf)
     expect(ctx!.text).toContain('computer_use')
+  })
+
+  it('injects the bridge token into the concrete computer-use call', async () => {
+    const call = vi.fn().mockResolvedValue({ ok: true, safe: true, summary: 'ok' })
+    const bridge = createAgentCapabilitiesBridge({
+      llm: fakeLLM(),
+      computerUse: {
+        toolSchema: {},
+        call,
+      },
+      capabilityToken: 'bridge-token',
+      autoCreateSkills: false,
+    })
+    await bridge.computerUse!.call({ action: 'capture' })
+    expect(call).toHaveBeenCalledWith({ action: 'capture', capabilityToken: 'bridge-token' })
   })
 })

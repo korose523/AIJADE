@@ -22,6 +22,8 @@ export interface AgentCapabilitiesOptions {
   learning?: ContinuousLearning
   /** Computer-control capability (Hermes-fused). */
   computerUse?: ComputerUseCapability
+  /** Runtime capability credential injected into every computer-use call. */
+  capabilityToken?: string | (() => string | undefined | Promise<string | undefined>)
   /** Autonomous teachable-moment -> skill creation. Default true. */
   autoCreateSkills?: boolean
   /** Context id used for the injected `ContextMessage`. */
@@ -65,7 +67,19 @@ export function createAgentCapabilitiesBridge(options: AgentCapabilitiesOptions)
       signalExtractor: createLexiconSignalExtractor(),
       onPersonaUpdate: options.onPersonaUpdate,
     })
-  const computerUse = options.computerUse
+  // Keep the credential out of model-visible tool arguments while ensuring
+  // every execution path receives the same runtime token.
+  const computerUse = options.computerUse && options.capabilityToken !== undefined
+    ? {
+        ...options.computerUse,
+        call: async (params: Parameters<ComputerUseCapability['call']>[0]) => {
+          const token = typeof options.capabilityToken === 'function'
+            ? await options.capabilityToken()
+            : options.capabilityToken
+          return options.computerUse!.call({ ...params, capabilityToken: token })
+        },
+      }
+    : options.computerUse
 
   let creating = false
   let lastTurnTs = Date.now()

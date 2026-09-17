@@ -127,6 +127,14 @@ export interface SkillForgeOptions {
   sandbox?: SkillSandbox
   /** Persist / load registered skills. Defaults to an in-memory registry. */
   registry?: SkillRegistry
+  /**
+   * When set, the registry is a JSONL-backed {@link createPersistentSkillRegistry}
+   * rooted at this file path, so the skill library survives a process restart
+   * (otherwise the whole library is lost on exit). The production chat bridge
+   * should pass this to make "the forge accumulates expertise over time" real.
+   * Takes precedence over `registry` when both are provided.
+   */
+  skillLibraryPath?: string
   /** Max teachable-moment detection attempts per conversation. */
   maxDetectAttempts?: number
 }

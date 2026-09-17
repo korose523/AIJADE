@@ -1,7 +1,7 @@
 import type { SkillBody, SkillFrontmatter, SkillModule, SkillPackage } from './types'
 
 export { createSkillForge, type SkillForge } from './forge'
-export { createSkillRegistry, type MeasuredSkillRegistry, type MeasuredSkillRegistryOptions } from './registry'
+export { createPersistentSkillRegistry, createSkillRegistry, type MeasuredSkillRegistry, type MeasuredSkillRegistryOptions, type PersistentSkillRegistryOptions } from './registry'
 export {
   platformSchema,
   skillBodySchema,

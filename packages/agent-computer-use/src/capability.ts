@@ -17,6 +17,8 @@ export interface ComputerUseCapability {
 }
 
 export interface ComputerUseCapabilityOptions {
+  /** Token (or lazy token provider) required for every computer-use call. */
+  capabilityToken?: string | (() => string | undefined | Promise<string | undefined>)
   /**
    * Approval gate for non-safe (state-mutating) actions such as click / type /
    * key / drag. Read-only actions (capture / wait / list_apps) are always
@@ -37,12 +39,24 @@ export function createComputerUseCapability(
   return {
     toolSchema: COMPUTER_USE_TOOL_SCHEMA,
     async call(params: ComputerUseParams): Promise<ComputerUseResult> {
+      let token: string | undefined
+      try {
+        token = typeof options.capabilityToken === 'function'
+          ? await options.capabilityToken()
+          : options.capabilityToken
+      }
+      catch {
+        token = undefined
+      }
+      if (!token?.trim()) {
+        return { ok: false, safe: false, summary: 'denied: missing capability token' }
+      }
       const parsed = computerUseParamsSchema.safeParse(params)
       if (!parsed.success) {
         const msg = parsed.error.issues.map(i => `${i.path.join('.') || 'action'}: ${i.message}`).join('; ')
         return { ok: false, safe: false, summary: `invalid computer_use params: ${msg}` }
       }
-      const data = parsed.data
+      const data = { ...parsed.data, capabilityToken: token }
       // Fail-closed: state-mutating actions require explicit approval.
       if (!SAFE_ACTIONS.has(data.action)) {
         let allowed = false
