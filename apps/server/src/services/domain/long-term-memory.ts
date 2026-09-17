@@ -5,9 +5,9 @@ import type { Database } from '../../libs/db'
 import { desc, eq } from 'drizzle-orm'
 
 import { nanoid } from '../../utils/id'
+import { createV9PerformanceIntentService } from './v9-performance-intent'
 
 import * as schema from '../../schemas/long-term-memory'
-import * as v9Schema from '../../schemas/memory-v9'
 
 export const LONG_TERM_MEMORY_QUEUE = 'aijade:memory:sync'
 export type PrivacyLevel = 0 | 1 | 2 | 3
@@ -104,39 +104,24 @@ export function createLongTermMemoryService(db: Database, redis: Redis) {
       sessionId: string
       deviceId: string
       privacyLevel: PrivacyLevel
+      /** Agent identity for the derived intent (kernel-required; added when the method was rewired to the real director). */
+      agentId: string
+      /** User scope for the derived intent (kernel-required; added when the method was rewired to the real director). */
+      userScope: string
     }) {
-      assertPrivacy(input.privacyLevel)
-      const evidence = await db.select({
-        content: v9Schema.v9EvidenceChunks.content,
-        source: v9Schema.v9EvidencePacks.source,
-      }).from(v9Schema.v9EvidenceChunks).innerJoin(v9Schema.v9EvidencePacks, eq(v9Schema.v9EvidenceChunks.packId, v9Schema.v9EvidencePacks.id)).where(eq(v9Schema.v9EvidencePacks.sessionId, input.sessionId)).orderBy(desc(v9Schema.v9EvidenceChunks.createdAt)).limit(20)
-      if (evidence.length === 0)
-        throw new Error('no committed long-term memory found for session')
-
-      const snapshot = await service.savePersonaSnapshot(userId, {
+      // Rewired to the real kernel path: `deriveForSession` runs the genuine
+      // `PerformanceDirector` and persists a validated `PerformanceIntent`
+      // (schema 'aijade.performance_intent@1'). The previous hand-rolled,
+      // unvalidated look-alike structure has been removed. `agentId`/`userScope`
+      // are now required because the kernel mandates them on every intent.
+      return createV9PerformanceIntentService({ db }).deriveForSession({
+        userId,
+        sessionId: input.sessionId,
         deviceId: input.deviceId,
         privacyLevel: input.privacyLevel,
-        version: 1,
-        persona: {
-          source: 'v9-long-term-memory',
-          sessionId: input.sessionId,
-          memoryCount: evidence.length,
-          memories: evidence.map(item => ({ source: item.source, content: item.content })),
-        },
+        agentId: input.agentId,
+        userScope: input.userScope,
       })
-      const intent = await service.savePerformanceIntent(userId, {
-        deviceId: input.deviceId,
-        privacyLevel: input.privacyLevel,
-        personaSnapshotRef: snapshot.id,
-        timeMarked: Date.now(),
-        intent: {
-          personaSnapshotRef: snapshot.id,
-          expression: { valence: 0, arousal: 0.5, confidence: 0.5, curiosity: 0.5, playfulness: 0.5, reflection: 0.5, urgency: 0.2 },
-          channels: { text: 0.5, voice: 0.5, gesture: 0.5 },
-          sourceMemoryCount: evidence.length,
-        },
-      })
-      return { snapshot, intent }
     },
     async pullForDevice(userId: string, deviceId: string) {
       const rows = await db.select().from(schema.memorySyncOutbox).where(eq(schema.memorySyncOutbox.userId, userId)).orderBy(desc(schema.memorySyncOutbox.createdAt))

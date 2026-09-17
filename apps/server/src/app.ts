@@ -70,6 +70,7 @@ import { createProviderRoutes } from './routes/providers'
 import { createStripeRoutes } from './routes/stripe'
 import { createV9EventsRoutes } from './routes/v9/events'
 import { createV9PerceptionRoutes } from './routes/v9/perception'
+import { createV9PersonaRoutes } from './routes/v9/persona'
 import { createV9ReplayRoutes } from './routes/v9/replay'
 import { createConfigKVService } from './services/adapters/config-kv'
 import { createEmailService } from './services/adapters/email'
@@ -375,6 +376,7 @@ export async function buildApp(deps: AppDeps) {
      * an invisible one. Never reports "consistent" when the snapshot is missing.
      */
     .route('/api/v1/v9/replay', createV9ReplayRoutes(deps.db))
+    .route('/api/v1/v9/persona/derive', createV9PersonaRoutes({ db: deps.db }))
 
     /**
      * V1 OpenAI-compatible and audio routes. The factory returns two
