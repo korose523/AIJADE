@@ -24,12 +24,14 @@ export * from './pilot'
 // --- local modules ---------------------------------------------------------
 export * from './ports'
 export * from './quest-planner'
+export * from './release-executor'
 export * from './sharing-policy'
 export * from './synthesis-workbench'
 
 export * from './transfer-lab'
 export * from './trusted-release-controller'
 export * from './util'
+export * from './v9-growth-bridge'
 
 // --- §53.2 growth contract types (from the research kernel) -----------------
 export type {
