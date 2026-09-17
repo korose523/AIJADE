@@ -129,6 +129,10 @@ export function createPerformanceBridge(
   // 本轮 trace：由 persona.render_requested 铸造，lpm.render_ready 复用它才能与请求配对。
   let activeTraceId: string | undefined
   let activeCorrelationId: string | undefined
+  // 本轮身份（render_ref）只铸造一次：在 onMessageSendStarted 里由 mintRenderRef 铸出，
+  // recordAppliedParams 复用它作为 render_ref。这样请求侧 intent_ref 与回执侧 render_ref
+  // 同源，同一 trace_id 下投影记录的 intent_ref === render_ref。
+  let activeRenderRef: string | undefined
 
   function wrapDeps(deps: ChatOrchestratorRuntimeDeps): ChatOrchestratorRuntimeDeps {
     return {
@@ -144,7 +148,22 @@ export function createPerformanceBridge(
         // 无活跃 session 时无法铸造稳定 trace，静默跳过（与渲染侧同语义，不伪造）。
         const sessionId = getSessionId?.()
         const personaSnapshotRef = options?.getPersonaSnapshotRef?.() ?? `${sessionId}:persona`
-        const intentRef = options?.getIntentRef?.() ?? `${sessionId}:intent:${turnSeq}`
+        // 本轮身份只铸造一次：mintRenderRef（确定性、无随机）铸出 render_ref，请求侧
+        // intent_ref 默认取自同一个本轮身份，从而同一 trace_id 下投影记录的
+        // intent_ref === render_ref。在 growth-services 的 PerformanceDirector（它才构建
+        // 真正的 PerformanceIntent，见 memory-biomimetic/src/pef.ts）通过 getIntentRef /
+        // getPersonaSnapshotRef 注入之前，UI 铸造一个确定性的轮次身份，而不是编一个假装是
+        // 内核 PerformanceIntent.id 的字符串。当这两个 option 被注入时必须优先采用；回执侧
+        // 仍复用 activeRenderRef 回指同一轮。
+        let intentRef: string
+        if (sessionId) {
+          const renderRef = mintRenderRef(sessionId, turnSeq)
+          activeRenderRef = renderRef
+          intentRef = options?.getIntentRef?.() ?? renderRef
+        }
+        else {
+          intentRef = options?.getIntentRef?.() ?? `${sessionId}:intent:${turnSeq}`
+        }
         if (sessionId && reportEvent) {
           activeTraceId = nanoid()
           activeCorrelationId = activeTraceId
@@ -213,9 +232,13 @@ export function createPerformanceBridge(
     const sessionId = getSessionId?.() ?? ''
     if (!sessionId)
       return undefined
+    // 复用 send-start 时铸造的同一轮身份（activeRenderRef），保证回执侧 render_ref 与
+    // 请求侧 intent_ref 同源。兜底用 mintRenderRef 重铸，仅当 send-start 未发生时（理论上
+    // 不会发生，渲染必在 send-start 之后）才走到，保持确定性一致。
+    const renderRef = activeRenderRef ?? mintRenderRef(sessionId, turnSeq)
     const receipt = buildRenderReceipt({
       sessionId,
-      renderRef: mintRenderRef(sessionId, turnSeq),
+      renderRef,
       appliedParams: params,
       assetVersionHash: getAssetVersionHash?.(),
     })

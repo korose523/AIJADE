@@ -234,6 +234,30 @@ describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', 
     )
   })
 
+  it('same-turn request intent_ref equals receipt render_ref (projection invariant)', () => {
+    const reportEvent = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      onRenderReceipt: vi.fn(),
+      reportEvent,
+    })
+    const deps = bridge.wrapDeps(noopDeps)
+    deps.onMessageSendStarted!({} as any)
+
+    // 请求侧：persona.render_requested 铸出本轮身份，intent_ref 默认取自它。
+    expect(reportEvent).toHaveBeenCalledTimes(1)
+    const reqCall = reportEvent.mock.calls[0][0]
+    expect(reqCall.payload.intent_ref).toBeTruthy()
+
+    // 回执侧：lpm.render_ready 复用同一轮身份作为 render_ref。
+    bridge.recordAppliedParams({ 'emotion.preset': 'happy', 'emotion.intensity': 0.5 })
+    expect(reportEvent).toHaveBeenCalledTimes(2)
+    const readyCall = reportEvent.mock.calls[1][0]
+
+    // 投影依赖的不变量：同一 trace_id 下 intent_ref === render_ref。
+    expect(reqCall.payload.intent_ref).toBe(readyCall.payload.render_ref)
+  })
+
   it('does NOT emit when there is no active session (cannot mint a stable trace)', () => {
     const reportEvent = vi.fn()
     const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
