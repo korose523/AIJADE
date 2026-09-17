@@ -1,3 +1,4 @@
+import type { OidcTokenSet } from '../src/shared/oidc'
 import type {
   BackgroundToContentMessage,
   ContentToBackgroundMessage,
@@ -14,19 +15,24 @@ import {
   handleVideoContext,
   toStatus,
 } from '../src/background/client'
-import { loadSettings, saveSettings } from '../src/background/storage'
+import { loadOidcTokens, loadSettings, saveOidcLoginState, saveOidcTokens, saveSettings } from '../src/background/storage'
 import { DEFAULT_REST_BASE_URL, DEFAULT_SETTINGS, STORAGE_KEY } from '../src/shared/constants'
+import { getActiveOidcTokens, setActiveOidcTokens } from '../src/shared/credentials'
 import {
   backgroundStatusChanged,
   popupClearError,
+  popupGetOidcStatus,
   popupGetStatus,
+  popupLogoutOidc,
   popupRequestVisionFrame,
+  popupStartOidcLogin,
   popupToggleEnabled,
   popupUpdateSettings,
 } from '../src/shared/eventa'
 import { createRuntimeEventaContext } from '../src/shared/eventa-runtime'
 import { sidepanelRequestEvidence } from '../src/shared/eventa-sidepanel'
 import { summarize } from '../src/shared/llm'
+import { buildExtensionRedirectUri, fetchOidcTokens } from '../src/shared/oidc'
 import { detectSiteFromUrl } from '../src/shared/sites'
 import { evaluatePageOpinion, reducePageToEvidence, reduceSubtitleToEvidence } from '../src/shared/v10-evidence'
 
@@ -91,8 +97,73 @@ async function updateSettings(partial: Partial<ExtensionSettings>) {
 
 async function init() {
   settings = await loadSettings()
+  // 重新加热持久化的 OIDC 令牌，使同步 `resolveApiToken` 立即可用。
+  const storedTokens = await loadOidcTokens()
+  if (storedTokens)
+    setActiveOidcTokens(storedTokens)
   await refreshClient()
   emitStatus()
+}
+
+/**
+ * 包装 `chrome.identity.launchWebAuthFlow`：用户取消/出错时回调得到 undefined（或
+ * `chrome.runtime.lastError`），统一解析为 `undefined` 给上层归类为 `cancelled`。
+ */
+function launchWebAuthFlow(url: string, _interactive: boolean): Promise<string | undefined> {
+  return new Promise((resolve) => {
+    browser.identity.launchWebAuthFlow({ url, interactive: true }, (responseUrl?: string) => {
+      if (browser.runtime.lastError || !responseUrl) {
+        resolve(undefined)
+        return
+      }
+      resolve(responseUrl)
+    })
+  })
+}
+
+/** 跑完整 OIDC PKCE 流程并把令牌落盘。返回可判别结果供 popup 展示。 */
+async function startOidcLogin() {
+  const extensionId = browser.runtime.id
+  const redirectUri = buildExtensionRedirectUri(extensionId)
+  const authBaseUrl = settings.restBaseUrl || DEFAULT_REST_BASE_URL
+
+  const result = await fetchOidcTokens({
+    authBaseUrl,
+    redirectUri,
+    launchWebAuthFlow: (url, interactive) => launchWebAuthFlow(url, interactive),
+  })
+
+  if (result.ok) {
+    const tokens: OidcTokenSet = {
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
+      expiresAt: result.expiresAt,
+    }
+    setActiveOidcTokens(tokens)
+    await saveOidcTokens(tokens)
+    await saveOidcLoginState('logged_in')
+  }
+  return result
+}
+
+/** 登出：清空内存持热 + 持久化令牌 + 登录态。 */
+async function logoutOidc() {
+  setActiveOidcTokens(null)
+  await saveOidcTokens(null)
+  await saveOidcLoginState('logged_out')
+  return { ok: true as const }
+}
+
+/** 读取 OIDC 登录态：结合内存持热与持久化，判断"是否仍有效登录"。 */
+async function getOidcStatus() {
+  const tokens = getActiveOidcTokens() ?? await loadOidcTokens()
+  const now = Date.now()
+  const loggedIn = tokens != null && tokens.expiresAt - 30_000 > now
+  return {
+    loggedIn,
+    accessTokenPresent: !!tokens?.accessToken,
+    expiresAt: tokens?.expiresAt ?? null,
+  }
 }
 
 function handleContentMessage(message: ContentToBackgroundMessage) {
@@ -162,6 +233,21 @@ export default defineBackground(() => {
     state.lastError = undefined
     emitStatus()
     return toStatus(state, settings)
+  })
+
+  // OIDC 登录：跑 PKCE 流程并把令牌落盘（popup 触发）。返回可判别结果。
+  defineInvokeHandler(context, popupStartOidcLogin, async () => {
+    return await startOidcLogin()
+  })
+
+  // 登出：清除 OIDC 令牌与登录态。
+  defineInvokeHandler(context, popupLogoutOidc, async () => {
+    return await logoutOidc()
+  })
+
+  // 读取登录态（popup 挂载时调用）。
+  defineInvokeHandler(context, popupGetOidcStatus, async () => {
+    return await getOidcStatus()
   })
 
   // 侧边栏 Companion：请求当前标签页的归约结果（确定性归约 + 可选 LLM 观点评价）。

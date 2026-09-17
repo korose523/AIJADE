@@ -1,3 +1,4 @@
+import type { OidcTokenSet } from '../shared/oidc'
 import type { ExtensionSettings } from '../shared/types'
 
 import { DEFAULT_SETTINGS, STORAGE_KEY } from '../shared/constants'
@@ -88,4 +89,41 @@ export function getOrCreateInstallId(): Promise<string> {
   })()
 
   return installIdPromise
+}
+
+/**
+ * OIDC 令牌持久化（生产凭据）。
+ *
+ * 键名风格与上方 `aijade:web-extension:*` 常量保持一致。存取与既有设置/tick 读写互不干扰。
+ * 令牌集形状见 `OidcTokenSet`（`shared/oidc.ts`）：access / refresh / expiresAt。
+ */
+const OIDC_TOKENS_KEY = 'aijade:web-extension:oidc-tokens'
+
+export async function loadOidcTokens(): Promise<OidcTokenSet | null> {
+  const stored = await browser.storage.local.get(OIDC_TOKENS_KEY)
+  const value = stored[OIDC_TOKENS_KEY] as OidcTokenSet | undefined
+  if (!value || typeof value.accessToken !== 'string' || typeof value.expiresAt !== 'number')
+    return null
+  return value
+}
+
+export async function saveOidcTokens(tokens: OidcTokenSet | null): Promise<void> {
+  if (tokens)
+    await browser.storage.local.set({ [OIDC_TOKENS_KEY]: tokens })
+  else
+    await browser.storage.local.remove(OIDC_TOKENS_KEY)
+}
+
+/** 登录态：仅记录"是否已登录"，UI 据此在登录/登出之间切换。 */
+const OIDC_LOGIN_STATE_KEY = 'aijade:web-extension:oidc-login-state'
+
+export type OidcLoginState = 'logged_in' | 'logged_out'
+
+export async function loadOidcLoginState(): Promise<OidcLoginState> {
+  const stored = await browser.storage.local.get(OIDC_LOGIN_STATE_KEY)
+  return stored[OIDC_LOGIN_STATE_KEY] === 'logged_in' ? 'logged_in' : 'logged_out'
+}
+
+export async function saveOidcLoginState(state: OidcLoginState): Promise<void> {
+  await browser.storage.local.set({ [OIDC_LOGIN_STATE_KEY]: state })
 }

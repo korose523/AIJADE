@@ -10,11 +10,11 @@ import { nanoid } from 'nanoid'
 import packageJSON from '../../package.json'
 
 import { DEFAULT_REST_BASE_URL } from '../shared/constants'
-import { resolveApiToken } from '../shared/credentials'
+import { resolveApiToken, resolveApiTokenFresh } from '../shared/credentials'
 import { summarize } from '../shared/llm'
 import { reducePageToEvidence, reduceSubtitleToEvidence, summarizePageToEvidence, summarizeSubtitleToEvidence } from '../shared/v10-evidence'
 import { buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
-import { advanceTick, getOrCreateInstallId } from './storage'
+import { advanceTick, getOrCreateInstallId, saveOidcTokens } from './storage'
 
 const PLUGIN_NAME = 'proj-aijade:plugin-web-extension'
 
@@ -189,9 +189,19 @@ async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: 
     const tick = await advanceTick(sessionId)
     const envelope = buildV9EventEnvelope({ evidence, tick })
     // 与 LLM 通道共用同一凭据真源（见 credentials.ts）。
-    const result = await postV9Event(settings.restBaseUrl, envelope, {
-      token: resolveApiToken(settings),
+    // 优先用异步解析：OIDC access token 过期时主动 refresh；refresh 失败则降级为
+    // "需重新登录"，**绝不**静默发过期 token。失败回落到同步解析（bearer 或新鲜 OIDC）。
+    const authBaseUrl = settings.restBaseUrl || DEFAULT_REST_BASE_URL
+    let token: string | undefined
+    const fresh = await resolveApiTokenFresh(settings, {
+      authBaseUrl,
+      onRefreshed: async (t) => { await saveOidcTokens(t) },
     })
+    if (fresh.ok)
+      token = fresh.token
+    else
+      token = resolveApiToken(settings)
+    const result = await postV9Event(settings.restBaseUrl, envelope, { token })
     if (result.ok)
       console.debug(`[v9-rest] 已上报 ${evidence.topic} tick=${tick} deduped=${result.deduped}`)
     else if (result.reason === 'unauthorized_missing')

@@ -4,6 +4,7 @@ import { onMounted } from 'vue'
 
 import {
   HeaderPopup,
+  OidcLogin,
   PreferenceCapture,
   SettingsConnection,
   VisualizeLiveVision,
@@ -38,6 +39,8 @@ onMounted(() => popup.init())
       v-model:enable-vision="popup.form.enableVision"
       @capture="popup.captureFrame"
     />
+
+    <OidcLogin />
 
     <VisualizeLiveVision :last-video="popup.lastVideo.value" :last-subtitle="popup.lastSubtitle.value" />
 

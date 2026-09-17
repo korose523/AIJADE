@@ -12,7 +12,7 @@ export default defineConfig({
   manifest: {
     name: 'AIJADE Web Extension',
     description: 'Capture web context (videos, pages, subtitles) for Project AIJADE.',
-    permissions: ['storage', 'tabs', 'sidePanel'],
+    permissions: ['storage', 'tabs', 'sidePanel', 'identity'],
     optional_host_permissions: [
       '*://*/*',
     ],
