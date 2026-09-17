@@ -6,7 +6,7 @@ import { createDrizzle, migrateDatabase } from '../libs/db'
 import { parseEnv } from '../libs/env'
 import { createRedis } from '../libs/redis'
 import { createLongTermMemoryService, dequeueMemoryJob } from '../services/domain/long-term-memory'
-import { dequeueV9Perception, dequeueV9Promotion } from '../services/domain/v9-jobs'
+import { dequeueV9Perception, dequeueV9Promotion, parkDeadLetter, V9_MEMORY_DEAD_LETTER, V9_PERCEPTION_DEAD_LETTER, V9_PROMOTION_DEAD_LETTER } from '../services/domain/v9-jobs'
 import { createV9PromotionService } from '../services/domain/v9-promotion'
 import { createV9RuntimeStore } from '../services/domain/v9-runtime-store'
 
@@ -35,7 +35,7 @@ async function main(): Promise<void> {
       }
       catch (error) {
         console.error(`[v9-worker] job ${v9Job.jobId} failed`, error)
-        await redis.lpush('aijade:v9:dead-letter', JSON.stringify({ job: v9Job, error: String(error) }))
+        await parkDeadLetter(redis, V9_PERCEPTION_DEAD_LETTER, { job: v9Job, error: String(error) })
       }
     }
     if (memoryJob) {
@@ -47,7 +47,7 @@ async function main(): Promise<void> {
       }
       catch (error) {
         console.error(`[memory-worker] ${memoryJob.kind} failed`, error)
-        await redis.lpush('aijade:memory:dead-letter', JSON.stringify({ job: memoryJob, error: String(error) }))
+        await parkDeadLetter(redis, V9_MEMORY_DEAD_LETTER, { job: memoryJob, error: String(error) })
       }
     }
     if (promotionJob) {
@@ -59,7 +59,7 @@ async function main(): Promise<void> {
       }
       catch (error) {
         console.error(`[v9-promotion-worker] job ${promotionJob.jobId} failed`, error)
-        await redis.lpush('aijade:v9:promotion:dead-letter', JSON.stringify({ job: promotionJob, error: String(error) }))
+        await parkDeadLetter(redis, V9_PROMOTION_DEAD_LETTER, { job: promotionJob, error: String(error) })
       }
     }
   }

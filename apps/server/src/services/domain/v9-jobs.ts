@@ -8,6 +8,31 @@ import type Redis from 'ioredis'
 
 export const V9_PERCEPTION_QUEUE = 'aijade:v9:perception'
 
+/**
+ * Worker dead-letter keys.
+ *
+ * These used to be inline string literals in `bin/worker.ts`, which meant the key
+ * a failed job is actually parked under was not assertable by any test or
+ * acceptance script — a verifier could "prove" the dead-letter path while the
+ * worker wrote to a different key. They live here so the worker and everything
+ * that verifies it read one source.
+ *
+ * (`V9_MEMORY_DEAD_LETTER` belongs to the memory queue, not the v9 ones, but it is
+ * declared alongside the others for that same single-source reason.)
+ */
+export const V9_PERCEPTION_DEAD_LETTER = 'aijade:v9:dead-letter'
+export const V9_PROMOTION_DEAD_LETTER = 'aijade:v9:promotion:dead-letter'
+export const V9_MEMORY_DEAD_LETTER = 'aijade:memory:dead-letter'
+
+/** Park a failed job for operator inspection. The worker and its verifiers share this. */
+export async function parkDeadLetter(
+  redis: Redis,
+  key: string,
+  entry: { job: unknown, error: string },
+): Promise<void> {
+  await redis.lpush(key, JSON.stringify(entry))
+}
+
 export interface V9PerceptionJob {
   jobId: string
   input: {
