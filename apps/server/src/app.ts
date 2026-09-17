@@ -366,7 +366,7 @@ export async function buildApp(deps: AppDeps) {
      * upserts them into the generic `v9_events` table with idempotent semantics
      * keyed by `idempotency_key`.
      */
-    .route('/api/v1/v9/events', createV9EventsRoutes(deps.v9EventService))
+    .route('/api/v1/v9/events', createV9EventsRoutes(deps.v9EventService, deps.v9CausalRuntime, deps.redis))
     .route('/api/v1/v9/perception', createV9PerceptionRoutes(deps.v9CausalRuntime, deps.redis))
     /**
      * v10 replay consistency check (design §4.3 / §11.3). Re-derives the recorded

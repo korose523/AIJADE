@@ -200,6 +200,8 @@ export const V9_PAYLOAD_SCHEMAS = {
     asset_version_hash: optional(pipe(string(), minLength(1))),
   }),
   'aijade.video.observation.webpage_text': strictObject({
+    /** A 路「会话」= 扩展实例级持久安装 id（与 shadow_params/evidence 的 session_id 同源）。 */
+    session_id: pipe(string(), minLength(1)),
     source_url: pipe(string(), minLength(1)),
     content_hash: pipe(string(), minLength(1)),
     spans: pipe(array(strictObject({
@@ -210,6 +212,8 @@ export const V9_PAYLOAD_SCHEMAS = {
     observation_text: pipe(string(), minLength(1)),
   }),
   'aijade.video.observation.video_transcript': strictObject({
+    /** A 路「会话」= 扩展实例级持久安装 id（与 shadow_params/evidence 的 session_id 同源）。 */
+    session_id: pipe(string(), minLength(1)),
     video_id: pipe(string(), minLength(1)),
     transcript_hash: pipe(string(), minLength(1)),
     time_spans: pipe(array(strictObject({

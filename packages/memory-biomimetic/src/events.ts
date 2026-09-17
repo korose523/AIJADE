@@ -251,6 +251,12 @@ export type LpmRenderReadyPayload = z.infer<typeof lpmRenderReadySchema>
 // ============================================================================
 
 export const webpageTextObservationSchema = z.strictObject({
+  /**
+   * A 路「会话」= 扩展实例级持久安装 id（与兄弟 topic
+   * `learning.proposed.shadow_params` / `learning.proposed.evidence` 的 `session_id` 同义）。
+   * 必填非空：扩展侧负责携带，缺它就无法把观察归约到正确的会话。
+   */
+  session_id: z.string().min(1),
   source_url: z.string().min(1),
   content_hash: z.string().min(1),
   spans: z.array(z.strictObject({
@@ -263,6 +269,12 @@ export const webpageTextObservationSchema = z.strictObject({
 export type WebpageTextObservationPayload = z.infer<typeof webpageTextObservationSchema>
 
 export const videoTranscriptObservationSchema = z.strictObject({
+  /**
+   * A 路「会话」= 扩展实例级持久安装 id（与兄弟 topic
+   * `learning.proposed.shadow_params` / `learning.proposed.evidence` 的 `session_id` 同义）。
+   * 必填非空：扩展侧负责携带，缺它就无法把观察归约到正确的会话。
+   */
+  session_id: z.string().min(1),
   video_id: z.string().min(1),
   transcript_hash: z.string().min(1),
   time_spans: z.array(z.strictObject({

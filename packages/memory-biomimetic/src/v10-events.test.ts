@@ -19,12 +19,14 @@ import {
 } from './events'
 
 const validWebpageText = {
+  session_id: 's-1',
   source_url: 'https://example.com/page',
   content_hash: 'sha256:abc',
   spans: [{ start_offset: 0, end_offset: 5, label: 'keyword' }],
   observation_text: '页面观察到某关键词',
 }
 const validVideoTranscript = {
+  session_id: 's-1',
   video_id: 'vid_1',
   transcript_hash: 'sha256:def',
   time_spans: [{ start_ms: 0, end_ms: 1000, text: '你好' }],

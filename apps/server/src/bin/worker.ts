@@ -6,7 +6,7 @@ import { createDrizzle, migrateDatabase } from '../libs/db'
 import { parseEnv } from '../libs/env'
 import { createRedis } from '../libs/redis'
 import { createLongTermMemoryService, dequeueMemoryJob } from '../services/domain/long-term-memory'
-import { dequeueV9Perception, dequeueV9Promotion, parkDeadLetter, V9_MEMORY_DEAD_LETTER, V9_PERCEPTION_DEAD_LETTER, V9_PROMOTION_DEAD_LETTER } from '../services/domain/v9-jobs'
+import { dequeueV9Perception, dequeueV9Promotion, dequeueV9VideoObservation, parkDeadLetter, V9_MEMORY_DEAD_LETTER, V9_PERCEPTION_DEAD_LETTER, V9_PROMOTION_DEAD_LETTER, V9_VIDEO_OBSERVATION_DEAD_LETTER } from '../services/domain/v9-jobs'
 import { createV9PromotionService } from '../services/domain/v9-promotion'
 import { createV9RuntimeStore } from '../services/domain/v9-runtime-store'
 
@@ -24,10 +24,11 @@ async function main(): Promise<void> {
   process.once('SIGINT', () => { void shutdown() })
 
   while (true) {
-    const [v9Job, memoryJob, promotionJob] = await Promise.all([
+    const [v9Job, memoryJob, promotionJob, videoObservationJob] = await Promise.all([
       dequeueV9Perception(redis),
       dequeueMemoryJob(redis),
       dequeueV9Promotion(redis),
+      dequeueV9VideoObservation(redis),
     ])
     if (v9Job) {
       try {
@@ -36,6 +37,15 @@ async function main(): Promise<void> {
       catch (error) {
         console.error(`[v9-worker] job ${v9Job.jobId} failed`, error)
         await parkDeadLetter(redis, V9_PERCEPTION_DEAD_LETTER, { job: v9Job, error: String(error) })
+      }
+    }
+    if (videoObservationJob) {
+      try {
+        await runtime.processVideoObservation(videoObservationJob.input)
+      }
+      catch (error) {
+        console.error(`[v9-worker] video-observation job ${videoObservationJob.jobId} failed`, error)
+        await parkDeadLetter(redis, V9_VIDEO_OBSERVATION_DEAD_LETTER, { job: videoObservationJob, error: String(error) })
       }
     }
     if (memoryJob) {

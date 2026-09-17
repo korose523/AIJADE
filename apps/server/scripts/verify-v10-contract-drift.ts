@@ -229,12 +229,15 @@ const FIXTURES: Fixture[] = [
     topic: 'aijade.video.observation.webpage_text',
     v10: true,
     payload: i => ({
+      session_id: `s-${i}`,
       source_url: `https://example.com/${i}`,
       content_hash: `ch-${i}`,
       spans: [{ start_offset: 0, end_offset: 5, label: 'p' }],
       observation_text: `text-${i}`,
     }),
     negatives: [
+      { name: 'missing session_id', mutate: drop('session_id') },
+      { name: 'blank session_id', mutate: blank('session_id') },
       { name: 'missing source_url', mutate: drop('source_url') },
       { name: 'blank observation_text', mutate: blank('observation_text') },
       { name: 'empty spans', mutate: p => ({ ...p, spans: [] }) },
@@ -245,12 +248,15 @@ const FIXTURES: Fixture[] = [
     topic: 'aijade.video.observation.video_transcript',
     v10: true,
     payload: i => ({
+      session_id: `s-${i}`,
       video_id: `v-${i}`,
       transcript_hash: `th-${i}`,
       time_spans: [{ start_ms: 0, end_ms: 100, text: `cap-${i}` }],
       caption_text: `cap-${i}`,
     }),
     negatives: [
+      { name: 'missing session_id', mutate: drop('session_id') },
+      { name: 'blank session_id', mutate: blank('session_id') },
       { name: 'missing video_id', mutate: drop('video_id') },
       { name: 'empty time_spans', mutate: p => ({ ...p, time_spans: [] }) },
       { name: 'unknown field', mutate: surprise() },

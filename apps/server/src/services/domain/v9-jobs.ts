@@ -3,6 +3,7 @@ import type {
   EvaluationEvidencePack,
   PgcState4,
   ShadowParamsProposal,
+  V9VideoObservationInput,
 } from '@proj-aijade/memory-biomimetic'
 import type Redis from 'ioredis'
 
@@ -129,4 +130,31 @@ export async function dequeueV9Promotion(redis: Redis): Promise<V9PromotionJob |
     throw new Error('invalid v9 promotion job payload: missing unitContractPropertyTests')
   }
   return parsed as V9PromotionJob
+}
+
+// ---------------------------------------------------------------------------
+// Video observation queue (A 路: webpage_text / video_transcript -> evidence)
+// ---------------------------------------------------------------------------
+
+export const V9_VIDEO_OBSERVATION_QUEUE = 'aijade:v9:video-observation'
+export const V9_VIDEO_OBSERVATION_DEAD_LETTER = 'aijade:v9:video-observation:dead-letter'
+
+export interface V9VideoObservationJob {
+  jobId: string
+  input: V9VideoObservationInput
+}
+
+export async function enqueueV9VideoObservation(redis: Redis, job: V9VideoObservationJob): Promise<void> {
+  await redis.lpush(V9_VIDEO_OBSERVATION_QUEUE, JSON.stringify(job))
+}
+
+export async function dequeueV9VideoObservation(redis: Redis): Promise<V9VideoObservationJob | undefined> {
+  const result = await redis.brpop(V9_VIDEO_OBSERVATION_QUEUE, 5)
+  if (!result)
+    return undefined
+  const [, raw] = result
+  const parsed: unknown = JSON.parse(raw)
+  if (!parsed || typeof parsed !== 'object' || !('jobId' in parsed) || !('input' in parsed))
+    throw new Error('invalid v9 video-observation job payload')
+  return parsed as V9VideoObservationJob
 }

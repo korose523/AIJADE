@@ -267,3 +267,51 @@ describe('渲染回执 — 身份/内容职责分离，且不可退化', () => {
     ])
   })
 })
+
+describe('video 观察 payload — A 路「会话」必须携带 session_id', () => {
+  const webpagePayload = (over: Record<string, unknown> = {}): Record<string, unknown> => ({
+    session_id: 's-1',
+    source_url: 'https://example.com',
+    content_hash: 'ch-1',
+    spans: [{ start_offset: 0, end_offset: 5, label: 'p' }],
+    observation_text: 'text',
+    ...over,
+  })
+  const transcriptPayload = (over: Record<string, unknown> = {}): Record<string, unknown> => ({
+    session_id: 's-1',
+    video_id: 'v-1',
+    transcript_hash: 'th-1',
+    time_spans: [{ start_ms: 0, end_ms: 100, text: 'cap' }],
+    caption_text: 'cap',
+    ...over,
+  })
+
+  function parseWebpage(payload: Record<string, unknown>) {
+    return safeParseAijadeEvent({ ...baseEnvelope(), topic: 'aijade.video.observation.webpage_text', payload })
+  }
+  function parseTranscript(payload: Record<string, unknown>) {
+    return safeParseAijadeEvent({ ...baseEnvelope(), topic: 'aijade.video.observation.video_transcript', payload })
+  }
+
+  it('webpage_text 基线：带 session_id 被接受', () => {
+    expect(parseWebpage(webpagePayload({ session_id: 's-1' })).success).toBe(true)
+  })
+  it('webpage_text 缺 session_id ⇒ 拒绝', () => {
+    const { session_id: _drop, ...rest } = webpagePayload({ session_id: 's-1' })
+    expect(parseWebpage(rest).success).toBe(false)
+  })
+  it('webpage_text session_id 为空串 ⇒ 拒绝', () => {
+    expect(parseWebpage(webpagePayload({ session_id: '' })).success).toBe(false)
+  })
+
+  it('video_transcript 基线：带 session_id 被接受', () => {
+    expect(parseTranscript(transcriptPayload({ session_id: 's-1' })).success).toBe(true)
+  })
+  it('video_transcript 缺 session_id ⇒ 拒绝', () => {
+    const { session_id: _drop, ...rest } = transcriptPayload({ session_id: 's-1' })
+    expect(parseTranscript(rest).success).toBe(false)
+  })
+  it('video_transcript session_id 为空串 ⇒ 拒绝', () => {
+    expect(parseTranscript(transcriptPayload({ session_id: '' })).success).toBe(false)
+  })
+})

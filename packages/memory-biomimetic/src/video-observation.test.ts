@@ -28,12 +28,14 @@ import {
 // ---------------------------------------------------------------------------
 
 const webpagePayload: WebpageTextObservationPayload = {
+  session_id: 's-1',
   source_url: 'https://example.com/page',
   content_hash: 'abc123contenthash',
   spans: [{ start_offset: 0, end_offset: 11 }],
   observation_text: 'the quick brown fox',
 }
 const subtitlePayload: VideoTranscriptObservationPayload = {
+  session_id: 's-1',
   video_id: 'vid-42',
   transcript_hash: 'def456transcripthash',
   time_spans: [{ start_ms: 0, end_ms: 1000, text: 'hello world' }],
