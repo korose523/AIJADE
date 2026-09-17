@@ -4,6 +4,8 @@ import process from 'node:process'
 
 import Redis from 'ioredis'
 
+import { computeLearningInputHash } from '@proj-aijade/memory-biomimetic'
+
 /**
  * v9/v10 promotion worker 的**真实基础设施**验收。
  *
@@ -60,12 +62,24 @@ function describeTarget(connectionString: string): string {
 
 const ROLLBACK = Symbol('rollback')
 
+/**
+ * 夹具必须带**真实**的 `input_hash`。
+ *
+ * promotion 的第一道门会用 `verifyShadowParamsProposalAnchor` 从提案自身字段复算并比对。
+ * 如果这里编一个 `input-${proposalId}`，那么三道 DB 结论里那两条**应当通过** integrity 门
+ * 的用例（promoted / pgc_gate 拒绝）会先停在 integrity_gate —— 脚本仍会"通过"，
+ * 但测的已经不是 evidence_gate 与 pgc_gate 了。所以一律走与生产者相同的口径。
+ */
 function makeProposal(proposalId: string): ShadowParamsProposal {
+  const sessionId = `session-${proposalId}`
+  const candidateParams = { lr: 0.01 }
   return {
     proposalId,
-    sessionId: `session-${proposalId}`,
-    inputHash: `input-${proposalId}`,
-    candidateParams: { lr: 0.01 },
+    sessionId,
+    inputHash: computeLearningInputHash(sessionId, proposalId, candidateParams),
+    anchorKind: 'shadow_params',
+    anchorVerified: true,
+    candidateParams,
     confidence: 0.9,
   }
 }
@@ -83,16 +97,18 @@ function makePack(proposalId: string, overrides: Partial<EvaluationEvidencePack>
 }
 
 function makeJob(proposalId: string, pack: EvaluationEvidencePack, pgcV6State?: PgcState4) {
+  const proposal = makeProposal(proposalId)
   return {
     jobId: `verify-job-${proposalId}`,
     input: {
       proposalId,
-      sessionId: `session-${proposalId}`,
+      sessionId: proposal.sessionId,
       traceId: `trace-${proposalId}`,
       tick: 7,
-      inputHash: `input-${proposalId}`,
+      // 必须与 proposal.inputHash 一致（job 头与提案体描述同一输入快照）。
+      inputHash: proposal.inputHash,
       evaluationPack: pack,
-      proposal: makeProposal(proposalId),
+      proposal,
       pgcV6State,
     },
   }
@@ -216,7 +232,20 @@ async function main(): Promise<number> {
         specsBefore = await countSpecs(tx)
         reportsBefore = await countReports(tx)
 
-        // 4a. EvidenceGate 拒绝 ⇒ 不落库
+        // 4a. 完整性锚点门（Door 0）拒绝 ⇒ 不落库
+        //     关键：被篡改的提案必须停在 integrity_gate，而**不是**恰好被后面的门拦住。
+        {
+          const honest = makeProposal('gate-anchor')
+          const tampered = { ...honest, candidateParams: { lr: 0.99 } }
+          const job = makeJob('gate-anchor', makePack('gate-anchor'), { a: 0, c: 0, d: 0, f: 0 })
+          const res = await service.process({ ...job, input: { ...job.input, proposal: tampered } } as never)
+          check(res.ok === false && res.stage === 'integrity_gate', `integrity gate refuses a tampered proposal (stage=${res.stage})`)
+          check(typeof res.reason === 'string' && res.reason.includes('input_hash mismatch'), `integrity refusal names the mismatch (${res.reason})`)
+          check(await countSpecs(tx) === specsBefore, 'integrity-gate refusal wrote no evolution_specs row')
+          check(await countReports(tx) === reportsBefore, 'integrity-gate refusal wrote no eval_reports row')
+        }
+
+        // 4b. EvidenceGate 拒绝 ⇒ 不落库
         {
           const job = makeJob('gate-evidence', makePack('gate-evidence', {
             securitySandbox: { passed: false, escapes: 2 },
@@ -227,7 +256,7 @@ async function main(): Promise<number> {
           check(await countReports(tx) === reportsBefore, 'evidence-gate refusal wrote no eval_reports row')
         }
 
-        // 4b. PGC 门拒绝 ⇒ 不落库，且 reason 带 commit_reason
+        // 4c. PGC 门拒绝 ⇒ 不落库，且 reason 带 commit_reason
         {
           const job = makeJob('gate-pgc', makePack('gate-pgc'), { a: 0, c: 0, d: 0, f: 0.95 })
           const res = await service.process(job as never)
@@ -237,7 +266,7 @@ async function main(): Promise<number> {
           check(await countReports(tx) === reportsBefore, 'pgc-gate refusal wrote no eval_reports row')
         }
 
-        // 4c. 两道门通过 ⇒ 恰好落 2 行
+        // 4d. 两道门通过 ⇒ 恰好落 2 行
         {
           const job = makeJob('promoted', makePack('promoted'), { a: 0, c: 0, d: 0, f: 0 })
           const res = await service.process(job as never)

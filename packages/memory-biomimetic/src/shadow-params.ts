@@ -34,6 +34,20 @@ import { contentHash } from './v9-hash'
 // 领域类型
 // ============================================================================
 
+/**
+ * 提案完整性锚点**类型**：决定 `inputHash` 该用哪一组字段复算。
+ *
+ * 为什么需要这个显式判别（而不是靠 `candidateParams` 是否为空来猜）：`shadow_params`
+ * 提案的 `candidate_params` 合法地可以是空对象，用"空即 evidence"来判会**误判分支**，
+ * 而误判分支的后果是锚点复算用了错的字段集 —— 一个恒不通过的闸门与一个恒通过的闸门
+ * 一样无用。所以分支由归约时显式记录，不由下游推断。
+ */
+export type ShadowParamsAnchorKind
+  /** 来自 `shadow_params`：锚点是 `candidate_params`。 */
+  = | 'shadow_params'
+  /** 来自 `evidence`：锚点是证据主体 `{ evidence_hash, claim_text }`。 */
+    | 'evidence'
+
 /** 一个被归约出的学习影子参数提案。 */
 export interface ShadowParamsProposal {
   /** 提案 id（来自事件 payload.proposal_id）。 */
@@ -41,11 +55,27 @@ export interface ShadowParamsProposal {
   /** 会话 id。 */
   sessionId: string
   /**
-   * 输入哈希（来自事件 payload.input_hash）。
-   * 是对提案主体（candidate_params 或 evidence 内容）的规范化哈希快照，
-   * 归约时会重算并比对以校验自洽（见 `computeLearningInputHash`）。
+   * 输入哈希。是对提案主体（`candidate_params` 或证据主体）的规范化哈希快照。
+   *
+   * ⚠️ 这个值的**来源不是一个**，`anchorVerified` 就是用来区分这两种情况的 ——
+   * 不要把它一律当成"已验证过"。
    */
   inputHash: string
+  /** 锚点类型：决定复算 `inputHash` 时用哪一组字段（见 {@link ShadowParamsAnchorKind}）。 */
+  anchorKind: ShadowParamsAnchorKind
+  /**
+   * `inputHash` 是否**与生产方声明的值比对过**。
+   *
+   * - `shadow_params` 分支：payload 里有 `input_hash`，归约时复算并比对 ⇒ `true`；
+   *   不一致直接抛 `ShadowParamsIntegrityError`。
+   * - `evidence` 分支：v10 契约里**没有** `input_hash` 字段，没有声明值可比 ⇒ `false`。
+   *   该分支的 `inputHash` 是由证据主体**推导**出来的，不是校验出来的。
+   *
+   * `false` 不等于"值不可信"：它表示"这一支没有可比的声明值"。真正需要的是**可复算**——
+   * 任何持有 proposal 的一方都能用 {@link verifyShadowParamsProposalAnchor} 从提案自身的
+   * 字段重算并比对，这是 promotion 侧必须做的一步（见 `v9-promotion.ts`）。
+   */
+  anchorVerified: boolean
   /** 候选参数（来自 shadow_params 事件的 candidate_params）。evidence 事件归约时为空对象。 */
   candidateParams: Record<string, unknown>
   /** 置信度 0..1（来自事件 confidence）。 */
@@ -98,6 +128,54 @@ export function computeLearningInputHash(sessionId: string, proposalId: string, 
   return contentHash({ session_id: sessionId, proposal_id: proposalId, body })
 }
 
+/**
+ * 从提案**自身的字段**复算 `inputHash` 并比对，返回可判别的结果。
+ *
+ * 为什么需要它（而不是只在归约时校验一次）：提案会以 JSON 形式跨进程流转 ——
+ * promotion worker 就是从 Redis 队列里把 proposal **反序列化**出来直接用的。
+ * 只信任反序列化结果，等于"队列里放什么就晋升什么"，`input_hash` 这道闸门在
+ * 归约之后不再起任何作用。本函数把闸门变成**任何持有提案的一方都能重放的动作**。
+ *
+ * 两个分支都必须通过：
+ * - `shadow_params`：用 `candidateParams` 复算；
+ * - `evidence`：用 `{ evidence_hash, claim_text }` 复算；缺任一字段即**拒绝**
+ *   （拒绝而不是跳过 —— "算不出来"绝不能被当成"算出来且一致"）。
+ *
+ * 确定性：`contentHash` 用规范化 JSON（键按字典序），因此 JSON 往返不改变结果。
+ */
+export function verifyShadowParamsProposalAnchor(
+  proposal: ShadowParamsProposal,
+): { ok: true } | { ok: false, reason: string } {
+  if (proposal.anchorKind === 'shadow_params') {
+    const expected = computeLearningInputHash(proposal.sessionId, proposal.proposalId, proposal.candidateParams)
+    if (expected !== proposal.inputHash) {
+      return {
+        ok: false,
+        reason: `shadow_params input_hash mismatch: declared=${proposal.inputHash} recomputed=${expected}`,
+      }
+    }
+    return { ok: true }
+  }
+
+  if (proposal.evidenceHash === undefined || proposal.claimText === undefined) {
+    return {
+      ok: false,
+      reason: 'evidence proposal is missing evidence_hash / claim_text, so its anchor cannot be recomputed',
+    }
+  }
+  const expected = computeLearningInputHash(proposal.sessionId, proposal.proposalId, {
+    evidence_hash: proposal.evidenceHash,
+    claim_text: proposal.claimText,
+  })
+  if (expected !== proposal.inputHash) {
+    return {
+      ok: false,
+      reason: `evidence input_hash mismatch: declared=${proposal.inputHash} recomputed=${expected}`,
+    }
+  }
+  return { ok: true }
+}
+
 // ============================================================================
 // 归约：两类学习事件 → ShadowParamsProposal
 // ============================================================================
@@ -124,6 +202,11 @@ export function shadowParamsProposalFromEvent(event: AijadeEvent): ShadowParamsP
       proposalId: p.proposal_id,
       sessionId: p.session_id,
       inputHash: p.input_hash,
+      // 本分支**有**声明值可比（payload.input_hash），且上面刚比对通过，故 anchorVerified=true。
+      // 这不代表下游可以跳过复算：proposal 会序列化后跨进程流转，反序列化方仍须
+      // 自行调 `verifyShadowParamsProposalAnchor`（见 `v9-promotion.ts`）。
+      anchorKind: 'shadow_params',
+      anchorVerified: true,
       candidateParams: p.candidate_params,
       confidence: p.confidence,
       renderRef: p.render_ref,
@@ -137,6 +220,9 @@ export function shadowParamsProposalFromEvent(event: AijadeEvent): ShadowParamsP
     // evidence 事件 schema（v10 契约）不含 input_hash 字段，没有外部声明值可供比对，
     // 故本分支**不跑** input_hash 闸门；改为以证据主体自算哈希作为提案的 inputHash
     // （确定性、可复现，与 shadow_params 分支用同一 `computeLearningInputHash` 口径）。
+    // ⚠️ 正因为这里没有可比的声明值，这个 hash 在归约时是**恒自洽**的 —— 它不构成闸门。
+    // 真正的校验发生在持有提案、准备据此行动的一侧（见 `verifyShadowParamsProposalAnchor`，
+    // 以及 `apps/server/src/services/domain/v9-promotion.ts` 的 promotion 前置检查）。
     const computed = computeLearningInputHash(p.session_id, p.proposal_id, {
       evidence_hash: p.evidence_hash,
       claim_text: p.claim_text,
@@ -145,6 +231,12 @@ export function shadowParamsProposalFromEvent(event: AijadeEvent): ShadowParamsP
       proposalId: p.proposal_id,
       sessionId: p.session_id,
       inputHash: computed,
+      // 本分支**没有**声明值可比（契约无 input_hash 字段），故 anchorVerified=false：
+      // 这个 inputHash 是推导出来的，不是校验出来的。它仍然**可复算** ——
+      // 下游（promotion）必须调 `verifyShadowParamsProposalAnchor` 自行核对，
+      // 不能因为这里已经算过一次就当它天然可信。
+      anchorKind: 'evidence',
+      anchorVerified: false,
       candidateParams: {},
       confidence: p.confidence,
       renderRef: p.render_ref,

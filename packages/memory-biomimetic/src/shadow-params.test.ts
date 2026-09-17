@@ -10,6 +10,7 @@ import {
   ShadowParamsIntegrityError,
   shadowParamsProposalFromEvent,
   shadowProposalAsPgcCandidate,
+  verifyShadowParamsProposalAnchor,
 } from './shadow-params'
 import { V9CausalRuntime } from './v9-runtime'
 
@@ -161,5 +162,97 @@ describe('shadow-params reduction', () => {
     expect(learningEvents.length).toBeGreaterThanOrEqual(1)
     for (const le of learningEvents)
       expect(() => assertV10RequiredFields(le)).not.toThrow()
+  })
+})
+
+// ============================================================================
+// verifyShadowParamsProposalAnchor —— 把闸门变成"任何持有提案的一方都能重放的动作"
+// ============================================================================
+
+describe('verifyShadowParamsProposalAnchor', () => {
+  /** 归约出的 shadow_params 提案（有生产方声明的 input_hash，归约时已比对通过）。 */
+  function shadowProposal() {
+    return shadowParamsProposalFromEvent(buildValidShadowParamsEvent())
+  }
+
+  it('accepts an honest shadow_params proposal', () => {
+    expect(verifyShadowParamsProposalAnchor(shadowProposal())).toEqual({ ok: true })
+  })
+
+  it('rejects a shadow_params proposal whose body was changed after reduction', () => {
+    // 模拟"序列化后被人改过"：body 变了、hash 没跟着变。
+    const tampered = { ...shadowProposal(), candidateParams: { lr: 0.99, layers: 3 } }
+    const res = verifyShadowParamsProposalAnchor(tampered)
+    expect(res.ok).toBe(false)
+    expect(res.ok === false && res.reason).toContain('input_hash mismatch')
+  })
+
+  it('rejects a shadow_params proposal whose session/proposal id was changed', () => {
+    // 锚点把 session_id / proposal_id 纳入哈希，故改 id 也必须被检出（防跨提案碰撞）。
+    const tampered = { ...shadowProposal(), proposalId: 'p2' }
+    expect(verifyShadowParamsProposalAnchor(tampered).ok).toBe(false)
+  })
+
+  it('accepts an evidence proposal whose derived hash still matches its body', () => {
+    // evidence 契约里没有 input_hash 字段，故归约时必须 anchorVerified=false。
+    const proposal = {
+      proposalId: 'p1',
+      sessionId: 's1',
+      inputHash: computeLearningInputHash('s1', 'p1', { evidence_hash: 'eh1', claim_text: 'claim' }),
+      anchorKind: 'evidence' as const,
+      anchorVerified: false,
+      candidateParams: {},
+      confidence: 0.7,
+      evidenceHash: 'eh1',
+      claimText: 'claim',
+    }
+    expect(verifyShadowParamsProposalAnchor(proposal)).toEqual({ ok: true })
+  })
+
+  it('rejects an evidence proposal whose claim_text was changed', () => {
+    const proposal = {
+      proposalId: 'p1',
+      sessionId: 's1',
+      inputHash: computeLearningInputHash('s1', 'p1', { evidence_hash: 'eh1', claim_text: 'claim' }),
+      anchorKind: 'evidence' as const,
+      anchorVerified: false,
+      candidateParams: {},
+      confidence: 0.7,
+      evidenceHash: 'eh1',
+      claimText: 'a different claim',
+    }
+    const res = verifyShadowParamsProposalAnchor(proposal)
+    expect(res.ok).toBe(false)
+    expect(res.ok === false && res.reason).toContain('evidence input_hash mismatch')
+  })
+
+  it('rejects (does not skip) an evidence proposal missing its anchor fields', () => {
+    // "算不出来"绝不能被当成"算出来且一致"。
+    const proposal = {
+      proposalId: 'p1',
+      sessionId: 's1',
+      inputHash: 'whatever',
+      anchorKind: 'evidence' as const,
+      anchorVerified: false,
+      candidateParams: {},
+      confidence: 0.7,
+    }
+    const res = verifyShadowParamsProposalAnchor(proposal)
+    expect(res.ok).toBe(false)
+    expect(res.ok === false && res.reason).toContain('cannot be recomputed')
+  })
+
+  it('is stable across a JSON round-trip (contentHash canonicalises keys)', () => {
+    // promotion worker 从 Redis 反序列化 proposal —— 往返不得改变判定。
+    const proposal = shadowProposal()
+    const roundTripped = JSON.parse(JSON.stringify(proposal)) as typeof proposal
+    expect(verifyShadowParamsProposalAnchor(roundTripped)).toEqual({ ok: true })
+  })
+
+  it('the honest branch really is verified, not merely un-checked', () => {
+    // 区分"有声明值且比对过"与"没有声明值可比对"——这正是 anchorVerified 存在的理由。
+    const shadow = shadowProposal()
+    expect(shadow.anchorKind).toBe('shadow_params')
+    expect(shadow.anchorVerified).toBe(true)
   })
 })

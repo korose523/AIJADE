@@ -32,11 +32,12 @@ import {
   NEUTRAL_PGC_POLICY,
   selectCandidateVersion,
   shadowProposalAsPgcCandidate,
+  verifyShadowParamsProposalAnchor,
 } from '@proj-aijade/memory-biomimetic'
 
 import * as schema from '../../schemas/memory-v9'
 
-export type PromotionStage = 'evidence_gate' | 'pgc_gate' | 'promoted'
+export type PromotionStage = 'integrity_gate' | 'evidence_gate' | 'pgc_gate' | 'promoted'
 
 export interface V9PromotionResult {
   ok: boolean
@@ -68,6 +69,32 @@ export function createV9PromotionService(deps: { db: Database }): V9PromotionSer
         candidateVersion,
         pgcV6State,
       } = job.input
+
+      // ---- Door 0: re-verify the proposal's integrity anchor --------------
+      // Why this gate has to be redone here rather than trusted from reduction:
+      // `proposal` arrives as JSON deserialised out of the Redis queue. Checking it
+      // once during reduction says nothing about the copy in the queue - trusting the
+      // deserialised object means "whatever is in the queue gets promoted". We
+      // recompute input_hash from the proposal's own fields and compare.
+      //
+      // This also closes a real asymmetry: the `evidence` branch of the reducer has no
+      // producer-declared input_hash to compare against (the v10 contract has no such
+      // field on that topic), so its hash is *derived* and therefore trivially
+      // self-consistent. It is only here, at the point of acting on the proposal, that
+      // the anchor becomes an actual check - and it covers both branches.
+      const anchor = verifyShadowParamsProposalAnchor(proposal)
+      if (!anchor.ok) {
+        return { ok: false, stage: 'integrity_gate', reason: anchor.reason }
+      }
+
+      // The job header and the proposal body must describe the same input snapshot.
+      if (inputHash !== proposal.inputHash) {
+        return {
+          ok: false,
+          stage: 'integrity_gate',
+          reason: `job inputHash disagrees with proposal: job=${inputHash} proposal=${proposal.inputHash}`,
+        }
+      }
 
       // ---- Door 1: EvidenceGate -------------------------------------------
       const evidenceGate = canPromote(evaluationPack)
