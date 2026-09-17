@@ -29,6 +29,8 @@ export interface V9EventInput {
   risk_level: 'low' | 'medium' | 'high'
   tick?: number
   causality?: { inputHash: string }
+  /** v10 内生状态节点（S0..S8），由客户端/内核信封传播而来。 */
+  core_state_node?: string
   topic: string
   payload: Record<string, unknown>
 }
@@ -251,8 +253,11 @@ export function createV9EventService(db: Database): V9EventService {
           riskLevel: input.risk_level,
           ...(input.tick === undefined ? {} : { tick: input.tick }),
           ...(input.causality === undefined ? {} : { causality: input.causality }),
+          ...(input.core_state_node === undefined ? {} : { coreStateNode: input.core_state_node }),
         }
-        if (input.tick === undefined && input.causality === undefined) {
+        // 只要带了任一 v10 字段就必须走 drizzle 分支（原始 SQL 回退分支不写这些列，
+        // 否则 `core_state_node` 会被静默丢弃）。
+        if (input.tick === undefined && input.causality === undefined && input.core_state_node === undefined) {
           // Keep the v9 write path compatible with databases that have not
           // applied the additive v10 migration yet.
           await tx.execute(sql`INSERT INTO "events"

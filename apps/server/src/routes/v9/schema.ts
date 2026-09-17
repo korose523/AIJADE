@@ -9,6 +9,7 @@ import {
   picklist,
   pipe,
   record,
+  regex,
   strictObject,
   string,
   unknown as vUnknown,
@@ -93,6 +94,8 @@ export const v9EventEnvelopeSchema = strictObject({
   /** v10 deterministic ordering and input provenance (optional for v9 clients). */
   tick: optional(nonNegInt),
   causality: optional(v10CausalitySchema),
+  /** v10 内生状态节点（S0..S8）；optional 以兼容旧客户端（strictObject 下客户端多发也必须登记）。 */
+  core_state_node: optional(pipe(string(), regex(/^S[0-8]$/))),
   topic: picklist(AIJADE_TOPICS),
   /** 不再透传：命中 topic 后由 {@link V9_PAYLOAD_SCHEMAS} 做语义校验。 */
   payload: record(string(), vUnknown()),
@@ -101,6 +104,12 @@ export const v9EventEnvelopeSchema = strictObject({
 export const v10EventFieldsSchema = strictObject({
   tick: nonNegInt,
   causality: v10CausalitySchema,
+})
+
+/** 回放一致性校验请求体：按 `tick` + `causality.inputHash` 定位同一输入快照下的事件。 */
+export const v9ReplaySchema = strictObject({
+  tick: nonNegInt,
+  inputHash: pipe(string(), minLength(1)),
 })
 
 /** 每个 topic 的 payload schema —— 字段名与必填性镜像内核 `events.ts`。 */

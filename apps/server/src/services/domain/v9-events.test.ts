@@ -28,7 +28,10 @@ async function createDb() {
       "payload" jsonb,
       "idempotency_key" text NOT NULL UNIQUE,
       "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-      "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high'))
+      "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
+      "tick" integer,
+      "causality" jsonb,
+      "core_state_node" text
     );
     CREATE TABLE "audit_log_entries" (
       "id" text PRIMARY KEY,

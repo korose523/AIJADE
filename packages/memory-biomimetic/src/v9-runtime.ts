@@ -25,6 +25,7 @@ import type {
   PgcWritePlanRow,
 } from './v9-schema'
 
+import { deriveCoreStateNode } from './core-state-node'
 import {
   buildLearningProposedEvidenceEvent,
   buildLearningProposedShadowParamsEvent,
@@ -129,6 +130,21 @@ function deriveStimulus(input: V9PerceptionInput): Partial<Record<StimulusFeatur
     stim_fatigue_score: risk * 0.2,
     ...input.stimulusFeatures,
   }
+}
+
+/**
+ * 给一次归约产出的全部事件打上 `core_state_node`（v10 §4.2/§4.3）。
+ *
+ * 用唯一的纯函数 `deriveCoreStateNode` 按 topic + 真实控制流事实（本次 MemoryTx 是否
+ * 真正落库）推导——保证与服务端回放复算同口径，从而同一 tick/inputHash 下选择一致，
+ * 且回放能检出篡改。`memory_tx.committed` 事件只有 `hasMemoryVersion` 为真时才标 `S8`，
+ * 否则停在 `S6`。
+ */
+function tagCoreStateNodes(artifact: V9RuntimeArtifact, hasMemoryVersion: boolean): void {
+  artifact.events = artifact.events.map(event => ({
+    ...event,
+    core_state_node: deriveCoreStateNode(event.topic, { hasMemoryVersion }),
+  }))
 }
 
 /**
@@ -270,6 +286,7 @@ export class V9CausalRuntime {
         buildEvidenceWeaveCandidateReadyEvent(weave, { ...envelope, idempotency_key: `${envelope.idempotency_key}:weave` }),
       ],
     }
+    tagCoreStateNodes(artifact, artifact.memoryVersions.length > 0)
     await this.store.persist(artifact)
     return { artifact, tx }
   }
@@ -452,6 +469,7 @@ export class V9CausalRuntime {
         buildEvidenceWeaveCandidateReadyEvent(weave, { ...baseEnvelope, idempotency_key: `${envelope.idempotency_key}:weave` }),
       ],
     }
+    tagCoreStateNodes(artifact, artifact.memoryVersions.length > 0)
     await this.store.persist(artifact)
     return { artifact, tx, proposal }
   }

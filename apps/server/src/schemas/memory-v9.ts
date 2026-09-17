@@ -68,6 +68,8 @@ export const v9Events = pgTable(
     /** v10 protocol fields; nullable while v9 producers migrate. */
     tick: integer('tick'),
     causality: jsonb('causality').$type<{ inputHash: string }>(),
+    /** v10 内生状态节点（S0..S8）；nullable 兼容未打标的旧行。 */
+    coreStateNode: text('core_state_node'),
   },
 )
 

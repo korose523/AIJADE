@@ -12,6 +12,8 @@
  * 网络/跨进程边界，必须在边界处校验，不能信赖调用方的类型。
  */
 
+import type { CoreStateNode } from './core-state-node'
+
 import { z } from 'zod'
 
 /** 风险等级：写入门控用它给记忆写做路由/审计分级。 */
@@ -44,6 +46,12 @@ const envelopeFields = {
    */
   tick: z.number().int().nonnegative().optional(),
   causality: z.object({ inputHash: z.string().min(1) }).optional(),
+  /**
+   * v10 内生状态节点（可选，v9 可省，v10 必给）。由 {@link deriveCoreStateNode}
+   * 依事件 topic + 真实控制流事实（是否真实落库）推导；是「关键事件 → S0..S8」映射的
+   * 落点，回放侧可据此复算并检出漂移。沿用 `tick`/`causality` 的「可选 + 注释」风格。
+   */
+  core_state_node: z.string().regex(/^S[0-8]$/).optional(),
 } as const
 
 /** 统一事件信封（topic 与 payload 为 unknown 的宽松形态，供总线透传）。 */
@@ -346,6 +354,8 @@ export interface V10EventEnvelope {
   risk_level: RiskLevel
   tick?: number
   causality?: { inputHash: string }
+  /** v10 内生状态节点（S0..S8），由 `deriveCoreStateNode` 决定。 */
+  core_state_node?: CoreStateNode
 }
 
 function buildV10Event(

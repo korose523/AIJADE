@@ -70,6 +70,7 @@ import { createProviderRoutes } from './routes/providers'
 import { createStripeRoutes } from './routes/stripe'
 import { createV9EventsRoutes } from './routes/v9/events'
 import { createV9PerceptionRoutes } from './routes/v9/perception'
+import { createV9ReplayRoutes } from './routes/v9/replay'
 import { createConfigKVService } from './services/adapters/config-kv'
 import { createEmailService } from './services/adapters/email'
 import { createPostHogClient } from './services/adapters/posthog'
@@ -367,6 +368,13 @@ export async function buildApp(deps: AppDeps) {
      */
     .route('/api/v1/v9/events', createV9EventsRoutes(deps.v9EventService))
     .route('/api/v1/v9/perception', createV9PerceptionRoutes(deps.v9CausalRuntime, deps.redis))
+    /**
+     * v10 replay consistency check (design §4.3 / §11.3). Re-derives the recorded
+     * `core_state_node` and the v6 `w_max_*` bounds from the persisted input
+     * snapshot, so a contract/code drift becomes a detectable failure instead of
+     * an invisible one. Never reports "consistent" when the snapshot is missing.
+     */
+    .route('/api/v1/v9/replay', createV9ReplayRoutes(deps.db))
 
     /**
      * V1 OpenAI-compatible and audio routes. The factory returns two
