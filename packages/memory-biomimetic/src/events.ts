@@ -32,6 +32,18 @@ const envelopeFields = {
   idempotency_key: z.string().min(1),
   replay_mode: replayModeSchema,
   risk_level: riskLevelSchema,
+  /**
+   * v10 确定性排序 / 输入溯源（可选）。v9 生产者可省略；
+   * `aijade.video.*` / `aijade.learning.*` 前缀的生产者【必须】提供，
+   * 由 {@link assertV10RequiredFields} 强制 —— 镜像服务端
+   * `v9EventEnvelopeSchema.tick` 与 `v10EventFieldsSchema.causality` 的拆分
+   *（`apps/server/src/routes/v9/schema.ts:77-104`）。
+   * 注意：本内核信封不引入 `origin_device` / `privacy_level` / `evidence_refs` /
+   * `causal_context_refs` / `risk_score`（那是服务端信封的字段，属另一待决事项），
+   * 本次只补 `tick` / `causality` 两项。
+   */
+  tick: z.number().int().nonnegative().optional(),
+  causality: z.object({ inputHash: z.string().min(1) }).optional(),
 } as const
 
 /** 统一事件信封（topic 与 payload 为 unknown 的宽松形态，供总线透传）。 */
@@ -176,6 +188,69 @@ export const lpmRenderReadySchema = z.object({
 export type LpmRenderReadyPayload = z.infer<typeof lpmRenderReadySchema>
 
 // ============================================================================
+// v10 topic payload schemas —— 字段逐字镜像服务端 `apps/server/src/routes/v9/schema.ts`
+// （V9_PAYLOAD_SCHEMAS，valibot strictObject）。均使用 `z.strictObject`，未知额外字段一概拒。
+// ============================================================================
+
+export const webpageTextObservationSchema = z.strictObject({
+  source_url: z.string().min(1),
+  content_hash: z.string().min(1),
+  spans: z.array(z.strictObject({
+    start_offset: z.number().int().nonnegative(),
+    end_offset: z.number().int().nonnegative(),
+    label: z.string().min(1).optional(),
+  })).min(1),
+  observation_text: z.string().min(1),
+})
+export type WebpageTextObservationPayload = z.infer<typeof webpageTextObservationSchema>
+
+export const videoTranscriptObservationSchema = z.strictObject({
+  video_id: z.string().min(1),
+  transcript_hash: z.string().min(1),
+  time_spans: z.array(z.strictObject({
+    start_ms: z.number().int().nonnegative(),
+    end_ms: z.number().int().nonnegative(),
+    text: z.string().min(1),
+  })).min(1),
+  caption_text: z.string().min(1),
+})
+export type VideoTranscriptObservationPayload = z.infer<typeof videoTranscriptObservationSchema>
+
+export const learningProposedShadowParamsSchema = z.strictObject({
+  session_id: z.string().min(1),
+  proposal_id: z.string().min(1),
+  render_ref: z.string().min(1),
+  applied_params_hash: z.string().min(1),
+  asset_version_hash: z.string().min(1),
+  input_hash: z.string().min(1),
+  candidate_params: z.record(z.string(), z.unknown()),
+  confidence: z.number().min(0).max(1),
+})
+export type LearningProposedShadowParamsPayload = z.infer<typeof learningProposedShadowParamsSchema>
+
+export const learningProposedEvidenceSchema = z.strictObject({
+  session_id: z.string().min(1),
+  proposal_id: z.string().min(1),
+  render_ref: z.string().min(1),
+  applied_params_hash: z.string().min(1),
+  asset_version_hash: z.string().min(1),
+  evidence_hash: z.string().min(1),
+  claim_text: z.string().min(1),
+  confidence: z.number().min(0).max(1),
+})
+export type LearningProposedEvidencePayload = z.infer<typeof learningProposedEvidenceSchema>
+
+export const learningConstraintOpinionEvaluationSchema = z.strictObject({
+  evaluation_target: z.string().min(1),
+  claims: z.array(z.strictObject({
+    claim_text: z.string().min(1),
+    confidence: z.number().min(0).max(1),
+  })).min(1),
+  uncertainty_notes: z.string().min(1),
+})
+export type LearningConstraintOpinionEvaluationPayload = z.infer<typeof learningConstraintOpinionEvaluationSchema>
+
+// ============================================================================
 // 每个 topic 一个强类型事件（信封 + 字面量 topic + 强类型 payload）
 // ============================================================================
 
@@ -190,6 +265,11 @@ export const pgcWritePlanReadyEvent = topicEvent('aijade.pgc.write_plan_ready', 
 export const memoryTxCommittedEvent = topicEvent('aijade.memory_tx.committed', memoryTxCommittedSchema)
 export const personaRenderRequestedEvent = topicEvent('aijade.persona.render_requested', personaRenderRequestedSchema)
 export const lpmRenderReadyEvent = topicEvent('aijade.lpm.render_ready', lpmRenderReadySchema)
+export const webpageTextObservationEvent = topicEvent('aijade.video.observation.webpage_text', webpageTextObservationSchema)
+export const videoTranscriptObservationEvent = topicEvent('aijade.video.observation.video_transcript', videoTranscriptObservationSchema)
+export const learningProposedShadowParamsEvent = topicEvent('aijade.learning.proposed.shadow_params', learningProposedShadowParamsSchema)
+export const learningProposedEvidenceEvent = topicEvent('aijade.learning.proposed.evidence', learningProposedEvidenceSchema)
+export const learningConstraintOpinionEvaluationEvent = topicEvent('aijade.learning.constraint.opinion_evaluation', learningConstraintOpinionEvaluationSchema)
 
 /** 全部受支持 topic 的判别联合。新增 topic 必须在此登记，否则 `safeParse` 会拒。 */
 export const aijadeEventSchema = z.union([
@@ -200,6 +280,11 @@ export const aijadeEventSchema = z.union([
   memoryTxCommittedEvent,
   personaRenderRequestedEvent,
   lpmRenderReadyEvent,
+  webpageTextObservationEvent,
+  videoTranscriptObservationEvent,
+  learningProposedShadowParamsEvent,
+  learningProposedEvidenceEvent,
+  learningConstraintOpinionEvaluationEvent,
 ])
 export type AijadeEvent = z.infer<typeof aijadeEventSchema>
 
@@ -212,6 +297,11 @@ export const AIJADE_TOPICS = [
   'aijade.memory_tx.committed',
   'aijade.persona.render_requested',
   'aijade.lpm.render_ready',
+  'aijade.video.observation.webpage_text',
+  'aijade.video.observation.video_transcript',
+  'aijade.learning.proposed.shadow_params',
+  'aijade.learning.proposed.evidence',
+  'aijade.learning.constraint.opinion_evaluation',
 ] as const
 export type AijadeTopic = typeof AIJADE_TOPICS[number]
 
@@ -222,4 +312,74 @@ export function parseAijadeEvent(input: unknown): AijadeEvent {
 
 export function safeParseAijadeEvent(input: unknown) {
   return aijadeEventSchema.safeParse(input)
+}
+
+/**
+ * v10 确定性/溯源强制校验 —— 镜像 `apps/server/src/routes/v9/events.ts` 的前缀检查。
+ *
+ * v9 生产者可省略 `tick` / `causality`；但凡 `aijade.video.*` 或 `aijade.learning.*`
+ * 前缀的事件【必须】同时携带 `tick`（int≥0）与 `causality.inputHash`（非空串），
+ * 否则视为不合规并抛错。这样内核与 HTTP 边界口径一致：v10 事件若无这两项，
+ * 在两边都不会被接受。
+ */
+export function assertV10RequiredFields(event: AijadeEvent): void {
+  if (event.topic.startsWith('aijade.video.') || event.topic.startsWith('aijade.learning.')) {
+    if (
+      event.tick === undefined
+      || event.causality === undefined
+      || event.causality.inputHash === ''
+    ) {
+      throw new Error('v10 video/learning events require tick and causality.inputHash')
+    }
+  }
+}
+
+/** v10 工厂统一的信封形态（在 v9 信封基础上允许可选的 tick / causality）。 */
+export interface V10EventEnvelope {
+  event_id: string
+  trace_id: string
+  correlation_id: string
+  timestamp: number
+  producer: string
+  idempotency_key: string
+  replay_mode: 'live' | 'replay'
+  risk_level: RiskLevel
+  tick?: number
+  causality?: { inputHash: string }
+}
+
+function buildV10Event(
+  eventSchema: z.ZodTypeAny,
+  topic: AijadeTopic,
+  payload: unknown,
+  envelope: V10EventEnvelope,
+) {
+  const event = eventSchema.parse({ ...envelope, topic, payload }) as AijadeEvent
+  assertV10RequiredFields(event)
+  return event
+}
+
+/** 构造 aijade.video.observation.webpage_text 事件（已 zod 校验；缺 tick/causality 即抛错）。 */
+export function buildWebpageTextObservationEvent(payload: WebpageTextObservationPayload, envelope: V10EventEnvelope) {
+  return buildV10Event(webpageTextObservationEvent, 'aijade.video.observation.webpage_text', payload, envelope)
+}
+
+/** 构造 aijade.video.observation.video_transcript 事件（已 zod 校验；缺 tick/causality 即抛错）。 */
+export function buildVideoTranscriptObservationEvent(payload: VideoTranscriptObservationPayload, envelope: V10EventEnvelope) {
+  return buildV10Event(videoTranscriptObservationEvent, 'aijade.video.observation.video_transcript', payload, envelope)
+}
+
+/** 构造 aijade.learning.proposed.shadow_params 事件（已 zod 校验；缺 tick/causality 即抛错）。 */
+export function buildLearningProposedShadowParamsEvent(payload: LearningProposedShadowParamsPayload, envelope: V10EventEnvelope) {
+  return buildV10Event(learningProposedShadowParamsEvent, 'aijade.learning.proposed.shadow_params', payload, envelope)
+}
+
+/** 构造 aijade.learning.proposed.evidence 事件（已 zod 校验；缺 tick/causality 即抛错）。 */
+export function buildLearningProposedEvidenceEvent(payload: LearningProposedEvidencePayload, envelope: V10EventEnvelope) {
+  return buildV10Event(learningProposedEvidenceEvent, 'aijade.learning.proposed.evidence', payload, envelope)
+}
+
+/** 构造 aijade.learning.constraint.opinion_evaluation 事件（已 zod 校验；缺 tick/causality 即抛错）。 */
+export function buildLearningConstraintOpinionEvaluationEvent(payload: LearningConstraintOpinionEvaluationPayload, envelope: V10EventEnvelope) {
+  return buildV10Event(learningConstraintOpinionEvaluationEvent, 'aijade.learning.constraint.opinion_evaluation', payload, envelope)
 }
