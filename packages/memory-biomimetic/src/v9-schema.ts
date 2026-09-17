@@ -12,6 +12,7 @@
 import type { Belief } from './belief'
 import type { RiskLevel } from './events'
 import type { MemoryKind, PgcDecision, PgcReasonCode, PgcStateSnapshot } from './pgc'
+import type { PgcState4 } from './pgc-state'
 
 export interface SessionRow {
   id: string
@@ -66,9 +67,14 @@ export type BeliefRow = Belief
 
 export interface PgcStateRow {
   id: string
+  /** Session and trace make the four-dimensional state recoverable across turns. */
+  sessionId: string
+  traceId: string
   policyVersion: string
   /** 快照的 components（含复用的 PlasticityGate）。 */
   components: PgcStateSnapshot['components']
+  /** The actual v6 endogenous state s_t; required for the next event's transition. */
+  v6State: PgcState4
   createdAt: number
 }
 
