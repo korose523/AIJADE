@@ -20,6 +20,10 @@
     "verify:v9-events": "tsx scripts/verify-v9-events.ts",
     "verify:v9-events-http": "tsx scripts/verify-v9-events-http.ts",
     "accept:v9-render-loop": "pnpm run apply:env -- tsx scripts/accept-v9-render-loop.ts",
+    "backfill:v9-render-traces": "pnpm run apply:env -- tsx scripts/backfill-render-traces.ts",
+    "verify:v10-contract-drift": "tsx scripts/verify-v10-contract-drift.ts",
+    "verify:v10-contract-drift:postgres": "tsx scripts/verify-v10-contract-drift.ts --postgres",
+    "verify:v9-render-traces": "tsx scripts/verify-render-trace-backfill.ts",
     "otel:dashboards": "tsx otel/grafana/dashboards/build.ts"
   },
   "dependencies": {
