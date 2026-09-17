@@ -1,0 +1,39 @@
+experiment registered: aijade.experiment_manifest@1 p1.5-gating-interference-recall@0.1.0 (seed 0, 2 conditions, 2 metrics)
+
+=== P1.5 model-free interference characterization ===
+corpus        : eval/data/locomo10.json
+conversations : 1
+metric A      : recall@K  (gold-evidence in top-K)
+metric B      : distractorLoad@K (non-evidence share of top-K)
+
+recall@K  (mean fraction of questions with gold evidence in top-K):
+  K    recallON  recallOFF   gap
+   1   0.111    0.136     -0.025
+   2   0.136    0.156     -0.020
+   3   0.156    0.181     -0.025
+   4   0.161    0.186     -0.025
+   6   0.166    0.186     -0.020
+   8   0.171    0.196     -0.025
+
+distractorLoad@K  (mean fraction of top-K slots that are trivial distractors):
+  K     loadON   loadOFF    gap(OFF-ON)
+   1    0.889    0.864     +-0.025
+   2    0.932    0.922     +-0.010
+   3    0.948    0.940     +-0.008
+   4    0.959    0.952     +-0.006
+   6    0.972    0.968     +-0.003
+   8    0.978    0.975     +-0.003
+
+Interpretation (DERIVED from the measured numbers printed above — no hardcoded claims):
+  recall@K is MEASURED, not assumed. Max mean recall@K across all K and both conditions = 0.196.
+  => recall@K is well below 1.0 for BOTH gating conditions: lexical retrieval does NOT reliably bring the gold-evidence memory into the top-K. The prior hardcoded claim "recall@K is ~1.0 for both" is contradicted by the data and has been removed.
+  K= 1: recallON=0.111 recallOFF=0.136 gap(ON-OFF)=-0.025  loadON=0.889 loadOFF=0.864
+  K= 2: recallON=0.136 recallOFF=0.156 gap(ON-OFF)=-0.020  loadON=0.932 loadOFF=0.922
+  K= 3: recallON=0.156 recallOFF=0.181 gap(ON-OFF)=-0.025  loadON=0.948 loadOFF=0.940
+  K= 4: recallON=0.161 recallOFF=0.186 gap(ON-OFF)=-0.025  loadON=0.959 loadOFF=0.952
+  K= 6: recallON=0.166 recallOFF=0.186 gap(ON-OFF)=-0.020  loadON=0.972 loadOFF=0.968
+  K= 8: recallON=0.171 recallOFF=0.196 gap(ON-OFF)=-0.025  loadON=0.978 loadOFF=0.975
+  gating effect at K=8: recallON - recallOFF = -0.025 => ON < OFF — SIGN REVERSAL (gating hurts recall@8).
+  distractorLoad@8: ON=0.978 OFF=0.975 (OFF-ON=+-0.003).
+  => Distractor-load difference is small; gating does not materially change context purity under this scorer.
+  Whether the distractor-load gap degrades ANSWERS (F1) is measured by p1.5-reader.ts — not asserted here.

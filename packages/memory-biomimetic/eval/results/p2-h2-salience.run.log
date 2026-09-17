@@ -1,0 +1,25 @@
+experiment registered: aijade.experiment_manifest@1 h2-content-salience-gated@0.1.0 (seed 0, 2 conditions, 3 metrics)
+
+=== H2 去 oracle 化：预测（内容）salience 下的 gated vs uniform ===
+corpus        : /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json
+conversations : 10
+horizon       : +90d
+budgets       : 10%, 25%, 50%
+metric        : evidenceRecall@4 after budget truncation
+
+--- 预测器质量（predicted vs oracle 标注）---
+  pooled AUC : 0.645   (0.5 = 随机)
+  逐对话 AUC : [0.62 0.57 0.67 0.59 0.68 0.70 0.58 0.68 0.64 0.68]  mean=0.641
+
+--- H2 对照：gated vs uniform（预测/内容显著性门控）---
+  budget |  gated  | uniform |  gap
+    10%  | 0.105 | 0.042 | +0.063
+    25%  | 0.121 | 0.075 | +0.046
+    50%  | 0.154 | 0.118 | +0.035
+
+判据：
+  · predicted（内容）显著性下 gap 仍为正 ⇒ 门控利用的是可预测信号，机制主张可辩护。
+  · gap 塌到 ~0 ⇒ 上一个 H2 的增益主要来自偷看金标准，应回到 v3 §10 熔断点。
+  · 重框定（0683600）后 store 内部计算内容显著性，oracle/predicted 注入与 α 混合均收敛到同一门控，已移除。
+
+artifact written: eval/results/p2-h2-salience.json

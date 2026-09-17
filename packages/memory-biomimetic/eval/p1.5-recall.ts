@@ -115,12 +115,29 @@ async function main(): Promise<void> {
     console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     +${(b - a).toFixed(3)}`)
   })
   console.info()
-  console.info('Interpretation:')
-  console.info('  recall@K is ~1.0 for both — lexical TF-IDF already surfaces the gold evidence,')
-  console.info('  so pruning does not change WHICH single memory is retrieved. The real, gating-')
-  console.info('  dependent effect is distractorLoad: ON removes trivial memories from the pool,')
-  console.info('  so its top-K context is clean (load ~0); OFF keeps them, polluting the context.')
-  console.info('  Whether that pollution degrades answers is the question the LLM reader answers.')
+  console.info('Interpretation (DERIVED from the measured numbers printed above — no hardcoded claims):')
+  const i8 = KS.indexOf(8)
+  const rOn = (i: number) => avg(recall[i].on)
+  const rOff = (i: number) => avg(recall[i].off)
+  const lOn = (i: number) => avg(load[i].on)
+  const lOff = (i: number) => avg(load[i].off)
+  const maxRecall = Math.max(...KS.map((_, i) => Math.max(rOn(i), rOff(i))))
+  const gap8 = rOn(i8) - rOff(i8)
+  const loadGap8 = lOff(i8) - lOn(i8)
+  console.info(`  recall@K is MEASURED, not assumed. Max mean recall@K across all K and both conditions = ${maxRecall.toFixed(3)}.`)
+  console.info(maxRecall < 0.9
+    ? '  => recall@K is well below 1.0 for BOTH gating conditions: lexical retrieval does NOT reliably bring the gold-evidence memory into the top-K. The prior hardcoded claim "recall@K is ~1.0 for both" is contradicted by the data and has been removed.'
+    : '  => at least one condition reaches near-saturation recall@K; the prior "~1.0 for both" assumption holds here.')
+  KS.forEach((k, i) => {
+    const g = rOn(i) - rOff(i)
+    console.info(`  K=${String(k).padStart(2)}: recallON=${rOn(i).toFixed(3)} recallOFF=${rOff(i).toFixed(3)} gap(ON-OFF)=${(g >= 0 ? '+' : '')}${g.toFixed(3)}  loadON=${lOn(i).toFixed(3)} loadOFF=${lOff(i).toFixed(3)}`)
+  })
+  console.info(`  gating effect at K=8: recallON - recallOFF = ${(gap8 >= 0 ? '+' : '')}${gap8.toFixed(3)} => ${gap8 > 0.005 ? 'ON > OFF (gating helps recall@8)' : gap8 < -0.005 ? 'ON < OFF — SIGN REVERSAL (gating hurts recall@8)' : 'no material difference'}.`)
+  console.info(`  distractorLoad@8: ON=${lOn(i8).toFixed(3)} OFF=${lOff(i8).toFixed(3)} (OFF-ON=${loadGap8 >= 0 ? '+' : ''}${loadGap8.toFixed(3)}).`)
+  console.info(loadGap8 > 0.01
+    ? '  => As expected, OFF retains trivial distractors (higher load); ON prunes them (cleaner context).'
+    : '  => Distractor-load difference is small; gating does not materially change context purity under this scorer.')
+  console.info('  Whether the distractor-load gap degrades ANSWERS (F1) is measured by p1.5-reader.ts — not asserted here.')
 }
 
 main().catch((e) => {
