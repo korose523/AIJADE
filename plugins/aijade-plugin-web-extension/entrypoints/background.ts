@@ -15,7 +15,7 @@ import {
   toStatus,
 } from '../src/background/client'
 import { loadSettings, saveSettings } from '../src/background/storage'
-import { DEFAULT_SETTINGS, STORAGE_KEY } from '../src/shared/constants'
+import { DEFAULT_REST_BASE_URL, DEFAULT_SETTINGS, STORAGE_KEY } from '../src/shared/constants'
 import {
   backgroundStatusChanged,
   popupClearError,
@@ -25,7 +25,10 @@ import {
   popupUpdateSettings,
 } from '../src/shared/eventa'
 import { createRuntimeEventaContext } from '../src/shared/eventa-runtime'
+import { sidepanelRequestEvidence } from '../src/shared/eventa-sidepanel'
+import { summarize } from '../src/shared/llm'
 import { detectSiteFromUrl } from '../src/shared/sites'
+import { evaluatePageOpinion, reducePageToEvidence, reduceSubtitleToEvidence } from '../src/shared/v10-evidence'
 
 const state = createClientState()
 
@@ -57,6 +60,18 @@ function shouldNotifyVideo(payload: { url: string, title?: string, videoId?: str
     return false
   lastVideoNotifyKey = key
   return true
+}
+
+/**
+ * 侧边栏视图用 LLM 调用：与 `src/background/client.ts` 的 `makeLlm` 同口径
+ * （绑定 baseUrl / model / token），但**不复用** client.ts 的内部函数
+ * （避免改动 client.ts 文件所有权）。仅用于按需计算观点评价。
+ */
+function makeSidePanelLlm(settings: ExtensionSettings) {
+  const baseUrl = settings.llmBaseUrl || DEFAULT_REST_BASE_URL
+  const model = settings.llmModel || 'auto'
+  const token = settings.bearerToken || undefined
+  return (text: string, opts: { kind: 'page' | 'subtitle' | 'opinion' }) => summarize(text, { kind: opts.kind, baseUrl, model, token })
 }
 
 function emitStatus() {
@@ -147,6 +162,24 @@ export default defineBackground(() => {
     state.lastError = undefined
     emitStatus()
     return toStatus(state, settings)
+  })
+
+  // 侧边栏 Companion：请求当前标签页的归约结果（确定性归约 + 可选 LLM 观点评价）。
+  // 复用既有 eventa 约定，不新造通信层；侧边栏只展示，不直接调 LLM。
+  defineInvokeHandler(context, sidepanelRequestEvidence, async (req) => {
+    const status = toStatus(state, settings)
+    const pageEvidence = state.lastPage ? reducePageToEvidence(state.lastPage) : null
+    const subtitleEvidence = state.lastSubtitle ? reduceSubtitleToEvidence(state.lastSubtitle) : null
+    let opinion: import('../src/shared/v10-evidence').OpinionEvaluationPayload | null = null
+    if (req?.includeOpinion && state.lastPage) {
+      try {
+        opinion = await evaluatePageOpinion(state.lastPage, makeSidePanelLlm(settings))
+      }
+      catch {
+        opinion = null
+      }
+    }
+    return { status, pageEvidence, subtitleEvidence, opinion }
   })
 
   void init()

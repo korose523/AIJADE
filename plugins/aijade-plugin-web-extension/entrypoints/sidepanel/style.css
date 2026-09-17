@@ -1,0 +1,30 @@
+@import '@proj-aijade/ui/main.css';
+
+:root {
+  color-scheme: light dark;
+  background-color: var(--bg-color-dark);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 360px;
+}
+
+#app {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0.75rem;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    background-color: var(--bg-color-light);
+  }
+}

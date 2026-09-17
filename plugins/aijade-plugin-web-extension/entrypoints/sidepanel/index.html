@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIJADE Companion</title>
+    <!--
+      WXT 通过路径 `entrypoints/sidepanel/index.html` 识别为 sidepanel 入口
+      （见 wxt 0.20.x find-entrypoints），并自动写入 `side_panel.default_path`
+      与 `sidePanel` 权限。`manifest.type` 这一 meta 仅被 popup 入口用于设置
+      actionType，sidepanel 入口并不消费它；此处沿用 popup 的同款 meta 形式以
+      保持约定一致、自文档化，对 sidepanel 检测无功能影响。
+    -->
+    <meta name="manifest.type" content="sidepanel" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
