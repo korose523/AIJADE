@@ -7,6 +7,8 @@ import { nanoid } from 'nanoid'
 
 import packageJSON from '../../package.json'
 
+import { reducePageToEvidence, reduceSubtitleToEvidence } from '../shared/v10-evidence'
+
 const PLUGIN_NAME = 'proj-aijade:plugin-web-extension'
 
 export interface ClientState {
@@ -28,7 +30,7 @@ export function createClientState(): ClientState {
 
 function createIdentity() {
   return {
-    kind: 'plugin',
+    kind: 'plugin' as const,
     plugin: {
       id: PLUGIN_NAME,
       version: typeof packageJSON.version === 'string' ? packageJSON.version : undefined,
@@ -147,6 +149,7 @@ export function handlePageContext(state: ClientState, settings: ExtensionSetting
     text: `User is browsing: ${payload.title} (${payload.url}).`,
     metadata: {
       source: 'web-extension',
+      v10Evidence: reducePageToEvidence(payload),
       site: payload.site,
       url: payload.url,
       title: payload.title,
@@ -229,6 +232,7 @@ export function handleSubtitle(state: ClientState, settings: ExtensionSettings, 
     text: `Subtitle: ${payload.text}`,
     metadata: {
       source: 'web-extension',
+      v10Evidence: reduceSubtitleToEvidence(payload),
       site: payload.site,
       url: payload.url,
       title: payload.title,
