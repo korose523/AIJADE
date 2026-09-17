@@ -20,6 +20,7 @@ import {
   buildEvidenceEventFromCandidate,
   evidenceFromSubtitleObservation,
   evidenceFromWebpageObservation,
+  evidenceHashFor,
 } from './video-observation'
 
 // ---------------------------------------------------------------------------
@@ -94,11 +95,22 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
   })
 
   // -------------------------------------------------------------------------
-  // D.2 端到端锚点闭合（本任务核心断言）：用归约结果构造事件 → proposal，
-  // anchorKind==='evidence' 且 verifyShadowParamsProposalAnchor 返回 { ok: true }。
-  // 证明生产者与下游闸门口径一致，而非两套哈希。
+  // D.2 「归约后闸门接受本提案」。
+  //
+  // ⚠️ 诚实标注：这一组**不是**对哈希口径的检验，它是**结构上恒真**的。
+  //    evidence 分支的闸门复算用的是 `proposal.evidenceHash` / `proposal.claimText`
+  //    这两个字段本身，而归约（`shadowParamsProposalFromEvent`）写 `inputHash` 时用的
+  //    也正是这两个字段 —— 两边取的是同一份数据，所以无论本模块用什么公式算
+  //    `evidenceHash`，这里都必然返回 `{ ok: true }`。
+  //
+  //    实测证伪过：给 `evidenceHashFor` 的 body 加一个常量字段（改变全部哈希值），
+  //    本组仍全绿。故**不要**引用本组断言来论证"哈希口径正确"。
+  //
+  //    它的真实价值只有一个：钉住 `anchorKind='evidence'` / `anchorVerified=false`
+  //    这两个判别位没被改错，且归约不抛错。
+  //    真正的、可失败的检验见下面的 D.2b 与 D.3。
   // -------------------------------------------------------------------------
-  it('webpage reduction closes the anchor end-to-end (producer == gate)', () => {
+  it('reduction yields an evidence-anchored proposal that the gate accepts (structurally true - see comment)', () => {
     const candidate = evidenceFromWebpageObservation(webpagePayload)
     const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
@@ -107,12 +119,45 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
     expect(verifyShadowParamsProposalAnchor(proposal)).toEqual({ ok: true })
   })
 
-  it('subtitle reduction closes the anchor end-to-end (producer == gate)', () => {
+  it('subtitle reduction yields an evidence-anchored proposal', () => {
     const candidate = evidenceFromSubtitleObservation(subtitlePayload)
     const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's2', proposalId: 'p2' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
     expect(proposal.anchorKind).toBe('evidence')
     expect(verifyShadowParamsProposalAnchor(proposal)).toEqual({ ok: true })
+  })
+
+  // -------------------------------------------------------------------------
+  // D.2b 真正可失败的那条：**第三方只拿到观察 payload** 也能复算出提案里的
+  //      `evidence_hash`。这才是"证据锚在观察上"的可检验形式 ——
+  //      它检验的是本模块的 payload → 提案 映射是否**保真**（原样透传）。
+  //      若生产者将来对 claim_text 做截断 / 摘要 / 规范化，本条会**失败**，
+  //      而上面的 D.2 不会。这就是两者的区别。
+  // -------------------------------------------------------------------------
+  it('a third party holding only the observation can recompute the evidence hash (mapping is lossless)', () => {
+    const candidate = evidenceFromWebpageObservation(webpagePayload)
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
+    const proposal = shadowParamsProposalFromEvent(ev)
+
+    // 从**观察 payload**（而不是 candidate / proposal）复算。
+    const fromObservation = evidenceHashFor(
+      'webpage_text',
+      webpagePayload.content_hash,
+      webpagePayload.observation_text,
+    )
+    expect(proposal.evidenceHash).toBe(fromObservation)
+    // claim_text 必须是原样透传；截断/摘要会让上面那条也一起失败。
+    expect(proposal.claimText).toBe(webpagePayload.observation_text)
+
+    const subCandidate = evidenceFromSubtitleObservation(subtitlePayload)
+    const subEv = buildEvidenceEventFromCandidate(subCandidate, { sessionId: 's2', proposalId: 'p2' }, observationEnvelope(1, 'h'))
+    const subProposal = shadowParamsProposalFromEvent(subEv)
+    expect(subProposal.evidenceHash).toBe(evidenceHashFor(
+      'video_transcript',
+      subtitlePayload.transcript_hash,
+      subtitlePayload.caption_text,
+    ))
+    expect(subProposal.claimText).toBe(subtitlePayload.caption_text)
   })
 
   // 显式点出耦合：本模块证据哈希 + 原样 claim_text，复算出的 input_hash 与
