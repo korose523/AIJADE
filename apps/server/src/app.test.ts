@@ -124,3 +124,43 @@ describe('app well-known metadata routes', () => {
     expect(auth.api.getOAuthServerConfig).not.toHaveBeenCalled()
   })
 })
+
+describe('app CORS allowlist', () => {
+  const EXTENSION_ID = 'abcdefghijklmnopabcdefghijklmnop'
+  const EXTENSION_ORIGIN = `chrome-extension://${EXTENSION_ID}`
+
+  /** Any `/api/*` path takes the CORS middleware; a 404 still carries its headers. */
+  async function corsHeadersFor(env: Record<string, unknown>, origin: string) {
+    const { deps } = createTestDeps()
+    Object.assign(deps.env, env)
+    const { app } = await buildApp(deps)
+    const res = await app.request('/api/v1/__cors_probe', { headers: { origin } })
+    return res.headers.get('access-control-allow-origin')
+  }
+
+  it('echoes the configured extension origin', async () => {
+    expect(await corsHeadersFor({ WEB_EXTENSION_ID: EXTENSION_ID }, EXTENSION_ORIGIN))
+      .toBe(EXTENSION_ORIGIN)
+  })
+
+  it('does not trust an extension origin when none is configured', async () => {
+    // The default must be trust-nothing, not trust-any-extension: WEB_EXTENSION_ID
+    // is per-deployment (Chrome derives the id from the unpacked path), so an
+    // unconfigured server cannot know which extension is legitimate.
+    expect(await corsHeadersFor({}, EXTENSION_ORIGIN)).not.toBe(EXTENSION_ORIGIN)
+  })
+
+  it('does not trust a different extension id than the configured one', async () => {
+    const other = 'ponmlkjihgfedcbaponmlkjihgfedcba'
+    expect(await corsHeadersFor({ WEB_EXTENSION_ID: EXTENSION_ID }, `chrome-extension://${other}`))
+      .not
+      .toBe(`chrome-extension://${other}`)
+  })
+
+  it('still echoes ADDITIONAL_TRUSTED_ORIGINS alongside the extension origin', async () => {
+    expect(await corsHeadersFor(
+      { WEB_EXTENSION_ID: EXTENSION_ID, ADDITIONAL_TRUSTED_ORIGINS: ['https://10.0.0.129:5273'] },
+      'https://10.0.0.129:5273',
+    )).toBe('https://10.0.0.129:5273')
+  })
+})

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { ensureDynamicFirstPartyRedirectUri, seedTrustedClients } from '../auth'
+import { ensureDynamicFirstPartyRedirectUri, getTrustedOIDCClientIds, seedTrustedClients } from '../auth'
 
 function createMockDb(existingRowsByCall: unknown[][] = []) {
   const limit = vi.fn()
@@ -31,13 +31,13 @@ function createMockDb(existingRowsByCall: unknown[][] = []) {
 
 describe('seedTrustedClients', () => {
   it('seeds trusted first-party clients with explicit oauth metadata', async () => {
-    const { db, values, capturedValues } = createMockDb([[], [], []])
+    const { db, values, capturedValues } = createMockDb([[], [], [], []])
 
     await seedTrustedClients(db as any, {
       API_SERVER_URL: 'http://localhost:3000',
     } as any)
 
-    expect(values).toHaveBeenCalledTimes(3)
+    expect(values).toHaveBeenCalledTimes(4)
 
     // Web — public client (no secret, PKCE only)
     const webClient = capturedValues[0]
@@ -87,6 +87,46 @@ describe('seedTrustedClients', () => {
       'capacitor://localhost/auth/callback',
       'ai.moeru.aijade-pocket://links/auth/callback',
     ])
+
+    // Extension — public native client (PKCE only), redirect URI derived from
+    // WEB_EXTENSION_ID. Seeded with NO redirect URIs when the id is unset, so that the
+    // authorize request fails at redirect validation rather than at client lookup.
+    const extensionClient = capturedValues[3]
+    if (!extensionClient)
+      throw new Error('Expected extension client seed insert')
+
+    expect(extensionClient.clientId).toBe('aijade-web-extension')
+    expect(extensionClient.clientSecret).toBeNull()
+    expect(extensionClient.public).toBe(true)
+    expect(extensionClient.type).toBe('native')
+    expect(extensionClient.tokenEndpointAuthMethod).toBe('none')
+    expect(extensionClient.requirePKCE).toBe(true)
+    expect(extensionClient.redirectUris).toEqual([])
+  })
+
+  it('registers the extension redirect URI from WEB_EXTENSION_ID', async () => {
+    const extensionId = 'abcdefghijklmnopabcdefghijklmnop'
+    const { db, capturedValues } = createMockDb([[], [], [], []])
+
+    await seedTrustedClients(db as any, {
+      API_SERVER_URL: 'http://localhost:3000',
+      WEB_EXTENSION_ID: extensionId,
+    } as any)
+
+    const extensionClient = capturedValues[3]
+    if (!extensionClient)
+      throw new Error('Expected extension client seed insert')
+
+    // `chrome-extension:` is a non-special scheme; the provider allows custom schemes for
+    // installed clients (only javascript:/data:/vbscript: are rejected), so this URI is
+    // accepted the same way the mobile deep links above are.
+    expect(extensionClient.redirectUris).toEqual([
+      `chrome-extension://${extensionId}/auth/callback`,
+    ])
+  })
+
+  it('lists the extension among the trusted first-party OIDC client ids', () => {
+    expect(getTrustedOIDCClientIds()).toContain('aijade-web-extension')
   })
 
   it('updates existing clients to match current config', async () => {
@@ -100,6 +140,7 @@ describe('seedTrustedClients', () => {
       [{ clientId: 'aijade-stage-web' }],
       [],
       [],
+      [],
     ]);
     (db as any).update = vi.fn(() => ({ set }))
 
@@ -107,7 +148,7 @@ describe('seedTrustedClients', () => {
       API_SERVER_URL: 'http://localhost:3000',
     } as any)
 
-    expect(values).toHaveBeenCalledTimes(2)
+    expect(values).toHaveBeenCalledTimes(3)
     expect(set).toHaveBeenCalledTimes(1)
     expect(setCalls[0].public).toBe(true)
     expect(setCalls[0].tokenEndpointAuthMethod).toBe('none')

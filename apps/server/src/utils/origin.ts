@@ -1,8 +1,26 @@
 import type { Env } from '../libs/env'
 
+/**
+ * Normalizes a URL to its origin.
+ *
+ * NOTICE: `URL.origin` is the literal string `"null"` for every non-special scheme
+ * (`chrome-extension:`, `capacitor:`, custom deep-link schemes such as
+ * `ai.moeru.aijade-pocket:`), not just for opaque origins. Returning that verbatim
+ * would collapse all of them into one unmatchable value: a configured
+ * `chrome-extension://<id>` entry would be rewritten to `"null"` and could never
+ * equal the `Origin` header it is meant to match. Rebuild those from
+ * `protocol` + `host` instead.
+ *
+ * `file://` is deliberately left alone: it has no host to rebuild from, and the
+ * Electron renderer's `file://` origin must stay untrusted so the Stripe redirect
+ * fallback (see {@link resolveCheckoutRedirectBase}) keeps applying.
+ */
 function getOriginFromUrl(url: string): string | undefined {
   try {
-    return new URL(url).origin
+    const parsed = new URL(url)
+    if (parsed.origin === 'null' && parsed.host)
+      return `${parsed.protocol}//${parsed.host}`
+    return parsed.origin
   }
   catch {
     return undefined
@@ -126,17 +144,39 @@ const ALWAYS_TRUSTED_AUTH_ORIGINS = [
 ]
 
 /**
+ * Origins derived from configuration that are not plain http(s) URLs.
+ *
+ * Kept separate from `ADDITIONAL_TRUSTED_ORIGINS` because a Chrome extension
+ * origin cannot be written into a static comma-separated list before the
+ * extension exists: Chrome mints the id from the unpacked extension's absolute
+ * path (or the published manifest `key`), so the operator only learns it after
+ * installing the extension. It is supplied as `WEB_EXTENSION_ID` and rendered
+ * here, so both the OIDC redirect URI (see `libs/auth.ts`) and the origin
+ * allowlist derive from one value instead of two spellings of the same string.
+ *
+ * Returns `[]` when unset — an unconfigured deployment trusts no extension
+ * origin, rather than falling back to trusting every one of them.
+ */
+export function deriveWebExtensionOrigin(env: { WEB_EXTENSION_ID?: string }): string[] {
+  const extensionId = env.WEB_EXTENSION_ID?.trim()
+  if (!extensionId)
+    return []
+  return [`chrome-extension://${extensionId}`]
+}
+
+/**
  * Builds the origin list passed to Better Auth `trustedOrigins` (and related flows).
  *
  * Expects:
- * - `env.API_SERVER_URL` and parsed `env.ADDITIONAL_TRUSTED_ORIGINS`.
+ * - `env.API_SERVER_URL`, parsed `env.ADDITIONAL_TRUSTED_ORIGINS`, optional `env.WEB_EXTENSION_ID`.
  * - Optional `request` so the caller's Origin/Referer can be merged when known.
  *
  * Returns:
- * - De-duplicated origins in insertion order (API URL, env extras, localhost wildcards, then request-derived).
+ * - De-duplicated origins in insertion order (API URL, env extras, extension
+ *   origin, localhost wildcards, then request-derived).
  */
 export function getAuthTrustedOrigins(
-  env: Pick<Env, 'API_SERVER_URL' | 'ADDITIONAL_TRUSTED_ORIGINS'>,
+  env: Pick<Env, 'API_SERVER_URL' | 'ADDITIONAL_TRUSTED_ORIGINS'> & { WEB_EXTENSION_ID?: string },
   request?: Request,
 ): string[] {
   const origins = new Set<string>()
@@ -146,6 +186,10 @@ export function getAuthTrustedOrigins(
   }
 
   for (const origin of env.ADDITIONAL_TRUSTED_ORIGINS) {
+    origins.add(origin)
+  }
+
+  for (const origin of deriveWebExtensionOrigin(env)) {
     origins.add(origin)
   }
 

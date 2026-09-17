@@ -19,7 +19,7 @@ import { eq } from 'drizzle-orm'
 
 import { captureSafe } from '../services/adapters/posthog'
 import { ApiError } from '../utils/error'
-import { getAuthTrustedOrigins, getTrustedOrigin } from '../utils/origin'
+import { deriveWebExtensionOrigin, getAuthTrustedOrigins, getTrustedOrigin } from '../utils/origin'
 import { oidcJwtBearer } from './auth-plugins/oidc-jwt-bearer'
 
 import * as authSchema from '../schemas/accounts'
@@ -63,6 +63,7 @@ const OIDC_RESPONSE_TYPES = ['code'] as const
 export const OIDC_CLIENT_ID_WEB = 'aijade-stage-web'
 export const OIDC_CLIENT_ID_ELECTRON = 'aijade-stage-electron'
 export const OIDC_CLIENT_ID_POCKET = 'aijade-stage-pocket'
+export const OIDC_CLIENT_ID_EXTENSION = 'aijade-web-extension'
 
 const DEFAULT_WEB_REDIRECT_URIS = [
   'https://aijade.ai/auth/callback',
@@ -91,6 +92,22 @@ function buildWebRedirectUris(env: Env): string[] {
   }
 
   return [...uris]
+}
+
+/**
+ * Build redirect URIs for the Chrome extension OIDC client.
+ *
+ * Derived from `WEB_EXTENSION_ID` rather than hardcoded, because Chrome mints an
+ * unpacked extension's id from its absolute path (published builds: the manifest
+ * `key`), so the id is per-deployment. Unset ⇒ no redirect URIs registered ⇒ the
+ * authorize request is rejected at redirect validation. That is the intended
+ * signal: the client is known, this deployment just has not been given the id yet.
+ *
+ * Shares `deriveWebExtensionOrigin` with the origin allowlist so the redirect URI
+ * and the trusted origin can never disagree about which extension is meant.
+ */
+function buildExtensionRedirectUris(env: Env): string[] {
+  return deriveWebExtensionOrigin(env).map(origin => `${origin}/auth/callback`)
 }
 
 function buildTrustedWebRedirectUri(redirectUri: string, additionalTrustedOrigins: readonly string[]): string | null {
@@ -188,6 +205,34 @@ function buildTrustedClientSeeds(env: Env): TrustedClientSeed[] {
     enableEndSession: true,
   })
 
+  // Chrome extension (MV3) — public client (no secret, PKCE only).
+  //
+  // Same reasoning as Electron: the extension bundle ships to the user and is
+  // readable from disk, so a bundled client_secret would be obfuscation rather
+  // than a confidentiality boundary. PKCE is what actually binds the code to the
+  // client, and the redirect URI is locked to the one Chrome will accept for this
+  // extension id.
+  //
+  // `type: 'native'` — an installed client on a user-controlled device, which is
+  // the same category as Electron and Capacitor, not a hosted web origin.
+  // `enableEndSession: true` so the extension can log out via RP-Initiated Logout
+  // without depending on cross-site session cookies (which it cannot hold: its
+  // cookie jar is keyed to `chrome-extension://<id>`, not the API origin).
+  clients.push({
+    clientId: OIDC_CLIENT_ID_EXTENSION,
+    name: 'AIJADE Web Extension',
+    type: 'native',
+    public: true,
+    redirectUris: buildExtensionRedirectUris(env),
+    scopes: [...OIDC_SCOPES],
+    grantTypes: [...OIDC_GRANT_TYPES],
+    responseTypes: [...OIDC_RESPONSE_TYPES],
+    tokenEndpointAuthMethod: 'none',
+    requirePKCE: true,
+    skipConsent: true,
+    enableEndSession: true,
+  })
+
   return clients
 }
 
@@ -200,7 +245,7 @@ export function getTrustedClientSeedSummaries(env: Env): TrustedClientSeedSummar
 }
 
 export function getTrustedOIDCClientIds(): string[] {
-  return [OIDC_CLIENT_ID_WEB, OIDC_CLIENT_ID_ELECTRON, OIDC_CLIENT_ID_POCKET]
+  return [OIDC_CLIENT_ID_WEB, OIDC_CLIENT_ID_ELECTRON, OIDC_CLIENT_ID_POCKET, OIDC_CLIENT_ID_EXTENSION]
 }
 
 export async function ensureDynamicFirstPartyRedirectUri(

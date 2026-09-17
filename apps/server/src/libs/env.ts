@@ -89,6 +89,11 @@ const EnvSchema = object({
 
   // Comma-separated exact origins (e.g. Capacitor dev server `https://10.x:5273`).
   // Prefer this over broad private-IP regex heuristics in production-like configs.
+  //
+  // NOTICE: do not put a `chrome-extension://` origin here — use WEB_EXTENSION_ID.
+  // `URL.origin` is the literal string "null" for every non-special scheme, and
+  // this list is normalized through `URL.origin` (see parseAdditionalTrustedOriginsEnv),
+  // so such an entry would be silently rewritten to "null" and never match.
   ADDITIONAL_TRUSTED_ORIGINS: optional(
     pipe(
       string(),
@@ -96,6 +101,20 @@ const EnvSchema = object({
     ),
     '',
   ),
+
+  // Chrome extension id of the AIJADE web extension (`aijade-plugin-web-extension`).
+  //
+  // NOTICE: this cannot be hardcoded. Chrome mints an unpacked extension's id from
+  // its absolute path on disk (and a published build's id from the manifest `key`),
+  // so it differs per machine and per signing key — the operator has to supply it.
+  //
+  // When set, the server registers `chrome-extension://<id>/auth/callback` as a
+  // first-party OIDC client redirect URI and trusts `chrome-extension://<id>` as an
+  // origin (CORS + Better Auth). When unset, the extension OIDC client is still
+  // seeded but with **no** redirect URIs, so authorization fails at redirect
+  // validation rather than at client lookup — that distinction is deliberate, it
+  // says "not configured for this deployment" instead of "unknown client".
+  WEB_EXTENSION_ID: optional(string(), ''),
 
   DATABASE_URL: pipe(string(), nonEmpty('DATABASE_URL is required')),
   REDIS_URL: pipe(string(), nonEmpty('REDIS_URL is required')),

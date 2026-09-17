@@ -96,7 +96,7 @@ import { createV9RuntimeStore } from './services/domain/v9-runtime-store'
 import { createEnvelopeCrypto } from './utils/envelope-crypto'
 import { ApiError, createInternalError } from './utils/error'
 import { nanoid } from './utils/id'
-import { getTrustedOrigin } from './utils/origin'
+import { deriveWebExtensionOrigin, getTrustedOrigin } from './utils/origin'
 
 interface AppDeps {
   auth: AuthInstance
@@ -130,6 +130,28 @@ interface AppDeps {
 export async function buildApp(deps: AppDeps) {
   const logger = useLogger('app').useGlobalConfig()
 
+  /**
+   * CORS allowlist, computed once per app build rather than per request (the CORS
+   * origin callback runs on every `/api/*` request, including preflights).
+   *
+   * `chrome-extension://<id>` is merged in here because it is derived from
+   * `WEB_EXTENSION_ID` and cannot be written into `ADDITIONAL_TRUSTED_ORIGINS`:
+   * that list is normalized through `URL.origin`, which yields the literal string
+   * `"null"` for every non-special scheme, so an entry there would never match.
+   *
+   * Without this, the browser blocks the extension's responses on `/api/*` — which
+   * is what made the OIDC token exchange and every Bearer call unreachable from
+   * the extension regardless of whether the token itself was valid.
+   *
+   * `?? []` mirrors the callee's own default: `ADDITIONAL_TRUSTED_ORIGINS` is
+   * guaranteed by `parseEnv` in production, but callers that build `Env` partially
+   * (tests) must keep working.
+   */
+  const corsTrustedOrigins = [
+    ...(deps.env.ADDITIONAL_TRUSTED_ORIGINS ?? []),
+    ...deriveWebExtensionOrigin(deps.env),
+  ]
+
   const app = new Hono<HonoEnv>()
     .use('*', async (c, next) => {
       await next()
@@ -144,7 +166,7 @@ export async function buildApp(deps: AppDeps) {
     .use(
       '/api/*',
       cors({
-        origin: origin => getTrustedOrigin(origin, deps.env.ADDITIONAL_TRUSTED_ORIGINS),
+        origin: origin => getTrustedOrigin(origin, corsTrustedOrigins),
         credentials: true,
       }),
     )
