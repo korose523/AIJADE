@@ -11,6 +11,8 @@ import type {
   AijadeEvent,
   AijadeEventEnvelope,
   RiskLevel,
+  VideoTranscriptObservationPayload,
+  WebpageTextObservationPayload,
 } from './events'
 import type { MemoryPayload, MemoryTxInput, TxResult } from './memory-tx'
 import type { StimulusFeature } from './pgc-state'
@@ -38,6 +40,11 @@ import {
   shadowParamsProposalFromEvent,
   shadowProposalAsPgcCandidate,
 } from './shadow-params'
+import {
+  buildEvidenceEventFromCandidate,
+  evidenceFromSubtitleObservation,
+  evidenceFromWebpageObservation,
+} from './video-observation'
 import { buildEvidenceWeaveCandidateReadyEvent, buildWeave, toWeaveRow } from './weave'
 
 export interface V9PerceptionInput {
@@ -108,6 +115,40 @@ export interface V9LearningResult {
   tx: TxResult
   /** 被归约出的影子参数提案（便于调用方审计/回放）。 */
   proposal: ShadowParamsProposal
+}
+
+/**
+ * A 路（纯视频输入）归约入口输入。与 `V9LearningInput` 平行，但输入是**已落库的 video 观察
+ * 事件**（或其 payload 经 `build*ObservationEvent` 构造的事件），输出是
+ * `aijade.learning.proposed.evidence` 提案。
+ *
+ * `tick` / `inputHash` 是 v10 确定性/溯源字段，由**输入 video 观察事件传播而来**（服务端落库
+ * 时记录），不是运行时发明；它们会原样传播到产出的 learning 事件信封。
+ * `proposalId` 由调用方提供——video 观察本身不携带 proposalId，归约时才生成。
+ * `event` 是被归约的 video 观察事件（topic 为
+ * `aijade.video.observation.webpage_text` 或 `aijade.video.observation.video_transcript`）。
+ */
+export interface V9VideoObservationInput {
+  eventId: string
+  sessionId: string
+  traceId: string
+  correlationId: string
+  timestamp: number
+  originDevice: string
+  privacyLevel: 0 | 1 | 2 | 3
+  riskScore: number
+  /** v10 确定性排序序号，由输入 video 观察事件传播而来。 */
+  tick: number
+  /** v10 输入溯源哈希，由输入 video 观察事件传播而来。 */
+  inputHash: string
+  /** 本次归约产出的提案 id（video 观察本身不携带 proposalId）。 */
+  proposalId: string
+  /** 被归约的 video 观察事件（webpage_text / video_transcript）。 */
+  event: AijadeEvent
+  /** 透传到产出的 learning 事件；缺省由 evidenceHash 确定性派生（见 video-observation.ts）。 */
+  renderRef?: string
+  appliedParamsHash?: string
+  assetVersionHash?: string
 }
 
 function id(prefix: string, eventId: string): string {
@@ -501,5 +542,85 @@ export class V9CausalRuntime {
     tagCoreStateNodes(artifact, artifact.memoryVersions.length > 0)
     await this.store.persist(artifact)
     return { artifact, tx, proposal }
+  }
+
+  /**
+   * A 路（纯视频输入）归约：video 观察 → 证据候选 → `aijade.learning.proposed.evidence`
+   * 事件 → **同一条**门控链（PGC → MemoryTx → EvidenceWeave）。
+   *
+   * 这是 v10 §0.2 / §2 / §3 缺失的生产者：扩展侧已能产出 video 观察 payload 并上报服务端，
+   * 但落库后没有下游把它归约成证据提案。本方法补上这一环，使 evidence 分支的「完整性锚点」
+   * 闸门（`verifyShadowParamsProposalAnchor` 的 evidence 分支）首次有真实生产者喂入。
+   *
+   * 流程：
+   * 1. 确定性归约：video 观察 payload → `EvidenceCandidate`（见 `video-observation.ts`，
+   *    无网络/随机/时钟依赖）。退化输入（空 observation_text / 空 spans 等）在此抛错。
+   * 2. 生成 `aijade.learning.proposed.evidence` 事件，信封带 `tick` + `causality.inputHash`，
+   *    **值由输入 video 观察事件传播而来**，不是运行时发明。
+   * 3. **复用 `processLearning` 走同一条门控链**：`shadowParamsProposalFromEvent`
+   *    → `createPgcStateIntegrator` → `evaluateStimulus` → `decidePgc` →
+   *    `MemoryTxEngine.commit` → `buildWeave` → `store.persist`。
+   *
+   * 产出的提案 `anchorKind === 'evidence'`、`anchorVerified === false`，并可通过
+   * `verifyShadowParamsProposalAnchor`（其复算口径与本模块的 `evidenceHashFor` 逐位一致）。
+   */
+  async processVideoObservation(input: V9VideoObservationInput): Promise<V9LearningResult> {
+    // 1. A 路归约：video 观察 → 证据候选（确定性）。
+    const payload = input.event.payload as
+      | WebpageTextObservationPayload
+      | VideoTranscriptObservationPayload
+    const candidate = input.event.topic === 'aijade.video.observation.webpage_text'
+      ? evidenceFromWebpageObservation(payload as WebpageTextObservationPayload)
+      : input.event.topic === 'aijade.video.observation.video_transcript'
+        ? evidenceFromSubtitleObservation(payload as VideoTranscriptObservationPayload)
+        : (() => {
+            throw new Error(`[v9-runtime] unsupported video observation topic: ${input.event.topic}`)
+          })()
+
+    // 2. 生成证据学习事件，信封带 tick + causality（由输入事件传播而来）。
+    const evidenceEvent = buildEvidenceEventFromCandidate(
+      candidate,
+      {
+        sessionId: input.sessionId,
+        proposalId: input.proposalId,
+        renderRef: input.renderRef,
+        appliedParamsHash: input.appliedParamsHash,
+        assetVersionHash: input.assetVersionHash,
+      },
+      {
+        event_id: id('evt', input.eventId),
+        trace_id: input.traceId,
+        correlation_id: input.correlationId,
+        timestamp: input.timestamp,
+        producer: 'v9-causal-runtime',
+        origin_device: input.originDevice,
+        privacy_level: input.privacyLevel,
+        evidence_refs: [],
+        causal_context_refs: [input.traceId],
+        risk_score: clampRisk(input.riskScore),
+        idempotency_key: id('runtime', input.eventId),
+        replay_mode: 'live',
+        risk_level: input.riskScore >= 0.7 ? 'high' : input.riskScore >= 0.35 ? 'medium' : 'low',
+        // v10 §0.2：tick 与 causality 由输入事件传播而来。
+        tick: input.tick,
+        causality: { inputHash: input.inputHash },
+      },
+    )
+
+    // 3. 复用 processLearning 的同一条门控链（不再重复实现 gating，
+    //    保证与 shadow_params 分支行为一致）。
+    return this.processLearning({
+      eventId: input.eventId,
+      sessionId: input.sessionId,
+      traceId: input.traceId,
+      correlationId: input.correlationId,
+      timestamp: input.timestamp,
+      originDevice: input.originDevice,
+      privacyLevel: input.privacyLevel,
+      riskScore: input.riskScore,
+      tick: input.tick,
+      inputHash: input.inputHash,
+      event: evidenceEvent,
+    })
   }
 }
