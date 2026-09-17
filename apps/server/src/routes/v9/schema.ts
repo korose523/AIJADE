@@ -19,8 +19,16 @@ import {
  * v9 事件信封 + **逐 topic payload** 的服务端校验 schema（valibot）。
  *
  * 真源：`packages/memory-biomimetic/src/events.ts` 的 `aijadeEventSchema`（zod v4）。
- * 本仓 `apps/` 不依赖研究内核（三层隔离，见 `PROVENANCE.md`），故此处**有意复制**
- * envelope + topic + payload 约束，而不是 import 内核。
+ *
+ * ⚠️ 本文件里的约束是**有意手写复制**的，不要"优化成 import 内核"：内核用 zod v4、
+ * 边界用 valibot，若让边界机械复用内核的 schema，边界就失去**独立复算**的能力 ——
+ * 共用一份实现时，任何契约漂移会在两侧同时成立，于是永远测不出来。
+ * `scripts/verify-v10-contract-drift.ts` 之所以值得存在，前提就是这两份约束各自独立。
+ *
+ * 另注：**不要**据此推断"apps/ 不依赖研究内核" —— 该说法已过时。`apps/server` 现在
+ * 确实依赖内核（`@proj-aijade/memory-biomimetic`），用于运行时编排（`V9CausalRuntime`、
+ * `deriveCoreStateNode`、`ShadowParamsProposal` 等）。隔离性只体现在一件事上：
+ * **本边界的校验代码不 import 内核的校验代码**。
  *
  * ⚠️ 为什么必须有逐 topic 的 payload 校验（这是踩出来的坑，勿回退）
  *
