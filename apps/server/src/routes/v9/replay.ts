@@ -59,6 +59,27 @@ interface PersistedV6State {
   commit_reason: string
 }
 
+/**
+ * 快照是否**完整可复算**。
+ *
+ * 必须逐字段校验，不能只看 `tau` 与 `s.f`：若 `w_max_global` 缺失，
+ * `Math.abs(undefined - n)` 得到 `NaN`，而 `NaN > FLOAT_EPSILON` 恒为 `false`，
+ * 于是「缺字段」会**静默地**变成「没有漂移」——这正是本模块最该避免的失效模式。
+ * 缺任何一项都必须归入 `insufficient`，而不是被算作通过。
+ */
+function isReplayableV6(v6: unknown): v6 is PersistedV6State {
+  if (v6 == null || typeof v6 !== 'object')
+    return false
+  const candidate = v6 as Partial<PersistedV6State>
+  return typeof candidate.tau === 'string'
+    && typeof candidate.s?.f === 'number'
+    && typeof candidate.w_max_global === 'number'
+    && Number.isFinite(candidate.w_max_global)
+    && typeof candidate.w_max_at_f === 'number'
+    && Number.isFinite(candidate.w_max_at_f)
+    && typeof candidate.commit_reason === 'string'
+}
+
 interface ReplayMismatch {
   kind: string
   eventId?: string
@@ -129,6 +150,39 @@ export function createV9ReplayRoutes(db: Database) {
       const tracesWithMemoryVersion = new Set(versionRows.map(r => r.traceId))
 
       // ---- 真实事实 #2：持久化的 v6 内生快照（用于复算 w_max_*） ----
+      //
+      // 真源是 `pgc_write_plans.write_plan[].pgcStateSnapshot.v6`，**不是** `pgc_states.v6_state`。
+      // 原因（这是一处已修的真实缺陷）：`pgc_states.v6_state` 存的是 `PgcState4`（即 `{a,c,d,f}`
+      // 四维状态），供下一次转移复用；而 §4.3 要求回放比对的是**决策当下的 v6 门控诊断**
+      // （`tau` / `w_max_global` / `w_max_at_f` / `commit_reason`）。两者是不同的对象。
+      // 早先内核把决策快照映射成行时只留了 `pgcStateId`，快照本身被丢弃，于是本模块对
+      // **运行期产出的事件**永远只能报 `insufficient_input_snapshot` —— 回放一致性沦为
+      // 只能对手工塞入的测试数据成立的断言。内核现已保留该快照（jsonb，无需迁移）。
+      const writePlanRows = await db
+        .select({
+          traceId: schema.v9PgcWritePlans.traceId,
+          writePlan: schema.v9PgcWritePlans.writePlan,
+        })
+        .from(schema.v9PgcWritePlans)
+        .where(inArray(schema.v9PgcWritePlans.traceId, traceIds))
+
+      /** 每个 trace 的决策快照来源：优先写计划（决策级），退回 pgc_states（状态级，通常无 v6）。 */
+      const v6Sources: { traceId: string, source: string, v6: PersistedV6State }[] = []
+      const tracesWithV6 = new Set<string>()
+
+      for (const row of writePlanRows) {
+        const plan = row.writePlan as { pgcStateSnapshot?: { v6?: PersistedV6State } }[] | null
+        if (!Array.isArray(plan))
+          continue
+        for (const entry of plan) {
+          const v6 = entry.pgcStateSnapshot?.v6
+          if (!isReplayableV6(v6))
+            continue
+          v6Sources.push({ traceId: row.traceId, source: 'pgc_write_plans', v6 })
+          tracesWithV6.add(row.traceId)
+        }
+      }
+
       const pgcRows = await db
         .select({
           traceId: schema.v9PgcStates.traceId,
@@ -136,6 +190,17 @@ export function createV9ReplayRoutes(db: Database) {
         })
         .from(schema.v9PgcStates)
         .where(inArray(schema.v9PgcStates.traceId, traceIds))
+
+      for (const row of pgcRows) {
+        // 已有决策级快照的 trace 不再用状态级回退（避免对同一 trace 重复计数）。
+        if (tracesWithV6.has(row.traceId))
+          continue
+        const v6 = row.v6State
+        if (!isReplayableV6(v6))
+          continue
+        v6Sources.push({ traceId: row.traceId, source: 'pgc_states', v6 })
+        tracesWithV6.add(row.traceId)
+      }
 
       const mismatches: ReplayMismatch[] = []
       const insufficient: ReplayInsufficient[] = []
@@ -194,17 +259,20 @@ export function createV9ReplayRoutes(db: Database) {
 
       // ---- 复算 §4.3 点名的 w_max_*：输入只取持久化的 tau 与 s.f，不做二次变换 ----
       const observedCommitReasons: string[] = []
-      for (const row of pgcRows) {
-        const v6 = row.v6State as PersistedV6State | null
-        if (!v6 || typeof v6.tau !== 'string' || typeof v6.s?.f !== 'number') {
+
+      // 该 trace 完全没有可复算的 v6 快照 ⇒ 如实报"快照不足"，绝不当作"一致"。
+      for (const traceId of traceIds) {
+        if (!tracesWithV6.has(traceId)) {
           insufficient.push({
             kind: 'missing_v6_snapshot',
-            traceId: row.traceId,
-            missing: ['pgc_states.v6_state.tau', 'pgc_states.v6_state.s.f'],
+            traceId,
+            missing: ['pgc_write_plans.write_plan[].pgcStateSnapshot.v6', 'pgc_states.v6_state.tau', 'pgc_states.v6_state.s.f'],
           })
-          continue
         }
+      }
 
+      for (const row of v6Sources) {
+        const v6 = row.v6
         observedCommitReasons.push(v6.commit_reason)
 
         if (!(COMMIT_REASON_CHAIN as readonly string[]).includes(v6.commit_reason)) {

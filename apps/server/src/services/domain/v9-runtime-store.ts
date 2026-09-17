@@ -137,6 +137,17 @@ export function createV9RuntimeStore(db: Database): V9RuntimeStore {
               evidenceRefs: event.evidence_refs,
               causalContextRefs: event.causal_context_refs,
               riskScore: event.risk_score,
+              // v10 溯源列同样**来自内核信封**，不在这里合成。
+              //
+              // 这三列曾是这条路径的系统性黑洞：HTTP 边界（`appendEvent`）一直写它们，
+              // 而运行期持久化（本文件）从不写 —— 于是**只有运行期自己产出的事件没有 tick /
+              // causality / core_state_node**，恰恰是回放 API 唯一要验的那批事件。
+              // `POST /api/v1/v9/replay` 按 `tick` 与 `causality->>'inputHash'` 找事件，
+              // 对运行期事件永远命中 0 行，回放一致性就成了只能对测试数据成立的断言。
+              // v9 感知路径的内核信封本就没有这两个字段，故为 null 是**正确的空**而非丢失。
+              tick: event.tick ?? null,
+              causality: event.causality ?? null,
+              coreStateNode: event.core_state_node ?? null,
               topic: event.topic,
               payload: event.payload,
               idempotencyKey: event.idempotency_key,

@@ -56,6 +56,16 @@ const DDL = `
     "id" text PRIMARY KEY,
     "memory_tx_id" text NOT NULL
   );
+  CREATE TABLE "pgc_write_plans" (
+    "id" text PRIMARY KEY,
+    "pgc_state_id" text NOT NULL,
+    "session_id" text NOT NULL,
+    "trace_id" text NOT NULL,
+    "policy_version" text NOT NULL,
+    "write_plan" jsonb NOT NULL,
+    "contradiction_report" jsonb NOT NULL,
+    "created_at" timestamp DEFAULT NOW() NOT NULL
+  );
 `
 
 const TICK = 42
@@ -145,6 +155,22 @@ describe('v10 replay consistency', () => {
       components: {},
       v6State: v6,
     })
+  }
+
+  /**
+   * 像**运行期持久化**那样写入决策快照：`v6` 挂在
+   * `write_plan[].pgcStateSnapshot` 上（`pgc_states.v6_state` 则只有 `{a,c,d,f}`）。
+   * 这是真实数据的形状，也是回放唯一能真正比对到的来源。
+   */
+  async function seedWritePlan(v6: Record<string, unknown>, traceId = TRACE_ID) {
+    await db.execute(sql`
+      INSERT INTO "pgc_write_plans" ("id", "pgc_state_id", "session_id", "trace_id", "policy_version", "write_plan", "contradiction_report")
+      VALUES (
+        ${'pwp-1'}, ${'pgc-1'}, ${'session-1'}, ${traceId}, ${'pgc_policy_v1'},
+        ${JSON.stringify([{ memoryWriteId: 'mw-1', decision: 'commit', pgcStateId: 'pgc-1', pgcStateSnapshot: { pgc_state_id: 'pgc-1', components: {}, v6 } }])}::jsonb,
+        ${JSON.stringify({ severity: 'low' })}::jsonb
+      )
+    `)
   }
 
   async function seedMemoryVersion() {
@@ -254,5 +280,55 @@ describe('v10 replay consistency', () => {
       body: JSON.stringify({ tick: -1, inputHash: '' }),
     })
     expect(res.status).toBe(400)
+  })
+
+  // ---------------------------------------------------------------------------
+  // 运行期数据形状：v6 决策快照挂在 write_plan[].pgcStateSnapshot 上，
+  // 而 pgc_states.v6_state 只有 {a,c,d,f}（供下一次转移复用，**不含**门控诊断）。
+  //
+  // 这一组断言的存在理由：早先回放只认 pgc_states.v6_state，而运行期从不往那里写
+  // tau/w_max_*/commit_reason，于是**真实事件回放永远只能报 insufficient** ——
+  // 回放一致性沦为只对手工塞入的测试数据成立的断言（构造性零）。
+  // ---------------------------------------------------------------------------
+
+  it('verifies a runtime-shaped trace whose v6 snapshot lives in the write plan', async () => {
+    await seedEvent({ eventId: 'e1', topic: 'aijade.pgc.write_plan_ready', coreStateNode: 'S5', idempotencyKey: 'k1' })
+    // 运行期的真实形状：pgc_states 只有四维状态，没有 v6 诊断。
+    await seedPgcState({ a: 0.1, c: 0.1, d: 0.1, f: 0.1 })
+    await seedWritePlan(v6Snapshot())
+
+    const { status, body } = await replay()
+    expect(status).toBe(200)
+    expect(body.ok).toBe(true)
+    expect(body.reason).toBeUndefined()
+    expect(body.commitReasons).toEqual(['committed'])
+    const insufficient = (body.insufficient ?? []) as Array<Record<string, unknown>>
+    expect(insufficient).toHaveLength(0)
+  })
+
+  it('detects w_max drift inside the write-plan snapshot (proves that path is not vacuous)', async () => {
+    await seedEvent({ eventId: 'e1', topic: 'aijade.pgc.write_plan_ready', coreStateNode: 'S5', idempotencyKey: 'k1' })
+    await seedPgcState({ a: 0.1, c: 0.1, d: 0.1, f: 0.1 })
+    await seedWritePlan(v6Snapshot({ w_max_global: 0.999999 }))
+
+    const { body } = await replay()
+    expect(body.ok).toBe(false)
+    expect(body.reason).toBe('mismatch')
+    const mismatches = body.mismatches as Array<Record<string, unknown>>
+    expect(mismatches.some(m => m.kind === 'w_max_global_drift')).toBe(true)
+  })
+
+  it('does not read a partial v6 snapshot as agreement (missing w_max_* is insufficient, not ok)', async () => {
+    await seedEvent({ eventId: 'e1', topic: 'aijade.pgc.write_plan_ready', coreStateNode: 'S5', idempotencyKey: 'k1' })
+    await seedPgcState({ a: 0.1, c: 0.1, d: 0.1, f: 0.1 })
+    // 有 tau 与 s.f，但缺 w_max_* —— `Math.abs(undefined - n)` 是 NaN，NaN > eps 恒 false，
+    // 若不逐字段校验，「缺字段」会静默变成「无漂移」。
+    await seedWritePlan({ tau: 'episodic', s: { f: 0.1 }, commit_reason: 'committed' })
+
+    const { body } = await replay()
+    expect(body.ok).toBe(false)
+    expect(body.reason).toBe('insufficient_input_snapshot')
+    const insufficient = body.insufficient as Array<Record<string, unknown>>
+    expect(insufficient.some(i => i.kind === 'missing_v6_snapshot')).toBe(true)
   })
 })

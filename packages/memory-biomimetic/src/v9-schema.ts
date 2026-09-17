@@ -96,6 +96,18 @@ export interface PgcWritePlanEntryRow {
   reasonCodes: PgcReasonCode[]
   expectedTests: string[]
   pgcStateId: string
+  /**
+   * 产生该决策的完整内生状态快照（含 `v6`：`tau` / `s` / `w_max_global` /
+   * `w_max_at_f` / `commit_reason`）。
+   *
+   * 这里原本只保留 `pgcStateId` 一个 id。后果是 v10 §4.3 点名要求的可回放证据
+   * （「进入 S5 时 `w_max_at_f` 所用的 `f` 必须来自同一个内生状态快照」）**在落库时被丢弃**，
+   * 于是回放侧只能拿到一个 id、拿不到快照，只能报 `insufficient_input_snapshot`——
+   * 也就是说 `write_plan` 无论如何都**不可能**被回放验证通过。
+   * 内核早就产出了这个快照（`PgcWritePlanEntry.pgc_state_snapshot`），只是映射到行时被削掉了。
+   * 服务端 `pgc_write_plans.write_plan` 是 jsonb，故保留它**无需任何迁移**。
+   */
+  pgcStateSnapshot: PgcStateSnapshot
 }
 
 export interface MemoryTxRow {

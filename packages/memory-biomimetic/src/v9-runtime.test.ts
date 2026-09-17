@@ -209,5 +209,15 @@ describe('v9CausalRuntime', () => {
       expect(event.origin_device).toBe('tablet-2')
       expect(event.risk_score).toBeCloseTo(0.77, 10)
     }
+
+    // v10 溯源必须覆盖**该次输入快照派生的全部事件**，而不只是 v10 前缀那一条。
+    // 回放按 `tick` + `causality.inputHash` 取事件；若 `memory_tx.committed`（S6/S8 的
+    // 唯一记录点）缺席，按 tick 回放就看不到「这次到底有没有真实落库」这一事实。
+    for (const event of result.artifact.events) {
+      expect(event.tick, `${event.topic} 丢失 tick`).toBe(7)
+      expect(event.causality, `${event.topic} 丢失 causality`).toEqual({ inputHash })
+    }
+    // 存在性断言，避免上面那个 for 因 events 为空而恒真。
+    expect(result.artifact.events.map(e => e.topic)).toContain('aijade.memory_tx.committed')
   })
 })

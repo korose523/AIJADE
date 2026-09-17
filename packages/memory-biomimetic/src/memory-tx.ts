@@ -85,6 +85,16 @@ export interface MemoryTxEnvelopeContext {
   causal_context_refs?: string[]
   /** 证据引用；缺省由本 tx 的 payload 证据链派生。 */
   evidence_refs?: string[]
+  /**
+   * v10 确定性排序序号与输入溯源哈希（由调用方从**输入事件**传播而来，本层不发明）。
+   *
+   * 不传则 `memory_tx.committed` 事件不带这两个字段，于是该事件不属于任何回放单元：
+   * 回放按 `tick` + `causality.inputHash` 找事件，会**看不到**这次提交 —— 而它正是
+   * `S6`/`S8`（是否真实落库）的唯一记录点。反过来，若本层自己编一个，就破坏了
+   * 「tick 表示输入快照」的语义。故只能由知情的一层传入。
+   */
+  tick?: number
+  causality?: { inputHash: string }
 }
 
 export interface MemoryTxInput {
@@ -407,6 +417,10 @@ export class MemoryTxEngine {
       idempotency_key: txId,
       replay_mode: 'live',
       risk_level: committed.some(c => this.versions.get(c.memory_version_id)?.riskLevel === 'high') ? 'high' : 'low',
+      // v10 溯源：本 tx 属于输入快照 `envelope_context.causality.inputHash` / `tick`。
+      // 由调用方传入而不是本层发明；缺上下文时保持缺省（v9 路径不产生这两个字段）。
+      ...(envelopeContext?.tick === undefined ? {} : { tick: envelopeContext.tick }),
+      ...(envelopeContext?.causality === undefined ? {} : { causality: envelopeContext.causality }),
       topic: 'aijade.memory_tx.committed',
       payload: {
         tx_id: txId,

@@ -266,6 +266,9 @@ export class V9CausalRuntime {
         reasonCodes: entry.reason_codes,
         expectedTests: entry.expected_tests,
         pgcStateId: entry.pgc_state_snapshot.pgc_state_id,
+        // 保留完整快照（含 v6 门控诊断）：回放要复算 w_max_* 与 commit_reason，
+        // 没有它就只能报 insufficient_input_snapshot —— 证据在产出点丢弃，回放永远无法成立。
+        pgcStateSnapshot: entry.pgc_state_snapshot,
       })),
       contradictionReport: {
         conflictingEvidenceIds: decision.contradiction_report.conflicting_evidence_ids,
@@ -421,6 +424,9 @@ export class V9CausalRuntime {
         reasonCodes: entry.reason_codes,
         expectedTests: entry.expected_tests,
         pgcStateId: entry.pgc_state_snapshot.pgc_state_id,
+        // 保留完整快照（含 v6 门控诊断）：回放要复算 w_max_* 与 commit_reason，
+        // 没有它就只能报 insufficient_input_snapshot —— 证据在产出点丢弃，回放永远无法成立。
+        pgcStateSnapshot: entry.pgc_state_snapshot,
       })),
       contradictionReport: {
         conflictingEvidenceIds: decision.contradiction_report.conflicting_evidence_ids,
@@ -458,6 +464,10 @@ export class V9CausalRuntime {
         privacy_level: input.privacyLevel,
         risk_score: clampRisk(input.riskScore),
         evidence_refs: [packId, chunkId],
+        // v10：让 `memory_tx.committed`（S6/S8 的唯一记录点）也归属同一输入快照，
+        // 否则按 tick 回放时看不到这次提交。值从输入事件传播，本层不发明。
+        tick: input.tick,
+        causality: { inputHash: input.inputHash },
       },
     }
     const engine = new MemoryTxEngine()
@@ -508,6 +518,11 @@ export class V9CausalRuntime {
 
     // 非 v10 前缀事件（pgc.write_plan_ready / evidence.weave_candidate_ready / memory_tx.committed）
     // 不强制携带 tick/causality，故用收窄后的信封，避免向 assertV10RequiredFields 注入多余约束。
+    //
+    // 但**有条件地传播** tick/causality：它们标识的是「这一次输入快照」，而不是某一个 topic。
+    // 同一 tick 下由该快照派生的全部事件（学习提案、写计划、MemoryTx、织入候选）都属于
+    // 同一次回放单元；若只让 v10 前缀的那一条带上，回放就一次只能验一个事件，
+    // 同 tick 的其余事件反而在回放查询里**不可见**。缺失时（v9 感知路径）保持不注入。
     const baseEnvelope = {
       event_id: envelope.event_id,
       trace_id: envelope.trace_id,
@@ -522,6 +537,8 @@ export class V9CausalRuntime {
       idempotency_key: envelope.idempotency_key,
       replay_mode: envelope.replay_mode,
       risk_level: envelope.risk_level,
+      ...(envelope.tick === undefined ? {} : { tick: envelope.tick }),
+      ...(envelope.causality === undefined ? {} : { causality: envelope.causality }),
     }
 
     const artifact: V9RuntimeArtifact = {
