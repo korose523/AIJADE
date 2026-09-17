@@ -6,7 +6,8 @@ import { createDrizzle, migrateDatabase } from '../libs/db'
 import { parseEnv } from '../libs/env'
 import { createRedis } from '../libs/redis'
 import { createLongTermMemoryService, dequeueMemoryJob } from '../services/domain/long-term-memory'
-import { dequeueV9Perception } from '../services/domain/v9-jobs'
+import { dequeueV9Perception, dequeueV9Promotion } from '../services/domain/v9-jobs'
+import { createV9PromotionService } from '../services/domain/v9-promotion'
 import { createV9RuntimeStore } from '../services/domain/v9-runtime-store'
 
 async function main(): Promise<void> {
@@ -18,13 +19,15 @@ async function main(): Promise<void> {
   await migrateDatabase(db)
   const runtime = new V9CausalRuntime(createV9RuntimeStore(db))
   const memory = createLongTermMemoryService(db, redis)
+  const promotion = createV9PromotionService({ db })
   process.once('SIGTERM', () => { void shutdown() })
   process.once('SIGINT', () => { void shutdown() })
 
   while (true) {
-    const [v9Job, memoryJob] = await Promise.all([
+    const [v9Job, memoryJob, promotionJob] = await Promise.all([
       dequeueV9Perception(redis),
       dequeueMemoryJob(redis),
+      dequeueV9Promotion(redis),
     ])
     if (v9Job) {
       try {
@@ -45,6 +48,18 @@ async function main(): Promise<void> {
       catch (error) {
         console.error(`[memory-worker] ${memoryJob.kind} failed`, error)
         await redis.lpush('aijade:memory:dead-letter', JSON.stringify({ job: memoryJob, error: String(error) }))
+      }
+    }
+    if (promotionJob) {
+      try {
+        const result = await promotion.process(promotionJob)
+        if (!result.ok) {
+          console.error(`[v9-promotion-worker] job ${promotionJob.jobId} refused at ${result.stage}: ${result.reason}`)
+        }
+      }
+      catch (error) {
+        console.error(`[v9-promotion-worker] job ${promotionJob.jobId} failed`, error)
+        await redis.lpush('aijade:v9:promotion:dead-letter', JSON.stringify({ job: promotionJob, error: String(error) }))
       }
     }
   }
