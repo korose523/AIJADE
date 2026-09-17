@@ -16,6 +16,11 @@ export function createServerCli() {
     .usage('<role>')
     .command('api', 'Start the HTTP/WebSocket API process')
     .action(() => runApiServer())
+  cli
+    .command('worker', 'Start the durable v9 perception worker')
+    .action(async () => {
+      await import('./worker')
+    })
 
   cli.help()
 

@@ -45,6 +45,9 @@ services:
         required: false
       - path: .env.local
         required: false
+    environment:
+      DATABASE_URL: postgresql://postgres:example-PAssw0rd-xHjDYR.b7N@db:5432/postgres
+      REDIS_URL: redis://redis:6379
     ports:
       - '6112:3000'
     healthcheck:
@@ -52,6 +55,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/server/Dockerfile
+    command: ['pnpm', '-F', '@proj-aijade/server', 'run', 'worker']
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+      - path: .env.local
+        required: false
+    environment:
+      DATABASE_URL: postgresql://postgres:example-PAssw0rd-xHjDYR.b7N@db:5432/postgres
+      REDIS_URL: redis://redis:6379
 
 volumes:
   db_data:

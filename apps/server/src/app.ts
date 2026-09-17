@@ -33,6 +33,7 @@ import { initLogger, LoggerFormat, LoggerLevel, setGlobalHookPostLog, useLogger 
 import { serve } from '@hono/node-server'
 import { createNodeWebSocket } from '@hono/node-ws'
 import { httpInstrumentationMiddleware } from '@hono/otel'
+import { V9CausalRuntime } from '@proj-aijade/memory-biomimetic'
 import { Hono } from 'hono'
 import { bodyLimit } from 'hono/body-limit'
 import { cors } from 'hono/cors'
@@ -63,10 +64,12 @@ import { createCharacterRoutes } from './routes/characters'
 import { createChatWsHandlers } from './routes/chat-ws'
 import { createChatRoutes } from './routes/chats'
 import { createFluxRoutes } from './routes/flux'
+import { createMemoryRoutes } from './routes/memory'
 import { createV1Routes } from './routes/openai/v1'
 import { createProviderRoutes } from './routes/providers'
 import { createStripeRoutes } from './routes/stripe'
 import { createV9EventsRoutes } from './routes/v9/events'
+import { createV9PerceptionRoutes } from './routes/v9/perception'
 import { createConfigKVService } from './services/adapters/config-kv'
 import { createEmailService } from './services/adapters/email'
 import { createPostHogClient } from './services/adapters/posthog'
@@ -80,12 +83,14 @@ import { createChatService } from './services/domain/chats'
 import { createFluxService } from './services/domain/flux'
 import { createFluxTransactionService } from './services/domain/flux-transaction'
 import { createConfigSyncSubscriber, createLlmRouterService } from './services/domain/llm-router'
+import { createLongTermMemoryService } from './services/domain/long-term-memory'
 import { createProductEventService } from './services/domain/product-events'
 import { createProviderService } from './services/domain/providers'
 import { createRequestLogService } from './services/domain/request-log'
 import { createStripeService } from './services/domain/stripe'
 import { createUserDeletionService } from './services/domain/user-deletion'
 import { createV9EventService } from './services/domain/v9-events'
+import { createV9RuntimeStore } from './services/domain/v9-runtime-store'
 import { createEnvelopeCrypto } from './utils/envelope-crypto'
 import { ApiError, createInternalError } from './utils/error'
 import { nanoid } from './utils/id'
@@ -108,6 +113,7 @@ interface AppDeps {
   requestLogService: RequestLogService
   productEventService: ProductEventService
   v9EventService: V9EventService
+  v9CausalRuntime: V9CausalRuntime
   configKV: ConfigKVService
   envelopeCrypto: EnvelopeCrypto
   redis: Redis
@@ -116,6 +122,7 @@ interface AppDeps {
   userDeletionService: UserDeletionService
   llmRouter: LlmRouterService
   posthog: PostHog | null
+  longTermMemoryService?: ReturnType<typeof createLongTermMemoryService>
 }
 
 export async function buildApp(deps: AppDeps) {
@@ -359,6 +366,7 @@ export async function buildApp(deps: AppDeps) {
      * keyed by `idempotency_key`.
      */
     .route('/api/v1/v9/events', createV9EventsRoutes(deps.v9EventService))
+    .route('/api/v1/v9/perception', createV9PerceptionRoutes(deps.v9CausalRuntime, deps.redis))
 
     /**
      * V1 OpenAI-compatible and audio routes. The factory returns two
@@ -422,6 +430,8 @@ export async function buildApp(deps: AppDeps) {
       ui: 'https://aijade.ai',
     }, 404))
 
+  if (deps.longTermMemoryService)
+    builtApp.route('/api/v1/memory', createMemoryRoutes(deps.longTermMemoryService))
   return { app: builtApp, injectWebSocket }
 }
 
@@ -566,6 +576,16 @@ export async function createApp() {
   const v9EventService = injeca.provide('services:v9Events', {
     dependsOn: { db },
     build: ({ dependsOn }) => createV9EventService(dependsOn.db),
+  })
+
+  const v9CausalRuntime = injeca.provide('services:v9CausalRuntime', {
+    dependsOn: { db },
+    build: ({ dependsOn }) => new V9CausalRuntime(createV9RuntimeStore(dependsOn.db)),
+  })
+
+  const longTermMemoryService = injeca.provide('services:longTermMemory', {
+    dependsOn: { db, redis },
+    build: ({ dependsOn }) => createLongTermMemoryService(dependsOn.db, dependsOn.redis),
   })
 
   const characterService = injeca.provide('services:characters', {
@@ -739,6 +759,7 @@ export async function createApp() {
     requestLogService,
     productEventService,
     v9EventService,
+    v9CausalRuntime,
     stripeService,
     billingService,
     adminFluxGrantsService,
@@ -753,6 +774,7 @@ export async function createApp() {
     userDeletionService,
     llmRouter,
     posthog,
+    longTermMemoryService,
   })
   // Register the cluster-wide ObservableGauges for sessions / users. Each
   // replica polls the same DB (cached inside each gauge, in-flight coalesced);
@@ -788,6 +810,7 @@ export async function createApp() {
     requestLogService: resolved.requestLogService,
     productEventService: resolved.productEventService,
     v9EventService: resolved.v9EventService,
+    v9CausalRuntime: resolved.v9CausalRuntime,
     configKV: resolved.configKV,
     envelopeCrypto: resolved.envelopeCrypto,
     redis: resolved.redis,
@@ -796,6 +819,7 @@ export async function createApp() {
     userDeletionService: resolved.userDeletionService,
     llmRouter: resolved.llmRouter,
     posthog: resolved.posthog,
+    longTermMemoryService: resolved.longTermMemoryService,
   })
 
   logger.withFields({ hostname: resolved.env.HOST, port: resolved.env.PORT }).log('Server started')
