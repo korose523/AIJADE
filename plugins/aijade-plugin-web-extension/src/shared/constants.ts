@@ -25,6 +25,8 @@ export const DEFAULT_SETTINGS: ExtensionSettings = {
   token: '',
   restBaseUrl: DEFAULT_REST_BASE_URL,
   bearerToken: '',
+  llmBaseUrl: DEFAULT_REST_BASE_URL,
+  llmModel: 'auto',
   enabled: true,
   sendPageContext: true,
   sendVideoContext: true,

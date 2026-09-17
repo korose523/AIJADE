@@ -1,5 +1,6 @@
 import type { ContextUpdate } from '@proj-aijade/server-sdk'
 
+import type { LlmCall } from '../shared/llm'
 import type { ExtensionSettings, ExtensionStatus, PageContextPayload, SubtitlePayload, VideoContextPayload } from '../shared/types'
 import type { V10EvidenceEvent } from '../shared/v10-evidence'
 
@@ -8,7 +9,9 @@ import { nanoid } from 'nanoid'
 
 import packageJSON from '../../package.json'
 
-import { reducePageToEvidence, reduceSubtitleToEvidence } from '../shared/v10-evidence'
+import { DEFAULT_REST_BASE_URL } from '../shared/constants'
+import { summarize } from '../shared/llm'
+import { reducePageToEvidence, reduceSubtitleToEvidence, summarizePageToEvidence, summarizeSubtitleToEvidence } from '../shared/v10-evidence'
 import { buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
 import { advanceTick } from './storage'
 
@@ -32,6 +35,18 @@ export function createClientState(): ClientState {
     client: null,
     connected: false,
   }
+}
+
+/**
+ * 从设置构建本次上报使用的 LLM 调用（绑定 baseUrl / model / token）。
+ * `summarize` 自身即为一个 `LlmCall`，故直接透传。模型默认 `'auto'`，
+ * 余额不足时服务端计费闸返回 402（预期失败），由 v10-evidence 的"失败不落库"回退。
+ */
+function makeLlm(settings: ExtensionSettings): LlmCall {
+  const baseUrl = settings.llmBaseUrl || DEFAULT_REST_BASE_URL
+  const model = settings.llmModel || 'auto'
+  const token = settings.bearerToken || undefined
+  return (text, opts) => summarize(text, { kind: opts.kind, baseUrl, model, token })
 }
 
 function createIdentity() {
@@ -184,7 +199,23 @@ export async function handlePageContext(state: ClientState, settings: ExtensionS
     return
 
   // 归约一次，WS 与 REST 复用同一结果（保证 hash 一致）。
-  const v10Evidence = reducePageToEvidence(payload)
+  // 优先尝试 LLM 摘要路径；失败（网络/鉴权/计费/解析）则回退确定性 reduce* 兜底。
+  let v10Evidence = reducePageToEvidence(payload)
+  try {
+    const llmEvidence = await summarizePageToEvidence(payload, makeLlm(settings))
+    if (llmEvidence) {
+      v10Evidence = llmEvidence
+      console.debug('[v10-evidence] 使用 LLM 摘要路径（page）')
+    }
+    else {
+      console.debug('[v10-evidence] LLM 摘要未产出，回退确定性归约（page）')
+    }
+  }
+  catch (err) {
+    // LLM 路径异常不得影响既有 WS 上报：记日志，继续用确定性兜底。
+    console.warn(`[v10-evidence] LLM 摘要路径异常，回退确定性归约（page）: ${err instanceof Error ? err.message : String(err)}`)
+  }
+
   sendContextUpdate(state, {
     strategy: ContextUpdateStrategy.ReplaceSelf,
     lane: 'web:page',
@@ -276,7 +307,22 @@ export async function handleSubtitle(state: ClientState, settings: ExtensionSett
     return
 
   // 归约一次，WS 与 REST 复用同一结果（保证 hash 一致）。
-  const v10Evidence = reduceSubtitleToEvidence(payload)
+  // 优先尝试 LLM 摘要路径；失败则回退确定性 reduce* 兜底（与 page 路径一致）。
+  let v10Evidence = reduceSubtitleToEvidence(payload)
+  try {
+    const llmEvidence = await summarizeSubtitleToEvidence(payload, makeLlm(settings))
+    if (llmEvidence) {
+      v10Evidence = llmEvidence
+      console.debug('[v10-evidence] 使用 LLM 摘要路径（subtitle）')
+    }
+    else {
+      console.debug('[v10-evidence] LLM 摘要未产出，回退确定性归约（subtitle）')
+    }
+  }
+  catch (err) {
+    console.warn(`[v10-evidence] LLM 摘要路径异常，回退确定性归约（subtitle）: ${err instanceof Error ? err.message : String(err)}`)
+  }
+
   sendContextUpdate(state, {
     strategy: ContextUpdateStrategy.ReplaceSelf,
     lane: 'web:subtitle',

@@ -68,6 +68,18 @@ export interface ExtensionSettings {
    * `authGuard` 返回 401，这是**预期失败而非 bug**。留空则只靠 cookie。
    */
   bearerToken: string
+  /**
+   * LLM 摘要端点 base URL（不含路径），打到 `POST /api/v1/openai/chat/completions`。
+   * 默认从 `wsUrl` 同源推导（与 `DEFAULT_REST_BASE_URL` 一致：`http://localhost:6121`）。
+   * 与 REST 上报同源，故复用同一个 dev server。缺省时回落到 `DEFAULT_REST_BASE_URL`。
+   */
+  llmBaseUrl?: string
+  /**
+   * 摘要用模型名；`'auto'` 走服务端 `DEFAULT_CHAT_MODEL`（见 chat-completions 路由）。
+   * 余额不足时服务端计费闸会返回 402——这是**预期失败**，调用方据此回退确定性兜底。
+   * 缺省时回落到 `'auto'`。
+   */
+  llmModel?: string
   enabled: boolean
   sendPageContext: boolean
   sendVideoContext: boolean
