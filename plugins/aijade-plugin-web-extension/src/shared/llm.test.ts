@@ -41,6 +41,26 @@ describe('chatCompletion', () => {
       expect(res.kind).toBe('unauthorized')
   })
 
+  it('401 without token → unauthorized + reason "missing" (user must configure a credential)', async () => {
+    mockFetch({ status: 401, body: { error: 'unauthorized' } })
+    const res = await chatCompletion('http://localhost:6121', { messages: [] })
+    expect(res.ok).toBe(false)
+    if (!res.ok) {
+      expect(res.kind).toBe('unauthorized')
+      expect(res.reason).toBe('missing')
+    }
+  })
+
+  it('401 with token → unauthorized + reason "rejected" (credential present but invalid/expired)', async () => {
+    mockFetch({ status: 401, body: { error: 'unauthorized' } })
+    const res = await chatCompletion('http://localhost:6121', { messages: [], token: 'stale' })
+    expect(res.ok).toBe(false)
+    if (!res.ok) {
+      expect(res.kind).toBe('unauthorized')
+      expect(res.reason).toBe('rejected')
+    }
+  })
+
   it('maps 402 to payment_required (expected failure, not a bug)', async () => {
     mockFetch({ status: 402, body: { error: 'insufficient balance' } })
     const res = await chatCompletion('http://localhost:6121', { messages: [] })

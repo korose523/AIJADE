@@ -51,6 +51,14 @@ export interface PostV9EventResult {
   deduped?: boolean
   eventId?: string
   error?: string
+  /**
+   * 401 的细分原因——UI/日志据此告诉使用者下一步该做什么：
+   * - `unauthorized_missing`：本次请求**根本没带**任何 token ⇒ 去设置里填写 Bearer Token；
+   * - `unauthorized_rejected`：带了 token 但服务端仍 401 ⇒ token 无效 / 已过期 /
+   *   与服务器不匹配，需重新获取或检查设置中的 Bearer Token。
+   * 两者下一步动作完全不同，必须可区分。
+   */
+  reason?: 'unauthorized_missing' | 'unauthorized_rejected'
 }
 
 function uuid(): string {
@@ -134,7 +142,18 @@ export async function postV9Event(
     if (res.status === 200)
       return { status: 200, ok: true, deduped: true, eventId: typeof data?.eventId === 'string' ? data.eventId : undefined }
 
-    // 4xx/5xx：把可见的错误信息带出来，不静默吞。
+    // 401 鉴权失败：区分「没配凭据」与「凭据被拒」，使用者下一步动作不同。
+    if (res.status === 401) {
+      const reason = opts.token ? 'unauthorized_rejected' : 'unauthorized_missing'
+      const hint = opts.token
+        ? '凭据无效或已过期（请检查设置中的 Bearer Token）'
+        : '未配置凭据（请在设置中填写 Bearer Token）'
+      const error = extractError(data, res.status)
+      console.warn(`[v9-rest] POST ${url} → 401 (${hint}): ${error}`)
+      return { status: 401, ok: false, reason, error }
+    }
+
+    // 其它 4xx/5xx：把可见的错误信息带出来，不静默吞。
     const error = extractError(data, res.status)
     console.warn(`[v9-rest] POST ${url} → ${res.status}: ${error}`)
     return { status: res.status, ok: false, error }

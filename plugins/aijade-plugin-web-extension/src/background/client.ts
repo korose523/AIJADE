@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid'
 import packageJSON from '../../package.json'
 
 import { DEFAULT_REST_BASE_URL } from '../shared/constants'
+import { resolveApiToken } from '../shared/credentials'
 import { summarize } from '../shared/llm'
 import { reducePageToEvidence, reduceSubtitleToEvidence, summarizePageToEvidence, summarizeSubtitleToEvidence } from '../shared/v10-evidence'
 import { buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
@@ -45,7 +46,8 @@ export function createClientState(): ClientState {
 function makeLlm(settings: ExtensionSettings): LlmCall {
   const baseUrl = settings.llmBaseUrl || DEFAULT_REST_BASE_URL
   const model = settings.llmModel || 'auto'
-  const token = settings.bearerToken || undefined
+  // 与 v9 REST 通道共用同一凭据真源（见 credentials.ts）。绝不引用 WS 的 `token` 字段。
+  const token = resolveApiToken(settings)
   return (text, opts) => summarize(text, { kind: opts.kind, baseUrl, model, token })
 }
 
@@ -178,11 +180,18 @@ async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: 
   try {
     const tick = await advanceTick(V9_TICK_SESSION)
     const envelope = buildV9EventEnvelope({ evidence, tick })
+    // 与 LLM 通道共用同一凭据真源（见 credentials.ts）。
     const result = await postV9Event(settings.restBaseUrl, envelope, {
-      token: settings.bearerToken || undefined,
+      token: resolveApiToken(settings),
     })
     if (result.ok)
       console.debug(`[v9-rest] 已上报 ${evidence.topic} tick=${tick} deduped=${result.deduped}`)
+    else if (result.reason === 'unauthorized_missing')
+      // 没配凭据：使用者下一步去设置里填写 Bearer Token。
+      console.warn('[v9-rest] REST 上报被拒：未配置凭据（请在设置中填写 Bearer Token）')
+    else if (result.reason === 'unauthorized_rejected')
+      // 凭据无效/过期：使用者下一步检查/重新获取设置中的 Bearer Token。
+      console.warn('[v9-rest] REST 上报被拒：凭据无效或已过期（请检查设置中的 Bearer Token）')
     else
       console.warn(`[v9-rest] REST 上报失败 (status ${result.status}): ${result.error}`)
   }

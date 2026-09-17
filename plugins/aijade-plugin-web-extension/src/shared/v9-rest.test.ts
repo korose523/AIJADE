@@ -127,6 +127,28 @@ describe('postV9Event', () => {
     await postV9Event('http://localhost:6121', pageEnvelope(), { token: 'secret', fetchImpl })
   })
 
+  it('401 without token → unauthorized_missing (no authorization header sent)', async () => {
+    const fetchImpl = vi.fn(async (_url: string, init: RequestInit) => {
+      expect((init.headers as Record<string, string>).authorization).toBeUndefined()
+      return { status: 401, json: async () => ({ error: 'unauthorized' }) }
+    }) as unknown as typeof fetch
+    const res = await postV9Event('http://localhost:6121', pageEnvelope(), { fetchImpl })
+    expect(res.ok).toBe(false)
+    expect(res.status).toBe(401)
+    expect(res.reason).toBe('unauthorized_missing')
+  })
+
+  it('401 with token → unauthorized_rejected (credential present but invalid)', async () => {
+    const fetchImpl = vi.fn(async (_url: string, init: RequestInit) => {
+      expect((init.headers as Record<string, string>).authorization).toBe('Bearer wrong')
+      return { status: 401, json: async () => ({ error: 'unauthorized' }) }
+    }) as unknown as typeof fetch
+    const res = await postV9Event('http://localhost:6121', pageEnvelope(), { token: 'wrong', fetchImpl })
+    expect(res.ok).toBe(false)
+    expect(res.status).toBe(401)
+    expect(res.reason).toBe('unauthorized_rejected')
+  })
+
   it('network failure → ok:false with error (not silently swallowed)', async () => {
     const fetchImpl = vi.fn(async () => {
       throw new Error('network down')

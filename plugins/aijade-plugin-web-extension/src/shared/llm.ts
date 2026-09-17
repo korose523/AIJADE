@@ -37,9 +37,20 @@ export type ChatErrorKind
     | 'malformed' // 其它 4xx / 响应无法解析
     | 'network' // fetch 抛错（网络层）
 
+/**
+ * 401 的细分原因——UI/日志据此告诉使用者下一步该做什么：
+ * - `missing`：本次调用**根本没带**任何 token ⇒ 去设置里填写 Bearer Token；
+ * - `rejected`：带了 token 但服务端仍 401 ⇒ token 无效 / 已过期 / 与服务器不匹配，
+ *   需重新获取或检查设置中的 Bearer Token。
+ * 两者下一步动作完全不同，必须可区分。
+ */
+export type UnauthorizedReason
+  = | 'missing'
+    | 'rejected'
+
 export type ChatCompletionResult
   = | { ok: true, content: string }
-    | { ok: false, status: number, kind: ChatErrorKind, message: string }
+    | { ok: false, status: number, kind: ChatErrorKind, message: string, reason?: UnauthorizedReason }
 
 export interface LlmCallOptions {
   kind: LlmKind
@@ -141,8 +152,14 @@ export async function chatCompletion(baseUrl: string, opts: ChatCompletionOption
     // 非 2xx：带出可识别的错误信息。
     // 注意：402（计费拒绝）/ 503（配置闸缺键）是**预期失败**，不是 bug；
     // 401（未登录）同样预期，调用方据此静默回退到确定性兜底。
+    // 401 进一步区分「没配凭据」与「凭据被拒」，见 `UnauthorizedReason`。
     const message = await readErrorMessage(res)
-    return { ok: false, status: res.status, kind: kindFromStatus(res.status), message }
+    const kind = kindFromStatus(res.status)
+    if (kind === 'unauthorized') {
+      const reason: UnauthorizedReason = opts.token ? 'rejected' : 'missing'
+      return { ok: false, status: res.status, kind, message, reason }
+    }
+    return { ok: false, status: res.status, kind, message }
   }
   catch (err) {
     const message = err instanceof Error ? err.message : String(err)
@@ -246,8 +263,14 @@ export async function summarize(
   })
 
   if (!result.ok) {
-    // 402/503/401 为预期失败，记日志但不抛出，交由上层决定回退或不落库。
-    console.warn(`[llm] chatCompletion 失败 (kind=${result.kind} status=${result.status}): ${result.message}`)
+    // 401 区分「没配凭据」与「凭据被拒」：两者下一步动作完全不同。
+    if (result.kind === 'unauthorized') {
+      console.warn(`[llm] 鉴权失败：${result.reason === 'rejected' ? '凭据无效或已过期（请检查设置中的 Bearer Token）' : '未配置凭据（请在设置中填写 Bearer Token）'}`)
+    }
+    else {
+      // 402/503/429/5xx 等为预期失败，记日志但不抛出，交由上层决定回退或不落库。
+      console.warn(`[llm] chatCompletion 失败 (kind=${result.kind} status=${result.status}): ${result.message}`)
+    }
     return undefined
   }
 
