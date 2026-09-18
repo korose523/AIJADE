@@ -69,6 +69,10 @@ async function main() {
     configKV,
     envelopeCrypto: envelope,
     gatewayMetrics: null,
+    // 本脚本在第 35 行就已经建好了 redis，却一直没往下传 ——
+    // `redis` 在 `CreateLlmRouterServiceOptions` 里是必填（TTS 音色目录缓存），
+    // 于是这个脚本在类型层面早就不能编译，只是因为 `scripts/**` 不在 tsc 覆盖内而无人发现。
+    redis,
     fetchImpl: debugFetch,
   })
 

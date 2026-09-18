@@ -63,7 +63,11 @@ function webpageEvent(sessionId: string, overEnvelope: Record<string, unknown> =
 }
 
 describe('v9 video observation dispatch — 确定性 proposalId', () => {
-  it('inline 路径：同一事件两次派发得到同一 proposalId，且字段来源正确', async () => {
+  // 复核报告 R1：派发前必须能取到真实渲染身份（来自 render_traces 真源投影），
+  // 否则跳过派发（宁缺勿伪造）。此 mock 模拟"存在真实回执三元组"的正常路径。
+  const realIdentity = { renderRef: 'r-1', appliedParamsHash: 'aph-1', assetVersionHash: 'avh-1' }
+
+  it('inline 路径：同一事件两次派发得到同一 proposalId，且字段来源正确（含真实渲染身份）', async () => {
     const calls: any[] = []
     const runtime = {
       processVideoObservation: vi.fn(async (input: any) => {
@@ -73,6 +77,7 @@ describe('v9 video observation dispatch — 确定性 proposalId', () => {
     } as unknown as V9CausalRuntime
     const service = {
       appendEvent: vi.fn(async () => ({ row: { eventId: 'evt-vo-1' }, deduped: false, pairingMissing: false })),
+      findLatestRenderIdentity: vi.fn(async () => realIdentity),
     }
     const app = makeApp(service, runtime) // 无 redis ⇒ 内联归约
 
@@ -107,9 +112,14 @@ describe('v9 video observation dispatch — 确定性 proposalId', () => {
     expect(calls[0].tick).toBe(7)
     expect(calls[0].inputHash).toBe('ih-vo-1')
     expect(calls[0].event.topic).toBe('aijade.video.observation.webpage_text')
+
+    // R1：渲染身份三项必须原样来自真源投影（内核 P0-2 守卫据此放行）。
+    expect(calls[0].renderRef).toBe('r-1')
+    expect(calls[0].appliedParamsHash).toBe('aph-1')
+    expect(calls[0].assetVersionHash).toBe('avh-1')
   })
 
-  it('redis 路径：入队 job 的 proposalId 同样确定性派生', async () => {
+  it('redis 路径：入队 job 的 proposalId 同样确定性派生，且携带真实渲染身份', async () => {
     const enqueued: any[] = []
     const fakeRedis = {
       lpush: vi.fn(async (_q: string, raw: string) => {
@@ -121,6 +131,7 @@ describe('v9 video observation dispatch — 确定性 proposalId', () => {
     const runtime = {} as unknown as V9CausalRuntime
     const service = {
       appendEvent: vi.fn(async () => ({ row: { eventId: 'evt-vo-2' }, deduped: false, pairingMissing: false })),
+      findLatestRenderIdentity: vi.fn(async () => realIdentity),
     }
     const app = makeApp(service, runtime, fakeRedis)
 
@@ -142,6 +153,9 @@ describe('v9 video observation dispatch — 确定性 proposalId', () => {
     expect(enqueued[0].input.sessionId).toBe('s-2')
     expect(enqueued[0].input.tick).toBe(9)
     expect(enqueued[0].input.inputHash).toBe('ih-vo-2')
+    expect(enqueued[0].input.renderRef).toBe('r-1')
+    expect(enqueued[0].input.appliedParamsHash).toBe('aph-1')
+    expect(enqueued[0].input.assetVersionHash).toBe('avh-1')
   })
 
   it('派发失败不回滚已落库事件：响应仍是 201，appendEvent 只调用一次', async () => {
@@ -152,6 +166,7 @@ describe('v9 video observation dispatch — 确定性 proposalId', () => {
     } as unknown as V9CausalRuntime
     const service = {
       appendEvent: vi.fn(async () => ({ row: { eventId: 'evt-vo-3' }, deduped: false, pairingMissing: false })),
+      findLatestRenderIdentity: vi.fn(async () => realIdentity),
     }
     const app = makeApp(service, runtime)
     const res = await app.request('/api/v1/v9/events', {
@@ -161,6 +176,48 @@ describe('v9 video observation dispatch — 确定性 proposalId', () => {
     })
     expect(res.status).toBe(201)
     expect(service.appendEvent).toHaveBeenCalledTimes(1)
+  })
+
+  it('r1 宁缺勿伪造：无真实渲染身份 ⇒ 跳过派发（runtime 不被调用），事件仍 201', async () => {
+    const runtime = {
+      processVideoObservation: vi.fn(async () => ({})),
+    } as unknown as V9CausalRuntime
+    const service = {
+      appendEvent: vi.fn(async () => ({ row: { eventId: 'evt-vo-4' }, deduped: false, pairingMissing: false })),
+      findLatestRenderIdentity: vi.fn(async () => null),
+    }
+    const app = makeApp(service, runtime)
+    const res = await app.request('/api/v1/v9/events', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(webpageEvent('s-4', { event_id: 'evt-vo-4', idempotency_key: 'vo-4#idem' })),
+    })
+    expect(res.status).toBe(201)
+    expect(runtime.processVideoObservation).not.toHaveBeenCalled()
+    expect(service.appendEvent).toHaveBeenCalledTimes(1)
+  })
+
+  it('r1 宁缺勿伪造：redis 路径无真实渲染身份 ⇒ 不入队，事件仍 201', async () => {
+    const enqueued: any[] = []
+    const fakeRedis = {
+      lpush: vi.fn(async (_q: string, raw: string) => {
+        enqueued.push(JSON.parse(raw))
+        return 1
+      }),
+    }
+    const runtime = {} as unknown as V9CausalRuntime
+    const service = {
+      appendEvent: vi.fn(async () => ({ row: { eventId: 'evt-vo-5' }, deduped: false, pairingMissing: false })),
+      findLatestRenderIdentity: vi.fn(async () => null),
+    }
+    const app = makeApp(service, runtime, fakeRedis)
+    const res = await app.request('/api/v1/v9/events', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(webpageEvent('s-5', { event_id: 'evt-vo-5', idempotency_key: 'vo-5#idem' })),
+    })
+    expect(res.status).toBe(201)
+    expect(enqueued).toHaveLength(0)
   })
 })
 

@@ -1,0 +1,23 @@
+-- v10 §6.2 / 报告 R4（两步走 · 第一步）：render_traces 两阶段身份不变量。
+--
+-- 背景：投影行由两端事件「任意一端先到」即建立（persona.render_requested 只带
+-- intent_ref；lpm.render_ready 只带回执侧，且 asset_version_hash 在内核 payload
+-- 契约中为可选 —— 异步解析，渲染发生时可能尚未就绪）。因此
+-- intent_ref / applied_params_hash / asset_version_hash 不能直接收紧为 NOT NULL：
+-- 那会同时破坏内核 payload 契约与「partial 配对缺口论文可见」的 §6.2 设计。
+--
+-- 本迁移落地的真正不变量（与 schemas/memory-v9.ts 的 render_traces_identity_phase_check
+-- 同源，勿单方改动其一）：
+--   ① 每行至少携带一端身份（intent_ref 或 render_ref）；
+--   ② 有回执端（render_ref）必有内容指纹（applied_params_hash）——
+--      lpm.render_ready 的 applied_params_hash 为必填（.min(1)），两者不可分割。
+--
+-- NOT VALID 语义：加约束时不扫描存量行 —— 历史回填（render-trace-backfill）是否
+-- 完成**不阻塞本迁移与服务器启动**；但自本约束生效起，所有**新写入**（含跨事件
+-- 补齐的 UPDATE）违反不变量即被数据库拒绝。
+--
+-- 第二步（回填完成后执行，手工 / 部署脚本内运行，不进迁移链 —— 若回填未完成
+-- 会让启动失败，属运维决策）：
+--   ALTER TABLE "render_traces" VALIDATE CONSTRAINT "render_traces_identity_phase_check";
+
+ALTER TABLE "render_traces" ADD CONSTRAINT "render_traces_identity_phase_check" CHECK (("intent_ref" IS NOT NULL OR "render_ref" IS NOT NULL) AND ("render_ref" IS NULL OR "applied_params_hash" IS NOT NULL)) NOT VALID;

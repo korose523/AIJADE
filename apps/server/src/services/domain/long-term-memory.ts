@@ -37,7 +37,7 @@ export function enqueueMemoryJob(redis: Redis, job: MemoryJob) {
 }
 
 export async function dequeueMemoryJob(redis: Redis): Promise<MemoryJob | undefined> {
-  const result = await redis.brpop(LONG_TERM_MEMORY_QUEUE, 5)
+  const result = await redis.brpop(LONG_TERM_MEMORY_QUEUE, 1)
   if (!result)
     return undefined
   const value: unknown = JSON.parse(result[1])

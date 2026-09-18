@@ -8,47 +8,14 @@ import { validatePerformanceIntent } from '@proj-aijade/memory-biomimetic'
 import { drizzle } from 'drizzle-orm/pglite'
 import { beforeEach, describe, expect, it } from 'vitest'
 
+import { buildMemoryAndLongTermDdl } from '../../schemas/pglite-ddl'
 import { createLongTermMemoryService } from './long-term-memory'
 import { createV9PerformanceIntentService } from './v9-performance-intent'
 
 import * as ltmSchema from '../../schemas/long-term-memory'
 import * as v9Schema from '../../schemas/memory-v9'
 
-const DDL = `
-  CREATE TABLE "persona_snapshots" (
-    "id" text PRIMARY KEY,
-    "user_id" text NOT NULL,
-    "device_id" text NOT NULL,
-    "privacy_level" integer NOT NULL,
-    "persona" jsonb NOT NULL,
-    "version" integer NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL
-  );
-  CREATE TABLE "performance_intents" (
-    "id" text PRIMARY KEY,
-    "user_id" text NOT NULL,
-    "device_id" text NOT NULL,
-    "persona_snapshot_ref" text NOT NULL,
-    "privacy_level" integer NOT NULL,
-    "intent" jsonb NOT NULL,
-    "time_marked" timestamp NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL
-  );
-  CREATE TABLE "evidence_packs" (
-    "id" text PRIMARY KEY,
-    "session_id" text NOT NULL,
-    "source" text NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL,
-    "note" text
-  );
-  CREATE TABLE "evidence_chunks" (
-    "id" text PRIMARY KEY,
-    "pack_id" text NOT NULL REFERENCES "evidence_packs"("id"),
-    "idx" text NOT NULL,
-    "content" text NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL
-  );
-`
+const DDL = buildMemoryAndLongTermDdl()
 
 const USER_ID = 'user-intent'
 const SESSION_ID = 'session-intent'

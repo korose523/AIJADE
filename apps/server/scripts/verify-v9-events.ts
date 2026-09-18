@@ -15,6 +15,7 @@ import { PGlite } from '@electric-sql/pglite'
 import { and, eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/pglite'
 
+import { assertSchemaMatchesDrizzle, buildMemoryV9Ddl, memoryV9Tables } from '../src/schemas/pglite-ddl'
 import { createV9EventService } from '../src/services/domain/v9-events'
 
 import * as schema from '../src/schemas/memory-v9'
@@ -26,55 +27,20 @@ function assert(cond: boolean, msg: string): void {
   }
 }
 
+/**
+ * 物理 DDL：**由 drizzle schema 生成**，不再手抄（见 `_shared/pglite-memory-schema.ts` 头注）。
+ *
+ * 本文件先前手抄的 DDL 是当时三份副本里**最新**的一份（已含 v9 的 8 个新列与
+ * `render_traces`），另两份则否 —— 这正是"同一形状抄多份"的典型代价：正确性取决于
+ * 哪一份最近被改过。改为生成后，三处共用同一真源。
+ */
+const DDL = buildMemoryV9Ddl()
+
 async function main() {
   const client = new PGlite()
   const db = drizzle(client, { schema })
-  await client.exec(`
-    CREATE TABLE "events" (
-      "id" text PRIMARY KEY,
-      "event_id" text NOT NULL,
-      "trace_id" text NOT NULL,
-      "correlation_id" text NOT NULL,
-      "timestamp" timestamp NOT NULL,
-      "producer" text NOT NULL,
-      "origin_device" text NOT NULL,
-      "privacy_level" integer NOT NULL,
-      "evidence_refs" text[] NOT NULL DEFAULT '{}',
-      "causal_context_refs" text[] NOT NULL DEFAULT '{}',
-      "risk_score" real NOT NULL DEFAULT 0,
-      "topic" text NOT NULL,
-      "payload" jsonb,
-      "idempotency_key" text NOT NULL UNIQUE,
-      "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-      "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
-      "tick" integer,
-      "causality" jsonb,
-      "core_state_node" text
-    );
-    CREATE TABLE "audit_log_entries" (
-      "id" text PRIMARY KEY,
-      "tx_id" text NOT NULL,
-      "actor" text NOT NULL,
-      "action" text NOT NULL,
-      "before_hash" text,
-      "after_hash" text,
-      "at" timestamp NOT NULL
-    );
-    CREATE TABLE "render_traces" (
-      "id" text PRIMARY KEY,
-      "session_id" text NOT NULL,
-      "trace_id" text NOT NULL,
-      "correlation_id" text NOT NULL,
-      "event_id" text NOT NULL,
-      "persona_snapshot_ref" text,
-      "intent_ref" text,
-      "render_ref" text,
-      "applied_params_hash" text,
-      "asset_version_hash" text,
-      "created_at" timestamp NOT NULL DEFAULT NOW(),
-      "updated_at" timestamp NOT NULL DEFAULT NOW()
-    );
-  `)
+  await client.exec(DDL)
+  await assertSchemaMatchesDrizzle(client, memoryV9Tables())
 
   const svc = createV9EventService(db as any)
   const trace = 'trace-1'

@@ -5,58 +5,14 @@ import { Hono } from 'hono'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 import { createV9EventsRoutes } from '../../routes/v9/events'
+import { buildMemoryV9Ddl } from '../../schemas/pglite-ddl'
 import { createV9EventService } from './v9-events'
 
 import * as schema from '../../schemas/memory-v9'
 
 async function createDb() {
   const client = new PGlite()
-  await client.exec(`
-    CREATE TABLE "events" (
-      "id" text PRIMARY KEY,
-      "event_id" text NOT NULL,
-      "trace_id" text NOT NULL,
-      "correlation_id" text NOT NULL,
-      "timestamp" timestamp NOT NULL,
-      "producer" text NOT NULL,
-      "origin_device" text NOT NULL,
-      "privacy_level" integer NOT NULL,
-      "evidence_refs" text[] NOT NULL DEFAULT '{}',
-      "causal_context_refs" text[] NOT NULL DEFAULT '{}',
-      "risk_score" real NOT NULL DEFAULT 0,
-      "topic" text NOT NULL,
-      "payload" jsonb,
-      "idempotency_key" text NOT NULL UNIQUE,
-      "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-      "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
-      "tick" integer,
-      "causality" jsonb,
-      "core_state_node" text
-    );
-    CREATE TABLE "audit_log_entries" (
-      "id" text PRIMARY KEY,
-      "tx_id" text NOT NULL,
-      "actor" text NOT NULL,
-      "action" text NOT NULL,
-      "before_hash" text,
-      "after_hash" text,
-      "at" timestamp NOT NULL
-    );
-    CREATE TABLE "render_traces" (
-      "id" text PRIMARY KEY,
-      "session_id" text NOT NULL,
-      "trace_id" text NOT NULL,
-      "correlation_id" text NOT NULL,
-      "event_id" text NOT NULL,
-      "persona_snapshot_ref" text,
-      "intent_ref" text,
-      "render_ref" text,
-      "applied_params_hash" text,
-      "asset_version_hash" text,
-      "created_at" timestamp NOT NULL DEFAULT NOW(),
-      "updated_at" timestamp NOT NULL DEFAULT NOW()
-    );
-  `)
+  await client.exec(buildMemoryV9Ddl())
   return drizzle(client, { schema })
 }
 
@@ -121,6 +77,10 @@ describe('v9 render projection', () => {
     expect(traceRows).toHaveLength(1)
     expect(traceRows[0].intentRef).toBe('intent-1')
     expect(traceRows[0].personaSnapshotRef).toBe('persona-1')
+    // v10 §6.2 / P1-2：只收到请求端时，投影为 partial（缺回执，未配对）。
+    expect(traceRows[0].projectionStatus).toBe('partial')
+    expect(traceRows[0].personaRenderRequestedEventId).toBe('req-1')
+    expect(traceRows[0].renderReadyEventId).toBeNull()
 
     const readyRes = await service.appendEvent(ready)
     expect(readyRes.deduped).toBe(false)
@@ -131,6 +91,10 @@ describe('v9 render projection', () => {
     expect(afterRows[0].renderRef).toBe('render-1')
     expect(afterRows[0].appliedParamsHash).toBe('hash-42')
     expect(afterRows[0].intentRef).toBe('intent-1')
+    // 两端齐备后升级为 paired。
+    expect(afterRows[0].projectionStatus).toBe('paired')
+    expect(afterRows[0].renderReadyEventId).toBe('ready-1')
+    expect(afterRows[0].personaRenderRequestedEventId).toBe('req-1')
     expect(await service.isRenderTraceConsistent({
       renderRef: 'render-1',
       intentRef: 'intent-1',
@@ -174,7 +138,7 @@ describe('v9 render projection', () => {
       event_id: 'ready-13',
       idempotency_key: 's1#ready-13',
       payload: { ...base.payload, render_ref: 'render-13' },
-    })).rejects.toThrow('v10 render trace render_ref mismatch')
+    })).rejects.toThrow('projection_render_ref_mismatch')
 
     const events = await db.execute(sql`SELECT "id" FROM "events" WHERE "trace_id" = 'trace-12'`)
     const traces = await db.select().from(schema.v9RenderTraces).where(eq(schema.v9RenderTraces.traceId, 'trace-12'))

@@ -2,49 +2,12 @@ import { PGlite } from '@electric-sql/pglite'
 import { drizzle } from 'drizzle-orm/pglite'
 import { beforeEach, describe, expect, it } from 'vitest'
 
+import { buildMemoryV9Ddl } from '../../schemas/pglite-ddl'
 import { planRenderTraceBackfill, runRenderTraceBackfill } from './render-trace-backfill'
 
 import * as schema from '../../schemas/memory-v9'
 
-const DDL = `
-  CREATE TABLE "events" (
-    "id" text PRIMARY KEY,
-    "event_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "correlation_id" text NOT NULL,
-    "timestamp" timestamp NOT NULL,
-    "producer" text NOT NULL,
-    "origin_device" text NOT NULL,
-    "privacy_level" integer NOT NULL,
-    "evidence_refs" text[] NOT NULL DEFAULT '{}',
-    "causal_context_refs" text[] NOT NULL DEFAULT '{}',
-    "risk_score" real NOT NULL DEFAULT 0,
-    "topic" text NOT NULL,
-    "payload" jsonb,
-    "idempotency_key" text NOT NULL UNIQUE,
-    "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-    "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
-    "tick" integer,
-    "causality" jsonb,
-    "core_state_node" text
-  );
-  CREATE TABLE "render_traces" (
-    "id" text PRIMARY KEY,
-    "session_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "correlation_id" text NOT NULL,
-    "event_id" text NOT NULL,
-    "persona_snapshot_ref" text,
-    "intent_ref" text,
-    "render_ref" text,
-    "applied_params_hash" text,
-    "asset_version_hash" text,
-    "created_at" timestamp DEFAULT NOW() NOT NULL,
-    "updated_at" timestamp DEFAULT NOW() NOT NULL
-  );
-  CREATE UNIQUE INDEX "render_traces_render_ref_idx"
-    ON "render_traces" ("render_ref") WHERE "render_ref" IS NOT NULL;
-`
+const DDL = buildMemoryV9Ddl()
 
 async function createDb() {
   const client = new PGlite()
@@ -117,6 +80,10 @@ describe('render_traces offline backfill', () => {
     expect(rows[0].appliedParamsHash).toBe('h1')
     expect(rows[0].assetVersionHash).toBe('a1')
     expect(rows[0].personaSnapshotRef).toBe('snap-1')
+    // v10 §6.2 / P1-2：请求+回执齐备 ⇒ paired；两端事件 id 回填。
+    expect(rows[0].projectionStatus).toBe('paired')
+    expect(rows[0].renderReadyEventId).toBe('ready-1')
+    expect(rows[0].personaRenderRequestedEventId).toBe('req-1')
   })
 
   it('is idempotent: a second run inserts nothing', async () => {

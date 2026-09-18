@@ -1,5 +1,3 @@
-import type { HonoEnv } from '../src/types/hono'
-
 /**
  * Step B 验收：**HTTP 边界**端到端验证。
  *
@@ -27,6 +25,10 @@ import type { HonoEnv } from '../src/types/hono'
  *
  * 运行：`pnpm --filter @proj-aijade/server verify:v9-events-http`
  */
+import type { AijadeEventEnvelope } from '@proj-aijade/memory-biomimetic'
+
+import type { HonoEnv } from '../src/types/hono'
+
 import process from 'node:process'
 
 import { PGlite } from '@electric-sql/pglite'
@@ -34,6 +36,7 @@ import { drizzle } from 'drizzle-orm/pglite'
 import { Hono } from 'hono'
 
 import { createV9EventsRoutes } from '../src/routes/v9/events'
+import { assertSchemaMatchesDrizzle, buildMemoryV9Ddl, memoryV9Tables } from '../src/schemas/pglite-ddl'
 import { createV9EventService } from '../src/services/domain/v9-events'
 import { ApiError } from '../src/utils/error'
 
@@ -46,41 +49,26 @@ function assert(cond: boolean, msg: string): void {
   }
 }
 
-/** 与 drizzle schema（memory-v9.ts 的 v9Events / v9AuditLogEntries）逐列对应的物理 DDL。 */
-const DDL = `
-  CREATE TABLE "events" (
-    "id" text PRIMARY KEY,
-    "event_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "correlation_id" text NOT NULL,
-    "timestamp" timestamp NOT NULL,
-    "producer" text NOT NULL,
-    "topic" text NOT NULL,
-    "payload" jsonb,
-    "idempotency_key" text NOT NULL UNIQUE,
-    "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-    "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high'))
-  );
-  CREATE TABLE "audit_log_entries" (
-    "id" text PRIMARY KEY,
-    "tx_id" text NOT NULL,
-    "actor" text NOT NULL,
-    "action" text NOT NULL,
-    "before_hash" text,
-    "after_hash" text,
-    "at" timestamp NOT NULL
-  );
-`
+/**
+ * 物理 DDL：**由 drizzle schema 生成**，不再手抄。
+ *
+ * 这里曾经手抄一份「与 drizzle schema 逐列对应」的 DDL，实际少了 `events` 的 8 列
+ * （`origin_device` / `privacy_level` / `evidence_refs` / `causal_context_refs` /
+ * `risk_score` / `tick` / `causality` / `core_state_node`），也**完全没有** `render_traces`
+ * 表 —— 于是本脚本在声称 PASS 之前就已经失败：`persona.render_requested` 期望 201，
+ * 实测 500（service 往不存在的列/表写）。因为它既不在 `tsc` 覆盖内、也不在 CI 里，
+ * 这个失效长期无人发现。改为生成后，schema 一改这里立刻跟着变。
+ */
+const DDL = buildMemoryV9Ddl()
 
-interface Envelope {
-  event_id: string
-  trace_id: string
-  correlation_id: string
-  timestamp: number
-  producer: string
-  idempotency_key: string
-  replay_mode: 'live' | 'replay'
-  risk_level: 'low' | 'medium' | 'high'
+/**
+ * 事件信封的**传输形态**。
+ *
+ * 类型直接取自内核（`@proj-aijade/memory-biomimetic` 的 `AijadeEventEnvelope`）而不是手抄 ——
+ * 手抄接口不参与运行期校验，schema 变了它不会跟着动，正是 §0.2 那次漂移的形态。
+ * 这里只额外挂上本脚本关心的 `topic` / `payload`。
+ */
+type Envelope = AijadeEventEnvelope & {
   topic: string
   payload: Record<string, unknown>
 }
@@ -89,6 +77,9 @@ async function main() {
   const client = new PGlite()
   const db = drizzle(client, { schema })
   await client.exec(DDL)
+  // 自检：确认生成的 DDL 真的建出了 schema 声明的全部表与全部列。
+  // 缺了这一步，DDL 生成器自身的漂移会以「下游 500」的形式表现（正是修复前的形态）。
+  await assertSchemaMatchesDrizzle(client, memoryV9Tables())
 
   const v9EventService = createV9EventService(db as never)
 

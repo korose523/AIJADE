@@ -7,66 +7,13 @@ import { drizzle } from 'drizzle-orm/pglite'
 import { Hono } from 'hono'
 import { beforeEach, describe, expect, it } from 'vitest'
 
+import { buildMemoryV9Ddl } from '../../schemas/pglite-ddl'
 import { ApiError } from '../../utils/error'
 import { createV9ReplayRoutes } from './replay'
 
 import * as schema from '../../schemas/memory-v9'
 
-const DDL = `
-  CREATE TABLE "events" (
-    "id" text PRIMARY KEY,
-    "event_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "correlation_id" text NOT NULL,
-    "timestamp" timestamp NOT NULL,
-    "producer" text NOT NULL,
-    "origin_device" text NOT NULL,
-    "privacy_level" integer NOT NULL,
-    "evidence_refs" text[] NOT NULL DEFAULT '{}',
-    "causal_context_refs" text[] NOT NULL DEFAULT '{}',
-    "risk_score" real NOT NULL DEFAULT 0,
-    "topic" text NOT NULL,
-    "payload" jsonb,
-    "idempotency_key" text NOT NULL UNIQUE,
-    "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-    "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
-    "tick" integer,
-    "causality" jsonb,
-    "core_state_node" text
-  );
-  CREATE TABLE "pgc_states" (
-    "id" text PRIMARY KEY,
-    "session_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "policy_version" text NOT NULL,
-    "components" jsonb NOT NULL,
-    "v6_state" jsonb NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL
-  );
-  CREATE TABLE "memory_txs" (
-    "id" text PRIMARY KEY,
-    "session_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "atomicity" text NOT NULL,
-    "max_writes" text NOT NULL,
-    "status" text NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL
-  );
-  CREATE TABLE "memory_versions" (
-    "id" text PRIMARY KEY,
-    "memory_tx_id" text NOT NULL
-  );
-  CREATE TABLE "pgc_write_plans" (
-    "id" text PRIMARY KEY,
-    "pgc_state_id" text NOT NULL,
-    "session_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "policy_version" text NOT NULL,
-    "write_plan" jsonb NOT NULL,
-    "contradiction_report" jsonb NOT NULL,
-    "created_at" timestamp DEFAULT NOW() NOT NULL
-  );
-`
+const DDL = buildMemoryV9Ddl()
 
 const TICK = 42
 const INPUT_HASH = 'input-hash-abc'
@@ -182,9 +129,36 @@ describe('v10 replay consistency', () => {
       maxWrites: '1',
       status: 'committed',
     })
-    // 该测试的 DDL 只建了本模块真正读取的两列（route 只 join `memory_tx_id`），
-    // 故用原始 SQL 写入，避免 drizzle 按完整 schema 展开未建的列。
-    await db.execute(sql`INSERT INTO "memory_versions" ("id", "memory_tx_id") VALUES ('mv-1', 'tx-1')`)
+    // DDL 现在由 drizzle 全量生成（不再有"只建两列"的局部 DDL），
+    // 故必须按真实 schema 写入 memory_versions 的全部 NOT NULL / 外键列。
+    // 回放路由只 inner join 到 memory_tx_id 来判定 trace 是否真的落库了 memory_version，
+    // 因此这里只保证一张**合法**的完整行即可，内容不影响断言。
+    await db.insert(schema.v9EvidencePacks).values({
+      id: 'ep-1',
+      sessionId: 'session-1',
+      source: 'test',
+    })
+    await db.insert(schema.v9PgcStates).values({
+      id: 'pgc-mv-1',
+      sessionId: 'session-1',
+      traceId: TRACE_ID,
+      policyVersion: 'pgc_policy_v1',
+      components: {},
+      v6State: {},
+    })
+    await db.insert(schema.v9MemoryVersions).values({
+      id: 'mv-1',
+      memoryTxId: 'tx-1',
+      memoryItemId: 'mi-1',
+      memoryWriteId: 'mw-1',
+      memoryKind: 'long_term',
+      contentHashSha256: 'deadbeef',
+      evidencePackId: 'ep-1',
+      evidenceIds: [],
+      pgcStateId: 'pgc-mv-1',
+      intensity: 'normal',
+      durability: 'durable',
+    })
   }
 
   async function replay(tick = TICK, inputHash = INPUT_HASH) {

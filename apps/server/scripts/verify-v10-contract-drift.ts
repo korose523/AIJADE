@@ -44,6 +44,7 @@ import { Hono } from 'hono'
 
 import { createV9EventsRoutes } from '../src/routes/v9/events'
 import { AIJADE_TOPICS as SERVER_TOPICS } from '../src/routes/v9/schema'
+import { assertSchemaMatchesDrizzle, buildMemoryV9Ddl, memoryV9Tables } from '../src/schemas/pglite-ddl'
 import { createV9EventService } from '../src/services/domain/v9-events'
 import { ApiError } from '../src/utils/error'
 
@@ -199,9 +200,10 @@ const FIXTURES: Fixture[] = [
       { name: 'missing persona_snapshot_ref', mutate: drop('persona_snapshot_ref') },
       { name: 'missing intent_ref', mutate: drop('intent_ref') },
       { name: 'blank intent_ref', mutate: blank('intent_ref') },
-      // 自引用冒充：把 intent_ref 指向 trace_id 自己（设计文档 §11.2 点名的形状）。
-      // 注意：边界层只保证"非空字符串"，这条由 §11.2 要求"必须 400"，而当前实现
-      // **不会**拒绝 —— 故这里把它作为 **已记录缺口** 断言，而不是假称通过。
+      // 自引用冒充（`intent_ref` 指向 trace_id 自己，§11.2 点名的形状）**不能**放在这里：
+      // 本列表的每条负例都会额外断言「内核也必须拒」，而"ref 不得等于信封自身标识"是
+      // **跨字段语义规则**，内核 payload schema 结构上判不了它（它不知道 ref 与 trace_id 的关系）。
+      // 该形状已移入下方「§11.2 自引用冒充」专节，作为真实断言而非"已记录缺口"。
       { name: 'unknown field', mutate: surprise() },
     ],
   },
@@ -317,54 +319,15 @@ const FIXTURES: Fixture[] = [
   },
 ]
 
-const DDL = `
-  CREATE TABLE "events" (
-    "id" text PRIMARY KEY,
-    "event_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "correlation_id" text NOT NULL,
-    "timestamp" timestamp NOT NULL,
-    "producer" text NOT NULL,
-    "origin_device" text NOT NULL,
-    "privacy_level" integer NOT NULL,
-    "evidence_refs" text[] NOT NULL DEFAULT '{}',
-    "causal_context_refs" text[] NOT NULL DEFAULT '{}',
-    "risk_score" real NOT NULL DEFAULT 0,
-    "topic" text NOT NULL,
-    "payload" jsonb,
-    "idempotency_key" text NOT NULL UNIQUE,
-    "replay_mode" text NOT NULL CHECK ("replay_mode" IN ('live','replay')),
-    "risk_level" text NOT NULL CHECK ("risk_level" IN ('low','medium','high')),
-    "tick" integer,
-    "causality" jsonb,
-    "core_state_node" text
-  );
-  CREATE TABLE "audit_log_entries" (
-    "id" text PRIMARY KEY,
-    "tx_id" text NOT NULL,
-    "actor" text NOT NULL,
-    "action" text NOT NULL,
-    "before_hash" text,
-    "after_hash" text,
-    "at" timestamp NOT NULL
-  );
-  CREATE TABLE "render_traces" (
-    "id" text PRIMARY KEY,
-    "session_id" text NOT NULL,
-    "trace_id" text NOT NULL,
-    "correlation_id" text NOT NULL,
-    "event_id" text NOT NULL,
-    "persona_snapshot_ref" text,
-    "intent_ref" text,
-    "render_ref" text,
-    "applied_params_hash" text,
-    "asset_version_hash" text,
-    "created_at" timestamp DEFAULT NOW() NOT NULL,
-    "updated_at" timestamp DEFAULT NOW() NOT NULL
-  );
-  CREATE UNIQUE INDEX "render_traces_render_ref_idx"
-    ON "render_traces" ("render_ref") WHERE "render_ref" IS NOT NULL;
-`
+/**
+ * 物理 DDL：**由 drizzle schema 生成**，不再手抄（见 `_shared/pglite-memory-schema.ts` 头注）。
+ *
+ * 本文件原先手抄的 `events` / `audit_log_entries` / `render_traces` 三张表当时是正确的，
+ * 但它与另外两个验收脚本各据一份 —— 三个副本里只要有一个漏改，失效形态是
+ * **下游 500 而非清晰的报错**（`verify-v9-events-http.ts` 就是这么坏的）。
+ * 现在统一由 schema 元数据生成，副本消失。
+ */
+const DDL = buildMemoryV9Ddl()
 
 function serverEnvelope(fixture: Fixture, i: number, payload: Record<string, unknown>): Record<string, unknown> {
   return {
@@ -474,6 +437,54 @@ async function runMatrix(leg: Leg): Promise<void> {
     }
   }
 
+  // ---- §11.2 自引用冒充：ref 指向信封自身标识 → 必须 400 且不得落库 ----
+  //
+  // 为什么单独做一节：`negatives` 的循环同时断言「内核也必须拒」，而"ref 不得等于
+  // `trace_id`/`event_id`/`idempotency_key`"是**跨字段语义规则**，内核 payload schema
+  // 结构上无法判定它。此前这一形状在 §11.2 里被点名要求 400，实现却只在矩阵里以注释
+  // "记录为缺口" —— 于是"配对被拦住的形状"实际能穿过引用校验（它撞车时会被幂等去重
+  // 掩盖成 200，比 500 更难发现）。
+  //
+  // 覆盖两类承载 ref 的 topic：
+  //   - `aijade.learning.proposed.*`：`render_ref` 指向自身（服务端 `validateLearningReference` 拒绝）
+  //   - `aijade.persona.render_requested`：`intent_ref` 指向自身（服务端投影 upsert 的身份链拒绝）
+  {
+    const selfReferenceCases: { topic: string, replace: string, value: (env: Record<string, unknown>) => string }[] = [
+      ...FIXTURES
+        .filter(f => f.topic.startsWith('aijade.learning.proposed.'))
+        .map(f => ({
+          topic: f.topic,
+          replace: 'render_ref',
+          value: (env: Record<string, unknown>) => String(env.trace_id),
+        })),
+      { topic: 'aijade.persona.render_requested', replace: 'intent_ref', value: env => String(env.trace_id) },
+    ]
+
+    for (const [k, testCase] of selfReferenceCases.entries()) {
+      const fixture = FIXTURES.find(f => f.topic === testCase.topic)!
+      const i = 700 + k
+      const payload = { ...fixture.payload(i), [testCase.replace]: testCase.value(serverEnvelope(fixture, i, fixture.payload(i))) }
+      const env = serverEnvelope(fixture, i, payload)
+
+      const before = await leg.countRows()
+      const res = await leg.post(env)
+      const after = await leg.countRows()
+
+      check(res.status === 400, `[http] ${fixture.topic} / ${testCase.replace} self-reference: must be 400 (got ${res.status})`)
+      check(after.events === before.events, `[no-write] ${fixture.topic} / ${testCase.replace} self-reference: events unchanged (${before.events} -> ${after.events})`)
+      check(
+        after.renderTraces === before.renderTraces,
+        `[no-write] ${fixture.topic} / ${testCase.replace} self-reference: render_traces unchanged (${before.renderTraces} -> ${after.renderTraces})`,
+      )
+      // 反向对照：内核**结构上必须接受**它（否则上面三条可能只是"内核本来就拒"，
+      // 从而测不到边界那一层）。这条断言正是"内核拒不了、必须由边界拒"的证据。
+      check(
+        kernelAccepts(env),
+        `[kernel] ${fixture.topic} / ${testCase.replace} self-reference: kernel accepts (shape is legal; only the boundary can reject it)`,
+      )
+    }
+  }
+
   // ---- 信封字段集两端同集（这正是此前 8 vs 13 漂移的判据） ----
   //
   // 为什么单独做这一节：topic 级的负例只变异 **payload**，永远测不出"信封少字段"。
@@ -495,6 +506,26 @@ async function runMatrix(leg: Leg): Promise<void> {
     check(after.events === before.events, `[no-write] envelope missing "${field}": events unchanged (${before.events} -> ${after.events})`)
   }
 
+  // ---- 信封层的**未知多余字段**：两端都必须拒绝 ----
+  //
+  // 为什么不能省：上面那组只变异"缺字段"。而信封层真实发生过的漂移方向恰好相反 ——
+  // 内核用 `z.object`（**静默剥离**未知字段）而边界用 `strictObject`（400），
+  // 于是"内核认为合法"的信封在边界被拒。只测缺字段，这个方向永远测不出来。
+  {
+    const i = 980
+    const fixture = FIXTURES[0]
+    const env = serverEnvelope(fixture, i, fixture.payload(i))
+    env.surprise_unknown_envelope_field = 'x'
+
+    const before = await leg.countRows()
+    const res = await leg.post(env)
+    const after = await leg.countRows()
+
+    check(!kernelAccepts(env), '[kernel] envelope with unknown extra field: must be rejected')
+    check(res.status === 400, `[http] envelope with unknown extra field: must be 400 (got ${res.status})`)
+    check(after.events === before.events, `[no-write] envelope with unknown extra field: events unchanged (${before.events} -> ${after.events})`)
+  }
+
   // 反向对照：3 个 v10 可选字段**确实可省**，否则上面的"必需"断言可能只是"什么都拒"。
   for (const field of ENVELOPE_OPTIONAL_FIELDS) {
     const i = 950 + ENVELOPE_OPTIONAL_FIELDS.indexOf(field)
@@ -505,7 +536,18 @@ async function runMatrix(leg: Leg): Promise<void> {
   }
 }
 
-async function main(): Promise<void> {
+/**
+ * P3-5：矩阵本体导出为可导入单元 —— PGlite 腿由此下沉为 vitest 用例
+ * （`verify-v10-contract-drift.test.ts`），断言失败随 `vitest run` 进 CI 红灯；
+ * 真实 PG 腿仍走 CLI（`--postgres` + `DATABASE_URL`，需真库）。
+ *
+ * 返回 `{ failures }` 供调用方断言；本函数**不**自行 `process.exit`
+ * （非零退出码的 CLI 语义保留在下方 `main` 包装器里）。可重复运行：
+ * 模块级计数器每次进入时清零。
+ */
+export async function runContractDriftMatrix(options: { postgres?: boolean } = {}): Promise<{ failures: number }> {
+  failures = 0
+  const wantsPostgres = options.postgres === true
   // ---- 守卫：服务端每新增 topic 都必须在本矩阵里登记 ----
   const covered = new Set(FIXTURES.map(f => f.topic))
   const uncovered = SERVER_TOPICS.filter(t => !covered.has(t))
@@ -531,6 +573,8 @@ async function main(): Promise<void> {
   // ---- PGlite 腿 ----
   const client = new PGlite()
   await client.exec(DDL)
+  // 自检：DDL 生成器自身若漂移，必须在此清晰报错，而不是伪装成下游 500。
+  await assertSchemaMatchesDrizzle(client, memoryV9Tables())
   const db = drizzle(client, { schema })
   const service = createV9EventService(db as never)
 
@@ -545,6 +589,9 @@ async function main(): Promise<void> {
     renderRef: SEED_RENDER_REF,
     appliedParamsHash: SEED_APPLIED_HASH,
     assetVersionHash: SEED_ASSET_HASH,
+    renderReadyEventId: 'seed-render-ready-event',
+    personaRenderRequestedEventId: 'seed-persona-request-event',
+    projectionStatus: 'paired',
     createdAt: new Date(),
     updatedAt: new Date(),
   })
@@ -590,7 +637,6 @@ async function main(): Promise<void> {
   })
 
   // ---- 真实 PostgreSQL 腿（只跑负例；非破坏性） ----
-  const wantsPostgres = process.argv.includes('--postgres')
   const connectionString = process.env.DATABASE_URL
 
   if (!wantsPostgres) {
@@ -662,13 +708,25 @@ async function main(): Promise<void> {
 
   if (failures > 0) {
     console.error(`\nFAIL: ${failures} contract-drift assertion(s) failed`)
-    process.exit(1)
+    return { failures }
   }
   const legs = wantsPostgres ? 'pglite + real postgres' : 'pglite only'
   console.info(`\nPASS: v10 contract-drift matrix (${legs}; dual-end acceptance + 400 + no-write on both tables)`)
+  return { failures }
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+/** CLI 包装器：保留原有的 `--postgres` 参数与非零退出码语义（P3-5 前 `main` 的行为）。 */
+async function main(): Promise<void> {
+  const { failures } = await runContractDriftMatrix({ postgres: process.argv.includes('--postgres') })
+  if (failures > 0)
+    process.exit(1)
+}
+
+// P3-5：被 vitest 导入时（下沉的 PGlite 腿测试）**不**自动执行，由测试显式调用
+// `runContractDriftMatrix`；CLI 运行（tsx）时保持原有的自动执行语义。
+if (process.env.VITEST !== 'true') {
+  main().catch((err) => {
+    console.error(err)
+    process.exit(1)
+  })
+}

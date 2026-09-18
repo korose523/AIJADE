@@ -6,6 +6,7 @@ import { computeLearningInputHash } from '@proj-aijade/memory-biomimetic'
 import { drizzle } from 'drizzle-orm/pglite'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { buildMemoryV9Ddl } from '../../schemas/pglite-ddl'
 import { dequeueV9Promotion } from './v9-jobs'
 import { createV9PromotionService } from './v9-promotion'
 
@@ -15,21 +16,7 @@ type TestDb = Awaited<ReturnType<typeof createDb>>
 
 async function createDb() {
   const client = new PGlite()
-  await client.exec(`
-    CREATE TABLE "evolution_specs" (
-      "id" text PRIMARY KEY,
-      "name" text NOT NULL,
-      "spec" jsonb NOT NULL,
-      "created_at" timestamp NOT NULL DEFAULT NOW()
-    );
-    CREATE TABLE "eval_reports" (
-      "id" text PRIMARY KEY,
-      "name" text NOT NULL,
-      "metric" jsonb NOT NULL,
-      "result" jsonb NOT NULL,
-      "created_at" timestamp NOT NULL DEFAULT NOW()
-    );
-  `)
+  await client.exec(buildMemoryV9Ddl())
   return drizzle(client, { schema })
 }
 

@@ -4,10 +4,12 @@ import type Redis from 'ioredis'
 import type { V9EventService } from '../../services/domain/v9-events'
 import type { HonoEnv } from '../../types/hono'
 
+import { useLogger } from '@guiiai/logg'
 import { Hono } from 'hono'
 import { safeParse } from 'valibot'
 
 import { authGuard } from '../../middlewares/auth'
+import { RenderTraceContractError, renderTraceFailureMessage } from '../../services/domain/v9-events'
 import { enqueueV9VideoObservation, parkDeadLetter, V9_VIDEO_OBSERVATION_DEAD_LETTER } from '../../services/domain/v9-jobs'
 import { createBadRequestError } from '../../utils/error'
 import { nanoid } from '../../utils/id'
@@ -17,6 +19,8 @@ import {
   v9EventEnvelopeSchema,
   v10EventFieldsSchema,
 } from './schema'
+
+const logger = useLogger('v9-events-route')
 
 /**
  * `POST /api/v1/v9/events` —— v9 事件总线的 HTTP 入口（Step B 设计稿 §4）。
@@ -55,11 +59,16 @@ const VIDEO_OBSERVATION_TOPICS = new Set<string>([
  * - `traceId` / `correlationId` / `eventId` / `timestamp` / `originDevice` /
  *   `privacyLevel` / `riskScore` ← 信封；
  * - `tick` ← 信封.tick、`inputHash` ← 信封.causality.inputHash（v10 前缀已强制它们存在）；
- * - `event` ← 本次被落库的事件本身（运行时只读 topic + payload）。
+ * - `event` ← 本次被落库的事件本身（运行时只读 topic + payload）；
+ * - `renderRef` / `appliedParamsHash` / `assetVersionHash` ← **真实渲染身份**（复核报告
+ *   R1：来自 `render_traces` 真源投影的最近回执三元组，见 service.
+ *   `findLatestRenderIdentity`）。内核 P0-2 守卫要求三者非空，调用方必须在无真实身份时
+ *   **跳过派发**（宁缺勿伪造），绝不传合成值。
  */
 function buildVideoObservationInput(
   event: { topic: string, event_id: string, trace_id: string, correlation_id: string, timestamp: number, origin_device: string, privacy_level: 0 | 1 | 2 | 3, risk_score: number, tick?: number, causality?: { inputHash: string } },
   payload: { session_id: string },
+  renderIdentity?: { renderRef: string, appliedParamsHash: string, assetVersionHash: string },
 ): V9VideoObservationInput {
   return {
     eventId: event.event_id,
@@ -75,6 +84,9 @@ function buildVideoObservationInput(
     inputHash: event.causality!.inputHash,
     proposalId: `sp_prop_${event.event_id}`,
     event: event as unknown as AijadeEvent,
+    renderRef: renderIdentity?.renderRef,
+    appliedParamsHash: renderIdentity?.appliedParamsHash,
+    assetVersionHash: renderIdentity?.assetVersionHash,
   }
 }
 
@@ -129,14 +141,17 @@ export function createV9EventsRoutes(v9EventService: V9EventService, runtime?: V
         })
       }
       catch (error) {
-        if (error instanceof Error && error.message === 'v10 learning proposal render trace reference or hash mismatch') {
-          throw createBadRequestError('Learning proposal render trace does not match the stored projection', 'INVALID_RENDER_TRACE_REFERENCE')
-        }
-        if (error instanceof Error && (
-          error.message === 'v10 render trace render_ref mismatch'
-          || error.message === 'v10 render trace intent_ref mismatch'
-        )) {
-          throw createBadRequestError('Render trace identity does not match the existing projection', 'INVALID_RENDER_TRACE_REFERENCE')
+        // 用**类型**判定而不是匹配错误消息字符串：消息一改（例如为了让人看清是哪条规则
+        // 失败），字符串比对就会静默失效，把本该 400 的请求变成 500。
+        // 对外契约（400 + INVALID_RENDER_TRACE_REFERENCE + 消息原文）保持不变；
+        // 可区分的 reason 只进服务端日志，让"缺配"与"漂移"能分开定位。
+        if (error instanceof RenderTraceContractError) {
+          logger.withFields({
+            reason: error.reason,
+            traceId: event.trace_id,
+            topic: event.topic,
+          }).warn('render trace contract rejected at the boundary')
+          throw createBadRequestError(renderTraceFailureMessage(error.reason), 'INVALID_RENDER_TRACE_REFERENCE')
         }
         throw error
       }
@@ -148,23 +163,34 @@ export function createV9EventsRoutes(v9EventService: V9EventService, runtime?: V
       // "事件已接受"。否则一次 worker/归约抖动会让生产者的 POST 拿到错误码，等于把 sink 的
       // 失败泄漏成上游的失败（与"事件总线只承诺落库"的契约相悖）。
       if (VIDEO_OBSERVATION_TOPICS.has(event.topic) && runtime) {
-        const dispatchInput = buildVideoObservationInput(event, payloadResult.output as { session_id: string })
-        try {
-          if (redis) {
-            await enqueueV9VideoObservation(redis, { jobId: nanoid(), input: dispatchInput })
-          }
-          else {
-            // 无 redis ⇒ 降级为内联归约（照 perception 路由的降级语义）。
-            await runtime.processVideoObservation(dispatchInput)
-          }
+        // 复核报告 R1（B/C 路真实生产者）：提案的渲染身份必须来自 `render_traces`
+        // 真源投影的最近真实回执三元组（`lpm.render_ready` 落库片段），绝不合成。
+        // 无真实身份 ⇒ 宁缺勿伪造：跳过派发（派发了也会被内核 P0-2 守卫拒绝，
+        // 之前的行为正是"派发 → 抛错 → 被吞"，提案端到端从未真实产出）。
+        const sessionId = (payloadResult.output as { session_id: string }).session_id
+        const renderIdentity = await v9EventService.findLatestRenderIdentity()
+        if (!renderIdentity) {
+          console.warn(`[v9-events] video observation ${event.event_id}: no real render identity available (session=${sessionId}); learning proposal dispatch skipped (宁缺勿伪造)`)
         }
-        catch (dispatchError) {
-          console.error(`[v9-events] video observation dispatch failed for ${event.event_id} (event accepted, not rolled back)`, dispatchError)
-          if (redis) {
-            await parkDeadLetter(redis, V9_VIDEO_OBSERVATION_DEAD_LETTER, {
-              job: { eventId: event.event_id, topic: event.topic },
-              error: String(dispatchError),
-            })
+        else {
+          const dispatchInput = buildVideoObservationInput(event, payloadResult.output as { session_id: string }, renderIdentity)
+          try {
+            if (redis) {
+              await enqueueV9VideoObservation(redis, { jobId: nanoid(), input: dispatchInput })
+            }
+            else {
+              // 无 redis ⇒ 降级为内联归约（照 perception 路由的降级语义）。
+              await runtime.processVideoObservation(dispatchInput)
+            }
+          }
+          catch (dispatchError) {
+            console.error(`[v9-events] video observation dispatch failed for ${event.event_id} (event accepted, not rolled back)`, dispatchError)
+            if (redis) {
+              await parkDeadLetter(redis, V9_VIDEO_OBSERVATION_DEAD_LETTER, {
+                job: { eventId: event.event_id, topic: event.topic },
+                error: String(dispatchError),
+              })
+            }
           }
         }
       }

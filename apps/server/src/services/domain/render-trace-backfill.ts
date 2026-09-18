@@ -54,6 +54,12 @@ export interface RenderTraceBackfillRow {
   renderRef: string | null
   appliedParamsHash: string | null
   assetVersionHash: string | null
+  /** v10 §6.2 / 报告 P1-2：来自 `lpm.render_ready` 的事件 id。 */
+  renderReadyEventId: string | null
+  /** v10 §6.2 / 报告 P1-2：来自 `persona.render_requested` 的事件 id。 */
+  personaRenderRequestedEventId: string | null
+  /** v10 §6.2 / 报告 P1-2：投影完成标记（paired / partial）。 */
+  projectionStatus: 'partial' | 'paired'
 }
 
 export interface RenderBackfillPlan {
@@ -111,6 +117,12 @@ export function planRenderTraceBackfill(events: RenderBackfillEventRow[]): Rende
       continue
     }
 
+    const renderRef = readString(ready.payload, 'render_ref')
+    const intentRef = request ? readString(request.payload, 'intent_ref') : null
+    // v10 §6.2 / 报告 P1-2：缺配检测的状态位。回填时 `ready` 必存在（上面已 return），
+    // 所以 `renderRef` 必填；`intentRef` 仅在同 trace 存在 `persona.render_requested` 时有值。
+    const projectionStatus: 'partial' | 'paired' = renderRef && intentRef ? 'paired' : 'partial'
+
     rows.push({
       id: `rt_${traceId}`,
       sessionId,
@@ -118,10 +130,13 @@ export function planRenderTraceBackfill(events: RenderBackfillEventRow[]): Rende
       correlationId: (request ?? ready).correlationId,
       eventId: ready.eventId,
       personaSnapshotRef: request ? readString(request.payload, 'persona_snapshot_ref') : null,
-      intentRef: request ? readString(request.payload, 'intent_ref') : null,
-      renderRef: readString(ready.payload, 'render_ref'),
+      intentRef,
+      renderRef,
       appliedParamsHash: readString(ready.payload, 'applied_params_hash'),
       assetVersionHash: readString(ready.payload, 'asset_version_hash'),
+      renderReadyEventId: ready.eventId,
+      personaRenderRequestedEventId: request ? request.eventId : null,
+      projectionStatus,
     })
   }
 
@@ -206,6 +221,9 @@ export async function runRenderTraceBackfill(
           renderRef: row.renderRef,
           appliedParamsHash: row.appliedParamsHash,
           assetVersionHash: row.assetVersionHash,
+          renderReadyEventId: row.renderReadyEventId,
+          personaRenderRequestedEventId: row.personaRenderRequestedEventId,
+          projectionStatus: row.projectionStatus,
           createdAt: new Date(),
           updatedAt: new Date(),
         })

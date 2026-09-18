@@ -14,7 +14,8 @@
  * - `memory_versions.memory_tx_id` → 引用 `memory_txs`（版本只由已提交事务产生）。
  */
 
-import { integer, jsonb, pgTable, real, text, timestamp } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm'
+import { check, integer, jsonb, pgTable, real, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { nanoid } from '../utils/id'
 
@@ -87,9 +88,45 @@ export const v9RenderTraces = pgTable(
     renderRef: text('render_ref'),
     appliedParamsHash: text('applied_params_hash'),
     assetVersionHash: text('asset_version_hash'),
+    /**
+     * v10 §6.2 / 报告 P1-2：来自 `lpm.render_ready` 的事件 id（审计/回放定位）。
+     * 可为空 —— 投影行可能先由 `persona.render_requested` 建立（那时还没有回执事件）。
+     */
+    renderReadyEventId: text('render_ready_event_id'),
+    /**
+     * v10 §6.2 / 报告 P1-2：来自 `persona.render_requested` 的事件 id。
+     * 可为空 —— 投影行可能先由 `lpm.render_ready` 建立（那时还没有请求事件）。
+     */
+    personaRenderRequestedEventId: text('persona_render_requested_event_id'),
+    /**
+     * v10 §6.2 / 报告 P1-2：投影完成标记 —— 这是"缺配检测"的关键状态位。
+     * - `paired`：请求 (`intent_ref`) 与回执 (`render_ref`) 齐备，身份链完整。
+     * - `partial`：只收到一端，存在配对缺口（论文可见，而非埋成正常数据）。
+     * 该列由投影写入逻辑**显式计算**，故可 NOT NULL；旧行的 NOT NULL 约束由迁移
+     * 0024 以 `DEFAULT 'partial'` 落地（见 `drizzle/0024_*.sql`）。
+     */
+    projectionStatus: text('projection_status').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
+  // v10 §6.2 / 报告 R4（两步走 · 第一步）：两阶段身份不变量。
+  //
+  // 投影行由两端事件「任意一端先到」即建立（persona.render_requested 只带 intent_ref；
+  // lpm.render_ready 只带回执三件套且 asset_version_hash 契约上可选），因此
+  // intent_ref / applied_params_hash / asset_version_hash **不能**简单收紧为 NOT NULL ——
+  // 那会同时破坏内核 payload 契约（render_ready 的 asset_version_hash 可省略）
+  // 与「partial 配对缺口论文可见」的设计。真正可数据库化强制的不变量是：
+  //   ① 每行至少携带一端身份（不允许两端皆空的无主行）；
+  //   ② 有回执端（render_ref）必有内容指纹（applied_params_hash）——
+  //      契约上 render_ready 的 applied_params_hash 为 `.min(1)` 必填，两者不可分割。
+  // 迁移侧（drizzle/0025）以 NOT VALID 落地：不扫存量行（回填完成前服务器照常启动），
+  // 但对**新写入**自约束生效起即强制；存量行合规性由回填后的 VALIDATE CONSTRAINT 确认。
+  () => [
+    check(
+      'render_traces_identity_phase_check',
+      sql`("intent_ref" IS NOT NULL OR "render_ref" IS NOT NULL) AND ("render_ref" IS NULL OR "applied_params_hash" IS NOT NULL)`,
+    ),
+  ],
 )
 
 // evidence_packs / evidence_chunks -------------------------------------------

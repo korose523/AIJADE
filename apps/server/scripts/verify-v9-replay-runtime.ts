@@ -1,4 +1,9 @@
-import process from 'node:process'
+/**
+ * Hono 环境类型。必须显式带上泛型 —— 不带时 `Variables` 是空对象，
+ * `c.set('user', …)` 的键会被推断成 `never`，`tsc` 直接报 TS2769。
+ * `scripts/**` 此前不在 tsc 覆盖内，所以这个错误一直没被看见。
+ */
+import type { HonoEnv } from '../src/types/hono'
 
 /**
  * 回放一致性 API 的**真实运行期数据**验收（v10 §4.3 / §11.3）。
@@ -26,6 +31,7 @@ import process from 'node:process'
  *
  * 退出码：0 全通过 / 2 缺 DATABASE_URL / 3 断言失败 / 4 意外错误 / 5 找不到运行期快照。
  */
+import process from 'node:process'
 
 const EXIT = {
   ok: 0,
@@ -80,7 +86,7 @@ async function main(): Promise<number> {
     DB_POOL_KEEPALIVE_INITIAL_DELAY_MS: 1_000,
   })
 
-  const app = new Hono()
+  const app = new Hono<HonoEnv>()
     .use('*', async (c, next) => {
       c.set('user', { id: 'verify-replay' } as never)
       await next()
