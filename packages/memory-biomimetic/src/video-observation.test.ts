@@ -114,7 +114,7 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
   // -------------------------------------------------------------------------
   it('reduction yields an evidence-anchored proposal that the gate accepts (structurally true - see comment)', () => {
     const candidate = evidenceFromWebpageObservation(webpagePayload)
-    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1', renderRef: 'render-s1-p1', appliedParamsHash: 'applied-s1-p1', assetVersionHash: 'asset-s1-p1' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
     expect(proposal.anchorKind).toBe('evidence')
     expect(proposal.anchorVerified).toBe(false)
@@ -123,7 +123,7 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
 
   it('subtitle reduction yields an evidence-anchored proposal', () => {
     const candidate = evidenceFromSubtitleObservation(subtitlePayload)
-    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's2', proposalId: 'p2' }, observationEnvelope(1, 'h'))
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's2', proposalId: 'p2', renderRef: 'render-s2-p2', appliedParamsHash: 'applied-s2-p2', assetVersionHash: 'asset-s2-p2' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
     expect(proposal.anchorKind).toBe('evidence')
     expect(verifyShadowParamsProposalAnchor(proposal)).toEqual({ ok: true })
@@ -138,7 +138,7 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
   // -------------------------------------------------------------------------
   it('a third party holding only the observation can recompute the evidence hash (mapping is lossless)', () => {
     const candidate = evidenceFromWebpageObservation(webpagePayload)
-    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1', renderRef: 'render-s1-p1', appliedParamsHash: 'applied-s1-p1', assetVersionHash: 'asset-s1-p1' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
 
     // 从**观察 payload**（而不是 candidate / proposal）复算。
@@ -152,7 +152,7 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
     expect(proposal.claimText).toBe(webpagePayload.observation_text)
 
     const subCandidate = evidenceFromSubtitleObservation(subtitlePayload)
-    const subEv = buildEvidenceEventFromCandidate(subCandidate, { sessionId: 's2', proposalId: 'p2' }, observationEnvelope(1, 'h'))
+    const subEv = buildEvidenceEventFromCandidate(subCandidate, { sessionId: 's2', proposalId: 'p2', renderRef: 'render-s2-p2', appliedParamsHash: 'applied-s2-p2', assetVersionHash: 'asset-s2-p2' }, observationEnvelope(1, 'h'))
     const subProposal = shadowParamsProposalFromEvent(subEv)
     expect(subProposal.evidenceHash).toBe(evidenceHashFor(
       'video_transcript',
@@ -170,7 +170,7 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
       evidence_hash: candidate.evidenceHash,
       claim_text: candidate.claimText,
     })
-    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1', renderRef: 'render-s1-p1', appliedParamsHash: 'applied-s1-p1', assetVersionHash: 'asset-s1-p1' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
     expect(proposal.inputHash).toBe(expected)
     expect(proposal.evidenceHash).toBe(candidate.evidenceHash)
@@ -182,7 +182,7 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
   // -------------------------------------------------------------------------
   it('gate is not a tautology: tampering claim_text (input_hash unchanged) is rejected', () => {
     const candidate = evidenceFromWebpageObservation(webpagePayload)
-    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1', renderRef: 'render-s1-p1', appliedParamsHash: 'applied-s1-p1', assetVersionHash: 'asset-s1-p1' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
     expect(verifyShadowParamsProposalAnchor(proposal).ok).toBe(true)
     const tampered = { ...proposal, claimText: `${proposal.claimText}x` }
@@ -208,12 +208,22 @@ describe('video-observation reduction (A 路 / 纯视频输入)', () => {
   })
 
   // -------------------------------------------------------------------------
+  // D.5b（报告 P0-2）禁止确定性派生缺省值：缺 render_ref / applied_params_hash /
+  // asset_version_hash 任一即抛错，而不是造一个「必被下游拒绝的假 ref」。
+  // -------------------------------------------------------------------------
+  it('rejects an evidence candidate payload missing renderRef (no synthesized default, P0-2)', () => {
+    const candidate = evidenceFromWebpageObservation(webpagePayload)
+    expect(() => buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h')))
+      .toThrow(/forbidden/)
+  })
+
+  // -------------------------------------------------------------------------
   // D.6 归约出的提案经 decidePgc 后，高疲劳/低 w 场景使其 commit_reason !== 'committed'
   // （证明门控真会拒，而不是恒提交）。
   // -------------------------------------------------------------------------
   it('the reduced evidence proposal is actually rejected by decidePgc under high fatigue / low w', () => {
     const candidate = evidenceFromWebpageObservation(webpagePayload)
-    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1' }, observationEnvelope(1, 'h'))
+    const ev = buildEvidenceEventFromCandidate(candidate, { sessionId: 's1', proposalId: 'p1', renderRef: 'render-s1-p1', appliedParamsHash: 'applied-s1-p1', assetVersionHash: 'asset-s1-p1' }, observationEnvelope(1, 'h'))
     const proposal = shadowParamsProposalFromEvent(ev)
     const candidateWrite = shadowProposalAsPgcCandidate(proposal)
     const decision = decidePgc({
@@ -278,6 +288,9 @@ describe('processVideoObservation (A 路归约入口)', () => {
       tick,
       inputHash,
       proposalId: 'prop-1',
+      renderRef: 'render-e-vid',
+      appliedParamsHash: 'applied-e-vid',
+      assetVersionHash: 'asset-e-vid',
       event: webpageObservationEvent(tick, inputHash),
     })
 
@@ -314,6 +327,9 @@ describe('processVideoObservation (A 路归约入口)', () => {
       tick,
       inputHash,
       proposalId: 'prop-2',
+      renderRef: 'render-e-sub',
+      appliedParamsHash: 'applied-e-sub',
+      assetVersionHash: 'asset-e-sub',
       event: subtitleObservationEvent(tick, inputHash),
     })
     const le = result.artifact.events.find(e => e.topic === 'aijade.learning.proposed.evidence')!

@@ -62,7 +62,8 @@ export interface EvidenceCandidateToEventPayloadOpts {
   proposalId: string
   /**
    * 以下三项对应 `learningProposedEvidenceSchema` 的必填字段（`.min(1)`）。
-   * 省略时由 `evidenceHash` 确定性派生（非空、可复现），保证事件可被 zod 接受。
+   * ⚠️ **不再提供缺省派生**（报告 P0-2）：缺少任一即抛错，由调用方保证传入真实来源
+   * （app 层注入的渲染身份 / 参数快照哈希）。伪造的缺省值会违反 v10 §14.4 且被 B 路校验拒绝。
    */
   renderRef?: string
   appliedParamsHash?: string
@@ -167,10 +168,21 @@ export function evidenceCandidateToEventPayload(
   candidate: EvidenceCandidate,
   opts: EvidenceCandidateToEventPayloadOpts,
 ): LearningProposedEvidencePayload {
-  // 缺省值的确定性派生：由 evidenceHash 做两次不同的内容哈希，保证非空且可复现。
-  const renderRef = opts.renderRef ?? `render_${opts.proposalId}`
-  const appliedParamsHash = opts.appliedParamsHash ?? contentHash({ t: 'applied', e: candidate.evidenceHash })
-  const assetVersionHash = opts.assetVersionHash ?? contentHash({ t: 'asset', e: candidate.evidenceHash })
+  // P0-2（报告 §4）：**禁止确定性派生缺省值**。v10 §14.4 明确禁止伪造 `render_ref`，
+  // 而 `applied_params_hash` / `asset_version_hash` 同理需要真实来源（由 app 层注入的真实
+  // 渲染身份 / 参数快照哈希）。此处若任一缺失，**显式抛错/跳过该候选**，而不是造一个
+  // 「必被下游拒绝的假 ref」（那仍是语义上不存在的 ref，违反研究效度）。
+  // 真实来源由 `V9VideoObservationInput`（v9-runtime → 服务端 `processVideoObservation`）
+  // 从 app 层下发；无真实来源时调用方应直接不发该提案。
+  if (opts.renderRef == null || opts.appliedParamsHash == null || opts.assetVersionHash == null) {
+    throw new Error(
+      '[video-observation] learning.proposed.evidence requires explicit renderRef, '
+      + 'appliedParamsHash, and assetVersionHash; synthesized defaults are forbidden (v10 §14.4 / report P0-2)',
+    )
+  }
+  const renderRef = opts.renderRef
+  const appliedParamsHash = opts.appliedParamsHash
+  const assetVersionHash = opts.assetVersionHash
   const confidence = opts.confidence ?? candidate.confidence
   return {
     session_id: opts.sessionId,

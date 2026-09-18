@@ -90,13 +90,26 @@ const envelopeFields = {
  * 现在唯一的真源是 {@link envelopeFields}，类型与校验同源，无法各自演化。
  */
 
-/** 信封的运行时校验（与 {@link AijadeEventEnvelope} 同源）。 */
-export const envelopeSchema = z.object(envelopeFields)
+/**
+ * 信封的运行时校验（与 {@link AijadeEventEnvelope} 同源）。
+ *
+ * ⚠️ 这里必须是 `strictObject`：边界（`apps/server/src/routes/v9/schema.ts` 的
+ * `v9EventEnvelopeSchema`）用的是 `strictObject`，未知的多余字段一律 400。
+ * 本处此前用 `z.object` —— 它**静默剥离**未知字段，于是一个"内核接受、边界拒绝"的
+ * 单向漂移得以存在：内核工厂（或任何按内核校验的调用方）会认为带多余字段的信封合法，
+ * 投到边界却被 400 丢掉。payload 层两侧早已都是 `strictObject`，只有信封层没对齐。
+ */
+export const envelopeSchema = z.strictObject(envelopeFields)
 
 export type AijadeEventEnvelope = z.infer<typeof envelopeSchema>
 
-/** 统一事件信封（topic 与 payload 为 unknown 的宽松形态，供总线透传）。 */
-export const eventEnvelopeSchema = z.object({
+/**
+ * 统一事件信封（topic 与 payload 为 unknown 的宽松形态，供总线透传）。
+ *
+ * 同样 `strictObject`：未知的多余顶层字段必须被拒，理由同上。
+ * 之前写的是 `z.object`，与 {@link envelopeSchema} 一样会静默剥离。
+ */
+export const eventEnvelopeSchema = z.strictObject({
   ...envelopeFields,
   topic: z.string().min(1),
   payload: z.unknown(),
@@ -324,8 +337,16 @@ export type LearningConstraintOpinionEvaluationPayload = z.infer<typeof learning
 // 每个 topic 一个强类型事件（信封 + 字面量 topic + 强类型 payload）
 // ============================================================================
 
+/**
+ * 每个 topic 一个强类型事件（信封 + 字面量 topic + 强类型 payload）。
+ *
+ * ⚠️ 这里必须是 `strictObject`：它是 {@link safeParseAijadeEvent} 实际走的路径，
+ * 也是"内核是否接受一个多余字段的信封"的真正判据。此前用 `z.object` —— 它会
+ * **静默剥离**未知字段，于是内核接受、边界 400，形成单向漂移（只改 `envelopeSchema`
+ * 而不改这里，是修不到这条路径的，矩阵的"信封多余字段"负例正是这么发现的）。
+ */
 function topicEvent<K extends string>(topic: K, payload: z.ZodTypeAny) {
-  return z.object({ ...envelopeFields, topic: z.literal(topic), payload })
+  return z.strictObject({ ...envelopeFields, topic: z.literal(topic), payload })
 }
 
 export const activeLearningRequestedEvent = topicEvent('aijade.active_learning.requested', activeLearningRequestedSchema)

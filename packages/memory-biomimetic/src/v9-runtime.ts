@@ -7,6 +7,7 @@
  * independent of Drizzle, browser storage, and any particular deployment.
  */
 
+import type { MemoryWriteGate } from './capability-token'
 import type {
   AijadeEvent,
   AijadeEventEnvelope,
@@ -61,6 +62,8 @@ export interface V9PerceptionInput {
   /** A feature vector is evidence, not a hidden heuristic: it is persisted in the state snapshot. */
   stimulusFeatures?: Partial<Record<StimulusFeature, number>>
   riskLevel?: RiskLevel
+  /** 报告 P2-1：能力令牌。配置 gate 的运行时在落库前会经 `gate.authorize` 校验。 */
+  capabilityToken?: string
 }
 
 /** Minimal repository required to make the runtime durable. */
@@ -87,6 +90,19 @@ export interface V9RuntimeResult {
 }
 
 /**
+ * 运行时构造选项（报告 P2-1）：配置 `gate` 后，三条归约入口（`processPerception` /
+ * `processLearning` / `processVideoObservation`）在落库前都会经 `gate.authorize` 校验
+ * 能力令牌（capability / scope / 过期 / 活跃 grant）。缺省不配置 gate 时行为与改动前完全一致。
+ */
+export interface V9RuntimeOptions {
+  gate?: MemoryWriteGate
+  /** 写入所需的能力名（与 grant 的 capability 对齐）。 */
+  writeCapability?: string
+  /** 写入所需的作用域（与 grant 的 scope 对齐）。 */
+  writeScope?: string
+}
+
+/**
  * 学习事件归约入口输入。与 `V9PerceptionInput` 平行，但**必须**携带 v10 确定性/溯源字段：
  * - `tick`：确定性排序序号（来自输入学习事件，不是运行时发明）。
  * - `inputHash`：输入溯源哈希（来自输入学习事件，不是运行时发明）。
@@ -108,6 +124,8 @@ export interface V9LearningInput {
   inputHash: string
   /** 被归约的原始学习事件（aijade.learning.proposed.shadow_params 或 .evidence）。 */
   event: AijadeEvent
+  /** 报告 P2-1：能力令牌。配置 gate 的运行时在落库前会经 `gate.authorize` 校验。 */
+  capabilityToken?: string
 }
 
 export interface V9LearningResult {
@@ -149,6 +167,8 @@ export interface V9VideoObservationInput {
   renderRef?: string
   appliedParamsHash?: string
   assetVersionHash?: string
+  /** 报告 P2-1：能力令牌。配置 gate 的运行时在落库前会经 `gate.authorize` 校验。 */
+  capabilityToken?: string
 }
 
 function id(prefix: string, eventId: string): string {
@@ -193,7 +213,25 @@ function tagCoreStateNodes(artifact: V9RuntimeArtifact, hasMemoryVersion: boolea
  * previous state is always read from the port before an event is processed.
  */
 export class V9CausalRuntime {
-  constructor(private readonly store: V9RuntimeStore) {}
+  constructor(
+    private readonly store: V9RuntimeStore,
+    private readonly options: V9RuntimeOptions = {},
+  ) {}
+
+  /**
+   * 报告 P2-1：落库前的令牌校验。仅当运行时以 `gate` 构造时才生效——
+   * 调用 `gate.authorize`（capability / scope / 过期 / 活跃 grant 全校验），失败即抛错，
+   * 从而**拒绝落库**。未配置 gate 时本方法为 no-op，行为同改动前。
+   */
+  private async authorizeWrite(token?: string): Promise<void> {
+    if (!this.options.gate)
+      return
+    await this.options.gate.authorize({
+      token: token ?? '',
+      capability: this.options.writeCapability ?? 'memory:write',
+      scope: this.options.writeScope ?? 'global',
+    })
+  }
 
   async processPerception(input: V9PerceptionInput): Promise<V9RuntimeResult> {
     if (!input.content.trim())
@@ -309,8 +347,11 @@ export class V9CausalRuntime {
         risk_score: clampRisk(input.riskScore),
         evidence_refs: [packId, chunkId],
       },
+      capabilityToken: input.capabilityToken,
     }
-    const engine = new MemoryTxEngine()
+    // 报告 P2-1：落库前令牌校验（配置 gate 时）。失败则本方法抛错、不落库。
+    await this.authorizeWrite(input.capabilityToken)
+    const engine = new MemoryTxEngine({ gate: this.options.gate })
     const tx = engine.commit(txInput)
     const weave = buildWeave(engine, tx.tx_id, { include_pgc_snapshot: true, include_claim_ids: true })
 
@@ -469,8 +510,11 @@ export class V9CausalRuntime {
         tick: input.tick,
         causality: { inputHash: input.inputHash },
       },
+      capabilityToken: input.capabilityToken,
     }
-    const engine = new MemoryTxEngine()
+    // 报告 P2-1：落库前令牌校验（配置 gate 时）。失败则本方法抛错、不落库。
+    await this.authorizeWrite(input.capabilityToken)
+    const engine = new MemoryTxEngine({ gate: this.options.gate })
     const tx = engine.commit(txInput)
     const weave = buildWeave(engine, tx.tx_id, { include_pgc_snapshot: true, include_claim_ids: true })
 
@@ -638,6 +682,7 @@ export class V9CausalRuntime {
       tick: input.tick,
       inputHash: input.inputHash,
       event: evidenceEvent,
+      capabilityToken: input.capabilityToken,
     })
   }
 }

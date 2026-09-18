@@ -314,8 +314,13 @@ export interface PgcV6State {
   w: number
   /** 闭式上界：全局 w_max（与当前疲劳无关）。 */
   w_max_global: number
-  /** 闭式上界：给定当前疲劳 f_t 的 w_max。 */
-  w_max_at_f: number
+  /**
+   * 闭式上界：给定当前疲劳 f_t 的 w_max。
+   * ⚠️ 当 read context 未提供 `f_t`（`s.f` 缺失）时为 `null` —— 此时**没有同源的
+   * at-f 上界可计算**，必须以 `null` 显式表达「未计算」，绝不可退回 `w_max_global`
+   * 冒充（那是近似而非同源，会让审计侧把近似当同源，见报告 P2-5）。
+   */
+  w_max_at_f: number | null
   /** 本次写入是否可能 commit（诊断项，区分「状态不好」与「参数不可能」）。 */
   commit_possible: boolean
   /** 见 `CommitReason`。 */
@@ -725,7 +730,10 @@ export function decideCandidate(
       w_prime,
       w,
       w_max_global,
-      w_max_at_f: w_max_at_f ?? w_max_global,
+      // P2-5：f_t 缺失时 `w_max_at_f` 来自 `computeV6WMaxBounds` 的 `null`，**原样保留 null**，
+      // 不退回 `w_max_global` 冒充——那是近似而非同源。审计侧据此可区分「已算 at-f 上界」
+      // 与「无 f_t 故未算」。
+      w_max_at_f,
       commit_possible,
       commit_reason,
       fatigue_deferred,

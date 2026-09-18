@@ -1,9 +1,14 @@
+import type { CapabilityTokenSigner } from './capability-token'
+import type { CapabilityGrant } from './contracts'
 import type { AijadeEvent } from './events'
+import type { V9PerceptionInput } from './v9-runtime'
 import type { PgcStateRow } from './v9-schema'
 
 import { describe, expect, it } from 'vitest'
 
-import { buildLearningProposedShadowParamsEvent, envelopeSchema } from './events'
+import { createMemoryWriteGate } from './capability-token'
+import { buildLearningProposedShadowParamsEvent, eventEnvelopeSchema } from './events'
+import { MemoryTxEngine } from './memory-tx'
 import { computeLearningInputHash } from './shadow-params'
 import { V9CausalRuntime } from './v9-runtime'
 
@@ -136,10 +141,15 @@ describe('v9CausalRuntime', () => {
     expect(txEvent.evidence_refs).toEqual(expect.arrayContaining(['ep_e-ctx', 'ec_e-ctx']))
     expect(txEvent.evidence_refs!.length).toBeGreaterThan(0)
 
-    // 3) 每条事件都能通过**内核自己的信封校验** ⇒ 13 字段齐全，可直接投递 HTTP 边界。
+    // 3) 每条事件都能通过**内核自己的整事件校验** ⇒ 13 字段齐全，可直接投递 HTTP 边界。
     //    （此前内核只有 8 个字段，这一条必然失败 —— 这就是漂移的可执行判据。）
+    //
+    // ⚠️ 这里用的是 `eventEnvelopeSchema`（含 `topic` / `payload`），**不是** `envelopeSchema`。
+    // 后者只声明信封字段；拿它去校验一个完整事件，在 `z.object` 下会**静默剥离** topic 与
+    // payload 然后判"通过"—— 即断言恒为真，测不到任何东西。信封改为 `strictObject` 后，
+    // 这种误用会立刻以 `unrecognized_keys: ["topic","payload"]` 暴露出来。
     for (const event of result.artifact.events) {
-      const parsed = envelopeSchema.safeParse(event)
+      const parsed = eventEnvelopeSchema.safeParse(event)
       expect(parsed.success, `${event.topic} 的信封不完整：${JSON.stringify(parsed.error?.issues)}`).toBe(true)
     }
   })
@@ -205,7 +215,7 @@ describe('v9CausalRuntime', () => {
 
     // 同一 artifact 里的非 v10 事件也必须带真实上下文（同一个信封家族）。
     for (const event of result.artifact.events) {
-      expect(envelopeSchema.safeParse(event).success, `${event.topic} 的信封不完整`).toBe(true)
+      expect(eventEnvelopeSchema.safeParse(event).success, `${event.topic} 的信封不完整`).toBe(true)
       expect(event.origin_device).toBe('tablet-2')
       expect(event.risk_score).toBeCloseTo(0.77, 10)
     }
@@ -219,5 +229,117 @@ describe('v9CausalRuntime', () => {
     }
     // 存在性断言，避免上面那个 for 因 events 为空而恒真。
     expect(result.artifact.events.map(e => e.topic)).toContain('aijade.memory_tx.committed')
+  })
+})
+
+describe('v9CausalRuntime capability-token gate (P2-1)', () => {
+  // 报告 P2-1：把 `capability-token` 原语的 `authorize` 接线到运行时落库边界。
+  // 此前该原语齐备却零调用（§8「能力不旁路」停留在"原语可用"）。本组测试证明：
+  // 配置 gate 后，无令牌 / 无效令牌 → 拒绝落库；持有效令牌 → 正常落库。
+  const signer: CapabilityTokenSigner = {
+    async sign() {
+      return 'signed'
+    },
+    async verify(token) {
+      if (token !== 'valid-token')
+        throw new Error('capability token invalid')
+      return {
+        token,
+        capability: 'memory:write',
+        scope: 'global',
+        grantee: { userScope: 'global' },
+        issuedAt: 0,
+        grantId: 'grant-1',
+      }
+    },
+  }
+  const grants: CapabilityGrant[] = [{
+    id: 'grant-1',
+    schema: 'aijade.capability_grant@1',
+    grantee: { userScope: 'global' },
+    capability: 'memory:write',
+    scope: 'global',
+    grantedBy: 'user',
+    issuedAt: 0,
+    consentPolicy: 'cp-1',
+    source: [{ ref: 'src-1', trusted: true }],
+  }]
+  const gate = createMemoryWriteGate(signer, grants)
+
+  const perceptionInput: V9PerceptionInput = {
+    eventId: 'e-gate',
+    sessionId: 's-gate',
+    traceId: 't-gate',
+    correlationId: 't-gate',
+    timestamp: 1,
+    originDevice: 'desktop',
+    privacyLevel: 1,
+    riskScore: 0.1,
+    source: 'chat:user',
+    content: 'A concrete user observation that should be gated.',
+  }
+
+  it('rejects persistence when no capability token is supplied', async () => {
+    const persisted: unknown[] = []
+    const runtime = new V9CausalRuntime({
+      readLatestPgcState: async () => undefined,
+      persist: async (artifact) => {
+        persisted.push(artifact)
+      },
+    }, { gate, writeCapability: 'memory:write', writeScope: 'global' })
+
+    await expect(runtime.processPerception(perceptionInput)).rejects.toThrow()
+    expect(persisted).toHaveLength(0)
+  })
+
+  it('rejects persistence when the token fails verification', async () => {
+    const persisted: unknown[] = []
+    const runtime = new V9CausalRuntime({
+      readLatestPgcState: async () => undefined,
+      persist: async (artifact) => {
+        persisted.push(artifact)
+      },
+    }, { gate, writeCapability: 'memory:write', writeScope: 'global' })
+
+    await expect(runtime.processPerception({ ...perceptionInput, capabilityToken: 'bogus' })).rejects.toThrow()
+    expect(persisted).toHaveLength(0)
+  })
+
+  it('persists normally when a valid capability token is supplied', async () => {
+    const persisted: unknown[] = []
+    const runtime = new V9CausalRuntime({
+      readLatestPgcState: async () => undefined,
+      persist: async (artifact) => {
+        persisted.push(artifact)
+      },
+    }, { gate, writeCapability: 'memory:write', writeScope: 'global' })
+
+    const result = await runtime.processPerception({ ...perceptionInput, capabilityToken: 'valid-token' })
+    expect(persisted).toHaveLength(1)
+    expect(result.artifact.memoryTx.id).toBe('tx_e-gate')
+    expect(result.tx.committed.length).toBeGreaterThan(0)
+  })
+
+  it('memoryTxEngine refuses commit without a token when a gate is configured', () => {
+    const engine = new MemoryTxEngine({ gate })
+    expect(() => engine.commit({
+      session_id: 's',
+      trace_id: 't',
+      pgc_write_plan: [],
+      memory_payloads: [],
+      tx_policy: { atomicity: 'per_write', max_writes: 1 },
+    })).toThrow(/missing capability token/)
+  })
+
+  it('without a gate configured, behaviour is unchanged (no enforcement)', async () => {
+    const persisted: unknown[] = []
+    const runtime = new V9CausalRuntime({
+      readLatestPgcState: async () => undefined,
+      persist: async (artifact) => {
+        persisted.push(artifact)
+      },
+    })
+    await runtime.processPerception(perceptionInput)
+    expect(persisted).toHaveLength(1)
   })
 })

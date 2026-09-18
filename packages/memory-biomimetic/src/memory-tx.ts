@@ -17,6 +17,7 @@
  * - `pgc.ts` 的 `PgcWritePlanEntry`：输入直接消费 PGC 的 write_plan，不重定义决策类型。
  */
 
+import type { MemoryWriteGate } from './capability-token'
 import type { AijadeEvent, PrivacyLevel, RiskLevel } from './events'
 import type { CommitReason, MemoryKind, PgcWritePlanEntry } from './pgc'
 import type { Tau } from './pgc-state'
@@ -106,6 +107,13 @@ export interface MemoryTxInput {
   tx_policy: TxPolicy
   /** 幂等键；缺省用 trace_id+session_id 推导（同一 tx 重复提交幂等）。 */
   tx_id?: string
+  /**
+   * 能力令牌（报告 P2-1）：当 `MemoryTxEngine` 以 `gate` 构造时，提交**必须**携带有效令牌，
+   * 否则 `commit` 直接拒绝（不落库）。真实密文校验（`signer.verify` / capability / scope / 过期）
+   * 由运行时边界的 `gate.authorize` 完成；引擎层的这一道是"无令牌即拒绝"的二次防线，
+   * 保证即便绕过运行时直接调引擎也仍受门控约束。缺省（未配置 gate）时本字段被忽略。
+   */
+  capabilityToken?: string
   /**
    * 观察/传输上下文。运行时路径**必须**传真实值（见 `V9CausalRuntime`）。
    *
@@ -253,9 +261,12 @@ export class MemoryTxEngine {
   private audit: AuditLogEntryRow[] = []
   private txResults = new Map<string, TxResult>()
   private gating: GatingCoefficients
+  /** 报告 P2-1：能力令牌门控（可选）。配置后，无令牌的提交在 commit 入口即被拒绝。 */
+  private gate?: MemoryWriteGate
 
-  constructor(opts?: { gating?: GatingCoefficients }) {
+  constructor(opts?: { gating?: GatingCoefficients, gate?: MemoryWriteGate }) {
     this.gating = opts?.gating ?? NO_GATING
+    this.gate = opts?.gate
   }
 
   /** 已提交的版本（供 EvidenceWeave 与测试读取）。 */
@@ -280,6 +291,12 @@ export class MemoryTxEngine {
    * 提交一笔受控写入事务。幂等：同一 `tx_id` 第二次提交直接返回首次结果。
    */
   commit(input: MemoryTxInput): TxResult {
+    // 报告 P2-1：若本引擎以 gate 构造，则"无令牌即拒绝落库"——二次防线。
+    // 真正的密文校验（capability/scope/过期）在运行时边界的 `gate.authorize` 完成；
+    // 引擎层只确认"提交伴随了一个令牌"，避免被绕过运行时直接调用时绕过门控。
+    if (this.gate && (!input.capabilityToken || input.capabilityToken.length === 0))
+      throw new Error('memory write denied: missing capability token')
+
     const txId = input.tx_id
       ?? makeId('tx', input.session_id, input.trace_id)
 
