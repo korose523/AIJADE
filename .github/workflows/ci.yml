@@ -1,0 +1,139 @@
+# AIJADE CI —— 报告 §4 P3-1 / P3-3：把"验收装置"接上自动触发者。
+#
+# 覆盖报告 §8 验收命令清单：
+#   - 内核 / 服务端 / stage-ui tsc --noEmit（零 error）
+#   - 内核 / 服务端 / Web 扩展 / stage-ui(node) vitest run
+#   - verify:v10-contract-drift（PGlite 腿，总是跑；负例全套；P3-5 起另有同名 vitest 用例）
+#   - verify:v10-contract-drift:postgres（真实 PG 腿，负例，需 DATABASE_URL）
+#
+# 说明：扩展测试此前游离于根 vitest projects 之外（报告 P3-2），现已接入；
+# 此处仍按包分别运行以便失败定位更清晰。stage-ui node project 常跑；
+# browser project（Playwright Chromium，R6b）为独立 job 腿 —— 本机已实跑验证
+# （3 文件 / 13 用例），CI 上以 `playwright install --with-deps` 自带二进制。
+name: CI
+
+on:
+  push:
+    branches: [main, master, dev]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck + Test (kernel / server / stage-ui / extension) + contract-drift (PGlite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck kernel
+        run: pnpm --filter @proj-aijade/memory-biomimetic typecheck
+
+      - name: Typecheck server
+        run: pnpm --filter @proj-aijade/server typecheck
+
+      - name: Typecheck stage-ui
+        run: pnpm --filter @proj-aijade/stage-ui typecheck
+
+      - name: Test kernel
+        run: pnpm --filter @proj-aijade/memory-biomimetic exec vitest run
+
+      - name: Test server
+        run: pnpm --filter @proj-aijade/server exec vitest run
+
+      # P0-1 的核心逻辑（宁缺勿伪造 + 真实 ref 注入）在 stage-ui：node 环境全套
+      # （browser project 由下方独立 job 腿执行，见 R6b）。
+      - name: Test stage-ui (node project)
+        run: pnpm --filter @proj-aijade/stage-ui exec vitest run --project node
+
+      - name: Test web extension
+        run: pnpm --filter @proj-aijade/aijade-plugin-web-extension test
+
+      - name: Contract drift matrix (PGlite — always runs)
+        run: pnpm --filter @proj-aijade/server verify:v10-contract-drift
+
+  contract-drift-postgres:
+    name: Contract drift (real PostgreSQL, negative cases)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: aijade
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # 真实 PG 腿读取 DATABASE_URL（见 apps/server/drizzle.config.ts）。
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/aijade
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply schema (fresh database)
+        run: pnpm --filter @proj-aijade/server exec drizzle-kit push --force
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/aijade
+
+      - name: Contract drift matrix (real PostgreSQL — negative cases only)
+        run: pnpm --filter @proj-aijade/server verify:v10-contract-drift:postgres
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/aijade
+
+  # R6b：stage-ui browser 测试腿（Playwright Chromium）。
+  # 独立 job —— 与主 verify job 解耦，失败只红灯本腿，不阻塞其余验收装置。
+  stage-ui-browser:
+    name: stage-ui browser tests (Playwright Chromium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium (with system deps)
+        run: pnpm --filter @proj-aijade/stage-ui exec playwright install --with-deps chromium
+
+      - name: Test stage-ui (browser project)
+        run: pnpm --filter @proj-aijade/stage-ui exec vitest run --project browser

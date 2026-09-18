@@ -11,10 +11,6 @@ export default defineConfig({
   vue: true,
 }, {
   ignores: [
-    'cspell.config.yaml',
-    'cspell.config.yml',
-    'crowdin.yaml',
-    'crowdin.yml',
     '**/assets/js/**',
     '**/assets/live2d/models/**',
     'apps/stage-tamagotchi/out/**',
