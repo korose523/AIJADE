@@ -111,6 +111,57 @@ export function buildV9EventEnvelope(input: BuildV9EnvelopeInput): V9EventEnvelo
   }
 }
 
+/**
+ * C 路约束性事件（如 `aijade.learning.constraint.opinion_evaluation`）的"可上报事件"形状。
+ * 与 `V10EvidenceEvent` 的区别：它不带 `inputText`、payload 也不必含 `content_hash`——
+ * 输入快照 hash 直接由 `evaluation_target`（被评价对象的规范 hash）提供。
+ */
+export interface V9ConstraintEvent {
+  topic: string
+  payload: Record<string, unknown>
+  /** 输入快照 hash（causality.inputHash）。缺省从 payload 的 content_hash / transcript_hash / evaluation_target 取。 */
+  inputHash?: string
+}
+
+function inputHashOfConstraint(event: V9ConstraintEvent): string {
+  if (typeof event.inputHash === 'string' && event.inputHash.length > 0)
+    return event.inputHash
+  const candidate = (event.payload as Record<string, unknown> | undefined)?.content_hash
+    ?? (event.payload as Record<string, unknown> | undefined)?.transcript_hash
+    ?? (event.payload as Record<string, unknown> | undefined)?.evaluation_target
+  return typeof candidate === 'string' ? candidate : ''
+}
+
+/**
+ * 与 `buildV9EventEnvelope` 同构，但面向 C 路约束性事件（报告 P2-2）。
+ * 输入快照 hash 优先用 `event.inputHash`，否则回退到 payload 中的定位锚。
+ */
+export function buildV9ConstraintEnvelope(input: { event: V9ConstraintEvent, tick: number }): V9EventEnvelope {
+  const { event, tick } = input
+  const traceId = uuid()
+  const inputHash = inputHashOfConstraint(event)
+  const idempotencyKey = `${event.topic}#${inputHash}#${tick}`
+  return {
+    event_id: uuid(),
+    trace_id: traceId,
+    correlation_id: uuid(),
+    timestamp: Date.now(),
+    producer: 'aijade-web-extension',
+    origin_device: 'browser',
+    privacy_level: 1,
+    evidence_refs: [],
+    causal_context_refs: [traceId],
+    risk_score: 0,
+    idempotency_key: idempotencyKey,
+    replay_mode: 'live',
+    risk_level: 'low',
+    tick,
+    causality: { inputHash },
+    topic: event.topic,
+    payload: event.payload,
+  }
+}
+
 export async function postV9Event(
   baseUrl: string,
   envelope: V9EventEnvelope,
@@ -175,4 +226,19 @@ function extractError(data: Record<string, unknown> | null, status: number): str
       return JSON.stringify(data.issues)
   }
   return `HTTP ${status}`
+}
+
+/**
+ * 上报 C 路约束性事件（报告 P2-2）：构建信封后复用 `postV9Event` 的同一传输通道。
+ * 此前 `opinion_evaluation` topic 已在服务端注册、侧边栏也生产该事件，但**从不 POST**——
+ * 本函数把它真正发出去。tick 由调用方注入（与观察通道同一会话身份）。
+ */
+export async function postV10ConstraintEvent(
+  baseUrl: string,
+  event: V9ConstraintEvent,
+  tick: number,
+  opts: PostV9EventOptions = {},
+): Promise<PostV9EventResult> {
+  const envelope = buildV9ConstraintEnvelope({ event, tick })
+  return postV9Event(baseUrl, envelope, opts)
 }

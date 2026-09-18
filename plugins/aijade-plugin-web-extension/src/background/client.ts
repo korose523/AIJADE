@@ -1,8 +1,9 @@
 import type { ContextUpdate } from '@proj-aijade/server-sdk'
 
 import type { LlmCall } from '../shared/llm'
-import type { ExtensionSettings, ExtensionStatus, PageContextPayload, SubtitlePayload, VideoContextPayload } from '../shared/types'
-import type { V10EvidenceEvent } from '../shared/v10-evidence'
+import type { ExtensionSettings, ExtensionStatus, PageContextPayload, SelectionPayload, SubtitlePayload, VideoContextPayload } from '../shared/types'
+import type { OpinionEvaluationPayload, V10EvidenceEvent } from '../shared/v10-evidence'
+import type { V9EventEnvelope } from '../shared/v9-rest'
 
 import { Client, ContextUpdateStrategy } from '@proj-aijade/server-sdk'
 import { nanoid } from 'nanoid'
@@ -13,7 +14,7 @@ import { DEFAULT_REST_BASE_URL } from '../shared/constants'
 import { resolveApiToken, resolveApiTokenFresh } from '../shared/credentials'
 import { summarize } from '../shared/llm'
 import { reducePageToEvidence, reduceSubtitleToEvidence, summarizePageToEvidence, summarizeSubtitleToEvidence } from '../shared/v10-evidence'
-import { buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
+import { buildV9ConstraintEnvelope, buildV9EventEnvelope, postV9Event } from '../shared/v9-rest'
 import { advanceTick, getOrCreateInstallId, saveOidcTokens } from './storage'
 
 const PLUGIN_NAME = 'proj-aijade:plugin-web-extension'
@@ -36,13 +37,50 @@ export interface ClientState {
   lastVideo?: VideoContextPayload
   lastSubtitle?: SubtitlePayload
   lastVisionFrameAt?: number
+  /** 用户选区（报告 P2-4），用于侧栏/状态面板展示与下游消费。 */
+  lastSelection?: SelectionPayload
+  /**
+   * v10 REST 上报通道的可观测遥测（报告 P3-6）。此前上报失败被静默 `console.warn`，
+   * "上报成功"无法从任何状态证明；现在累计成功/失败计数与最近失败原因，暴露给状态面板。
+   */
+  restReport: {
+    successes: number
+    failures: number
+    consecutiveFailures: number
+    lastSuccessAt?: number
+    lastFailureAt?: number
+    lastFailureReason?: string
+  }
 }
 
 export function createClientState(): ClientState {
   return {
     client: null,
     connected: false,
+    restReport: { successes: 0, failures: 0, consecutiveFailures: 0 },
   }
+}
+
+/** 退避重试常量（报告 P3-6）：瞬时失败最多重试 2 次（共 3 次尝试），指数退避。 */
+const REST_MAX_ATTEMPTS = 3
+const REST_BACKOFF_BASE_MS = 400
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+/**
+ * 仅瞬时失败可重试：网络层错误（`status === 0`）与 5xx。
+ * 4xx（含 401 鉴权/400 校验）是终态，重试无意义。
+ */
+function isRetryableV9Post(result: { ok: boolean, status: number }): boolean {
+  if (result.ok)
+    return false
+  if (result.status === 0)
+    return true
+  if (result.status >= 500 && result.status < 600)
+    return true
+  return false
 }
 
 /**
@@ -80,7 +118,9 @@ export function toStatus(state: ClientState, settings: ExtensionSettings): Exten
     lastPage: state.lastPage,
     lastVideo: state.lastVideo,
     lastSubtitle: state.lastSubtitle,
+    lastSelection: state.lastSelection,
     lastVisionFrameAt: state.lastVisionFrameAt,
+    restReport: { ...state.restReport },
   }
 }
 
@@ -175,7 +215,78 @@ function sendSparkNotify(state: ClientState, data: { headline: string, note?: st
  * - `restBaseUrl` 未配置时直接跳过并记录 debug 日志（"零接线也能跑"降级语义）。
  * - tick 由 `advanceTick` 注入并持久化（每会话单调递增，跨 SW 重启不回退）。
  */
-async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: ExtensionSettings, sessionId: string) {
+/**
+ * 解析 REST 上报用的凭据（与 LLM 通道共用同一真源，见 credentials.ts）。
+ * 优先异步解析：OIDC access token 过期时主动 refresh；refresh 失败则降级为同步解析
+ * （bearer 或新鲜 OIDC）。凭据只解析一次，重试只针对传输层。
+ */
+async function resolveRestToken(settings: ExtensionSettings): Promise<string | undefined> {
+  const authBaseUrl = settings.restBaseUrl || DEFAULT_REST_BASE_URL
+  const fresh = await resolveApiTokenFresh(settings, {
+    authBaseUrl,
+    onRefreshed: async (t) => { await saveOidcTokens(t) },
+  })
+  return fresh.ok ? fresh.token : resolveApiToken(settings)
+}
+
+/**
+ * 通用 REST 上报 + 退避重试 + 可见遥测（报告 P3-6）。
+ * 仅对瞬时失败（网络 / 5xx）重试；4xx / 鉴权为终态。
+ * 成功/失败计数与最近失败原因写入 `state.restReport`，暴露给状态面板，使"上报成功"可证明。
+ */
+async function postV9EnvelopeWithRetry(
+  state: ClientState,
+  baseUrl: string,
+  envelope: V9EventEnvelope,
+  token: string | undefined,
+): Promise<void> {
+  let lastResult: { ok: boolean, status: number, error?: string, reason?: string } | null = null
+  for (let attempt = 1; attempt <= REST_MAX_ATTEMPTS; attempt++) {
+    try {
+      const result = await postV9Event(baseUrl, envelope, { token })
+      lastResult = result
+      if (result.ok) {
+        state.restReport.successes += 1
+        state.restReport.consecutiveFailures = 0
+        state.restReport.lastSuccessAt = Date.now()
+        console.debug(`[v9-rest] 已上报 ${envelope.topic} tick=${envelope.tick} deduped=${result.deduped}（累计成功 ${state.restReport.successes}）`)
+        return
+      }
+      // 终态失败（4xx / 鉴权）：不重试，立即退出重试循环。
+      if (!isRetryableV9Post(result)) {
+        console.warn(`[v9-rest] REST 上报终态失败（status ${result.status}, reason ${result.reason ?? '-'}）: ${result.error ?? ''}`)
+        break
+      }
+      console.warn(`[v9-rest] REST 上报瞬时失败 (attempt ${attempt}/${REST_MAX_ATTEMPTS}, status ${result.status}): ${result.error ?? ''}${attempt < REST_MAX_ATTEMPTS ? ' — 退避重试' : ''}`)
+    }
+    catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      lastResult = { ok: false, status: 0, error: message }
+      console.warn(`[v9-rest] REST 上报异常 (attempt ${attempt}/${REST_MAX_ATTEMPTS}): ${message}${attempt < REST_MAX_ATTEMPTS ? ' — 退避重试' : ''}`)
+    }
+    if (attempt < REST_MAX_ATTEMPTS)
+      await sleep(REST_BACKOFF_BASE_MS * 2 ** (attempt - 1))
+  }
+
+  // 全部尝试失败：累计可见失败计数 + 暴露最近一次原因，使"上报成功"可证明。
+  state.restReport.failures += 1
+  state.restReport.consecutiveFailures += 1
+  state.restReport.lastFailureAt = Date.now()
+  state.restReport.lastFailureReason = lastResult?.reason ?? lastResult?.error ?? 'unknown'
+  console.warn(`[v9-rest] REST 上报最终失败（累计 ${state.restReport.failures} 次，连续 ${state.restReport.consecutiveFailures} 次），topic=${envelope.topic}`)
+}
+
+/**
+ * 走 v10 REST 事件上报通道上报一次观察事件（独立于 WS 路径）。
+ *
+ * - 复用调用方已算好的同一个 `v10Evidence`（不重新归约，hash 才一致）。
+ * - REST 失败**不得**影响 WS 路径：各自独立 try/catch。
+ * - `restBaseUrl` 未配置时直接跳过并记录 debug 日志（"零接线也能跑"降级语义）。
+ * - tick 由 `advanceTick` 注入并持久化（每会话单调递增，跨 SW 重启不回退）。
+ * - **报告 P3-6**：失败不再被静默吞掉——累计可见的成功/失败计数与最近失败原因
+ *   （暴露给状态面板），并对瞬时失败（网络 / 5xx）做指数退避重试；4xx/鉴权为终态，不重试。
+ */
+async function reportV9Observation(state: ClientState, evidence: V10EvidenceEvent | null, settings: ExtensionSettings, sessionId: string) {
   if (!evidence)
     return
 
@@ -184,39 +295,31 @@ async function reportV9Observation(evidence: V10EvidenceEvent | null, settings: 
     return
   }
 
-  try {
-    // 与 payload 里的 `session_id` 同一身份（见文件顶部不变量注释）。advanceTick 语义不变：先读 → +1 → 写回。
-    const tick = await advanceTick(sessionId)
-    const envelope = buildV9EventEnvelope({ evidence, tick })
-    // 与 LLM 通道共用同一凭据真源（见 credentials.ts）。
-    // 优先用异步解析：OIDC access token 过期时主动 refresh；refresh 失败则降级为
-    // "需重新登录"，**绝不**静默发过期 token。失败回落到同步解析（bearer 或新鲜 OIDC）。
-    const authBaseUrl = settings.restBaseUrl || DEFAULT_REST_BASE_URL
-    let token: string | undefined
-    const fresh = await resolveApiTokenFresh(settings, {
-      authBaseUrl,
-      onRefreshed: async (t) => { await saveOidcTokens(t) },
-    })
-    if (fresh.ok)
-      token = fresh.token
-    else
-      token = resolveApiToken(settings)
-    const result = await postV9Event(settings.restBaseUrl, envelope, { token })
-    if (result.ok)
-      console.debug(`[v9-rest] 已上报 ${evidence.topic} tick=${tick} deduped=${result.deduped}`)
-    else if (result.reason === 'unauthorized_missing')
-      // 没配凭据：使用者下一步去设置里填写 Bearer Token。
-      console.warn('[v9-rest] REST 上报被拒：未配置凭据（请在设置中填写 Bearer Token）')
-    else if (result.reason === 'unauthorized_rejected')
-      // 凭据无效/过期：使用者下一步检查/重新获取设置中的 Bearer Token。
-      console.warn('[v9-rest] REST 上报被拒：凭据无效或已过期（请检查设置中的 Bearer Token）')
-    else
-      console.warn(`[v9-rest] REST 上报失败 (status ${result.status}): ${result.error}`)
+  // 与 payload 里的 `session_id` 同一身份（见文件顶部不变量注释）。advanceTick 语义不变：先读 → +1 → 写回。
+  const tick = await advanceTick(sessionId)
+  const envelope = buildV9EventEnvelope({ evidence, tick })
+  const token = await resolveRestToken(settings)
+  await postV9EnvelopeWithRetry(state, settings.restBaseUrl, envelope, token)
+}
+
+/**
+ * 报告 C 路约束性事件（报告 P2-2）：把侧边栏的观点评价（`opinion_evaluation`）真正 POST 出去。
+ * 此前该 topic 已在服务端注册、侧边栏也生产该事件，但**从不 POST**——本函数让它真正发出去。
+ * 复用与观察通道同一套凭据解析、退避重试与遥测。
+ */
+export async function reportV9Constraint(state: ClientState, opinion: OpinionEvaluationPayload, settings: ExtensionSettings, sessionId: string) {
+  if (!settings.restBaseUrl) {
+    console.debug('[v9-rest] restBaseUrl 未配置，跳过约束事件上报')
+    return
   }
-  catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    console.warn(`[v9-rest] REST 上报异常: ${message}`)
-  }
+
+  const tick = await advanceTick(sessionId)
+  const envelope = buildV9ConstraintEnvelope({
+    event: { topic: opinion.topic, payload: opinion.payload, inputHash: opinion.payload.evaluation_target },
+    tick,
+  })
+  const token = await resolveRestToken(settings)
+  await postV9EnvelopeWithRetry(state, settings.restBaseUrl, envelope, token)
 }
 
 export async function handlePageContext(state: ClientState, settings: ExtensionSettings, payload: PageContextPayload) {
@@ -259,7 +362,7 @@ export async function handlePageContext(state: ClientState, settings: ExtensionS
     },
   })
   // REST 通道：独立于 WS，各自 try/catch。
-  await reportV9Observation(v10Evidence, settings, sessionId)
+  await reportV9Observation(state, v10Evidence, settings, sessionId)
 }
 
 export function handleVideoContext(
@@ -328,6 +431,27 @@ export function handleVideoContext(
   })
 }
 
+export function handleSelection(state: ClientState, settings: ExtensionSettings, payload: SelectionPayload) {
+  state.lastSelection = payload
+
+  if (!settings.enabled || !settings.sendPageContext)
+    return
+
+  sendContextUpdate(state, {
+    strategy: ContextUpdateStrategy.ReplaceSelf,
+    lane: 'web:selection',
+    text: `User selected: ${payload.selected_text.slice(0, 200)}`,
+    metadata: {
+      source: 'web-extension',
+      site: payload.site,
+      url: payload.url,
+      selectedText: payload.selected_text,
+      startOffset: payload.start_offset,
+      endOffset: payload.end_offset,
+    },
+  })
+}
+
 export async function handleSubtitle(state: ClientState, settings: ExtensionSettings, payload: SubtitlePayload) {
   state.lastSubtitle = payload
 
@@ -370,5 +494,5 @@ export async function handleSubtitle(state: ClientState, settings: ExtensionSett
     },
   })
   // REST 通道：独立于 WS，各自 try/catch。
-  await reportV9Observation(v10Evidence, settings, sessionId)
+  await reportV9Observation(state, v10Evidence, settings, sessionId)
 }

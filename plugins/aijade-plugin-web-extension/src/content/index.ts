@@ -1,10 +1,11 @@
-import type { BackgroundToContentMessage, ContentToBackgroundMessage, PageContextPayload, SubtitlePayload, VideoContextPayload, VideoSite, VisionFramePayload } from '../shared/types'
+import type { BackgroundToContentMessage, ContentToBackgroundMessage, PageContextPayload, PageSpan, SelectionPayload, SubtitlePayload, VideoContextPayload, VideoSite, VisionFramePayload } from '../shared/types'
 
 import { detectSiteFromUrl, extractVideoId, normalizeText } from '../shared/sites'
 
 const VIDEO_PROGRESS_INTERVAL = 15000
 const TITLE_POLL_INTERVAL = 2000
 const SUBTITLE_DEDUPE_WINDOW = 2000
+const SELECTION_DEBOUNCE_MS = 300
 
 const lastPayloadByType = new Map<string, string>()
 
@@ -22,13 +23,57 @@ function buildPageContext(site: VideoSite): PageContextPayload {
   const description = normalizeText(document.querySelector('meta[name="description"]')?.getAttribute('content'))
   const ogDescription = normalizeText(document.querySelector('meta[property="og:description"]')?.getAttribute('content'))
 
-  return {
+  const payload: PageContextPayload = {
     site,
     url: location.href,
     title: normalizeText(document.title),
     description: description || ogDescription || undefined,
     language: document.documentElement.lang || undefined,
   }
+
+  // 报告 P2-3：抽取真实正文（段落/标题/列表），产出 bodyText + 每个块的定位锚 spans。
+  // 缺失（无正文块）时留空，归约器自动回退到 title + description。
+  const body = extractBodyText()
+  if (body) {
+    payload.bodyText = body.text
+    payload.spans = body.spans
+  }
+
+  return payload
+}
+
+/**
+ * 报告 P2-3：从 `<article>` / `<main>`（回退 `<body>`）抽取正文块文本。
+ * 逐块归约 + 记录每个块在拼接后 `bodyText` 内的字符区间（spans）。
+ * 噪声标签（script/style/nav/header/footer/aside 等）被跳过；正文块取 `p/h1-h6/li` 的 innerText。
+ */
+function extractBodyText(): { text: string, spans: PageSpan[] } | null {
+  const root = document.querySelector('article') || document.querySelector('main') || document.body
+  if (!root)
+    return null
+
+  const blocks = Array.from(root.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li'))
+  const parts: string[] = []
+  const spans: PageSpan[] = []
+  let cursor = 0
+  for (const block of blocks) {
+    const text = normalizeText((block as HTMLElement).innerText)
+    if (!text)
+      continue
+
+    parts.push(text)
+    spans.push({ start_offset: cursor, end_offset: cursor + text.length, label: block.tagName.toLowerCase() })
+    cursor += text.length + 1 // +1 为拼接时块间空格
+  }
+
+  if (parts.length === 0) {
+    const full = normalizeText(root.innerText)
+    if (!full)
+      return null
+    return { text: full, spans: [{ start_offset: 0, end_offset: full.length, label: 'body' }] }
+  }
+
+  return { text: parts.join(' '), spans }
 }
 
 function buildVideoContext(site: VideoSite, video: HTMLVideoElement, includeProgress = false): VideoContextPayload {
@@ -315,6 +360,46 @@ function observeVideo(site: VideoSite) {
   }
 }
 
+/**
+ * 报告 P2-4：把 DOM 节点 + 偏移映射到相对 `document.body` 文本的字符偏移。
+ * 用 `Range` 从 body 起点 setEnd 到目标点，`range.toString().length` 即字符数——
+ * 对文本节点与元素节点的子索引偏移都稳健。返回的是"定位锚"，权威内容仍是 `selected_text`。
+ */
+function offsetWithin(root: Node, container: Node, offset: number): number {
+  try {
+    const range = document.createRange()
+    range.setStart(root, 0)
+    range.setEnd(container, offset)
+    return range.toString().length
+  }
+  catch {
+    return 0
+  }
+}
+
+/** 报告 P2-4：`window.getSelection()` 采集用户选区，带 start/end 定位锚。 */
+function buildSelectionPayload(site: VideoSite): SelectionPayload | null {
+  const sel = window.getSelection()
+  if (!sel || sel.isCollapsed || sel.rangeCount === 0)
+    return null
+
+  const selectedText = sel.toString()
+  if (!selectedText.trim())
+    return null
+
+  const range = sel.getRangeAt(0)
+  const start = offsetWithin(document.body, range.startContainer, range.startOffset)
+  const end = offsetWithin(document.body, range.endContainer, range.endOffset)
+
+  return {
+    site,
+    url: location.href,
+    selected_text: selectedText,
+    start_offset: Math.min(start, end),
+    end_offset: Math.max(start, end),
+  }
+}
+
 export function startContentObserver() {
   const site = detectSiteFromUrl(location.href)
   safeSend({ type: 'content:page', payload: buildPageContext(site) })
@@ -332,7 +417,23 @@ export function startContentObserver() {
     }
   })
 
+  // 报告 P2-4：监听选区变化（防抖），有非空选区则采集并上报。
+  let selectionTimer: number | undefined
+  const onSelectionChange = () => {
+    if (selectionTimer !== undefined)
+      window.clearTimeout(selectionTimer)
+    selectionTimer = window.setTimeout(() => {
+      const selection = buildSelectionPayload(site)
+      if (selection)
+        safeSend({ type: 'content:selection', payload: selection })
+    }, SELECTION_DEBOUNCE_MS)
+  }
+  document.addEventListener('selectionchange', onSelectionChange)
+
   return () => {
     stopVideo?.()
+    document.removeEventListener('selectionchange', onSelectionChange)
+    if (selectionTimer !== undefined)
+      window.clearTimeout(selectionTimer)
   }
 }

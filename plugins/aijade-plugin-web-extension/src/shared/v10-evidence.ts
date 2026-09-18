@@ -42,9 +42,17 @@ export function stableHash(value: string): string {
 }
 
 export function reducePageToEvidence(page: PageContextPayload, opts?: ReduceOptions): V10EvidenceEvent | null {
-  const text = normalize([page.title, page.description].filter(Boolean).join('. '))
+  // 报告 P2-3：优先用真实正文（bodyText + spans）；缺失时回退到 title + description 的确定性口径。
+  const bodyText = typeof page.bodyText === 'string' ? page.bodyText : ''
+  const hasBody = bodyText.trim().length > 0
+  const text = hasBody ? normalize(bodyText) : normalize([page.title, page.description].filter(Boolean).join('. '))
   if (!text || !page.url)
     return null
+
+  const spans
+    = hasBody && Array.isArray(page.spans) && page.spans.length > 0
+      ? page.spans
+      : [{ start_offset: 0, end_offset: text.length, label: hasBody ? 'body' : 'page-summary' }]
 
   return {
     topic: 'aijade.video.observation.webpage_text',
@@ -52,7 +60,7 @@ export function reducePageToEvidence(page: PageContextPayload, opts?: ReduceOpti
     payload: {
       source_url: page.url,
       content_hash: stableHash(text),
-      spans: [{ start_offset: 0, end_offset: text.length, label: 'page-summary' }],
+      spans,
       observation_text: text,
       ...(opts?.sessionId ? { session_id: opts.sessionId } : {}),
     },
@@ -126,7 +134,11 @@ function toValidClaims(output: LlmOutput): { claim_text: string, confidence: num
  * 任何失败（LLM 抛错 / 返回不可解析 / summary 为空）⇒ 返回 `null`（不产出事件）。
  */
 export async function summarizePageToEvidence(page: PageContextPayload, llm: LlmCall, opts?: ReduceOptions): Promise<V10EvidenceEvent | null> {
-  const inputText = normalize([page.title, page.description].filter(Boolean).join('. '))
+  // 报告 P2-3：优先用真实正文作为 LLM 摘要输入（让模型看到页面实际内容），缺失时回退 title + description。
+  const rawText = (typeof page.bodyText === 'string' && page.bodyText.trim().length > 0)
+    ? page.bodyText
+    : [page.title, page.description].filter(Boolean).join('. ')
+  const inputText = normalize(rawText)
   if (!inputText || !page.url)
     return null
 
@@ -216,7 +228,11 @@ export async function summarizeSubtitleToEvidence(subtitle: SubtitlePayload, llm
  * - `uncertainty_notes` 为空 ⇒ 返回 `null`（缺失不确定性边界，不编造）。
  */
 export async function evaluatePageOpinion(page: PageContextPayload, llm: LlmCall): Promise<OpinionEvaluationPayload | null> {
-  const sourceText = normalize([page.title, page.description].filter(Boolean).join('. '))
+  // 报告 P2-3：优先用真实正文作为评价源（评价定位锚 evaluation_target 来自此文本）。
+  const rawText = (typeof page.bodyText === 'string' && page.bodyText.trim().length > 0)
+    ? page.bodyText
+    : [page.title, page.description].filter(Boolean).join('. ')
+  const sourceText = normalize(rawText)
   if (!sourceText)
     return null
   // 该页的规范 content_hash，作为评价的定位锚（evaluation_target）。

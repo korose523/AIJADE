@@ -61,6 +61,44 @@ describe('v10 evidence reduction', () => {
   })
 })
 
+describe('v10 evidence P2-3 real body text', () => {
+  it('prefers bodyText + spans over title/description when present', () => {
+    const body = 'First paragraph about the topic. Second paragraph with more detail.'
+    const event = reducePageToEvidence({
+      site: 'youtube',
+      url: 'https://example.test/article',
+      title: 'A title',
+      description: 'A summary',
+      bodyText: body,
+      spans: [
+        { start_offset: 0, end_offset: 39, label: 'p' },
+        { start_offset: 40, end_offset: 78, label: 'p' },
+      ],
+    })
+    expect(event?.payload.observation_text).toBe(body)
+    expect(event?.payload.spans).toEqual([
+      { start_offset: 0, end_offset: 39, label: 'p' },
+      { start_offset: 40, end_offset: 78, label: 'p' },
+    ])
+    // content_hash 必须对实际写入的 observation_text 重算（防漂移）。
+    expect(event?.payload.content_hash).toBe(stableHash(body))
+    // 正文存在时不得混入 title/description 的回退口径。
+    expect(event?.payload.observation_text).not.toContain('A title')
+  })
+
+  it('falls back to title+description when bodyText is empty (unchanged behaviour)', () => {
+    const event = reducePageToEvidence({
+      site: 'youtube',
+      url: 'https://example.test/article',
+      title: 'A title',
+      description: 'A summary',
+      bodyText: '   ',
+    })
+    expect(event?.payload.observation_text).toBe('A title. A summary')
+    expect(event?.payload.spans).toEqual([{ start_offset: 0, end_offset: 18, label: 'page-summary' }])
+  })
+})
+
 describe('v10 evidence session_id injection', () => {
   const SESSION = 'install-id-abc-123'
 

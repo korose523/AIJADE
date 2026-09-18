@@ -11,11 +11,13 @@ import {
   createClientState,
   ensureClient,
   handlePageContext,
+  handleSelection,
   handleSubtitle,
   handleVideoContext,
+  reportV9Constraint,
   toStatus,
 } from '../src/background/client'
-import { loadOidcTokens, loadSettings, saveOidcLoginState, saveOidcTokens, saveSettings } from '../src/background/storage'
+import { getOrCreateInstallId, loadOidcTokens, loadSettings, saveOidcLoginState, saveOidcTokens, saveSettings } from '../src/background/storage'
 import { DEFAULT_REST_BASE_URL, DEFAULT_SETTINGS, STORAGE_KEY } from '../src/shared/constants'
 import { getActiveOidcTokens, setActiveOidcTokens } from '../src/shared/credentials'
 import {
@@ -195,6 +197,11 @@ function handleContentMessage(message: ContentToBackgroundMessage) {
       emitStatus()
       break
     }
+    case 'content:selection': {
+      handleSelection(state, settings, message.payload)
+      emitStatus()
+      break
+    }
     case 'content:vision:frame': {
       state.lastVisionFrameAt = Date.now()
       emitStatus()
@@ -264,6 +271,13 @@ export default defineBackground(() => {
       catch {
         opinion = null
       }
+    }
+    // 报告 P2-2：把侧边栏的观点评价（`opinion_evaluation`）真正 POST 到 REST 通道
+    // ——此前该 topic 已在服务端注册、侧边栏也生产该事件、却从不 POST。火不待（fire-and-forget）：
+    // REST 失败不得影响侧边栏响应（与 reportV9Observation 同口径的"零接线也能跑"降级语义）。
+    if (opinion) {
+      const sessionId = await getOrCreateInstallId()
+      void reportV9Constraint(state, opinion, settings, sessionId).catch(() => {})
     }
     return { status, pageEvidence, subtitleEvidence, opinion }
   })

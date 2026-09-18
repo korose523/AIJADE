@@ -1,11 +1,34 @@
 export type VideoSite = 'youtube' | 'bilibili' | 'unknown'
 
+/** 网页正文片段定位锚（报告 P2-3）：相对 `PageContextPayload.bodyText` 的字符区间。 */
+export interface PageSpan {
+  start_offset: number
+  end_offset: number
+  label: string
+}
+
 export interface PageContextPayload {
   site: VideoSite
   url: string
   title: string
   description?: string
   language?: string
+  /**
+   * 真实正文抽取（报告 P2-3）：从 `<article>/<main>` 的段落/标题/列表块拼接，
+   * 配合 `spans` 给出每个块在 `bodyText` 内的字符定位锚。缺省（未采集到正文）时，
+   * 归约器回退到 `title + description` 的确定性口径，行为与改动前一致。
+   */
+  bodyText?: string
+  spans?: PageSpan[]
+}
+
+/** 用户选区（报告 P2-4）：`window.getSelection()` 采集，偏移相对 `document.body` 文本。 */
+export interface SelectionPayload {
+  site: VideoSite
+  url: string
+  selected_text: string
+  start_offset: number
+  end_offset: number
 }
 
 export interface VideoContextPayload {
@@ -51,6 +74,7 @@ export type ContentToBackgroundMessage
   = | { type: 'content:page', payload: PageContextPayload }
     | { type: 'content:video', payload: VideoContextPayload }
     | { type: 'content:subtitle', payload: SubtitlePayload }
+    | { type: 'content:selection', payload: SelectionPayload }
     | { type: 'content:vision:frame', payload: VisionFramePayload }
 
 export interface ExtensionSettings {
@@ -95,7 +119,21 @@ export interface ExtensionStatus {
   lastPage?: PageContextPayload
   lastVideo?: VideoContextPayload
   lastSubtitle?: SubtitlePayload
+  lastSelection?: SelectionPayload
   lastVisionFrameAt?: number
+  /**
+   * v10 REST 上报通道的可观测遥测（报告 P3-6）。此前上报失败被静默 `console.warn`，
+   * "上报成功"无法证明；现在把成功/失败计数与最近一次失败原因暴露给状态面板，
+   * 让失败可见、可证明。
+   */
+  restReport?: {
+    successes: number
+    failures: number
+    consecutiveFailures: number
+    lastSuccessAt?: number
+    lastFailureAt?: number
+    lastFailureReason?: string
+  }
 }
 
 export type BackgroundToContentMessage
