@@ -142,29 +142,21 @@ export function createPerformanceBridge(
         director.enterListen()
         onState(director.snapshot())
         turnSeq++
-        // 铸造本轮 trace 并发出 persona.render_requested（Step B 请求侧）。
-        // trace_id 与 correlation_id 同源：请求是 trace 的根，关联指向自身。
-        // turnSeq 已在上方递增，故幂等键用 s#turnSeq#request，与渲染侧 s#s#render:N 区分。
-        // 无活跃 session 时无法铸造稳定 trace，静默跳过（与渲染侧同语义，不伪造）。
+        // 报告 P0-1：真实 ref 由 app 层（growth-services 的 PerformanceDirector 产物，见
+        // memory-biomimetic/src/pef.ts）通过 getPersonaSnapshotRef / getIntentRef 注入；
+        // 本文件**绝不** import growth-services（三层隔离）。当没有真实来源时：
+        // 宁缺勿伪造——不铸造合成的 `${sessionId}:persona` / `${sessionId}:intent:N`，
+        // 也不发出"声称忠于某次意图却无依据"的事件（v8 §52.5 身份连续性可审计 + §6.4
+        // B 引用校验要求 ref 必须真实）。仅当真实 ref 齐备时才铸造本轮 trace 并上报。
         const sessionId = getSessionId?.()
-        const personaSnapshotRef = options?.getPersonaSnapshotRef?.() ?? `${sessionId}:persona`
-        // 本轮身份只铸造一次：mintRenderRef（确定性、无随机）铸出 render_ref，请求侧
-        // intent_ref 默认取自同一个本轮身份，从而同一 trace_id 下投影记录的
-        // intent_ref === render_ref。在 growth-services 的 PerformanceDirector（它才构建
-        // 真正的 PerformanceIntent，见 memory-biomimetic/src/pef.ts）通过 getIntentRef /
-        // getPersonaSnapshotRef 注入之前，UI 铸造一个确定性的轮次身份，而不是编一个假装是
-        // 内核 PerformanceIntent.id 的字符串。当这两个 option 被注入时必须优先采用；回执侧
-        // 仍复用 activeRenderRef 回指同一轮。
-        let intentRef: string
-        if (sessionId) {
+        const personaSnapshotRef = options?.getPersonaSnapshotRef?.()
+        const intentRef = options?.getIntentRef?.()
+        if (sessionId && personaSnapshotRef && intentRef && reportEvent) {
+          // 本轮身份只铸造一次（render_ref），回执侧复用它回指同一轮。
           const renderRef = mintRenderRef(sessionId, turnSeq)
           activeRenderRef = renderRef
-          intentRef = options?.getIntentRef?.() ?? renderRef
-        }
-        else {
-          intentRef = options?.getIntentRef?.() ?? `${sessionId}:intent:${turnSeq}`
-        }
-        if (sessionId && reportEvent) {
+          // trace_id 与 correlation_id 同源：请求是 trace 的根，关联指向自身。
+          // 幂等键：session#turnSeq#request（同一次请求重复上报必然同键）。
           activeTraceId = nanoid()
           activeCorrelationId = activeTraceId
           reportEvent({
@@ -178,8 +170,6 @@ export function createPerformanceBridge(
             evidence_refs: [],
             causal_context_refs: [activeTraceId],
             risk_score: 0,
-            // The request itself is the root of this causal trace.
-            // 幂等键：session#turnSeq#request（同一次请求重复上报必然同键）。
             idempotency_key: `${sessionId}#${turnSeq}#request`,
             replay_mode: 'live',
             risk_level: 'low',

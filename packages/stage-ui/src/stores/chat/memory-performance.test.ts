@@ -203,23 +203,32 @@ describe('createPerformanceBridge.recordAppliedParams (render receipt)', () => {
   })
 })
 
-describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', () => {
-  it('emits persona.render_requested on send-start and lpm.render_ready on render, sharing one trace_id', () => {
+describe('createPerformanceBridge — v9 event reporting (Step B closed loop, P0-1)', () => {
+  // 报告 P0-1：真实 ref 由 app 层注入；无真实来源 ⇒ 宁缺勿伪造，不发事件。
+  const realRefs = {
+    getPersonaSnapshotRef: () => 'persona-snapshot-ref-xyz',
+    getIntentRef: () => 'performance-intent-abc',
+  }
+
+  it('emits persona.render_requested (with real refs) on send-start and lpm.render_ready on render, sharing one trace_id', () => {
     const reportEvent = vi.fn()
     const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
       getSessionId: () => 's1',
       onRenderReceipt: vi.fn(),
       reportEvent,
+      ...realRefs,
     })
     const deps = bridge.wrapDeps(noopDeps)
     deps.onMessageSendStarted!({} as any)
 
-    // 请求侧：persona.render_requested，铸造 trace_id。
+    // 请求侧：persona.render_requested，铸造 trace_id；ref 为注入的真实值。
     expect(reportEvent).toHaveBeenCalledTimes(1)
     const reqCall = reportEvent.mock.calls[0][0]
     expect(reqCall.topic).toBe('aijade.persona.render_requested')
     expect(reqCall.trace_id).toBeTruthy()
     expect(reqCall.idempotency_key).toBe('s1#1#request')
+    expect(reqCall.payload.persona_snapshot_ref).toBe('persona-snapshot-ref-xyz')
+    expect(reqCall.payload.intent_ref).toBe('performance-intent-abc')
 
     // 回执侧：lpm.render_ready，复用同一 trace_id（配对校验的关键）。
     bridge.recordAppliedParams({ 'emotion.preset': 'happy', 'emotion.intensity': 0.5 })
@@ -234,28 +243,16 @@ describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', 
     )
   })
 
-  it('same-turn request intent_ref equals receipt render_ref (projection invariant)', () => {
+  it('does NOT emit when no real persona/intent ref is available (宁缺勿伪造)', () => {
     const reportEvent = vi.fn()
     const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
       getSessionId: () => 's1',
       onRenderReceipt: vi.fn(),
       reportEvent,
+      // 故意不注入 getPersonaSnapshotRef / getIntentRef ⇒ 不伪造、不发事件。
     })
-    const deps = bridge.wrapDeps(noopDeps)
-    deps.onMessageSendStarted!({} as any)
-
-    // 请求侧：persona.render_requested 铸出本轮身份，intent_ref 默认取自它。
-    expect(reportEvent).toHaveBeenCalledTimes(1)
-    const reqCall = reportEvent.mock.calls[0][0]
-    expect(reqCall.payload.intent_ref).toBeTruthy()
-
-    // 回执侧：lpm.render_ready 复用同一轮身份作为 render_ref。
-    bridge.recordAppliedParams({ 'emotion.preset': 'happy', 'emotion.intensity': 0.5 })
-    expect(reportEvent).toHaveBeenCalledTimes(2)
-    const readyCall = reportEvent.mock.calls[1][0]
-
-    // 投影依赖的不变量：同一 trace_id 下 intent_ref === render_ref。
-    expect(reqCall.payload.intent_ref).toBe(readyCall.payload.render_ref)
+    bridge.wrapDeps(noopDeps).onMessageSendStarted!({} as any)
+    expect(reportEvent).not.toHaveBeenCalled()
   })
 
   it('does NOT emit when there is no active session (cannot mint a stable trace)', () => {
@@ -263,6 +260,7 @@ describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', 
     const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
       getSessionId: () => undefined,
       reportEvent,
+      ...realRefs,
     })
     bridge.wrapDeps(noopDeps).onMessageSendStarted!({} as any)
     expect(reportEvent).not.toHaveBeenCalled()
@@ -273,6 +271,7 @@ describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', 
     const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
       getSessionId: () => 's1',
       reportEvent,
+      ...realRefs,
     })
     const deps = bridge.wrapDeps(noopDeps)
     // Turn 1
@@ -286,5 +285,26 @@ describe('createPerformanceBridge — v9 event reporting (Step B closed loop)', 
     expect(trace2).not.toBe(trace1)
     bridge.recordAppliedParams({ 'emotion.preset': 'sad' })
     expect(reportEvent.mock.calls[3][0].trace_id).toBe(trace2)
+  })
+
+  it('same-turn request and render share one trace_id and carry real refs (projection pairing key)', () => {
+    const reportEvent = vi.fn()
+    const bridge = createPerformanceBridge(makeDirector() as any, () => {}, {
+      getSessionId: () => 's1',
+      onRenderReceipt: vi.fn(),
+      reportEvent,
+      ...realRefs,
+    })
+    const deps = bridge.wrapDeps(noopDeps)
+    deps.onMessageSendStarted!({} as any)
+    expect(reportEvent).toHaveBeenCalledTimes(1)
+    const reqCall = reportEvent.mock.calls[0][0]
+    expect(reqCall.payload.persona_snapshot_ref).toBe('persona-snapshot-ref-xyz')
+    expect(reqCall.payload.intent_ref).toBe('performance-intent-abc')
+    bridge.recordAppliedParams({ 'emotion.preset': 'happy', 'emotion.intensity': 0.5 })
+    const readyCall = reportEvent.mock.calls[1][0]
+    // 配对键是 trace_id（不是 intent_ref === render_ref）；两者都真实存在即可投影为 paired。
+    expect(readyCall.trace_id).toBe(reqCall.trace_id)
+    expect(readyCall.payload.render_ref).toBeTruthy()
   })
 })

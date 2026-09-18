@@ -31,6 +31,7 @@ import { activeTurnSpan, startSpan } from '../composables/use-io-tracer'
 import { extractMessageText, isCloudSyncableMessage } from '../libs/chat-sync'
 import { systemPromptEmotionSupplement } from '../libs/speech/speech-facade'
 import { reportV9Event, reportV9Perception } from '../libs/v9-event-reporter'
+import { ensureV9PersonaIntent, getIntentRefFor, getPersonaSnapshotRefFor } from '../libs/v9-persona-intent'
 import { createMinecraftContext } from './chat/context-providers'
 import { useChatContextStore } from './chat/context-store'
 import { createMemoryBridge, createPerformanceBridge } from './chat/memory-performance'
@@ -179,6 +180,12 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
     getSessionId: () => activeSessionId.value,
     // 资产身份来自 settings store；Pinia 已解包，直接是 `string | undefined`（异步解析过，可能 undefined）。
     getAssetVersionHash: () => stageModel.stageModelAssetVersionHash,
+    // P0-1：真实 ref —— 来自服务端 `POST /api/v1/v9/persona/derive`（growth-services
+    // `PerformanceDirector` 产物，落库 persona_snapshots / performance_intents 表）经 REST
+    // 回读；本文件全程**不** import growth-services（三层隔离）。派发完成前 getter 返回
+    // undefined ⇒ bridge 按「宁缺勿伪造」跳过 persona.render_requested 上报。
+    getPersonaSnapshotRef: () => getPersonaSnapshotRefFor(activeSessionId.value),
+    getIntentRef: () => getIntentRefFor(activeSessionId.value),
     // 回执组装成功即存为"最后一条"，供产品层接线消费。
     onRenderReceipt: (receipt) => { lastRenderReceipt.value = receipt },
     // Step B 闭环：把 persona.render_requested / lpm.render_ready 两个事件发往
@@ -188,6 +195,15 @@ export const useChatOrchestratorStore = defineStore('chat-orchestrator', () => {
   // The performance bridge owns a self-driven 100ms tick loop; tear it down with the
   // store so HMR reloads don't accumulate duplicate timers (which would double-emit).
   onScopeDispose(() => performanceBridge.stop())
+
+  // P0-1：会话切换即派发真实 persona/intent ref（fire-and-forget，失败仅日志）。
+  // 派发完成前的发送轮，getter 返回 undefined ⇒ bridge 宁缺勿伪造、跳过上报；
+  // 从派发成功后的下一轮起携带真实 ref。每会话至多派发一次（服务端每次 derive
+  // 都落一行新快照+intent，不在发送路径重复调用）。
+  watch(activeSessionId, (sessionId) => {
+    if (sessionId)
+      void ensureV9PersonaIntent(sessionId)
+  }, { immediate: true })
 
   // ---- Agent capabilities: skill auto-creation + continuous learning + computer control ----
   // Uses the same bridge pattern as memory/performance. The LLM runs against the
