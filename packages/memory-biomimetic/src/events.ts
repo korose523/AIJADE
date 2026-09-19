@@ -71,7 +71,9 @@ const envelopeFields = {
    * `v9EventEnvelopeSchema.tick` 与 `v10EventFieldsSchema.causality` 的拆分
    *（`apps/server/src/routes/v9/schema.ts`）。
    */
-  tick: z.number().int().nonnegative().optional(),
+  // 与服务端 `tickInt` 对齐：持久化列为 int32，越界值必须在边界被拒绝（400），
+  // 否则会被 DB 抛成 22003 并泄漏为 500。双端同约束，避免新增契约漂移。
+  tick: z.number().int().nonnegative().max(2_147_483_647).optional(),
   causality: z.object({ inputHash: z.string().min(1) }).optional(),
   /**
    * v10 内生状态节点（可选，v9 可省，v10 必给）。由 `deriveCoreStateNode`

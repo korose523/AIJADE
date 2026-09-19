@@ -5,7 +5,10 @@
       "ESNext",
       "DOM"
     ],
-    "types": []
+    // 本包源码使用 `process` 与 `node:fs/promises`（见 src/storage.ts、src/ablation.ts），
+    // 是 Node 运行时包；此前 `"types": []` 会屏蔽全部 @types，导致 tsc 找不到 Node 类型定义
+    // （TS2591 / TS2307），`pnpm typecheck` 在此包整体失败。
+    "types": ["node"]
   },
   "include": [
     "src/**/*.ts"

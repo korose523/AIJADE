@@ -526,6 +526,23 @@ async function runMatrix(leg: Leg): Promise<void> {
     check(after.events === before.events, `[no-write] envelope with unknown extra field: events unchanged (${before.events} -> ${after.events})`)
   }
 
+  // 越界 tick（int32 上界）：持久化列为 integer，越界值必须在边界被 400 拒绝，
+  // 否则会落到 DB 抛 22003 并被泄漏成 500（本条为该缺陷的回归钉子）。
+  {
+    const i = 981
+    const fixture = FIXTURES[0]
+    const env = serverEnvelope(fixture, i, fixture.payload(i))
+    env.tick = 2_147_483_648 // INT32_MAX + 1
+
+    const before = await leg.countRows()
+    const res = await leg.post(env)
+    const after = await leg.countRows()
+
+    check(!kernelAccepts(env), '[kernel] tick beyond int32: must be rejected')
+    check(res.status === 400, `[http] tick beyond int32: must be 400 (got ${res.status})`)
+    check(after.events === before.events, `[no-write] tick beyond int32: events unchanged (${before.events} -> ${after.events})`)
+  }
+
   // 反向对照：3 个 v10 可选字段**确实可省**，否则上面的"必需"断言可能只是"什么都拒"。
   for (const field of ENVELOPE_OPTIONAL_FIELDS) {
     const i = 950 + ENVELOPE_OPTIONAL_FIELDS.indexOf(field)

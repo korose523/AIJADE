@@ -736,6 +736,8 @@ async function runCondition(
       attempts: number
       envFeedback?: EnvironmentFeedbackSignal
       selfCritique?: string
+      /** 上一轮生成的代码原文：仅当该条件拥有反馈通道时才回灌（见 previousCode 注入门控）。 */
+      lastCode?: string
     }
     const retry = new Map<string, RetryState>()
 

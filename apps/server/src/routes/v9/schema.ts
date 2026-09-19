@@ -76,6 +76,16 @@ export type AijadeTopic = (typeof AIJADE_TOPICS)[number]
 const nonNegInt = pipe(number(), integer(), minValue(0))
 
 /**
+ * `tick` 是确定性排序计数器，持久化列为 `integer`（int32）。
+ * 此前只校验「非负整数」而无上界，生产者若误传 epoch 毫秒（1.7e12）会在插入时
+ * 触发 PG 22003（numeric out of range），并被泄漏成 500——既违反严格边界，
+ * 也违反「内部失败不泄漏为上游错误码」的纪律。故边界处显式收紧到 int32 上界。
+ * 注意：`requested_at` 仍用 nonNegInt（可能为 epoch 毫秒，且不落 int32 列）。
+ */
+const INT32_MAX = 2_147_483_647
+const tickInt = pipe(number(), integer(), minValue(0), maxValue(INT32_MAX))
+
+/**
  * v10 protocol additions. Kept optional so existing v9 producers can migrate
  * without changing the v9 endpoint; v10 producers must send both fields.
  */
@@ -100,7 +110,7 @@ export const v9EventEnvelopeSchema = strictObject({
   replay_mode: picklist(['live', 'replay']),
   risk_level: picklist(['low', 'medium', 'high']),
   /** v10 deterministic ordering and input provenance (optional for v9 clients). */
-  tick: optional(nonNegInt),
+  tick: optional(tickInt),
   causality: optional(v10CausalitySchema),
   /** v10 内生状态节点（S0..S8）；optional 以兼容旧客户端（strictObject 下客户端多发也必须登记）。 */
   core_state_node: optional(pipe(string(), regex(/^S[0-8]$/))),
@@ -110,13 +120,13 @@ export const v9EventEnvelopeSchema = strictObject({
 })
 
 export const v10EventFieldsSchema = strictObject({
-  tick: nonNegInt,
+  tick: tickInt,
   causality: v10CausalitySchema,
 })
 
 /** 回放一致性校验请求体：按 `tick` + `causality.inputHash` 定位同一输入快照下的事件。 */
 export const v9ReplaySchema = strictObject({
-  tick: nonNegInt,
+  tick: tickInt,
   inputHash: pipe(string(), minLength(1)),
 })
 

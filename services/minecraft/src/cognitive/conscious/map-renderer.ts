@@ -304,8 +304,11 @@ function renderTopDown(bot: Bot, options: Required<MapOptions>): MapResult {
 
   // Build the grid: each cell is [symbol, elevation_delta]
   const size = r * 2 + 1
-  const grid: string[][] = Array.from({ length: size }).fill(Array.from({ length: size }).fill(' '))
-  const elevations: (number | null)[][] = Array.from({ length: size }).fill(Array.from({ length: size }).fill(null))
+  // ⚠️ 必须逐行新建数组：`.fill(Array.from(...))` 会让所有行共享同一引用，
+  // 于是 `grid[gz][gx] = sym` 实际写进同一个数组——地图只剩最后一行的数据，
+  // 且实体覆盖会互相擦除（水面 ~/矿石 $/交互 !/自身 @ 全部丢失）。
+  const grid: string[][] = Array.from({ length: size }, () => Array.from({ length: size }).fill(' '))
+  const elevations: (number | null)[][] = Array.from({ length: size }, () => Array.from({ length: size }).fill(null))
   const usedCategories = new Set<BlockCategory>()
 
   for (let dz = -r; dz <= r; dz++) {

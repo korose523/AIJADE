@@ -23,7 +23,11 @@ describe('image_journal config snapshot', () => {
     const tools = await imageJournalTools()
 
     expect(tools).toSatisfyStrictToolSchemas()
-  }, 15_000)
+    // 预算放宽到 60s：本用例通过 `await import('./image-journal')` 动态加载
+    // ComfyUI/Replicate 等 provider 的完整模块图，单跑约 6s；但在全量并行
+    // （178 个测试文件同时调度）下 Vite 冷转换 + CPU 争用会把它推到 15s 以上，
+    // 曾因此出现非逻辑性的超时抖动。60s 只放宽等待预算，不改变断言语义。
+  }, 60_000)
 
   it('extracts plain values instead of leaking Ref objects', () => {
     const config = resolveArtistryConfigFromStore({

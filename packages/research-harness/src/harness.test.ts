@@ -1,5 +1,6 @@
 import type { LearningLoopCell } from '@proj-aijade/skill-forge-store'
 
+import type { LLMBackend } from './backends'
 import type { RunOptions } from './harness'
 
 import { describe, expect, it } from 'vitest'

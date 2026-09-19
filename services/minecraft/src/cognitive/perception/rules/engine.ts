@@ -258,7 +258,10 @@ export class RuleEngine {
     }
 
     if (nowMs < detectorState.lastUpdateMs) {
-      this.recordDetectorDecision(Object.freeze({
+      // 乱序事件：detector 侧忽略，但必须留痕——
+      // 否则"时间窗检测不确定"这类失效在日志里完全不可见。
+      // decision 载荷同时进日志与调试快照，便于 devtools 回放。
+      const ignoredDecision = Object.freeze({
         ruleName: rule.name,
         mode: rule.detector.mode,
         groupKey,
@@ -267,7 +270,13 @@ export class RuleEngine {
         windowMs: rule.detector.windowMs,
         eventTs: nowMs,
         decision: 'ignored_out_of_order',
-      }))
+      })
+
+      this.deps.logger
+        .withFields(ignoredDecision as unknown as Record<string, unknown>)
+        .warn('RuleEngine: ignored out-of-order event to keep temporal detection deterministic')
+
+      this.recordDetectorDecision(ignoredDecision)
       return
     }
 
@@ -283,7 +292,7 @@ export class RuleEngine {
     // Update state
     this.detectors.set(stateKey, newDetectorState)
 
-    this.recordDetectorDecision(Object.freeze({
+    const decisionSnapshot = Object.freeze({
       ruleName: rule.name,
       mode: rule.detector.mode,
       groupKey,
@@ -292,7 +301,17 @@ export class RuleEngine {
       windowMs: rule.detector.windowMs,
       eventTs: nowMs,
       decision: fired ? 'fired' : 'matched_not_fired',
-    }))
+    })
+
+    this.recordDetectorDecision(decisionSnapshot)
+
+    // 只有终态决策（fired）落日志：`matched_not_fired` 属于每事件高频噪声，
+    // 记录它会淹没真正的异常（乱序忽略 / 触发），故刻意不入日志。
+    if (fired) {
+      this.deps.logger
+        .withFields(decisionSnapshot as unknown as Record<string, unknown>)
+        .log('RuleEngine: detector fired')
+    }
 
     // If fired, emit signal
     if (fired) {

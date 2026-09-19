@@ -43,7 +43,23 @@ export function useLanguage(
   async function restore() {
     const DEFAULT_LOCALE = 'zh-Hans'
 
-    // Ask the main process for any explicitly-saved language.
+    // 渲染层已有持久化选择：以渲染层为准，完全不发起 IPC。
+    // （Electron 重启时若 localStorage 未刷盘，`hasPersistedLanguage` 为 false，
+    //  才会走到下面「回主进程问」的分支——这正是 issue #1658 的场景。）
+    if (hasPersistedLanguage) {
+      // Legacy migration: an old build stored the OS-detected `en` as the
+      // default when the user never explicitly picked a language. Treat that
+      // residual `en` as a legacy default and switch to Chinese.
+      if ((language.value || '').startsWith('en'))
+        language.value = DEFAULT_LOCALE
+
+      isLocaleSynced = true
+      void setLocale(language.value || DEFAULT_LOCALE)
+      return
+    }
+
+    // 无持久化值（可能是首次启动，也可能是 localStorage 未刷盘）：
+    // 向主进程询问是否存在显式保存的语言。
     let mainLocale: unknown
     try {
       mainLocale = await getMainLocale()
@@ -51,21 +67,14 @@ export function useLanguage(
     catch (error) {
       console.warn('[useLanguage] Failed to get locale from main process, using fallback:', error)
     }
-    const mainHasLanguage = typeof mainLocale === 'string' && mainLocale !== ''
 
-    if (!hasPersistedLanguage) {
-      // True first launch: default to Simplified Chinese.
-      language.value = DEFAULT_LOCALE
+    if (typeof mainLocale === 'string' && mainLocale !== '') {
+      // 主进程持有显式选择 —— 以它为准，覆盖渲染层的 OS 兜底值。
+      language.value = mainLocale
     }
-    else if (!mainHasLanguage && (language.value || '').startsWith('en')) {
-      // Legacy migration: an old build stored the OS-detected `en` as the
-      // default when the user never explicitly picked a language. Treat that
-      // residual `en` as a legacy default and switch to Chinese.
+    else if (!language.value) {
+      // 主进程也无配置且渲染层兜底为空：落到简体中文。
       language.value = DEFAULT_LOCALE
-    }
-    else if (mainHasLanguage && mainLocale !== language.value) {
-      // Main process holds an explicit choice — honor it.
-      language.value = mainLocale as string
     }
 
     isLocaleSynced = true
