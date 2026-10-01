@@ -1,4 +1,4 @@
-import type { BioticMemory, GatingCoefficients, LocomoConversation } from '../src/index'
+import type { BioticMemory, GatingCoefficients, LocomoConversation, RetrievalWeights } from '../src/index'
 
 import process from 'node:process'
 
@@ -24,17 +24,17 @@ import process from 'node:process'
  *
  * Usage:  tsx eval/p1.5-recall.ts [path-to-locomo.json] [conversation-limit]
  */
-import { buildExperimentManifest, buildMemory, DEFAULT_GATING, evidenceRecall, loadLocomo, NO_GATING, registerExperimentManifest } from '../src/index'
+import { buildExperimentManifest, buildMemory, CORRECTED_RETRIEVAL_WEIGHTS, DEFAULT_GATING, evidenceRecall, loadLocomo, NO_GATING, registerExperimentManifest } from '../src/index'
 import { resolveLocomoPath } from './locomo-path'
 
 const KS = [1, 2, 3, 4, 6, 8]
 
 /** Fraction of top-K retrieved slots that are NOT gold-evidence memories. */
-function distractorLoad(mem: BioticMemory, conv: LocomoConversation, k: number): number {
+function distractorLoad(mem: BioticMemory, conv: LocomoConversation, k: number, weights?: Partial<RetrievalWeights>): number {
   let total = 0
   let trivial = 0
   for (const q of conv.qa) {
-    const top = mem.retrieve(q.question, k, false)
+    const top = mem.retrieve(q.question, k, false, weights)
     const ev = new Set<string>()
     for (const e of q.evidence) {
       ev.add(e)
@@ -83,6 +83,9 @@ async function main(): Promise<void> {
 
   const recall = KS.map(() => ({ on: [] as number[], off: [] as number[] }))
   const load = KS.map(() => ({ on: [] as number[], off: [] as number[] }))
+  // J5 §X 修正权重对照（recency=0）：同一候选在修正权重下重打分，边际成本可忽略。
+  const recallC = KS.map(() => ({ on: [] as number[], off: [] as number[] }))
+  const loadC = KS.map(() => ({ on: [] as number[], off: [] as number[] }))
 
   for (const conv of subset) {
     const on = await buildMemory(conv, DEFAULT_GATING as GatingCoefficients)
@@ -96,6 +99,10 @@ async function main(): Promise<void> {
       recall[i].off.push(evidenceRecall(off, conv, k).overall)
       load[i].on.push(distractorLoad(on, conv, k))
       load[i].off.push(distractorLoad(off, conv, k))
+      recallC[i].on.push(evidenceRecall(on, conv, k, CORRECTED_RETRIEVAL_WEIGHTS).overall)
+      recallC[i].off.push(evidenceRecall(off, conv, k, CORRECTED_RETRIEVAL_WEIGHTS).overall)
+      loadC[i].on.push(distractorLoad(on, conv, k, CORRECTED_RETRIEVAL_WEIGHTS))
+      loadC[i].off.push(distractorLoad(off, conv, k, CORRECTED_RETRIEVAL_WEIGHTS))
     })
   }
 
@@ -112,6 +119,22 @@ async function main(): Promise<void> {
   KS.forEach((k, i) => {
     const a = avg(load[i].on)
     const b = avg(load[i].off)
+    console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     +${(b - a).toFixed(3)}`)
+  })
+  console.info()
+  console.info('J5 §X 修正权重对照（recency=0，仅重打分同一候选）：')
+  console.info('recall@K*  (mean fraction of questions with gold evidence in top-K under recency=0):')
+  console.info('  K    recallON* recallOFF*  gap')
+  KS.forEach((k, i) => {
+    const a = avg(recallC[i].on)
+    const b = avg(recallC[i].off)
+    console.info(`  ${String(k).padStart(2)}   ${a.toFixed(3)}    ${b.toFixed(3)}     ${(a - b >= 0 ? '+' : '')}${(a - b).toFixed(3)}`)
+  })
+  console.info('distractorLoad@K*  (recency=0):')
+  console.info('  K     loadON*  loadOFF*   gap(OFF-ON)')
+  KS.forEach((k, i) => {
+    const a = avg(loadC[i].on)
+    const b = avg(loadC[i].off)
     console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     +${(b - a).toFixed(3)}`)
   })
   console.info()

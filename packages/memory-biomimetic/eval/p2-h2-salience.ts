@@ -32,6 +32,7 @@ import {
   auc,
   BioticMemory,
   buildExperimentManifest,
+  CORRECTED_RETRIEVAL_WEIGHTS,
   DAY,
   DEFAULT_FORGETTING,
   DEFAULT_GATING,
@@ -204,18 +205,23 @@ async function main(): Promise<void> {
 
   // ---- 2. 内容显著性门控下的 H2（gated vs uniform）----
   const out: Record<Cond, Record<string, number[]>> = { gated: {}, uniform: {} }
+  // J5 §X 修正权重对照（recency=0）：同一候选在修正权重下重打分，边际成本可忽略。
+  const outCorrected: Record<Cond, Record<string, number[]>> = { gated: {}, uniform: {} }
 
   for (const cond of CONDS) {
     for (const b of BUDGETS) {
       const perConv: number[] = []
+      const perConvCorrected: number[] = []
       for (const conv of convs) {
         const now = conv.endTs + HORIZON_DAYS * DAY
         const mem = await build(conv, cond)
         truncateToBudget(mem, now, b)
         mem.setNow(now)
         perConv.push(evidenceRecall(mem, conv, TOP_K).overall)
+        perConvCorrected.push(evidenceRecall(mem, conv, TOP_K, CORRECTED_RETRIEVAL_WEIGHTS).overall)
       }
       out[cond][String(b)] = [avg(perConv)]
+      outCorrected[cond][String(b)] = [avg(perConvCorrected)]
     }
   }
 
@@ -224,6 +230,15 @@ async function main(): Promise<void> {
   for (const b of BUDGETS) {
     const g = avg(out.gated[String(b)])
     const u = avg(out.uniform[String(b)])
+    const gap = g - u
+    console.info(`  ${String(Math.round(b * 100)).padStart(4)}%  | ${g.toFixed(3)} | ${u.toFixed(3)} | ${(gap >= 0 ? '+' : '')}${gap.toFixed(3)}`)
+  }
+  console.info()
+  console.info('J5 §X 修正权重对照（recency=0，仅重打分同一候选）：')
+  console.info('  budget |  gated* | uniform*|  gap*')
+  for (const b of BUDGETS) {
+    const g = avg(outCorrected.gated[String(b)])
+    const u = avg(outCorrected.uniform[String(b)])
     const gap = g - u
     console.info(`  ${String(Math.round(b * 100)).padStart(4)}%  | ${g.toFixed(3)} | ${u.toFixed(3)} | ${(gap >= 0 ? '+' : '')}${gap.toFixed(3)}`)
   }
@@ -251,7 +266,18 @@ async function main(): Promise<void> {
       uniform: avg(out.uniform[String(b)]),
       gap: avg(out.gated[String(b)]) - avg(out.uniform[String(b)]),
     })),
-    note: 'After re-frame (commit 0683600) the store computes content salience internally, so the oracle-vs-predicted distinction and the α-mixing sensitivity block are obsolete (both collapse to the same content-salience gate). The re-runnable core is content-salience gated vs NO_GATING uniform.',
+    // J5 §X corrected-weight对照（recency=0）：同一候选在修正权重下重打分，揭示默认 recency 是否掩盖门控边际贡献。
+    correctedWeights: {
+      weights: CORRECTED_RETRIEVAL_WEIGHTS,
+      results: outCorrected,
+      summary: BUDGETS.map(b => ({
+        budget: b,
+        gated: avg(outCorrected.gated[String(b)]),
+        uniform: avg(outCorrected.uniform[String(b)]),
+        gap: avg(outCorrected.gated[String(b)]) - avg(outCorrected.uniform[String(b)]),
+      })),
+    },
+    note: 'After re-frame (commit 0683600) the store computes content salience internally, so the oracle-vs-predicted distinction and the α-mixing sensitivity block are obsolete (both collapse to the same content-salience gate). The re-runnable core is content-salience gated vs NO_GATING uniform. The correctedWeights block re-scores the SAME truncated candidates under recency=0 (J5 §X); it adds no extra memory builds.',
   }
   mkdirSync('eval/results', { recursive: true })
   writeFileSync('eval/results/p2-h2-salience.json', `${JSON.stringify(artifact, null, 2)}\n`)

@@ -15,6 +15,7 @@ import type {
   PhysiologicalStateV3,
   PresentationModulation,
   ProceduralMemory,
+  RetrievalWeights,
   ScoredCandidate,
   SemanticFact,
   StorageAdapter,
@@ -831,13 +832,16 @@ export class BioticMemory {
   }
 
   /** Retrieve the top-K scored candidates for a query, with content-salience gating + R-conflict penalty. */
-  retrieve(query: string, topK = 10, bump = true): ScoredCandidate[] {
+  retrieve(query: string, topK = 10, bump = true, weights?: Partial<RetrievalWeights>): ScoredCandidate[] {
     const idx = this.ensureIndex()
     const qVec = idx.querySparse(query)
     const queryTags = tokenize(query)
     const f = this.config.forgetting
     const g = this.config.gating
-    const w = this.config.weights
+    // Optional per-call weight override (J5 §X): lets an eval re-score the SAME
+    // candidates under corrected weights without mutating the store config.
+    // Default (undefined) ⇒ zero behaviour change.
+    const w = weights ? { ...this.config.weights, ...weights } : this.config.weights
     const conflictPenalty = this.config.conflictPenalty ?? 0.5
     // Read defensively (`??`) so snapshot configs written before these fields
     // existed still rehydrate: absent means "corrected behaviour", which is what

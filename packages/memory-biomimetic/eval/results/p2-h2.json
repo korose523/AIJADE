@@ -1,6 +1,6 @@
 {
   "experiment": "H2 (v3 §9): gated vs uniform vs no forgetting under matched storage budget",
-  "corpus": "/tmp/locomo10.json",
+  "corpus": "/Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json",
   "conversations": 10,
   "horizonDays": 90,
   "budgets": [
@@ -13,60 +13,127 @@
   "perSeed": {
     "0.1": {
       "gated": [
-        0.15680933284312637
+        0.10480781608086645
       ],
       "uniform": [
-        0.05372583911100559
+        0.042298208751772766
       ],
       "none": [
-        0.053065227876065935
+        0.051142640456855
       ]
     },
     "0.25": {
       "gated": [
-        0.2623389377337916
+        0.12146126304735565
       ],
       "uniform": [
-        0.13326442971145394
+        0.07541652154761301
       ],
       "none": [
-        0.13641655758678128
+        0.09011747535839994
       ]
     },
     "0.5": {
       "gated": [
-        0.37812025688281187
+        0.1535915969676072
       ],
       "uniform": [
-        0.23853544070340033
+        0.11830392572656456
       ],
       "none": [
-        0.24482971358309163
+        0.14380449663801034
       ]
     }
   },
   "summary": [
     {
       "budget": 0.1,
-      "gated": 0.15680933284312637,
-      "uniform": 0.05372583911100559,
-      "none": 0.053065227876065935,
-      "gapGatedUniform": 0.10308349373212078
+      "gated": 0.10480781608086645,
+      "uniform": 0.042298208751772766,
+      "none": 0.051142640456855,
+      "gapGatedUniform": 0.06250960732909369
     },
     {
       "budget": 0.25,
-      "gated": 0.2623389377337916,
-      "uniform": 0.13326442971145394,
-      "none": 0.13641655758678128,
-      "gapGatedUniform": 0.12907450802233764
+      "gated": 0.12146126304735565,
+      "uniform": 0.07541652154761301,
+      "none": 0.09011747535839994,
+      "gapGatedUniform": 0.046044741499742636
     },
     {
       "budget": 0.5,
-      "gated": 0.37812025688281187,
-      "uniform": 0.23853544070340033,
-      "none": 0.24482971358309163,
-      "gapGatedUniform": 0.13958481617941154
+      "gated": 0.1535915969676072,
+      "uniform": 0.11830392572656456,
+      "none": 0.14380449663801034,
+      "gapGatedUniform": 0.03528767124104265
     }
   ],
-  "caveat": "After the re-frame (commit 0683600) the gate is driven by content salience (predictSalienceV2), not by an oracle label or by physiology. The measured gating benefit is therefore conditional on the predicted-salience signal being available; p2-h2-salience.ts re-tests the mechanism with the predicted signal. Retention is now deterministic per (cond, budget) — the former physiological-seed dimension is gone (physiology only modulates presentation)."
+  "correctedWeights": {
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "perSeed": {
+      "0.1": {
+        "gated": [
+          0.11252630533256465
+        ],
+        "uniform": [
+          0.048424525055082004
+        ],
+        "none": [
+          0.05487394768021571
+        ]
+      },
+      "0.25": {
+        "gated": [
+          0.1330530080015254
+        ],
+        "uniform": [
+          0.08247628760516866
+        ],
+        "none": [
+          0.09642902079227779
+        ]
+      },
+      "0.5": {
+        "gated": [
+          0.17222708317949156
+        ],
+        "uniform": [
+          0.13054050795839453
+        ],
+        "none": [
+          0.19899434998959936
+        ]
+      }
+    },
+    "summary": [
+      {
+        "budget": 0.1,
+        "gated": 0.11252630533256465,
+        "uniform": 0.048424525055082004,
+        "none": 0.05487394768021571,
+        "gapGatedUniform": 0.06410178027748265
+      },
+      {
+        "budget": 0.25,
+        "gated": 0.1330530080015254,
+        "uniform": 0.08247628760516866,
+        "none": 0.09642902079227779,
+        "gapGatedUniform": 0.05057672039635673
+      },
+      {
+        "budget": 0.5,
+        "gated": 0.17222708317949156,
+        "uniform": 0.13054050795839453,
+        "none": 0.19899434998959936,
+        "gapGatedUniform": 0.04168657522109703
+      }
+    ]
+  },
+  "caveat": "After the re-frame (commit 0683600) the gate is driven by content salience (predictSalienceV2), not by an oracle label or by physiology. The measured gating benefit is therefore conditional on the predicted-salience signal being available; p2-h2-salience.ts re-tests the mechanism with the predicted signal. Retention is now deterministic per (cond, budget) — the former physiological-seed dimension is gone (physiology only modulates presentation). The correctedWeights block re-scores the SAME truncated candidates under recency=0 (J5 §X) to isolate whether the default recency term masks the gating marginal contribution; it adds no extra memory builds."
 }

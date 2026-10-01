@@ -68,5 +68,58 @@
       "gap": 0.03528767124104265
     }
   ],
-  "note": "After re-frame (commit 0683600) the store computes content salience internally, so the oracle-vs-predicted distinction and the α-mixing sensitivity block are obsolete (both collapse to the same content-salience gate). The re-runnable core is content-salience gated vs NO_GATING uniform."
+  "correctedWeights": {
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "results": {
+      "gated": {
+        "0.1": [
+          0.11252630533256465
+        ],
+        "0.25": [
+          0.1330530080015254
+        ],
+        "0.5": [
+          0.17222708317949156
+        ]
+      },
+      "uniform": {
+        "0.1": [
+          0.048424525055082004
+        ],
+        "0.25": [
+          0.08247628760516866
+        ],
+        "0.5": [
+          0.13054050795839453
+        ]
+      }
+    },
+    "summary": [
+      {
+        "budget": 0.1,
+        "gated": 0.11252630533256465,
+        "uniform": 0.048424525055082004,
+        "gap": 0.06410178027748265
+      },
+      {
+        "budget": 0.25,
+        "gated": 0.1330530080015254,
+        "uniform": 0.08247628760516866,
+        "gap": 0.05057672039635673
+      },
+      {
+        "budget": 0.5,
+        "gated": 0.17222708317949156,
+        "uniform": 0.13054050795839453,
+        "gap": 0.04168657522109703
+      }
+    ]
+  },
+  "note": "After re-frame (commit 0683600) the store computes content salience internally, so the oracle-vs-predicted distinction and the α-mixing sensitivity block are obsolete (both collapse to the same content-salience gate). The re-runnable core is content-salience gated vs NO_GATING uniform. The correctedWeights block re-scores the SAME truncated candidates under recency=0 (J5 §X); it adds no extra memory builds."
 }

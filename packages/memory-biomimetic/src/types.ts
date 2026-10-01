@@ -328,6 +328,21 @@ export const DEFAULT_RETRIEVAL_WEIGHTS: RetrievalWeights = {
 }
 
 /**
+ * Corrected retrieval weights (J5 §X — "dimensional mismatch" fix).
+ *
+ * The default weights let `recency` (0.3) keep a non-relevance signal in the
+ * score; on this corpus that term is the dominant *non*-relevance component and
+ * masks whether content-salience gating actually improves recall. Zeroing
+ * `recency` removes that dominance so the gating / forgetting marginal
+ * contribution becomes measurable in isolation. Kept as a named constant so the
+ * corrected-weight experiment is reproducible and auditable.
+ */
+export const CORRECTED_RETRIEVAL_WEIGHTS: RetrievalWeights = {
+  ...DEFAULT_RETRIEVAL_WEIGHTS,
+  recency: 0,
+}
+
+/**
  * How the four retrieval components are combined before weighting. See
  * {@link MemoryConfig.retrievalScoreMode}.
  */

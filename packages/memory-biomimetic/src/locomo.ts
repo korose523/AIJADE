@@ -1,5 +1,5 @@
 import type { Distiller } from './consolidation'
-import type { Episode, GatingCoefficients, MemoryConfig } from './types'
+import type { Episode, GatingCoefficients, MemoryConfig, RetrievalWeights } from './types'
 
 import { readFileSync } from 'node:fs'
 
@@ -232,7 +232,7 @@ export interface RecallResult {
  * and above the retrieval floor? This isolates the *memory dynamics* from any
  * LLM answer skill — it only asks "did the right memory surface?".
  */
-export function evidenceRecall(mem: BioticMemory, conv: LocomoConversation, topK = 10): RecallResult {
+export function evidenceRecall(mem: BioticMemory, conv: LocomoConversation, topK = 10, weights?: Partial<RetrievalWeights>): RecallResult {
   let covered = 0
   const byCat: Record<number, { cov: number, tot: number }> = {}
   for (const q of conv.qa) {
@@ -243,7 +243,7 @@ export function evidenceRecall(mem: BioticMemory, conv: LocomoConversation, topK
       candidates.add(e)
       candidates.add(`fact_${e}`)
     }
-    const top = mem.retrieve(q.question, topK, false)
+    const top = mem.retrieve(q.question, topK, false, weights)
     const hit = top.some(c => candidates.has(c.id) && c.score > mem.config.retrievalFloor)
     if (hit)
       covered++

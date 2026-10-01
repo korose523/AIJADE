@@ -35,6 +35,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import {
   BioticMemory,
   buildExperimentManifest,
+  CORRECTED_RETRIEVAL_WEIGHTS,
   DAY,
   DEFAULT_FORGETTING,
   DEFAULT_GATING,
@@ -207,21 +208,28 @@ async function main(): Promise<void> {
 
   // results[budget][cond] = mean recall over conversations (deterministic per cond/budget)
   const results: Record<string, Record<Cond, number[]>> = {}
+  // J5 §X corrected-weight对照：同一组候选，在 recency=0 修正权重下重新打分。
+  // 仅改变 retrieve 的 weight 覆盖（不重建记忆），边际成本可忽略。
+  const resultsCorrected: Record<string, Record<Cond, number[]>> = {}
   for (const b of BUDGETS) {
     results[String(b)] = { gated: [], uniform: [], none: [] }
+    resultsCorrected[String(b)] = { gated: [], uniform: [], none: [] }
   }
 
   for (const cond of CONDS) {
     for (const b of BUDGETS) {
       const perConv: number[] = []
+      const perConvCorrected: number[] = []
       for (const conv of subset) {
         const now = conv.endTs + HORIZON_DAYS * DAY
         const mem = await build(conv, cond)
         truncateToBudget(mem, now, b)
         mem.setNow(now) // 推进时钟并失效索引
         perConv.push(evidenceRecall(mem, conv, TOP_K).overall)
+        perConvCorrected.push(evidenceRecall(mem, conv, TOP_K, CORRECTED_RETRIEVAL_WEIGHTS).overall)
       }
       results[String(b)][cond].push(avg(perConv))
+      resultsCorrected[String(b)][cond].push(avg(perConvCorrected))
     }
   }
 
@@ -229,6 +237,18 @@ async function main(): Promise<void> {
   console.info('  budget   gated            uniform          none             gap(gated-uniform)')
   for (const b of BUDGETS) {
     const r = results[String(b)]
+    const gm = avg(r.gated)
+    const um = avg(r.uniform)
+    const fmt = (a: number[]) => `${avg(a).toFixed(3)} [${a.map(x => x.toFixed(3)).join(' ')}]`
+    console.info(
+      `  ${String(Math.round(b * 100)).padStart(4)}%   ${fmt(r.gated).padEnd(16)} ${fmt(r.uniform).padEnd(16)} ${fmt(r.none).padEnd(16)} ${(gm - um >= 0 ? '+' : '')}${(gm - um).toFixed(3)}`,
+    )
+  }
+  console.info()
+  console.info('J5 §X 修正权重对照（recency=0，仅重打分同一候选）：')
+  console.info('  budget   gated*           uniform*         none*            gap*(gated-uniform)')
+  for (const b of BUDGETS) {
+    const r = resultsCorrected[String(b)]
     const gm = avg(r.gated)
     const um = avg(r.uniform)
     const fmt = (a: number[]) => `${avg(a).toFixed(3)} [${a.map(x => x.toFixed(3)).join(' ')}]`
@@ -257,7 +277,19 @@ async function main(): Promise<void> {
       none: avg(results[String(b)].none),
       gapGatedUniform: avg(results[String(b)].gated) - avg(results[String(b)].uniform),
     })),
-    caveat: 'After the re-frame (commit 0683600) the gate is driven by content salience (predictSalienceV2), not by an oracle label or by physiology. The measured gating benefit is therefore conditional on the predicted-salience signal being available; p2-h2-salience.ts re-tests the mechanism with the predicted signal. Retention is now deterministic per (cond, budget) — the former physiological-seed dimension is gone (physiology only modulates presentation).',
+    // J5 §X corrected-weight对照（recency=0）：揭示默认 recency=0.3 是否掩盖了门控的边际贡献。
+    correctedWeights: {
+      weights: CORRECTED_RETRIEVAL_WEIGHTS,
+      perSeed: resultsCorrected,
+      summary: BUDGETS.map(b => ({
+        budget: b,
+        gated: avg(resultsCorrected[String(b)].gated),
+        uniform: avg(resultsCorrected[String(b)].uniform),
+        none: avg(resultsCorrected[String(b)].none),
+        gapGatedUniform: avg(resultsCorrected[String(b)].gated) - avg(resultsCorrected[String(b)].uniform),
+      })),
+    },
+    caveat: 'After the re-frame (commit 0683600) the gate is driven by content salience (predictSalienceV2), not by an oracle label or by physiology. The measured gating benefit is therefore conditional on the predicted-salience signal being available; p2-h2-salience.ts re-tests the mechanism with the predicted signal. Retention is now deterministic per (cond, budget) — the former physiological-seed dimension is gone (physiology only modulates presentation). The correctedWeights block re-scores the SAME truncated candidates under recency=0 (J5 §X) to isolate whether the default recency term masks the gating marginal contribution; it adds no extra memory builds.',
   }
   mkdirSync('eval/results', { recursive: true })
   writeFileSync('eval/results/p2-h2.json', `${JSON.stringify(artifact, null, 2)}\n`)
