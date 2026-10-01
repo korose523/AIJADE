@@ -25,11 +25,15 @@
     "verify:v10-contract-drift:postgres": "tsx scripts/verify-v10-contract-drift.ts --postgres",
     "verify:v9-render-traces": "tsx scripts/verify-render-trace-backfill.ts",
     "verify:v9-promotion": "tsx scripts/verify-v9-promotion-worker.ts",
+    "verify:v9-promotion-control": "tsx scripts/verify-v9-promotion-control.ts",
     "verify:v9-performance-intent": "tsx scripts/verify-v9-performance-intent.ts",
     "verify:v9-replay-runtime": "tsx scripts/verify-v9-replay-runtime.ts",
     "otel:dashboards": "tsx otel/grafana/dashboards/build.ts",
     "e2e:main-flow": "node scripts/e2e/run-main-flow.mjs",
-    "e2e:negative-fork": "node scripts/e2e/run-negative-fork.mjs"
+    "e2e:negative-fork": "node scripts/e2e/run-negative-fork.mjs",
+    "bench:ingest": "node scripts/bench/ingest-latency.mjs",
+    "bench:ingest:sequential": "node scripts/bench/ingest-latency.mjs --mode sequential --n 100 --out bench-out/ingest-sequential.json",
+    "bench:ingest:concurrent": "node scripts/bench/ingest-latency.mjs --mode concurrent --n 50 --out bench-out/ingest-concurrent.json"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "catalog:",
