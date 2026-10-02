@@ -8,6 +8,24 @@
  *
  * Run this once per model before trusting any experiment that uses it, and
  * record the result alongside the artifact.
+ *
+ * ## Scope of the guarantee — read this before quoting the check in a paper
+ *
+ * Passing means: **on this machine, with this server, at this batch size, right
+ * now**, decoding is reproducible. It does **not** mean the run reproduces on
+ * other hardware. Greedy decoding is not precision-invariant: floating-point
+ * addition is non-associative, and device / kernel / batch-size changes alter
+ * the reduction order, so the same weights and prompt can still diverge.
+ * Measured elsewhere at up to **9% accuracy and 9,000 tokens of length
+ * difference** under BF16 when only GPU count, GPU type and batch size were
+ * varied [Yuan et al., arXiv:2506.09501], and **49–100% of prompts diverging**
+ * between BF16 and FP16 on *identical* hardware [Du et al., TMLR 2026,
+ * arXiv:2609.26621]; cross-architecture bitwise agreement requires fixing the
+ * reduction order itself [Cooper et al., arXiv:2609.25624].
+ *
+ * ⇒ Cite this check as **"same-device, same-configuration reproducibility"**
+ *   and nothing stronger. This module does not, and cannot, test cross-device
+ *   reproducibility: every repeat runs through the same substrate instance.
  */
 
 import type { ChatMessage, SamplingConfig, Substrate } from './types'
