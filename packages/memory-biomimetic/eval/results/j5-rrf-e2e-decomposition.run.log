@@ -6,3 +6,48 @@ condition: NO_GATING；每题 retrieve(topK=8, bump=false)
 同 build : 每对话 build 一次，翻转 mem.config 跑各臂
 ⚠️ 本表属族 B，与族 A（j5-rrf-ablation，重排 top-150）**不可互比**
 
+  arm                       R@1      R@2      R@4      R@8    MRR@8
+  store-default          0.1118   0.1400   0.1747   0.2064   0.1415   【基线】standardized + 去重（014b17b 后的 shipped path）
+  rrf-e2e                0.0342   0.0488   0.0680   0.0745   0.0487   rrf（k=60）+ 去重 + DEFAULT 权重
+  rrf-e2e-no-recency     0.0403   0.0529   0.0599   0.0609   0.0490   rrf + 去重 + CORRECTED 权重（recency 置 0）
+  std-no-dedupe          0.1279   0.1339   0.1687   0.1999   0.1477   standardized + **不去重**（隔离去重，打分模式与基线相同）
+  additive-e2e           0.0398   0.0514   0.0655   0.0821   0.0522   additive + 去重（隔离打分模式，去重条件与基线相同）
+  prefix-e2e             0.0428   0.0519   0.0650   0.0836   0.0547   additive + 不去重 —— 014b17b 之前配置的**近似**（推断，非实测确证）
+
+--- 校验 ---
+  recall 实现交叉校验（对标 eval-metrics.measure）：最大偏差 0.000000  ✅ 逐位一致
+  历史数字对照（来自 13 号文档 §2.4，仅作定位，非本脚本产物）：
+    014b17b 之前基线（09-15 制品） 0.0817  ← 本脚本 prefix-e2e    0.0836
+    014b17b 之后基线（09-19 制品） 0.1985  ← 本脚本 store-default 0.2064
+    注：0.0817 / 0.1985 是历史制品，其配置是本脚本的**推断**，未独立确证。
+
+--- 判读（由上方实测数字生成，无硬编码结论）---
+【① 端到端 recall@8（族 B）】
+  store-default      0.2064   （族 B 唯一基线）
+  rrf-e2e            0.0745   -0.1319
+  rrf-e2e-no-recency 0.0609   -0.1455
+
+【② 0.0817 → 修复后 的因果拆分（13 号文档 §2.4 的受控重跑）】
+  additive + 不去重      0.0836   （014b17b 前配置的近似）
+  additive + 去重        0.0821   -0.0015  ← additive 下去重的贡献
+  standardized + 不去重  0.1999   +0.1163  ← 打分模式的贡献（去重条件相同）
+  standardized + 去重    0.2064   +0.0065  ← standardized 下去重的贡献
+
+  ⇒ 两条路径都试过了：去重的贡献是 -0.0015（additive 下）与 +0.0065（standardized 下），
+     打分模式的贡献是 +0.1163（去重条件不变）。谁主导一目了然。
+
+【③ 结论】
+  ⇒ 端到端 RRF 0.0745 **劣于** shipped 默认 0.2064（-0.1319）。
+
+⚠️ 口径：本表全部数字属**族 B（端到端、全池、含噪声与冲突惩罚）**，
+   基线只能配本表的 store-default；与族 A（j5-rrf-ablation，重排 top-150）的任何数字都不可相减。
+   additive 两臂沿用 legacy 的 K 依赖冲突重排头，其 R@1/2/4 由一次 topK=8 检索按位置还原，
+   不等于逐 K 各调一次 retrieve()。
+
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-store-default-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-rrf-e2e-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-rrf-e2e-no-recency-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-std-no-dedupe-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-additive-e2e-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-prefix-e2e-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-e2e-decomp-2026-10-02.json

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-02T23:03:19.942Z",
+  "generatedAt": "2026-10-02T23:03:19.872Z",
   "experiment": "j5-rrf-e2e",
   "calibrationFamily": "B-end-to-end",
   "corpus": {
@@ -15,24 +15,24 @@
     4,
     8
   ],
-  "arm": "prefix-e2e",
-  "note": "additive + 不去重 —— 014b17b 之前配置的**近似**（推断，非实测确证）",
+  "arm": "std-no-dedupe",
+  "note": "standardized + **不去重**（隔离去重，打分模式与基线相同）",
   "baseline": false,
   "config": {
-    "retrievalScoreMode": "additive",
+    "retrievalScoreMode": "standardized",
     "dedupeByContent": false
   },
   "questions": 1986,
   "recall": {
-    "1": 0.042799597180261835,
-    "2": 0.051863041289023165,
-    "4": 0.0649546827794562,
-    "8": 0.08358509566968782
+    "1": 0.12789526686807653,
+    "2": 0.1339375629405841,
+    "4": 0.1686807653575025,
+    "8": 0.1998992950654582
   },
-  "mrrAtMaxK": 0.05466299812976552,
+  "mrrAtMaxK": 0.14765261593056153,
   "provenance": {
     "schema": "aijade.run_provenance@1",
-    "scoreMode": "additive",
+    "scoreMode": "standardized",
     "weights": {
       "similarity": 1,
       "strength": 0.6,
@@ -41,6 +41,6 @@
       "affect": 0.25
     },
     "gitSha": "ad13751c050375a6e98e839ba2a414d26435d367",
-    "generatedAt": "2026-10-02T23:03:19.976Z"
+    "generatedAt": "2026-10-02T23:03:19.906Z"
   }
 }

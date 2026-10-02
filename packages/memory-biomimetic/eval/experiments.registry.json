@@ -465,13 +465,12 @@
         },
         {
           "name": "std-no-dedupe",
-          "description": "standardized + no dedupe -- the fourth 2x2 cell; DEFINED IN SCRIPT BUT NOT YET PRODUCED",
+          "description": "standardized + no dedupe -- the fourth 2x2 cell; MEASURED 2026-10-02 (full run, 1986 questions), recall@8 0.1999",
           "params": {
             "retrievalScoreMode": "standardized",
             "dedupeByContent": false,
             "weights": "DEFAULT"
-          },
-          "pending": true
+          }
         },
         {
           "name": "rrf-e2e",
@@ -500,9 +499,10 @@
         "MRR@8"
       ],
       "createdAt": 1790981342167,
-      "notes": "LoCoMo 10 conversations, 1986 questions, NO_GATING, corpus sha256 79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4. Delivery track: full pool, retrieval noise and conflict penalty applied. Harness self-check: recall implementation agrees with eval-metrics.measure to 0.000000 (bit-identical). MEASURED 2x2 (three of four cells): additive+no-dedupe 0.0836, additive+dedupe 0.0821 (dedupe contributes -0.0015, at noise), standardized+dedupe 0.2064 (score mode contributes +0.1244). The repair commit 014b17b changed BOTH the score mode and dedupe, but the controlled comparison shows the contributions are sharply asymmetric: essentially the entire gain comes from standardizing the score, not from dedupe. WITHDRAWN CLAIM: an earlier diagnostic (p2-index-duplication-confusion-2026-09-15, predicted q=0.3) attributed +0.1245 to dedupe; that arm toggled the distiller while shrinking the pool 353->177, and the same artifact's pool-size control shows pool size alone moves recall@8 by up to 0.25 at constant evidence survival, so the gain was confounded. OPEN: the score-mode x dedupe interaction needs the fourth cell (std-no-dedupe), which is defined in eval/j5-rrf-e2e-decomposition.ts but absent from the artifact. retrievalFloor domain check: RRF scores live in a far smaller numeric range (sum of w_c/(k+rank_c), weight sum 2.3) than standardized scores, so the default floor 0.02 is NOT a comparable criterion across modes. Measured with each arm judged by its OWN score the RRF arms collapse (rrf-default 0.1536 -> 0.0745, rrf-corrected 0.1757 -> 0.0609); judged by a SHARED floor criterion (store standardized score over the whole pool, floor=0.02) they are 0.1536 and 0.1757. Any cross-mode recall comparison must state which criterion was used. CAUTION: these delivery-track figures are NOT comparable with j5-rrf-fusion-ablation (re-ranking diagnostic track, top-150 pool, no floor). Do not subtract across the two families.",
+      "notes": "LoCoMo 10 conversations, 1986 questions, NO_GATING, corpus sha256 79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4. Delivery track: full pool, retrieval noise and conflict penalty applied. Harness self-check: recall implementation agrees with eval-metrics.measure to 0.000000 (bit-identical). MEASURED 2x2, ALL FOUR CELLS: additive+no-dedupe 0.0836, additive+dedupe 0.0821, standardized+no-dedupe 0.1999, standardized+dedupe 0.2064. MAIN EFFECTS: score mode contributes +0.1163 (dedupe off) and +0.1244 (dedupe on); dedupe contributes -0.0015 (under additive) and +0.0065 (under standardized). INTERACTION (difference of differences) = +0.0081, i.e. 6.9% of the score-mode main effect -- small but of the same sign as predicted (dedupe helps only once scores are commensurable), and NOT established as significant at n=1986 without a paired test. The repair commit 014b17b changed BOTH the score mode and dedupe, but the controlled comparison shows the contributions are sharply asymmetric: essentially the entire gain comes from standardizing the score, not from dedupe. This closes the previously OPEN interaction question. NEGATIVE RESULT worth stating: even under the better score mode, dedupe is worth only +0.0065 recall@8, so the 2x2 does NOT support a strong 'dedupe only pays off after standardizing' claim. WITHDRAWN CLAIM: an earlier diagnostic (p2-index-duplication-confusion-2026-09-15, predicted q=0.3) attributed +0.1245 to dedupe; that arm toggled the distiller while shrinking the pool 353->177, and the same artifact's pool-size control shows pool size alone moves recall@8 by up to 0.25 at constant evidence survival, so the gain was confounded. retrievalFloor domain check: RRF scores live in a far smaller numeric range (sum of w_c/(k+rank_c), weight sum 2.3) than standardized scores, so the default floor 0.02 is NOT a comparable criterion across modes. Measured with each arm judged by its OWN score the RRF arms collapse (rrf-default 0.1536 -> 0.0745, rrf-corrected 0.1757 -> 0.0609); judged by a SHARED floor criterion (store standardized score over the whole pool, floor=0.02) they are 0.1536 and 0.1757. Any cross-mode recall comparison must state which criterion was used. CAUTION: these delivery-track figures are NOT comparable with j5-rrf-fusion-ablation (re-ranking diagnostic track, top-150 pool, no floor). Do not subtract across the two families.",
       "artifacts": [
         "eval/results/j5-rrf-e2e-decomp-2026-10-02.json",
+        "eval/results/j5-rrf-e2e-decomp-std-no-dedupe-2026-10-02.json",
         "eval/results/j5-rrf-e2e-independent-2026-10-02.json",
         "eval/results/j5-rrf-e2e-decomposition.run.log"
       ]
