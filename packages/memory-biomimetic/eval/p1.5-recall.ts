@@ -16,11 +16,15 @@ import process from 'node:process'
  * LoCoMo conversations:
  *
  *   recall@K   — fraction of questions whose gold-evidence memory is in the
- *                top-K. Expected ~1.0 for both (the evidence turn is lexically
- *                the closest match to its question regardless of gating).
+ *                top-K. MEASURED, not assumed: an earlier version of this
+ *                comment predicted ~1.0 for both gating conditions, but the
+ *                measured max is 0.199 (default weights) / 0.241 (recency=0) —
+ *                lexical retrieval does NOT reliably surface the evidence.
  *   distractorLoad@K — fraction of top-K slots that are NON-evidence memories
- *                (trivial distractors). Expected ON ≈ 0, OFF > 0. This is the
- *                precise statement of the interference the reader must survive.
+ *                (trivial distractors). MEASURED: ≈0.97 at K=8 under BOTH
+ *                gating conditions, i.e. the expected ON≈0 / OFF>0 asymmetry
+ *                does NOT hold under this scorer. This is the precise
+ *                statement of the interference the reader must survive.
  *
  * Usage:  tsx eval/p1.5-recall.ts [path-to-locomo.json] [conversation-limit]
  */
@@ -119,7 +123,7 @@ async function main(): Promise<void> {
   KS.forEach((k, i) => {
     const a = avg(load[i].on)
     const b = avg(load[i].off)
-    console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     +${(b - a).toFixed(3)}`)
+    console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     ${(b - a >= 0 ? '+' : '')}${(b - a).toFixed(3)}`)
   })
   console.info()
   console.info('J5 §X 修正权重对照（recency=0，仅重打分同一候选）：')
@@ -135,7 +139,7 @@ async function main(): Promise<void> {
   KS.forEach((k, i) => {
     const a = avg(loadC[i].on)
     const b = avg(loadC[i].off)
-    console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     +${(b - a).toFixed(3)}`)
+    console.info(`  ${String(k).padStart(2)}    ${a.toFixed(3)}    ${b.toFixed(3)}     ${(b - a >= 0 ? '+' : '')}${(b - a).toFixed(3)}`)
   })
   console.info()
   console.info('Interpretation (DERIVED from the measured numbers printed above — no hardcoded claims):')
