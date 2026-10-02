@@ -1,0 +1,361 @@
+{
+  "run": {
+    "generatedBy": "run-experiment.mjs",
+    "gitShaBefore": "8185713b95fb6e3f80de0517f46c19be796cf3ab",
+    "matrixVersion": "verify-v10-contract-drift (PGlite leg)",
+    "dualLeg": false,
+    "note": "仅 PGlite 腿（默认）；--postgres 腿当前仓库不可达，按设计 skipped。"
+  },
+  "baseline": {
+    "total": 531,
+    "failures": 0,
+    "perClass": {
+      "kernel": 160,
+      "http": 141,
+      "noWrite": 226,
+      "guard": 4
+    }
+  },
+  "mutants": [
+    {
+      "id": "FU-01",
+      "file": "packages/memory-biomimetic/src/events.ts",
+      "classHint": "kernel",
+      "expectedCapture": "kernel",
+      "expectedContains": [
+        "envelope with unknown extra field"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 1,
+      "newRed": 1,
+      "falseRed": 0,
+      "totalRed": 1,
+      "note": "topicEvent 判据由 strictObject→object：内核静默剥离未知字段，信封未知字段负例的 kernel 断言翻红（line 524）。"
+    },
+    {
+      "id": "FU-02",
+      "file": "packages/memory-biomimetic/src/events.ts",
+      "classHint": "kernel",
+      "expectedCapture": "kernel",
+      "expectedContains": [
+        "tick beyond int32"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 1,
+      "newRed": 1,
+      "falseRed": 0,
+      "totalRed": 1,
+      "note": "删内核 tick 上界：内核接受 2_147_483_648，line 541 的 kernel 断言翻红（仅 1/3，HTTP 侧仍拒）。"
+    },
+    {
+      "id": "FU-03",
+      "file": "apps/server/src/routes/v9/schema.ts",
+      "classHint": "http",
+      "expectedCapture": "http",
+      "expectedContains": [
+        "tick beyond int32"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 1,
+      "newRed": 1,
+      "falseRed": 0,
+      "totalRed": 1,
+      "note": "删服务端 tickInt 上界：越界值穿过边界 → DB 22003 泄漏为 500，line 542 的 HTTP 400 断言翻红（复现 §4.4 真实缺陷）。"
+    },
+    {
+      "id": "FU-04",
+      "file": "apps/server/src/routes/v9/events.ts",
+      "classHint": "http",
+      "expectedCapture": "http",
+      "expectedContains": [
+        "must be 400"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 97,
+      "newRed": 97,
+      "falseRed": 51,
+      "totalRed": 97,
+      "note": "绕过逐 topic payload 校验：大量 payload 负例（缺必填/空串/未知字段）从 400 变 201，HTTP 类成批翻红。"
+    },
+    {
+      "id": "FU-05",
+      "file": "apps/server/src/routes/v9/schema.ts",
+      "classHint": "http",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "envelope with unknown extra field"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 2,
+      "newRed": 2,
+      "falseRed": 0,
+      "totalRed": 2,
+      "note": "信封 strictObject→object（并补 import object）：信封未知多余字段被静默忽略，line 525 的 HTTP 400 与 no-write 双翻红。"
+    },
+    {
+      "id": "FU-06",
+      "file": "packages/memory-biomimetic/src/events.ts",
+      "classHint": "guard+kernel",
+      "expectedCapture": "guard+kernel",
+      "expectedContains": [
+        "risk_level",
+        "envelope declares exactly"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 21,
+      "newRed": 21,
+      "falseRed": 19,
+      "totalRed": 21,
+      "note": "删 envelopeFields 必填 risk_level：静态守卫（line 585 字段集 12 vs 13）与行为层 kernel 断言（line 504）双翻红。"
+    },
+    {
+      "id": "FU-07a",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "http+no-write",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "self-reference"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "caught",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "删 validateLearningReference 内 render_ref 自引用 throw（learning 分支）：设计预测应翻红，但实测 survived —— 531 矩阵缺 'render_ref 自引用' 负例（fixtures 恒用合法 render_ref），该 throw 被移除后无断言落红。诚实边界⑤：learning 分支自引用守卫未被矩阵覆盖。"
+    },
+    {
+      "id": "FU-07b",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "http+no-write",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "self-reference"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 3,
+      "newRed": 3,
+      "falseRed": 0,
+      "totalRed": 3,
+      "note": "删投影层 intent_ref 自引用 throw（persona 分支）：persona 自引用负例 201 + events++，HTTP/no-write 翻红。"
+    },
+    {
+      "id": "FU-08",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "none",
+      "expectedCapture": "http",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "删 applied_params_hash 不匹配 throw：矩阵无 '哈希不一致应被拒' 负例（fixtures 恒用 seed 哈希）→ 仍全绿。诚实边界①。"
+    },
+    {
+      "id": "FU-09",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "none",
+      "expectedCapture": "no-write",
+      "expectedContains": [],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 2,
+      "newRed": 2,
+      "falseRed": 0,
+      "totalRed": 2,
+      "note": "回执早退不写 render_traces 投影（guard 恒 true）：设计预测 survived，但实测 caught（newRed=2）—— 矩阵 seed render_traces 插入（line 598）/ countRows 能捕获投影缺失。矩阵比设计假设更严。"
+    },
+    {
+      "id": "FU-10",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "projectionStatusOf 恒 'paired'：531 无 projection_status 断言（仅 E2E P1b 捕获）→ 仍全绿。诚实边界②。"
+    },
+    {
+      "id": "FU-11",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "删 append-only 冲突 throw：531 无 '同 trace 二回执' 负例（仅 E2E N8 捕获）→ 仍全绿。诚实边界②。"
+    },
+    {
+      "id": "FU-12",
+      "file": "apps/server/src/routes/v9/events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "causality.inputHash 改常量：矩阵只查存在性、不查 '值↔内容' 一致；promotion 门复算提案自身 input_hash，中链不可见 → 仍全绿。诚实边界③（验证 c）。"
+    },
+    {
+      "id": "FU-13",
+      "file": "packages/memory-biomimetic/src/events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "跳过 assertV10RequiredFields 的 causality 强制：531 无 'v10 topic 缺 tick/causality' 负例（仅 E2E N2/N3）→ 仍全绿。诚实边界③。"
+    },
+    {
+      "id": "FU-14",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "http+no-write",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "self-reference"
+      ],
+      "predictedVerdict": "caught",
+      "executed": true,
+      "observedVerdict": "caught",
+      "predicted": "caught",
+      "failures": 11,
+      "newRed": 11,
+      "falseRed": 11,
+      "totalRed": 11,
+      "note": "validateLearningReference 整体早退（绕过校验直写）：learning 自引用负例 201 + events++，HTTP/no-write 翻红。"
+    },
+    {
+      "id": "FU-15",
+      "file": "apps/server/src/services/domain/v9-events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "拒绝路径也写 audit_log_entries：countRows（line 628-632）只数 events/render_traces 两表，第三表写入不被捕获 → 仍全绿。诚实边界④。"
+    },
+    {
+      "id": "FU-16",
+      "file": "packages/memory-biomimetic/src/store.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "notImplemented",
+      "executed": false,
+      "observedVerdict": "notImplemented",
+      "predicted": "notImplemented",
+      "note": "不可注入：531 矩阵走 drizzle/PGlite，模块图从未 import BioticMemory（store.ts），内存库写入完全不在观测域内；强制注入需构造 StorageAdapter（触及生产构造），故标记 notImplemented。"
+    },
+    {
+      "id": "FU-17",
+      "file": "apps/server/src/routes/v9/schema.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "删 tick 的 integer()（允许浮点）：531 无浮点 tick 负例 → 仍全绿。语义等价边界。"
+    },
+    {
+      "id": "FU-18",
+      "file": "packages/memory-biomimetic/src/events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "executed": true,
+      "observedVerdict": "survived",
+      "predicted": "survived",
+      "failures": 0,
+      "newRed": 0,
+      "falseRed": 0,
+      "totalRed": 0,
+      "note": "仅改 envelopeSchema（不动 line 351）：真正判据是 topicEvent 的 strictObject，104 被遮蔽 → 改 104 不触发任何红。证明 '两处都定义严格性' 的遮蔽面（文档所述漂移形状）。"
+    },
+    {
+      "id": "FU-19",
+      "file": "packages/memory-biomimetic/src/events.ts",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "notImplemented",
+      "executed": false,
+      "observedVerdict": "notImplemented",
+      "predicted": "notImplemented",
+      "note": "语义等价变异（注释/字段序改写）无可见锚点，注入不产生可观测差异，应在 diffScore 分母中排除；标记 notImplemented（equivalent）。"
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "executed": 18,
+    "caught": 9,
+    "survived": 9,
+    "notImplemented": 2,
+    "equivalent": 1,
+    "diffScore": 0.5
+  }
+}
