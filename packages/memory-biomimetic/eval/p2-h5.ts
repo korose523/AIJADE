@@ -82,6 +82,7 @@ import {
   registerExperimentManifest,
   tokenF1,
 } from '../src/index'
+import { runProvenance, withProvenance } from './artifact-provenance'
 import { resolveLocomoPath } from './locomo-path'
 
 /** 预算（占全部 episode 的比例）。 */
@@ -776,11 +777,13 @@ async function main(): Promise<void> {
   }
 
   mkdirSync('eval/results', { recursive: true })
-  writeFileSync('eval/results/p2-h5.json', `${JSON.stringify(artifact, null, 2)}\n`)
+  writeFileSync('eval/results/p2-h5.json', `${JSON.stringify(withProvenance(artifact), null, 2)}\n`)
 
   // ---- 写出 Markdown 报告 ----
   const md = buildReport(results, convs.length, nEpisodes, answerLayer)
-  writeFileSync('eval/results/p2-h5-report.md', md)
+  // 报告也须声明打分口径：`withProvenance` 只吃对象，故以 HTML 注释附在文末，
+  // 不改动正文任何一节。
+  writeFileSync('eval/results/p2-h5-report.md', `${md}\n<!-- provenance: ${JSON.stringify(runProvenance())} -->\n`)
 
   console.info()
   console.info('artifacts written: eval/results/p2-h5.json , eval/results/p2-h5-report.md')

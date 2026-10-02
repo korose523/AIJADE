@@ -59,6 +59,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 import { auc, buildMemory, DEFAULT_GATING, loadLocomo, NO_GATING, predictSalienceV2 } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { avg, goldEvidenceIds, KS, measure, mulberry32, shuffledCopy } from './eval-metrics'
 import { resolveLocomoPath, sha256File } from './locomo-path'
 
@@ -283,7 +284,7 @@ async function main(): Promise<void> {
   const outDir = join(dirname(new URL(import.meta.url).pathname), 'results')
   mkdirSync(outDir, { recursive: true })
   const jsonPath = join(outDir, `p2-oracle-vs-predicted-salience-${stamp}.json`)
-  writeFileSync(jsonPath, `${JSON.stringify({
+  writeFileSync(jsonPath, `${JSON.stringify(withProvenance({
     generatedAt: new Date().toISOString(),
     corpus: { path, sha256: sha, conversations: convs.length },
     ks: KS,
@@ -291,7 +292,7 @@ async function main(): Promise<void> {
     conditions: Object.fromEntries(CONDITIONS.map(c => [c.key, { ...summary[c.key], note: c.note }])),
     contrasts: Object.fromEntries(contrasts.map(([a, b, label]) => [label, Object.fromEntries(KS.map(k => [k, summary[a].recall[k] - summary[b].recall[k]]))])),
     verdicts,
-  }, null, 2)}\n`, 'utf8')
+  }), null, 2)}\n`, 'utf8')
   console.info()
   console.info(`artifact: ${jsonPath}`)
 }

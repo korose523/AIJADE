@@ -36,6 +36,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 import { buildMemory, loadLocomo, NO_GATING } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { avg, goldEvidenceIds, KS } from './eval-metrics'
 import { resolveLocomoPath, sha256File } from './locomo-path'
 
@@ -253,7 +254,7 @@ async function main(): Promise<void> {
   const outDir = join(dirname(new URL(import.meta.url).pathname), 'results')
   mkdirSync(outDir, { recursive: true })
   const jsonPath = join(outDir, `p2-weight-ablation-${stamp}.json`)
-  writeFileSync(jsonPath, `${JSON.stringify({
+  writeFileSync(jsonPath, `${JSON.stringify(withProvenance({
     generatedAt: new Date().toISOString(),
     corpus: { path, sha256: sha256File(path), conversations: convs.length },
     rerankPool: RERANK_POOL,
@@ -269,7 +270,7 @@ async function main(): Promise<void> {
       meanSlotAgePercentile: avg(slotAge),
     },
     verdicts,
-  }, null, 2)}\n`, 'utf8')
+  }), null, 2)}\n`, 'utf8')
   console.info()
   console.info(`artifact: ${jsonPath}`)
 }

@@ -40,12 +40,31 @@ import process from 'node:process'
  *   V3 若 `quantile-q` < `salience-retain-q`
  *      ⇒ 重加权在剪枝之上还有额外损害，应把两者拆成可独立开关的机制。
  *
+ * ── 版本取代说明（引用前必读）──────────────────────────────────────────────
+ * `eval/results/` 下存有本扫描的两次产物：**09-15 版已被 09-19 版取代**，
+ * 引用一律以 09-19 版为准。取代原因与结论翻转的事实链：
+ *
+ *   · 09-15 版产物时间戳 `2026-09-15 12:17`，**早于** commit `014b17b`
+ *     （`2026-09-15 13:39:32 +0900`，“make the retrieval score components
+ *     commensurable, not the weights”）。该提交把 `retrievalScoreMode` 默认改为
+ *     `standardized`、`dedupeByContent` 改为 `true` ⇒ **09-15 版的数字出自旧打分口径**。
+ *   · 于是 V1 的判读在两版之间**翻转**：
+ *       09-15 版：“V1 成立：…阈值失配确是可修的。”
+ *       09-19 版：“V1 不成立或幅度不足：排名制保留未能显著超过现状。”
+ *     同一实验、同一预测器，仅因打分口径不同即得到相反结论 —— 这正是本仓库要求
+ *     产物必须携带 `scoreMode` / `weights` / `gitSha` 的原因（见 `./artifact-provenance`）。
+ *   · 09-19 版：23 arms，~58 min，exit=0；**V1 阴性**（最优 q*=0.6 仅 **+0.0046@K=8**，
+ *     噪声内），V2/V3 通过，oracle 缺口 0.1112。
+ *   · **不得**把 09-15 版的“V1 成立”当作“排名制保留提升检索”的证据：该论断在
+ *     09-19 版口径下不被支持，属**阴性结果**，须如实呈现，不得包装为收益。
+ *
  * 用法：tsx eval/p2-quantile-retention-sweep.ts [path-to-locomo.json] [conv-limit]
  */
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 
 import { auc, buildMemory, DEFAULT_GATING, loadLocomo, NO_GATING, predictSalienceV2 } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { avg, goldEvidenceIds, KS, measure, mulberry32 } from './eval-metrics'
 import { resolveLocomoPath, sha256File } from './locomo-path'
 
@@ -251,7 +270,7 @@ async function main(): Promise<void> {
   const outDir = join(dirname(new URL(import.meta.url).pathname), 'results')
   mkdirSync(outDir, { recursive: true })
   const jsonPath = join(outDir, `p2-quantile-retention-sweep-${stamp}.json`)
-  writeFileSync(jsonPath, `${JSON.stringify({
+  writeFileSync(jsonPath, `${JSON.stringify(withProvenance({
     generatedAt: new Date().toISOString(),
     corpus: { path, sha256: sha, conversations: convs.length },
     ks: KS,
@@ -259,7 +278,7 @@ async function main(): Promise<void> {
     salienceAuc: aucOf,
     arms: Object.fromEntries(ARMS.map(a => [a.key, { ...summary[a.key], label: a.label }])),
     verdicts,
-  }, null, 2)}\n`, 'utf8')
+  }), null, 2)}\n`, 'utf8')
   console.info()
   console.info(`artifact: ${jsonPath}`)
 }

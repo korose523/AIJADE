@@ -49,6 +49,7 @@ import {
   scoreFeatures,
   standardizeFeatures,
 } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { resolveLocomoPath } from './locomo-path'
 
 type Cond = 'gated' | 'uniform'
@@ -296,7 +297,7 @@ async function main(): Promise<void> {
     note: 'After re-frame (commit 0683600) the gate is content-salience driven; the former oracle/prior/locv dopamine-injection modes and gated-varied/gated-fixed mood modes are obsolete (encode computes salience internally; physiology no longer gates retention). This run collapses to the re-runnable core: content-salience gated vs NO_GATING uniform.',
   }
   mkdirSync('eval/results', { recursive: true })
-  writeFileSync('eval/results/p2-h2-a1.json', `${JSON.stringify(artifact, null, 2)}\n`)
+  writeFileSync('eval/results/p2-h2-a1.json', `${JSON.stringify(withProvenance(artifact), null, 2)}\n`)
   console.info()
   console.info('artifact written: eval/results/p2-h2-a1.json')
 }

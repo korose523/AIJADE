@@ -54,6 +54,7 @@ import {
   registerExperimentManifest,
   tokenF1,
 } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { resolveLocomoPath } from './locomo-path'
 
 const MODEL = 'qwythos:latest'
@@ -235,7 +236,7 @@ async function run(): Promise<void> {
   }
   const fs = await import('node:fs')
   fs.mkdirSync(new URL('./results/', import.meta.url), { recursive: true })
-  fs.writeFileSync(new URL('./results/p1.5-reader.json', import.meta.url), JSON.stringify(artifact, null, 2))
+  fs.writeFileSync(new URL('./results/p1.5-reader.json', import.meta.url), JSON.stringify(withProvenance(artifact), null, 2))
   console.info(`\nartifact written: eval/results/p1.5-reader.json`)
 }
 

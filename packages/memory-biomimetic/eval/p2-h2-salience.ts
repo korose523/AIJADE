@@ -45,6 +45,7 @@ import {
   registerExperimentManifest,
   retrievalStrength,
 } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { resolveLocomoPath } from './locomo-path'
 
 type Cond = 'gated' | 'uniform'
@@ -280,7 +281,7 @@ async function main(): Promise<void> {
     note: 'After re-frame (commit 0683600) the store computes content salience internally, so the oracle-vs-predicted distinction and the α-mixing sensitivity block are obsolete (both collapse to the same content-salience gate). The re-runnable core is content-salience gated vs NO_GATING uniform. The correctedWeights block re-scores the SAME truncated candidates under recency=0 (J5 §X); it adds no extra memory builds.',
   }
   mkdirSync('eval/results', { recursive: true })
-  writeFileSync('eval/results/p2-h2-salience.json', `${JSON.stringify(artifact, null, 2)}\n`)
+  writeFileSync('eval/results/p2-h2-salience.json', `${JSON.stringify(withProvenance(artifact), null, 2)}\n`)
   console.info()
   console.info('artifact written: eval/results/p2-h2-salience.json')
 }

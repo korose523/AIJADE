@@ -47,6 +47,7 @@ import {
   registerExperimentManifest,
   retrievalStrength,
 } from '../src/index'
+import { withProvenance } from './artifact-provenance'
 import { resolveLocomoPath } from './locomo-path'
 
 type Cond = 'gated' | 'uniform' | 'none'
@@ -292,7 +293,7 @@ async function main(): Promise<void> {
     caveat: 'After the re-frame (commit 0683600) the gate is driven by content salience (predictSalienceV2), not by an oracle label or by physiology. The measured gating benefit is therefore conditional on the predicted-salience signal being available; p2-h2-salience.ts re-tests the mechanism with the predicted signal. Retention is now deterministic per (cond, budget) — the former physiological-seed dimension is gone (physiology only modulates presentation). The correctedWeights block re-scores the SAME truncated candidates under recency=0 (J5 §X) to isolate whether the default recency term masks the gating marginal contribution; it adds no extra memory builds.',
   }
   mkdirSync('eval/results', { recursive: true })
-  writeFileSync('eval/results/p2-h2.json', `${JSON.stringify(artifact, null, 2)}\n`)
+  writeFileSync('eval/results/p2-h2.json', `${JSON.stringify(withProvenance(artifact), null, 2)}\n`)
   console.info('artifact written: eval/results/p2-h2.json')
 }
 
