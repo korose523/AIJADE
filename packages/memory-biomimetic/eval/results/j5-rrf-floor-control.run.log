@@ -1,0 +1,94 @@
+=== J5/P4 RRF 端到端 floor 对照：三档判据 × 四臂 ===
+corpus   : eval/data/locomo10.json
+sha256   : 79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4
+convs    : 10
+condition: NO_GATING；去重恒开；判据阈值 FLOOR = 0.02
+臂内 mem.config.retrievalFloor = 0（采用口径；retrieve() 不读该字段）
+
+  [1/10] conv ok（累计 199 题）
+  [2/10] conv ok（累计 304 题）
+  [3/10] conv ok（累计 497 题）
+  [4/10] conv ok（累计 757 题）
+  [5/10] conv ok（累计 999 题）
+  [6/10] conv ok（累计 1157 题）
+  [7/10] conv ok（累计 1347 题）
+  [8/10] conv ok（累计 1586 题）
+  [9/10] conv ok（累计 1782 题）
+  [10/10] conv ok（累计 1986 题）
+
+(A) rank-only：只看排名，完全不看分数 —— 采用口径
+  arm                     R@1      R@2      R@4      R@8    MRR@8
+  store-default        0.1118   0.1400   0.1747   0.2064   0.1511
+  rrf-default          0.0373   0.0574   0.0987   0.1536   0.0751
+  rrf-corrected        0.0509   0.0831   0.1324   0.1757   0.0957
+  additive-default     0.0398   0.0514   0.0655   0.0821   0.0522
+
+(B) shared-standardized：金标准 且 store-standardized 全池分数 > 0.02 —— 对照口径
+  arm                     R@1      R@2      R@4      R@8    MRR@8
+  store-default        0.1118   0.1400   0.1747   0.2064   0.1511
+  rrf-default          0.0373   0.0574   0.0987   0.1536   0.0750
+  rrf-corrected        0.0509   0.0831   0.1324   0.1757   0.0956
+  additive-default     0.0363   0.0468   0.0599   0.0750   0.0477
+
+(C) own-score：金标准 且 本臂自己的分数 > 0.02 —— 复现现有污染条件，不作结论依据
+  arm                     R@1      R@2      R@4      R@8    MRR@8
+  store-default        0.1118   0.1400   0.1747   0.2064   0.1511
+  rrf-default          0.0342   0.0488   0.0680   0.0745   0.0487
+  rrf-corrected        0.0403   0.0529   0.0599   0.0609   0.0490
+  additive-default     0.0398   0.0514   0.0655   0.0821   0.0522
+
+--- 各臂「自己分数」的实测域（判定 floor 是否落在域内）---
+  arm                 win       min       p25    median       p75       max   >flr%    <=0% topK<=0
+  store-default       150   0.11134   0.90901   1.16062   1.83502  27.39509   100.0     0.0       0
+  rrf-default         150   0.00586   0.00773   0.00869   0.01041   0.03449     1.9     0.0       0
+  rrf-corrected       150   0.00495   0.00648   0.00728   0.00850   0.03020     0.7     0.0       0
+  additive-default      8   0.51211   0.56905   0.58434   0.60139   1.43653   100.0     0.0       0
+  RRF 权重和 Σw = 2.300；理论上限 Σw/61 = 0.03770；FLOOR = 0.02
+  ⇒ FLOOR < RRF 上限，即 floor **落在 RRF 域内** ✅
+
+--- 污染量：(A) rank-only 减 (C) own-score（同为 R@8）---
+  store-default     +0.0000   top-8 内被own-floor 判死的金标准候选 0/425
+  rrf-default       +0.0791   top-8 内被own-floor 判死的金标准候选 166/316
+  rrf-corrected     +0.1148   top-8 内被own-floor 判死的金标准候选 240/363
+  additive-default  +0.0000   top-8 内被own-floor 判死的金标准候选 0/166
+
+--- 交叉校验（对标 eval/eval-metrics.ts 的 measure()）---
+  基线臂判据 (C)（floor=0.02）：最大偏差 0.000000  ✅ 逐位一致
+  基线臂判据 (A)（floor=-Inf，即纯排名）：最大偏差 0.000000  ✅ 逐位一致
+  fused 前缀不变式断言通过 132 次；平均池大小 = 600.6
+
+--- 判读（全部由上方实测数字生成，无硬编码结论）---
+【① 判据敏感性：三档口径下的 recall@8】
+  store-default      rank-only 0.2064   shared 0.2064   own 0.2064
+  rrf-default        rank-only 0.1536   shared 0.1536   own 0.0745
+  rrf-corrected      rank-only 0.1757   shared 0.1757   own 0.0609
+  additive-default   rank-only 0.0821   shared 0.0750   own 0.0821
+
+【② (A) 与 (B) 是否一致 —— 判据自身是否也带污染】
+  store-default      +0.0000   （top-8 金标准候选被 shared-floor 判死 0/425）
+  rrf-default        +0.0000   （top-8 金标准候选被 shared-floor 判死 0/316）
+  rrf-corrected      +0.0000   （top-8 金标准候选被 shared-floor 判死 0/363）
+  additive-default   +0.0070   （top-8 金标准候选被 shared-floor 判死 14/166）
+
+【③ RRF vs standardized：结论必须以 (A) 或 (B) 为准，(C) 含 floor 污染】
+  以 (A) rank-only           rrf-default 0.1536  vs  store-default 0.2064  -0.0529
+  以 (B) shared-standardized rrf-default 0.1536  vs  store-default 0.2064  -0.0529
+  以 (C) own-score           rrf-default 0.0745  vs  store-default 0.2064  -0.1319
+  以 (A) rank-only           rrf-corrected 0.1757  vs  store-default 0.2064  -0.0307
+  以 (B) shared-standardized rrf-corrected 0.1757  vs  store-default 0.2064  -0.0307
+  以 (C) own-score           rrf-corrected 0.0609  vs  store-default 0.2064  -0.1455
+
+【④ (A) vs (C) 的污染量 = own-score 口径低估了多少】
+  store-default      +0.0000   （top-8 金标准候选被own-floor 判死 0/425）
+  rrf-default        +0.0791   （top-8 金标准候选被own-floor 判死 166/316）
+  rrf-corrected      +0.1148   （top-8 金标准候选被own-floor 判死 240/363）
+  additive-default   +0.0000   （top-8 金标准候选被own-floor 判死 0/166）
+
+⚠️ 口径：
+  · 本表全部数字属族 B（端到端、全池、含检索噪声与冲突惩罚），与族 A（重排 top-150）不可互比。
+  · (A) 是采用口径：跨打分模式比较时 floor 不是可比判据，已按定义关闭。
+  · additive 臂沿用 legacy K 依赖冲突头，窗口=8，R@1/2/4 由一次 topK=8 检索按位置还原。
+  · 基线臂与 (B) 参考跑是同一次调用；fused 前缀不变式已断言 132 次。
+  · (A) 与 "retrievalFloor=0" 不是同一件事：standardized/additive 的分数可为 0 或负，floor=0 仍会剔掉它们。
+
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-floor-control-2026-10-02.json

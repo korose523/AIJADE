@@ -1,0 +1,322 @@
+{
+  "generatedAt": "2026-10-02T23:41:51.264Z",
+  "experiment": "j5-rrf-floor-control",
+  "calibrationFamily": "B-end-to-end",
+  "corpus": {
+    "path": "eval/data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10
+  },
+  "condition": "NO_GATING",
+  "dedupeByContent": true,
+  "ks": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "questions": 1986,
+  "poolSizeMean": 600.6062437059416,
+  "floor": 0.02,
+  "floorConfigInArms": 0,
+  "criteria": {
+    "rankOnly": "(A) rel = gold in top-K; score ignored entirely (adoption criterion)",
+    "sharedStandardized": "(B) rel = gold AND store-standardized whole-pool score > 0.02 (reference criterion)",
+    "ownScore": "(C) rel = gold AND this arm own score > 0.02 (reproduces the contaminated condition)"
+  },
+  "fusedPrefixInvarianceAsserts": 132,
+  "scoreDomainNote": "每臂的 ownScoreDomain 是**该臂自己分数**在检索窗口内的实测分布。(A) rank-only 不看分数，故无分数域；(B) 的判据分数域等于 store-default 臂的 ownScoreDomain（参考跑同源）；(C) 的判据分数域等于各臂自己的 ownScoreDomain。对照 floor = 0.02：若该臂 ownScoreDomain 的 min < 0.02 < max，则 floor 落在其域内。",
+  "arms": [
+    {
+      "arm": "store-default",
+      "note": "【基线】standardized + 去重 + DEFAULT 权重（= (B) 的参考跑，同一次调用）",
+      "baseline": true,
+      "scoreMode": "standardized",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      },
+      "recall": {
+        "rankOnly": {
+          "1": 0.11178247734138973,
+          "2": 0.13997985901309165,
+          "4": 0.17472306143001007,
+          "8": 0.20644511581067473
+        },
+        "sharedStandardized": {
+          "1": 0.11178247734138973,
+          "2": 0.13997985901309165,
+          "4": 0.17472306143001007,
+          "8": 0.20644511581067473
+        },
+        "ownScore": {
+          "1": 0.11178247734138973,
+          "2": 0.13997985901309165,
+          "4": 0.17472306143001007,
+          "8": 0.20644511581067473
+        }
+      },
+      "mrrAtMaxK": {
+        "rankOnly": 0.15110898643468385,
+        "sharedStandardized": 0.15110898643468385,
+        "ownScore": 0.15110898643468385
+      },
+      "ownScoreDomain": {
+        "window": 150,
+        "min": 0.11134114381604793,
+        "p25": 0.9090100715498269,
+        "median": 1.1606210216977426,
+        "p75": 1.835024328580666,
+        "max": 27.395092095606156,
+        "n": 297900,
+        "shareAboveFloor": 1,
+        "shareNonPositive": 0,
+        "topKNonPositive": 0,
+        "topKGold": 425,
+        "topKGoldKilledByOwnFloor": 0,
+        "topKGoldKilledBySharedFloor": 0
+      }
+    },
+    {
+      "arm": "rrf-default",
+      "note": "rrf(k=60) + 去重 + DEFAULT 权重",
+      "baseline": false,
+      "scoreMode": "rrf",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      },
+      "recall": {
+        "rankOnly": {
+          "1": 0.03726082578046324,
+          "2": 0.05740181268882175,
+          "4": 0.0986908358509567,
+          "8": 0.15357502517623364
+        },
+        "sharedStandardized": {
+          "1": 0.03726082578046324,
+          "2": 0.05740181268882175,
+          "4": 0.0986908358509567,
+          "8": 0.15357502517623364
+        },
+        "ownScore": {
+          "1": 0.03423967774420947,
+          "2": 0.048841893252769386,
+          "4": 0.06797583081570997,
+          "8": 0.07452165156092648
+        }
+      },
+      "mrrAtMaxK": {
+        "rankOnly": 0.07514494218574297,
+        "sharedStandardized": 0.07497672369751646,
+        "ownScore": 0.04867405169519974
+      },
+      "ownScoreDomain": {
+        "window": 150,
+        "min": 0.005856847673974782,
+        "p25": 0.007730805691458046,
+        "median": 0.008688220431307405,
+        "p75": 0.010405190066541524,
+        "max": 0.0344932895593313,
+        "n": 297900,
+        "shareAboveFloor": 0.019311849613964416,
+        "shareNonPositive": 0,
+        "topKNonPositive": 0,
+        "topKGold": 316,
+        "topKGoldKilledByOwnFloor": 166,
+        "topKGoldKilledBySharedFloor": 0
+      }
+    },
+    {
+      "arm": "rrf-corrected",
+      "note": "rrf + 去重 + CORRECTED 权重（recency 置 0）",
+      "baseline": false,
+      "scoreMode": "rrf",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0,
+        "context": 0.4,
+        "affect": 0.25
+      },
+      "recall": {
+        "rankOnly": {
+          "1": 0.05085599194360524,
+          "2": 0.08308157099697885,
+          "4": 0.1324269889224572,
+          "8": 0.175730110775428
+        },
+        "sharedStandardized": {
+          "1": 0.05085599194360524,
+          "2": 0.08308157099697885,
+          "4": 0.1324269889224572,
+          "8": 0.175730110775428
+        },
+        "ownScore": {
+          "1": 0.04028197381671702,
+          "2": 0.052870090634441085,
+          "4": 0.05991943605236657,
+          "8": 0.06092648539778449
+        }
+      },
+      "mrrAtMaxK": {
+        "rankOnly": 0.09568914027377184,
+        "sharedStandardized": 0.095576480783586,
+        "ownScore": 0.048959382343068146
+      },
+      "ownScoreDomain": {
+        "window": 150,
+        "min": 0.00494746295136283,
+        "p25": 0.006477086640373952,
+        "median": 0.007275583764802591,
+        "p75": 0.008497912739376591,
+        "max": 0.030196669469578802,
+        "n": 297900,
+        "shareAboveFloor": 0.007254112118160456,
+        "shareNonPositive": 0,
+        "topKNonPositive": 0,
+        "topKGold": 363,
+        "topKGoldKilledByOwnFloor": 240,
+        "topKGoldKilledBySharedFloor": 0
+      }
+    },
+    {
+      "arm": "additive-default",
+      "note": "additive + 去重 + DEFAULT 权重（分数量级参照；legacy K 依赖冲突头）",
+      "baseline": false,
+      "scoreMode": "additive",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      },
+      "recall": {
+        "rankOnly": {
+          "1": 0.039778449144008056,
+          "2": 0.0513595166163142,
+          "4": 0.06545820745216516,
+          "8": 0.08207452165156093
+        },
+        "sharedStandardized": {
+          "1": 0.03625377643504532,
+          "2": 0.04682779456193353,
+          "4": 0.05991943605236657,
+          "8": 0.07502517623363544
+        },
+        "ownScore": {
+          "1": 0.039778449144008056,
+          "2": 0.0513595166163142,
+          "4": 0.06545820745216516,
+          "8": 0.08207452165156093
+        }
+      },
+      "mrrAtMaxK": {
+        "rankOnly": 0.05224667913489666,
+        "sharedStandardized": 0.04774013331415145,
+        "ownScore": 0.05224667913489666
+      },
+      "ownScoreDomain": {
+        "window": 8,
+        "min": 0.5121143486117944,
+        "p25": 0.5690521927762375,
+        "median": 0.5843403322063386,
+        "p75": 0.6013938973900055,
+        "max": 1.4365313803016602,
+        "n": 15888,
+        "shareAboveFloor": 1,
+        "shareNonPositive": 0,
+        "topKNonPositive": 0,
+        "topKGold": 166,
+        "topKGoldKilledByOwnFloor": 0,
+        "topKGoldKilledBySharedFloor": 14
+      }
+    }
+  ],
+  "contamination": {
+    "store-default": {
+      "rankOnlyMinusOwnScoreAtMaxK": 0,
+      "topKGoldCandidates": 425,
+      "topKGoldKilledByOwnFloor": 0,
+      "topKGoldKilledBySharedFloor": 0
+    },
+    "rrf-default": {
+      "rankOnlyMinusOwnScoreAtMaxK": 0.07905337361530716,
+      "topKGoldCandidates": 316,
+      "topKGoldKilledByOwnFloor": 166,
+      "topKGoldKilledBySharedFloor": 0
+    },
+    "rrf-corrected": {
+      "rankOnlyMinusOwnScoreAtMaxK": 0.1148036253776435,
+      "topKGoldCandidates": 363,
+      "topKGoldKilledByOwnFloor": 240,
+      "topKGoldKilledBySharedFloor": 0
+    },
+    "additive-default": {
+      "rankOnlyMinusOwnScoreAtMaxK": 0,
+      "topKGoldCandidates": 166,
+      "topKGoldKilledByOwnFloor": 0,
+      "topKGoldKilledBySharedFloor": 14
+    }
+  },
+  "calibration": {
+    "recallImplMaxDeltaVsMeasure_ownScore": 0,
+    "recallImplMaxDeltaVsMeasure_rankOnly": 0
+  },
+  "verdicts": [
+    "【① 判据敏感性：三档口径下的 recall@8】",
+    "  store-default      rank-only 0.2064   shared 0.2064   own 0.2064",
+    "  rrf-default        rank-only 0.1536   shared 0.1536   own 0.0745",
+    "  rrf-corrected      rank-only 0.1757   shared 0.1757   own 0.0609",
+    "  additive-default   rank-only 0.0821   shared 0.0750   own 0.0821",
+    "",
+    "【② (A) 与 (B) 是否一致 —— 判据自身是否也带污染】",
+    "  store-default      +0.0000   （top-8 金标准候选被 shared-floor 判死 0/425）",
+    "  rrf-default        +0.0000   （top-8 金标准候选被 shared-floor 判死 0/316）",
+    "  rrf-corrected      +0.0000   （top-8 金标准候选被 shared-floor 判死 0/363）",
+    "  additive-default   +0.0070   （top-8 金标准候选被 shared-floor 判死 14/166）",
+    "",
+    "【③ RRF vs standardized：结论必须以 (A) 或 (B) 为准，(C) 含 floor 污染】",
+    "  以 (A) rank-only           rrf-default 0.1536  vs  store-default 0.2064  -0.0529",
+    "  以 (B) shared-standardized rrf-default 0.1536  vs  store-default 0.2064  -0.0529",
+    "  以 (C) own-score           rrf-default 0.0745  vs  store-default 0.2064  -0.1319",
+    "  以 (A) rank-only           rrf-corrected 0.1757  vs  store-default 0.2064  -0.0307",
+    "  以 (B) shared-standardized rrf-corrected 0.1757  vs  store-default 0.2064  -0.0307",
+    "  以 (C) own-score           rrf-corrected 0.0609  vs  store-default 0.2064  -0.1455",
+    "",
+    "【④ (A) vs (C) 的污染量 = own-score 口径低估了多少】",
+    "  store-default      +0.0000   （top-8 金标准候选被own-floor 判死 0/425）",
+    "  rrf-default        +0.0791   （top-8 金标准候选被own-floor 判死 166/316）",
+    "  rrf-corrected      +0.1148   （top-8 金标准候选被own-floor 判死 240/363）",
+    "  additive-default   +0.0000   （top-8 金标准候选被own-floor 判死 0/166）",
+    "",
+    "⚠️ 口径：",
+    "  · 本表全部数字属族 B（端到端、全池、含检索噪声与冲突惩罚），与族 A（重排 top-150）不可互比。",
+    "  · (A) 是采用口径：跨打分模式比较时 floor 不是可比判据，已按定义关闭。",
+    "  · additive 臂沿用 legacy K 依赖冲突头，窗口=8，R@1/2/4 由一次 topK=8 检索按位置还原。",
+    "  · 基线臂与 (B) 参考跑是同一次调用；fused 前缀不变式已断言 132 次。",
+    "  · (A) 与 \"retrievalFloor=0\" 不是同一件事：standardized/additive 的分数可为 0 或负，floor=0 仍会剔掉它们。"
+  ],
+  "provenance": {
+    "schema": "aijade.run_provenance@1",
+    "scoreMode": "standardized",
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0.3,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "gitSha": "945187d43dc66e1db7db150fdbc9060b374ba4fe",
+    "gitShaAtRun": "945187d43dc66e1db7db150fdbc9060b374ba4fe",
+    "gitDirty": true,
+    "generatedAt": "2026-10-02T23:41:51.727Z"
+  }
+}
