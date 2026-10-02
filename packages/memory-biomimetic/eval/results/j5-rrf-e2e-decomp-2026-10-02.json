@@ -1,0 +1,215 @@
+{
+  "generatedAt": "2026-10-02T22:49:07.734Z",
+  "experiment": "j5-rrf-e2e",
+  "calibrationFamily": "B-end-to-end",
+  "corpus": {
+    "path": "/Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 1
+  },
+  "condition": "NO_GATING",
+  "topK": 8,
+  "ks": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "questions": 199,
+  "arms": [
+    {
+      "arm": "store-default",
+      "note": "【基线】standardized + 去重（014b17b 后的 shipped path）",
+      "baseline": true,
+      "config": {
+        "retrievalScoreMode": "standardized",
+        "dedupeByContent": true
+      },
+      "questions": 199,
+      "recall": {
+        "1": 0.135678391959799,
+        "2": 0.15577889447236182,
+        "4": 0.18592964824120603,
+        "8": 0.19597989949748743
+      },
+      "mrrAtMaxK": 0.15670614979660205,
+      "scoreMode": "standardized",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "rrf-e2e",
+      "note": "rrf（k=60）+ 去重 + DEFAULT 权重",
+      "baseline": false,
+      "config": {
+        "retrievalScoreMode": "rrf",
+        "dedupeByContent": true
+      },
+      "questions": 199,
+      "recall": {
+        "1": 0.05025125628140704,
+        "2": 0.05527638190954774,
+        "4": 0.08040201005025126,
+        "8": 0.10050251256281408
+      },
+      "mrrAtMaxK": 0.06499162479061976,
+      "scoreMode": "rrf",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "rrf-e2e-no-recency",
+      "note": "rrf + 去重 + CORRECTED 权重（recency 置 0）",
+      "baseline": false,
+      "config": {
+        "retrievalScoreMode": "rrf",
+        "dedupeByContent": true
+      },
+      "questions": 199,
+      "recall": {
+        "1": 0.05527638190954774,
+        "2": 0.06532663316582915,
+        "4": 0.08542713567839195,
+        "8": 0.08542713567839195
+      },
+      "mrrAtMaxK": 0.06658291457286432,
+      "scoreMode": "rrf",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "std-no-dedupe",
+      "note": "standardized + **不去重**（隔离去重，打分模式与基线相同）",
+      "baseline": false,
+      "config": {
+        "retrievalScoreMode": "standardized",
+        "dedupeByContent": false
+      },
+      "questions": 199,
+      "recall": {
+        "1": 0.1457286432160804,
+        "2": 0.15577889447236182,
+        "4": 0.20603015075376885,
+        "8": 0.24120603015075376
+      },
+      "mrrAtMaxK": 0.1732471883225652,
+      "scoreMode": "standardized",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "additive-e2e",
+      "note": "additive + 去重（隔离打分模式，去重条件与基线相同）",
+      "baseline": false,
+      "config": {
+        "retrievalScoreMode": "additive",
+        "dedupeByContent": true
+      },
+      "questions": 199,
+      "recall": {
+        "1": 0.05527638190954774,
+        "2": 0.05527638190954774,
+        "4": 0.06532663316582915,
+        "8": 0.09045226130653267
+      },
+      "mrrAtMaxK": 0.06261067240966738,
+      "scoreMode": "additive",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "prefix-e2e",
+      "note": "additive + 不去重 —— 014b17b 之前配置的**近似**（推断，非实测确证）",
+      "baseline": false,
+      "config": {
+        "retrievalScoreMode": "additive",
+        "dedupeByContent": false
+      },
+      "questions": 199,
+      "recall": {
+        "1": 0.05527638190954774,
+        "2": 0.05527638190954774,
+        "4": 0.06030150753768844,
+        "8": 0.07035175879396985
+      },
+      "mrrAtMaxK": 0.058255563531945435,
+      "scoreMode": "additive",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    }
+  ],
+  "calibration": {
+    "recallImplementationMaxDeltaVsMeasure": 0,
+    "historical": {
+      "note": "历史制品数字，仅作定位；其配置为本脚本的推断，未独立确证。",
+      "before014b17b_2026_09_15": 0.0817,
+      "after014b17b_2026_09_19": 0.1985
+    }
+  },
+  "verdicts": [
+    "【① 端到端 recall@8（族 B）】",
+    "  store-default      0.1960   （族 B 唯一基线）",
+    "  rrf-e2e            0.1005   -0.0955",
+    "  rrf-e2e-no-recency 0.0854   -0.1106",
+    "",
+    "【② 0.0817 → 修复后 的因果拆分（13 号文档 §2.4 的受控重跑）】",
+    "  additive + 不去重      0.0704   （014b17b 前配置的近似）",
+    "  additive + 去重        0.0905   +0.0201  ← additive 下去重的贡献",
+    "  standardized + 不去重  0.2412   +0.1709  ← 打分模式的贡献（去重条件相同）",
+    "  standardized + 去重    0.1960   -0.0452  ← standardized 下去重的贡献",
+    "",
+    "  ⇒ 两条路径都试过了：去重的贡献是 +0.0201（additive 下）与 -0.0452（standardized 下），",
+    "     打分模式的贡献是 +0.1709（去重条件不变）。谁主导一目了然。",
+    "",
+    "【③ 结论】",
+    "  ⇒ 端到端 RRF 0.1005 **劣于** shipped 默认 0.1960（-0.0955）。",
+    "",
+    "⚠️ 口径：本表全部数字属**族 B（端到端、全池、含噪声与冲突惩罚）**，",
+    "   基线只能配本表的 store-default；与族 A（j5-rrf-ablation，重排 top-150）的任何数字都不可相减。",
+    "   additive 两臂沿用 legacy 的 K 依赖冲突重排头，其 R@1/2/4 由一次 topK=8 检索按位置还原，",
+    "   不等于逐 K 各调一次 retrieve()。"
+  ],
+  "provenance": {
+    "schema": "aijade.run_provenance@1",
+    "scoreMode": "standardized",
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0.3,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "gitSha": "f71445c3412b66a7b453cb0fe554944e14d1e4ba",
+    "generatedAt": "2026-10-02T22:49:07.767Z"
+  }
+}

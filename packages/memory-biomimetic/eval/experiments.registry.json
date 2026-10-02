@@ -1,7 +1,7 @@
 {
   "schema": "aijade.experiment_registry@1",
-  "updatedAt": 1789856703921,
-  "count": 10,
+  "updatedAt": 1790981342167,
+  "count": 13,
   "experiments": {
     "p1-gating-retention-ablation": {
       "id": "p1-gating-retention-ablation",
@@ -330,6 +330,234 @@
       ],
       "createdAt": 1788910987210,
       "notes": "Budgets [10%,25%,50%,100%]; TOP_K=4. (A) Full lexical recall/F1 proxy over all questions. (B) Answer-correctness layer on a sampled subset (~17 q/conv, local qwythos) with token-F1 + LLM-judge — latency-driven sampling, stated as caveat. Falsifiable: ours should beat recency at low budget and converge to ~0 gap as B→1.0; whether ours beats the stronger compression baseline is the core question (not guaranteed)."
+    },
+    "j5-rrf-fusion-ablation": {
+      "id": "j5-rrf-fusion-ablation",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "J5: RRF (reciprocal rank fusion, k=60) as a third repair baseline for the retrieval dimensional mismatch (LoCoMo)",
+      "version": "0.1.0",
+      "seed": 42,
+      "conditions": [
+        {
+          "name": "current",
+          "description": "DEFAULT_RETRIEVAL_WEIGHTS raw weighted sum over exposed parts (replicates diag-weight-ablation convention)",
+          "params": {
+            "combine": "additive-parts",
+            "weights": "DEFAULT_RETRIEVAL_WEIGHTS"
+          }
+        },
+        {
+          "name": "sim-only",
+          "description": "similarity only",
+          "params": {
+            "combine": "additive-parts",
+            "weights": {
+              "similarity": 1,
+              "strength": 0,
+              "recency": 0,
+              "context": 0
+            }
+          }
+        },
+        {
+          "name": "no-recency",
+          "description": "CORRECTED_RETRIEVAL_WEIGHTS (recency=0)",
+          "params": {
+            "combine": "additive-parts",
+            "weights": "CORRECTED_RETRIEVAL_WEIGHTS"
+          }
+        },
+        {
+          "name": "rrf",
+          "description": "RRF k=60 + DEFAULT weights",
+          "params": {
+            "combine": "rrf",
+            "k": 60,
+            "weights": "DEFAULT_RETRIEVAL_WEIGHTS"
+          }
+        },
+        {
+          "name": "current-standardized",
+          "description": "REFERENCE arm: DEFAULT weights re-z-scored inside the 150 pool",
+          "params": {
+            "combine": "standardized",
+            "weights": "DEFAULT_RETRIEVAL_WEIGHTS"
+          },
+          "reference": true
+        },
+        {
+          "name": "no-recency-standardized",
+          "description": "REFERENCE arm: CORRECTED weights + z-score",
+          "params": {
+            "combine": "standardized",
+            "weights": "CORRECTED_RETRIEVAL_WEIGHTS"
+          },
+          "reference": true
+        },
+        {
+          "name": "rrf-no-recency",
+          "description": "REFERENCE arm: RRF k=60 + CORRECTED weights",
+          "params": {
+            "combine": "rrf",
+            "k": 60,
+            "weights": "CORRECTED_RETRIEVAL_WEIGHTS"
+          },
+          "reference": true
+        },
+        {
+          "name": "store-default",
+          "description": "REFERENCE arm: store output under its own default (standardized) order, not re-ranked",
+          "params": {
+            "combine": "store-order"
+          },
+          "reference": true
+        }
+      ],
+      "metrics": [
+        "recall@1",
+        "recall@2",
+        "recall@4",
+        "recall@8",
+        "MRR",
+        "ndcg@1",
+        "ndcg@2",
+        "ndcg@4",
+        "ndcg@8"
+      ],
+      "createdAt": 1790978769141,
+      "notes": "LoCoMo 10 conversations, 1986 questions, NO_GATING, sha256-pinned corpus 79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4. Candidate pool = top-150 returned by retrieve() under the store default score; all arms re-rank the SAME pool so the comparison isolates the combination rule. Harness self-check: current 0.0906 / sim-only 0.3580 / no-recency 0.3046 reproduce diag-weight-ablation bit-exactly. NEGATIVE RESULT: rrf recall@8 = 0.2422 beats current 0.0906 but LOSES to sim-only 0.3580 (-0.1158); rrf-no-recency 0.3001 ~= no-recency 0.3046, i.e. the gain comes from removing the harmful recency cue, not from rank fusion. RRF head precision is poor (recall@1 0.0337, MRR 0.0985 vs sim-only 0.2481). LIMITATIONS: (1) this is an OFFLINE re-rank over a top-150 pool, NOT store-end-to-end retrievalScoreMode='rrf' over the full pool; a separate end-to-end run is required before citing these as the end-to-end figure. (2) MRR/NDCG conventions are defined locally in eval/j5-rrf-ablation.ts and are not cross-checkable against any existing repo baseline. (3) artifact provenance gitSha records 13fd0ce (HEAD at run time, before the RRF commit 55d692a). Code: feat(memory-biomimetic) 55d692a, opt-in, DEFAULT scoring mode unchanged."
+    },
+    "j5-e2e-causal-decomposition": {
+      "id": "j5-e2e-causal-decomposition",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "J5: end-to-end (delivery-track) causal decomposition of the 014b17b repair -- score mode vs content dedupe, plus the retrievalFloor domain check for RRF",
+      "version": "0.1.0",
+      "seed": 42,
+      "calibrationFamily": "B-end-to-end",
+      "conditions": [
+        {
+          "name": "store-default",
+          "description": "baseline: standardized + dedupe (the shipped path after 014b17b)",
+          "params": {
+            "retrievalScoreMode": "standardized",
+            "dedupeByContent": true,
+            "weights": "DEFAULT"
+          },
+          "baseline": true
+        },
+        {
+          "name": "additive-e2e",
+          "description": "additive + dedupe (isolates the score mode; dedupe held at baseline)",
+          "params": {
+            "retrievalScoreMode": "additive",
+            "dedupeByContent": true,
+            "weights": "DEFAULT"
+          }
+        },
+        {
+          "name": "prefix-e2e",
+          "description": "additive + no dedupe -- approximates the pre-014b17b configuration (INFERRED, not confirmed)",
+          "params": {
+            "retrievalScoreMode": "additive",
+            "dedupeByContent": false,
+            "weights": "DEFAULT"
+          }
+        },
+        {
+          "name": "std-no-dedupe",
+          "description": "standardized + no dedupe -- the fourth 2x2 cell; DEFINED IN SCRIPT BUT NOT YET PRODUCED",
+          "params": {
+            "retrievalScoreMode": "standardized",
+            "dedupeByContent": false,
+            "weights": "DEFAULT"
+          },
+          "pending": true
+        },
+        {
+          "name": "rrf-e2e",
+          "description": "rrf k=60 + dedupe + DEFAULT weights",
+          "params": {
+            "retrievalScoreMode": "rrf",
+            "dedupeByContent": true,
+            "weights": "DEFAULT"
+          }
+        },
+        {
+          "name": "rrf-e2e-no-recency",
+          "description": "rrf + dedupe + CORRECTED weights (recency=0)",
+          "params": {
+            "retrievalScoreMode": "rrf",
+            "dedupeByContent": true,
+            "weights": "CORRECTED"
+          }
+        }
+      ],
+      "metrics": [
+        "recall@1",
+        "recall@2",
+        "recall@4",
+        "recall@8",
+        "MRR@8"
+      ],
+      "createdAt": 1790981342167,
+      "notes": "LoCoMo 10 conversations, 1986 questions, NO_GATING, corpus sha256 79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4. Delivery track: full pool, retrieval noise and conflict penalty applied. Harness self-check: recall implementation agrees with eval-metrics.measure to 0.000000 (bit-identical). MEASURED 2x2 (three of four cells): additive+no-dedupe 0.0836, additive+dedupe 0.0821 (dedupe contributes -0.0015, at noise), standardized+dedupe 0.2064 (score mode contributes +0.1244). The repair commit 014b17b changed BOTH the score mode and dedupe, but the controlled comparison shows the contributions are sharply asymmetric: essentially the entire gain comes from standardizing the score, not from dedupe. WITHDRAWN CLAIM: an earlier diagnostic (p2-index-duplication-confusion-2026-09-15, predicted q=0.3) attributed +0.1245 to dedupe; that arm toggled the distiller while shrinking the pool 353->177, and the same artifact's pool-size control shows pool size alone moves recall@8 by up to 0.25 at constant evidence survival, so the gain was confounded. OPEN: the score-mode x dedupe interaction needs the fourth cell (std-no-dedupe), which is defined in eval/j5-rrf-e2e-decomposition.ts but absent from the artifact. retrievalFloor domain check: RRF scores live in a far smaller numeric range (sum of w_c/(k+rank_c), weight sum 2.3) than standardized scores, so the default floor 0.02 is NOT a comparable criterion across modes. Measured with each arm judged by its OWN score the RRF arms collapse (rrf-default 0.1536 -> 0.0745, rrf-corrected 0.1757 -> 0.0609); judged by a SHARED floor criterion (store standardized score over the whole pool, floor=0.02) they are 0.1536 and 0.1757. Any cross-mode recall comparison must state which criterion was used. CAUTION: these delivery-track figures are NOT comparable with j5-rrf-fusion-ablation (re-ranking diagnostic track, top-150 pool, no floor). Do not subtract across the two families.",
+      "artifacts": [
+        "eval/results/j5-rrf-e2e-decomp-2026-10-02.json",
+        "eval/results/j5-rrf-e2e-independent-2026-10-02.json",
+        "eval/results/j5-rrf-e2e-decomposition.run.log"
+      ]
+    },
+    "j5-locomo-recall-longmemeval": {
+      "id": "j5-locomo-recall-longmemeval",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "J5/P4: replication of the recency-suppression effect on a second corpus (LongMemEval, official cleaned variant, 500 questions)",
+      "version": "0.1.0",
+      "seed": 42,
+      "conditions": [
+        {
+          "name": "current",
+          "description": "DEFAULT weights, store order",
+          "params": {
+            "weights": "DEFAULT"
+          },
+          "baseline": true
+        },
+        {
+          "name": "sim-only",
+          "description": "similarity only",
+          "params": {
+            "weights": {
+              "similarity": 1,
+              "strength": 0,
+              "recency": 0,
+              "context": 0
+            }
+          }
+        },
+        {
+          "name": "no-recency",
+          "description": "CORRECTED weights (recency=0)",
+          "params": {
+            "weights": "CORRECTED"
+          }
+        }
+      ],
+      "metrics": [
+        "recall@1",
+        "recall@2",
+        "recall@4",
+        "recall@8"
+      ],
+      "createdAt": 1790981342167,
+      "notes": "LongMemEval official cleaned variant, 500 questions, full run in 1007.6s. Source: the LongMemEval GitHub repo does NOT host data; the official release is on Hugging Face under MIT. longmemeval_s_cleaned.json = 277,383,467 bytes, sha256 d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442. question_type distribution: multi-session 133 / temporal-reasoning 133 / knowledge-update 78 / single-session-user 70 / single-session-assistant 56 / single-session-preference 30; answer:null count = 0 (this variant has NO abstention questions). Metric convention as recorded in the artifact: granularity = session (one haystack session per episode, matching LongMemEval's official session-level convention); recall@K = the gold session (or its fact_ variant) appears in top-K AND score > retrievalFloor(0.02); nDCG here is BINARY relevance whereas LongMemEval official uses graded relevance, so the two are NOT the same quantity. RESULT: the DIRECTION replicates at all four K -- sim-only 0.9060 > no-recency 0.7560 > current 0.7300 at K=8. MAGNITUDE does not: the K=8 ratio is 1.24x versus 3.95x on LoCoMo, roughly one third. TWO CONFOUNDS that make the absolute values non-transferable between corpora: (1) GRANULARITY -- LongMemEval is session-level, LoCoMo is turn-level (dia_id), so the two recall values are two different rulers and must never be subtracted or compared directly. (2) POOL SIZE -- LongMemEval pools are 40-60 items so a top-150 truncation is a no-op, whereas LoCoMo pools average ~1176. Rank-fusion spread 1/(k+rank) therefore spans only ~1.8x on small pools versus ~20x on large ones, so an RRF-vs-sim-only comparison on LongMemEval may be a pool-size artifact rather than a property of the fusion rule. KNOWN DEFECT in eval/j5-longmemeval-recall.ts scoreOne() (line ~119): it applies c.score > floor per arm, which invalidates any fourth RRF arm (the score-domain incompatibility documented in j5-e2e-causal-decomposition). Must be changed to a common floor criterion before adding an RRF arm.",
+      "artifacts": [
+        "eval/results/j5-longmemeval-recall.json"
+      ],
+      "provenance": {
+        "gitSha": "55d692abc855e194eb1d1bf0351dbb3ac468059c",
+        "scoreMode": "standardized",
+        "generatedAt": "2026-10-02T22:16:10.196Z"
+      }
     }
   }
 }

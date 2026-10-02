@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-10-02T22:49:07.562Z",
+  "experiment": "j5-rrf-e2e",
+  "calibrationFamily": "B-end-to-end",
+  "corpus": {
+    "path": "/Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 1
+  },
+  "condition": "NO_GATING",
+  "topK": 8,
+  "ks": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "arm": "rrf-e2e",
+  "note": "rrf（k=60）+ 去重 + DEFAULT 权重",
+  "baseline": false,
+  "config": {
+    "retrievalScoreMode": "rrf",
+    "dedupeByContent": true
+  },
+  "questions": 199,
+  "recall": {
+    "1": 0.05025125628140704,
+    "2": 0.05527638190954774,
+    "4": 0.08040201005025126,
+    "8": 0.10050251256281408
+  },
+  "mrrAtMaxK": 0.06499162479061976,
+  "provenance": {
+    "schema": "aijade.run_provenance@1",
+    "scoreMode": "rrf",
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0.3,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "gitSha": "f71445c3412b66a7b453cb0fe554944e14d1e4ba",
+    "generatedAt": "2026-10-02T22:49:07.597Z"
+  }
+}

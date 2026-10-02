@@ -1,0 +1,57 @@
+experiment registered: aijade.experiment_manifest@1 p1.5-gating-interference-recall@0.1.0 (seed 0, 2 conditions, 2 metrics)
+
+=== P1.5 model-free interference characterization ===
+corpus        : /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json
+conversations : 10
+metric A      : recall@K  (gold-evidence in top-K)
+metric B      : distractorLoad@K (non-evidence share of top-K)
+
+recall@K  (mean fraction of questions with gold evidence in top-K):
+  K    recallON  recallOFF   gap
+   1   0.105    0.108     -0.003
+   2   0.133    0.134     -0.001
+   3   0.152    0.151     +0.000
+   4   0.169    0.167     +0.002
+   6   0.185    0.188     -0.003
+   8   0.198    0.199     -0.000
+
+distractorLoad@K  (mean fraction of top-K slots that are trivial distractors):
+  K     loadON   loadOFF    gap(OFF-ON)
+   1    0.895    0.892     +-0.003
+   2    0.933    0.932     +-0.000
+   3    0.948    0.948     +0.000
+   4    0.957    0.957     +0.001
+   6    0.968    0.968     +-0.000
+   8    0.974    0.974     +-0.000
+
+J5 §X 修正权重对照（recency=0，仅重打分同一候选）：
+recall@K*  (mean fraction of questions with gold evidence in top-K under recency=0):
+  K    recallON* recallOFF*  gap
+   1   0.118    0.120     -0.002
+   2   0.157    0.161     -0.004
+   3   0.179    0.182     -0.003
+   4   0.198    0.201     -0.003
+   6   0.220    0.225     -0.005
+   8   0.238    0.241     -0.003
+distractorLoad@K*  (recency=0):
+  K     loadON*  loadOFF*   gap(OFF-ON)
+   1    0.882    0.880     +-0.002
+   2    0.921    0.919     +-0.002
+   3    0.939    0.938     +-0.001
+   4    0.949    0.948     +-0.001
+   6    0.962    0.961     +-0.001
+   8    0.969    0.969     +-0.000
+
+Interpretation (DERIVED from the measured numbers printed above — no hardcoded claims):
+  recall@K is MEASURED, not assumed. Max mean recall@K across all K and both conditions = 0.199.
+  => recall@K is well below 1.0 for BOTH gating conditions: lexical retrieval does NOT reliably bring the gold-evidence memory into the top-K. The prior hardcoded claim "recall@K is ~1.0 for both" is contradicted by the data and has been removed.
+  K= 1: recallON=0.105 recallOFF=0.108 gap(ON-OFF)=-0.003  loadON=0.895 loadOFF=0.892
+  K= 2: recallON=0.133 recallOFF=0.134 gap(ON-OFF)=-0.001  loadON=0.933 loadOFF=0.932
+  K= 3: recallON=0.152 recallOFF=0.151 gap(ON-OFF)=+0.000  loadON=0.948 loadOFF=0.948
+  K= 4: recallON=0.169 recallOFF=0.167 gap(ON-OFF)=+0.002  loadON=0.957 loadOFF=0.957
+  K= 6: recallON=0.185 recallOFF=0.188 gap(ON-OFF)=-0.003  loadON=0.968 loadOFF=0.968
+  K= 8: recallON=0.198 recallOFF=0.199 gap(ON-OFF)=-0.000  loadON=0.974 loadOFF=0.974
+  gating effect at K=8: recallON - recallOFF = -0.000 => no material difference.
+  distractorLoad@8: ON=0.974 OFF=0.974 (OFF-ON=-0.000).
+  => Distractor-load difference is small; gating does not materially change context purity under this scorer.
+  Whether the distractor-load gap degrades ANSWERS (F1) is measured by p1.5-reader.ts — not asserted here.
