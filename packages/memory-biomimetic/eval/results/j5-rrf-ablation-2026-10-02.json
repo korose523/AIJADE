@@ -1,0 +1,284 @@
+{
+  "generatedAt": "2026-10-02T21:59:06.399Z",
+  "experiment": "j5-rrf-ablation",
+  "corpus": {
+    "path": "/Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10
+  },
+  "rerankPool": 150,
+  "condition": "NO_GATING",
+  "ks": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "questions": 1986,
+  "arms": [
+    {
+      "arm": "current",
+      "note": "DEFAULT 权重的加权和（复刻 diag-weight-ablation 口径）",
+      "primary": true,
+      "combine": "additive-parts",
+      "questions": 1986,
+      "recall": {
+        "1": 0.03675730110775428,
+        "2": 0.057905337361530716,
+        "4": 0.07804632426988922,
+        "8": 0.09063444108761329
+      },
+      "ndcg": {
+        "1": 0.03675730110775428,
+        "2": 0.047312919299474135,
+        "4": 0.05665872895555937,
+        "8": 0.0608702617542668
+      },
+      "mrr": 0.0707174877228491,
+      "scoreMode": "additive",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "sim-only",
+      "note": "只用 similarity",
+      "primary": true,
+      "combine": "additive-parts",
+      "questions": 1986,
+      "recall": {
+        "1": 0.18277945619335348,
+        "2": 0.25075528700906347,
+        "4": 0.31017119838872104,
+        "8": 0.3580060422960725
+      },
+      "ndcg": {
+        "1": 0.18277945619335348,
+        "2": 0.21932289687575063,
+        "4": 0.24727125267073885,
+        "8": 0.26484439334842
+      },
+      "mrr": 0.24805480398687121,
+      "scoreMode": "additive",
+      "weights": {
+        "similarity": 1,
+        "strength": 0,
+        "recency": 0,
+        "context": 0,
+        "affect": 0
+      }
+    },
+    {
+      "arm": "no-recency",
+      "note": "CORRECTED_RETRIEVAL_WEIGHTS（recency 置 0）",
+      "primary": true,
+      "combine": "additive-parts",
+      "questions": 1986,
+      "recall": {
+        "1": 0.16112789526686808,
+        "2": 0.21601208459214502,
+        "4": 0.2638469284994965,
+        "8": 0.30463242698892246
+      },
+      "ndcg": {
+        "1": 0.16112789526686808,
+        "2": 0.18948332097848952,
+        "4": 0.21199048189377698,
+        "8": 0.22645105335120264
+      },
+      "mrr": 0.21591243969994697,
+      "scoreMode": "additive",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "rrf",
+      "note": "RRF（k=60）+ DEFAULT 权重",
+      "primary": true,
+      "combine": "rrf",
+      "questions": 1986,
+      "recall": {
+        "1": 0.033736153071500505,
+        "2": 0.05991943605236657,
+        "4": 0.12235649546827794,
+        "8": 0.24219536757301108
+      },
+      "ndcg": {
+        "1": 0.033736153071500505,
+        "2": 0.048032144466624106,
+        "4": 0.07564004138004735,
+        "8": 0.11714109352913583
+      },
+      "mrr": 0.09848602068871759,
+      "scoreMode": "rrf",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "current-standardized",
+      "note": "【参考】DEFAULT 权重 + z-score 规则",
+      "primary": false,
+      "combine": "standardized",
+      "questions": 1986,
+      "recall": {
+        "1": 0.18277945619335348,
+        "2": 0.24370594159113795,
+        "4": 0.3016112789526687,
+        "8": 0.3434038267875126
+      },
+      "ndcg": {
+        "1": 0.18277945619335348,
+        "2": 0.21455756641070947,
+        "4": 0.24171159165210596,
+        "8": 0.2573381280383412
+      },
+      "mrr": 0.2432414650808359,
+      "scoreMode": "standardized",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "no-recency-standardized",
+      "note": "【参考】CORRECTED 权重 + z-score 规则",
+      "primary": false,
+      "combine": "standardized",
+      "questions": 1986,
+      "recall": {
+        "1": 0.1878147029204431,
+        "2": 0.2527693856998993,
+        "4": 0.31017119838872104,
+        "8": 0.35750251762336355
+      },
+      "ndcg": {
+        "1": 0.1878147029204431,
+        "2": 0.22220621388778375,
+        "4": 0.24960788441912596,
+        "8": 0.2674101482918239
+      },
+      "mrr": 0.25100202880346334,
+      "scoreMode": "standardized",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "rrf-no-recency",
+      "note": "【参考】RRF（k=60）+ CORRECTED 权重（recency 置 0）",
+      "primary": false,
+      "combine": "rrf",
+      "questions": 1986,
+      "recall": {
+        "1": 0.06143001007049345,
+        "2": 0.10120845921450151,
+        "4": 0.18177240684793555,
+        "8": 0.3001007049345418
+      },
+      "ndcg": {
+        "1": 0.06143001007049345,
+        "2": 0.08285893515160252,
+        "4": 0.11797472008044457,
+        "8": 0.16055542753469285
+      },
+      "mrr": 0.1339244489978821,
+      "scoreMode": "rrf",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    },
+    {
+      "arm": "store-default",
+      "note": "【参考】store 默认（standardized）排序原样，不重排",
+      "primary": false,
+      "combine": "store-order",
+      "questions": 1986,
+      "recall": {
+        "1": 0.11178247734138973,
+        "2": 0.13997985901309165,
+        "4": 0.17472306143001007,
+        "8": 0.20644511581067473
+      },
+      "ndcg": {
+        "1": 0.11178247734138973,
+        "2": 0.12403779466365258,
+        "4": 0.13974594371789661,
+        "8": 0.15150588052708522
+      },
+      "mrr": 0.15110898643468385,
+      "scoreMode": "standardized",
+      "weights": {
+        "similarity": 1,
+        "strength": 0.6,
+        "recency": 0.3,
+        "context": 0.4,
+        "affect": 0.25
+      }
+    }
+  ],
+  "harnessSanity": {
+    "current": {
+      "expected": 0.0906,
+      "measured": 0.09063444108761329
+    },
+    "sim-only": {
+      "expected": 0.358,
+      "measured": 0.3580060422960725
+    },
+    "no-recency": {
+      "expected": 0.3046,
+      "measured": 0.30463242698892246
+    }
+  },
+  "verdicts": [
+    "【① 台架】✅ 三条既有基线全部复现，本脚本的候选集与判据与 diag-weight-ablation 一致。",
+    "【② 四臂 recall@8】current 0.0906 · sim-only 0.3580 · no-recency 0.3046 · rrf 0.2422",
+    "    rrf vs sim-only -0.1158   rrf vs current +0.1516",
+    "【③ 结论】",
+    "  ⇒ RRF 0.2422 **未能超过** sim-only 0.3580（-0.1158）。",
+    "     这是一个**负面结果**，如实记录：名次融合并没有提供超出\"干脆只用相似度\"的收益。",
+    "     可写入论文 limitations —— \"我们试过 RRF，它没能胜过 z-score 修正 / 纯相似度\"。",
+    "  ⇒ 四臂最佳：sim-only 0.3580（MRR 0.2481）。",
+    "",
+    "⚠️ 口径限制：重排仅在现行打分的前 150 条内进行，所有数字只当下界读；",
+    "   floor 判据四臂共用 store 在默认（standardized）打分下的分数，故比较的是排序能力而非分数量级。"
+  ],
+  "provenance": {
+    "schema": "aijade.run_provenance@1",
+    "scoreMode": "standardized",
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0.3,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "gitSha": "13fd0ce3696edd456446a9e8b90454db0ff153e5",
+    "generatedAt": "2026-10-02T21:59:06.430Z"
+  }
+}

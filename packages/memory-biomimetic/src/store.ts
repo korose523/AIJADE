@@ -6,6 +6,7 @@ import type { FaultReport } from './fault-injection'
 import type { EndogenousState, UtilityFeatures, WriteConstraints, WriteDecision } from './hac'
 import type { IdentityCandidate, IdentityEvidence, IdentityLayer, IdentitySource, IdentityState, IdentityVersion } from './identity'
 import type { InterventionPlan, RegisteredIntervention, ResolvedIntervention } from './intervention'
+import type { RawScoreRow, StandardizedScore } from './retrieval'
 import type { LexicalIndex } from './sim'
 import type {
   AffectiveSnapshot,
@@ -16,6 +17,7 @@ import type {
   PhysiologicalStateV3,
   PresentationModulation,
   ProceduralMemory,
+  RetrievalScoreMode,
   RetrievalWeights,
   ScoredCandidate,
   SemanticFact,
@@ -35,13 +37,33 @@ import { HacController, mulberry32 } from './hac'
 import { DEFAULT_CDI_CONFIG, feedbackToIdentityCandidate, IdentityController, snapshotToIdentityEvidence } from './identity'
 import { DEFAULT_SWITCHES, bypassOf as interventionBypassOf, isEnabled as interventionIsEnabled, registerIntervention, resolveIntervention } from './intervention'
 import { applyRetrievalNoise, deriveGateFromContent, derivePresentationModulation } from './plasticity'
-import { collapseDuplicateContent, detectConflict, jaccard, scoreCandidate, scoreCandidatesStandardized } from './retrieval'
+import { collapseDuplicateContent, detectConflict, jaccard, scoreCandidate, scoreCandidatesRRF, scoreCandidatesStandardized } from './retrieval'
 import { predictSalienceV2, SALIENCE_FEATURES, salienceFeatureVector } from './salience'
 import { buildLexicalIndex, tokenize } from './sim'
 import { DEFAULT_BELIEF_CONFIG, DEFAULT_MEMORY_CONFIG, isRetrievableStatus, NEUTRAL_AFFECT, NEUTRAL_PHYSIOLOGY_V3 } from './types'
 
 /** Content salience above this is treated as a "salient" memory worth keeping. */
 const SALIENCE_THRESHOLD = 0.5
+
+/**
+ * Pool-wide scoring dispatch for the two modern modes.
+ *
+ * Returns `null` for `'additive'`, which keeps its own per-candidate legacy path
+ * (it also carries the legacy K-dependent R-conflict reranking). Anything
+ * unrecognised — including a mode string written before `'rrf'` existed — is
+ * treated as `'standardized'`, so an old snapshot rehydrates instead of throwing.
+ */
+function scoreCandidates(
+  mode: RetrievalScoreMode,
+  rows: RawScoreRow[],
+  w: RetrievalWeights,
+): StandardizedScore[] | null {
+  if (mode === 'rrf')
+    return scoreCandidatesRRF(rows, w)
+  if (mode === 'additive')
+    return null
+  return scoreCandidatesStandardized(rows, w)
+}
 
 /**
  * How many top-ranked candidates are scanned for R-conflicts (see `retrieve`).
@@ -956,18 +978,22 @@ export class BioticMemory {
       context: jaccard(queryTags, it.contextTags),
     }))
     // `'standardized'` z-scores each component across this pool; the weights are
-    // untouched. `'additive'` is the legacy raw sum, kept for reproduction.
-    const standardized = scoreMode === 'standardized'
-      ? scoreCandidatesStandardized(rows, w)
-      : null
+    // untouched. `'rrf'` fuses by *rank* instead of by magnitude. `'additive'`
+    // is the legacy raw sum, kept for reproduction (it needs the per-candidate
+    // legacy path below, hence `null`).
+    //
+    // Any other value — e.g. a snapshot written before `'rrf'` existed — falls
+    // back to `'standardized'` instead of throwing, the same defensive posture
+    // the neighbouring `?? 'standardized'` already takes on read.
+    const fused: StandardizedScore[] | null = scoreCandidates(scoreMode, rows, w)
 
     const scored: ScoredInternal[] = ranked.map((it, i) => {
       const gate = deriveGateFromContent({ salience: it.salience, socialSalience: it.socialSalience, novelty: it.novelty })
       let base: number
       let parts: ScoredCandidate['parts']
-      if (standardized) {
-        base = standardized[i].score
-        parts = { ...standardized[i].rawParts, z: standardized[i].z }
+      if (fused) {
+        base = fused[i].score
+        parts = { ...fused[i].rawParts, z: fused[i].z }
       }
       else {
         const legacy = scoreCandidate(rows[i].similarity, rows[i].strengthRaw, rows[i].recency, rows[i].context, rows[i].affect, w)
@@ -1003,7 +1029,9 @@ export class BioticMemory {
     // The scanned head is a *constant* under the corrected scoring, so the
     // penalty a candidate receives cannot depend on `topK`. `'additive'` keeps
     // the legacy K-dependent head purely so pre-fix numbers reproduce exactly.
-    const penaltyHead = standardized ? CONFLICT_RERANK_POOL : topK
+    // `'rrf'` is rank-based and therefore K-independent too, so it shares the
+    // constant head — which is what keeps its recall@1/2/4/8 comparable.
+    const penaltyHead = fused ? CONFLICT_RERANK_POOL : topK
     scored.sort((a, b) => b.score - a.score)
     const top = scored.slice(0, penaltyHead)
     for (let i = 0; i < top.length; i++) {

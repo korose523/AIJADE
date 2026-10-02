@@ -239,6 +239,173 @@ export function scoreCandidatesStandardized(
 }
 
 /**
+ * The RRF damping constant — the standard value from Cormack, Clarke & Büttcher
+ * (SIGIR 2009), reused verbatim so the number is comparable with the literature
+ * rather than tuned on this corpus. Larger `k` flattens the difference between
+ * adjacent ranks; `k = 60` is the conventional "top ranks still matter, the tail
+ * is nearly flat" setting.
+ */
+export const RRF_K = 60
+
+/**
+ * The components that take part in RRF fusion.
+ *
+ * `affect` is deliberately absent: it is presentation-only and contributes
+ * exactly 0 in **all three** modes (`additive`, `standardized`, `rrf`). Fusing
+ * it would resurrect a channel the memory path has already switched off.
+ */
+const RRF_COMPONENTS = ['similarity', 'strength', 'recency', 'context'] as const
+
+type RrfComponent = typeof RRF_COMPONENTS[number]
+
+/**
+ * Reciprocal Rank Fusion over the retrieval components.
+ *
+ *   score_i = Σ_c  w_c / (k + rank_i(c))
+ *
+ * where `rank_i(c)` is the 1-based rank of candidate `i` when the **whole
+ * candidate pool** is sorted by component `c` descending.
+ *
+ * Why this exists (J5/P4): the paper's core finding is a *dimensional
+ * mismatch* — `recency` occupies a much wider absolute range than the sparse
+ * cosine `similarity`, so any linear combination (raw or z-scored) hands the
+ * ranking to whichever component happens to carry the most mass. RRF never
+ * reads a component's magnitude, only its **order**, so a component cannot
+ * outvote another by being numerically larger. It is the strongest available
+ * form of the fix, and therefore the right third repair baseline next to
+ * z-scoring and hierarchical retrieval.
+ *
+ * Properties, stated so they can be checked:
+ *
+ * 1. **Scale invariance.** RRF depends on the inputs only through their
+ *    ordering, so any strictly **increasing** per-component transform (multiply
+ *    by 100, `x → 3x + 7`, …) leaves the output **bit-identical**. A decreasing
+ *    transform of course reverses that component's ranking — RRF is invariant to
+ *    units*, not to *polarity*. The additive mode fails even the increasing
+ *    case; `standardized` passes it only for *affine* transforms.
+ * 2. **Prefix invariant.** Ranks are computed over the entire pool, never over
+ *    a top-K window, so `retrieve(q, K)` is a strict prefix of
+ *    `retrieve(q, K')` for `K < K'` — the same guarantee
+ *    {@link scoreCandidatesStandardized} gives, for the same reason.
+ * 3. **Ties: competition ("average") ranking.** When `m` candidates tie on a
+ *    component they share the mean of the `m` ranks they span, so a tie at
+ *    positions 2–3 gives both 2.5. Chosen over "dense"/"min" ranking because it
+ *    is symmetric under reordering of the tied group (the result cannot depend
+ *    on the incidental input order of equal candidates) and it is the
+ *    conventional tie rule for ranked retrieval. Consequence worth stating: a
+ *    tie contributes the *same* score to every tied candidate, so RRF cannot
+ *    break a component-level tie — it can only aggregate the other components'
+ *    evidence.
+ * 4. **Inputs are saturated first**, identically to
+ *    {@link scoreCandidatesStandardized} (`strengthRaw/(1+strengthRaw)`,
+ *    `context` clamped to [0,1]), so the only difference between the modes is
+ *    the combination rule, never the inputs.
+ * 5. A component with weight 0 contributes 0; all-zero weights give score 0
+ *    rather than NaN.
+ *
+ * The `z` field carries the **per-component rank contributions actually summed**
+ * (`w_c / (k + rank_i(c))`), so `score === z.similarity + z.strength +
+ * z.recency + z.context` up to floating-point error and a fusion can be
+ * explained component by component. It is *not* a z-score under this mode — read
+ * `z` as "what each component paid in", and `score` as their sum. Unlike
+ * {@link scoreCandidatesStandardized} there is no min-shift: every term is
+ * non-negative by construction, so no score can be negative and the downstream
+ * multiplicative noise / R-conflict stages cannot be inverted.
+ */
+export function scoreCandidatesRRF(
+  rows: RawScoreRow[],
+  w: RetrievalWeights,
+  k = RRF_K,
+): StandardizedScore[] {
+  const n = rows.length
+  if (n === 0)
+    return []
+
+  // Saturated components — byte-identical to scoreCandidatesStandardized, so a
+  // mode change never smuggles in a different input.
+  const sim: number[] = new Array(n)
+  const str: number[] = new Array(n)
+  const rec: number[] = new Array(n)
+  const ctx: number[] = new Array(n)
+  const aff: number[] = new Array(n)
+  for (let i = 0; i < n; i++) {
+    const r = rows[i]
+    sim[i] = r.similarity
+    str[i] = r.strengthRaw / (1 + r.strengthRaw)
+    rec[i] = r.recency
+    ctx[i] = Math.max(0, Math.min(1, r.context))
+    aff[i] = Math.max(0, r.affect)
+  }
+
+  // rank[component][i] — 1-based competition rank of i under that component.
+  const rank: Record<RrfComponent, number[]> = {
+    similarity: competitionRanksDesc(sim),
+    strength: competitionRanksDesc(str),
+    recency: competitionRanksDesc(rec),
+    context: competitionRanksDesc(ctx),
+  }
+
+  const out: StandardizedScore[] = new Array(n)
+  for (let i = 0; i < n; i++) {
+    const contribution = {} as Record<RrfComponent, number>
+    let score = 0
+    for (const c of RRF_COMPONENTS) {
+      const v = w[c] / (k + rank[c][i])
+      contribution[c] = v
+      score += v
+    }
+    out[i] = {
+      score,
+      rawParts: {
+        similarity: sim[i],
+        strength: str[i],
+        recency: rec[i],
+        context: ctx[i],
+        affect: aff[i],
+      },
+      z: {
+        similarity: contribution.similarity,
+        strength: contribution.strength,
+        recency: contribution.recency,
+        context: contribution.context,
+      },
+    }
+  }
+  return out
+}
+
+/**
+ * 1-based competition ranks of `xs`, largest value first.
+ *
+ * Tied values receive the **mean** of the ranks they span (2nd and 3rd tied ⇒
+ * both get 2.5). Stable with respect to input order: the assignment depends on
+ * the multiset of values only.
+ */
+export function competitionRanksDesc(xs: number[]): number[] {
+  const n = xs.length
+  const out = new Array<number>(n)
+  if (n === 0)
+    return out
+  const order = Array.from({ length: n }, (_, i) => i).sort((a, b) => xs[b] - xs[a])
+  let i = 0
+  while (i < n) {
+    let j = i
+    // Extend the tie group while the value is exactly equal. NaN never compares
+    // equal, so a NaN becomes its own singleton group at position `i` — no
+    // infinite loop, and no silent corruption of the neighbours' ranks.
+    while (j + 1 < n && xs[order[j + 1]] === xs[order[i]])
+      j++
+    // Ranks spanned are (i+1)..(j+1); the mean of an integer range is its
+    // midpoint, and the endpoints share the parity so it stays exact in FP.
+    const r = (i + j + 2) / 2
+    for (let t = i; t <= j; t++)
+      out[order[t]] = r
+    i = j + 1
+  }
+  return out
+}
+
+/**
  * Population z-scores. A zero-variance column maps entirely to 0 rather than
  * 0/0 — see {@link scoreCandidatesStandardized}.
  */

@@ -346,8 +346,11 @@ export const CORRECTED_RETRIEVAL_WEIGHTS: RetrievalWeights = {
 /**
  * How the four retrieval components are combined before weighting. See
  * {@link MemoryConfig.retrievalScoreMode}.
+ *
+ * `'rrf'` is opt-in and was added after the `standardized` default was
+ * published; it exists only as a repair baseline, never as a default.
  */
-export type RetrievalScoreMode = 'additive' | 'standardized'
+export type RetrievalScoreMode = 'additive' | 'standardized' | 'rrf'
 
 /**
  * Belief-graph thresholds (v7 §10.2; contract #5 `BeliefRevision`).
@@ -392,6 +395,12 @@ export interface MemoryConfig {
    * - `'additive'` — the legacy raw weighted sum, kept so previously published
    *   numbers stay reproducible. It also retains the legacy K-dependent
    *   R-conflict reranking, because the two only diverge together in practice.
+   * - `'rrf'` — **opt-in**, never the default. Reciprocal Rank Fusion: each
+   *   component is reduced to a *rank* over the candidate pool and the weights
+   *   are applied as `w_c / (k + rank_i(c))`. Rank-based fusion is invariant to
+   *   any monotone rescaling of a component, so the dimensional mismatch cannot
+   *   arise at all. Added as a third repair baseline for J5/P4 alongside the
+   *   z-score fix and hierarchical retrieval; see `scoreCandidatesRRF`.
    *
    * Why this exists: on real corpora the components are **not** on comparable
    * scales (a sparse TF-IDF cosine between a short query and a long utterance
@@ -530,9 +539,11 @@ export interface ScoredCandidate {
     /** True if this candidate was penalised as the *loser* of an R-conflict. */
     conflict?: boolean
     /**
-     * `'standardized'` mode only — the z-scored component values that were
-     * actually weighted. The sibling scalars above stay **raw** so a surprising
-     * retrieval can be read from either side of the standardisation.
+     * Pool-relative component contributions, present in the two modern modes:
+     * the z-scored values that were actually weighted under `'standardized'`,
+     * and the per-component `w_c / (k + rank_i(c))` rank contributions under
+     * `'rrf'`. The sibling scalars above stay **raw** so a surprising retrieval
+     * can be read from either side of the transformation.
      */
     z?: {
       similarity: number
