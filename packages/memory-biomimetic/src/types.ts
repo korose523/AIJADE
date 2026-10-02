@@ -44,6 +44,7 @@
 
 import type { Belief, BeliefRejection, BeliefRevision } from './belief'
 import type { CbrConfig, ReplayBundle } from './cbr'
+import type { FaultInjectionConfig } from './fault-injection'
 import type { EndogenousState, HacConfig } from './hac'
 import type { CdiConfig, IdentityState, IdentityVersion } from './identity'
 import type { InterventionConfig, ResolvedIntervention } from './intervention'
@@ -437,6 +438,14 @@ export interface MemoryConfig {
    * （P8/§43）；只持有回放证据，不介入记忆动力学。
    */
   cbr?: CbrConfig
+  /**
+   * v7 §38 / J1-C5 故障注入脚手架（AgentChaos 风格分类）。opt-in，默认关闭
+   * （`enabled:false`）：仅当显式为 true 时，`store.retrieve` 才在返回前对
+   * 候选集施加确定性故障扰动，用于证明记忆系统在组件故障下**fail-closed**，
+   * 而非仅 Happy Path 正确。复用 §38 的 `interventionRng(seed)` 保证可复现。
+   * 默认（缺省）⇒ 零行为变化（H2c 兼容）。
+   */
+  faultInjection?: FaultInjectionConfig
   /**
    * v7 §26 storage tiering — opt-in persistence adapter. When omitted (default),
    * the store is fully in-memory and nothing is written to disk. The adapter only

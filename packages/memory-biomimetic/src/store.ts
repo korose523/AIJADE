@@ -2,6 +2,7 @@ import type { Belief, BeliefOwner, BeliefRejection, BeliefRevision, EvidenceEntr
 import type { IteEstimate, ReplayBundle, ReplayRun } from './cbr'
 import type { Distiller } from './consolidation'
 import type { Appraisal, FeedbackEvent, StateSnapshot } from './contracts'
+import type { FaultReport } from './fault-injection'
 import type { EndogenousState, UtilityFeatures, WriteConstraints, WriteDecision } from './hac'
 import type { IdentityCandidate, IdentityEvidence, IdentityLayer, IdentitySource, IdentityState, IdentityVersion } from './identity'
 import type { InterventionPlan, RegisteredIntervention, ResolvedIntervention } from './intervention'
@@ -27,6 +28,7 @@ import type {
 import { applyRevision, createBelief, retract } from './belief'
 import { estimateITE, pairReplays, ReplayLog } from './cbr'
 import { LexicalDistiller } from './consolidation'
+import { FaultInjectedError, FaultInjector } from './fault-injection'
 import { retrievalStrength } from './forgetting'
 import { durability as durabilityOf } from './gating'
 import { HacController, mulberry32 } from './hac'
@@ -158,6 +160,8 @@ export class BioticMemory {
   private resolvedIntervention?: ResolvedIntervention
   /** v7 §12 CBR 回放日志（仅当 CBR 接入时构造）。 */
   private replayLog?: ReplayLog
+  /** v7 §38 / J1-C5 — last fault-injection report (only set when harness active). */
+  private lastFaultReport?: FaultReport
 
   constructor(config: MemoryConfig = DEFAULT_MEMORY_CONFIG, now = Date.now()) {
     this.config = config
@@ -598,6 +602,11 @@ export class BioticMemory {
     return this.resolvedIntervention?.fingerprint
   }
 
+  /** v7 §38 / J1-C5 — 上一次 `retrieve` 的故障注入报告；未启用/无故障则为 undefined。 */
+  faultInjectionReport(): FaultReport | undefined {
+    return this.lastFaultReport
+  }
+
   // ---------- v7 §12 CBR 因果具身回放（opt-in，P8/§43 解耦） ----------
 
   /**
@@ -1008,7 +1017,29 @@ export class BioticMemory {
       }
     }
     scored.sort((a, b) => b.score - a.score)
-    const finalTop = scored.slice(0, topK)
+    let finalTop = scored.slice(0, topK)
+    // ── §38 / J1-C5 opt-in fault injection (AgentChaos taxonomy) ─────────────
+    // Default off: only active when `config.faultInjection.enabled` is explicitly
+    // true, so the default path is byte-for-byte unchanged (H2c compatible).
+    // `component_crash` throws `FaultInjectedError`; we catch it and degrade
+    // gracefully (serve the remaining healthy stores) — the J1 fail-closed path.
+    this.lastFaultReport = undefined
+    if (this.config.faultInjection?.enabled) {
+      try {
+        const res = new FaultInjector(this.config.faultInjection).apply(finalTop)
+        finalTop = res.candidates
+        this.lastFaultReport = res.report
+      }
+      catch (err) {
+        if (err instanceof FaultInjectedError) {
+          finalTop = finalTop.filter(c => c.kind !== err.component)
+          this.lastFaultReport = err.report
+        }
+        else {
+          throw err
+        }
+      }
+    }
     if (bump) {
       for (const c of finalTop) {
         const target
