@@ -47,15 +47,27 @@ export interface DedupResult<T extends DedupableCandidate> {
  * deduplication.
  *
  * The controlled comparison is `j5-rrf-e2e-decomp-2026-10-02.json`: same pool,
- * same questions, `NO_GATING`, 1986 questions. There, toggling
- * `dedupeByContent` under `additive` scoring moved recall@8 by **-0.0015**
- * (0.0836 → 0.0821) — indistinguishable from noise. The +0.1244 that separates
- * the pre- and post-`014b17b` baselines is attributable to the **score mode**
- * change to `standardized`, not to this function. Whether the two interact
- * (i.e. whether deduplication only helps once scores are commensurable) is not
- * yet resolved: that needs the `std-no-dedupe` cell of the 2×2, which is defined
- * in `eval/j5-rrf-e2e-decomposition.ts` but was not present in the artifact
- * above.
+ * same questions, `NO_GATING`, 1986 questions. The full 2×2 (recall@8):
+ *
+ * ```
+ *                      dedupe=ON      dedupe=OFF
+ *   additive              0.0821          0.0836
+ *   standardized          0.2064          0.1999
+ * ```
+ *
+ * Main effect of the score mode: +0.1244 (dedupe on) / +0.1163 (dedupe off).
+ * Main effect of dedupe: +0.0065 (standardized) / -0.0015 (additive).
+ * Interaction (difference of differences): **+0.0081**, only ~7% of the score
+ * mode's main effect.
+ *
+ * So the +0.1244 separating the pre- and post-`014b17b` baselines is
+ * attributable to the **score mode** change to `standardized`, not to this
+ * function. Dedupe is worth roughly +0.006 at best.
+ *
+ * The interaction's sign is consistent with "dedupe only helps once scores are
+ * commensurable", but +0.0081 on 1986 questions with no paired significance
+ * test is **not** evidence for that claim; record it as directionally
+ * consistent, not demonstrated.
  *
  * The structural argument above (two ranks per evidence ⇒ recall@8 is really
  * recall@4) stands on its own and is unaffected by what the numbers measure; it
