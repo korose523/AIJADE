@@ -35,8 +35,31 @@ export interface DedupResult<T extends DedupableCandidate> {
  * copies the episode's content **verbatim**. Without this collapse every piece
  * of evidence enters the ranking twice — as `e` and as `fact_e` — so a reported
  * `recall@8` is in truth a `recall@4`, and the precision of every K is halved by
- * construction. Measured on LoCoMo: removing the duplicate copies was worth
- * +0.1245 recall@8 on its own.
+ * construction.
+ *
+ * **Do not cite a recall@8 gain for this function.** An earlier version of this
+ * comment claimed "removing the duplicate copies was worth +0.1245 recall@8 on
+ * its own". That number came from `p2-index-duplication-confusion-2026-09-15`,
+ * which toggled the distiller **and** halved the candidate pool at the same time
+ * (353 vs 177 candidates) — and that same artifact's section ② shows pool size
+ * alone moves recall@8 by up to 0.25 within a fixed evidence-survival band. The
+ * gain was therefore confounded with pool size and cannot be attributed to
+ * deduplication.
+ *
+ * The controlled comparison is `j5-rrf-e2e-decomp-2026-10-02.json`: same pool,
+ * same questions, `NO_GATING`, 1986 questions. There, toggling
+ * `dedupeByContent` under `additive` scoring moved recall@8 by **-0.0015**
+ * (0.0836 → 0.0821) — indistinguishable from noise. The +0.1244 that separates
+ * the pre- and post-`014b17b` baselines is attributable to the **score mode**
+ * change to `standardized`, not to this function. Whether the two interact
+ * (i.e. whether deduplication only helps once scores are commensurable) is not
+ * yet resolved: that needs the `std-no-dedupe` cell of the 2×2, which is defined
+ * in `eval/j5-rrf-e2e-decomposition.ts` but was not present in the artifact
+ * above.
+ *
+ * The structural argument above (two ranks per evidence ⇒ recall@8 is really
+ * recall@4) stands on its own and is unaffected by what the numbers measure; it
+ * is the *quantified benefit* that was unsupported.
  *
  * The survivor is chosen by provenance first (`episode` beats the derived
  * `fact`), then by age. Losers are **not** deleted — the caller keeps them in
