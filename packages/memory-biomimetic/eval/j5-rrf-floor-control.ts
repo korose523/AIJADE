@@ -39,6 +39,14 @@
  * `≤ 0.02`、`≤ 0` 的占比，让读者能自行判断 floor 是否落在域内 —— 不必相信本脚本
  * 的任何一句话。
  *
+ * ── 聚合口径（跨脚本相减前必须对齐）────────────────────────────────────
+ * 本脚本的 recall 是**微平均**：逐题 0/1 pooled 后除以总题数（1986），
+ * 即 `j5-rrf-e2e-decomposition.ts` 的口径。产物同时给出**宏平均**
+ * （每对话先算 hits/qa 再对对话取均值，`p2-quantile` 口径）——
+ * 各对话题数不相等（199/105/193/260/242/158/190/239/196/204），
+ * 故两者不等（基线臂差约 0.0079）。**引用本表数字时必须声明用哪个口径**，
+ * 否则与报宏平均的另一份产物相减会得到一个纯口径artifact 的假差。
+ *
  * ── 臂 ──────────────────────────────────────────────────────────────────
  *   store-default      standardized + 去重 + DEFAULT 权重   ← 基线
  *   rrf-default        rrf+ 去重 + DEFAULT 权重
@@ -193,6 +201,12 @@ function rel(c: Candidate, gold: Set<string>, criterion: Criterion, shared: Shar
 
 interface ArmAcc {
   recall: Record<Criterion, Record<number, number[]>>
+  /**
+   * 逐对话的命中数与题数 —— 用于**宏平均**（每对话先算比例再对对话取均值）。
+   * 与 `recall`（逐题 pooled 数组的均值，即**微平均**）并存，两者之差就是聚合口径差。
+   */
+  convHits: Record<Criterion, number[]>
+  convTotals: number[]
   mrr: Record<Criterion, number[]>
   /** 本臂分数在检索窗口内的全部取值（分数域实测）。 */
   windowScores: number[]
@@ -212,6 +226,8 @@ interface ArmAcc {
 function newAcc(): ArmAcc {
   return {
     recall: Object.fromEntries(CRITERIA.map(c => [c, Object.fromEntries(KS.map(k => [k, [] as number[]]))])),
+    convHits: Object.fromEntries(CRITERIA.map(c => [c, [] as number[]])),
+    convTotals: [],
     mrr: Object.fromEntries(CRITERIA.map(c => [c, [] as number[]])),
     windowScores: [],
     windowAboveFloor: 0,
@@ -222,6 +238,16 @@ function newAcc(): ArmAcc {
     topKGoldKilledByOwnFloor: 0,
     topKGoldKilledBySharedFloor: 0,
   }
+}
+
+/** 宏平均：每对话先算 hits/qa，再对各对话取均值（`p2-quantile` 口径）。 */
+function macroOf(hits: number[], totals: number[]): number {
+  if (totals.length === 0)
+    return 0
+  let s = 0
+  for (let i = 0; i < totals.length; i++)
+    s += totals[i] > 0 ? hits[i] / totals[i] : 0
+  return s / totals.length
 }
 
 function summarise(a: number[]): { min: number, p25: number, median: number, p75: number, max: number, n: number } {
@@ -310,6 +336,9 @@ async function main(): Promise<void> {
     if (mem.config.retrievalScoreMode !== 'standardized')
       throw new Error(`默认模式不是 standardized：${String(mem.config.retrievalScoreMode)}`)
 
+    // 本对话开始前各臂已累计的命中条数 —— 用于事后切出「本对话」的命中数（宏平均）。
+    const mark = Object.fromEntries(ARMS.map(a => [a.key, acc[a.key].recall.rankOnly[MAXK].length]))
+
     // 本对话内基线臂的逐题命中，仅用于与 `measure()` 的**逐对话**交叉校验。
     const baseHit: Record<Criterion, Record<number, number[]>> = {
       rankOnly: Object.fromEntries(KS.map(k => [k, [] as number[]])),
@@ -387,6 +416,18 @@ async function main(): Promise<void> {
         crossRankOnly.push(shared.recall[k] - avg(baseHit.rankOnly[k]))
     }
 
+    // ── 宏平均素材：本对话各臂各判据的命中数（命中数组自`mark` 起的增量）。
+    for (const a of ARMS) {
+      for (const criterion of CRITERIA) {
+        const carr = acc[a.key].recall[criterion][MAXK]
+        let h = 0
+        for (let i = mark[a.key]; i < carr.length; i++)
+          h += carr[i]
+        acc[a.key].convHits[criterion].push(h)
+      }
+      acc[a.key].convTotals.push(conv.qa.length)
+    }
+
     console.info(`  [${ci + 1}/${convs.length}] conv ok（累计 ${questions} 题）`)
   }
 
@@ -406,14 +447,16 @@ async function main(): Promise<void> {
   }
 
   const R = (key: string, c: Criterion, k: number) => avg(acc[key].recall[c][k])
+  /** 宏平均版（每对话先算比例再对对话取均值）。 */
+  const RMacro = (key: string, c: Criterion) => macroOf(acc[key].convHits[c], acc[key].convTotals)
 
   // ─────────────────────────────────────────────────────────── 打印
   console.info()
   for (const criterion of CRITERIA) {
     console.info(CRITERION_NOTE[criterion])
-    console.info(`  ${'arm'.padEnd(18)}${KS.map(k => `R@${k}`.padStart(9)).join('')}${'MRR@8'.padStart(9)}`)
+    console.info(`  ${'arm'.padEnd(18)}${KS.map(k => `R@${k}`.padStart(9)).join('')}${'MRR@8'.padStart(9)}${'R@8(macro)'.padStart(12)}`)
     for (const a of ARMS)
-      console.info(`  ${a.key.padEnd(18)}${KS.map(k => R(a.key, criterion, k).toFixed(4).padStart(9)).join('')}${avg(acc[a.key].mrr[criterion]).toFixed(4).padStart(9)}`)
+      console.info(`  ${a.key.padEnd(18)}${KS.map(k => R(a.key, criterion, k).toFixed(4).padStart(9)).join('')}${avg(acc[a.key].mrr[criterion]).toFixed(4).padStart(9)}${RMacro(a.key, criterion).toFixed(4).padStart(12)}`)
     console.info()
   }
 
@@ -442,7 +485,21 @@ async function main(): Promise<void> {
   console.info('--- 交叉校验（对标 eval/eval-metrics.ts 的 measure()）---')
   console.info(`  基线臂判据 (C)（floor=${FLOOR}）：最大偏差 ${maxOwn.toFixed(6)}  ${maxOwn < 1e-9 ? '✅ 逐位一致' : '❌ 口径写歪了'}`)
   console.info(`  基线臂判据 (A)（floor=-Inf，即纯排名）：最大偏差 ${maxRank.toFixed(6)}  ${maxRank < 1e-9 ? '✅ 逐位一致' : '❌ 口径写歪了'}`)
+  console.info('  ⚠️ 该校验在**单个对话内部**做（与 decomp 脚本同），故分母相同、恒等；')
+  console.info('     它能证明「逐题命中实现与 measure() 一致」，**结构上无法**发现跨对话的聚合口径差。')
   console.info(`  fused 前缀不变式断言通过 ${prefixAsserts} 次；平均池大小 = ${avg(poolSizes).toFixed(1)}`)
+  console.info()
+
+  console.info(`--- 聚合口径：微平均(micro) vs 宏平均(macro)，同为 R@${MAXK} ---`)
+  console.info(`  ${'arm'.padEnd(18)}${'判据'.padEnd(10)}${'micro'.padStart(10)}${'macro'.padStart(10)}${'micro-macro'.padStart(13)}`)
+  for (const a of ARMS) {
+    for (const criterion of CRITERIA) {
+      const mi = R(a.key, criterion, MAXK)
+      const ma = RMacro(a.key, criterion)
+      console.info(`  ${a.key.padEnd(18)}${CRITERION_LABEL[criterion].padEnd(10)}${mi.toFixed(6).padStart(10)}${ma.toFixed(6).padStart(10)}${(mi - ma >= 0 ? '+' : '')}${(mi - ma).toFixed(6).padStart(12)}`)
+    }
+  }
+  console.info('  各对话题数（不相等 ⇒ 宏≠微）：', acc['store-default'].convTotals.join(','))
   console.info()
 
   // ─────────────────────────────────────────────────────────── 判读
@@ -472,12 +529,26 @@ async function main(): Promise<void> {
   for (const a of ARMS)
     verdicts.push(`  ${a.key.padEnd(18)} ${fmt(R(a.key, 'rankOnly', MAXK) - R(a.key, 'ownScore', MAXK))}   （top-${MAXK} 金标准候选被own-floor 判死 ${acc[a.key].topKGoldKilledByOwnFloor}/${acc[a.key].topKGold}）`)
   verdicts.push('')
+  verdicts.push('【⑤ 聚合口径：本表数字是微平均，跨脚本相减前必须先对齐】')
+  verdicts.push(`  ${'arm'.padEnd(18)}${'判据'.padEnd(10)}${'micro'.padStart(10)}${'macro'.padStart(10)}${'micro-macro'.padStart(13)}`)
+  for (const a of ARMS) {
+    for (const criterion of CRITERIA) {
+      const mi = R(a.key, criterion, MAXK)
+      const ma = RMacro(a.key, criterion)
+      verdicts.push(`  ${a.key.padEnd(18)}${CRITERION_LABEL[criterion].padEnd(10)}${mi.toFixed(6).padStart(10)}${ma.toFixed(6).padStart(10)}${(mi - ma >= 0 ? '+' : '')}${(mi - ma).toFixed(6).padStart(12)}`)
+    }
+  }
+  verdicts.push(`  各对话题数（不相等 ⇒ 宏 ≠ 微）：${acc['store-default'].convTotals.join(',')}`)
+  verdicts.push('  ⇒ 本表全部 recall 为**微平均**（逐题 0/1 pooled 后除以总题数 1986）。')
+  verdicts.push('     若另一份产物报的是宏平均（每对话先算比例再均值），两个数不可直接相减。')
+  verdicts.push('')
   verdicts.push('⚠️ 口径：')
   verdicts.push('  · 本表全部数字属族 B（端到端、全池、含检索噪声与冲突惩罚），与族 A（重排 top-150）不可互比。')
   verdicts.push('  · (A) 是采用口径：跨打分模式比较时 floor 不是可比判据，已按定义关闭。')
   verdicts.push(`  · additive 臂沿用 legacy K 依赖冲突头，窗口=${MAXK}，R@1/2/4 由一次 topK=8 检索按位置还原。`)
   verdicts.push(`  · 基线臂与 (B) 参考跑是同一次调用；fused 前缀不变式已断言 ${prefixAsserts} 次。`)
   verdicts.push('  · (A) 与 "retrievalFloor=0" 不是同一件事：standardized/additive 的分数可为 0 或负，floor=0 仍会剔掉它们。')
+  verdicts.push('  · 与 measure() 的交叉校验在单对话内完成（分母相同故恒等），只能证明逐题命中实现一致，无法发现跨对话聚合差。')
 
   console.info('--- 判读（全部由上方实测数字生成，无硬编码结论）---')
   for (const v of verdicts)
@@ -518,9 +589,21 @@ async function main(): Promise<void> {
       scoreMode: a.scoreMode,
       weights: a.weights,
       recall: Object.fromEntries(CRITERIA.map(c => [c, Object.fromEntries(KS.map(k => [k, R(a.key, c, k)]))])),
+      recallMacroAtMaxK: Object.fromEntries(CRITERIA.map(c => [c, RMacro(a.key, c)])),
       mrrAtMaxK: Object.fromEntries(CRITERIA.map(c => [c, avg(acc[a.key].mrr[c])])),
       ownScoreDomain: domain(a.key),
     })),
+    aggregation: {
+      primary: 'micro',
+      note: 'recall 字段为**微平均**（逐题 0/1 pooled ÷ 总题数）。recallMacroAtMaxK 为**宏平均**'
+        + '（每对话先算 hits/qa 再对对话取均值，p2-quantile 口径）。各对话题数不相等，'
+        + '故两者不等；跨脚本相减前必须先对齐口径。',
+      perConvQuestions: acc['store-default'].convTotals,
+      microMinusMacroAtMaxK: Object.fromEntries(ARMS.map(a => [
+        a.key,
+        Object.fromEntries(CRITERIA.map(c => [c, R(a.key, c, MAXK) - RMacro(a.key, c)])),
+      ])),
+    },
     contamination: Object.fromEntries(ARMS.map(a => [
       a.key,
       {

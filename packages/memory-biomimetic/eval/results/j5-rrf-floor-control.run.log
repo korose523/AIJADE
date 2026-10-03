@@ -17,25 +17,25 @@ condition: NO_GATING；去重恒开；判据阈值 FLOOR = 0.02
   [10/10] conv ok（累计 1986 题）
 
 (A) rank-only：只看排名，完全不看分数 —— 采用口径
-  arm                     R@1      R@2      R@4      R@8    MRR@8
-  store-default        0.1118   0.1400   0.1747   0.2064   0.1511
-  rrf-default          0.0373   0.0574   0.0987   0.1536   0.0751
-  rrf-corrected        0.0509   0.0831   0.1324   0.1757   0.0957
-  additive-default     0.0398   0.0514   0.0655   0.0821   0.0522
+  arm                     R@1      R@2      R@4      R@8    MRR@8  R@8(macro)
+  store-default        0.1118   0.1400   0.1747   0.2064   0.1511      0.1985
+  rrf-default          0.0373   0.0574   0.0987   0.1536   0.0751      0.1456
+  rrf-corrected        0.0509   0.0831   0.1324   0.1757   0.0957      0.1686
+  additive-default     0.0398   0.0514   0.0655   0.0821   0.0522      0.0797
 
 (B) shared-standardized：金标准 且 store-standardized 全池分数 > 0.02 —— 对照口径
-  arm                     R@1      R@2      R@4      R@8    MRR@8
-  store-default        0.1118   0.1400   0.1747   0.2064   0.1511
-  rrf-default          0.0373   0.0574   0.0987   0.1536   0.0750
-  rrf-corrected        0.0509   0.0831   0.1324   0.1757   0.0956
-  additive-default     0.0363   0.0468   0.0599   0.0750   0.0477
+  arm                     R@1      R@2      R@4      R@8    MRR@8  R@8(macro)
+  store-default        0.1118   0.1400   0.1747   0.2064   0.1511      0.1985
+  rrf-default          0.0373   0.0574   0.0987   0.1536   0.0750      0.1456
+  rrf-corrected        0.0509   0.0831   0.1324   0.1757   0.0956      0.1686
+  additive-default     0.0363   0.0468   0.0599   0.0750   0.0477      0.0724
 
 (C) own-score：金标准 且 本臂自己的分数 > 0.02 —— 复现现有污染条件，不作结论依据
-  arm                     R@1      R@2      R@4      R@8    MRR@8
-  store-default        0.1118   0.1400   0.1747   0.2064   0.1511
-  rrf-default          0.0342   0.0488   0.0680   0.0745   0.0487
-  rrf-corrected        0.0403   0.0529   0.0599   0.0609   0.0490
-  additive-default     0.0398   0.0514   0.0655   0.0821   0.0522
+  arm                     R@1      R@2      R@4      R@8    MRR@8  R@8(macro)
+  store-default        0.1118   0.1400   0.1747   0.2064   0.1511      0.1985
+  rrf-default          0.0342   0.0488   0.0680   0.0745   0.0487      0.0721
+  rrf-corrected        0.0403   0.0529   0.0599   0.0609   0.0490      0.0580
+  additive-default     0.0398   0.0514   0.0655   0.0821   0.0522      0.0797
 
 --- 各臂「自己分数」的实测域（判定 floor 是否落在域内）---
   arm                 win       min       p25    median       p75       max   >flr%    <=0% topK<=0
@@ -55,7 +55,25 @@ condition: NO_GATING；去重恒开；判据阈值 FLOOR = 0.02
 --- 交叉校验（对标 eval/eval-metrics.ts 的 measure()）---
   基线臂判据 (C)（floor=0.02）：最大偏差 0.000000  ✅ 逐位一致
   基线臂判据 (A)（floor=-Inf，即纯排名）：最大偏差 0.000000  ✅ 逐位一致
+  ⚠️ 该校验在**单个对话内部**做（与 decomp 脚本同），故分母相同、恒等；
+     它能证明「逐题命中实现与 measure() 一致」，**结构上无法**发现跨对话的聚合口径差。
   fused 前缀不变式断言通过 132 次；平均池大小 = 600.6
+
+--- 聚合口径：微平均(micro) vs 宏平均(macro)，同为 R@8 ---
+  arm               判据             micro     macro  micro-macro
+  store-default     (A) rank-only  0.206445  0.198532+    0.007913
+  store-default     (B) shared-standardized  0.206445  0.198532+    0.007913
+  store-default     (C) own-score  0.206445  0.198532+    0.007913
+  rrf-default       (A) rank-only  0.153575  0.145588+    0.007987
+  rrf-default       (B) shared-standardized  0.153575  0.145588+    0.007987
+  rrf-default       (C) own-score  0.074522  0.072147+    0.002375
+  rrf-corrected     (A) rank-only  0.175730  0.168599+    0.007131
+  rrf-corrected     (B) shared-standardized  0.175730  0.168599+    0.007131
+  rrf-corrected     (C) own-score  0.060926  0.057983+    0.002943
+  additive-default  (A) rank-only  0.082075  0.079696+    0.002378
+  additive-default  (B) shared-standardized  0.075025  0.072397+    0.002628
+  additive-default  (C) own-score  0.082075  0.079696+    0.002378
+  各对话题数（不相等 ⇒ 宏≠微）： 199,105,193,260,242,158,190,239,196,204
 
 --- 判读（全部由上方实测数字生成，无硬编码结论）---
 【① 判据敏感性：三档口径下的 recall@8】
@@ -84,11 +102,30 @@ condition: NO_GATING；去重恒开；判据阈值 FLOOR = 0.02
   rrf-corrected      +0.1148   （top-8 金标准候选被own-floor 判死 240/363）
   additive-default   +0.0000   （top-8 金标准候选被own-floor 判死 0/166）
 
+【⑤ 聚合口径：本表数字是微平均，跨脚本相减前必须先对齐】
+  arm               判据             micro     macro  micro-macro
+  store-default     (A) rank-only  0.206445  0.198532+    0.007913
+  store-default     (B) shared-standardized  0.206445  0.198532+    0.007913
+  store-default     (C) own-score  0.206445  0.198532+    0.007913
+  rrf-default       (A) rank-only  0.153575  0.145588+    0.007987
+  rrf-default       (B) shared-standardized  0.153575  0.145588+    0.007987
+  rrf-default       (C) own-score  0.074522  0.072147+    0.002375
+  rrf-corrected     (A) rank-only  0.175730  0.168599+    0.007131
+  rrf-corrected     (B) shared-standardized  0.175730  0.168599+    0.007131
+  rrf-corrected     (C) own-score  0.060926  0.057983+    0.002943
+  additive-default  (A) rank-only  0.082075  0.079696+    0.002378
+  additive-default  (B) shared-standardized  0.075025  0.072397+    0.002628
+  additive-default  (C) own-score  0.082075  0.079696+    0.002378
+  各对话题数（不相等 ⇒ 宏 ≠ 微）：199,105,193,260,242,158,190,239,196,204
+  ⇒ 本表全部 recall 为**微平均**（逐题 0/1 pooled 后除以总题数 1986）。
+     若另一份产物报的是宏平均（每对话先算比例再均值），两个数不可直接相减。
+
 ⚠️ 口径：
   · 本表全部数字属族 B（端到端、全池、含检索噪声与冲突惩罚），与族 A（重排 top-150）不可互比。
   · (A) 是采用口径：跨打分模式比较时 floor 不是可比判据，已按定义关闭。
   · additive 臂沿用 legacy K 依赖冲突头，窗口=8，R@1/2/4 由一次 topK=8 检索按位置还原。
   · 基线臂与 (B) 参考跑是同一次调用；fused 前缀不变式已断言 132 次。
   · (A) 与 "retrievalFloor=0" 不是同一件事：standardized/additive 的分数可为 0 或负，floor=0 仍会剔掉它们。
+  · 与 measure() 的交叉校验在单对话内完成（分母相同故恒等），只能证明逐题命中实现一致，无法发现跨对话聚合差。
 
-artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-floor-control-2026-10-02.json
+artifact: /Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/results/j5-rrf-floor-control-2026-10-03.json
