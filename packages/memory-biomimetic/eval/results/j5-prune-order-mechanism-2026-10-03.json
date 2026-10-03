@@ -1,0 +1,1363 @@
+{
+  "generatedAt": "2026-10-03T03:42:47.977Z",
+  "corpus": {
+    "path": "/Users/mac/WorkBuddy/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10
+  },
+  "ks": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "grids": {
+    "repro": [
+      1,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.3
+    ],
+    "mechanism": [
+      1,
+      0.98,
+      0.95,
+      0.9,
+      0.8,
+      0.7,
+      0.6,
+      0.5,
+      0.4,
+      0.3
+    ],
+    "jitter": [
+      1,
+      0.9,
+      0.6,
+      0.3
+    ],
+    "placebo": [
+      0.9,
+      0.6,
+      0.3
+    ],
+    "norec": [
+      1,
+      0.9
+    ]
+  },
+  "design": {
+    "poolControl": "k = max(1, min(pending.length, round(pending.length * q))) 只依赖条数与 q（src/store.ts:803）⇒ 同 q 下池规模与显著性数值无关地被固定",
+    "tiebreakMechanism": "只改 conv.episodes 的插入顺序（V8 sort 稳定 ⇒ 并列按插入序决胜），salience 逐条相同（证据=1/非证据=0）⇒ durability/decay/检索分公式完全一致",
+    "confoundAvoided": "salJitter 臂沿用旧口径（改 salience 数值），会经 durability（src/store.ts:261）与 decay（src/forgetting.ts:34）污染「留下的项有多强」，故单列以量化其量级",
+    "residual": "placebo 臂：与 chrono 剪掉同一批 id、仅池内顺序不同 ⇒ 其与 chrono 的差即池内顺序效应的上界",
+    "q4": "q=1 与 q<1 走同一条 keepFraction 代码路径（src/store.ts:802-806），无特例分支；k=round(N·q) 是q 的连续函数"
+  },
+  "crossCheck": {
+    "maxAbsDiffRecall": 0.04602510460251047,
+    "note": "independentRecall（retrieve(q,9999) 全量名次） vs eval-metrics.measure（retrieve(q,8) 位置还原）"
+  },
+  "poolSizeSpreadAcrossStrategies": 0,
+  "arms": {
+    "repro": {
+      "dup-1": {
+        "recall": {
+          "1": 0.11404052759473593,
+          "2": 0.14712363742611195,
+          "4": 0.18348517991821253,
+          "8": 0.22244314380883073
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 1176.4,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q1 复现 dup-1"
+      },
+      "nofact-1": {
+        "recall": {
+          "1": 0.11454304015755001,
+          "2": 0.147207739947085,
+          "4": 0.18255175566216517,
+          "8": 0.22233523806119804
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 588.2,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q1 复现 nofact-1"
+      },
+      "dup-0.9": {
+        "recall": {
+          "1": 0.1262252253475265,
+          "2": 0.15883968689251782,
+          "4": 0.20845268172806372,
+          "8": 0.2799408229335444
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 1058.8,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.027305319342683057,
+          "median": 0.012005167000706697,
+          "newestDecile": 0.9285714285714286,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q1 复现 dup-0.9"
+      },
+      "nofact-0.9": {
+        "recall": {
+          "1": 0.12289967416141478,
+          "2": 0.1572792126835068,
+          "4": 0.20738236719973177,
+          "8": 0.2800615707035885
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.027305319342683057,
+          "median": 0.012005167000706697,
+          "newestDecile": 0.9285714285714286,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q1 复现 nofact-0.9"
+      },
+      "dup-0.8": {
+        "recall": {
+          "1": 0.13847648206808266,
+          "2": 0.17740224923830228,
+          "4": 0.22314673485266606,
+          "8": 0.2989963044191873
+        },
+        "evidenceSurvival": 1,
+        "distinct": 470.4,
+        "poolSize": 940.8,
+        "prunedAge": {
+          "count": 1178,
+          "mean": 0.07390678466859722,
+          "median": 0.061518522393090865,
+          "newestDecile": 0.6782682512733447,
+          "newestQuartile": 0.9736842105263158,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q1 复现 dup-0.8"
+      },
+      "nofact-0.8": {
+        "recall": {
+          "1": 0.13559276177834734,
+          "2": 0.17315226738339873,
+          "4": 0.22314673485266606,
+          "8": 0.29952262020866094
+        },
+        "evidenceSurvival": 1,
+        "distinct": 470.4,
+        "poolSize": 470.4,
+        "prunedAge": {
+          "count": 1178,
+          "mean": 0.07390678466859722,
+          "median": 0.061518522393090865,
+          "newestDecile": 0.6782682512733447,
+          "newestQuartile": 0.9736842105263158,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q1 复现 nofact-0.8"
+      },
+      "dup-0.7": {
+        "recall": {
+          "1": 0.14858396506414479,
+          "2": 0.18757292444214313,
+          "4": 0.23408881405271828,
+          "8": 0.3056038970120075
+        },
+        "evidenceSurvival": 1,
+        "distinct": 411.6,
+        "poolSize": 823.2,
+        "prunedAge": {
+          "count": 1766,
+          "mean": 0.11984605030694324,
+          "median": 0.10328662966276649,
+          "newestDecile": 0.4535673839184598,
+          "newestQuartile": 0.8980747451868629,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q1 复现 dup-0.7"
+      },
+      "nofact-0.7": {
+        "recall": {
+          "1": 0.14488215913152222,
+          "2": 0.18581617193301206,
+          "4": 0.23444730115685736,
+          "8": 0.3061260773915463
+        },
+        "evidenceSurvival": 1,
+        "distinct": 411.6,
+        "poolSize": 411.6,
+        "prunedAge": {
+          "count": 1766,
+          "mean": 0.11984605030694324,
+          "median": 0.10328662966276649,
+          "newestDecile": 0.4535673839184598,
+          "newestQuartile": 0.8980747451868629,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q1 复现 nofact-0.7"
+      },
+      "dup-0.6": {
+        "recall": {
+          "1": 0.151276773700544,
+          "2": 0.19070122722236404,
+          "4": 0.24630073014400372,
+          "8": 0.31434863411766467
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 705.6,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.17877172479330783,
+          "median": 0.15091487716024962,
+          "newestDecile": 0.34027187765505523,
+          "newestQuartile": 0.7073067119796091,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q1 复现 dup-0.6"
+      },
+      "nofact-0.6": {
+        "recall": {
+          "1": 0.15058544924517864,
+          "2": 0.189445997096841,
+          "4": 0.24292071864063125,
+          "8": 0.31485114668047876
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 352.8,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.17877172479330783,
+          "median": 0.15091487716024962,
+          "newestDecile": 0.34027187765505523,
+          "newestQuartile": 0.7073067119796091,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q1 复现 nofact-0.6"
+      },
+      "dup-0.5": {
+        "recall": {
+          "1": 0.154681522295415,
+          "2": 0.19429073658067875,
+          "4": 0.25089478054938064,
+          "8": 0.32158415127575823
+        },
+        "evidenceSurvival": 1,
+        "distinct": 294.5,
+        "poolSize": 589,
+        "prunedAge": {
+          "count": 2937,
+          "mean": 0.24505458710431208,
+          "median": 0.20868426845233268,
+          "newestDecile": 0.2727272727272727,
+          "newestQuartile": 0.5669050051072523,
+          "oldestQuartile": 0.001361933946203609
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410047,
+        "label": "Q1 复现 dup-0.5"
+      },
+      "nofact-0.5": {
+        "recall": {
+          "1": 0.15103417688682227,
+          "2": 0.19300288154079287,
+          "4": 0.24741201380196834,
+          "8": 0.32067554515548585
+        },
+        "evidenceSurvival": 1,
+        "distinct": 294.5,
+        "poolSize": 294.5,
+        "prunedAge": {
+          "count": 2937,
+          "mean": 0.24505458710431208,
+          "median": 0.20868426845233268,
+          "newestDecile": 0.2727272727272727,
+          "newestQuartile": 0.5669050051072523,
+          "oldestQuartile": 0.001361933946203609
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q1 复现 nofact-0.5"
+      },
+      "dup-0.4": {
+        "recall": {
+          "1": 0.15768103919033033,
+          "2": 0.1983995466774255,
+          "4": 0.2513186698430813,
+          "8": 0.32090798006945775
+        },
+        "evidenceSurvival": 1,
+        "distinct": 235.4,
+        "poolSize": 470.8,
+        "prunedAge": {
+          "count": 3528,
+          "mean": 0.31643267679812837,
+          "median": 0.2720501912101452,
+          "newestDecile": 0.22704081632653061,
+          "newestQuartile": 0.4719387755102041,
+          "oldestQuartile": 0.04903628117913832
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q1 复现 dup-0.4"
+      },
+      "nofact-0.4": {
+        "recall": {
+          "1": 0.1565456152351112,
+          "2": 0.19518397293567252,
+          "4": 0.2502898414907936,
+          "8": 0.319976622213936
+        },
+        "evidenceSurvival": 1,
+        "distinct": 235.4,
+        "poolSize": 235.4,
+        "prunedAge": {
+          "count": 3528,
+          "mean": 0.31643267679812837,
+          "median": 0.2720501912101452,
+          "newestDecile": 0.22704081632653061,
+          "newestQuartile": 0.4719387755102041,
+          "oldestQuartile": 0.04903628117913832
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q1 复现 nofact-0.4"
+      },
+      "dup-0.3": {
+        "recall": {
+          "1": 0.1558230181129001,
+          "2": 0.1943904842522744,
+          "4": 0.24070067165275028,
+          "8": 0.31650184495816824
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 353.2,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.38672431899330223,
+          "median": 0.35129180204249355,
+          "newestDecile": 0.1963235294117647,
+          "newestQuartile": 0.40808823529411764,
+          "oldestQuartile": 0.1482843137254902
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q1 复现 dup-0.3"
+      },
+      "nofact-0.3": {
+        "recall": {
+          "1": 0.15236245769466406,
+          "2": 0.1943904842522744,
+          "4": 0.2410217686062457,
+          "8": 0.3149342047683673
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 176.6,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.38672431899330223,
+          "median": 0.35129180204249355,
+          "newestDecile": 0.1963235294117647,
+          "newestQuartile": 0.40808823529411764,
+          "oldestQuartile": 0.1482843137254902
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q1 复现 nofact-0.3"
+      }
+    },
+    "mechanism": {
+      "chrono,1": {
+        "recall": {
+          "1": 0.11454304015755001,
+          "2": 0.147207739947085,
+          "4": 0.18255175566216517,
+          "8": 0.22233523806119804
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 588.2,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q2/Q3 chrono|1"
+      },
+      "chrono,0.98": {
+        "recall": {
+          "1": 0.11273010201413766,
+          "2": 0.1501665553071881,
+          "4": 0.18555793385502742,
+          "8": 0.23813709719341652
+        },
+        "evidenceSurvival": 1,
+        "distinct": 576.5,
+        "poolSize": 576.5,
+        "prunedAge": {
+          "count": 117,
+          "mean": 0.00044149412660200087,
+          "median": 0.000017713013751203008,
+          "newestDecile": 1,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 chrono|0.98"
+      },
+      "chrono,0.95": {
+        "recall": {
+          "1": 0.12117640656802489,
+          "2": 0.15855141801333222,
+          "4": 0.1992158108295125,
+          "8": 0.26258781201966025
+        },
+        "evidenceSurvival": 1,
+        "distinct": 559,
+        "poolSize": 559,
+        "prunedAge": {
+          "count": 292,
+          "mean": 0.011521475970491897,
+          "median": 0.004256185917401098,
+          "newestDecile": 0.9691780821917808,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2/Q3 chrono|0.95"
+      },
+      "chrono,0.9": {
+        "recall": {
+          "1": 0.12289967416141478,
+          "2": 0.1572792126835068,
+          "4": 0.20738236719973177,
+          "8": 0.2800615707035885
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.027305319342683057,
+          "median": 0.012005167000706697,
+          "newestDecile": 0.9285714285714286,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2/Q3 chrono|0.9"
+      },
+      "chrono,0.8": {
+        "recall": {
+          "1": 0.13559276177834734,
+          "2": 0.17315226738339873,
+          "4": 0.22314673485266606,
+          "8": 0.29952262020866094
+        },
+        "evidenceSurvival": 1,
+        "distinct": 470.4,
+        "poolSize": 470.4,
+        "prunedAge": {
+          "count": 1178,
+          "mean": 0.07390678466859722,
+          "median": 0.061518522393090865,
+          "newestDecile": 0.6782682512733447,
+          "newestQuartile": 0.9736842105263158,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q2/Q3 chrono|0.8"
+      },
+      "chrono,0.7": {
+        "recall": {
+          "1": 0.14488215913152222,
+          "2": 0.18581617193301206,
+          "4": 0.23444730115685736,
+          "8": 0.3061260773915463
+        },
+        "evidenceSurvival": 1,
+        "distinct": 411.6,
+        "poolSize": 411.6,
+        "prunedAge": {
+          "count": 1766,
+          "mean": 0.11984605030694324,
+          "median": 0.10328662966276649,
+          "newestDecile": 0.4535673839184598,
+          "newestQuartile": 0.8980747451868629,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 chrono|0.7"
+      },
+      "chrono,0.6": {
+        "recall": {
+          "1": 0.15058544924517864,
+          "2": 0.189445997096841,
+          "4": 0.24292071864063125,
+          "8": 0.31485114668047876
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 352.8,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.17877172479330783,
+          "median": 0.15091487716024962,
+          "newestDecile": 0.34027187765505523,
+          "newestQuartile": 0.7073067119796091,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 chrono|0.6"
+      },
+      "chrono,0.5": {
+        "recall": {
+          "1": 0.15103417688682227,
+          "2": 0.19300288154079287,
+          "4": 0.24741201380196834,
+          "8": 0.32067554515548585
+        },
+        "evidenceSurvival": 1,
+        "distinct": 294.5,
+        "poolSize": 294.5,
+        "prunedAge": {
+          "count": 2937,
+          "mean": 0.24505458710431208,
+          "median": 0.20868426845233268,
+          "newestDecile": 0.2727272727272727,
+          "newestQuartile": 0.5669050051072523,
+          "oldestQuartile": 0.001361933946203609
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 chrono|0.5"
+      },
+      "chrono,0.4": {
+        "recall": {
+          "1": 0.1565456152351112,
+          "2": 0.19518397293567252,
+          "4": 0.2502898414907936,
+          "8": 0.319976622213936
+        },
+        "evidenceSurvival": 1,
+        "distinct": 235.4,
+        "poolSize": 235.4,
+        "prunedAge": {
+          "count": 3528,
+          "mean": 0.31643267679812837,
+          "median": 0.2720501912101452,
+          "newestDecile": 0.22704081632653061,
+          "newestQuartile": 0.4719387755102041,
+          "oldestQuartile": 0.04903628117913832
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 chrono|0.4"
+      },
+      "chrono,0.3": {
+        "recall": {
+          "1": 0.15236245769466406,
+          "2": 0.1943904842522744,
+          "4": 0.2410217686062457,
+          "8": 0.3149342047683673
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 176.6,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.38672431899330223,
+          "median": 0.35129180204249355,
+          "newestDecile": 0.1963235294117647,
+          "newestQuartile": 0.40808823529411764,
+          "oldestQuartile": 0.1482843137254902
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 chrono|0.3"
+      },
+      "lifo,1": {
+        "recall": {
+          "1": 0.11454304015755001,
+          "2": 0.147207739947085,
+          "4": 0.18255175566216517,
+          "8": 0.22233523806119804
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 588.2,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q2/Q3 lifo|1"
+      },
+      "lifo,0.98": {
+        "recall": {
+          "1": 0.11359065920516906,
+          "2": 0.14825906138133108,
+          "4": 0.18381757844697527,
+          "8": 0.2229218531449852
+        },
+        "evidenceSurvival": 1,
+        "distinct": 576.5,
+        "poolSize": 576.5,
+        "prunedAge": {
+          "count": 117,
+          "mean": 0.9966290888995657,
+          "median": 0.9999738466366774,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 1
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2/Q3 lifo|0.98"
+      },
+      "lifo,0.95": {
+        "recall": {
+          "1": 0.11266973660051398,
+          "2": 0.14681182298720233,
+          "4": 0.18247006472603144,
+          "8": 0.22347197216111853
+        },
+        "evidenceSurvival": 1,
+        "distinct": 559,
+        "poolSize": 559,
+        "prunedAge": {
+          "count": 292,
+          "mean": 0.9763634343679862,
+          "median": 0.9999025784243684,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 1
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2/Q3 lifo|0.95"
+      },
+      "lifo,0.9": {
+        "recall": {
+          "1": 0.11190199573299711,
+          "2": 0.14514407575209226,
+          "4": 0.18097340952246524,
+          "8": 0.2235291509546124
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.9283990538810325,
+          "median": 0.9601427668908347,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0.9268707482993197
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2/Q3 lifo|0.9"
+      },
+      "lifo,0.8": {
+        "recall": {
+          "1": 0.11201316575286946,
+          "2": 0.14650835286208025,
+          "4": 0.18347715625218516,
+          "8": 0.22227919537522306
+        },
+        "evidenceSurvival": 1,
+        "distinct": 470.4,
+        "poolSize": 470.4,
+        "prunedAge": {
+          "count": 1178,
+          "mean": 0.846087755418539,
+          "median": 0.874845047904816,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0.7376910016977929
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 lifo|0.8"
+      },
+      "lifo,0.7": {
+        "recall": {
+          "1": 0.11082988191649454,
+          "2": 0.14351552316190988,
+          "4": 0.1800810330409717,
+          "8": 0.21725032254732152
+        },
+        "evidenceSurvival": 1,
+        "distinct": 411.6,
+        "poolSize": 411.6,
+        "prunedAge": {
+          "count": 1766,
+          "mean": 0.7645962710710625,
+          "median": 0.7927478386125801,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0.5503963759909399
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 lifo|0.7"
+      },
+      "lifo,0.6": {
+        "recall": {
+          "1": 0.10977126301351348,
+          "2": 0.14598091858168122,
+          "4": 0.18423066417246553,
+          "8": 0.21649747906905556
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 352.8,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.6848504934405305,
+          "median": 0.6723615004748883,
+          "newestDecile": 0,
+          "newestQuartile": 0.008071367884451997,
+          "oldestQuartile": 0.41716227697536107
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410047,
+        "label": "Q2/Q3 lifo|0.6"
+      },
+      "lifo,0.5": {
+        "recall": {
+          "1": 0.11066366768052276,
+          "2": 0.14732870799949455,
+          "4": 0.18524495816686593,
+          "8": 0.2195482464693256
+        },
+        "evidenceSurvival": 1,
+        "distinct": 294.5,
+        "poolSize": 294.5,
+        "prunedAge": {
+          "count": 2937,
+          "mean": 0.6052305542633736,
+          "median": 0.6089875265508772,
+          "newestDecile": 0.0020429009193054137,
+          "newestQuartile": 0.08852570650323459,
+          "oldestQuartile": 0.33435478379298605
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410047,
+        "label": "Q2/Q3 lifo|0.5"
+      },
+      "lifo,0.4": {
+        "recall": {
+          "1": 0.11436650501497203,
+          "2": 0.1510462812539037,
+          "4": 0.18712474676191307,
+          "8": 0.22351104075052616
+        },
+        "evidenceSurvival": 1,
+        "distinct": 235.4,
+        "poolSize": 235.4,
+        "prunedAge": {
+          "count": 3528,
+          "mean": 0.5321746656776455,
+          "median": 0.5549888993502342,
+          "newestDecile": 0.0391156462585034,
+          "newestQuartile": 0.21116780045351474,
+          "oldestQuartile": 0.27834467120181405
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410047,
+        "label": "Q2/Q3 lifo|0.4"
+      },
+      "lifo,0.3": {
+        "recall": {
+          "1": 0.11671411119748465,
+          "2": 0.16037236961733342,
+          "4": 0.20145752110675436,
+          "8": 0.23766983908265185
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 176.6,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.4720675307266858,
+          "median": 0.4290493912534469,
+          "newestDecile": 0.11666666666666667,
+          "newestQuartile": 0.3156862745098039,
+          "oldestQuartile": 0.24068627450980393
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 lifo|0.3"
+      },
+      "shuffled,1": {
+        "recall": {
+          "1": 0.11454304015755001,
+          "2": 0.147207739947085,
+          "4": 0.18255175566216517,
+          "8": 0.22233523806119804
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 588.2,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.03765690376569042,
+        "label": "Q2/Q3 shuffled|1"
+      },
+      "shuffled,0.98": {
+        "recall": {
+          "1": 0.11451923693089039,
+          "2": 0.14793665428313435,
+          "4": 0.18433250011145336,
+          "8": 0.221285839769928
+        },
+        "evidenceSurvival": 1,
+        "distinct": 576.5,
+        "poolSize": 576.5,
+        "prunedAge": {
+          "count": 117,
+          "mean": 0.43365332691556846,
+          "median": 0.3767854092289696,
+          "newestDecile": 0.13675213675213677,
+          "newestQuartile": 0.3162393162393162,
+          "oldestQuartile": 0.1623931623931624
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 shuffled|0.98"
+      },
+      "shuffled,0.95": {
+        "recall": {
+          "1": 0.11482977762285103,
+          "2": 0.14869099923936283,
+          "4": 0.1853780884538433,
+          "8": 0.22266059962739745
+        },
+        "evidenceSurvival": 1,
+        "distinct": 559,
+        "poolSize": 559,
+        "prunedAge": {
+          "count": 292,
+          "mean": 0.43053754552526613,
+          "median": 0.36900676609119054,
+          "newestDecile": 0.1541095890410959,
+          "newestQuartile": 0.363013698630137,
+          "oldestQuartile": 0.2089041095890411
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410047,
+        "label": "Q2/Q3 shuffled|0.95"
+      },
+      "shuffled,0.9": {
+        "recall": {
+          "1": 0.1137427703243405,
+          "2": 0.14862829639947783,
+          "4": 0.185886161287832,
+          "8": 0.22359564286935618
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.4367888106993934,
+          "median": 0.3767680365058821,
+          "newestDecile": 0.17517006802721088,
+          "newestQuartile": 0.36904761904761907,
+          "oldestQuartile": 0.2227891156462585
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 shuffled|0.9"
+      },
+      "shuffled,0.8": {
+        "recall": {
+          "1": 0.11528776024136085,
+          "2": 0.15315163519070676,
+          "4": 0.1918001130820127,
+          "8": 0.22734337383733486
+        },
+        "evidenceSurvival": 1,
+        "distinct": 470.4,
+        "poolSize": 470.4,
+        "prunedAge": {
+          "count": 1178,
+          "mean": 0.43285488119716475,
+          "median": 0.3859499774660002,
+          "newestDecile": 0.18505942275042445,
+          "newestQuartile": 0.3709677419354839,
+          "oldestQuartile": 0.22241086587436332
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 shuffled|0.8"
+      },
+      "shuffled,0.7": {
+        "recall": {
+          "1": 0.12079389700758239,
+          "2": 0.16145059519662328,
+          "4": 0.1891048310596609,
+          "8": 0.23197749680075724
+        },
+        "evidenceSurvival": 1,
+        "distinct": 411.6,
+        "poolSize": 411.6,
+        "prunedAge": {
+          "count": 1766,
+          "mean": 0.43326400824429384,
+          "median": 0.39396413690863974,
+          "newestDecile": 0.18516421291053228,
+          "newestQuartile": 0.3635334088335221,
+          "oldestQuartile": 0.217440543601359
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 shuffled|0.7"
+      },
+      "shuffled,0.6": {
+        "recall": {
+          "1": 0.12066751301110826,
+          "2": 0.16302012756203194,
+          "4": 0.19297829435453423,
+          "8": 0.23019479269137366
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 352.8,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.4300720635195295,
+          "median": 0.385961759949571,
+          "newestDecile": 0.1937128292268479,
+          "newestQuartile": 0.37892948173322005,
+          "oldestQuartile": 0.22047578589634664
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 shuffled|0.6"
+      },
+      "shuffled,0.5": {
+        "recall": {
+          "1": 0.12750525195151158,
+          "2": 0.16439520009603018,
+          "4": 0.1933272066953345,
+          "8": 0.24295280455686147
+        },
+        "evidenceSurvival": 1,
+        "distinct": 294.5,
+        "poolSize": 294.5,
+        "prunedAge": {
+          "count": 2937,
+          "mean": 0.43165854389838765,
+          "median": 0.38599121615849796,
+          "newestDecile": 0.1906707524685053,
+          "newestQuartile": 0.3769152196118488,
+          "oldestQuartile": 0.21961184882533197
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 shuffled|0.5"
+      },
+      "shuffled,0.4": {
+        "recall": {
+          "1": 0.13587976622192044,
+          "2": 0.17005422721814084,
+          "4": 0.21594762337525908,
+          "8": 0.2684510896366338
+        },
+        "evidenceSurvival": 1,
+        "distinct": 235.4,
+        "poolSize": 235.4,
+        "prunedAge": {
+          "count": 3528,
+          "mean": 0.4326678126135529,
+          "median": 0.39399019599327095,
+          "newestDecile": 0.1850907029478458,
+          "newestQuartile": 0.37443310657596374,
+          "oldestQuartile": 0.21882086167800455
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2/Q3 shuffled|0.4"
+      },
+      "shuffled,0.3": {
+        "recall": {
+          "1": 0.13937725715239263,
+          "2": 0.17765102550750217,
+          "4": 0.22340677079316745,
+          "8": 0.29374671914490563
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 176.6,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.43345541075563077,
+          "median": 0.3945923672128964,
+          "newestDecile": 0.1821078431372549,
+          "newestQuartile": 0.37450980392156863,
+          "oldestQuartile": 0.21911764705882353
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 shuffled|0.3"
+      },
+      "salJitter,1": {
+        "recall": {
+          "1": 0.11400314006380516,
+          "2": 0.14247004709250716,
+          "4": 0.17690066628681345,
+          "8": 0.21813304260116886
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 588.2,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 salJitter|1"
+      },
+      "salJitter,0.9": {
+        "recall": {
+          "1": 0.11325602866534012,
+          "2": 0.1427065530831662,
+          "4": 0.17879572873681845,
+          "8": 0.2134948246505906
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.43833358533012157,
+          "median": 0.39726931563165935,
+          "newestDecile": 0.1598639455782313,
+          "newestQuartile": 0.3622448979591837,
+          "oldestQuartile": 0.21428571428571427
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 salJitter|0.9"
+      },
+      "salJitter,0.6": {
+        "recall": {
+          "1": 0.12154363380455573,
+          "2": 0.15746747584536808,
+          "4": 0.19674774082685995,
+          "8": 0.23129767477941637
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 352.8,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.4325454351905208,
+          "median": 0.39463815228113697,
+          "newestDecile": 0.18139337298215802,
+          "newestQuartile": 0.36873406966864913,
+          "oldestQuartile": 0.2107051826677995
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2/Q3 salJitter|0.6"
+      },
+      "salJitter,0.3": {
+        "recall": {
+          "1": 0.13662728192680124,
+          "2": 0.17535449513123647,
+          "4": 0.21559625993573453,
+          "8": 0.2766604988692467
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 176.6,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.4332711298849689,
+          "median": 0.39460069177075835,
+          "newestDecile": 0.1821078431372549,
+          "newestQuartile": 0.3737745098039216,
+          "oldestQuartile": 0.2161764705882353
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2/Q3 salJitter|0.3"
+      }
+    },
+    "placebo": {
+      "0.9": {
+        "recall": {
+          "1": 0.12289967416141478,
+          "2": 0.1572792126835068,
+          "4": 0.20738236719973177,
+          "8": 0.2800615707035885
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.027305319342683057,
+          "median": 0.012005167000706697,
+          "newestDecile": 0.9285714285714286,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.037656903765690364,
+        "label": "Q2 残余 placebo q=0.9"
+      },
+      "0.6": {
+        "recall": {
+          "1": 0.15058544924517864,
+          "2": 0.189445997096841,
+          "4": 0.24292071864063125,
+          "8": 0.31485114668047876
+        },
+        "evidenceSurvival": 1,
+        "distinct": 352.8,
+        "poolSize": 352.8,
+        "prunedAge": {
+          "count": 2354,
+          "mean": 0.17877172479330766,
+          "median": 0.15091487716024962,
+          "newestDecile": 0.34027187765505523,
+          "newestQuartile": 0.7073067119796091,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0.04184100418410042,
+        "label": "Q2 残余 placebo q=0.6"
+      },
+      "0.3": {
+        "recall": {
+          "1": 0.15236245769466406,
+          "2": 0.1943904842522744,
+          "4": 0.2410217686062457,
+          "8": 0.3149342047683673
+        },
+        "evidenceSurvival": 0.9791004437273095,
+        "distinct": 176.6,
+        "poolSize": 176.6,
+        "prunedAge": {
+          "count": 4080,
+          "mean": 0.38672431899330223,
+          "median": 0.35129180204249355,
+          "newestDecile": 0.1963235294117647,
+          "newestQuartile": 0.40808823529411764,
+          "oldestQuartile": 0.1482843137254902
+        },
+        "prunedGold": 36,
+        "crossCheckMaxAbsDiff": 0.04602510460251047,
+        "label": "Q2 残余 placebo q=0.3"
+      }
+    },
+    "norec": {
+      "chrono|1": {
+        "recall": {
+          "1": 0.12418636899847275,
+          "2": 0.17978816129916847,
+          "4": 0.22643646455942762,
+          "8": 0.2750093695045558
+        },
+        "evidenceSurvival": 1,
+        "distinct": 588.2,
+        "poolSize": 588.2,
+        "prunedAge": {
+          "count": 0,
+          "mean": 0,
+          "median": 0,
+          "newestDecile": 0,
+          "newestQuartile": 0,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0,
+        "label": "机制判决 recency=0 chrono q=1"
+      },
+      "chrono|0.9": {
+        "recall": {
+          "1": 0.15009299402200188,
+          "2": 0.21701351981659278,
+          "4": 0.2726372957940183,
+          "8": 0.323944504049154
+        },
+        "evidenceSurvival": 1,
+        "distinct": 529.4,
+        "poolSize": 529.4,
+        "prunedAge": {
+          "count": 588,
+          "mean": 0.027305319342683057,
+          "median": 0.012005167000706697,
+          "newestDecile": 0.9285714285714286,
+          "newestQuartile": 1,
+          "oldestQuartile": 0
+        },
+        "prunedGold": 0,
+        "crossCheckMaxAbsDiff": 0,
+        "label": "机制判决 recency=0 chrono q=0.9"
+      }
+    }
+  },
+  "verdicts": [
+    "【Q1 逐位比对：本次复现 vs p2-index-duplication-confusion-2026-09-15.json】",
+    "  oracle-q1-dup        pool 1176.4000 vs 1176.4000 (Δ+0.0000)   R@8 0.2224 vs 0.0993 (Δ+0.1231)  ❌",
+    "  oracle-q1-nofact     pool 588.2000 vs 588.2000 (Δ+0.0000)   R@8 0.2223 vs 0.1123 (Δ+0.1100)  ❌",
+    "  oracle-q0.9-dup      pool 1058.8000 vs 1058.8000 (Δ+0.0000)   R@8 0.2799 vs 0.2827 (Δ-0.0027)  ❌",
+    "  oracle-q0.9-nofact   pool 529.4000 vs 529.4000 (Δ+0.0000)   R@8 0.2801 vs 0.3524 (Δ-0.0723)  ❌",
+    "  oracle-q0.8-dup      pool 940.8000 vs 940.8000 (Δ+0.0000)   R@8 0.2990 vs 0.2837 (Δ+0.0153)  ❌",
+    "  oracle-q0.8-nofact   pool 470.4000 vs 470.4000 (Δ+0.0000)   R@8 0.2995 vs 0.3540 (Δ-0.0545)  ❌",
+    "  oracle-q0.7-dup      pool 823.2000 vs 823.2000 (Δ+0.0000)   R@8 0.3056 vs 0.2832 (Δ+0.0224)  ❌",
+    "  oracle-q0.7-nofact   pool 411.6000 vs 411.6000 (Δ+0.0000)   R@8 0.3061 vs 0.3603 (Δ-0.0542)  ❌",
+    "  oracle-q0.6-dup      pool 705.6000 vs 705.6000 (Δ+0.0000)   R@8 0.3143 vs 0.2788 (Δ+0.0355)  ❌",
+    "  oracle-q0.6-nofact   pool 352.8000 vs 352.8000 (Δ+0.0000)   R@8 0.3149 vs 0.3588 (Δ-0.0440)  ❌",
+    "  oracle-q0.5-dup      pool 589.0000 vs 589.0000 (Δ+0.0000)   R@8 0.3216 vs 0.2819 (Δ+0.0397)  ❌",
+    "  oracle-q0.5-nofact   pool 294.5000 vs 294.5000 (Δ+0.0000)   R@8 0.3207 vs 0.3611 (Δ-0.0404)  ❌",
+    "  oracle-q0.4-dup      pool 470.8000 vs 470.8000 (Δ+0.0000)   R@8 0.3209 vs 0.2832 (Δ+0.0377)  ❌",
+    "  oracle-q0.4-nofact   pool 235.4000 vs 235.4000 (Δ+0.0000)   R@8 0.3200 vs 0.3649 (Δ-0.0449)  ❌",
+    "  oracle-q0.3-dup      pool 353.2000 vs 353.2000 (Δ+0.0000)   R@8 0.3165 vs 0.3153 (Δ+0.0013)  ❌",
+    "  oracle-q0.3-nofact   pool 176.6000 vs 176.6000 (Δ+0.0000)   R@8 0.3149 vs 0.3922 (Δ-0.0772)  ❌",
+    "  ⇒ ⚠️ 存在不一致，须停下排查。",
+    "",
+    "【判据 1】池规模是否在策略间严格固定",
+    "  q=1: distinct = 588.2 / 588.2 / 588.2 ⇒ 跨策略极差 0.0000",
+    "  q=0.98: distinct = 576.5 / 576.5 / 576.5 ⇒ 跨策略极差 0.0000",
+    "  q=0.95: distinct = 559.0 / 559.0 / 559.0 ⇒ 跨策略极差 0.0000",
+    "  q=0.9: distinct = 529.4 / 529.4 / 529.4 ⇒ 跨策略极差 0.0000",
+    "  q=0.8: distinct = 470.4 / 470.4 / 470.4 ⇒ 跨策略极差 0.0000",
+    "  q=0.7: distinct = 411.6 / 411.6 / 411.6 ⇒ 跨策略极差 0.0000",
+    "  q=0.6: distinct = 352.8 / 352.8 / 352.8 ⇒ 跨策略极差 0.0000",
+    "  q=0.5: distinct = 294.5 / 294.5 / 294.5 ⇒ 跨策略极差 0.0000",
+    "  q=0.4: distinct = 235.4 / 235.4 / 235.4 ⇒ 跨策略极差 0.0000",
+    "  q=0.3: distinct = 176.6 / 176.6 / 176.6 ⇒ 跨策略极差 0.0000",
+    "  ⇒ 全部 q 的跨策略极差最大值 = 0.0000",
+    "  **池规模被严格固定**（`k` 只由条数 × q 决定，见 src/store.ts:803）⇒「池子大小」这一维度在本路径上已被结构性消除。",
+    "",
+    "【判据 2】q=1 → q=0.9 一步的 recall@8 跳变（池规模相同，只差剪掉谁）",
+    "  chrono     0.2223 → 0.2801   跳变 -0.0577",
+    "  lifo       0.2223 → 0.2235   跳变 -0.0012",
+    "  shuffled   0.2223 → 0.2236   跳变 -0.0013",
+    "  salJitter  0.2181 → 0.2135   跳变 +0.0046",
+    "",
+    "【判据 2b】q=1 附近加细（判断是连续量变还是台阶）",
+    "  chrono     q=1: 0.2223  q=0.98: 0.2381  q=0.95: 0.2626  q=0.9: 0.2801",
+    "  lifo       q=1: 0.2223  q=0.98: 0.2229  q=0.95: 0.2235  q=0.9: 0.2235",
+    "  shuffled   q=1: 0.2223  q=0.98: 0.2213  q=0.95: 0.2227  q=0.9: 0.2236",
+    "",
+    "【判据 3】被剪项的年龄分布（0 = 最新）",
+    "  chrono     q=0.9：被剪非证据 588 条，平均年龄 0.027，中位 0.012，最新 10% 占 92.9%，最新 25% 占 100.0%，最老 25% 占 0.0%",
+    "  lifo       q=0.9：被剪非证据 588 条，平均年龄 0.928，中位 0.960，最新 10% 占 0.0%，最新 25% 占 0.0%，最老 25% 占 92.7%",
+    "  shuffled   q=0.9：被剪非证据 588 条，平均年龄 0.437，中位 0.377，最新 10% 占 17.5%，最新 25% 占 36.9%，最老 25% 占 22.3%",
+    "",
+    "【判据 4】旧口径（改 salience 数值破并列） vs 本脚本（只改插入序）",
+    "  q=0.9: salJitter R@8 0.2135 vs shuffled R@8 0.2236 ⇒ 差 -0.0101",
+    "  q=0.6: salJitter R@8 0.2313 vs shuffled R@8 0.2302 ⇒ 差 +0.0011",
+    "  q=0.3: salJitter R@8 0.2767 vs shuffled R@8 0.2937 ⇒ 差 -0.0171",
+    "  ⇒ 该差即 durability/decay 混淆的量级；`diag-oracle-tiebreak.ts` 把它一并算进了「剪枝顺序」。",
+    "",
+    "【判据 5】最终判读",
+    "  · chrono（剪掉最近）跳 -0.0577；lifo（剪掉最老）跳 -0.0012；shuffled（随机）跳 -0.0013。",
+    "  · 三者池规模逐条相同 ⇒ 跳变**不能**归因于池子大小。",
+    "  · 被剪项年龄：chrono 平均 0.027（最新 10% 占 92.9%）、",
+    "    lifo 平均 0.928（最老 25% 占 92.7%）、shuffled 平均 0.437（最新 10% 占 17.5%）",
+    "  ⇒ 跳变量与「剪掉的是不是最近那批」单调对应，与池规模无关。"
+  ],
+  "provenance": {
+    "schema": "aijade.run_provenance@1",
+    "scoreMode": "standardized",
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0.3,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "gitSha": "ca54f0ee5888d9555973db8a355cb906f85b3e53",
+    "gitShaAtRun": "ca54f0ee5888d9555973db8a355cb906f85b3e53",
+    "gitDirty": true,
+    "generatedAt": "2026-10-03T03:42:48.099Z"
+  }
+}
