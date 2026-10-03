@@ -142,6 +142,11 @@ function ageFraction(conv: LocomoConversation, createdAt: number): number {
  *     1-based 名次，名次 ≤ K 即命中。
  * 二者若一致，同时验证了 recall 数值与「`retrieve` 的 top-k 是前缀」这一性质。
  * 判定条件与 `measure()` 对齐：分数必须严格高于 `retrievalFloor`。
+ *
+ * 每个查询对每个 K **最多计一次**（与 `measure()` 的 `hitAtK` 语义一致）：
+ * 一个查询若有多条证据同时进榜，`measure()` 只记 1 次命中，若按「每条证据都加」
+ * 就会把多证据查询重复计入，分母不变分子偏大 ⇒ 出现 K 越大偏差越大的假阳性。
+ * （`fact_<id>` 与 `id` 同时在候选集里，这种重复是真实存在的。）
  */
 function independentRecall(
   mem: { retrieve: (q: string, k: number, bump: boolean, weights?: Partial<RetrievalWeights>) => { id: string, score: number }[], config: { retrievalFloor: number } },
@@ -159,13 +164,14 @@ function independentRecall(
       cands.add(`fact_${e}`)
     }
     const full = mem.retrieve(q.question, 9999, false, weights)
-    for (let i = 0; i < full.length; i++) {
-      const c = full[i]
-      if (!cands.has(c.id) || !(c.score > floor))
-        continue
-      for (const k of KS) {
-        if (i + 1 <= k)
+    for (const k of KS) {
+      // 该 K 下只要有一条证据落在前 k 名即算命中，至多计一次（对齐 measure 的 hitAtK）。
+      for (let i = 0; i < full.length && i < k; i++) {
+        const c = full[i]
+        if (cands.has(c.id) && c.score > floor) {
           covered[k]++
+          break
+        }
       }
     }
   }
