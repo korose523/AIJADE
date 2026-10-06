@@ -148,6 +148,54 @@ const ARMS: Arm[] = [
     scoreMode: 'standardized',
     primary: false,
   },
+  // ── 溯源补跑臂（2026-10-03）────────────────────────────────────────────
+  // 这 5 个权重组合的 recall@8 原本只存在于 `p2-weight-ablation-2026-09-19.json`，
+  // 那份产物早于溯源机制（`30ffde2`），无 `provenance` 块 —— 数字无法归属到任何
+  // commit。它们在 `diag-weight-ablation.ts` 的 `WCONFIGS` 里已有权威定义，此处
+  // **逐字复刻**其权重，以补出带溯源的等价数字。口径与上方四臂完全一致：
+  // 同一 `RERANK_POOL` 候选集、同一共用 `storeScore` floor 判据。
+  // `str-only` / `rec-only` 支撑"单独 strength 或 recency 不携带相关性信息"这一
+  // 结论性主张，因此必须有一份可溯源的数字来背书。
+  {
+    key: 'sim+ctx',
+    note: '相似度 + 上下文（复刻 diag-weight-ablation 的 sim+ctx）',
+    combine: 'additive-parts',
+    weights: { ...ZERO_W, similarity: 1, context: 0.4 },
+    scoreMode: 'additive',
+    primary: true,
+  },
+  {
+    key: 'sim+str',
+    note: '相似度 + 强度（去新近项；复刻 diag-weight-ablation 的 sim+str）',
+    combine: 'additive-parts',
+    weights: { ...ZERO_W, similarity: 1, strength: 0.6 },
+    scoreMode: 'additive',
+    primary: true,
+  },
+  {
+    key: 'sim-heavy',
+    note: '相似度 ×3（复刻 diag-weight-ablation 的 sim-heavy）',
+    combine: 'additive-parts',
+    weights: { ...ZERO_W, similarity: 3, strength: 0.6, recency: 0.3, context: 0.4 },
+    scoreMode: 'additive',
+    primary: true,
+  },
+  {
+    key: 'str-only',
+    note: '只用强度（极端对照；复刻 diag-weight-ablation 的 str-only）',
+    combine: 'additive-parts',
+    weights: { ...ZERO_W, strength: 1 },
+    scoreMode: 'additive',
+    primary: true,
+  },
+  {
+    key: 'rec-only',
+    note: '只用新近（极端对照，受池截断影响最大；复刻 diag-weight-ablation 的 rec-only）',
+    combine: 'additive-parts',
+    weights: { ...ZERO_W, recency: 1 },
+    scoreMode: 'additive',
+    primary: true,
+  },
 ]
 
 interface PoolItem {
