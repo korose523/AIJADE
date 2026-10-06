@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T00:36:26.514Z",
+  "generatedAt": "2026-10-03T02:05:19.563Z",
   "experiment": "j5-rrf-floor-control",
   "calibrationFamily": "B-end-to-end",
   "corpus": {
@@ -16,6 +16,7 @@
     8
   ],
   "questions": 1986,
+  "convLimit": null,
   "poolSizeMean": 600.6062437059416,
   "floor": 0.02,
   "floorConfigInArms": 0,
@@ -25,7 +26,174 @@
     "ownScore": "(C) rel = gold AND this arm own score > 0.02 (reproduces the contaminated condition)"
   },
   "fusedPrefixInvarianceAsserts": 132,
-  "scoreDomainNote": "每臂的 ownScoreDomain 是**该臂自己分数**在检索窗口内的实测分布。(A) rank-only 不看分数，故无分数域；(B) 的判据分数域等于 store-default 臂的 ownScoreDomain（参考跑同源）；(C) 的判据分数域等于各臂自己的 ownScoreDomain。对照 floor = 0.02：若该臂 ownScoreDomain 的 min < 0.02 < max，则 floor 落在其域内。",
+  "scoreDomainNote": "每臂的 ownScoreDomain 是**该臂自己分数**在检索窗口内的实测分布。(A) rank-only 不看分数，故无分数域；(B) 的判据分数域等于 store-default 臂的 ownScoreDomain（参考跑同源）；(C) 的判据分数域等于各臂自己的 ownScoreDomain。对照 floor = 0.02：若该臂ownScoreDomain 的 min < 0.02 < max，则 floor 落在其域内。",
+  "rrfDampingNote": "rrfDamping 把分数域分位数 S 反解成「至少多少路RRF 组件同时排进前列才可能凑出 S」：单路贡献上界 w_c/(60+1)，故须权重和 >= 61×S。所用分量与 RRF_K 在运行时对照 src/retrieval.ts 校验。若 max 分位需要全部 4 路，则 RRF 低分来自 1/(60+rank) 的结构性阻尼，而非「只有单路组件在起作用」。",
+  "contaminationDriver": {
+    "note": "污染量(= (A) 减 (C)) 的因子分解：判死率 × 基数（top-8 内金标准候选数 ÷ 总题数）。**适用边界**：该方向性仅在 floor 对该臂实际生效时成立（其分数域跨越 floor），不可外推为「R@8 越高污染越大」—— store-default 的 R@8 最高但污染为 0，即为反例。",
+    "arms": {
+      "store-default": {
+        "rAtMaxK_rankOnly": 0.20644511581067473,
+        "contamination": 0,
+        "killRate": 0,
+        "baseCandidates": 425,
+        "shareAboveFloor": 1,
+        "floorActive": false
+      },
+      "rrf-default": {
+        "rAtMaxK_rankOnly": 0.15357502517623364,
+        "contamination": 0.07905337361530716,
+        "killRate": 0.5253164556962026,
+        "baseCandidates": 316,
+        "shareAboveFloor": 0.019311849613964416,
+        "floorActive": true
+      },
+      "rrf-corrected": {
+        "rAtMaxK_rankOnly": 0.175730110775428,
+        "contamination": 0.1148036253776435,
+        "killRate": 0.6611570247933884,
+        "baseCandidates": 363,
+        "shareAboveFloor": 0.007254112118160456,
+        "floorActive": true
+      },
+      "additive-default": {
+        "rAtMaxK_rankOnly": 0.08207452165156093,
+        "contamination": 0,
+        "killRate": 0,
+        "baseCandidates": 166,
+        "shareAboveFloor": 1,
+        "floorActive": false
+      }
+    },
+    "rrfPairDecomposition": {
+      "rateMultiple": 1.2585880712934383,
+      "baseMultiple": 1.1487341772151898,
+      "ceilingRatio": 1.1500000000000001,
+      "note": "⚠️「判死率倍数 × 基数倍数」是**定义的展开**，不是被数据验证的机制模型 —— 代数上基数比完全约掉，恒等于判死候选数之比；它贴近题级实测污染量比，仅因两臂候选/题比相近（一题多金标时候选数≠题数）。证据分层：承重项是 (A) rank-only 的 R@8（判据无关、不受 floor 污染）；topKGold 基数是**候选条数、与判据耦合**（只看位置不看分数），仅作辅助描述，不作排序质量的证据。天花板比远小于实测污染量比且方向相反 ⇒ 天花板不是主因。",
+      "loadBearingEvidence": {
+        "metric": "R@8 under criterion (A) rank-only",
+        "note": "(A) 不看分数、不受 floor 污染，是度量 RRF 排序质量的判据无关量。",
+        "rrfDefault": 0.15357502517623364,
+        "rrfCorrected": 0.175730110775428
+      },
+      "auxiliaryEvidence": {
+        "candidatePerQuestionRatio": {
+          "rrfDefault": 1.057324840764331,
+          "rrfCorrected": 1.0526315789473684,
+          "note": "两臂几乎相同 ⇒ 基数差异不是「一题多金标」结构造成的；这一条是为基数的可比性背书。"
+        }
+      }
+    }
+  },
+  "floorBiasLayers": {
+    "rrf-default": {
+      "dampingLayer": {
+        "singleRouteCeiling": 0.01639344262295082,
+        "minRoutes": 2,
+        "note": "单路候选分数上界低于 floor，一律不过线"
+      },
+      "similarityFavourLayer": {
+        "twoRouteCombos": [
+          {
+            "routes": "similarity+strength",
+            "optimisticScore": 0.02622950819672131,
+            "passes": true
+          },
+          {
+            "routes": "similarity+recency",
+            "optimisticScore": 0.021311475409836068,
+            "passes": true
+          },
+          {
+            "routes": "similarity+context",
+            "optimisticScore": 0.022950819672131147,
+            "passes": true
+          },
+          {
+            "routes": "strength+recency",
+            "optimisticScore": 0.014754098360655736,
+            "passes": false
+          },
+          {
+            "routes": "strength+context",
+            "optimisticScore": 0.01639344262295082,
+            "passes": false
+          },
+          {
+            "routes": "recency+context",
+            "optimisticScore": 0.011475409836065573,
+            "passes": false
+          }
+        ],
+        "passingWithoutSimilarity": [],
+        "allPassingContainSimilarity": true,
+        "note": "枚举全部两路组合（都假设 rank=1）。过 floor 的组合全部含 similarity；纯非相似度通道即便都排 rank=1 也过不了线 ⇒ own-score 口径系统性偏袒 similarity 通道。"
+      }
+    },
+    "rrf-corrected": {
+      "dampingLayer": {
+        "singleRouteCeiling": 0.01639344262295082,
+        "minRoutes": 2,
+        "note": "单路候选分数上界低于 floor，一律不过线"
+      },
+      "similarityFavourLayer": {
+        "twoRouteCombos": [
+          {
+            "routes": "similarity+strength",
+            "optimisticScore": 0.02622950819672131,
+            "passes": true
+          },
+          {
+            "routes": "similarity+recency",
+            "optimisticScore": 0.01639344262295082,
+            "passes": false
+          },
+          {
+            "routes": "similarity+context",
+            "optimisticScore": 0.022950819672131147,
+            "passes": true
+          },
+          {
+            "routes": "strength+recency",
+            "optimisticScore": 0.009836065573770491,
+            "passes": false
+          },
+          {
+            "routes": "strength+context",
+            "optimisticScore": 0.01639344262295082,
+            "passes": false
+          },
+          {
+            "routes": "recency+context",
+            "optimisticScore": 0.006557377049180328,
+            "passes": false
+          }
+        ],
+        "passingWithoutSimilarity": [],
+        "allPassingContainSimilarity": true,
+        "note": "枚举全部两路组合（都假设 rank=1）。过 floor 的组合全部含 similarity；纯非相似度通道即便都排 rank=1 也过不了线 ⇒ own-score 口径系统性偏袒 similarity 通道。"
+      }
+    }
+  },
+  "floorGap": {
+    "rrf-default": {
+      "floor": 0.02,
+      "singleRouteCeiling": 0.01639344262295082,
+      "twoRouteCeiling": 0.02622950819672131,
+      "minRoutesToPass": 2,
+      "gapHolds": true,
+      "counterpartArmMinScore": 0.11134114381604793,
+      "note": "单路绝对上界 =max(w_c)/(K+1)。floor 落在单路与双路上界之间时，任何仅由单路支撑的 RRF 候选在数学上不可能过 floor（一次都不可能），故 RRF 臂的「过 floor」等价于「至少 minRoutesToPass 路组件共同支持」这一纯计数条件。注意：这是污染的**必要条件**而非充分条件——夹缝位置相同的两臂污染量可以差很多（rrf-default 与 rrf-corrected 夹缝一字不差，污染量 +0.0791 vs +0.1148），污染量大小取决于天花板高度 Σw/(K+1) 与分数分布形状，不可由夹缝位置反推。"
+    },
+    "rrf-corrected": {
+      "floor": 0.02,
+      "singleRouteCeiling": 0.01639344262295082,
+      "twoRouteCeiling": 0.02622950819672131,
+      "minRoutesToPass": 2,
+      "gapHolds": true,
+      "counterpartArmMinScore": 0.11134114381604793,
+      "note": "单路绝对上界 =max(w_c)/(K+1)。floor 落在单路与双路上界之间时，任何仅由单路支撑的 RRF 候选在数学上不可能过 floor（一次都不可能），故 RRF 臂的「过 floor」等价于「至少 minRoutesToPass 路组件共同支持」这一纯计数条件。注意：这是污染的**必要条件**而非充分条件——夹缝位置相同的两臂污染量可以差很多（rrf-default 与 rrf-corrected 夹缝一字不差，污染量 +0.0791 vs +0.1148），污染量大小取决于天花板高度 Σw/(K+1) 与分数分布形状，不可由夹缝位置反推。"
+    }
+  },
   "arms": [
     {
       "arm": "store-default",
@@ -83,7 +251,8 @@
         "topKGold": 425,
         "topKGoldKilledByOwnFloor": 0,
         "topKGoldKilledBySharedFloor": 0
-      }
+      },
+      "rrfDamping": null
     },
     {
       "arm": "rrf-default",
@@ -141,6 +310,39 @@
         "topKGold": 316,
         "topKGoldKilledByOwnFloor": 166,
         "topKGoldKilledBySharedFloor": 0
+      },
+      "rrfDamping": {
+        "sumWeights": 2.3000000000000003,
+        "theoreticalMax": 0.03770491803278689,
+        "observedMax": 0.0344932895593313,
+        "headroom": 0.0032116284734555883,
+        "quantiles": {
+          "min": {
+            "score": 0.005856847673974782,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "p25": {
+            "score": 0.007730805691458046,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "median": {
+            "score": 0.008688220431307405,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "p75": {
+            "score": 0.010405190066541524,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "max": {
+            "score": 0.0344932895593313,
+            "minRoutes": 4,
+            "optimisticBound": 0.03770491803278688
+          }
+        }
       }
     },
     {
@@ -199,6 +401,39 @@
         "topKGold": 363,
         "topKGoldKilledByOwnFloor": 240,
         "topKGoldKilledBySharedFloor": 0
+      },
+      "rrfDamping": {
+        "sumWeights": 2,
+        "theoreticalMax": 0.03278688524590164,
+        "observedMax": 0.030196669469578802,
+        "headroom": 0.0025902157763228392,
+        "quantiles": {
+          "min": {
+            "score": 0.00494746295136283,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "p25": {
+            "score": 0.006477086640373952,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "median": {
+            "score": 0.007275583764802591,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "p75": {
+            "score": 0.008497912739376591,
+            "minRoutes": 1,
+            "optimisticBound": 0.01639344262295082
+          },
+          "max": {
+            "score": 0.030196669469578802,
+            "minRoutes": 3,
+            "optimisticBound": 0.03278688524590164
+          }
+        }
       }
     },
     {
@@ -257,7 +492,8 @@
         "topKGold": 166,
         "topKGoldKilledByOwnFloor": 0,
         "topKGoldKilledBySharedFloor": 14
-      }
+      },
+      "rrfDamping": null
     }
   ],
   "aggregation": {
@@ -373,6 +609,64 @@
     "  ⇒ 本表全部 recall 为**微平均**（逐题 0/1 pooled 后除以总题数 1986）。",
     "     若另一份产物报的是宏平均（每对话先算比例再均值），两个数不可直接相减。",
     "",
+    "【⑥ RRF 低分的机制：阻尼而非单路支撑】",
+    "  rrf-default        权重和 2.30  分数上界 0.037705  观测 max 0.034493（余量 0.003212）",
+    "                     median 0.008688 ⇒ 至少 1/4 路；max 0.034493 ⇒ 至少 4/4 路",
+    "  rrf-corrected      权重和 2.00  分数上界 0.032787  观测 max 0.030197（余量 0.002590）",
+    "                     median 0.007276 ⇒ 至少 1/4 路；max 0.030197 ⇒ 至少 3/4 路",
+    "  ⇒ 最高分候选也需 4/4 路组件同时排进前列才可能凑出该分 ⇒ 低分来自 1/(60+rank) 的结构性阻尼，不是「只有单路组件起作用」。",
+    "  ⇒ floor 0.02 落在 rrf-default 窗口分布的第 1.93 百分位：它切掉的是分布主体而非尾部，这正是 own-score 口径大量误杀的直接原因。",
+    "",
+    "【⑦ floor 落在 RRF 单/双路贡献的夹缝中⇒ 过线等价于纯计数条件】",
+    "  rrf-default        单路绝对上界 0.016393（=max(w_c)/61）  <floor 0.02 <  双路上界 0.026230  夹缝成立=true  ⇒ 过 floor 至少需 2/4 路组件同时排前列",
+    "  rrf-corrected      单路绝对上界 0.016393（=max(w_c)/61）  <floor 0.02 <  双路上界 0.026230  夹缝成立=true  ⇒ 过 floor 至少需 2/4 路组件同时排前列",
+    "  ⇒ 数学结论：任何只由**单路**组件支撑的 RRF 候选，分数上界 0.016393 < floor 0.02，**一次都不可能过线**。",
+    "  ⇒ 因此在 RRF 臂下「过 floor」**至少**要求「2 路组件共同支持」；【⑧】进一步收紧为「且其中必含 similarity」。",
+    "  ⇒ 对照：store-default 臂 ownScoreDomain.min = 0.111341，远高于 floor，单项即可过线，故该臂不受此效应影响。",
+    "  ⇒ 这是 floor 污染的**必要条件**（不是充分条件）：夹缝一旦成立，单路候选一律不过线，污染必然产生。",
+    "     但污染量的大小**不由夹缝位置决定** —— 本脚本自带反例：rrf-default 与 rrf-corrected 的夹缝位置一字不差（单路 0.016393、双路 0.026230），污染量却是 0.0791 vs 0.1148。",
+    "     差异来自**天花板高度**（Σw/61 = 0.037705 vs 0.032787）与分数分布形状，故判读时不可由夹缝位置反推污染量。",
+    "",
+    "【⑧ 第二层偏袒：own-score 口径系统性偏袒 similarity 通道】",
+    "  枚举全部两路组合（都假设 rank=1，即最乐观），看哪些能过 floor 0.02：",
+    "  rrf-default       similarity+strength=0.026230✓  similarity+recency=0.021311✓  similarity+context=0.022951✓  strength+recency=0.014754✗  strength+context=0.016393✗  recency+context=0.011475✗",
+    "  rrf-corrected     similarity+strength=0.026230✓  similarity+recency=0.016393✗  similarity+context=0.022951✓  strength+recency=0.009836✗  strength+context=0.016393✗  recency+context=0.006557✗",
+    "  ⇒ 过线组合**全部含 similarity**；纯非相似度组合即便都排 rank=1 也过不了线。",
+    "  ⇒ 故 floor 对 RRF 臂施加的是**两层**与排序质量无关的偏置：",
+    "     ① 多路阻尼（【⑦】）：单路候选一律不过线；",
+    "     ② 相似度偏袒（本条）：非 similarity 通道无论凑几路都过不了线。",
+    "  ⇒ 含义：own-score 口径**替 similarity 说话、同时惩罚 recency** —— 实测 recency(0.3) 单独不过线，",
+    "     且与 str(0.6) / ctx(0.4) 任一组合也都不过线，只有搭配 similarity 才过（rec+sim=0.021311）。",
+    "     ⚠️ 前提：若论文关心的是 recency 压倒 similarity 的现象，则 (C) 与该现象方向一致、并非中性度量，",
+    "     必须用 (A)/(B) 判据交叉验证后才能下结论。",
+    "     该方向性的外部依据：p2-weight-ablation-2026-09-19.json 的新近偏置直接测量 —— top-8 中比正确答案更新的",
+    "     干扰项均值 7.735 条、无偏基准 3.789 条（2.04×），正确答案平均年龄分位 0.9759。",
+    "     ⚠️ 口径：那是**族 A**（重排 top-150、微平均）产物，与本表族 B 不可互比，此处仅作前提引用、不参与本表任何相减。",
+    "     本脚本只断言自己实测的方向性（floor 偏袒 similarity）；「§8.2 结论为真」是外部输入，故保留此警示。",
+    "     这正是「三档判据必须双跑」的直接理由，而不只是方法学上的谨慎。",
+    "  ⇒ recency 通道的封杀形态因臂而异：sim+rec 在 DEFAULT 臂 = 0.021311 过线（相对削弱），在 CORRECTED 臂 = 0.016393 不过线（绝对封杀，恰卡在 floor 之下）。",
+    "     这解释了一个可能被误读的现象：CORRECTED 把 recency 权重置 0 后，(C) 口径污染量反而**更大**",
+    "     （+0.1148 vs +0.0791）。但**主因不是 recency 封杀，也不是天花板**，见【⑨】的分解。",
+    "",
+    "【⑨ 污染量为何随排序改善而增大：分解与适用边界】",
+    "  污染量的两个因子（基数为 top-8 内金标准候选数 ÷ 1986）：",
+    "    rrf-default   判死率 0.5253 × 基数 316  ⇒ 实测污染 0.0791（157 题）",
+    "    rrf-corrected 判死率 0.6612 × 基数 363  ⇒ 实测污染 0.1148（228 题）",
+    "  【候选级恒等展开】判死率比 1.2586× × 基数比 1.1487× = 1.4458×，与题级实测比 1.4522× 相差 0.44%。",
+    "    ⚠️ 该乘积是**定义的展开**（代数上基数比完全约掉，恒等于判死候选数之比），**不是被数据验证的机制模型**；",
+    "    它贴近题级实测，仅因两臂候选/题比相近（一题多金标时候选数≠题数），与机制无关。",
+    "  【承重项】(A) rank-only 完全不看分数、不受 floor 污染：R@8 0.1536 → 0.1757（14.4%），直接证明 CORRECTED 排序确实更好。",
+    "  【辅助项】两臂候选/题比 1.0573 vs 1.0526 几乎相同 ⇒ 基数的差异不是「一题多金标」结构造成的。",
+    "  【降级项】top-8 金标候选基数 316 → 363（14.9%）与 R@8 同向，但基数是**候选条数、与判据耦合**（只看位置不看分数），仅作辅助描述。",
+    "  【恒等展开，非机制】判死率比 × 基数比在代数上基数比完全约掉、恒等于判死候选数之比，不是被数据验证的机制模型。",
+    "  ⇒ 天花板高度**不是主因**：天花板 0.037705 vs 0.032787（仅压低 13%），远小于实测污染量增幅 45%；方向亦相反（天花板被压低、污染却增大）。",
+    "  ⇒ 含义：own-score 口径**系统性地惩罚「把正确答案排得更靠前」** —— 在 floor 生效的语料内，排序越好，(C) 下的 recall 越低。",
+    "  ⚠️ 适用边界：该方向性**仅在 floor 对该臂实际生效时成立**，不可外推为「R@8 越高污染越大」的一般规律。",
+    "     store-default      R@8(A)=0.206445  污染=+0.0000  分数域高于floor 占比 100.00% ← floor 不生效",
+    "     rrf-default        R@8(A)=0.153575  污染=+0.0791  分数域高于floor 占比 1.93% ← floor 生效",
+    "     rrf-corrected      R@8(A)=0.175730  污染=+0.1148  分数域高于floor 占比 0.73% ← floor 生效",
+    "     additive-default   R@8(A)=0.082075  污染=+0.0000  分数域高于floor 占比 100.00% ← floor 不生效",
+    "     store-default 的 R@8 最高但污染为 0，正是上述边界的反例，不可省略。",
     "⚠️ 口径：",
     "  · 本表全部数字属族 B（端到端、全池、含检索噪声与冲突惩罚），与族 A（重排 top-150）不可互比。",
     "  · (A) 是采用口径：跨打分模式比较时 floor 不是可比判据，已按定义关闭。",
@@ -391,9 +685,9 @@
       "context": 0.4,
       "affect": 0.25
     },
-    "gitSha": "baa1c95bf93de894db20fdfa41223dd7945d4fa2",
-    "gitShaAtRun": "baa1c95bf93de894db20fdfa41223dd7945d4fa2",
+    "gitSha": "ca54f0ee5888d9555973db8a355cb906f85b3e53",
+    "gitShaAtRun": "ca54f0ee5888d9555973db8a355cb906f85b3e53",
     "gitDirty": true,
-    "generatedAt": "2026-10-03T00:36:27.063Z"
+    "generatedAt": "2026-10-03T02:05:21.510Z"
   }
 }

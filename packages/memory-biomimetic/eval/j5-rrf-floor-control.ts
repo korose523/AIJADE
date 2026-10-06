@@ -75,8 +75,9 @@ import type { BioticMemory, GatingCoefficients, RetrievalScoreMode, RetrievalWei
 
 import process from 'node:process'
 
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 import {
   buildMemory,
@@ -93,6 +94,15 @@ import { resolveLocomoPath, sha256File } from './locomo-path'
 const MAXK = Math.max(...KS)
 /** (B)/(C) 共用的阈值，取 shipped 默认值，本脚本不调它。 */
 const FLOOR = DEFAULT_MEMORY_CONFIG.retrievalFloor
+/** RRF 的 rank 阻尼常数（`src/retrieval.ts:283`，同样未从index 导出，见 assertRrfComponentsUnchanged）。 */
+const RRF_K = 60
+/**
+ * 参与 RRF 打分的组件（逐字复制 `src/retrieval.ts:292` 的`RRF_COMPONENTS`）。
+ * 那里是模块私有常量、未从 `src/index.ts` 导出，而本任务不允许改`src/**`，
+ * 故在此本地声明；`assertRrfComponentsUnchanged()` 在运行时对照源码文本，
+ * 若上游改动这份清单则本脚本会直接失败而不是静默算错上界。
+ */
+const RRF_COMPONENTS = ['similarity', 'strength', 'recency', 'context'] as const
 /** fused 模式的检索窗口。取 150 兼作分数域取样窗（其 R@K 取前 MAXK 项）。 */
 const FUSED_WINDOW = 150
 /** 每 N 题做一次「topK=8 前缀 == 全池前 8」断言。 */
@@ -258,7 +268,108 @@ function summarise(a: number[]): { min: number, p25: number, median: number, p75
   return { min: s[0], p25: at(0.25), median: at(0.5), p75: at(0.75), max: s[s.length - 1], n: s.length }
 }
 
+/**
+ * RRF 单路组件的**绝对上界** = `max(w_c)/(K+1)`（rank=1 时取到）。
+ * 若 `FLOOR` 落在「单路上界」与「双路上界」之间，则floor 对 RRF 臂等价于
+ * 「至少 2 路组件共同支持」这个**纯计数条件**，与相关性/召回质量无关：
+ * 单路候选在数学上不可能过线。
+ */
+function floorGap(w: RetrievalWeights): {
+  singleRouteCeiling: number
+  twoRouteCeiling: number
+  minRoutesToPass: number
+  gapHolds: boolean
+} {
+  const ws = RRF_COMPONENTS.map(c => w[c]).sort((x, y) => y - x)
+  const single = ws[0] / (RRF_K + 1)
+  const two = (ws[0] + (ws[1] ?? 0)) / (RRF_K + 1)
+  const target = (RRF_K + 1) * FLOOR
+  let sum = 0
+  let routes = 0
+  for (const x of ws) {
+    sum += x
+    routes++
+    if (sum >= target - 1e-15)
+      break
+  }
+  return { singleRouteCeiling: single, twoRouteCeiling: two, minRoutesToPass: routes, gapHolds: single < FLOOR && FLOOR < two }
+}
+
+/**
+ * 第二层偏袒：枚举**全部两路组合**（都假设 rank=1，即最乐观），看哪些能过 floor。
+ * `minRoutesToPass=2` 只回答「最少几路」，回答不了「哪几路」——
+ * 实测过线的组合全部含similarity，纯非相似度通道（str+rec/str+ctx/rec+ctx）
+ * 即便都排 rank=1 也过不了线。故 own-score 口径系统性偏袒 similarity 通道。
+ */
+function twoRouteCombos(w: RetrievalWeights): {
+  combos: { routes: string, optimisticScore: number, passes: boolean }[]
+  passingWithoutSimilarity: string[]
+  allPassingContainSimilarity: boolean
+} {
+  const ws = RRF_COMPONENTS.map(c => [c, w[c]] as const)
+  const combos: { routes: string, optimisticScore: number, passes: boolean }[] = []
+  for (let i = 0; i < ws.length; i++) {
+    for (let j = i + 1; j < ws.length; j++) {
+      const s = (ws[i][1] + ws[j][1]) / (RRF_K + 1)
+      combos.push({ routes: `${ws[i][0]}+${ws[j][0]}`, optimisticScore: s, passes: s > FLOOR })
+    }
+  }
+  const passingWithoutSimilarity = combos.filter(c => c.passes && !c.routes.includes('similarity')).map(c => c.routes)
+  return { combos, passingWithoutSimilarity, allPassingContainSimilarity: passingWithoutSimilarity.length === 0 }
+}
+
 const pct = (num: number, den: number) => (den > 0 ? num / den : 0)
+
+/** 读取 `src/retrieval.ts` 中`RRF_COMPONENTS` 的字面定义，做一次文本级对照。 */
+function assertRrfComponentsUnchanged(): void {
+  const src = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../src/retrieval.ts'), 'utf8')
+  const m = src.match(/const RRF_COMPONENTS = \[([^\]]*)\]/)
+  const fromSrc = m ? m[1].replace(/['"\s,]/g, '') : null
+  const local = RRF_COMPONENTS.join('')
+  if (fromSrc !== local)
+    throw new Error(`RRF_COMPONENTS 与 src/retrieval.ts 不一致：src=${fromSrc} local=${local}；上界计算会失效，请同步本脚本`)
+  const km = src.match(/export const RRF_K = (\d+)/)
+  const kFromSrc = km ? Number(km[1]) : null
+  if (kFromSrc !== RRF_K)
+    throw new Error(`RRF_K 与 src/retrieval.ts 不一致：src=${kFromSrc} local=${RRF_K}；阻尼分解会失效，请同步本脚本`)
+  // 夹缝断言的**前提**：floor 必须高于 RRF 单路绝对上界，否则「单路候选不可能过线」不成立。
+  for (const [name, w] of [['DEFAULT', DEFAULT_RETRIEVAL_WEIGHTS], ['CORRECTED', CORRECTED_RETRIEVAL_WEIGHTS]] as const) {
+    const g = floorGap(w)
+    if (!g.gapHolds) {
+      throw new Error(`floor=${FLOOR} 未落在 ${name} 权重的 RRF 单/双路上界之间（单路 ${g.singleRouteCeiling.toFixed(6)}、双路 ${g.twoRouteCeiling.toFixed(6)}）；`
+        + '「过 floor 等价于至少多路支持」这一结论的前提已失效，请重新审视')
+    }
+    // 第二层偏袒的前提：凡乐观过线的两路组合都必含 similarity。
+    const t = twoRouteCombos(w)
+    if (!t.allPassingContainSimilarity) {
+      throw new Error(`${name} 权重下纯非相似度组合 ${t.passingWithoutSimilarity.join(',')} 也能过floor ${FLOOR}；`
+        + '「own-score 口径系统性偏袒 similarity」这一层不再成立，verdict【⑧】需重新审视')
+    }
+  }
+}
+
+/**
+ * RRF 的`1/(60+rank)` 阻尼分解：把分数域的某个分位数 S 反解成「至少多少路组件
+ * 同时排进前列才可能凑出 S」。
+ *
+ * 推导：单路贡献上界是 `w_c/61`（rank=1 时），故要凑出 S 至少需要权重和 `>= 61*S`
+ * 的若干路同时命中；且这是**乐观上界**（假设所有这些路都排 rank=1，实际不可能）。
+ * 取权重降序累加，首次 `sum(top-k w)/61 >= S` 的 k 即"至少 k 路"。
+ *
+ * 用途：回答「RRF 分数低是不是因为只有单路组件在起作用」。若 max 分位需要 4 路全中，
+ * 说明低分来自 `1/(60+rank)` 的结构性阻尼，而非单路支撑。
+ */
+function minRoutesFor(score: number, weights: RetrievalWeights): { routes: number, optimisticBound: number } {
+  const ws = RRF_COMPONENTS.map(c => weights[c]).sort((x, y) => y - x)
+  let sum = 0
+  for (let i = 0; i < ws.length; i++) {
+    sum += ws[i]
+    const bound = sum / (RRF_K + 1)
+    if (bound >= score - 1e-15)
+      return { routes: i + 1, optimisticBound: bound }
+  }
+  return { routes: ws.length, optimisticBound: sum / (RRF_K + 1) }
+}
 
 /** 与 `eval-metrics.measure()` 同定义的 recall@K + MRR@maxK，只是判据可切换。 */
 function rankOne(ranking: Candidate[], gold: Set<string>, criterion: Criterion, shared: SharedFloor) {
@@ -312,6 +423,8 @@ async function main(): Promise<void> {
   const sha = sha256File(path)
   const convsAll = loadLocomo(path)
   const convs = limit ? convsAll.slice(0, limit) : convsAll
+
+  assertRrfComponentsUnchanged()
 
   console.info('=== J5/P4 RRF 端到端 floor 对照：三档判据 × 四臂 ===')
   console.info(`corpus   : ${path}`)
@@ -502,6 +615,36 @@ async function main(): Promise<void> {
   console.info('  各对话题数（不相等 ⇒ 宏≠微）：', acc['store-default'].convTotals.join(','))
   console.info()
 
+  // RRF 专属：把分数域分位数反解成「至少多少路组件同时排进前列」。
+  const rrfArms = ARMS.filter(a => a.scoreMode === 'rrf')
+  console.info('--- RRF 阻尼分解：分数低是单路支撑还是 1/(60+rank) 结构性阻尼 ---')
+  console.info(`  单路贡献上界 = w_c/${RRF_K + 1}；下表「至少N 路」= 要凑出该分位，权重和须≥ ${RRF_K + 1}×S`)
+  console.info(`  ${'arm'.padEnd(18)}${'分位'.padStart(8)}${'S'.padStart(11)}${'至少路数'.padStart(10)}${'乐观上界'.padStart(12)}`)
+  for (const a of rrfArms) {
+    const st = summarise(acc[a.key].windowScores)
+    for (const q of ['min', 'p25', 'median', 'p75', 'max'] as const) {
+      const r = minRoutesFor(st[q], a.weights)
+      const routes = `${r.routes}/${RRF_COMPONENTS.length}`
+      console.info(`  ${a.key.padEnd(18)}${q.padStart(8)}${st[q].toFixed(6).padStart(11)}${routes.padStart(10)}${r.optimisticBound.toFixed(6).padStart(12)}`)
+    }
+  }
+  console.info(`  读法：「至少 N/4 路」指权重最大的 N 路组件**同时排 rank=1** 才能凑出S（乐观上界，实际不可能同时满足）。`)
+  console.info('        N 随分位上升而增大 ⇒ 高分靠多路共同支撑；低分不是"只有一路起作用"，而是被 1/(60+rank) 阻尼压住。')
+  const rrfFloorPct = pct(acc['rrf-default'].windowAboveFloor, acc['rrf-default'].windowTotal) * 100
+  console.info(`  对照：floor = ${FLOOR} 落在 rrf-default 窗口分布的第 ${rrfFloorPct.toFixed(2)} 百分位（窗口内 ${(100 - rrfFloorPct).toFixed(2)}% 的候选低于 floor ⇒ floor 切掉的是分布主体，不是尾部）。`)
+  console.info('--- floor 夹缝：过线是否只是「多路计数」条件 ---')
+  const gapHdr = ['单路上界', 'floor', '双路上界', '过线需路数', '夹缝成立']
+    .map((h, i) => h.padStart([11, 9, 11, 11, 10][i]))
+    .join('')
+  console.info(`  ${'arm'.padEnd(18)}${gapHdr}`)
+  for (const a of rrfArms) {
+    const g = floorGap(a.weights)
+    console.info(`  ${a.key.padEnd(18)}${g.singleRouteCeiling.toFixed(6).padStart(11)}${FLOOR.toFixed(6).padStart(9)}${g.twoRouteCeiling.toFixed(6).padStart(11)}${`${g.minRoutesToPass}/${RRF_COMPONENTS.length}`.padStart(11)}${(g.gapHolds ? '是' : '否').padStart(10)}`)
+  }
+  console.info(`  ⇒ 单路候选的分数上界 ${floorGap(rrfArms[0].weights).singleRouteCeiling.toFixed(6)} < floor ${FLOOR} ⇒ 数学上不可能过线。`)
+  console.info(`  ⇒ 对照 store-default 臂窗口 min = ${summarise(acc['store-default'].windowScores).min.toFixed(6)}，单项轻松过线，不受影响。`)
+  console.info()
+
   // ─────────────────────────────────────────────────────────── 判读
   const verdicts: string[] = []
   const fmt = (x: number) => `${x >= 0 ? '+' : ''}${x.toFixed(4)}`
@@ -542,6 +685,123 @@ async function main(): Promise<void> {
   verdicts.push('  ⇒ 本表全部 recall 为**微平均**（逐题 0/1 pooled 后除以总题数 1986）。')
   verdicts.push('     若另一份产物报的是宏平均（每对话先算比例再均值），两个数不可直接相减。')
   verdicts.push('')
+  verdicts.push('【⑥ RRF 低分的机制：阻尼而非单路支撑】')
+  for (const a of rrfArms) {
+    const st = summarise(acc[a.key].windowScores)
+    const med = minRoutesFor(st.median, a.weights)
+    const mx = minRoutesFor(st.max, a.weights)
+    verdicts.push(`  ${a.key.padEnd(18)} 权重和 ${RRF_SUM_W(a.weights).toFixed(2)}  分数上界 ${(RRF_SUM_W(a.weights) / (RRF_K + 1)).toFixed(6)}  观测 max ${st.max.toFixed(6)}（余量 ${(RRF_SUM_W(a.weights) / (RRF_K + 1) - st.max).toFixed(6)}）`)
+    verdicts.push(`  ${''.padEnd(18)} median ${st.median.toFixed(6)} ⇒ 至少 ${med.routes}/${RRF_COMPONENTS.length} 路；max ${st.max.toFixed(6)} ⇒ 至少 ${mx.routes}/${RRF_COMPONENTS.length} 路`)
+  }
+  {
+    const stMax = summarise(acc['rrf-default'].windowScores).max
+    const mx = minRoutesFor(stMax, rrfArms[0].weights)
+    const floorPct = pct(acc['rrf-default'].windowAboveFloor, acc['rrf-default'].windowTotal) * 100
+    verdicts.push(`  ⇒ 最高分候选也需 ${mx.routes}/${RRF_COMPONENTS.length} 路组件同时排进前列才可能凑出该分 ⇒ 低分来自 1/(${RRF_K}+rank) 的结构性阻尼，不是「只有单路组件起作用」。`)
+    verdicts.push(`  ⇒ floor ${FLOOR} 落在 rrf-default 窗口分布的第 ${floorPct.toFixed(2)} 百分位：它切掉的是分布主体而非尾部，这正是 own-score 口径大量误杀的直接原因。`)
+  }
+  verdicts.push('')
+  verdicts.push('【⑦ floor 落在 RRF 单/双路贡献的夹缝中⇒ 过线等价于纯计数条件】')
+  for (const a of rrfArms) {
+    const g = floorGap(a.weights)
+    verdicts.push(`  ${a.key.padEnd(18)} 单路绝对上界 ${g.singleRouteCeiling.toFixed(6)}（=max(w_c)/${RRF_K + 1}）  <floor ${FLOOR} <  双路上界 ${g.twoRouteCeiling.toFixed(6)}  夹缝成立=${g.gapHolds}  ⇒ 过 floor 至少需 ${g.minRoutesToPass}/${RRF_COMPONENTS.length} 路组件同时排前列`)
+  }
+  verdicts.push(`  ⇒ 数学结论：任何只由**单路**组件支撑的 RRF 候选，分数上界 ${floorGap(rrfArms[0].weights).singleRouteCeiling.toFixed(6)} < floor ${FLOOR}，**一次都不可能过线**。`)
+  const simTwo = twoRouteCombos(rrfArms[0].weights)
+  const simTwoCor = twoRouteCombos(rrfArms.find(a => a.key === 'rrf-corrected')!.weights)
+  verdicts.push(`  ⇒ 因此在 RRF 臂下「过 floor」**至少**要求「${floorGap(rrfArms[0].weights).minRoutesToPass} 路组件共同支持」；【⑧】进一步收紧为「且其中必含 similarity」。`)
+  verdicts.push(`  ⇒ 对照：store-default 臂 ownScoreDomain.min = ${summarise(acc['store-default'].windowScores).min.toFixed(6)}，远高于 floor，单项即可过线，故该臂不受此效应影响。`)
+  {
+    // 污染量由「天花板高度 + 分布形状」决定，而非仅由夹缝位置决定 —— 用实测数字自证。
+    const gDef = floorGap(rrfArms.find(a => a.key === 'rrf-default')!.weights)
+    const gCor = floorGap(rrfArms.find(a => a.key === 'rrf-corrected')!.weights)
+    const dDef = R('rrf-default', 'rankOnly', MAXK) - R('rrf-default', 'ownScore', MAXK)
+    const dCor = R('rrf-corrected', 'rankOnly', MAXK) - R('rrf-corrected', 'ownScore', MAXK)
+    const sameCeil = Math.abs(gDef.singleRouteCeiling - gCor.singleRouteCeiling) < 1e-15
+      && Math.abs(gDef.twoRouteCeiling - gCor.twoRouteCeiling) < 1e-15
+    const ceilDef = RRF_SUM_W(rrfArms.find(a => a.key === 'rrf-default')!.weights) / (RRF_K + 1)
+    const ceilCor = RRF_SUM_W(rrfArms.find(a => a.key === 'rrf-corrected')!.weights) / (RRF_K + 1)
+    verdicts.push('  ⇒ 这是 floor 污染的**必要条件**（不是充分条件）：夹缝一旦成立，单路候选一律不过线，污染必然产生。')
+    verdicts.push(`     但污染量的大小**不由夹缝位置决定** —— 本脚本自带反例：rrf-default 与 rrf-corrected 的夹缝位置${sameCeil ? '一字不差' : '不同'}`
+      + `（单路 ${gDef.singleRouteCeiling.toFixed(6)}、双路 ${gDef.twoRouteCeiling.toFixed(6)}），污染量却是 ${dDef.toFixed(4)} vs ${dCor.toFixed(4)}。`)
+    verdicts.push(`     差异来自**天花板高度**（Σw/${RRF_K + 1} = ${ceilDef.toFixed(6)} vs ${ceilCor.toFixed(6)}）与分数分布形状，故判读时不可由夹缝位置反推污染量。`)
+  }
+  verdicts.push('')
+  verdicts.push('【⑧ 第二层偏袒：own-score 口径系统性偏袒 similarity 通道】')
+  verdicts.push(`  枚举全部两路组合（都假设 rank=1，即最乐观），看哪些能过 floor ${FLOOR}：`)
+  for (const [armName, t] of [['rrf-default', simTwo], ['rrf-corrected', simTwoCor]] as const) {
+    verdicts.push(`  ${armName.padEnd(18)}${t.combos.map(c => `${c.routes}=${c.optimisticScore.toFixed(6)}${c.passes ? '✓' : '✗'}`).join('  ')}`)
+  }
+  verdicts.push(`  ⇒ 过线组合${simTwo.allPassingContainSimilarity && simTwoCor.allPassingContainSimilarity ? '**全部含 similarity**' : '存在不含 similarity 的组合'}`
+    + `；纯非相似度组合${simTwo.allPassingContainSimilarity ? '即便都排 rank=1 也过不了线' : '有例外'}。`)
+  verdicts.push('  ⇒ 故 floor 对 RRF 臂施加的是**两层**与排序质量无关的偏置：')
+  verdicts.push('     ① 多路阻尼（【⑦】）：单路候选一律不过线；')
+  verdicts.push('     ② 相似度偏袒（本条）：非 similarity 通道无论凑几路都过不了线。')
+  verdicts.push('  ⇒ 含义：own-score 口径**替 similarity 说话、同时惩罚 recency** —— 实测 recency(0.3) 单独不过线，')
+  verdicts.push('     且与 str(0.6) / ctx(0.4) 任一组合也都不过线，只有搭配 similarity 才过（rec+sim=0.021311）。')
+  verdicts.push('     ⚠️ 前提：若论文关心的是 recency 压倒 similarity 的现象，则 (C) 与该现象方向一致、并非中性度量，')
+  verdicts.push('     必须用 (A)/(B) 判据交叉验证后才能下结论。')
+  verdicts.push('     该方向性的外部依据：p2-weight-ablation-2026-09-19.json 的新近偏置直接测量 —— top-8 中比正确答案更新的')
+  verdicts.push('     干扰项均值 7.735 条、无偏基准 3.789 条（2.04×），正确答案平均年龄分位 0.9759。')
+  verdicts.push('     ⚠️ 口径：那是**族 A**（重排 top-150、微平均）产物，与本表族 B 不可互比，此处仅作前提引用、不参与本表任何相减。')
+  verdicts.push('     本脚本只断言自己实测的方向性（floor 偏袒 similarity）；「§8.2 结论为真」是外部输入，故保留此警示。')
+  verdicts.push('     这正是「三档判据必须双跑」的直接理由，而不只是方法学上的谨慎。')
+  {
+    // recency 通道的封杀形态在两臂不同：DEFAULT 相对削弱、CORRECTED 绝对封杀。
+    const simRec = (w: RetrievalWeights) => (w.similarity + w.recency) / (RRF_K + 1)
+    const wDef = rrfArms.find(a => a.key === 'rrf-default')!.weights
+    const wCor = rrfArms.find(a => a.key === 'rrf-corrected')!.weights
+    const vDef = simRec(wDef)
+    const vCor = simRec(wCor)
+    verdicts.push(`  ⇒ recency 通道的封杀形态因臂而异：sim+rec 在 DEFAULT 臂 = ${vDef.toFixed(6)} ${vDef > FLOOR ? '过线' : '不过线'}（相对削弱），`
+      + `在 CORRECTED 臂 = ${vCor.toFixed(6)} ${vCor > FLOOR ? '过线' : '不过线'}（绝对封杀，恰卡在 floor 之下）。`)
+    verdicts.push('     这解释了一个可能被误读的现象：CORRECTED 把 recency 权重置 0 后，(C) 口径污染量反而**更大**')
+    verdicts.push(`     （${fmt(R('rrf-corrected', 'rankOnly', MAXK) - R('rrf-corrected', 'ownScore', MAXK))} vs ${fmt(R('rrf-default', 'rankOnly', MAXK) - R('rrf-default', 'ownScore', MAXK))}）。但**主因不是 recency 封杀，也不是天花板**，见【⑨】的分解。`)
+  }
+  verdicts.push('')
+  verdicts.push('【⑨ 污染量为何随排序改善而增大：分解与适用边界】')
+  {
+    // 污染量 = 判死率 × 基数。两个因子：floor 判死的比例、以及 top-8 内金标准候选的绝对数量。
+    // 天花板高度是第三个候选解释，用倍数对比即可看出它不是主因。
+    const wDef2 = rrfArms.find(a => a.key === 'rrf-default')!.weights
+    const wCor2 = rrfArms.find(a => a.key === 'rrf-corrected')!.weights
+    const rateOf = (k: string) => {
+      const x = acc[k]
+      return x.topKGold > 0 ? x.topKGoldKilledByOwnFloor / x.topKGold : 0
+    }
+    const rateD = rateOf('rrf-default')
+    const rateC = rateOf('rrf-corrected')
+    const baseD = acc['rrf-default'].topKGold
+    const baseC = acc['rrf-corrected'].topKGold
+    const cD = R('rrf-default', 'rankOnly', MAXK) - R('rrf-default', 'ownScore', MAXK)
+    const cC = R('rrf-corrected', 'rankOnly', MAXK) - R('rrf-corrected', 'ownScore', MAXK)
+    const ceilD = RRF_SUM_W(wDef2) / (RRF_K + 1)
+    const ceilC = RRF_SUM_W(wCor2) / (RRF_K + 1)
+    verdicts.push(`  污染量的两个因子（基数为 top-${MAXK} 内金标准候选数 ÷ ${questions}）：`)
+    verdicts.push(`    rrf-default   判死率 ${rateD.toFixed(4)} × 基数 ${baseD}  ⇒ 实测污染 ${cD.toFixed(4)}（${(cD * questions).toFixed(0)} 题）`)
+    verdicts.push(`    rrf-corrected 判死率 ${rateC.toFixed(4)} × 基数 ${baseC}  ⇒ 实测污染 ${cC.toFixed(4)}（${(cC * questions).toFixed(0)} 题）`)
+    verdicts.push(`  【候选级恒等展开】判死率比 ${(rateC / rateD).toFixed(4)}× × 基数比 ${(baseC / baseD).toFixed(4)}× = ${(rateC / rateD * baseC / baseD).toFixed(4)}×，与题级实测比 ${(cC / cD).toFixed(4)}× 相差 ${(100 * Math.abs(rateC / rateD * baseC / baseD - cC / cD) / (cC / cD)).toFixed(2)}%。`)
+    verdicts.push('    ⚠️ 该乘积是**定义的展开**（代数上基数比完全约掉，恒等于判死候选数之比），**不是被数据验证的机制模型**；')
+    verdicts.push('    它贴近题级实测，仅因两臂候选/题比相近（一题多金标时候选数≠题数），与机制无关。')
+    verdicts.push(`  【承重项】(A) rank-only 完全不看分数、不受 floor 污染：R@8 ${R('rrf-default', 'rankOnly', MAXK).toFixed(4)} → ${R('rrf-corrected', 'rankOnly', MAXK).toFixed(4)}`
+      + `（${(100 * (R('rrf-corrected', 'rankOnly', MAXK) / R('rrf-default', 'rankOnly', MAXK) - 1)).toFixed(1)}%），直接证明 CORRECTED 排序确实更好。`)
+    {
+      const crD = cD * questions > 0 ? acc['rrf-default'].topKGoldKilledByOwnFloor / (cD * questions) : 0
+      const crC = cC * questions > 0 ? acc['rrf-corrected'].topKGoldKilledByOwnFloor / (cC * questions) : 0
+      verdicts.push(`  【辅助项】两臂候选/题比 ${crD.toFixed(4)} vs ${crC.toFixed(4)} 几乎相同 ⇒ 基数的差异不是「一题多金标」结构造成的。`)
+    }
+    verdicts.push(`  【降级项】top-${MAXK} 金标候选基数 ${baseD} → ${baseC}（${(100 * (baseC / baseD - 1)).toFixed(1)}%）与 R@8 同向，但基数是**候选条数、与判据耦合**（只看位置不看分数），仅作辅助描述。`)
+    verdicts.push('  【恒等展开，非机制】判死率比 × 基数比在代数上基数比完全约掉、恒等于判死候选数之比，不是被数据验证的机制模型。')
+    verdicts.push(`  ⇒ 天花板高度**不是主因**：天花板 ${ceilD.toFixed(6)} vs ${ceilC.toFixed(6)}（仅压低 ${(100 * (1 - ceilC / ceilD)).toFixed(0)}%），远小于实测污染量增幅 ${(100 * (cC / cD - 1)).toFixed(0)}%；方向亦相反（天花板被压低、污染却增大）。`)
+    verdicts.push('  ⇒ 含义：own-score 口径**系统性地惩罚「把正确答案排得更靠前」** —— 在 floor 生效的语料内，排序越好，(C) 下的 recall 越低。')
+    verdicts.push('  ⚠️ 适用边界：该方向性**仅在 floor 对该臂实际生效时成立**，不可外推为「R@8 越高污染越大」的一般规律。')
+    for (const a of ARMS) {
+      const x = acc[a.key]
+      const c = R(a.key, 'rankOnly', MAXK) - R(a.key, 'ownScore', MAXK)
+      verdicts.push(`     ${a.key.padEnd(18)} R@8(A)=${R(a.key, 'rankOnly', MAXK).toFixed(6)}  污染=${fmt(c)}  分数域高于floor 占比 ${(pct(x.windowAboveFloor, x.windowTotal) * 100).toFixed(2)}%${x.windowAboveFloor < x.windowTotal ? ' ← floor 生效' : ' ← floor 不生效'}`)
+    }
+    verdicts.push('     store-default 的 R@8 最高但污染为 0，正是上述边界的反例，不可省略。')
+  }
   verdicts.push('⚠️ 口径：')
   verdicts.push('  · 本表全部数字属族 B（端到端、全池、含检索噪声与冲突惩罚），与族 A（重排 top-150）不可互比。')
   verdicts.push('  · (A) 是采用口径：跨打分模式比较时 floor 不是可比判据，已按定义关闭。')
@@ -558,7 +818,8 @@ async function main(): Promise<void> {
   const stamp = new Date().toISOString().slice(0, 10)
   const outDir = join(dirname(new URL(import.meta.url).pathname), 'results')
   mkdirSync(outDir, { recursive: true })
-  const outPath = join(outDir, `j5-rrf-floor-control-${stamp}.json`)
+  // 带 limit 的部分跑（冒烟）必须写到独立文件，否则会按同一日期戳覆盖全量产物。
+  const outPath = join(outDir, `j5-rrf-floor-control-${stamp}${limit ? `-limit${limit}` : ''}.json`)
   writeFileSync(outPath, `${JSON.stringify(withProvenance({
     generatedAt: new Date().toISOString(),
     experiment: 'j5-rrf-floor-control',
@@ -568,6 +829,7 @@ async function main(): Promise<void> {
     dedupeByContent: true,
     ks: KS,
     questions,
+    convLimit: limit ?? null,
     poolSizeMean: avg(poolSizes),
     floor: FLOOR,
     floorConfigInArms: 0,
@@ -581,7 +843,74 @@ async function main(): Promise<void> {
       '每臂的 ownScoreDomain 是**该臂自己分数**在检索窗口内的实测分布。(A) rank-only 不看分数，故无分数域；'
       + '(B) 的判据分数域等于 store-default 臂的 ownScoreDomain（参考跑同源）；'
       + '(C) 的判据分数域等于各臂自己的 ownScoreDomain。对照 floor = '
-      + `${FLOOR}：若该臂 ownScoreDomain 的 min < ${FLOOR} < max，则 floor 落在其域内。`,
+      + `${FLOOR}：若该臂ownScoreDomain 的 min < ${FLOOR} < max，则 floor 落在其域内。`,
+    rrfDampingNote:
+      'rrfDamping 把分数域分位数 S 反解成「至少多少路RRF 组件同时排进前列才可能凑出 S」：'
+      + `单路贡献上界 w_c/(${RRF_K}+1)，故须权重和 >= ${RRF_K + 1}×S。所用分量与 RRF_K 在运行时对照 src/retrieval.ts 校验。`
+      + '若 max 分位需要全部 4 路，则 RRF 低分来自 1/(60+rank) 的结构性阻尼，而非「只有单路组件在起作用」。',
+    contaminationDriver: {
+      note: '污染量(= (A) 减 (C)) 的因子分解：判死率 × 基数（top-8 内金标准候选数 ÷ 总题数）。'
+        + '**适用边界**：该方向性仅在 floor 对该臂实际生效时成立（其分数域跨越 floor），'
+        + '不可外推为「R@8 越高污染越大」—— store-default 的 R@8 最高但污染为 0，即为反例。',
+      arms: Object.fromEntries(ARMS.map(a => [a.key, {
+        rAtMaxK_rankOnly: R(a.key, 'rankOnly', MAXK),
+        contamination: R(a.key, 'rankOnly', MAXK) - R(a.key, 'ownScore', MAXK),
+        killRate: acc[a.key].topKGold > 0 ? acc[a.key].topKGoldKilledByOwnFloor / acc[a.key].topKGold : 0,
+        baseCandidates: acc[a.key].topKGold,
+        shareAboveFloor: pct(acc[a.key].windowAboveFloor, acc[a.key].windowTotal),
+        floorActive: acc[a.key].windowAboveFloor < acc[a.key].windowTotal,
+      }])),
+      rrfPairDecomposition: {
+        rateMultiple: (acc['rrf-corrected'].topKGoldKilledByOwnFloor / acc['rrf-corrected'].topKGold)
+          / (acc['rrf-default'].topKGoldKilledByOwnFloor / acc['rrf-default'].topKGold),
+        baseMultiple: acc['rrf-corrected'].topKGold / acc['rrf-default'].topKGold,
+        ceilingRatio: (RRF_SUM_W(ARMS.find(x => x.key === 'rrf-default')!.weights) / (RRF_K + 1))
+          / (RRF_SUM_W(ARMS.find(x => x.key === 'rrf-corrected')!.weights) / (RRF_K + 1)),
+        note: '⚠️「判死率倍数 × 基数倍数」是**定义的展开**，不是被数据验证的机制模型 —— 代数上基数比完全约掉，'
+          + '恒等于判死候选数之比；它贴近题级实测污染量比，仅因两臂候选/题比相近（一题多金标时候选数≠题数）。'
+          + '证据分层：承重项是 (A) rank-only 的 R@8（判据无关、不受 floor 污染）；'
+          + 'topKGold 基数是**候选条数、与判据耦合**（只看位置不看分数），仅作辅助描述，不作排序质量的证据。'
+          + '天花板比远小于实测污染量比且方向相反 ⇒ 天花板不是主因。',
+        loadBearingEvidence: {
+          metric: 'R@8 under criterion (A) rank-only',
+          note: '(A) 不看分数、不受 floor 污染，是度量 RRF 排序质量的判据无关量。',
+          rrfDefault: R('rrf-default', 'rankOnly', MAXK),
+          rrfCorrected: R('rrf-corrected', 'rankOnly', MAXK),
+        },
+        auxiliaryEvidence: {
+          candidatePerQuestionRatio: {
+            rrfDefault: acc['rrf-default'].topKGoldKilledByOwnFloor / ((R('rrf-default', 'rankOnly', MAXK) - R('rrf-default', 'ownScore', MAXK)) * questions),
+            rrfCorrected: acc['rrf-corrected'].topKGoldKilledByOwnFloor / ((R('rrf-corrected', 'rankOnly', MAXK) - R('rrf-corrected', 'ownScore', MAXK)) * questions),
+            note: '两臂几乎相同 ⇒ 基数差异不是「一题多金标」结构造成的；这一条是为基数的可比性背书。',
+          },
+        },
+      },
+    },
+    floorBiasLayers: Object.fromEntries(rrfArms.map(a => [a.key, {
+      dampingLayer: {
+        singleRouteCeiling: floorGap(a.weights).singleRouteCeiling,
+        minRoutes: floorGap(a.weights).minRoutesToPass,
+        note: '单路候选分数上界低于 floor，一律不过线',
+      },
+      similarityFavourLayer: {
+        twoRouteCombos: twoRouteCombos(a.weights).combos,
+        passingWithoutSimilarity: twoRouteCombos(a.weights).passingWithoutSimilarity,
+        allPassingContainSimilarity: twoRouteCombos(a.weights).allPassingContainSimilarity,
+        note: '枚举全部两路组合（都假设 rank=1）。过 floor 的组合全部含 similarity；'
+          + '纯非相似度通道即便都排 rank=1 也过不了线 ⇒ own-score 口径系统性偏袒 similarity 通道。',
+      },
+    }])),
+    floorGap: Object.fromEntries(rrfArms.map(a => [a.key, {
+      floor: FLOOR,
+      ...floorGap(a.weights),
+      counterpartArmMinScore: summarise(acc['store-default'].windowScores).min,
+      note: '单路绝对上界 =max(w_c)/(K+1)。floor 落在单路与双路上界之间时，'
+        + '任何仅由单路支撑的 RRF 候选在数学上不可能过 floor（一次都不可能），'
+        + '故 RRF 臂的「过 floor」等价于「至少 minRoutesToPass 路组件共同支持」这一纯计数条件。'
+        + '注意：这是污染的**必要条件**而非充分条件——夹缝位置相同的两臂污染量可以差很多'
+        + '（rrf-default 与 rrf-corrected 夹缝一字不差，污染量 +0.0791 vs +0.1148），'
+        + '污染量大小取决于天花板高度 Σw/(K+1) 与分数分布形状，不可由夹缝位置反推。',
+    }])),
     arms: ARMS.map(a => ({
       arm: a.key,
       note: a.note,
@@ -592,6 +921,21 @@ async function main(): Promise<void> {
       recallMacroAtMaxK: Object.fromEntries(CRITERIA.map(c => [c, RMacro(a.key, c)])),
       mrrAtMaxK: Object.fromEntries(CRITERIA.map(c => [c, avg(acc[a.key].mrr[c])])),
       ownScoreDomain: domain(a.key),
+      rrfDamping: a.scoreMode === 'rrf'
+        ? (() => {
+            const st = summarise(acc[a.key].windowScores)
+            return {
+              sumWeights: RRF_SUM_W(a.weights),
+              theoreticalMax: RRF_SUM_W(a.weights) / (RRF_K + 1),
+              observedMax: st.max,
+              headroom: RRF_SUM_W(a.weights) / (RRF_K + 1) - st.max,
+              quantiles: Object.fromEntries((['min', 'p25', 'median', 'p75', 'max'] as const).map((q) => {
+                const r = minRoutesFor(st[q], a.weights)
+                return [q, { score: st[q], minRoutes: r.routes, optimisticBound: r.optimisticBound }]
+              })),
+            }
+          })()
+        : null,
     })),
     aggregation: {
       primary: 'micro',
@@ -620,7 +964,8 @@ async function main(): Promise<void> {
     verdicts,
   }, { scoreMode: 'standardized', weights: DEFAULT_RETRIEVAL_WEIGHTS }), null, 2)}\n`, 'utf8')
   console.info()
-  console.info(`artifact: ${outPath}`)
+  // 与产物一同落log，供混合产物识别（本行与产物的 questions/convLimit 必须一致）。
+  console.info(`artifact: ${outPath}  questions=${questions}  convLimit=${limit ?? 'null'}  poolSizeMean=${avg(poolSizes).toFixed(6)}`)
 }
 
 main().catch((e) => {
