@@ -1,7 +1,7 @@
 {
   "schema": "aijade.experiment_registry@1",
-  "updatedAt": 1790983180072,
-  "count": 13,
+  "updatedAt": 1790985952432,
+  "count": 16,
   "experiments": {
     "p1-gating-retention-ablation": {
       "id": "p1-gating-retention-ablation",
@@ -562,6 +562,127 @@
         "scoreMode": "standardized",
         "generatedAt": "2026-10-02T22:16:10.196Z"
       }
+    },
+    "j5-rrf-floor-control": {
+      "id": "j5-rrf-floor-control",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "J5: retrievalFloor criterion control for the RRF end-to-end arms (rank-only / shared-standardized / own-score)",
+      "version": "0.1.0",
+      "seed": 0,
+      "calibrationFamily": "j5",
+      "conditions": [
+        {
+          "name": "criterion-rank-only",
+          "description": "(A) pure ranking, retrievalFloor not consulted at all; adopted caliber",
+          "params": {
+            "criterion": "rankOnly"
+          }
+        },
+        {
+          "name": "criterion-shared-standardized",
+          "description": "(B) one shared store-standardized score compared against retrievalFloor across all arms",
+          "params": {
+            "criterion": "sharedStandardized"
+          }
+        },
+        {
+          "name": "criterion-own-score",
+          "description": "(C) each arm's own score vs retrievalFloor - reproduces the contaminated condition, not a basis for conclusions",
+          "params": {
+            "criterion": "ownScore"
+          }
+        }
+      ],
+      "metrics": [
+        "recall@1",
+        "recall@2",
+        "recall@4",
+        "recall@8",
+        "MRR@8",
+        "scoreDomainDistribution",
+        "topKGoldKilledByFloor"
+      ],
+      "createdAt": 1790984715014,
+      "notes": "LoCoMo 10 conversations, 1986 questions, NO_GATING, corpus sha256 79fa87e9...98ff4, dedupe ON, poolSizeMean 600.6. PURPOSE: settle whether the low end-to-end RRF recall reported by j5-e2e-causal-decomposition (rrf-e2e 0.0745 / rrf-e2e-no-recency 0.0609) is a real ranking-capability gap or an artifact of the hit criterion. Three criteria x four arms, same run: (A) rank-only (score-blind, ADOPTED), (B) shared store-standardized score vs floor, (C) each arm's own score vs floor (reproduces the contaminated condition). RESULT: contamination is real and quantified - criterion (C) kills 166/316 (rrf) and 240/363 (rrf-norec) top-8 gold candidates and understates recall@8 by 0.0791 / 0.1148, while killing 0 for standardized and additive. RRF weight sum is 2.30 (affect deliberately excluded from RRF_COMPONENTS; src/retrieval.ts:292), so the theoretical max is 2.30/61 = 0.03770; measured domain 0.00495-0.03449, median 0.00869 - the default floor 0.02 sits INSIDE it and only 1.9% (0.7% corrected) of the window passes. BUT the qualitative conclusion survives correction: under (A)/(B) rrf 0.1536 vs standardized 0.2064 = -0.0529, rrf-norec 0.1757 = -0.0307. Contamination had swallowed ~60% of the gap. Ranking-capability ordering standardized (0.2064) > rrf (0.1536) > additive (0.0821), consistent with track A. NOTE the previously cited 0.0745 / 0.0609 are floor-induced FALSE NEGATIVES and must not be used as evidence that RRF is poor end-to-end. ACCEPTANCE CRITERION MET: within track B the rrf vs rrf-norec ordering flips with the criterion (+0.0222 rank-only vs -0.0136 own-score), and track A (shared storeScore) agrees with the rank-only sign (+0.0579) - so the pre-registered falsifiable prediction held. Criterion (A) and (B) are bit-identical on all three fused arms (0 killed), which cross-validates two independent code paths; the single exception is additive under (B) (-0.0070, 14/166), which does not affect any conclusion. Honest boundary: (A) with retrievalFloor=0 is not the same thing in general; they coincide here only because 0 top-8 scores were non-positive - the script implements (A) as pure ranking and does not rely on that coincidence. Harness: fused-path topK prefix invariance asserted 132 times (guards against K-dependent re-ranking silently distorting R@1/2/4); criterion (C) reproduces 0.0745/0.0609/0.2064 bit-exactly against the earlier run.log, confirming same-caliber reproduction.",
+      "artifacts": [
+        "eval/results/j5-rrf-floor-control-2026-10-02.json",
+        "eval/results/j5-rrf-floor-control.run.log"
+      ],
+      "probes": [
+        "eval/j5-rrf-floor-control.ts"
+      ]
+    },
+    "j5-aggregation-caliber": {
+      "id": "j5-aggregation-caliber",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "J5: macro vs micro aggregation caliber on one identical set of hits (closes the 0.1985 vs 0.2064 gap)",
+      "version": "0.1.0",
+      "seed": 0,
+      "calibrationFamily": "j5",
+      "conditions": [
+        {
+          "name": "standardized-store-default",
+          "description": "LoCoMo 10 conversations, 1986 questions, NO_GATING, dedupe ON, store default standardized scoring; the same hit set summarized under both calibers",
+          "params": {
+            "caliber": "both"
+          }
+        }
+      ],
+      "metrics": [
+        "recall@1",
+        "recall@2",
+        "recall@4",
+        "recall@8",
+        "macro",
+        "micro",
+        "deltaMicroMinusMacro",
+        "perConversationQuestionCounts"
+      ],
+      "createdAt": 1790985790583,
+      "notes": "WHY: 0.1985 (09-19 artifacts) and 0.2064 (j5-rrf-e2e-decomposition) were long treated as needing a salienceSource explanation. That hypothesis is FALSIFIED - see j5-salience-source-repro. ACTUAL ROOT CAUSE: aggregation caliber. The 10 conversations carry UNEQUAL question counts (199/105/193/260/242/158/190/239/196/204 = 1986), so macro (per-conversation proportion, then mean over conversations; p2-quantile-retention-sweep.ts:172) and micro (per-question 0/1 pooled, then divide by total; j5-rrf-e2e-decomposition.ts:207) differ. CLOSED AT FULL PRECISION: same 410 hits at recall@8 give macro 0.19853236649084932 (bit-equal to the 09-19 figure 0.198532) and micro 0.20644511581067473 (bit-equal to store-default 0.206445); delta = +0.007912749319825413 equals micro-macro exactly. The two figures come from TWO DIFFERENT scripts over the SAME hit set - only the denominator differs. ⚠️ CONSEQUENCE: any difference taken ACROSS tracks or calibers is invalid; 0.1985 and 0.2064 must never be subtracted or juxtaposed. WHY THE OLD CROSS-CHECK MISSED IT: j5-rrf-e2e-decomposition.ts:224 compares measure() against avg(convHit) WITHIN one conversation, where covered/qa.length and mean(0/1) share the same denominator - it is STRUCTURALLY INCAPABLE of detecting a cross-conversation aggregation difference, so its 0.000000 is not evidence.",
+      "artifacts": [
+        "eval/results/j5-aggregation-caliber-2026-10-03.json"
+      ],
+      "probes": [
+        "eval/j5-aggregation-caliber.ts"
+      ]
+    },
+    "j5-salience-source-repro": {
+      "id": "j5-salience-source-repro",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "J5: falsification test for the salienceSource hypothesis behind 0.1985 vs 0.2064",
+      "version": "0.1.0",
+      "seed": 0,
+      "calibrationFamily": "j5",
+      "conditions": [
+        {
+          "name": "pred-salience",
+          "description": "injects p2-quantile-style salienceOf as salienceOverride",
+          "params": {
+            "salienceSource": "injected"
+          }
+        },
+        {
+          "name": "default-salience",
+          "description": "no injection; store default branch",
+          "params": {
+            "salienceSource": "default"
+          }
+        }
+      ],
+      "metrics": [
+        "recall@8",
+        "episodeSalienceDifferenceCount",
+        "configFieldAssertions"
+      ],
+      "createdAt": 1790985790583,
+      "notes": "PURPOSE: test whether the 0.1985 vs 0.2064 gap is caused by the salience SOURCE (oracle/predicted). RESULT: hypothesis FALSIFIED, twice over. (1) Two arms differing ONLY in salience source, with scoreMode/dedupeByContent/retrievalFloor/weights asserted field-by-field identical (10/10 asserts passed), return the SAME recall@8: pred-salience 0.198532 (bit-reproducing the 09-19 figure) AND default-salience 0.198532 (NOT reproducing store-default 0.206445, delta -0.007913). (2) Mechanism: the two arms' episode.encoding.salience differ on 0 of 5882 episodes. CODE-LEVEL REASON: src/store.ts:254-256 - when salienceOverride is undefined the default branch IS clamp01(sigmoid(predictSalienceV2(content, ctx))), i.e. the SAME formula with the SAME ctx that p2-quantile's injection evaluates, so injecting predicted salience is a NO-OP. Consequence: the residual gap is fully explained by aggregation caliber (see j5-aggregation-caliber), and src/ default configuration has not changed since 09-19 (380dc2f / 55d692a are opt-in, c420ff2 default-off), so both figures stand. Also corrects an earlier belief: the 0.1985 and 0.2064 figures did NOT come from the same script and arm - they came from two different scripts (p2-quantile vs j5-rrf-e2e-decomposition), with identical poolSize 1176.4.",
+      "artifacts": [
+        "eval/results/j5-salience-source-repro-2026-10-03.json"
+      ],
+      "probes": [
+        "eval/j5-salience-source-repro.ts"
+      ]
     }
   }
 }

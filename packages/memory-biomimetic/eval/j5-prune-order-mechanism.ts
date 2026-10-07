@@ -209,6 +209,11 @@ function measureW(
     }
     const ranking = mem.retrieve(q.question, maxK, false, weights)
     let best = Number.NEGATIVE_INFINITY
+    // 必须用布尔表逐K 标记，与 `measure()` 的 `hitAtK` 语义**完全一致**：
+    // 一个 query 若有多条证据同时进榜，只记 1 次命中。若在此处对每条命中的
+    // 证据都 `covered[k]++`，多证据 query 会被重复计入（分母不变分子偏大），
+    // 且偏差随 K 增大——`id` 与 `fact_<id>` 同时在候选集里，这种重复真实存在。
+    const hitAtK: Record<number, boolean> = Object.fromEntries(KS.map(k => [k, false]))
     for (let i = 0; i < ranking.length; i++) {
       const c = ranking[i]
       if (!cands.has(c.id))
@@ -218,9 +223,13 @@ function measureW(
       if (c.score > floor) {
         for (const k of KS) {
           if (i + 1 <= k)
-            covered[k]++
+            hitAtK[k] = true
         }
       }
+    }
+    for (const k of KS) {
+      if (hitAtK[k])
+        covered[k]++
     }
     if (best > Number.NEGATIVE_INFINITY)
       hitScores.push(best)
