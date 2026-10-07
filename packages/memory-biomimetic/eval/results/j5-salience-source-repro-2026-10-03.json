@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-10-02T23:55:40.957Z",
+  "experiment": "j5-salience-source-repro",
+  "question": "0.1985（p2-quantile 式显著性）vs 0.2064（store 默认显著性）在受控只切显著性来源下能否各自复现",
+  "corpus": {
+    "path": "eval/data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10
+  },
+  "condition": "NO_GATING（不门控、不剪枝）",
+  "controlledVariable": "salience source only",
+  "configAsserted": {
+    "fields": [
+      "retrievalScoreMode",
+      "dedupeByContent",
+      "retrievalFloor",
+      "weights"
+    ],
+    "convsChecked": 10
+  },
+  "measure": "eval-metrics.measure（每题一次 retrieve(topK=8)，与 p2-quantile 逐位同定义）",
+  "hitCriterion": "c.score > mem.config.retrievalFloor（0.02），c.score 为本臂自身分数",
+  "caliber": {
+    "family": "族 B（端到端，全池）",
+    "doNotCompareWith": "族 A（j5-rrf-ablation，重排 top-150）",
+    "granularity": "turn 级（LoCoMo dia_id）；与 LongMemEval session 级不可相减"
+  },
+  "targets": {
+    "p2quantile0919": 0.19853236649084932,
+    "storeDefault": 0.20644511581067473
+  },
+  "questions": 1986,
+  "arms": [
+    {
+      "arm": "pred-salience",
+      "note": "注入 salienceOf = sigmoid(predictSalienceV2(content, ctx))，p2-quantile 式",
+      "recall": {
+        "1": 0.107628677817079,
+        "2": 0.13407518610544006,
+        "4": 0.16665404371068815,
+        "8": 0.19853236649084932
+      },
+      "evidenceSurvival": 1,
+      "poolSize": 1176.4
+    },
+    {
+      "arm": "default-salience",
+      "note": "不传第 3/4 参 ⇒ store 默认显著性（本仓库族 B 各臂的写法）",
+      "recall": {
+        "1": 0.107628677817079,
+        "2": 0.13407518610544006,
+        "4": 0.16665404371068815,
+        "8": 0.19853236649084932
+      },
+      "evidenceSurvival": 1,
+      "poolSize": 1176.4
+    }
+  ],
+  "deltaRecall8_predMinusDefault": 0,
+  "deltaPoolSize": 0,
+  "salienceMechanism": {
+    "predMean": 0.7850812105354945,
+    "defaultMean": 0.7850812105354945,
+    "diffMean": 0,
+    "diffCount": 5882,
+    "diffNonZero": 0
+  },
+  "reproduced": {
+    "predSalienceVs_p2quantile0919": true,
+    "defaultSalienceVs_storeDefault": false
+  },
+  "provenance": {
+    "schema": "aijade.run_provenance@1",
+    "scoreMode": "standardized",
+    "weights": {
+      "similarity": 1,
+      "strength": 0.6,
+      "recency": 0.3,
+      "context": 0.4,
+      "affect": 0.25
+    },
+    "gitSha": "baa1c95bf93de894db20fdfa41223dd7945d4fa2",
+    "gitShaAtRun": "baa1c95bf93de894db20fdfa41223dd7945d4fa2",
+    "gitDirty": true,
+    "generatedAt": "2026-10-02T23:55:41.090Z"
+  }
+}

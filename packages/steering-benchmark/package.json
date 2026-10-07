@@ -1,0 +1,24 @@
+{
+  "name": "@proj-aijade/steering-benchmark",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent steering / perturbation-recovery benchmark harness (degree-preserving randomization + PRR/RC). Reimplements MOSAIC-derived methodology without copyleft dependencies.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx src/selftest.ts",
+    "selftest": "tsx src/selftest.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:vitest"
+  }
+}

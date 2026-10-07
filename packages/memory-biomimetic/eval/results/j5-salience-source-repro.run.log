@@ -1,0 +1,30 @@
+=== 显著性来源受控复现：0.1985（p2-quantile 式） vs 0.2064（store 默认式）===
+corpus : eval/data/locomo10.json
+sha256 : 79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4
+convs  : 10
+唯一自变量：显著性来源；其余字段逐项断言相同
+
+  arm                      R@1       R@2       R@4       R@8    poolSize   evSurv
+  pred-salience       0.107629  0.134075  0.166654  0.198532      1176.4   1.0000
+  default-salience    0.107629  0.134075  0.166654  0.198532      1176.4   1.0000
+
+  断言通过：10/10 个对话的两臂 config（mode/dedupe/floor/weights）逐字段相同 ✅
+
+  显著性机制（episode.encoding.salience，同一批 id）：
+    pred 臂均值    0.785081
+    default 臂均值 0.785081
+    差值均值       0.000000   |差|>1e-12 的条数 0/5882
+
+  与历史值对照（判据 |Δ| < 5e-5 即视为复现）：
+    pred-salience    R@8 0.198532  vs 0.198532 (p2-quantile 09-19)  ✅ 复现   Δ=0.000000
+    default-salience R@8 0.198532  vs 0.206445 (store-default)   ❌ 未复现   Δ=-0.007913
+
+  两臂差 ΔR@8 = 0.000000   历史两数差 = 0.007913
+  池大小差 ΔpoolSize = 0.0000
+
+  判读（由上方实测数字生成，无硬编码结论）：
+  ⇒ R2 成立：两臂 recall@8 实质相同 ⇒ 显著性来源**不解释**该分歧。
+     缺口：还缺哪个变量未确定 —— 如实报告，不回推、不估算。
+
+artifact: eval/results/j5-salience-source-repro-2026-10-03.json
+provenance: scoreMode=standardized gitSha=baa1c95bf93de894db20fdfa41223dd7945d4fa2 gitDirty=true
