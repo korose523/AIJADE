@@ -3,7 +3,7 @@
     "id": "c5-mem0-transfer",
     "apparatus_version": "c5-transfer/1",
     "question": "D1 装置可迁移性：AIJADE 的五条可复现性约束能否在第三方记忆系统（mem0）上被计算出来。D2 判据可迁移性：逐条施加性判定。",
-    "created_at_utc": "2026-10-07T05:15:43.799989+00:00",
+    "created_at_utc": "2026-10-07T05:26:15.294989+00:00",
     "seed": 42,
     "dry_run": false
   },
@@ -110,13 +110,20 @@
     "c1_determinism_precheck": {
       "computable": true,
       "tier": "gray",
-      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，其 ollama digest 可记录，因而可实测『同一 digest + 同一依赖锁下，端到端 add()+search() 是否给出逐字节一致的输出』。实测 4/4 题一致（两次独立进程运行）。",
+      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加一个**不同的**可观测命题：同一模型别名 digest + 同一依赖锁下，端到端 add()+search() 在被检索返回的条目及其前 200 字符上是否逐字节一致。实测两次独立进程运行 4/4 题一致。注意该结论**不蕴含**解码级 bit-exact（观测面更窄），反之解码一致也不保证端到端一致（向量库写入顺序/并发/分片）。",
       "measured": {
         "substrate_exposed_by_mem0": false,
         "black_box_decodability": false,
         "gray_box_end_to_end_reproducibility": true,
         "measured_identical_items": "4/4（见产物 end_to_end_determinism）",
-        "reason_not_identical": "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，而 mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。逻辑方向：端到端一致 **蕴含** 解码一致，反之不成立。",
+        "observation_surface": "被检索返回的条目（每题写入 12–36、返回 12–20）+ 每条前 200 字符",
+        "not_established": [
+          "substrate-level bit-exact decoding",
+          "未被检索到的记忆是否一致",
+          "每条第 200 字符之后是否一致"
+        ],
+        "relation_to_decoding_determinism": "不可互换（非蕴含关系）",
+        "reason_not_identical": "① 观测面被截断：比对只覆盖归一后 `[:200]` 的检索文本与被返回条目，其余部分原理上不可观测；② 采样参数不可观测：mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。",
         "n_repeats_planned": 3,
         "timeout_s": 1800.0
       }
@@ -182,13 +189,20 @@
     "c1_determinism_precheck": {
       "computable": true,
       "tier": "gray",
-      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，其 ollama digest 可记录，因而可实测『同一 digest + 同一依赖锁下，端到端 add()+search() 是否给出逐字节一致的输出』。实测 4/4 题一致（两次独立进程运行）。",
+      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加一个**不同的**可观测命题：同一模型别名 digest + 同一依赖锁下，端到端 add()+search() 在被检索返回的条目及其前 200 字符上是否逐字节一致。实测两次独立进程运行 4/4 题一致。注意该结论**不蕴含**解码级 bit-exact（观测面更窄），反之解码一致也不保证端到端一致（向量库写入顺序/并发/分片）。",
       "measured": {
         "substrate_exposed_by_mem0": false,
         "black_box_decodability": false,
         "gray_box_end_to_end_reproducibility": true,
         "measured_identical_items": "4/4（见产物 end_to_end_determinism）",
-        "reason_not_identical": "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，而 mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。逻辑方向：端到端一致 **蕴含** 解码一致，反之不成立。",
+        "observation_surface": "被检索返回的条目（每题写入 12–36、返回 12–20）+ 每条前 200 字符",
+        "not_established": [
+          "substrate-level bit-exact decoding",
+          "未被检索到的记忆是否一致",
+          "每条第 200 字符之后是否一致"
+        ],
+        "relation_to_decoding_determinism": "不可互换（非蕴含关系）",
+        "reason_not_identical": "① 观测面被截断：比对只覆盖归一后 `[:200]` 的检索文本与被返回条目，其余部分原理上不可观测；② 采样参数不可观测：mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。",
         "n_repeats_planned": 3,
         "timeout_s": 1800.0
       },
@@ -265,7 +279,7 @@
     "corpus_sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
     "run_fingerprint": "e5e2b5be",
     "sample_size": 4,
-    "recorded_at_utc": "2026-10-07T05:15:44.262285+00:00",
+    "recorded_at_utc": "2026-10-07T05:26:16.163660+00:00",
     "registry_note": "本条目写在**本产物内**而非 experiments.registry.json：该注册表当前有其他 worker 的未提交改动，本次实验不得触碰它（git 纪律）。如需并入，须由改动者在合并时统一登记。"
   },
   "leak_vectors": [
@@ -304,8 +318,21 @@
     "n_items_compared": 4,
     "n_identical": 4,
     "all_identical": true,
-    "claim": "end-to-end-reproducible",
-    "does_not_establish": "substrate-level bit-exact decoding",
+    "claim": "no-difference-observed-on-observable-surface",
+    "claim_zh": "在本次可观测面上，两次独立运行未观测到差异",
+    "observation_surface": {
+      "text_truncation_chars": 200,
+      "covers_retrieved_items_only": true,
+      "misses_unretrieved_memories": true,
+      "misses_beyond_truncation": true,
+      "note": "每题写入 12–36 条、检索返回 12–20 条（实测）；未返回的条目与每条第 200 字符之后的内容不在比对范围内。"
+    },
+    "does_not_establish": [
+      "substrate-level bit-exact decoding",
+      "identical output for unretrieved memories",
+      "identical output beyond the 200-char truncation"
+    ],
+    "relation_to_decoding_determinism": "不可互换：端到端观测面**更窄**（截断+top-N），故不蕴含解码一致；解码一致也不保证端到端一致（向量库写入顺序/并发/分片）。正确表述仅为『在本次可观测面上未观测到差异』。",
     "per_item": [
       {
         "question_id": "001be529",
@@ -373,7 +400,7 @@
         "n_messages_fed": 12,
         "inputs_sha256": "227ba4c58258eec782f4b2ae2a7a32eec45428a37b5c3dd91c33d6abb9e5b932",
         "ok": true,
-        "add_seconds": 5.0,
+        "add_seconds": 10.9,
         "n_add_events": 12,
         "n_retrieved": 12,
         "retrieved": [
@@ -436,7 +463,7 @@
         "n_messages_fed": 36,
         "inputs_sha256": "bb5dc7b553b56f2821fa7e448901bf2a48c8806c69d303611916e9cc951ebc1a",
         "ok": true,
-        "add_seconds": 16.8,
+        "add_seconds": 32.3,
         "n_add_events": 36,
         "n_retrieved": 20,
         "retrieved": [
@@ -531,7 +558,7 @@
         "n_messages_fed": 24,
         "inputs_sha256": "add9dd8abdbf3f48ad62941682c2a4519c438482e4b972905b16d8f7c4996dfc",
         "ok": true,
-        "add_seconds": 9.9,
+        "add_seconds": 16.3,
         "n_add_events": 24,
         "n_retrieved": 20,
         "retrieved": [
@@ -626,7 +653,7 @@
         "n_messages_fed": 24,
         "inputs_sha256": "b5da7357fff25a3f60a141d684277a57e3937c901f440362a9a870d00b263a59",
         "ok": true,
-        "add_seconds": 11.7,
+        "add_seconds": 19.5,
         "n_add_events": 24,
         "n_retrieved": 20,
         "retrieved": [
@@ -718,12 +745,12 @@
   },
   "timings": {
     "add_seconds": [
-      5.0,
-      16.8,
-      9.9,
-      11.7
+      10.9,
+      32.3,
+      16.3,
+      19.5
     ],
-    "add_seconds_mean": 10.8
+    "add_seconds_mean": 19.8
   },
   "feasibility": {
     "hardware": "Intel i7-8569U，纯 CPU，无 GPU 卸载（size_vram=0.00GB）",

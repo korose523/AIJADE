@@ -3,13 +3,18 @@
 ## 为什么这个测试盯着一句话
 
 `verify_end_to_end_determinism` 返回 `all_identical=True` 时，很容易顺手把它
-写成"解码 bit-exact"。**那是错的**：本函数比较的是 `add()` + `search()` 的
-最终输出文本，它无法观测 mem0 内部传给 LLM 的采样参数（mem0 不透传 seed/top_k）。
-端到端一致**蕴含**解码一致，反之不成立 —— 挂错术语会让论文把一个真的结论
-写在一个错的限定语上。
+写成"解码 bit-exact"或"端到端可复现 ⇒ 解码可复现"。**两者都是错的**：
 
-因此测试除了比对逻辑本身，还要锁住 `does_not_establish` 这个字段存在，
-让"这个测量不成立什么"随结果一起被记录，而不是靠人记得写。
+* 观测面被截断——只覆盖被检索返回的条目，且每条只取前 200 字符；
+* 采样参数不可观测——mem0 不透传 seed/top_k。
+
+端到端观测与解码观测是**两个不可互换**的结论：端到端不蕴含解码（观测面更窄，
+未检索到的记忆与第 200 字符之后的内容测不到），解码也不保证端到端（向量库写入
+顺序、并发、分片皆可引入差异）。唯一能说的是「在本次可观测面上未观测到差异」。
+
+因此测试除了比对逻辑，还要锁住 `claim` 用词、`does_not_establish` 与
+`observation_surface` 字段的存在，让"这个测量不成立什么"随结果一起被记录，
+而不是靠人记得写。
 
 运行：
     /Users/mac/.workbuddy/binaries/python/envs/default/bin/python -m pytest \
@@ -52,7 +57,35 @@ def test_identical_runs_are_detected(tmp_path: Path) -> None:
     r = verify_end_to_end_determinism(a, b)
     assert r["all_identical"] is True
     assert r["n_identical"] == 2
-    assert r["claim"] == "end-to-end-reproducible"
+    # 用词必须是"未观测到差异"，不得是"可复现"这类更强的断言
+    assert r["claim"] == "no-difference-observed-on-observable-surface"
+    assert "未观测到差异" in r["claim_zh"]
+
+
+def test_claim_never_asserts_reproducibility_or_decoding(tmp_path: Path) -> None:
+    """claim 不得声称"可复现"或"解码一致"，那会超出观测面。
+
+    这是本测试最核心的一条：措辞比数字更容易被误读，而产物里的 claim 会被
+    直接抄进论文。**只扫 claim 字段**——`does_not_establish` 里出现
+    "bit-exact decoding"是正确的（那里本就是在声明*不*成立什么）。
+    """
+    a = _art(tmp_path / "a.json", [("q1", 3, ["x"])])
+    b = _art(tmp_path / "b.json", [("q1", 3, ["x"])])
+    r = verify_end_to_end_determinism(a, b)
+    claim = (r["claim"] + " " + r["claim_zh"]).lower()
+    for banned in ("reproducible", "bit-exact", "bit_exact", "可复现"):
+        assert banned not in claim, f"claim 不得声称 {banned!r}：超出观测面"
+
+
+def test_observation_surface_is_declared(tmp_path: Path) -> None:
+    """必须声明观测面的三处截断，否则读者会以为比对了全部记忆。"""
+    a = _art(tmp_path / "a.json", [("q1", 1, ["x"])])
+    b = _art(tmp_path / "b.json", [("q1", 1, ["x"])])
+    surf = verify_end_to_end_determinism(a, b)["observation_surface"]
+    assert surf["text_truncation_chars"] == 200
+    assert surf["covers_retrieved_items_only"] is True
+    assert surf["misses_unretrieved_memories"] is True
+    assert surf["misses_beyond_truncation"] is True
 
 
 def test_differing_output_is_not_silently_passed(tmp_path: Path) -> None:
@@ -66,12 +99,13 @@ def test_differing_output_is_not_silently_passed(tmp_path: Path) -> None:
 
 
 def test_result_always_records_what_it_does_not_establish(tmp_path: Path) -> None:
-    """无论一致与否，都必须写明"这不能证明解码 bit-exact"。"""
+    """无论一致与否，都必须写明不能证明什么。"""
     a = _art(tmp_path / "a.json", [("q1", 1, ["x"])])
     b = _art(tmp_path / "b.json", [("q1", 1, ["y"])])
     for art_a, art_b in ((a, b), (a, a)):
         r = verify_end_to_end_determinism(art_a, art_b)
-        assert r["does_not_establish"] == "substrate-level bit-exact decoding"
+        assert "substrate-level bit-exact decoding" in r["does_not_establish"]
+        assert r["relation_to_decoding_determinism"]
 
 
 def test_empty_comparison_is_not_reported_as_reproducible(tmp_path: Path) -> None:

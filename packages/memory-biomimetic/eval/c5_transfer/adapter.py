@@ -30,6 +30,7 @@ import os
 import subprocess
 import sys
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 
 # ── 被测系统标识（写进指纹，缺了它就无法区分"换了 mem0 版本"的复现）──────────
@@ -52,6 +53,113 @@ except Exception:  # noqa: BLE001
 
 # 本装置自身的版本。语义变化时必须 bump，否则旧产物无法区分装置改动。
 C5_APPARATUS_VERSION = "c5-transfer/1"
+
+
+# ── 语料读取：唯一入口 ───────────────────────────────────────────────────────
+
+
+class CorpusFormatError(ValueError):
+    """语料文件的实际结构与"非空 dict 数组"不符。
+
+    单列一个异常类型，是为了让"语料坏了"与"实验跑挂了"在调用方与测试里
+    可被分别捕获 —— 前者要修数据/修读法，后者要修装置。
+    """
+
+
+def read_corpus(path: str | os.PathLike[str]) -> list[dict[str, Any]]:
+    """读取 LongMemEval 语料，**整体** JSON 解析，并校验顶层结构。
+
+    ## 为什么必须走这个函数（这是一个已经踩过的坑）
+
+    `eval/data/longmemeval_oracle.jsonl` 的扩展名是 `.jsonl`，但内容**不是 jsonl**：
+    它是一个**pretty-print 的 JSON 数组**（实测 67,041 行 / 500 项，缩进 4 空格）。
+    `longmemeval_s_cleaned.json` 同理（实测 1,101,877 行 / 500 项）。
+
+    因此逐行解析是错的，而且**错得不会报错**：
+
+    - 大部分行（`{`、`},`、`"key":` 等）确实会抛JSONDecodeError，
+      逐行解析的读者通常会在这里"发现"问题；
+    - 但文件里有**1,500 行是独立的 JSON 字符串字面量**（`answer_*` 证据 id、
+      `2023/04/10 (Mon) 17:15` 这类时间戳），它们**逐行解析完全合法**，
+      得到 1,500 个 `str` —— 实测 `longmemeval_oracle.jsonl` 逐行解析出
+      1,500 个可解析片段（全部是 `str`），零报错。
+
+    也就是说，一个写成"跳过解析失败的行、留下能解析的行"的读取器会
+    **静默**拿到1,500 个字符串而不是 500 个题目dict，且没有任何异常。
+    本项目已有两名 worker 以这种方式产出过垃圾数据。
+
+    ⇒ 这里做三件事，且**都不依赖调用方的自觉**：
+      1. 整体 `json.loads`；
+      2. 断言顶层是 `list`、非空、每个元素是 `dict`；
+      3. 失败时抛出点名文件、说明真实形状的错误，并直接给出正确读法。
+
+    ## 不要改名
+
+    `longmemeval_oracle.jsonl` 这个误导性的文件名**不能改**：`experiments.registry.json`
+    等多处按此路径引用它。纠正只以文档与本函数注释的形式存在。
+    """
+    p = Path(path)
+    try:
+        raw = p.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise CorpusFormatError(f"语料文件无法读取：{p}（{exc}）") from exc
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise CorpusFormatError(_format_hint(p, raw, f"整体 JSON 解析失败：{exc}")) from exc
+
+    if not isinstance(data, list):
+        raise CorpusFormatError(
+            _format_hint(p, raw, f"顶层是 {type(data).__name__}，期望 list")
+        )
+    if not data:
+        raise CorpusFormatError(_format_hint(p, raw, "顶层是空数组（0 项）"))
+    bad = [i for i, x in enumerate(data) if not isinstance(x, dict)]
+    if bad:
+        first = bad[0]
+        raise CorpusFormatError(
+            _format_hint(
+                p,
+                raw,
+                f"数组元素不全是 dict：{len(bad)}/{len(data)} 个不是，"
+                f"首个下标 {first}（第 {first + 1} 项）是 {type(data[first]).__name__}",
+            )
+        )
+    return data
+
+
+def _format_hint(path: Path, raw: str, detected: str) -> str:
+    """构造一条"说清事实 + 给出正确读法"的错误信息。
+
+    措辞纪律：**只陈述实测到的形状**。`is_array` / `multiline` 是量出来的，
+    不是从扩展名推的—— 否则对真正损坏的文件也会 falsely 断言"它是
+    pretty-print 数组"，那是本函数最不该犯的错。
+    """
+    lines = raw.count("\n") + 1
+    stripped = raw.lstrip()
+    first = stripped[:1] or "<空文件>"
+    looks_like_array = first == "["
+    # "pretty-print" 的判据：顶层是数组，且缩进过（即多行格式化），
+    # 或干脆就是多行。任一不成立就只说"多行 JSON 值"，不硬套pretty-print。
+    indented = raw[:1] in (" ", "\t", "\n")
+    multiline = lines > 1
+    shape_desc = (
+        "pretty-print 的 JSON 数组（已缩进多行）"
+        if looks_like_array and (indented or multiline)
+        else f"单个 JSON 值（首字符 {first!r}，共 {lines} 行）"
+    )
+    return (
+        f"语料格式异常：{path}\n"
+        f"  实测：{lines} 行，{len(raw)} 字节；{detected}。\n"
+        f"  原因：该文件扩展名是 .jsonl，但内容是{shape_desc}，并非 JSON Lines。\n"
+        f"  正确读法：json.loads(path.read_text()) 整体解析，然后断言顶层是 list。\n"
+        f"  禁止读法：for line in f: json.loads(line) —— 逐行解析不会可靠地报错。\n"
+        f"    LongMemEval 的两个语料文件里各有约 1,500 行是独立的 JSON 字符串\n"
+        f"    字面量（answer_* 证据 id、时间戳等），逐行解析它们**完全合法**，\n"
+        f"    会让'跳过坏行'式读取器静默拿到 1,500 个 str 而非 500 个题目 dict。\n"
+        f"  请改用 c5_transfer.adapter.read_corpus()。"
+    )
 
 
 # ── 约束一：determinism pre-check ────────────────────────────────────────────
@@ -81,14 +189,16 @@ def probe_determinism_precheck(
     关键区分（这是本判定的全部技术内容）：AIJADE 版本的 determinism pre-check
     测的是**substrate 的解码**是否 bit-exact；而 mem0 **不暴露 substrate**——
     `Memory.add()` 的prompt 构造、采样参数传递、模型选择全在库内部。因此
-    "端到端重跑 mem0 是否给出相同结果"与"解码是否 bit-exact"**不是同一个命题**：
-    前者可测且已实测通过，后者结构性不可算。
+    "端到端重跑 mem0 是否给出相同结果"与"解码是否 bit-exact"**不是同一个命题**，
+    且**不可互换**（端到端观测面更窄，见 verify_end_to_end_determinism）。
 
-    已实测（见产物 end_to_end_determinism段）：两次独立进程运行，
+    已实测（见产物 end_to_end_determinism 段）：两次独立进程运行，
     4/4 题的检索结果文本逐字节一致，事件数与命中数亦一致。
+    该结论的强度**仅限于**"在本次可观测面上未观测到差异"。
 
-    ⚠️ 引用这条时**必须**保留限定语：端到端一致**蕴含**解码一致，反之不成立。
-    把它写成"解码 bit-exact"是把一个真结论挂上错的术语。
+    ⚠️ 引用这条时**必须**保留观测面限定：观测面为「被检索返回的条目 +
+    每条前 200 字符」，未检索到的记忆与截断后的内容在原理上不可观测。
+    把"未观测到差异"写成"解码 bit-exact"是把一个弱得多的真结论挂上错的术语。
     """
     return DeterminismVerdict(
         computable=True,
@@ -96,23 +206,33 @@ def probe_determinism_precheck(
         reason=(
             "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、"
             "调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』"
-            "在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 "
-            "Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，"
-            "其 ollama digest 可记录，因而可实测『同一 digest + 同一依赖锁下，"
-            "端到端 add()+search() 是否给出逐字节一致的输出』。"
-            "实测 4/4 题一致（两次独立进程运行）。"
+            "在黑盒下**不可计算**。但在灰盒下可施加一个**不同的**可观测命题："
+            "同一模型别名 digest + 同一依赖锁下，端到端 add()+search() "
+            "在被检索返回的条目及其前 200 字符上是否逐字节一致。"
+            "实测两次独立进程运行 4/4 题一致。"
+            "注意该结论**不蕴含**解码级 bit-exact（观测面更窄），"
+            "反之解码一致也不保证端到端一致（向量库写入顺序/并发/分片）。"
         ),
         measured={
             "substrate_exposed_by_mem0": False,
             "black_box_decodability": False,
             "gray_box_end_to_end_reproducibility": True,
             "measured_identical_items": "4/4（见产物 end_to_end_determinism）",
+            "observation_surface": (
+                "被检索返回的条目（每题写入 12–36、返回 12–20）+ 每条前 200 字符"
+            ),
+            "not_established": [
+                "substrate-level bit-exact decoding",
+                "未被检索到的记忆是否一致",
+                "每条第 200 字符之后是否一致",
+            ],
+            "relation_to_decoding_determinism": "不可互换（非蕴含关系）",
             "reason_not_identical": (
-                "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，"
-                "而 mem0 的 OllamaLLM.generate_response 只透传 "
+                "① 观测面被截断：比对只覆盖归一后 `[:200]` 的检索文本与被返回条目，"
+                "其余部分原理上不可观测；"
+                "② 采样参数不可观测：mem0 的 OllamaLLM.generate_response 只透传 "
                 "{temperature, num_predict, top_p}，丢弃 top_k 与 seed "
                 "（源码事实，见产物 mem0_observability.sampling_params_forwarded）。"
-                "逻辑方向：端到端一致 **蕴含** 解码一致，反之不成立。"
             ),
             "n_repeats_planned": n_repeats,
             "timeout_s": timeout_s,
@@ -126,19 +246,32 @@ def verify_end_to_end_determinism(
 ) -> dict[str, Any]:
     """比对两次**独立进程**运行的检索结果，判断端到端是否可复现。
 
-    ## 这测的是什么、不测什么
+    ## 这测的是什么
 
-    **测**：同一模型 digest、同一依赖锁、同一喂入输入下，`add()` + `search()`
-    的**输出文本**是否逐字节一致。这是 AIJADE 约束一在灰盒下**可实测**的那个
-    较弱命题（见 probe_determinism_precheck 的 tier="gray"）。
+    同一模型 digest、同一依赖锁、同一喂入输入下，`add()` + `search()` 返回的
+    **被截断后的**检索文本是否逐字节一致。
 
-    **不测**：底层解码是否 bit-exact。后者要求观测 mem0 内部传给 LLM 的
-    采样参数实际取值，而 mem0 不透传 seed/top_k（见 mem0_observability）。
-    所以即便本函数返回 identical=true，也**不能**把它写成"解码 bit-exact"——
-    端到端一致是比解码一致**更强**的可观测结论（它蕴含后者，反之不成立）。
+    ## 这**不**测什么（措辞纪律，勿改）
 
-    这个区分是本函数存在的全部理由：把"端到端可复现"写成"解码 bit-exact"
-    会让论文把一个真的结论挂在一个错的术语上。
+    **不能**用它证明"底层解码 bit-exact"。两个独立理由，缺一不可：
+
+    1. **观测面被截断。** 比对只覆盖 `run.py::_normalize_search` 归一后的
+       文本：每条截断到 **200 字符**（`_normalize_search` 里的 `[:200]`），
+       且只覆盖 **被检索返回的**条目（实测每题写入 12–36 条、返回 12–20 条）。
+       因此未被检索到的记忆、以及每条记忆第 200 字符之后的内容，
+       本函数**在原理上就看不到**。若底座解码在那里发散，哈希不变。
+    2. **采样参数不可观测。** mem0 的 `OllamaLLM.generate_response`不透传
+       seed/top_k（见 mem0_observability.sampling_params_forwarded），
+       我们无法确认被测系统实际用了什么解码设置。
+
+    ⇒ 端到端一致与解码一致是**两个不可互换的观测**：
+       既不能说端到端一致"蕴含/强于"解码一致（覆盖面更窄，见上1），
+       也不能说解码一致保证端到端一致（向量库写入顺序、并发、分片皆可引入差异，
+       见上 2 的反向）。
+       正确表述只有一句：**在本次可观测面上，两次独立运行未观测到差异。**
+
+    这个区分是本函数存在的核心理由。把"在可观测面上未观测到差异"写成
+    "解码 bit-exact"会让论文把一个弱得多的真结论挂上错的术语。
     """
     import hashlib
 
@@ -163,17 +296,38 @@ def verify_end_to_end_determinism(
     per_item = [
         {"question_id": q, "identical": a[q] == b[q], **a[q]} for q in shared
     ]
+    all_identical = bool(shared) and all(r["identical"] for r in per_item)
     return {
         "compared_artifacts": [committed_artifact, fresh_artifact],
         "n_items_compared": len(shared),
         "n_identical": sum(1 for r in per_item if r["identical"]),
-        "all_identical": bool(shared) and all(r["identical"] for r in per_item),
-        "claim": (
-            "end-to-end-reproducible"
-            if bool(shared) and all(r["identical"] for r in per_item)
-            else "NOT-identical"
+        "all_identical": all_identical,
+        "claim": "no-difference-observed-on-observable-surface" if all_identical else "NOT-identical",
+        "claim_zh": (
+            "在本次可观测面上，两次独立运行未观测到差异"
+            if all_identical
+            else "观测到差异"
         ),
-        "does_not_establish": "substrate-level bit-exact decoding",
+        "observation_surface": {
+            "text_truncation_chars": 200,
+            "covers_retrieved_items_only": True,
+            "misses_unretrieved_memories": True,
+            "misses_beyond_truncation": True,
+            "note": (
+                "每题写入 12–36 条、检索返回 12–20 条（实测）；"
+                "未返回的条目与每条第 200 字符之后的内容不在比对范围内。"
+            ),
+        },
+        "does_not_establish": [
+            "substrate-level bit-exact decoding",
+            "identical output for unretrieved memories",
+            "identical output beyond the 200-char truncation",
+        ],
+        "relation_to_decoding_determinism": (
+            "不可互换：端到端观测面**更窄**（截断+top-N），故不蕴含解码一致；"
+            "解码一致也不保证端到端一致（向量库写入顺序/并发/分片）。"
+            "正确表述仅为『在本次可观测面上未观测到差异』。"
+        ),
         "per_item": per_item,
     }
 
@@ -336,8 +490,7 @@ def probe_leak_free_oracle(*, corpus_path: str) -> OracleVerdict:
     每条消息是否已脱敏。
     """
     vectors: list[dict[str, Any]] = []
-    with open(corpus_path, encoding="utf-8") as f:
-        rows = json.load(f)
+    rows = read_corpus(corpus_path)
 
     flagged_turns = 0
     total_turns = 0
