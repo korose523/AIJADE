@@ -1,0 +1,373 @@
+{
+  "experiment": {
+    "id": "c5-mem0-transfer",
+    "apparatus_version": "c5-transfer/1",
+    "question": "D1 装置可迁移性：AIJADE 的五条可复现性约束能否在第三方记忆系统（mem0）上被计算出来。D2 判据可迁移性：逐条施加性判定。",
+    "created_at_utc": "2026-10-07T05:06:55.077448+00:00",
+    "seed": 42,
+    "dry_run": false
+  },
+  "verdict_scope": {
+    "inferenceScope": "judge-computability-only",
+    "excluded": [
+      "mem0 与 AIJADE 的分数高低比较",
+      "任何『五条约束在别的项目里带来提升』的结论（需A/B，本实验不具备）",
+      "mem0 的能力水平评估（小 n + 本机算力，见 feasibility）"
+    ],
+    "why": "判据是『我们的判据能否被计算出来』，不是『对方分数多少』。把可计算性说成效度是本实验最容易被误用的方向。"
+  },
+  "corpus": {
+    "name": "LongMemEval (oracle split)",
+    "path": "/Volumes/Untitled/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/longmemeval_oracle.jsonl",
+    "sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
+    "items_total": 500,
+    "format_note": "上游文件名为 longmemeval_oracle，内容为 JSON 数组（非 jsonl）",
+    "license": "MIT (Hugging Face: xiaowu0162/longmemeval)",
+    "n_sessions_total": 948,
+    "chars_total": 13977239,
+    "abstention_items": 30
+  },
+  "target_system": {
+    "mem0_version": "2.2.1",
+    "qdrant_client_version": null,
+    "python_version": "3.13.12",
+    "api_surface": {
+      "Memory.from_config": "仅接受 config_dict 一个位置参数",
+      "Memory.add": "参数含 messages/user_id/agent_id/run_id/metadata/infer/memory_type/prompt —— **无返回值中的模型或采样信息**",
+      "Memory.search": "参数含 query/top_k/filters/threshold/rerank/explain。实测：mem0 2.2.1 起**拒绝顶层 user_id**，必须写成 filters={'user_id': ...}，否则抛 ValueError。"
+    },
+    "sampling_params_forwarded": {
+      "forwarded": [
+        "temperature",
+        "num_predict",
+        "top_p"
+      ],
+      "dropped_by_mem0": [
+        "top_k",
+        "seed",
+        "repeat_penalty",
+        "num_ctx"
+      ],
+      "source": "mem0/llms/ollama.py::OllamaLLM.generate_response",
+      "consequence": "调用方无法通过 mem0 配置把seed/top_k 传到底层。本实验通过 **模型别名**（Modelfile 固化参数）在灰盒侧补齐，这是绕开库限制的合法手段，未修改 mem0 源码。"
+    },
+    "embedding_dims_default_mismatch": {
+      "mem0_default": 512,
+      "nomic_embed_text_actual": 768,
+      "consequence": "不显式设 embedding_dims 会导致维度不匹配，建库或检索失败"
+    },
+    "json_suffix_liveness": {
+      "what": "mem0/llms/ollama.py 在 response_format=json_object 时，会向最后一条 user 消息追加 '\\n\\nPlease respond with valid JSON only.'，同时置 params['format']='json'",
+      "measured": "带该后缀 + format=json：num_predict=512 → done=length, eval_tokens=512, content长度=0；num_predict=2048 → done=length, eval_tokens=2048, content长度=0。去掉该后缀、其余完全相同：num_predict=512 → done=stop, eval_tokens=466, 解析出 6 条 memory。",
+      "consequence": "在本机底座模型（qwythos 8.95B Q4_K_M）上，mem0 的 ollama provider 因该冗余后缀触发无限 JSON 前缀/空白生成，**抽取恒为空**。因此本实验观测到的『检索为空』由底座模型与 provider 的交互缺陷造成，**不是**操纵不可达 —— 装置据此拒绝报出构造性零。",
+      "note": "这是可迁移性实验的一个正面结果：约束 3（degeneracy guard）在真实装置上确实拦下了一个会被误读为『构造性零』的数字。"
+    },
+    "prompt_size_floor": {
+      "system_prompt_chars": 33653,
+      "system_prompt_sha256_prefix": "ad19187a37813ef7",
+      "measured": "最短会话(622 字符)仍使请求达 8,365 tokens",
+      "consequence": "mem0 的抽取提示词本身即约 8.4K tokens，底座模型 num_ctx 必须 ≥ 16K 才可能跑通；mem0 不透传 num_ctx（见 sampling_params_forwarded.dropped_by_mem0），本实验经模型别名(Modelfile) 在灰盒侧设定。"
+    },
+    "not_exposed": [
+      "substrate 抽象（无法从 mem0 内部拿到解码参数与模型 digest）",
+      "记忆抽取提示词模板的版本号/哈希（只能连同 site-packages 一起钉）",
+      "实验角色（control / main result）概念"
+    ]
+  },
+  "fingerprint": {
+    "fingerprint": "e5e2b5be",
+    "fields_present": [
+      "mem0_version",
+      "qdrant_client_version",
+      "python_version",
+      "model_digest",
+      "server_version",
+      "sampling",
+      "sampling_hash",
+      "corpus_sha256",
+      "embedder_model"
+    ],
+    "fields_absent": [
+      "mem0_prompt_template_version",
+      "mem0_fact_extraction_prompt_sha256",
+      "ollama_build_arch"
+    ],
+    "tier": "gray",
+    "reason": "灰盒下可覆盖：模型 digest、服务端版本、pinned 采样参数、全部喂入输入（语料 sha256 + 每题实际 messages 的 sha256）、embedder 模型、以及被测库版本。仍缺两项 mem0 内部提示词模板版本 —— 库不暴露该模板的版本号或哈希，只能连同 site-packages 一起钉。"
+  },
+  "environment": {
+    "apparatus_version": "c5-transfer/1",
+    "python_executable": "/Users/mac/.workbuddy/binaries/python/envs/default/bin/python",
+    "platform": "darwin",
+    "env_vars_material": {
+      "OLLAMA_HOST": "<unset>",
+      "OPENAI_API_KEY": "<unset>",
+      "HF_HOME": "<unset>"
+    },
+    "pip_freeze_sha256": "ebd2006a9cc2331c"
+  },
+  "D1_criterion_probe": {
+    "c1_determinism_precheck": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，其 ollama digest 可记录，因而可改写为『同一 digest + 同一依赖锁下，端到端记忆抽取是否可复现』这一**较弱但可审计**的命题。",
+      "measured": {
+        "substrate_exposed_by_mem0": false,
+        "black_box_decodability": false,
+        "gray_box_end_to_end_reproducibility": true,
+        "reason_not_identical": "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，而 mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。",
+        "n_repeats_planned": 3,
+        "timeout_s": 1800.0
+      }
+    },
+    "c2_run_fingerprint": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "灰盒下可覆盖：模型 digest、服务端版本、pinned 采样参数、全部喂入输入（语料 sha256 + 每题实际 messages 的 sha256）、embedder 模型、以及被测库版本。仍缺两项 mem0 内部提示词模板版本 —— 库不暴露该模板的版本号或哈希，只能连同 site-packages 一起钉。",
+      "fields_present": [
+        "mem0_version",
+        "qdrant_client_version",
+        "python_version",
+        "model_digest",
+        "server_version",
+        "sampling",
+        "sampling_hash",
+        "corpus_sha256",
+        "embedder_model"
+      ],
+      "fields_absent": [
+        "mem0_prompt_template_version",
+        "mem0_fact_extraction_prompt_sha256",
+        "ollama_build_arch"
+      ],
+      "fingerprint": "e5e2b5be"
+    },
+    "c3_degeneracy_guard": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可算：只需 mem0 的公开输出（search 返回的记忆条数与文本），不需要任何内部状态。判据为『每题检索结果条数 == 0』，该量在黑盒下即可观测。",
+      "note": "口径映射：AIJADE 的 2×2 四格 precision 相同 ⇒ mem0 的『检索条数恒为 0』，二者都判定为构造性零。"
+    },
+    "c4_leak_free_oracle": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可施加，且是本实验里唯一**必须由我们侧保证**的约束：oracle 只向 mem0 暴露 question 与已脱敏的会话，永不下发 answer；失败实例只报 question_id。已实测并记录语料自带的两类泄漏向量。",
+      "leak_vectors": [
+        {
+          "vector": "per_turn_has_answer_flag",
+          "where": "haystack_sessions[].{role,content,has_answer}",
+          "turns_flagged": 896,
+          "turns_total": 10960,
+          "why": "oracle 切分的每个 turn 带 has_answer 布尔标签，若原样喂给 mem0，等于把『答案在哪一段』直接告诉被测系统。这是本次实验中实测到的真实泄漏向量，不是假想风险。",
+          "mitigation": "喂入前删除 has_answer 字段，仅保留 role/content"
+        },
+        {
+          "vector": "answer_string_present_in_context",
+          "where": "haystack_sessions[].content",
+          "items_with_exact_answer": 101,
+          "items_checked": 309,
+          "why": "oracle 切分的定义就是只保留含答案的会话，故答案原文必然在上下文里。这不是可修的泄漏，而是语料切分的设计；必须记录，以免把 oracle 切分下的高分误读为记忆系统能力强。",
+          "mitigation": "仅可用于检索/记忆抽取环节的有界评测，不可用于端到端问答宣称"
+        }
+      ]
+    },
+    "c5_artifact_registry": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "可施加，但**主体是 AIJADE 侧**：被测系统不知道自己是 control 还是 main result，这个角色只能由运行者登记。mem0 侧可提供的只有 run_id 与 history_db，属内部日志，不构成实验注册表。"
+    }
+  },
+  "D2_applicability": {
+    "c1_determinism_precheck": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，其 ollama digest 可记录，因而可改写为『同一 digest + 同一依赖锁下，端到端记忆抽取是否可复现』这一**较弱但可审计**的命题。",
+      "measured": {
+        "substrate_exposed_by_mem0": false,
+        "black_box_decodability": false,
+        "gray_box_end_to_end_reproducibility": true,
+        "reason_not_identical": "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，而 mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。",
+        "n_repeats_planned": 3,
+        "timeout_s": 1800.0
+      },
+      "grade": "PARTIALLY_APPLICABLE"
+    },
+    "c2_run_fingerprint": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "灰盒下可覆盖：模型 digest、服务端版本、pinned 采样参数、全部喂入输入（语料 sha256 + 每题实际 messages 的 sha256）、embedder 模型、以及被测库版本。仍缺两项 mem0 内部提示词模板版本 —— 库不暴露该模板的版本号或哈希，只能连同 site-packages 一起钉。",
+      "fields_present": [
+        "mem0_version",
+        "qdrant_client_version",
+        "python_version",
+        "model_digest",
+        "server_version",
+        "sampling",
+        "sampling_hash",
+        "corpus_sha256",
+        "embedder_model"
+      ],
+      "fields_absent": [
+        "mem0_prompt_template_version",
+        "mem0_fact_extraction_prompt_sha256",
+        "ollama_build_arch"
+      ],
+      "fingerprint": "e5e2b5be",
+      "grade": "PARTIALLY_APPLICABLE"
+    },
+    "c3_degeneracy_guard": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可算：只需 mem0 的公开输出（search 返回的记忆条数与文本），不需要任何内部状态。判据为『每题检索结果条数 == 0』，该量在黑盒下即可观测。",
+      "note": "口径映射：AIJADE 的 2×2 四格 precision 相同 ⇒ mem0 的『检索条数恒为 0』，二者都判定为构造性零。",
+      "grade": "FULLY_APPLICABLE"
+    },
+    "c4_leak_free_oracle": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可施加，且是本实验里唯一**必须由我们侧保证**的约束：oracle 只向 mem0 暴露 question 与已脱敏的会话，永不下发 answer；失败实例只报 question_id。已实测并记录语料自带的两类泄漏向量。",
+      "leak_vectors": [
+        {
+          "vector": "per_turn_has_answer_flag",
+          "where": "haystack_sessions[].{role,content,has_answer}",
+          "turns_flagged": 896,
+          "turns_total": 10960,
+          "why": "oracle 切分的每个 turn 带 has_answer 布尔标签，若原样喂给 mem0，等于把『答案在哪一段』直接告诉被测系统。这是本次实验中实测到的真实泄漏向量，不是假想风险。",
+          "mitigation": "喂入前删除 has_answer 字段，仅保留 role/content"
+        },
+        {
+          "vector": "answer_string_present_in_context",
+          "where": "haystack_sessions[].content",
+          "items_with_exact_answer": 101,
+          "items_checked": 309,
+          "why": "oracle 切分的定义就是只保留含答案的会话，故答案原文必然在上下文里。这不是可修的泄漏，而是语料切分的设计；必须记录，以免把 oracle 切分下的高分误读为记忆系统能力强。",
+          "mitigation": "仅可用于检索/记忆抽取环节的有界评测，不可用于端到端问答宣称"
+        }
+      ],
+      "grade": "FULLY_APPLICABLE"
+    },
+    "c5_artifact_registry": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "可施加，但**主体是 AIJADE 侧**：被测系统不知道自己是 control 还是 main result，这个角色只能由运行者登记。mem0 侧可提供的只有 run_id 与 history_db，属内部日志，不构成实验注册表。",
+      "grade": "PARTIALLY_APPLICABLE"
+    }
+  },
+  "artifact_registry_entry": {
+    "schema": "c5.artifact_registry_entry@1",
+    "experiment_id": "c5-mem0-transfer",
+    "apparatus_version": "c5-transfer/1",
+    "arm": "infer",
+    "role": "control",
+    "role_semantics": "control 臂：走 mem0 的 LLM 事实抽取（add(infer=True)）。本机底座模型在该臂下抽取恒为空，因此它的作用是展示同一套装置如何把『底座失效』与『构造性零』区分开—— 即拦下一个会被误读为科学结论的数字。它不是 mem0 能力的结果。",
+    "corpus_sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
+    "run_fingerprint": "e5e2b5be",
+    "sample_size": 2,
+    "recorded_at_utc": "2026-10-07T05:06:55.763607+00:00",
+    "registry_note": "本条目写在**本产物内**而非 experiments.registry.json：该注册表当前有其他 worker 的未提交改动，本次实验不得触碰它（git 纪律）。如需并入，须由改动者在合并时统一登记。"
+  },
+  "leak_vectors": [
+    {
+      "vector": "per_turn_has_answer_flag",
+      "where": "haystack_sessions[].{role,content,has_answer}",
+      "turns_flagged": 896,
+      "turns_total": 10960,
+      "why": "oracle 切分的每个 turn 带 has_answer 布尔标签，若原样喂给 mem0，等于把『答案在哪一段』直接告诉被测系统。这是本次实验中实测到的真实泄漏向量，不是假想风险。",
+      "mitigation": "喂入前删除 has_answer 字段，仅保留 role/content"
+    },
+    {
+      "vector": "answer_string_present_in_context",
+      "where": "haystack_sessions[].content",
+      "items_with_exact_answer": 101,
+      "items_checked": 309,
+      "why": "oracle 切分的定义就是只保留含答案的会话，故答案原文必然在上下文里。这不是可修的泄漏，而是语料切分的设计；必须记录，以免把 oracle 切分下的高分误读为记忆系统能力强。",
+      "mitigation": "仅可用于检索/记忆抽取环节的有界评测，不可用于端到端问答宣称"
+    }
+  ],
+  "degeneracy_measured": {
+    "n_succeeded": 2,
+    "n_failed": 0,
+    "n_add_events_total": 0,
+    "extraction_dead": true,
+    "all_retrieved_zero": true,
+    "any_retrieved_zero": true,
+    "verdict": "APPARATUS_INADEQUATE_NOT_CONSTRUCTIVE_ZERO",
+    "note": "所有实例的记忆抽取事件数均为 0 ⇒ 底座模型在该提示下未能产出可入库事实。此时的『检索为空』由**底座能力不足**造成，不是操纵不可达，因此**不得**报为构造性零（NULL BY CONSTRUCTION）。本装置在此处正确地拒绝给出可复现性数字。"
+  },
+  "abstention_subset": {
+    "present_in_corpus": true,
+    "corpus_count": 30,
+    "corpus_share_of_500": 0.06,
+    "evaluated": 1,
+    "definition": "question_id 以 _abs 结尾；其 gold answer 形如『The information provided is not enough...』，即正确答案就是弃权。这是现成的外部『宁缺勿伪造』判据。",
+    "records": [
+      {
+        "question_id": "gpt4_70e84552_abs",
+        "ok": true,
+        "n_retrieved": 0,
+        "constructive_zero": true
+      }
+    ],
+    "caveat": "本机算力下 abstention 子集样本量为 1，**不足以**给出该子集的准确率；只能报告装置在该子集上可运行/可判定。"
+  },
+  "sample": {
+    "sampleSize": 2,
+    "arm": "infer",
+    "arm_semantics": "add(infer=True)：mem0 走 LLM 事实抽取管线",
+    "arm_caveat": "本机底座模型在 infer 臂下抽取恒为空（见 target_system.json_suffix_liveness），故只有 store 臂能产出非空记忆。两臂都是 mem0 公开参数，未修改其源码；store 臂**不**代表 mem0 的事实抽取能力。",
+    "regular": 1,
+    "abstention": 1,
+    "selection": "按 question_id 字典序取前 n（确定性，无随机依赖）",
+    "items": [
+      {
+        "question_id": "001be529",
+        "question_type": "single-session-user",
+        "arm": "infer",
+        "n_messages_fed": 12,
+        "inputs_sha256": "227ba4c58258eec782f4b2ae2a7a32eec45428a37b5c3dd91c33d6abb9e5b932",
+        "ok": true,
+        "add_seconds": 475.7,
+        "n_add_events": 0,
+        "n_retrieved": 0,
+        "retrieved": [],
+        "constructive_zero": true,
+        "is_abstention": false
+      },
+      {
+        "question_id": "gpt4_70e84552_abs",
+        "question_type": "temporal-reasoning",
+        "arm": "infer",
+        "n_messages_fed": 24,
+        "inputs_sha256": "b5da7357fff25a3f60a141d684277a57e3937c901f440362a9a870d00b263a59",
+        "ok": true,
+        "add_seconds": 585.9,
+        "n_add_events": 0,
+        "n_retrieved": 0,
+        "retrieved": [],
+        "constructive_zero": true,
+        "is_abstention": true
+      }
+    ]
+  },
+  "timings": {
+    "add_seconds": [
+      475.7,
+      585.9
+    ],
+    "add_seconds_mean": 530.8
+  },
+  "feasibility": {
+    "hardware": "Intel i7-8569U，纯 CPU，无 GPU 卸载（size_vram=0.00GB）",
+    "measured_prefill_tok_per_s": 8.1,
+    "measured_gen_tok_per_s": 1.0,
+    "corpus_sessions_total": 948,
+    "oracle_split_vs_cleaned": "oracle 切分 948 会话 ≈ 1.4e7 字符；cleaned 切分 23,867 会话 ≈ 2.4e8 字符，两者体量差约 15 倍。任何算力估算必须指明是哪个切分。",
+    "full_500_status": "NOT_RUN",
+    "full_500_reason": "本机纯 CPU、生成 1 tok/s；mem0 每次 add 至少两次 LLM 调用。全量 500 题所需时间远超本任务预算，故本产物只覆盖小 n，并在 verdict_scope 中限定结论范围。"
+  },
+  "honesty": {
+    "no_fabricated_numbers": true,
+    "failed_items_reported_by_id_only": true,
+    "expected_output_never_fed": true
+  }
+}
