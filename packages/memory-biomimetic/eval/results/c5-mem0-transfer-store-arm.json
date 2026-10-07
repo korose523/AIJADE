@@ -1,0 +1,695 @@
+{
+  "experiment": {
+    "id": "c5-mem0-transfer",
+    "apparatus_version": "c5-transfer/1",
+    "question": "D1 装置可迁移性：AIJADE 的五条可复现性约束能否在第三方记忆系统（mem0）上被计算出来。D2 判据可迁移性：逐条施加性判定。",
+    "created_at_utc": "2026-10-07T04:49:02.838028+00:00",
+    "seed": 42,
+    "dry_run": false
+  },
+  "verdict_scope": {
+    "inferenceScope": "judge-computability-only",
+    "excluded": [
+      "mem0 与 AIJADE 的分数高低比较",
+      "任何『五条约束在别的项目里带来提升』的结论（需A/B，本实验不具备）",
+      "mem0 的能力水平评估（小 n + 本机算力，见 feasibility）"
+    ],
+    "why": "判据是『我们的判据能否被计算出来』，不是『对方分数多少』。把可计算性说成效度是本实验最容易被误用的方向。"
+  },
+  "corpus": {
+    "name": "LongMemEval (oracle split)",
+    "path": "/Volumes/Untitled/AIJADE/AIJADE/packages/memory-biomimetic/eval/data/longmemeval_oracle.jsonl",
+    "sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
+    "items_total": 500,
+    "format_note": "上游文件名为 longmemeval_oracle，内容为 JSON 数组（非 jsonl）",
+    "license": "MIT (Hugging Face: xiaowu0162/longmemeval)",
+    "n_sessions_total": 948,
+    "chars_total": 13977239,
+    "abstention_items": 30
+  },
+  "target_system": {
+    "mem0_version": "2.2.1",
+    "qdrant_client_version": null,
+    "python_version": "3.13.12",
+    "api_surface": {
+      "Memory.from_config": "仅接受 config_dict 一个位置参数",
+      "Memory.add": "参数含 messages/user_id/agent_id/run_id/metadata/infer/memory_type/prompt —— **无返回值中的模型或采样信息**",
+      "Memory.search": "参数含 query/top_k/filters/threshold/rerank/explain。实测：mem0 2.2.1 起**拒绝顶层 user_id**，必须写成 filters={'user_id': ...}，否则抛 ValueError。"
+    },
+    "sampling_params_forwarded": {
+      "forwarded": [
+        "temperature",
+        "num_predict",
+        "top_p"
+      ],
+      "dropped_by_mem0": [
+        "top_k",
+        "seed",
+        "repeat_penalty",
+        "num_ctx"
+      ],
+      "source": "mem0/llms/ollama.py::OllamaLLM.generate_response",
+      "consequence": "调用方无法通过 mem0 配置把seed/top_k 传到底层。本实验通过 **模型别名**（Modelfile 固化参数）在灰盒侧补齐，这是绕开库限制的合法手段，未修改 mem0 源码。"
+    },
+    "embedding_dims_default_mismatch": {
+      "mem0_default": 512,
+      "nomic_embed_text_actual": 768,
+      "consequence": "不显式设 embedding_dims 会导致维度不匹配，建库或检索失败"
+    },
+    "json_suffix_liveness": {
+      "what": "mem0/llms/ollama.py 在 response_format=json_object 时，会向最后一条 user 消息追加 '\\n\\nPlease respond with valid JSON only.'，同时置 params['format']='json'",
+      "measured": "带该后缀 + format=json：num_predict=512 → done=length, eval_tokens=512, content长度=0；num_predict=2048 → done=length, eval_tokens=2048, content长度=0。去掉该后缀、其余完全相同：num_predict=512 → done=stop, eval_tokens=466, 解析出 6 条 memory。",
+      "consequence": "在本机底座模型（qwythos 8.95B Q4_K_M）上，mem0 的 ollama provider 因该冗余后缀触发无限 JSON 前缀/空白生成，**抽取恒为空**。因此本实验观测到的『检索为空』由底座模型与 provider 的交互缺陷造成，**不是**操纵不可达 —— 装置据此拒绝报出构造性零。",
+      "note": "这是可迁移性实验的一个正面结果：约束 3（degeneracy guard）在真实装置上确实拦下了一个会被误读为『构造性零』的数字。"
+    },
+    "prompt_size_floor": {
+      "system_prompt_chars": 33653,
+      "system_prompt_sha256_prefix": "ad19187a37813ef7",
+      "measured": "最短会话(622 字符)仍使请求达 8,365 tokens",
+      "consequence": "mem0 的抽取提示词本身即约 8.4K tokens，底座模型 num_ctx 必须 ≥ 16K 才可能跑通；mem0 不透传 num_ctx（见 sampling_params_forwarded.dropped_by_mem0），本实验经模型别名(Modelfile) 在灰盒侧设定。"
+    },
+    "not_exposed": [
+      "substrate 抽象（无法从 mem0 内部拿到解码参数与模型 digest）",
+      "记忆抽取提示词模板的版本号/哈希（只能连同 site-packages 一起钉）",
+      "实验角色（control / main result）概念"
+    ]
+  },
+  "fingerprint": {
+    "fingerprint": "e5e2b5be",
+    "fields_present": [
+      "mem0_version",
+      "qdrant_client_version",
+      "python_version",
+      "model_digest",
+      "server_version",
+      "sampling",
+      "sampling_hash",
+      "corpus_sha256",
+      "embedder_model"
+    ],
+    "fields_absent": [
+      "mem0_prompt_template_version",
+      "mem0_fact_extraction_prompt_sha256",
+      "ollama_build_arch"
+    ],
+    "tier": "gray",
+    "reason": "灰盒下可覆盖：模型 digest、服务端版本、pinned 采样参数、全部喂入输入（语料 sha256 + 每题实际 messages 的 sha256）、embedder 模型、以及被测库版本。仍缺两项 mem0 内部提示词模板版本 —— 库不暴露该模板的版本号或哈希，只能连同 site-packages 一起钉。"
+  },
+  "environment": {
+    "apparatus_version": "c5-transfer/1",
+    "python_executable": "/Users/mac/.workbuddy/binaries/python/envs/default/bin/python",
+    "platform": "darwin",
+    "env_vars_material": {
+      "OLLAMA_HOST": "<unset>",
+      "OPENAI_API_KEY": "<unset>",
+      "HF_HOME": "<unset>"
+    },
+    "pip_freeze_sha256": "ebd2006a9cc2331c"
+  },
+  "D1_criterion_probe": {
+    "c1_determinism_precheck": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，其 ollama digest 可记录，因而可改写为『同一 digest + 同一依赖锁下，端到端记忆抽取是否可复现』这一**较弱但可审计**的命题。",
+      "measured": {
+        "substrate_exposed_by_mem0": false,
+        "black_box_decodability": false,
+        "gray_box_end_to_end_reproducibility": true,
+        "reason_not_identical": "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，而 mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。",
+        "n_repeats_planned": 3,
+        "timeout_s": 1800.0
+      }
+    },
+    "c2_run_fingerprint": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "灰盒下可覆盖：模型 digest、服务端版本、pinned 采样参数、全部喂入输入（语料 sha256 + 每题实际 messages 的 sha256）、embedder 模型、以及被测库版本。仍缺两项 mem0 内部提示词模板版本 —— 库不暴露该模板的版本号或哈希，只能连同 site-packages 一起钉。",
+      "fields_present": [
+        "mem0_version",
+        "qdrant_client_version",
+        "python_version",
+        "model_digest",
+        "server_version",
+        "sampling",
+        "sampling_hash",
+        "corpus_sha256",
+        "embedder_model"
+      ],
+      "fields_absent": [
+        "mem0_prompt_template_version",
+        "mem0_fact_extraction_prompt_sha256",
+        "ollama_build_arch"
+      ],
+      "fingerprint": "e5e2b5be"
+    },
+    "c3_degeneracy_guard": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可算：只需 mem0 的公开输出（search 返回的记忆条数与文本），不需要任何内部状态。判据为『每题检索结果条数 == 0』，该量在黑盒下即可观测。",
+      "note": "口径映射：AIJADE 的 2×2 四格 precision 相同 ⇒ mem0 的『检索条数恒为 0』，二者都判定为构造性零。"
+    },
+    "c4_leak_free_oracle": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可施加，且是本实验里唯一**必须由我们侧保证**的约束：oracle 只向 mem0 暴露 question 与已脱敏的会话，永不下发 answer；失败实例只报 question_id。已实测并记录语料自带的两类泄漏向量。",
+      "leak_vectors": [
+        {
+          "vector": "per_turn_has_answer_flag",
+          "where": "haystack_sessions[].{role,content,has_answer}",
+          "turns_flagged": 896,
+          "turns_total": 10960,
+          "why": "oracle 切分的每个 turn 带 has_answer 布尔标签，若原样喂给 mem0，等于把『答案在哪一段』直接告诉被测系统。这是本次实验中实测到的真实泄漏向量，不是假想风险。",
+          "mitigation": "喂入前删除 has_answer 字段，仅保留 role/content"
+        },
+        {
+          "vector": "answer_string_present_in_context",
+          "where": "haystack_sessions[].content",
+          "items_with_exact_answer": 101,
+          "items_checked": 309,
+          "why": "oracle 切分的定义就是只保留含答案的会话，故答案原文必然在上下文里。这不是可修的泄漏，而是语料切分的设计；必须记录，以免把 oracle 切分下的高分误读为记忆系统能力强。",
+          "mitigation": "仅可用于检索/记忆抽取环节的有界评测，不可用于端到端问答宣称"
+        }
+      ]
+    },
+    "c5_artifact_registry": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "可施加，但**主体是 AIJADE 侧**：被测系统不知道自己是 control 还是 main result，这个角色只能由运行者登记。mem0 侧可提供的只有 run_id 与 history_db，属内部日志，不构成实验注册表。"
+    }
+  },
+  "D2_applicability": {
+    "c1_determinism_precheck": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "纯黑盒下 mem0 不暴露 substrate：Memory.add() 内部构造 prompt、调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，其 ollama digest 可记录，因而可改写为『同一 digest + 同一依赖锁下，端到端记忆抽取是否可复现』这一**较弱但可审计**的命题。",
+      "measured": {
+        "substrate_exposed_by_mem0": false,
+        "black_box_decodability": false,
+        "gray_box_end_to_end_reproducibility": true,
+        "reason_not_identical": "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，而 mem0 的 OllamaLLM.generate_response 只透传 {temperature, num_predict, top_p}，丢弃 top_k 与 seed （源码事实，见产物 mem0_observability.sampling_params_forwarded）。",
+        "n_repeats_planned": 3,
+        "timeout_s": 1800.0
+      },
+      "grade": "PARTIALLY_APPLICABLE"
+    },
+    "c2_run_fingerprint": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "灰盒下可覆盖：模型 digest、服务端版本、pinned 采样参数、全部喂入输入（语料 sha256 + 每题实际 messages 的 sha256）、embedder 模型、以及被测库版本。仍缺两项 mem0 内部提示词模板版本 —— 库不暴露该模板的版本号或哈希，只能连同 site-packages 一起钉。",
+      "fields_present": [
+        "mem0_version",
+        "qdrant_client_version",
+        "python_version",
+        "model_digest",
+        "server_version",
+        "sampling",
+        "sampling_hash",
+        "corpus_sha256",
+        "embedder_model"
+      ],
+      "fields_absent": [
+        "mem0_prompt_template_version",
+        "mem0_fact_extraction_prompt_sha256",
+        "ollama_build_arch"
+      ],
+      "fingerprint": "e5e2b5be",
+      "grade": "PARTIALLY_APPLICABLE"
+    },
+    "c3_degeneracy_guard": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可算：只需 mem0 的公开输出（search 返回的记忆条数与文本），不需要任何内部状态。判据为『每题检索结果条数 == 0』，该量在黑盒下即可观测。",
+      "note": "口径映射：AIJADE 的 2×2 四格 precision 相同 ⇒ mem0 的『检索条数恒为 0』，二者都判定为构造性零。",
+      "grade": "FULLY_APPLICABLE"
+    },
+    "c4_leak_free_oracle": {
+      "computable": true,
+      "tier": "black",
+      "reason": "完全可施加，且是本实验里唯一**必须由我们侧保证**的约束：oracle 只向 mem0 暴露 question 与已脱敏的会话，永不下发 answer；失败实例只报 question_id。已实测并记录语料自带的两类泄漏向量。",
+      "leak_vectors": [
+        {
+          "vector": "per_turn_has_answer_flag",
+          "where": "haystack_sessions[].{role,content,has_answer}",
+          "turns_flagged": 896,
+          "turns_total": 10960,
+          "why": "oracle 切分的每个 turn 带 has_answer 布尔标签，若原样喂给 mem0，等于把『答案在哪一段』直接告诉被测系统。这是本次实验中实测到的真实泄漏向量，不是假想风险。",
+          "mitigation": "喂入前删除 has_answer 字段，仅保留 role/content"
+        },
+        {
+          "vector": "answer_string_present_in_context",
+          "where": "haystack_sessions[].content",
+          "items_with_exact_answer": 101,
+          "items_checked": 309,
+          "why": "oracle 切分的定义就是只保留含答案的会话，故答案原文必然在上下文里。这不是可修的泄漏，而是语料切分的设计；必须记录，以免把 oracle 切分下的高分误读为记忆系统能力强。",
+          "mitigation": "仅可用于检索/记忆抽取环节的有界评测，不可用于端到端问答宣称"
+        }
+      ],
+      "grade": "FULLY_APPLICABLE"
+    },
+    "c5_artifact_registry": {
+      "computable": true,
+      "tier": "gray",
+      "reason": "可施加，但**主体是 AIJADE 侧**：被测系统不知道自己是 control 还是 main result，这个角色只能由运行者登记。mem0 侧可提供的只有 run_id 与 history_db，属内部日志，不构成实验注册表。",
+      "grade": "PARTIALLY_APPLICABLE"
+    }
+  },
+  "artifact_registry_entry": {
+    "schema": "c5.artifact_registry_entry@1",
+    "experiment_id": "c5-mem0-transfer",
+    "apparatus_version": "c5-transfer/1",
+    "arm": "store",
+    "role": "main_result",
+    "role_semantics": "main_result 臂：给出 D1/D2 的施加性判定。该臂用 add(infer=False) 绕过 LLM 抽取，故其检索数字只证明判据可计算，不表征 mem0 的抽取能力。",
+    "corpus_sha256": "821a2034d219ab45846873dd14c14f12cfe7776e73527a483f9dac095d38620c",
+    "run_fingerprint": "e5e2b5be",
+    "sample_size": 4,
+    "recorded_at_utc": "2026-10-07T04:49:03.313044+00:00",
+    "registry_note": "本条目写在**本产物内**而非 experiments.registry.json：该注册表当前有其他 worker 的未提交改动，本次实验不得触碰它（git 纪律）。如需并入，须由改动者在合并时统一登记。"
+  },
+  "leak_vectors": [
+    {
+      "vector": "per_turn_has_answer_flag",
+      "where": "haystack_sessions[].{role,content,has_answer}",
+      "turns_flagged": 896,
+      "turns_total": 10960,
+      "why": "oracle 切分的每个 turn 带 has_answer 布尔标签，若原样喂给 mem0，等于把『答案在哪一段』直接告诉被测系统。这是本次实验中实测到的真实泄漏向量，不是假想风险。",
+      "mitigation": "喂入前删除 has_answer 字段，仅保留 role/content"
+    },
+    {
+      "vector": "answer_string_present_in_context",
+      "where": "haystack_sessions[].content",
+      "items_with_exact_answer": 101,
+      "items_checked": 309,
+      "why": "oracle 切分的定义就是只保留含答案的会话，故答案原文必然在上下文里。这不是可修的泄漏，而是语料切分的设计；必须记录，以免把 oracle 切分下的高分误读为记忆系统能力强。",
+      "mitigation": "仅可用于检索/记忆抽取环节的有界评测，不可用于端到端问答宣称"
+    }
+  ],
+  "degeneracy_measured": {
+    "n_succeeded": 4,
+    "n_failed": 0,
+    "n_add_events_total": 96,
+    "extraction_dead": false,
+    "all_retrieved_zero": false,
+    "any_retrieved_zero": false,
+    "verdict": "reachable",
+    "note": "存在非 0 检索 ⇒ 操纵可达；此处的零结果（若有）才是经验零。"
+  },
+  "abstention_subset": {
+    "present_in_corpus": true,
+    "corpus_count": 30,
+    "corpus_share_of_500": 0.06,
+    "evaluated": 1,
+    "definition": "question_id 以 _abs 结尾；其 gold answer 形如『The information provided is not enough...』，即正确答案就是弃权。这是现成的外部『宁缺勿伪造』判据。",
+    "records": [
+      {
+        "question_id": "gpt4_70e84552_abs",
+        "ok": true,
+        "n_retrieved": 20,
+        "constructive_zero": false
+      }
+    ],
+    "caveat": "本机算力下 abstention 子集样本量为 1，**不足以**给出该子集的准确率；只能报告装置在该子集上可运行/可判定。"
+  },
+  "sample": {
+    "sampleSize": 4,
+    "arm": "store",
+    "arm_semantics": "add(infer=False)：原样入库，不经 LLM",
+    "arm_caveat": "store 臂绕过了 mem0 的 LLM 事实抽取环节，因此其检索数字只用于验证约束 3 的可计算性，**不可**作为 mem0 事实抽取能力的证据。",
+    "regular": 3,
+    "abstention": 1,
+    "selection": "按 question_id 字典序取前 n（确定性，无随机依赖）",
+    "items": [
+      {
+        "question_id": "001be529",
+        "question_type": "single-session-user",
+        "arm": "store",
+        "n_messages_fed": 12,
+        "inputs_sha256": "227ba4c58258eec782f4b2ae2a7a32eec45428a37b5c3dd91c33d6abb9e5b932",
+        "ok": true,
+        "add_seconds": 4.9,
+        "n_add_events": 12,
+        "n_retrieved": 12,
+        "retrieved": [
+          {
+            "text": "I've been using Zillow and HotPads, but I haven't tried the others. I'll definitely check them out. By the way, speaking of waiting, it's crazy how long it took for my asylum application to get approv",
+            "score": 0.7192249756005489
+          },
+          {
+            "text": "I'm so glad to hear that your asylum application has been approved! That must be a huge weight off your shoulders. The waiting process can be incredibly stressful and uncertain, and it's amazing that ",
+            "score": 0.6845839168883707
+          },
+          {
+            "text": "I'm trying to find a permanent place to live. Can you help me with that? I'm on a limited budget and not sure where to start looking.",
+            "score": 0.45132640461137996
+          },
+          {
+            "text": "I'd be happy to help you find a permanent place to live on a limited budget. Let's break down the process into manageable steps.\n\n**Step 1: Assess Your Budget**\n\nTo start, can you please share some de",
+            "score": 0.4275858694170014
+          },
+          {
+            "text": "With a budget of $800/month, you'll want to focus on finding affordable options that meet your location and safety requirements. Here are some website and app recommendations to help you filter your s",
+            "score": 0.4185302835712021
+          },
+          {
+            "text": "That's really helpful, thanks. My maximum monthly rent budget is $800. I have some savings for a security deposit and first month's rent. I'm not eligible for any government assistance programs. For l",
+            "score": 0.40673210019598005
+          },
+          {
+            "text": "That's wonderful that you're volunteering at a non-profit organization that helps refugees! It's great that you're giving back to the community and gaining valuable experience at the same time.\n\nRegar",
+            "score": 0.37771079786921824
+          },
+          {
+            "text": "[Neighborhood 1] is a wonderful area with a lot to offer.\n\n**Apartment Complexes and Landlords**\n\nHere are a few apartment complexes and landlords in [Neighborhood 1] that you might want to consider:\n",
+            "score": 0.34351188373905805
+          },
+          {
+            "text": "I'm volunteering at a non-profit organization that helps refugees, which has been a great way for me to give back and meet like-minded people. It's also been helpful in building my resume and getting ",
+            "score": 0.3147702187781971
+          },
+          {
+            "text": "I'm glad you're interested in learning more about those neighborhoods.\n\n**[Neighborhood 1]**\n\nSafety-wise, [Neighborhood 1] is considered a relatively safe area. It's a family-friendly neighborhood wi",
+            "score": 0.306372429302758
+          },
+          {
+            "text": "Those neighborhoods sound like they could be good options. I'd like to learn more about [Neighborhood 1] and [Neighborhood 2]. Can you tell me more about the safety in those areas? Are there any parti",
+            "score": 0.29064942434493474
+          },
+          {
+            "text": "That's really helpful, thank you! I think I'll focus on [Neighborhood 1] for now. Do you know of any specific apartment complexes or landlords in that area that I should consider? Also, are there any ",
+            "score": 0.28981975501251966
+          }
+        ],
+        "constructive_zero": false,
+        "is_abstention": false
+      },
+      {
+        "question_id": "00ca467f",
+        "question_type": "multi-session",
+        "arm": "store",
+        "n_messages_fed": 36,
+        "inputs_sha256": "bb5dc7b553b56f2821fa7e448901bf2a48c8806c69d303611916e9cc951ebc1a",
+        "ok": true,
+        "add_seconds": 16.7,
+        "n_add_events": 36,
+        "n_retrieved": 20,
+        "retrieved": [
+          {
+            "text": "I'll schedule an appointment with Dr. Smith and Dr. Johnson to discuss the numbness in my left hand. I'll also make sure to keep a symptom journal to track the numbness and any other symptoms I'm expe",
+            "score": 0.512885157873343
+          },
+          {
+            "text": "I'm scheduled to start physical therapy sessions twice a week since March 25th to strengthen my leg muscles after my orthopedic surgeon, Dr. Thompson, cleared me to do so. I'm hoping it will help me r",
+            "score": 0.4889800142910454
+          },
+          {
+            "text": "That's a great point. I'm also concerned about the numbness in my left hand, which I noticed around March 15th. Do you think it could be related to my bronchitis or is it a separate issue that I shoul",
+            "score": 0.484599599026408
+          },
+          {
+            "text": "I'm glad you're taking proactive steps to address your concerns! Given your persistent cough and bronchitis diagnosis, getting a chest x-ray might be a good idea. Here's why:\n\n1. **Rule out other cond",
+            "score": 0.47501395086130976
+          },
+          {
+            "text": "I want to ask, can you provide some information on EMG tests? What should I expect during the test, and how long does it usually take?",
+            "score": 0.4717783277069795
+          },
+          {
+            "text": "Congratulations on taking the first step towards recovery! Physical therapy is a crucial part of the rehabilitation process, especially after an injury like a torn ACL.\n\nIt's great that you've been cl",
+            "score": 0.47089363601640505
+          },
+          {
+            "text": "You're welcome! I'm glad I could help. It's great that you're taking proactive steps to address the numbness in your left hand. Remember to be thorough and detailed in your symptom journal, as this wi",
+            "score": 0.4703695342360853
+          },
+          {
+            "text": "I've been dealing with a lingering cough for weeks, and I'm still trying to figure out what's going on. I had an appointment with my primary care physician, but the antibiotic didn't fully clear it up",
+            "score": 0.4493282999148055
+          },
+          {
+            "text": "I'd be happy to help!\n\nAn Electromyography (EMG) test is a diagnostic procedure that measures the electrical activity of your muscles. It's used to diagnose and monitor muscle and nerve disorders, suc",
+            "score": 0.4461202422736952
+          },
+          {
+            "text": "I've been dealing with this lingering cough for weeks, and I'm getting a bit frustrated. Can you help me find some information on bronchitis and its common symptoms? By the way, I recently had a follo",
+            "score": 0.44413479381138876
+          },
+          {
+            "text": "I'm considering scheduling an appointment with my gastroenterologist, Dr. Patel, to discuss further treatment options for my heartburn and acid reflux. Do you think it's worth exploring natural remedi",
+            "score": 0.44371052262738253
+          },
+          {
+            "text": "I'm glad I could help alleviate some of your concerns about the EMG test!\n\nPhysical therapy (PT) is a crucial aspect of treating nerve damage or compression. A physical therapist can help you manage s",
+            "score": 0.44298996180527717
+          },
+          {
+            "text": "I've been taking some over-the-counter medications, but they don't seem to be working as well as I'd like. Can you tell me more about expectorants and how they work?",
+            "score": 0.4429280291052554
+          },
+          {
+            "text": "That's a great idea! Dr. Patel can definitely provide you with personalized guidance on stress management techniques that can help alleviate your heartburn and acid reflux symptoms. Relaxation exercis",
+            "score": 0.4422480507455228
+          },
+          {
+            "text": "I'm scheduled to have an EMG test with Dr. Johnson on April 1st to rule out any nerve damage, so I'm a bit anxious about what to expect. Thanks for the information. Can you tell me more about nerve co",
+            "score": 0.4418300434401704
+          },
+          {
+            "text": "I'm happy to help you with information on bronchitis!\n\nBronchitis is an inflammation of the bronchial tubes, which are the airways that carry air in and out of the lungs. There are two main types of b",
+            "score": 0.4409441989864895
+          },
+          {
+            "text": "I'll definitely ask Dr. Patel about trying some natural remedies, but I also want to make sure I'm not overlooking any other potential causes of my heartburn and acid reflux. Can you tell me more abou",
+            "score": 0.43285854277483177
+          },
+          {
+            "text": "The numbness in your left hand is a new symptom that warrants attention! While bronchitis is primarily a respiratory issue, it's possible that the numbness could be related to an underlying condition ",
+            "score": 0.42973571289924095
+          },
+          {
+            "text": "Dr. Patel will be able to provide you with personalized guidance on managing your heartburn and acid reflux.\n\nRegarding natural remedies, some people do find them helpful in alleviating symptoms. Whil",
+            "score": 0.4262632113160217
+          },
+          {
+            "text": "I've been dealing with a lingering cough for six weeks now, and I'm wondering if you can recommend some natural remedies to help soothe my symptoms. By the way, I finally went to see my primary care p",
+            "score": 0.42358801975342286
+          }
+        ],
+        "constructive_zero": false,
+        "is_abstention": false
+      },
+      {
+        "question_id": "0100672e",
+        "question_type": "multi-session",
+        "arm": "store",
+        "n_messages_fed": 24,
+        "inputs_sha256": "add9dd8abdbf3f48ad62941682c2a4519c438482e4b972905b16d8f7c4996dfc",
+        "ok": true,
+        "add_seconds": 9.7,
+        "n_add_events": 24,
+        "n_retrieved": 20,
+        "retrieved": [
+          {
+            "text": "I'm looking for some gift ideas for my coworkers' birthdays, which are coming up soon. I want to get something nice, but not too expensive. By the way, I already got them a nice gesture during the hol",
+            "score": 0.6703589015428841
+          },
+          {
+            "text": "I've got my records right here. Let me go through them quickly. Okay, so I spent $50 on a gift for my best friend's birthday, $60 on a gift for my brother's anniversary, $60 on coffee mugs for my cowo",
+            "score": 0.6184817853132024
+          },
+          {
+            "text": "Let's revisit the birthday gift allocation to include gifts for your coworkers.\n\n**Revisiting birthday gifts allocation:**\n\n* You initially allocated $200 for birthday gifts, which covered 5-6 close f",
+            "score": 0.6011481568196101
+          },
+          {
+            "text": "I'm trying to get a better grip on my finances, especially when it comes to gift-giving. I've been tracking my expenses and noticed I've been spending a lot on gifts lately. Can you help me come up wi",
+            "score": 0.5884716922277993
+          },
+          {
+            "text": "What a thoughtful gesture! It's great that you're looking to celebrate your coworkers' birthdays with a nice gift. Considering you've already gotten them a thoughtful gift during the holiday season, y",
+            "score": 0.5618347009825676
+          },
+          {
+            "text": "I'll keep that in mind. I'm still deciding on the design and material for the desk accessories. Do you have any suggestions on what kind of design or material would be suitable for a coworker's birthd",
+            "score": 0.5571853357191081
+          },
+          {
+            "text": "I'm thinking about my gift-giving habits, and I do tend to spend more during holidays like Christmas. I usually buy gifts for my family and close friends, and those can add up quickly. I'd say I spend",
+            "score": 0.539283622311169
+          },
+          {
+            "text": "The design and material of the desk accessory can greatly impact the overall look and feel of the gift. Here are some suggestions for designs and materials that might be suitable for a coworker's birt",
+            "score": 0.5322115963924121
+          },
+          {
+            "text": "Let's dive into your past spending habits to estimate your annual gift-giving expenses.\n\nTo get a more accurate number, we'll need to review your past expenses. You can use your expense tracking recor",
+            "score": 0.5239204085872846
+          },
+          {
+            "text": "I'm happy to help you get a grip on your gift-giving expenses!\n\nFirst, kudos to you for tracking your expenses and recognizing the need to set a budget. That's a huge step towards taking control of yo",
+            "score": 0.5230277063029971
+          },
+          {
+            "text": "That's a solid plan! I like the idea of allocating funds per occasion. Can you help me estimate my annual gift-giving expenses based on my past spending habits? I've got a rough idea, but I'd like to ",
+            "score": 0.5141072408976977
+          },
+          {
+            "text": "I'll check out these websites, thanks. By the way, do they offer any discounts or promotions for bulk orders? I'm planning to get one for each of my coworkers.",
+            "score": 0.5121766112277639
+          },
+          {
+            "text": "Christmas gifts can be a significant expense.\n\nLet's factor that into your annualized expense. Since you mentioned you spend around $200-300 on Christmas gifts, we can take the midpoint of that range,",
+            "score": 0.5101504758286479
+          },
+          {
+            "text": "I think I need to revisit my budget for birthday gifts. I realized that I also buy gifts for my coworkers, and that's not included in the $200 allocation. How can I adjust the allocation to account fo",
+            "score": 0.5096938850744611
+          },
+          {
+            "text": "I'll definitely check out the bulk order policies for each website. How long does it usually take to produce and ship customized items? I want to make sure I get them on time for my coworkers' birthda",
+            "score": 0.5014785083497548
+          },
+          {
+            "text": "Let's work with the data you have.\n\nYou've got 3 months of data, and your total gift-giving expenses are $297. To annualize this amount, we can multiply it by 4 (since there are 4 quarters in a year).",
+            "score": 0.48596076155799744
+          },
+          {
+            "text": "Customized desk accessories make for a thoughtful and unique gift. Here are some websites and stores where you can find a variety of options:\n\n1. **Etsy**: Etsy is a fantastic platform for unique, han",
+            "score": 0.4829458783772481
+          },
+          {
+            "text": "Many of the websites I mentioned offer discounts or promotions for bulk orders, which can help you save money and make your gift-giving more affordable. Here are some general observations:\n\n1. **Etsy*",
+            "score": 0.48289892481981067
+          },
+          {
+            "text": "I think that's a wonderful idea! A simple and elegant design with a subtle message can be a thoughtful and professional gift for a coworker's birthday. A glass or crystal paperweight with a brief mess",
+            "score": 0.4760924153052212
+          },
+          {
+            "text": "Let's break down the $718 for regular gifts into smaller chunks for specific occasions. We'll allocate funds based on your typical gift-giving habits and the frequency of each occasion.\n\n**Birthday gi",
+            "score": 0.4707845163808426
+          }
+        ],
+        "constructive_zero": false,
+        "is_abstention": false
+      },
+      {
+        "question_id": "gpt4_70e84552_abs",
+        "question_type": "temporal-reasoning",
+        "arm": "store",
+        "n_messages_fed": 24,
+        "inputs_sha256": "b5da7357fff25a3f60a141d684277a57e3937c901f440362a9a870d00b263a59",
+        "ok": true,
+        "add_seconds": 11.5,
+        "n_add_events": 24,
+        "n_retrieved": 20,
+        "retrieved": [
+          {
+            "text": "You're welcome! It was my pleasure to help. I'm glad I could provide you with useful advice and guidance. Remember to take your time, do your research, and don't hesitate to reach out if you have any ",
+            "score": 0.6415009064199229
+          },
+          {
+            "text": "You're doing a great job with your farm, and it's wonderful that you're taking the time to research and care for your animals. Both Brown Swiss and Jersey cows are excellent choices for dairy producti",
+            "score": 0.6180203514821135
+          },
+          {
+            "text": "I think I'll stop here for now. I've got a lot to think about with the farm open house event and selecting a new cow breed. Thanks for all the advice and guidance! I feel more confident about making a",
+            "score": 0.614194109411675
+          },
+          {
+            "text": "Congratulations on fixing that broken fence! It's great to hear that your goats are now safe and secure.\n\nNow, let's get started on planning your farm open house event! Here are some activity ideas to",
+            "score": 0.6097343546778223
+          },
+          {
+            "text": "Exciting times! Adding a new cow to your farm can be a great decision, but it's essential to do your research and consider several factors before making a decision. I'd be happy to help you with that.",
+            "score": 0.5950806584156683
+          },
+          {
+            "text": "Thanks for the advice! I was thinking of getting a Brown Swiss or a Jersey, as I've heard they're both great for dairy production. I've also been doing some research online and talking to other farmer",
+            "score": 0.5881480173724728
+          },
+          {
+            "text": "I'm thinking of hosting a farm open house event soon and I want to make sure everything is perfect. Can you help me come up with some ideas for activities and also give me some tips on how to promote ",
+            "score": 0.5704601992036935
+          },
+          {
+            "text": "I'm thinking of also offering some milk and cheese products if I can finalize the purchase of a new cow soon. Do you have any advice on how to choose the right breed for dairy production?",
+            "score": 0.5578445812158177
+          },
+          {
+            "text": "Congratulations on getting your goats vaccinated! That's an important step in keeping them healthy.\n\nNow, let's talk about setting up a safe and enjoyable petting zoo area. Here are some tips to help ",
+            "score": 0.5473250374242871
+          },
+          {
+            "text": "Selling your milk and cheese products at your farm open house event is a great way to showcase your farm's bounty and connect with potential customers. To attract more visitors, here are some marketin",
+            "score": 0.536695387033771
+          },
+          {
+            "text": "That's great, thanks for the ideas! I'll definitely try out some of those recipes. By the way, I've been thinking of getting a new cow, maybe a brown Swiss or a jersey, to increase my milk production.",
+            "score": 0.5247455868964308
+          },
+          {
+            "text": "Congratulations on keeping up with the goat's hoof trimming! That's no small feat!\n\nNow, let's get to planning a fantastic farm open house event! Here are some fun activity ideas for kids and adults t",
+            "score": 0.5236059947511258
+          },
+          {
+            "text": "Congratulations on considering expanding your dairy offerings! Choosing the right breed for dairy production is a crucial decision, as it can impact the quality and quantity of milk, as well as the ov",
+            "score": 0.5205952164796854
+          },
+          {
+            "text": "A farm-to-table section is a great way to showcase your farm's bounty and offer visitors a taste of your hard work. Here are some ideas to get you started:\n\n**Farm-to-Table Setup:**\n\n1. **Display and ",
+            "score": 0.5160455630238421
+          },
+          {
+            "text": "What a great idea! A farm store can be a fantastic way to connect with customers and showcase your farm's bounty. Here are some tips to help you design and stock your farm store:\n\n**Design:**\n\n1. **Lo",
+            "score": 0.5112565755902062
+          },
+          {
+            "text": "I really like the idea of a petting zoo and farm-themed crafts for kids. I was thinking of also offering some fresh produce and eggs for sale, maybe even some quiche or other baked goods made with the",
+            "score": 0.5084399917177491
+          },
+          {
+            "text": "I'm thinking of setting up a small farm store on my property where customers can purchase my dairy products, eggs, and other farm-fresh goods. Do you have any advice on how to design and stock the sto",
+            "score": 0.498106012996964
+          },
+          {
+            "text": "I like the idea of a petting zoo, but I'm worried about the logistics of keeping all the animals contained and safe. Do you have any advice on how to set that up? By the way, I've also been meaning to",
+            "score": 0.49426698853396245
+          },
+          {
+            "text": "Offering fresh produce, eggs, and baked goods is a wonderful way to showcase your farm's bounty and provide a tangible experience for your visitors. Pricing can be a bit tricky, but here are some sugg",
+            "score": 0.48560453827329736
+          },
+          {
+            "text": "I'm thinking of hosting a farm open house event soon and I was wondering if you could help me come up with some fun activities for kids and adults alike. By the way, speaking of the farm, I've been do",
+            "score": 0.48486071097820527
+          }
+        ],
+        "constructive_zero": false,
+        "is_abstention": true
+      }
+    ]
+  },
+  "timings": {
+    "add_seconds": [
+      4.9,
+      16.7,
+      9.7,
+      11.5
+    ],
+    "add_seconds_mean": 10.7
+  },
+  "feasibility": {
+    "hardware": "Intel i7-8569U，纯 CPU，无 GPU 卸载（size_vram=0.00GB）",
+    "measured_prefill_tok_per_s": 8.1,
+    "measured_gen_tok_per_s": 1.0,
+    "corpus_sessions_total": 948,
+    "oracle_split_vs_cleaned": "oracle 切分 948 会话 ≈ 1.4e7 字符；cleaned 切分 23,867 会话 ≈ 2.4e8 字符，两者体量差约 15 倍。任何算力估算必须指明是哪个切分。",
+    "full_500_status": "NOT_RUN",
+    "full_500_reason": "本机纯 CPU、生成 1 tok/s；mem0 每次 add 至少两次 LLM 调用。全量 500 题所需时间远超本任务预算，故本产物只覆盖小 n，并在 verdict_scope 中限定结论范围。"
+  },
+  "honesty": {
+    "no_fabricated_numbers": true,
+    "failed_items_reported_by_id_only": true,
+    "expected_output_never_fed": true
+  }
+}
