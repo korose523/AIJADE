@@ -49,6 +49,7 @@ from c5_transfer.adapter import (  # noqa: E402
     probe_degeneracy_guard,
     probe_determinism_precheck,
     probe_leak_free_oracle,
+    read_corpus,
     scrub_turn,
     sha256_file,
     verify_end_to_end_determinism,
@@ -316,8 +317,7 @@ def main() -> int:  # noqa: PLR0915 - 线性流程，拆开反而更难审计
         return 2
 
     corpus_sha = sha256_file(str(corpus_path))
-    with corpus_path.open(encoding="utf-8") as f:
-        rows: list[dict[str, Any]] = json.load(f)
+    rows: list[dict[str, Any]] = read_corpus(corpus_path)
 
     # ── `--one`：单题执行并落盘后立即退出 ────────────────────────────────
     if args.one:

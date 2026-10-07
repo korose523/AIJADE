@@ -44,6 +44,34 @@ python packages/memory-biomimetic/eval/c5_transfer/run.py --arm infer --limit 1 
 python -m pytest packages/memory-biomimetic/eval/c5_transfer/ -q
 ```
 
+## ⚠️ 语料文件名与格式不符（不要按 `.jsonl` 读）
+
+`longmemeval_oracle.jsonl` 的扩展名是 `.jsonl`，但内容**不是 JSON Lines**，
+而是一个 **pretty-print 的 JSON 数组**（实测 67,041 行 / 500 项，缩进 4 空格）。
+`longmemeval_s_cleaned.json` 同理（实测 1,101,877 行 / 500 项）。
+
+**逐行解析不仅会报错，还会静默出错**：文件里有约 1,500 行是独立的 JSON 字符串
+字面量（`answer_*` 证据 id、`2023/04/10 (Mon) 17:15` 这类时间戳），它们单独
+`json.loads` **完全合法**。一个"跳过解析失败的行、留下能解析的行"的读取器会拿到
+**1,500 个 `str`**，而不是 500 个题目 dict，且**不抛任何异常**。
+
+⇒ 本目录所有语料读取一律走唯一入口：
+
+```python
+from c5_transfer.adapter import read_corpus
+
+rows = read_corpus(path)   # 整体 json.loads + 断言顶层非空 list 且元素全为 dict
+```
+
+它会在形状不对时**响亮失败**，并给出实测形状与正确读法。
+
+**不要改名**：`experiments.registry.json` 等多处按 `longmemeval_oracle.jsonl`
+这一路径引用它，改名会打断这些引用。纠正只以本文档与代码注释的形式存在。
+
+TS 侧（`eval/longmemeval-path.ts::loadLongMemEvalVerified`）本来就是安全的：
+它用 `JSON.parse(readFileSync(path,'utf8'))` 整体解析，并断言 `Array.isArray`
+且非空。`eval/longmemeval-adapter.ts` 只做 item 映射，不读文件。
+
 ## 两个臂为什么都存在
 
 |臂 | mem0 调用 | 实测结果 | 作用 |
@@ -81,4 +109,25 @@ python -m pytest packages/memory-biomimetic/eval/c5_transfer/ -q
 | `degeneracy.py` | 退化守卫判定（三种"零"的区分），有单测锁定 |
 | `fingerprint_lib.py` | FNV-1a，与 `model-substrate` 同算法；用公开标准向量验证 |
 | `run.py` | runner；`--one` 单题子进程隔离，`--arm` 选臂 |
-| `test_*.py` | 13 项测试：标准向量、键序一致性、退化判定 |
+| `test_*.py` | 29 项测试：标准向量、键序一致性、退化判定、语料加载器 |
+
+## 端到端确定性证据为什么有两个产物文件
+
+`results/c5-mem0-transfer-store-arm.json` 的 `end_to_end_determinism` 段声称
+"两次独立进程运行在可观测面上 4/4 逐字节一致"。该判定的两个被比较对象**都必须
+在版本控制内**，否则一个头条可复现性主张就依赖一个会被清空的 `/tmp` 文件。
+
+| 文件 | 角色 |
+|------|------|
+| `results/c5-mem0-transfer-store-arm.json` | 第 1 次运行（`--arm store --limit 3`） |
+| `results/c5-mem0-transfer-store-arm-run2.json` | 第 2 次运行，同参数独立进程 |
+
+复核方式（不需重跑实验，仅比对已提交数据）：
+
+```bash
+python -c "import json;print(json.load(open('packages/memory-biomimetic/eval/results/c5-mem0-transfer-store-arm.json'))['end_to_end_determinism']['per_item'])"
+```
+
+`run2_provenance` 字段记录了生成 run2 的完整命令行。该判定**不**等于解码级
+bit-exact：`does_not_establish` 与 `relation_to_decoding_determinism` 已就地
+声明观测面（截断 200 字符、仅覆盖被检索返回条目）与其单向蕴含方向。
