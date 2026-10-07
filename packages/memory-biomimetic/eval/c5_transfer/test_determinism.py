@@ -77,6 +77,33 @@ def test_claim_never_asserts_reproducibility_or_decoding(tmp_path: Path) -> None
         assert banned not in claim, f"claim 不得声称 {banned!r}：超出观测面"
 
 
+def test_evidence_files_are_distinguished_from_descriptive_paths(
+    tmp_path: Path,
+) -> None:
+    """产物里除证据路径外还会出现说明性路径字样（如 /tmp 的历史出处）。
+
+    后者**不是**需要解析的依赖。若不显式区分，日后有人 `grep '/tmp'` 做卫生
+    检查会误报，也分不清"哪条路径真的缺失"。故断言：
+      · evidence_files_in_tree 只收录**实际存在**的文件；
+      · path_literals_are_descriptive_only 恒为 True。
+    """
+    a = _art(tmp_path / "a.json", [("q1", 1, ["x"])])
+    b = _art(tmp_path / "b.json", [("q1", 1, ["x"])])
+    r = verify_end_to_end_determinism(a, b)
+
+    assert r["path_literals_are_descriptive_only"] is True
+    assert set(r["evidence_files_in_tree"]) == {a, b}
+    for p in r["evidence_files_in_tree"]:
+        assert Path(p).exists()
+
+    # 缺失文件不得被误列为证据
+    c = _art(tmp_path / "c.json", [("q1", 1, ["x"])])
+    missing = str(tmp_path / "nope.json")
+    r2 = verify_end_to_end_determinism(c, missing)
+    assert missing not in r2["evidence_files_in_tree"]
+    assert r2["evidence_files_in_tree"] == [c]
+
+
 def test_observation_surface_is_declared(tmp_path: Path) -> None:
     """必须声明观测面的三处截断，否则读者会以为比对了全部记忆。"""
     a = _art(tmp_path / "a.json", [("q1", 1, ["x"])])

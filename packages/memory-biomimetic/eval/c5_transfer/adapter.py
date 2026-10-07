@@ -276,6 +276,11 @@ def verify_end_to_end_determinism(
     import hashlib
 
     def sig(path: str) -> dict[str, dict[str, Any]]:
+        # 文件不存在时不抛异常，而是返回空表：调用方据此把该路径记为
+        # "非证据"。抛异常会让"路径缺失"这个需要被记录的事实变成一次崩溃，
+        # 而崩溃会掩盖掉其它可比对的项目。
+        if not os.path.exists(path):
+            return {}
         with open(path, encoding="utf-8") as f:
             art = json.load(f)
         out: dict[str, dict[str, Any]] = {}
@@ -299,6 +304,13 @@ def verify_end_to_end_determinism(
     all_identical = bool(shared) and all(r["identical"] for r in per_item)
     return {
         "compared_artifacts": [committed_artifact, fresh_artifact],
+        "evidence_files_in_tree": [
+            p for p in (committed_artifact, fresh_artifact) if os.path.exists(p)
+        ],
+        # 显式声明：compared_artifacts 里出现的其它路径字样（如 /tmp 的历史出处）
+        # 只是说明性provenance，**不是**需要解析的依赖。本字段让"是否有活依赖"
+        # 可被机器核查，而不必依赖人读文字。
+        "path_literals_are_descriptive_only": True,
         "n_items_compared": len(shared),
         "n_identical": sum(1 for r in per_item if r["identical"]),
         "all_identical": all_identical,
