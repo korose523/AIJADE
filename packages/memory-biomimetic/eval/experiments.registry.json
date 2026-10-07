@@ -1,7 +1,7 @@
 {
   "schema": "aijade.experiment_registry@1",
-  "updatedAt": 1790985952432,
-  "count": 16,
+  "updatedAt": 1791339776990,
+  "count": 17,
   "experiments": {
     "p1-gating-retention-ablation": {
       "id": "p1-gating-retention-ablation",
@@ -683,6 +683,56 @@
       "probes": [
         "eval/j5-salience-source-repro.ts"
       ]
+    },
+    "steering-harness-selftest": {
+      "id": "steering-harness-selftest",
+      "schema": "aijade.experiment_manifest@1",
+      "name": "Steering benchmark harness: degree-preserving randomization + perturbation-recovery (PRR/RC) self-test",
+      "version": "0.1.0",
+      "seed": 42,
+      "calibrationFamily": "steering",
+      "conditions": [
+        {
+          "name": "undirected-degree-preserving",
+          "description": "20 edge-swap MCMC swaps on a 5-node/6-edge graph; degree sequence must be invariant",
+          "params": {
+            "directed": false,
+            "numSwaps": 20,
+            "seed": 42
+          }
+        },
+        {
+          "name": "directed-degree-preserving",
+          "description": "10 directed swaps on a 4-node/5-edge digraph; in- and out-degree sequences must be invariant",
+          "params": {
+            "directed": true,
+            "numSwaps": 10,
+            "seed": 7
+          }
+        },
+        {
+          "name": "perturbation-recovery",
+          "description": "latent/transient/permanent faults injected into an 8-step reference trace; PRR must be 1 for a perfect agent and 0 for a no-op agent under permanent",
+          "params": {
+            "atIndex": 2,
+            "transientWindow": 3,
+            "perturbationKinds": [
+              "latent",
+              "transient",
+              "permanent"
+            ]
+          }
+        }
+      ],
+      "metrics": [
+        "degreeSequencePreserved",
+        "determinismUnderFixedSeed",
+        "perturbedStepCount",
+        "meanPrr",
+        "recoveryCost"
+      ],
+      "createdAt": 1791339776990,
+      "notes": "PURPOSE: provide the degree-preserving null model and perturbation-recovery metrics (PRR / Recovery Cost) that the steering benchmark needs, with no copyleft dependency. IMPLEMENTATION: self-contained in @proj-aijade/steering-benchmark (MIT). Randomization is a from-scratch mulberry32 PRNG + undirected/directed double-edge-swap MCMC; no graspologic / networkx. METHODOLOGY CREDIT: the perturbation taxonomy and the PRR/RC concepts are borrowed from MOSAIC (a separate AIJADE-derived project) and ToolMaze; all code is original, no code copied. CONNECTOME SCOPE: deliberately ships NO neural-simulation or connectome data — FlyWire / MaleCNS datasets are CC-BY-NC (non-commercial) and navis is GPL-3.0, both incompatible with this project's licence red line; only the degree-preserving methodology is reproduced. VERIFIED: selftest 10/10 assertions pass; tsc --strict clean. Registered here so the harness is discoverable alongside the J5 experiment family; note it lives in a separate package and does not share the J5 corpus/caliber conventions."
     }
   }
 }

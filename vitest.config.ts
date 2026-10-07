@@ -34,6 +34,9 @@ const projects = [
   // 记忆生物学包（检索打分 / 记忆动力学 / 固化 / 评测脚本）。
   // 此前不在列表中，本包 723 个测试（含 `eval/**`）全部游离于统一 CI 之外。
   'packages/memory-biomimetic',
+  // 转向评测 harness（度保持随机化 + 扰动恢复 PRR/RC）。
+  // 与上面同源的问题：新建包若不登记，其 vitest 用例永远不会在统一运行里执行。
+  'packages/steering-benchmark',
   'packages/vishot-runner-browser',
   'packages/plugin-sdk',
   'packages/plugin-sdk-tamagotchi',
