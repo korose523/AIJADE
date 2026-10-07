@@ -51,6 +51,7 @@ from c5_transfer.adapter import (  # noqa: E402
     probe_leak_free_oracle,
     scrub_turn,
     sha256_file,
+    verify_end_to_end_determinism,
 )
 from c5_transfer.degeneracy import classify_degeneracy  # noqa: E402
 
@@ -281,10 +282,32 @@ def main() -> int:  # noqa: PLR0915 - 线性流程，拆开反而更难审计
             "store=add(infer=False) 原样入库，不经 LLM"
         ),
     )
+    ap.add_argument(
+        "--compare-with",
+        default="",
+        help=(
+            "内部/审计用：与指定产物比对检索结果，判断端到端是否可复现。"
+            "约束一在灰盒下可实测的正是这个较弱命题。"
+        ),
+    )
+    ap.add_argument(
+        "--determinism-evidence",
+        default="",
+        help=(
+            "把一次独立重跑与本产物比对的结果写入 end_to_end_determinism 段。"
+            "用于把『灰盒下端到端可复现』从终端观察变成产物内的可审计记录。"
+        ),
+    )
     args = ap.parse_args()
 
     global ARM  # noqa: PLW0603 - 子进程单臂执行，模块级状态是最小传递手段
     ARM = args.arm
+
+    # ── `--compare-with`：只做端到端复现性比对，不重跑实验、不写新产物 ──
+    if args.compare_with:
+        cmp = verify_end_to_end_determinism(args.compare_with, str(args.out))
+        print(json.dumps(cmp, ensure_ascii=False, indent=2))
+        return 0 if cmp["all_identical"] else 1
 
     corpus_path = Path(args.corpus)
     if not corpus_path.exists():
@@ -402,6 +425,23 @@ def main() -> int:  # noqa: PLR0915 - 线性流程，拆开反而更难审计
     }
 
     # ── 产物 ────────────────────────────────────────────────────────────
+    # 端到端复现性：若提供了独立重跑的产物，比对结果写进产物本身，
+    # 使「灰盒下可复现」成为可审计记录而非终端里的一句话。
+    determinism_result: dict[str, Any]
+    if args.determinism_evidence and Path(args.determinism_evidence).exists():
+        determinism_result = verify_end_to_end_determinism(
+            str(args.out), args.determinism_evidence
+        )
+    else:
+        determinism_result = {
+            "measured": False,
+            "reason": (
+                "本次运行未提供 --determinism-evidence（独立重跑产物），"
+                "故未测。可用两次独立运行比对检索文本哈希来测。"
+            ),
+            "does_not_establish": "substrate-level bit-exact decoding",
+        }
+
     artifact = {
         "experiment": {
             "id": "c5-mem0-transfer",
@@ -490,6 +530,7 @@ def main() -> int:  # noqa: PLR0915 - 线性流程，拆开反而更难审计
         },
         "leak_vectors": oracle_verdict.leak_vectors,
         "degeneracy_measured": degeneracy_measured,
+        "end_to_end_determinism": determinism_result,
         "abstention_subset": abstention_block,
         "sample": {
             "sampleSize": len(per_item),

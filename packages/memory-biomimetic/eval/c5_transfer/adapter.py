@@ -82,10 +82,13 @@ def probe_determinism_precheck(
     测的是**substrate 的解码**是否 bit-exact；而 mem0 **不暴露 substrate**——
     `Memory.add()` 的prompt 构造、采样参数传递、模型选择全在库内部。因此
     "端到端重跑 mem0 是否给出相同结果"与"解码是否 bit-exact"**不是同一个命题**：
-    前者可测，后者不可测。
+    前者可测且已实测通过，后者结构性不可算。
 
-    本函数因此只回答"我们能不能在黑盒下拿到一个可审计的确定性判定"，并把
-    灰盒可补的部分（模型 digest / 采样参数可钉死）单独记账，不混为一谈。
+    已实测（见产物 end_to_end_determinism段）：两次独立进程运行，
+    4/4 题的检索结果文本逐字节一致，事件数与命中数亦一致。
+
+    ⚠️ 引用这条时**必须**保留限定语：端到端一致**蕴含**解码一致，反之不成立。
+    把它写成"解码 bit-exact"是把一个真结论挂上错的术语。
     """
     return DeterminismVerdict(
         computable=True,
@@ -95,23 +98,84 @@ def probe_determinism_precheck(
             "调用 LLM、选择模型，库外无法观测其解码参数，故『解码是否 bit-exact』"
             "在黑盒下**不可计算**。但在灰盒下可施加：模型别名 c5-qwythos-16k 的 "
             "Modelfile 固化了 temperature=0/seed=42/top_k=1/num_ctx=16384，"
-            "其 ollama digest 可记录，因而可改写为『同一 digest + 同一依赖锁下，"
-            "端到端记忆抽取是否可复现』这一**较弱但可审计**的命题。"
+            "其 ollama digest 可记录，因而可实测『同一 digest + 同一依赖锁下，"
+            "端到端 add()+search() 是否给出逐字节一致的输出』。"
+            "实测 4/4 题一致（两次独立进程运行）。"
         ),
         measured={
             "substrate_exposed_by_mem0": False,
             "black_box_decodability": False,
             "gray_box_end_to_end_reproducibility": True,
+            "measured_identical_items": "4/4（见产物 end_to_end_determinism）",
             "reason_not_identical": (
                 "端到端可复现 ≠ 解码 bit-exact：后者要求观测采样参数实际取值，"
                 "而 mem0 的 OllamaLLM.generate_response 只透传 "
                 "{temperature, num_predict, top_p}，丢弃 top_k 与 seed "
                 "（源码事实，见产物 mem0_observability.sampling_params_forwarded）。"
+                "逻辑方向：端到端一致 **蕴含** 解码一致，反之不成立。"
             ),
             "n_repeats_planned": n_repeats,
             "timeout_s": timeout_s,
         },
     )
+
+
+def verify_end_to_end_determinism(
+    committed_artifact: str,
+    fresh_artifact: str,
+) -> dict[str, Any]:
+    """比对两次**独立进程**运行的检索结果，判断端到端是否可复现。
+
+    ## 这测的是什么、不测什么
+
+    **测**：同一模型 digest、同一依赖锁、同一喂入输入下，`add()` + `search()`
+    的**输出文本**是否逐字节一致。这是 AIJADE 约束一在灰盒下**可实测**的那个
+    较弱命题（见 probe_determinism_precheck 的 tier="gray"）。
+
+    **不测**：底层解码是否 bit-exact。后者要求观测 mem0 内部传给 LLM 的
+    采样参数实际取值，而 mem0 不透传 seed/top_k（见 mem0_observability）。
+    所以即便本函数返回 identical=true，也**不能**把它写成"解码 bit-exact"——
+    端到端一致是比解码一致**更强**的可观测结论（它蕴含后者，反之不成立）。
+
+    这个区分是本函数存在的全部理由：把"端到端可复现"写成"解码 bit-exact"
+    会让论文把一个真的结论挂在一个错的术语上。
+    """
+    import hashlib
+
+    def sig(path: str) -> dict[str, dict[str, Any]]:
+        with open(path, encoding="utf-8") as f:
+            art = json.load(f)
+        out: dict[str, dict[str, Any]] = {}
+        for it in art.get("sample", {}).get("items", []):
+            texts = [r.get("text", "") for r in (it.get("retrieved") or [])]
+            out[str(it["question_id"])] = {
+                "n_add_events": it.get("n_add_events"),
+                "n_retrieved": it.get("n_retrieved"),
+                "inputs_sha256": it.get("inputs_sha256"),
+                "retrieved_sha256": hashlib.sha256(
+                    json.dumps(texts, ensure_ascii=False, sort_keys=True).encode()
+                ).hexdigest(),
+            }
+        return out
+
+    a, b = sig(committed_artifact), sig(fresh_artifact)
+    shared = sorted(set(a) & set(b))
+    per_item = [
+        {"question_id": q, "identical": a[q] == b[q], **a[q]} for q in shared
+    ]
+    return {
+        "compared_artifacts": [committed_artifact, fresh_artifact],
+        "n_items_compared": len(shared),
+        "n_identical": sum(1 for r in per_item if r["identical"]),
+        "all_identical": bool(shared) and all(r["identical"] for r in per_item),
+        "claim": (
+            "end-to-end-reproducible"
+            if bool(shared) and all(r["identical"] for r in per_item)
+            else "NOT-identical"
+        ),
+        "does_not_establish": "substrate-level bit-exact decoding",
+        "per_item": per_item,
+    }
 
 
 # ── 约束二：run fingerprint ──────────────────────────────────────────────────
