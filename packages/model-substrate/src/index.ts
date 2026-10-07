@@ -35,8 +35,23 @@ export { SamplingError } from './types'
 
 export {
   assertDeterminism,
+  assertDeterminismAudit,
+  auditDeterminism,
   hashText,
   measureDeterminism,
+  runSamplingControl,
+  SAMPLING_CONTROL_OVERRIDES,
 } from './verify'
 
-export type { DeterminismOptions, DeterminismReport, DeterminismRun } from './verify'
+export type {
+  DeterminismAudit,
+  DeterminismAuditOptions,
+  DeterminismAuditVerdict,
+  DeterminismOptions,
+  DeterminismReport,
+  DeterminismRun,
+  SamplingControlOptions,
+  SamplingControlReport,
+  SamplingControlRun,
+  SamplingControlVerdict,
+} from './verify'
