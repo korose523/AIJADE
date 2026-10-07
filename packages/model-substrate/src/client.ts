@@ -82,7 +82,18 @@ export function createOllamaSubstrate(options: OllamaSubstrateOptions): OllamaSu
     throw new SamplingError('createOllamaSubstrate: "model" is required')
 
   const mode: SubstrateMode = options.mode ?? 'interactive'
-  const baseUrl = (options.baseUrl ?? 'http://localhost:11434').replace(/\/+$/, '')
+  // Default to 127.0.0.1, NOT `localhost`.
+  //
+  // Ollama's default listener is IPv4-only. Node's fetch (and Python's urllib)
+  // resolve `localhost` to `::1` first, so `http://localhost:11434` fails with
+  // ECONNREFUSED even while the server is healthy. curl hides this because it
+  // falls back to IPv4 — which is exactly why the breakage is easy to miss when
+  // probing by hand and then breaks every real script.
+  //
+  // Measured 2026-10-07: `fetch('http://localhost:11434/api/tags')` → ECONNREFUSED;
+  // `fetch('http://127.0.0.1:11434/api/tags')` → 200. `lsof -iTCP:11434 -sTCP:LISTEN`
+  // shows ollama bound to 127.0.0.1:11434 only.
+  const baseUrl = (options.baseUrl ?? 'http://127.0.0.1:11434').replace(/\/+$/, '')
   const timeoutMs = options.timeoutMs ?? 120_000
 
   // Pick the mode-appropriate default, then let an explicit config win.

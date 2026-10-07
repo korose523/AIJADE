@@ -15,7 +15,11 @@ describe('createOllamaSubstrate', () => {
   it('defaults to interactive mode with the Qwythos sampling preset', () => {
     const s = createOllamaSubstrate({ model: 'qwythos' })
     expect(s.options.mode).toBe('interactive')
-    expect(s.options.baseUrl).toBe('http://localhost:11434')
+    // Defaults to 127.0.0.1, not `localhost`: Ollama listens IPv4-only while
+    // Node fetch resolves `localhost` to `::1` first, so a `localhost` default
+    // makes every script fail with ECONNREFUSED. curl falls back to IPv4 and
+    // hides it, which is why this only showed up when a real script was run.
+    expect(s.options.baseUrl).toBe('http://127.0.0.1:11434')
   })
 
   it('enforces greedy decoding in research mode', () => {
