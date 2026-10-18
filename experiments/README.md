@@ -21,7 +21,8 @@ repository, listed below; re-running the driver regenerates it.
 | `rq-c/format-precheck/` | P2 | Verdict-format pre-checks of the candidate replacement models (rule fixed before testing) | `aijade-experiments format-precheck --model M --ollama-base-url U` |
 
 The LoCoMo corpus is third-party data and is not part of the repository; `aijade-experiments memory` reads it from
-`$AIJADE_LOCOMO` or `~/.local/share/aijade-data/locomo10.json` and checks its SHA-256 before running.
+`$AIJADE_LOCOMO` or `~/.local/share/aijade-data/locomo10.json` and checks its SHA-256 before running; `tools/data/fetch-corpora.sh`
+downloads both corpora to the default paths and verifies them.
 LongMemEval_s (cleaned release, MIT) is read from `--data`, `$AIJADE_LONGMEMEVAL` or `~/.local/share/aijade-data/longmemeval/longmemeval_s_cleaned.json`, also
 checked against its SHA-256.
 

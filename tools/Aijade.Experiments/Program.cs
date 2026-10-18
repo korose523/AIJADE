@@ -23,7 +23,7 @@ using Aijade.Research.RqC;
 //   aijade-experiments component-scales --corpus longmemeval          (P4 §5.8: component means and spreads on LongMemEval)
 //   aijade-experiments format-precheck --model M [--ollama-base-url U] [--out F]   (P2: verdict-format pre-check for a control model)
 // The LoCoMo corpus is third-party data (snap-research/locomo) and is not part of the repository: by default it is read from
-// $AIJADE_LOCOMO or ~/.local/share/aijade-data/locomo10.json (tools/data/fetch-locomo.sh fetches and verifies it).
+// $AIJADE_LOCOMO or ~/.local/share/aijade-data/locomo10.json (tools/data/fetch-corpora.sh fetches and verifies it, and LongMemEval_s).
 
 string? Arg(string name) => args.SkipWhile(a => a != name).Skip(1).FirstOrDefault();
 var command = args.FirstOrDefault() ?? "";
@@ -352,7 +352,7 @@ static int LongMemEvalReplication(string data, string outDir)
 {
     if (!File.Exists(data))
     {
-        Console.Error.WriteLine($"LongMemEval not found at {data} (huggingface.co/datasets/xiaowu0162/longmemeval-cleaned, longmemeval_s_cleaned.json)");
+        Console.Error.WriteLine($"LongMemEval not found at {data}; run tools/data/fetch-corpora.sh longmemeval or pass --data");
         return 2;
     }
     var sha = LocomoCorpus.FileSha256(data);
@@ -488,7 +488,7 @@ static int WithLongMemEval(string? dataArg, Func<IReadOnlyList<LocomoConversatio
         ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "aijade-data", "longmemeval", "longmemeval_s_cleaned.json");
     if (!File.Exists(data) || LocomoCorpus.FileSha256(data) != LongMemEvalCorpus.Sha256)
     {
-        Console.Error.WriteLine($"LongMemEval missing or checksum mismatch at {data}");
+        Console.Error.WriteLine($"LongMemEval missing or checksum mismatch at {data}; run tools/data/fetch-corpora.sh longmemeval or pass --data");
         return 2;
     }
     var corpus = LongMemEvalCorpus.Load(data);
@@ -517,7 +517,7 @@ static int WithCorpus(string locomo, string outDir, Action<IReadOnlyList<LocomoC
 {
     if (!File.Exists(locomo))
     {
-        Console.Error.WriteLine($"LoCoMo corpus not found at {locomo}; run tools/data/fetch-locomo.sh or pass --locomo");
+        Console.Error.WriteLine($"LoCoMo corpus not found at {locomo}; run tools/data/fetch-corpora.sh or pass --locomo");
         return 2;
     }
     var sha = LocomoCorpus.FileSha256(locomo);

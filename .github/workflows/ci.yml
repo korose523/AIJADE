@@ -7,10 +7,27 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    # the database-backed tests run against the same PostgreSQL image as tools/dev-services.sh; tests that need a model
+    # server, a Minecraft server, a desktop or a browser stay opt-in and are reported as skipped
+    services:
+      postgres:
+        image: ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+        env:
+          POSTGRES_USER: aijade
+          POSTGRES_PASSWORD: aijade
+          POSTGRES_DB: aijade
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U aijade"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      AIJADE_TEST_DATABASE_URL: postgres://aijade:aijade@127.0.0.1:55432/aijade
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
       - run: dotnet test --configuration Release
-

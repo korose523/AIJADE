@@ -32,6 +32,28 @@ AIJADE_E2E=1 AIJADE_TEST_DATABASE_URL=postgres://aijade:aijade@127.0.0.1:55432/a
 Add `AIJADE_E2E_MMD_DIR=<folder>` and `AIJADE_E2E_MMD_MODEL=<file.pmx>` to also test the MMD stage with a model you are
 licensed to use. Models are served from that folder and never copied into the repository.
 
+## Reproducing the measurements
+
+Every number in the accompanying papers is computed from the files under `experiments/`; [experiments/README.md](experiments/README.md)
+lists each file with the driver that regenerates it. Three studies use this code:
+
+| Study | Artefacts | Main drivers |
+|---|---|---|
+| Verifiable event-driven architecture and evidence-gated learning | `experiments/p1/`, `experiments/growth-pilot/` | `tools/Aijade.P1` (against a running server and worker), `tools/Aijade.Mutation`, `aijade-experiments growth-pilot` |
+| Self-assessment reliability of agent-generated skills | `experiments/rq-c/` | `tools/Aijade.Rqc`, `aijade-experiments p2-models`, `differential`, `format-precheck` |
+| Retrieval scoring in the biomimetic memory | `experiments/memory/`, `experiments/memory-longmemeval/` | `aijade-experiments memory`, `memory-uncertainty`, `pool-check`, `delivery-check`, `gating-check`, `longmemeval` |
+
+(`aijade-experiments` is `dotnet run --project tools/Aijade.Experiments -c Release --`.)
+
+- **Re-analysis without a model.** The statistics of the self-assessment study are recomputed from the archived per-step
+  logs (`aijade-experiments p2-models`); the memory experiments are deterministic and need only the two third-party
+  corpora, which `tools/data/fetch-corpora.sh` downloads and checks against the SHA-256 pinned in the code.
+- **Re-running the model runs.** They use Ollama with `qwen2.5-coder:7b-instruct` (weights `dae161e27b0e…`),
+  `qwen2.5-coder:1.5b` and `llama3.1:8b` (`46e0c10c039e…`) at temperature 0 with a fixed seed; each run's summary records
+  the model digest and the server version, and the scripts in `experiments/rq-c/` (`run-redo.sh`, `run-family-gpu.sh`,
+  `run-template.sh`) give the exact flags. Greedy decoding on other hardware changes individual generations, so a re-run
+  reproduces the estimates within their uncertainty rather than the trajectory step by step.
+
 ## The companion elsewhere
 
 **Chat platforms** — `src/Aijade.Bots` runs the companion on Discord, Telegram, Satori (QQ, OneBot, KOOK … via Koishi),
