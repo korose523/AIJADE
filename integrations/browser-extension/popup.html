@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AIJADE</title>
+  <style>
+    body { font: 14px system-ui, sans-serif; width: 300px; margin: 12px; color: #1e2230; }
+    label { display: block; margin: 8px 0 2px; } input[type=url], input[type=email], input[type=password] { width: 100%; box-sizing: border-box; padding: 6px; }
+    button { margin-top: 10px; padding: 6px 10px; } .row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+    .note { color: #667; font-size: 12px; } .error { color: #b3261e; }
+  </style>
+</head>
+<body>
+  <h3>AIJADE</h3>
+  <form id="signin">
+    <label for="server">Server</label><input id="server" type="url" placeholder="https://your-aijade-server" required>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
+    <button type="submit">Sign in</button>
+  </form>
+  <div id="connected" hidden>
+    <p>Signed in to <span id="where"></span></p>
+    <div class="row"><input id="sharing" type="checkbox"><label for="sharing">Share what I'm watching</label></div>
+    <p class="note">Only on YouTube and Bilibili: the title, the video position and the subtitle line on screen. Turn on
+      "What I'm watching" in AIJADE's settings so the companion uses it.</p>
+    <p class="note" id="last"></p>
+    <button id="signout">Sign out</button>
+  </div>
+  <p class="error" id="error"></p>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

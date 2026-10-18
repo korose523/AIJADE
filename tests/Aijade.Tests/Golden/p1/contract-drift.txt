@@ -1,0 +1,287 @@
+ok   every server topic has a fixture (uncovered: none)
+ok   no stale fixture for a removed topic (stale: none)
+ok   kernel/server topic sets agree (kernel-only: none; server-only: none)
+ok   kernel envelope declares exactly 13 required + 3 optional fields (got: causal_context_refs, causality, core_state_node, correlation_id, event_id, evidence_refs, idempotency_key, origin_device, privacy_level, producer, replay_mode, risk_level, risk_score, tick, timestamp, trace_id)
+ok   [kernel] aijade.active_learning.requested / valid payload: valid payload accepted
+ok   [kernel] aijade.active_learning.requested / valid payload: v10 envelope fields present
+ok   [http] aijade.active_learning.requested / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.active_learning.completed / valid payload: valid payload accepted
+ok   [kernel] aijade.active_learning.completed / valid payload: v10 envelope fields present
+ok   [http] aijade.active_learning.completed / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.evidence.weave_candidate_ready / valid payload: valid payload accepted
+ok   [kernel] aijade.evidence.weave_candidate_ready / valid payload: v10 envelope fields present
+ok   [http] aijade.evidence.weave_candidate_ready / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.pgc.write_plan_ready / valid payload: valid payload accepted
+ok   [kernel] aijade.pgc.write_plan_ready / valid payload: v10 envelope fields present
+ok   [http] aijade.pgc.write_plan_ready / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.memory_tx.committed / valid payload: valid payload accepted
+ok   [kernel] aijade.memory_tx.committed / valid payload: v10 envelope fields present
+ok   [http] aijade.memory_tx.committed / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.persona.render_requested / valid payload: valid payload accepted
+ok   [kernel] aijade.persona.render_requested / valid payload: v10 envelope fields present
+ok   [http] aijade.persona.render_requested / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.lpm.render_ready / valid payload: valid payload accepted
+ok   [kernel] aijade.lpm.render_ready / valid payload: v10 envelope fields present
+ok   [http] aijade.lpm.render_ready / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.lpm.render_ready / asset_version_hash absent (optional per kernel): valid payload accepted
+ok   [kernel] aijade.lpm.render_ready / asset_version_hash absent (optional per kernel): v10 envelope fields present
+ok   [http] aijade.lpm.render_ready / asset_version_hash absent (optional per kernel): valid payload -> 201 (got 201)
+ok   [kernel] aijade.video.observation.webpage_text / valid payload: valid payload accepted
+ok   [kernel] aijade.video.observation.webpage_text / valid payload: v10 envelope fields present
+ok   [http] aijade.video.observation.webpage_text / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.video.observation.video_transcript / valid payload: valid payload accepted
+ok   [kernel] aijade.video.observation.video_transcript / valid payload: v10 envelope fields present
+ok   [http] aijade.video.observation.video_transcript / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.learning.proposed.shadow_params / valid payload: valid payload accepted
+ok   [kernel] aijade.learning.proposed.shadow_params / valid payload: v10 envelope fields present
+ok   [http] aijade.learning.proposed.shadow_params / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.learning.proposed.evidence / valid payload: valid payload accepted
+ok   [kernel] aijade.learning.proposed.evidence / valid payload: v10 envelope fields present
+ok   [http] aijade.learning.proposed.evidence / valid payload: valid payload -> 201 (got 201)
+ok   [kernel] aijade.learning.constraint.opinion_evaluation / valid payload: valid payload accepted
+ok   [kernel] aijade.learning.constraint.opinion_evaluation / valid payload: v10 envelope fields present
+ok   [http] aijade.learning.constraint.opinion_evaluation / valid payload: valid payload -> 201 (got 201)
+ok   [http] aijade.active_learning.requested / missing quest_ref: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.requested / missing quest_ref: kernel must reject too
+ok   [no-write] aijade.active_learning.requested / missing quest_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.requested / missing quest_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.active_learning.requested / blank quest_ref: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.requested / blank quest_ref: kernel must reject too
+ok   [no-write] aijade.active_learning.requested / blank quest_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.requested / blank quest_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.active_learning.requested / empty stop_conditions: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.requested / empty stop_conditions: kernel must reject too
+ok   [no-write] aijade.active_learning.requested / empty stop_conditions: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.requested / empty stop_conditions: render_traces unchanged (4 -> 4)
+ok   [http] aijade.active_learning.requested / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.requested / unknown field: kernel must reject too
+ok   [no-write] aijade.active_learning.requested / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.requested / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.active_learning.completed / missing quest_ref: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.completed / missing quest_ref: kernel must reject too
+ok   [no-write] aijade.active_learning.completed / missing quest_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.completed / missing quest_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.active_learning.completed / blank quest_ref: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.completed / blank quest_ref: kernel must reject too
+ok   [no-write] aijade.active_learning.completed / blank quest_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.completed / blank quest_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.active_learning.completed / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.active_learning.completed / unknown field: kernel must reject too
+ok   [no-write] aijade.active_learning.completed / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.active_learning.completed / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.evidence.weave_candidate_ready / missing graph_hash: must be 400 (got 400)
+ok   [kernel] aijade.evidence.weave_candidate_ready / missing graph_hash: kernel must reject too
+ok   [no-write] aijade.evidence.weave_candidate_ready / missing graph_hash: events unchanged (13 -> 13)
+ok   [no-write] aijade.evidence.weave_candidate_ready / missing graph_hash: render_traces unchanged (4 -> 4)
+ok   [http] aijade.evidence.weave_candidate_ready / blank graph_hash: must be 400 (got 400)
+ok   [kernel] aijade.evidence.weave_candidate_ready / blank graph_hash: kernel must reject too
+ok   [no-write] aijade.evidence.weave_candidate_ready / blank graph_hash: events unchanged (13 -> 13)
+ok   [no-write] aijade.evidence.weave_candidate_ready / blank graph_hash: render_traces unchanged (4 -> 4)
+ok   [http] aijade.evidence.weave_candidate_ready / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.evidence.weave_candidate_ready / unknown field: kernel must reject too
+ok   [no-write] aijade.evidence.weave_candidate_ready / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.evidence.weave_candidate_ready / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.pgc.write_plan_ready / missing pgc_state_id: must be 400 (got 400)
+ok   [kernel] aijade.pgc.write_plan_ready / missing pgc_state_id: kernel must reject too
+ok   [no-write] aijade.pgc.write_plan_ready / missing pgc_state_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.pgc.write_plan_ready / missing pgc_state_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.pgc.write_plan_ready / negative write_plan_size: must be 400 (got 400)
+ok   [kernel] aijade.pgc.write_plan_ready / negative write_plan_size: kernel must reject too
+ok   [no-write] aijade.pgc.write_plan_ready / negative write_plan_size: events unchanged (13 -> 13)
+ok   [no-write] aijade.pgc.write_plan_ready / negative write_plan_size: render_traces unchanged (4 -> 4)
+ok   [http] aijade.pgc.write_plan_ready / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.pgc.write_plan_ready / unknown field: kernel must reject too
+ok   [no-write] aijade.pgc.write_plan_ready / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.pgc.write_plan_ready / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.memory_tx.committed / missing committed_count: must be 400 (got 400)
+ok   [kernel] aijade.memory_tx.committed / missing committed_count: kernel must reject too
+ok   [no-write] aijade.memory_tx.committed / missing committed_count: events unchanged (13 -> 13)
+ok   [no-write] aijade.memory_tx.committed / missing committed_count: render_traces unchanged (4 -> 4)
+ok   [http] aijade.memory_tx.committed / negative committed_count: must be 400 (got 400)
+ok   [kernel] aijade.memory_tx.committed / negative committed_count: kernel must reject too
+ok   [no-write] aijade.memory_tx.committed / negative committed_count: events unchanged (13 -> 13)
+ok   [no-write] aijade.memory_tx.committed / negative committed_count: render_traces unchanged (4 -> 4)
+ok   [http] aijade.memory_tx.committed / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.memory_tx.committed / unknown field: kernel must reject too
+ok   [no-write] aijade.memory_tx.committed / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.memory_tx.committed / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.persona.render_requested / missing persona_snapshot_ref: must be 400 (got 400)
+ok   [kernel] aijade.persona.render_requested / missing persona_snapshot_ref: kernel must reject too
+ok   [no-write] aijade.persona.render_requested / missing persona_snapshot_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.persona.render_requested / missing persona_snapshot_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.persona.render_requested / missing intent_ref: must be 400 (got 400)
+ok   [kernel] aijade.persona.render_requested / missing intent_ref: kernel must reject too
+ok   [no-write] aijade.persona.render_requested / missing intent_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.persona.render_requested / missing intent_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.persona.render_requested / blank intent_ref: must be 400 (got 400)
+ok   [kernel] aijade.persona.render_requested / blank intent_ref: kernel must reject too
+ok   [no-write] aijade.persona.render_requested / blank intent_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.persona.render_requested / blank intent_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.persona.render_requested / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.persona.render_requested / unknown field: kernel must reject too
+ok   [no-write] aijade.persona.render_requested / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.persona.render_requested / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.lpm.render_ready / missing render_ref: must be 400 (got 400)
+ok   [kernel] aijade.lpm.render_ready / missing render_ref: kernel must reject too
+ok   [no-write] aijade.lpm.render_ready / missing render_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.lpm.render_ready / missing render_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.lpm.render_ready / blank render_ref: must be 400 (got 400)
+ok   [kernel] aijade.lpm.render_ready / blank render_ref: kernel must reject too
+ok   [no-write] aijade.lpm.render_ready / blank render_ref: events unchanged (13 -> 13)
+ok   [no-write] aijade.lpm.render_ready / blank render_ref: render_traces unchanged (4 -> 4)
+ok   [http] aijade.lpm.render_ready / blank applied_params_hash: must be 400 (got 400)
+ok   [kernel] aijade.lpm.render_ready / blank applied_params_hash: kernel must reject too
+ok   [no-write] aijade.lpm.render_ready / blank applied_params_hash: events unchanged (13 -> 13)
+ok   [no-write] aijade.lpm.render_ready / blank applied_params_hash: render_traces unchanged (4 -> 4)
+ok   [http] aijade.lpm.render_ready / blank asset_version_hash: must be 400 (got 400)
+ok   [kernel] aijade.lpm.render_ready / blank asset_version_hash: kernel must reject too
+ok   [no-write] aijade.lpm.render_ready / blank asset_version_hash: events unchanged (13 -> 13)
+ok   [no-write] aijade.lpm.render_ready / blank asset_version_hash: render_traces unchanged (4 -> 4)
+ok   [http] aijade.lpm.render_ready / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.lpm.render_ready / unknown field: kernel must reject too
+ok   [no-write] aijade.lpm.render_ready / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.lpm.render_ready / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.webpage_text / missing session_id: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.webpage_text / missing session_id: kernel must reject too
+ok   [no-write] aijade.video.observation.webpage_text / missing session_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.webpage_text / missing session_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.webpage_text / blank session_id: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.webpage_text / blank session_id: kernel must reject too
+ok   [no-write] aijade.video.observation.webpage_text / blank session_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.webpage_text / blank session_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.webpage_text / missing source_url: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.webpage_text / missing source_url: kernel must reject too
+ok   [no-write] aijade.video.observation.webpage_text / missing source_url: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.webpage_text / missing source_url: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.webpage_text / blank observation_text: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.webpage_text / blank observation_text: kernel must reject too
+ok   [no-write] aijade.video.observation.webpage_text / blank observation_text: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.webpage_text / blank observation_text: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.webpage_text / empty spans: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.webpage_text / empty spans: kernel must reject too
+ok   [no-write] aijade.video.observation.webpage_text / empty spans: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.webpage_text / empty spans: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.webpage_text / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.webpage_text / unknown field: kernel must reject too
+ok   [no-write] aijade.video.observation.webpage_text / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.webpage_text / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.video_transcript / missing session_id: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.video_transcript / missing session_id: kernel must reject too
+ok   [no-write] aijade.video.observation.video_transcript / missing session_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.video_transcript / missing session_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.video_transcript / blank session_id: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.video_transcript / blank session_id: kernel must reject too
+ok   [no-write] aijade.video.observation.video_transcript / blank session_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.video_transcript / blank session_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.video_transcript / missing video_id: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.video_transcript / missing video_id: kernel must reject too
+ok   [no-write] aijade.video.observation.video_transcript / missing video_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.video_transcript / missing video_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.video_transcript / empty time_spans: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.video_transcript / empty time_spans: kernel must reject too
+ok   [no-write] aijade.video.observation.video_transcript / empty time_spans: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.video_transcript / empty time_spans: render_traces unchanged (4 -> 4)
+ok   [http] aijade.video.observation.video_transcript / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.video.observation.video_transcript / unknown field: kernel must reject too
+ok   [no-write] aijade.video.observation.video_transcript / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.video.observation.video_transcript / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.shadow_params / missing input_hash: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.shadow_params / missing input_hash: kernel must reject too
+ok   [no-write] aijade.learning.proposed.shadow_params / missing input_hash: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.shadow_params / missing input_hash: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.shadow_params / blank proposal_id: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.shadow_params / blank proposal_id: kernel must reject too
+ok   [no-write] aijade.learning.proposed.shadow_params / blank proposal_id: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.shadow_params / blank proposal_id: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.shadow_params / confidence out of range: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.shadow_params / confidence out of range: kernel must reject too
+ok   [no-write] aijade.learning.proposed.shadow_params / confidence out of range: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.shadow_params / confidence out of range: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.shadow_params / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.shadow_params / unknown field: kernel must reject too
+ok   [no-write] aijade.learning.proposed.shadow_params / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.shadow_params / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.evidence / missing evidence_hash: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.evidence / missing evidence_hash: kernel must reject too
+ok   [no-write] aijade.learning.proposed.evidence / missing evidence_hash: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.evidence / missing evidence_hash: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.evidence / blank claim_text: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.evidence / blank claim_text: kernel must reject too
+ok   [no-write] aijade.learning.proposed.evidence / blank claim_text: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.evidence / blank claim_text: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.evidence / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.learning.proposed.evidence / unknown field: kernel must reject too
+ok   [no-write] aijade.learning.proposed.evidence / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.evidence / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: must be 400 (got 400)
+ok   [kernel] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: kernel must reject too
+ok   [no-write] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.constraint.opinion_evaluation / empty claims: must be 400 (got 400)
+ok   [kernel] aijade.learning.constraint.opinion_evaluation / empty claims: kernel must reject too
+ok   [no-write] aijade.learning.constraint.opinion_evaluation / empty claims: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.constraint.opinion_evaluation / empty claims: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.constraint.opinion_evaluation / unknown field: must be 400 (got 400)
+ok   [kernel] aijade.learning.constraint.opinion_evaluation / unknown field: kernel must reject too
+ok   [no-write] aijade.learning.constraint.opinion_evaluation / unknown field: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.constraint.opinion_evaluation / unknown field: render_traces unchanged (4 -> 4)
+ok   [http] aijade.learning.proposed.shadow_params / render_ref self-reference: must be 400 (got 400)
+ok   [no-write] aijade.learning.proposed.shadow_params / render_ref self-reference: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.shadow_params / render_ref self-reference: render_traces unchanged (4 -> 4)
+ok   [kernel] aijade.learning.proposed.shadow_params / render_ref self-reference: kernel accepts (shape is legal; only the boundary can reject it)
+ok   [http] aijade.learning.proposed.evidence / render_ref self-reference: must be 400 (got 400)
+ok   [no-write] aijade.learning.proposed.evidence / render_ref self-reference: events unchanged (13 -> 13)
+ok   [no-write] aijade.learning.proposed.evidence / render_ref self-reference: render_traces unchanged (4 -> 4)
+ok   [kernel] aijade.learning.proposed.evidence / render_ref self-reference: kernel accepts (shape is legal; only the boundary can reject it)
+ok   [http] aijade.persona.render_requested / intent_ref self-reference: must be 400 (got 400)
+ok   [no-write] aijade.persona.render_requested / intent_ref self-reference: events unchanged (13 -> 13)
+ok   [no-write] aijade.persona.render_requested / intent_ref self-reference: render_traces unchanged (4 -> 4)
+ok   [kernel] aijade.persona.render_requested / intent_ref self-reference: kernel accepts (shape is legal; only the boundary can reject it)
+ok   [kernel] envelope missing "event_id": must be rejected
+ok   [http] envelope missing "event_id": must be 400 (got 400)
+ok   [no-write] envelope missing "event_id": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "trace_id": must be rejected
+ok   [http] envelope missing "trace_id": must be 400 (got 400)
+ok   [no-write] envelope missing "trace_id": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "correlation_id": must be rejected
+ok   [http] envelope missing "correlation_id": must be 400 (got 400)
+ok   [no-write] envelope missing "correlation_id": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "timestamp": must be rejected
+ok   [http] envelope missing "timestamp": must be 400 (got 400)
+ok   [no-write] envelope missing "timestamp": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "producer": must be rejected
+ok   [http] envelope missing "producer": must be 400 (got 400)
+ok   [no-write] envelope missing "producer": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "origin_device": must be rejected
+ok   [http] envelope missing "origin_device": must be 400 (got 400)
+ok   [no-write] envelope missing "origin_device": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "privacy_level": must be rejected
+ok   [http] envelope missing "privacy_level": must be 400 (got 400)
+ok   [no-write] envelope missing "privacy_level": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "evidence_refs": must be rejected
+ok   [http] envelope missing "evidence_refs": must be 400 (got 400)
+ok   [no-write] envelope missing "evidence_refs": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "causal_context_refs": must be rejected
+ok   [http] envelope missing "causal_context_refs": must be 400 (got 400)
+ok   [no-write] envelope missing "causal_context_refs": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "risk_score": must be rejected
+ok   [http] envelope missing "risk_score": must be 400 (got 400)
+ok   [no-write] envelope missing "risk_score": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "idempotency_key": must be rejected
+ok   [http] envelope missing "idempotency_key": must be 400 (got 400)
+ok   [no-write] envelope missing "idempotency_key": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "replay_mode": must be rejected
+ok   [http] envelope missing "replay_mode": must be 400 (got 400)
+ok   [no-write] envelope missing "replay_mode": events unchanged (13 -> 13)
+ok   [kernel] envelope missing "risk_level": must be rejected
+ok   [http] envelope missing "risk_level": must be 400 (got 400)
+ok   [no-write] envelope missing "risk_level": events unchanged (13 -> 13)
+ok   [kernel] envelope with unknown extra field: must be rejected
+ok   [http] envelope with unknown extra field: must be 400 (got 400)
+ok   [no-write] envelope with unknown extra field: events unchanged (13 -> 13)
+ok   [kernel] tick beyond int32: must be rejected
+ok   [http] tick beyond int32: must be 400 (got 400)
+ok   [no-write] tick beyond int32: events unchanged (13 -> 13)
+ok   [kernel] envelope without optional "tick": must still be accepted
+ok   [kernel] envelope without optional "causality": must still be accepted
+ok   [kernel] envelope without optional "core_state_node": must still be accepted

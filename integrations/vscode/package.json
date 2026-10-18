@@ -1,0 +1,29 @@
+{
+  "name": "aijade-vscode",
+  "displayName": "AIJADE",
+  "description": "Lets your AIJADE companion know what you are working on in VS Code (file, language, line; code only if you allow it).",
+  "version": "0.1.0",
+  "publisher": "korose523",
+  "license": "MIT",
+  "engines": { "vscode": "^1.90.0" },
+  "main": "./extension.js",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "commands": [
+      { "command": "aijade.signIn", "title": "AIJADE: Sign in" },
+      { "command": "aijade.signOut", "title": "AIJADE: Sign out" },
+      { "command": "aijade.toggle", "title": "AIJADE: Pause / resume sharing" },
+      { "command": "aijade.status", "title": "AIJADE: Show status" }
+    ],
+    "configuration": {
+      "title": "AIJADE",
+      "properties": {
+        "aijade.server": { "type": "string", "default": "", "description": "Your AIJADE server, e.g. https://aijade.example/" },
+        "aijade.enabled": { "type": "boolean", "default": true, "description": "Share what you are working on." },
+        "aijade.shareCode": { "type": "boolean", "default": false, "description": "Also share the selected text, or the lines around the cursor. Off: only the file name, language and line number leave this machine." },
+        "aijade.contextLines": { "type": "number", "default": 5, "minimum": 0, "maximum": 50, "description": "Lines before and after the cursor when sharing code." },
+        "aijade.sendInterval": { "type": "number", "default": 3000, "minimum": 1000, "description": "Milliseconds between updates." }
+      }
+    }
+  }
+}

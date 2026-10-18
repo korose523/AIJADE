@@ -1,0 +1,343 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 30,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:7b-instruct",
+    "rounds": 5,
+    "pCorrect": 0.5,
+    "tasks": 12,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "maxReplyTokens": 4096,
+    "numCtx": 4096
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "qwen2.5-coder:7b-instruct",
+    "temperature": 0,
+    "seed": 3759066737,
+    "ollamaVersion": "0.40.0",
+    "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+    "abortedReplies": 0,
+    "lengthLimitedReplies": 0,
+    "nonConformingVerdicts": 0,
+    "warmUp": true
+  },
+  "analysisUnit": "skill",
+  "nSkills": 1602,
+  "nExecutions": 7200,
+  "fingerprint": "bc101508",
+  "gitHash": "unknown",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9138888888888889,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 390,
+      "precision": 0.9322222222222222,
+      "retiredRate": 0.07692307692307693,
+      "meanCallsPerSkill": 4.615384615384615
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 412,
+      "precision": 0.9144444444444444,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 4.368932038834951
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 440,
+      "precision": 0.9211111111111111,
+      "retiredRate": 0.056818181818181816,
+      "meanCallsPerSkill": 4.090909090909091
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.9138888888888889,
+        "lo": 0.8833333333333333,
+        "hi": 0.9416666666666667
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.9322222222222222,
+        "lo": 0.9114642451759364,
+        "hi": 0.9509271911547048
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.9144444444444444,
+        "lo": 0.8863620607069026,
+        "hi": 0.9401033503360858
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.9211111111111111,
+        "lo": 0.9008303181148187,
+        "hi": 0.9398578458173865
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 852,
+    "hallucinationRate": 0.5384615384615384,
+    "missRate": 0.09418282548476455,
+    "agreement": 0.8380281690140845,
+    "falseDiscoveryRate": 0.09668508287292818,
+    "falseOmissionRate": 0.53125
+  },
+  "diffInDiff": {
+    "estimate": -0.011666666666666603,
+    "ci": {
+      "mean": -0.011666666666666603,
+      "lo": -0.05939313698397211,
+      "hi": 0.035654396486704175
+    },
+    "cellMeans": {
+      "a": 0.9138888888888889,
+      "b": 0.9322222222222222,
+      "c": 0.9144444444444444,
+      "d": 0.9211111111111111
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 0.718018469468108,
+    "riskDifference": -0.03688432486422377,
+    "cramersV": 0.05308147762368098,
+    "cohensH": -0.1104665067275703,
+    "interactionLogOdds": {
+      "estimate": -0.012598269369454072,
+      "se": 0.04913776567286008,
+      "z": -0.2563866955882446,
+      "p": 0.7976522599984931
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 0.033621195833946654,
+        "adjustedP": 0.26789996157965845,
+        "reject": false
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 0.0037634445702442606,
+        "adjustedP": 0.03387100113219835,
+        "reject": true
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 0.7976522599984931,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 0.07248608508684651,
+        "adjustedP": 0.3643373213239218,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 0.1885889395863165,
+        "adjustedP": 0.5657668187589495,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 0.060722886887320304,
+        "adjustedP": 0.3643373213239218,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 0.0005084458510287167,
+        "adjustedP": 0.005084458510287168,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 0.6489887452821783,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 0.033487495197457307,
+        "adjustedP": 0.26789996157965845,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 0.11080283454709994,
+        "adjustedP": 0.44321133818839975,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": -0.012598269369454072,
+    "se": 0.04913776567286008,
+    "z": -0.2563866955882446,
+    "p": 0.7976522599984931
+  },
+  "chiSquare": {
+    "statistic": 4.513864513274778,
+    "p": 0.033621195833946654,
+    "table": [
+      [
+        708,
+        122
+      ],
+      [
+        687,
+        85
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareSelfVerification": {
+    "statistic": 8.394565513699307,
+    "p": 0.0037634445702442606,
+    "table": [
+      [
+        722,
+        130
+      ],
+      [
+        673,
+        77
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 3.67084677390684,
+    "p": 0.055372045927237656,
+    "table": [
+      [
+        3336,
+        264
+      ],
+      [
+        3291,
+        309
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 36,
+    "b": 21,
+    "c": 10,
+    "d": 653,
+    "nPairs": 720,
+    "chiSquare": 3.225806451612903,
+    "pChiSquare": 0.07248608508684651,
+    "pExact": null,
+    "p": 0.07248608508684651,
+    "usedExact": false
+  },
+  "power": {
+    "minDetectableEffectAt80": 9.844685451820103,
+    "nSkillsPerCell": 401,
+    "powerAtDelta10pp": 0.8161388870364428,
+    "powerAtDelta5pp": 0.29445007405957935
+  },
+  "powerReference": [
+    {
+      "nPerCell": 240,
+      "minDetectableEffectAt80pp": 12.68,
+      "powerAtDelta10pp": 0.5999,
+      "powerAtDelta5pp": 0.1944
+    },
+    {
+      "nPerCell": 360,
+      "minDetectableEffectAt80pp": 10.38,
+      "powerAtDelta10pp": 0.7735,
+      "powerAtDelta5pp": 0.2693
+    }
+  ],
+  "preregistrationDeviation": [],
+  "degeneracy": {
+    "allCellsIdenticalPrecision": false,
+    "totalRegenerations": 162,
+    "totalRecoveries": 76,
+    "recoveredRate": 0.4691358024691358,
+    "manipulationReachable": true,
+    "note": "reachable: cells differ and 76/162 regenerations recovered with changed code (76 recovered in all)",
+    "totalRecoveriesWithChangedCode": 76
+  },
+  "loopDiagnostics": [
+    {
+      "condition": "sv0-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv0-ef1",
+      "loop": {
+        "regenerations": 30,
+        "regenerationsWithSignal": 30,
+        "recoveries": 14,
+        "recoveredRate": 0.4666666666666667
+      }
+    },
+    {
+      "condition": "sv1-ef0",
+      "loop": {
+        "regenerations": 52,
+        "regenerationsWithSignal": 52,
+        "recoveries": 28,
+        "recoveredRate": 0.5384615384615384
+      }
+    },
+    {
+      "condition": "sv1-ef1",
+      "loop": {
+        "regenerations": 80,
+        "regenerationsWithSignal": 80,
+        "recoveries": 34,
+        "recoveredRate": 0.425
+      }
+    }
+  ]
+}

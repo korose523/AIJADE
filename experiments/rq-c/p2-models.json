@@ -1,0 +1,4477 @@
+{
+  "experiment": "P2 model-based analysis of the RQ-C runs",
+  "main (7B)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 1621,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 330,
+        "failure": 30
+      },
+      "sv0-ef1": {
+        "success": 344,
+        "failure": 46
+      },
+      "sv1-ef0": {
+        "success": 363,
+        "failure": 54
+      },
+      "sv1-ef1": {
+        "success": 369,
+        "failure": 85
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": -0.05137838823629881,
+      "se": 0.3110591840476449,
+      "z": -0.16517238799298462,
+      "p": 0.8688082979235352,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 2.397895272798371,
+          "se": 0.1906925178491401,
+          "z": 12.574668895480128,
+          "p": 2.910169942187508e-36
+        },
+        "selfVerification": {
+          "estimate": -0.49247648509779474,
+          "se": 0.24007702059714361,
+          "z": -2.051327044432899,
+          "p": 0.040235108482786455
+        },
+        "envFeedback": {
+          "estimate": -0.3858950119140678,
+          "se": 0.2470015051424025,
+          "z": -1.5623184631672173,
+          "p": 0.1182129846115556
+        },
+        "interaction": {
+          "estimate": -0.05137838823629777,
+          "se": 0.31105918404765504,
+          "z": -0.16517238799297587,
+          "p": 0.8688082979235421
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 2.397895272798371,
+          "se": 0.19095792162108574,
+          "z": 12.557191932348688,
+          "p": 3.6298797457483834e-36
+        },
+        "selfVerification": {
+          "estimate": -0.49247648509779474,
+          "se": 0.13759390804032937,
+          "z": -3.5792026850014884,
+          "p": 0.0003446440980260867
+        },
+        "envFeedback": {
+          "estimate": -0.3858950119140678,
+          "se": 0.06788602467451109,
+          "z": -5.684454403749441,
+          "p": 1.3123092769386015e-8
+        },
+        "interaction": {
+          "estimate": -0.05137838823629777,
+          "se": 0.06158769843400001,
+          "z": -0.8342313407174491,
+          "p": 0.40415063350530867
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 2.397895272798371,
+          "se": 0.5169251893628516,
+          "z": 4.6387665413518615,
+          "p": 0.000003504946996436146
+        },
+        "selfVerification": {
+          "estimate": -0.49247648509779474,
+          "se": 0.40331575119359653,
+          "z": -1.2210693077082426,
+          "p": 0.22205977934515542
+        },
+        "envFeedback": {
+          "estimate": -0.3858950119140678,
+          "se": 0.1820687033960695,
+          "z": -2.1195021698737406,
+          "p": 0.034048050572519285
+        },
+        "interaction": {
+          "estimate": -0.05137838823629777,
+          "se": 0.1787775839086549,
+          "z": -0.2873871942611619,
+          "p": 0.7738158653353076
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -186.1379044266254,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 14.091634703754586,
+          "se": 3.8141720828838963,
+          "z": 3.6945461288940846,
+          "p": 0.00022027990274627003
+        },
+        "selfVerification": {
+          "estimate": -0.3042513805635762,
+          "se": 0.47608902633192246,
+          "z": -0.6390640483938743,
+          "p": 0.5227812666735916
+        },
+        "envFeedback": {
+          "estimate": 1.0121554991111334,
+          "se": 0.5371621447006835,
+          "z": 1.884264386640881,
+          "p": 0.05952922211192557
+        },
+        "interaction": {
+          "estimate": -0.9163665404915723,
+          "se": 0.6250182456300248,
+          "z": -1.4661436636427556,
+          "p": 0.14260915252868622
+        }
+      },
+      "logSigmaSe": 0.43440865953451596
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 4,
+      "informativeSkills": 242,
+      "effects": {
+        "selfVerification": {
+          "estimate": -0.2930836711790836,
+          "se": 0.47158292107921357,
+          "z": -0.6214891550957021,
+          "p": 0.5342778278110918
+        },
+        "envFeedback": {
+          "estimate": 0.9920577232940206,
+          "se": 0.5303946385744956,
+          "z": 1.8704143125584836,
+          "p": 0.06142630595664467
+        },
+        "interaction": {
+          "estimate": -0.8949516499898231,
+          "se": 0.6176376887119908,
+          "z": -1.448991320228753,
+          "p": 0.14734000655480828
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 330,
+          "failure": 30
+        },
+        "sv0-ef1": {
+          "success": 344,
+          "failure": 16
+        },
+        "sv1-ef0": {
+          "success": 334,
+          "failure": 26
+        },
+        "sv1-ef1": {
+          "success": 339,
+          "failure": 21
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": -0.4417244476334372,
+        "se": 0.4402216074567797,
+        "z": -1.003413826471035,
+        "p": 0.3156612357062042,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 2.397895272798371,
+            "se": 0.1906925178491199,
+            "z": 12.57466889548146,
+            "p": 2.910169942138445e-36
+          },
+          "selfVerification": {
+            "estimate": 0.15514918215684667,
+            "se": 0.2789609055068877,
+            "z": 0.556168190933177,
+            "p": 0.578095882185312
+          },
+          "envFeedback": {
+            "estimate": 0.6701576623352439,
+            "se": 0.3190150672107122,
+            "z": 2.100708496920614,
+            "p": 0.03566656298777699
+          },
+          "interaction": {
+            "estimate": -0.4417244476334361,
+            "se": 0.44022160745636113,
+            "z": -1.0034138264719865,
+            "p": 0.31566123570574534
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 2.397895272798371,
+            "se": 0.1909579216210443,
+            "z": 12.557191932351413,
+            "p": 3.6298797456233916e-36
+          },
+          "selfVerification": {
+            "estimate": 0.15514918215684667,
+            "se": 0.13443548029615862,
+            "z": 1.1540791301154738,
+            "p": 0.24846772872258827
+          },
+          "envFeedback": {
+            "estimate": 0.6701576623352439,
+            "se": 0.1791432850285231,
+            "z": 3.740903055498517,
+            "p": 0.00018336024192713794
+          },
+          "interaction": {
+            "estimate": -0.4417244476334361,
+            "se": 0.14153503194880435,
+            "z": -3.1209548728064402,
+            "p": 0.0018026565622658811
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 2.397895272798371,
+            "se": 0.5169251893627398,
+            "z": 4.638766541352865,
+            "p": 0.0000035049469964191275
+          },
+          "selfVerification": {
+            "estimate": 0.15514918215684667,
+            "se": 0.3442994580859295,
+            "z": 0.45062278929909,
+            "p": 0.6522614388568271
+          },
+          "envFeedback": {
+            "estimate": 0.6701576623352439,
+            "se": 0.47978124409658196,
+            "z": 1.396798375470339,
+            "p": 0.16247421096441583
+          },
+          "interaction": {
+            "estimate": -0.4417244476334361,
+            "se": 0.3689978020488285,
+            "z": -1.1970923544281271,
+            "p": 0.23127055965969967
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -64.80814366615806,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 13.061699611720488,
+            "se": 3.6137766156668403,
+            "z": 3.614418100746454,
+            "p": 0.00030102295114097817
+          },
+          "selfVerification": {
+            "estimate": 1.0207835116788508,
+            "se": 0.7366155556087522,
+            "z": 1.385775122323146,
+            "p": 0.16581558108930428
+          },
+          "envFeedback": {
+            "estimate": 6.063957513036973,
+            "se": 2.2409057252441666,
+            "z": 2.7060297292855777,
+            "p": 0.006809294975236566
+          },
+          "interaction": {
+            "estimate": -4.684391421021933,
+            "se": 2.335033673056366,
+            "z": -2.0061344189912482,
+            "p": 0.04484190850345839
+          }
+        },
+        "logSigmaSe": 0.40715686775997717
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 4,
+        "informativeSkills": 112,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 19,
+        "informativeSkills": 76,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 20,
+      "c": 1,
+      "tasksWithDiscordantPairs": 3,
+      "largestTaskShareOfDiscordant": 0.5714285714285714,
+      "clusteredChiSquare": 1.7272727272727273,
+      "clusteredP": 0.18875957054112547,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 871,
+      "tasks": 44,
+      "confusion": {
+        "tp": 654,
+        "fp": 59,
+        "fn": 78,
+        "tn": 80
+      },
+      "usableShare": 0.8404133180252583,
+      "hallucinationRate": {
+        "numerator": 59,
+        "denominator": 139,
+        "estimate": 0.4244604316546763,
+        "wilson95": [
+          0.34541197176462135,
+          0.5075718875898195
+        ],
+        "taskBootstrap95": [
+          0.13274336283185842,
+          0.8974358974358975
+        ],
+        "taskBootstrapBca95": [
+          0.06,
+          0.7692307692307693
+        ]
+      },
+      "missRate": {
+        "numerator": 78,
+        "denominator": 732,
+        "estimate": 0.10655737704918032,
+        "wilson95": [
+          0.08622328113807373,
+          0.13099940576633926
+        ],
+        "taskBootstrap95": [
+          0,
+          0.2649350649350649
+        ],
+        "taskBootstrapBca95": [
+          0.013774104683195593,
+          0.3672053016596141
+        ]
+      },
+      "agreement": {
+        "numerator": 734,
+        "denominator": 871,
+        "estimate": 0.8427095292766934,
+        "wilson95": [
+          0.8170324449483589,
+          0.8653769150341565
+        ],
+        "taskBootstrap95": [
+          0.726895119418484,
+          0.9547325102880658
+        ],
+        "taskBootstrapBca95": [
+          0.6853727807575799,
+          0.9335159892139676
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 59,
+        "denominator": 713,
+        "estimate": 0.08274894810659186,
+        "wilson95": [
+          0.06469341335501351,
+          0.10527646955485696
+        ],
+        "taskBootstrap95": [
+          0.01749271137026239,
+          0.16598079561042525
+        ],
+        "taskBootstrapBca95": [
+          0.02857142857142857,
+          0.19199369489582346
+        ]
+      },
+      "falseOmissionRate": {
+        "numerator": 78,
+        "denominator": 158,
+        "estimate": 0.4936708860759494,
+        "wilson95": [
+          0.41679477879084703,
+          0.5708474482715289
+        ],
+        "taskBootstrap95": [
+          0,
+          0.7647058823529411
+        ],
+        "taskBootstrapBca95": [
+          0.09523809523809523,
+          1
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": -0.31790305460549595,
+        "taskBootstrap95": [
+          -0.8666666666666667,
+          0.07837361170694507
+        ],
+        "shareOfResamplesAboveZero": 0.059235541324794874,
+        "taskBootstrapBca95": [
+          -0.7152542260690374,
+          0.19079514940012263
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": -0.010770366424335258,
+      "p": 0.8264648817089693
+    },
+    "loop": {
+      "regenerations": 181,
+      "regenerationsWithChangedCode": 172,
+      "recoveries": 86,
+      "recoveriesWithChangedCode": 86
+    },
+    "run": "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5"
+  },
+  "negative control (7B, inert)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 1708,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 330,
+        "failure": 30
+      },
+      "sv0-ef1": {
+        "success": 330,
+        "failure": 60
+      },
+      "sv1-ef0": {
+        "success": 406,
+        "failure": 62
+      },
+      "sv1-ef1": {
+        "success": 406,
+        "failure": 84
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": 0.38946476676172326,
+      "se": 0.29836304831164445,
+      "z": 1.305338475945995,
+      "p": 0.19177761799780169,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 2.3978952727983702,
+          "se": 0.19069251784911437,
+          "z": 12.57466889548182,
+          "p": 2.910169942125253e-36
+        },
+        "selfVerification": {
+          "estimate": -0.5186764982417299,
+          "se": 0.23442636969609842,
+          "z": -2.212534788275409,
+          "p": 0.026929735234154605
+        },
+        "envFeedback": {
+          "estimate": -0.693147180559946,
+          "se": 0.2367712103711195,
+          "z": -2.927497728602622,
+          "p": 0.003417015567598746
+        },
+        "interaction": {
+          "estimate": 0.3894647667617247,
+          "se": 0.29836304831164345,
+          "z": 1.3053384759460043,
+          "p": 0.1917776179977987
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 2.3978952727983702,
+          "se": 0.19095792162099093,
+          "z": 12.557191932354918,
+          "p": 3.629879745462636e-36
+        },
+        "selfVerification": {
+          "estimate": -0.5186764982417299,
+          "se": 0.16195660448703234,
+          "z": -3.202564661592789,
+          "p": 0.0013620971734784144
+        },
+        "envFeedback": {
+          "estimate": -0.693147180559946,
+          "se": null,
+          "z": null,
+          "p": null
+        },
+        "interaction": {
+          "estimate": 0.3894647667617247,
+          "se": 0.06985862223303813,
+          "z": 5.5750421968318715,
+          "p": 2.474698732940975e-8
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 2.3978952727983702,
+          "se": 0.5169251893626872,
+          "z": 4.638766541353335,
+          "p": 0.00000350494699641116
+        },
+        "selfVerification": {
+          "estimate": -0.5186764982417299,
+          "se": 0.4518826607638851,
+          "z": -1.147812348818459,
+          "p": 0.2510460383579499
+        },
+        "envFeedback": {
+          "estimate": -0.693147180559946,
+          "se": null,
+          "z": null,
+          "p": null
+        },
+        "interaction": {
+          "estimate": 0.3894647667617247,
+          "se": 0.19500753873818735,
+          "z": 1.9971780028699873,
+          "p": 0.045805849747628136
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -17.855640665403254,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 27.239312275382723,
+          "se": 9.82106550279149,
+          "z": 2.77355978000965,
+          "p": 0.00554466521691659
+        },
+        "selfVerification": {
+          "estimate": -0.08045975316349448,
+          "se": 3.189550034752961,
+          "z": -0.025226051413777647,
+          "p": 0.9798746575421503
+        },
+        "envFeedback": {
+          "estimate": -0.3562984363477958,
+          "se": 3.097411208945575,
+          "z": -0.11503104118651633,
+          "p": 0.9084205180382048
+        },
+        "interaction": {
+          "estimate": 0.10509044508401942,
+          "se": 4.151014698517701,
+          "z": 0.025316808712228,
+          "p": 0.9798022668146471
+        }
+      },
+      "logSigmaSe": 0.427937506601687
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 0,
+      "informativeSkills": 0,
+      "note": "not estimable: every task's skills all succeed or all fail"
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 330,
+          "failure": 30
+        },
+        "sv0-ef1": {
+          "success": 330,
+          "failure": 30
+        },
+        "sv1-ef0": {
+          "success": 330,
+          "failure": 30
+        },
+        "sv1-ef1": {
+          "success": 330,
+          "failure": 30
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": 0,
+        "se": 0.38138503569823695,
+        "z": 0,
+        "p": 1,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 2.3978952727983693,
+            "se": 0.19069251784912347,
+            "z": 12.574668895481215,
+            "p": 2.9101699421474754e-36
+          },
+          "selfVerification": {
+            "estimate": 2.4745708304081406e-15,
+            "se": 0.2696799449853025,
+            "z": 9.175954224341762e-15,
+            "p": 0.9999999999999927
+          },
+          "envFeedback": {
+            "estimate": 2.363548528359215e-15,
+            "se": 0.2696799449853025,
+            "z": 8.764272510097211e-15,
+            "p": 0.999999999999993
+          },
+          "interaction": {
+            "estimate": -4.995611659100754e-15,
+            "se": 0.3813850356982423,
+            "z": -1.3098604275216921e-14,
+            "p": 0.9999999999999896
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 2.3978952727983693,
+            "se": 0.1909579216210575,
+            "z": 12.557191932350536,
+            "p": 3.62987974566362e-36
+          },
+          "selfVerification": {
+            "estimate": 2.4745708304081406e-15,
+            "se": null,
+            "z": null,
+            "p": null
+          },
+          "envFeedback": {
+            "estimate": 2.363548528359215e-15,
+            "se": 5.690989542636327e-9,
+            "z": 4.1531415769643305e-7,
+            "p": 0.9999996686272457
+          },
+          "interaction": {
+            "estimate": -4.995611659100754e-15,
+            "se": null,
+            "z": null,
+            "p": null
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 2.3978952727983693,
+            "se": 0.5169251893627617,
+            "z": 4.638766541352665,
+            "p": 0.0000035049469964225173
+          },
+          "selfVerification": {
+            "estimate": 2.4745708304081406e-15,
+            "se": 3.041969726107047e-8,
+            "z": 8.134764817580766e-8,
+            "p": 0.9999999350939675
+          },
+          "envFeedback": {
+            "estimate": 2.363548528359215e-15,
+            "se": 1.991436647378721e-8,
+            "z": 1.186855997387763e-7,
+            "p": 0.9999999053025924
+          },
+          "interaction": {
+            "estimate": -4.995611659100754e-15,
+            "se": 4.5990259377520285e-8,
+            "z": -1.0862325472212001e-7,
+            "p": 0.9999999133311821
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -19.47912685476999,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 14.13901121079904,
+            "se": 4.247840127189003,
+            "z": 3.3285177378263273,
+            "p": 0.0008730944503221959
+          },
+          "selfVerification": {
+            "estimate": 0.0000019328814133099624,
+            "se": 3.3658584577555173,
+            "z": 5.742610503588679e-7,
+            "p": 0.9999995418059741
+          },
+          "envFeedback": {
+            "estimate": 0.0000017317681632825548,
+            "se": 3.3608904232158388,
+            "z": 5.152706411729804e-7,
+            "p": 0.9999995888735108
+          },
+          "interaction": {
+            "estimate": -0.000003256158650216288,
+            "se": 4.760414519417532,
+            "z": -6.840073772850143e-7,
+            "p": 0.9999994542410742
+          }
+        },
+        "logSigmaSe": 0.4286169675537862
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 0,
+        "informativeSkills": 0,
+        "note": "not estimable: every task's skills all succeed or all fail"
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 0,
+        "informativeSkills": 0,
+        "note": "not estimable: every task's skills all succeed or all fail"
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 0,
+      "c": 0,
+      "tasksWithDiscordantPairs": 0,
+      "largestTaskShareOfDiscordant": null,
+      "clusteredChiSquare": null,
+      "clusteredP": null,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 958,
+      "tasks": 44,
+      "confusion": {
+        "tp": 622,
+        "fp": 66,
+        "fn": 190,
+        "tn": 80
+      },
+      "usableShare": 0.8475991649269311,
+      "hallucinationRate": {
+        "numerator": 66,
+        "denominator": 146,
+        "estimate": 0.4520547945205479,
+        "wilson95": [
+          0.37358587754894446,
+          0.5329820368975312
+        ],
+        "taskBootstrap95": [
+          0.06976744186046512,
+          1
+        ],
+        "taskBootstrapBca95": [
+          0,
+          1
+        ]
+      },
+      "missRate": {
+        "numerator": 190,
+        "denominator": 812,
+        "estimate": 0.23399014778325122,
+        "wilson95": [
+          0.20616468345398956,
+          0.264320672089893
+        ],
+        "taskBootstrap95": [
+          0,
+          0.4449152542372881
+        ],
+        "taskBootstrapBca95": [
+          0.05857555378507205,
+          0.5252711269446353
+        ]
+      },
+      "agreement": {
+        "numerator": 702,
+        "denominator": 958,
+        "estimate": 0.732776617954071,
+        "wilson95": [
+          0.7038661992234565,
+          0.7598276828710386
+        ],
+        "taskBootstrap95": [
+          0.5413313825896123,
+          0.927007299270073
+        ],
+        "taskBootstrapBca95": [
+          0.4802746463057019,
+          0.8902941748438781
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 66,
+        "denominator": 688,
+        "estimate": 0.09593023255813954,
+        "wilson95": [
+          0.07611504964065485,
+          0.12023262089682363
+        ],
+        "taskBootstrap95": [
+          0.008982035928143712,
+          0.20380434782608695
+        ],
+        "taskBootstrapBca95": [
+          0.026627218934911243,
+          0.24577705691816393
+        ]
+      },
+      "falseOmissionRate": {
+        "numerator": 190,
+        "denominator": 270,
+        "estimate": 0.7037037037037037,
+        "wilson95": [
+          0.6466882295801616,
+          0.7550040505943528
+        ],
+        "taskBootstrap95": [
+          0,
+          1
+        ],
+        "taskBootstrapBca95": [
+          0,
+          1
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": -0.2180646467372967,
+        "taskBootstrap95": [
+          -0.943502824858757,
+          0.21594684385382057
+        ],
+        "shareOfResamplesAboveZero": 0.1714630710404508,
+        "taskBootstrapBca95": [
+          -0.8443487097372432,
+          0.3838805638983276
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": 0,
+      "p": 1
+    },
+    "loop": {
+      "regenerations": 268,
+      "regenerationsWithChangedCode": 0,
+      "recoveries": 152,
+      "recoveriesWithChangedCode": 0
+    },
+    "run": "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5-INERT"
+  },
+  "positive control (mock)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 2040,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 179,
+        "failure": 181
+      },
+      "sv0-ef1": {
+        "success": 336,
+        "failure": 192
+      },
+      "sv1-ef0": {
+        "success": 347,
+        "failure": 198
+      },
+      "sv1-ef1": {
+        "success": 394,
+        "failure": 213
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": -0.5167260190243086,
+      "se": 0.1856373724345325,
+      "z": -2.7835236636229537,
+      "p": 0.005377193984116348,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": -0.011111225425070339,
+          "se": 0.10541088206264558,
+          "z": -0.10540871310105297,
+          "p": 0.9160515025282425
+        },
+        "selfVerification": {
+          "estimate": 0.5721689746773942,
+          "se": 0.13799928799864528,
+          "z": 4.146173382307676,
+          "p": 0.00003380778624744584
+        },
+        "envFeedback": {
+          "estimate": 0.5707270133604925,
+          "se": 0.13890996316588808,
+          "z": 4.108611076938541,
+          "p": 0.00003980457488773325
+        },
+        "interaction": {
+          "estimate": -0.5167260190243075,
+          "se": 0.18563737243453296,
+          "z": -2.783523663622941,
+          "p": 0.0053771939841165605
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": -0.011111225425070339,
+          "se": 0.10555759178161216,
+          "z": -0.10526221030182581,
+          "p": 0.916167748152429
+        },
+        "selfVerification": {
+          "estimate": 0.5721689746773942,
+          "se": 0.13618715308397328,
+          "z": 4.201343237747203,
+          "p": 0.000026533594804385824
+        },
+        "envFeedback": {
+          "estimate": 0.5707270133604925,
+          "se": 0.12375987411004029,
+          "z": 4.611567500893175,
+          "p": 0.000003996438370676193
+        },
+        "interaction": {
+          "estimate": -0.5167260190243075,
+          "se": 0.16319277333348245,
+          "z": -3.16635356130865,
+          "p": 0.0015436304617152095
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": -0.011111225425070339,
+          "se": 0.0853069982915261,
+          "z": -0.13024986985357406,
+          "p": 0.8963687401613245
+        },
+        "selfVerification": {
+          "estimate": 0.5721689746773942,
+          "se": 0.12613407008154276,
+          "z": 4.536196876129504,
+          "p": 0.00000572777147092703
+        },
+        "envFeedback": {
+          "estimate": 0.5707270133604925,
+          "se": 0.09263798901387518,
+          "z": 6.160831203654581,
+          "p": 7.236409448681371e-10
+        },
+        "interaction": {
+          "estimate": -0.5167260190243075,
+          "se": 0.15642862831864462,
+          "z": -3.303270153157248,
+          "p": 0.0009556427473392177
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -1346.1093456675796,
+      "sigmaTask": 0.010000000000000004,
+      "fixedEffects": {
+        "intercept": {
+          "estimate": -0.011133742762467922,
+          "se": 0.10542356413622633,
+          "z": -0.10560962203934891,
+          "p": 0.9158920901664183
+        },
+        "selfVerification": {
+          "estimate": 0.5721860004655368,
+          "se": 0.13800049992032837,
+          "z": 4.146260345403648,
+          "p": 0.00003379495490720311
+        },
+        "envFeedback": {
+          "estimate": 0.5707431228394715,
+          "se": 0.13891072752483846,
+          "z": 4.108704439240789,
+          "p": 0.000039788489403045764
+        },
+        "interaction": {
+          "estimate": -0.5167257037804739,
+          "se": 0.1856386691148964,
+          "z": -2.7835025226379932,
+          "p": 0.005377544429520339
+        }
+      },
+      "logSigmaSe": 4.4962823691101255
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 44,
+      "informativeSkills": 2040,
+      "effects": {
+        "selfVerification": {
+          "estimate": 0.5657983282121933,
+          "se": 0.1372943395597212,
+          "z": 4.121060853831331,
+          "p": 0.0000377131784263238
+        },
+        "envFeedback": {
+          "estimate": 0.5663794599036746,
+          "se": 0.13810492787605322,
+          "z": 4.1010807406669105,
+          "p": 0.00004112250328241982
+        },
+        "interaction": {
+          "estimate": -0.5000156944324238,
+          "se": 0.1847592823748588,
+          "z": -2.7063089226442223,
+          "p": 0.006803572296301683
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 179,
+          "failure": 181
+        },
+        "sv0-ef1": {
+          "success": 336,
+          "failure": 24
+        },
+        "sv1-ef0": {
+          "success": 309,
+          "failure": 51
+        },
+        "sv1-ef1": {
+          "success": 354,
+          "failure": 6
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": -0.3741467553080291,
+        "se": 0.49808626332770656,
+        "z": -0.7511685883653174,
+        "p": 0.4525512018492571,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": -0.011111225425070365,
+            "se": 0.10541088206264367,
+            "z": -0.10540871310105514,
+            "p": 0.9160515025282407
+          },
+          "selfVerification": {
+            "estimate": 1.8126268695984897,
+            "se": 0.18427029915092638,
+            "z": 9.836782584880158,
+            "p": 7.817079375862101e-23
+          },
+          "envFeedback": {
+            "estimate": 2.650168555040329,
+            "se": 0.2361235083596728,
+            "z": 11.22365398282786,
+            "p": 3.1210260069328177e-29
+          },
+          "interaction": {
+            "estimate": -0.3741467553080329,
+            "se": 0.4980862633259357,
+            "z": -0.7511685883679956,
+            "p": 0.4525512018476455
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": -0.011111225425070365,
+            "se": 0.10555759178160883,
+            "z": -0.10526221030182938,
+            "p": 0.9161677481524261
+          },
+          "selfVerification": {
+            "estimate": 1.8126268695984897,
+            "se": 0.1947827441346255,
+            "z": 9.30589040446868,
+            "p": 1.3287427693292067e-20
+          },
+          "envFeedback": {
+            "estimate": 2.650168555040329,
+            "se": 0.23659234883756303,
+            "z": 11.201412759378169,
+            "p": 4.0128250368059305e-29
+          },
+          "interaction": {
+            "estimate": -0.3741467553080329,
+            "se": 0.4837687942533176,
+            "z": -0.7733999376407009,
+            "p": 0.4392857268703111
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": -0.011111225425070365,
+            "se": 0.0853069982915229,
+            "z": -0.13024986985357925,
+            "p": 0.8963687401613204
+          },
+          "selfVerification": {
+            "estimate": 1.8126268695984897,
+            "se": 0.21353271717782704,
+            "z": 8.488754761121498,
+            "p": 2.088629476953262e-17
+          },
+          "envFeedback": {
+            "estimate": 2.650168555040329,
+            "se": 0.21957963052652474,
+            "z": 12.069282331359942,
+            "p": 1.534668216261911e-33
+          },
+          "interaction": {
+            "estimate": -0.3741467553080329,
+            "se": 0.5427055914478,
+            "z": -0.6894101722996899,
+            "p": 0.4905651838186056
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -514.7929027250002,
+        "sigmaTask": 0.20720263844063536,
+        "fixedEffects": {
+          "intercept": {
+            "estimate": -0.01714381753100783,
+            "se": 0.11114714365093954,
+            "z": -0.15424433744198077,
+            "p": 0.877417084240138
+          },
+          "selfVerification": {
+            "estimate": 1.8282643493798174,
+            "se": 0.18631012646153783,
+            "z": 9.813016523056504,
+            "p": 9.896502705206627e-23
+          },
+          "envFeedback": {
+            "estimate": 2.6691151414527723,
+            "se": 0.23823881354170923,
+            "z": 11.203527677850367,
+            "p": 3.918140915628887e-29
+          },
+          "interaction": {
+            "estimate": -0.38755969880049906,
+            "se": 0.4989526005766221,
+            "z": -0.7767465253264736,
+            "p": 0.4373083316577385
+          }
+        },
+        "logSigmaSe": 0.7295249359121134
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 44,
+        "informativeSkills": 1440,
+        "effects": {
+          "selfVerification": {
+            "estimate": 1.818096267502771,
+            "se": 0.18603241408577365,
+            "z": 9.773007980558186,
+            "p": 1.4702094001569908e-22
+          },
+          "envFeedback": {
+            "estimate": 2.657869098745454,
+            "se": 0.2381835845116694,
+            "z": 11.158909646081156,
+            "p": 6.478119575536426e-29
+          },
+          "interaction": {
+            "estimate": -0.37777302955654696,
+            "se": 0.4987724103237224,
+            "z": -0.7574056257669862,
+            "p": 0.4488068867245216
+          }
+        }
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 227,
+        "informativeSkills": 908,
+        "effects": {
+          "selfVerification": {
+            "estimate": 1.6666762984485866,
+            "se": 0.18953209576189342,
+            "z": 8.793636200500886,
+            "p": 1.4479589010160358e-18
+          },
+          "envFeedback": {
+            "estimate": 2.4778344618823303,
+            "se": 0.24235576528548006,
+            "z": 10.22395509743123,
+            "p": 1.5488929386866238e-24
+          },
+          "interaction": {
+            "estimate": -0.24543809623958307,
+            "se": 0.49783658518965557,
+            "z": -0.4930093599812097,
+            "p": 0.6220059737607938
+          }
+        }
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 219,
+      "c": 17,
+      "tasksWithDiscordantPairs": 43,
+      "largestTaskShareOfDiscordant": 0.046610169491525424,
+      "clusteredChiSquare": 34.87521367521367,
+      "clusteredP": 3.5152761075790224e-9,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 1152,
+      "tasks": 44,
+      "confusion": {
+        "tp": 661,
+        "fp": 116,
+        "fn": 80,
+        "tn": 295
+      },
+      "usableShare": 0.6432291666666666,
+      "hallucinationRate": {
+        "numerator": 116,
+        "denominator": 411,
+        "estimate": 0.2822384428223844,
+        "wilson95": [
+          0.24089631654414076,
+          0.32761354139325327
+        ],
+        "taskBootstrap95": [
+          0.23324396782841822,
+          0.3326133909287257
+        ],
+        "taskBootstrapBca95": [
+          0.23701096859851672,
+          0.33602150537634407
+        ]
+      },
+      "missRate": {
+        "numerator": 80,
+        "denominator": 741,
+        "estimate": 0.10796221322537113,
+        "wilson95": [
+          0.08760599441388703,
+          0.13236223759095325
+        ],
+        "taskBootstrap95": [
+          0.08744710860366714,
+          0.13038130381303814
+        ],
+        "taskBootstrapBca95": [
+          0.08889374922834964,
+          0.13234659368603532
+        ]
+      },
+      "agreement": {
+        "numerator": 956,
+        "denominator": 1152,
+        "estimate": 0.8298611111111112,
+        "wilson95": [
+          0.8070748438422496,
+          0.850454780311766
+        ],
+        "taskBootstrap95": [
+          0.8052064631956912,
+          0.8526989935956084
+        ],
+        "taskBootstrapBca95": [
+          0.8028743929484011,
+          0.850639337524408
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 116,
+        "denominator": 777,
+        "estimate": 0.1492921492921493,
+        "wilson95": [
+          0.12596175138304513,
+          0.1760732598942579
+        ],
+        "taskBootstrap95": [
+          0.12146892655367232,
+          0.17809867629362214
+        ],
+        "taskBootstrapBca95": [
+          0.12315930388219545,
+          0.1798196142642286
+        ]
+      },
+      "falseOmissionRate": {
+        "numerator": 80,
+        "denominator": 375,
+        "estimate": 0.21333333333333335,
+        "wilson95": [
+          0.17488594015804154,
+          0.25759433623705175
+        ],
+        "taskBootstrap95": [
+          0.17557251908396945,
+          0.2535612535612536
+        ],
+        "taskBootstrapBca95": [
+          0.17866203511407627,
+          0.2569832402234637
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": -0.17427622959701328,
+        "taskBootstrap95": [
+          -0.22884796978281396,
+          -0.120846142585273
+        ],
+        "shareOfResamplesAboveZero": 0,
+        "taskBootstrapBca95": [
+          -0.23135581987510623,
+          -0.12244102770837624
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": -0.2948124760182072,
+      "p": 3.033831973775918e-7
+    },
+    "loop": {
+      "regenerations": 600,
+      "regenerationsWithChangedCode": 521,
+      "recoveries": 520,
+      "recoveriesWithChangedCode": 448
+    },
+    "verdictFallback": {
+      "what": "exploratory: non-conforming verifier replies read by their last explicit verdict; unreadable ones stay FAIL",
+      "judged": 1152,
+      "nonConforming": 1152,
+      "readPass": 0,
+      "readFail": 0,
+      "unreadable": 1152,
+      "diagnostics": {
+        "n": 1152,
+        "tasks": 44,
+        "confusion": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 741,
+          "tn": 411
+        },
+        "usableShare": 0.6432291666666666,
+        "hallucinationRate": {
+          "numerator": 0,
+          "denominator": 411,
+          "estimate": 0,
+          "wilson95": [
+            0,
+            0.009260064873010943
+          ],
+          "taskBootstrap95": [
+            0,
+            0
+          ],
+          "taskBootstrapBca95": [
+            0,
+            0
+          ]
+        },
+        "missRate": {
+          "numerator": 741,
+          "denominator": 741,
+          "estimate": 1,
+          "wilson95": [
+            0.9948425819008834,
+            0.9999999999999999
+          ],
+          "taskBootstrap95": [
+            1,
+            1
+          ],
+          "taskBootstrapBca95": [
+            1,
+            1
+          ]
+        },
+        "agreement": {
+          "numerator": 411,
+          "denominator": 1152,
+          "estimate": 0.3567708333333333,
+          "wilson95": [
+            0.329625756137182,
+            0.3848679596906797
+          ],
+          "taskBootstrap95": [
+            0.3319467554076539,
+            0.3799638989169675
+          ],
+          "taskBootstrapBca95": [
+            0.33132616222253686,
+            0.37906854649635835
+          ]
+        },
+        "falseDiscoveryRate": {
+          "numerator": 0,
+          "denominator": 0,
+          "estimate": null
+        },
+        "falseOmissionRate": {
+          "numerator": 741,
+          "denominator": 1152,
+          "estimate": 0.6432291666666666,
+          "wilson95": [
+            0.6151320403093202,
+            0.6703742438628181
+          ],
+          "taskBootstrap95": [
+            0.6200361010830325,
+            0.668053244592346
+          ],
+          "taskBootstrapBca95": [
+            0.6209314535036414,
+            0.6686738377774626
+          ]
+        },
+        "missMinusHallucination": {
+          "estimate": 1,
+          "taskBootstrap95": [
+            1,
+            1
+          ],
+          "shareOfResamplesAboveZero": 1,
+          "taskBootstrapBca95": [
+            1,
+            1
+          ]
+        },
+        "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+        "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+      }
+    },
+    "run": "experiments/rq-c/rq-c-s42-mock-t30-r5"
+  },
+  "second model (1.5B)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 4364,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 316,
+        "failure": 44
+      },
+      "sv0-ef1": {
+        "success": 325,
+        "failure": 79
+      },
+      "sv1-ef0": {
+        "success": 1487,
+        "failure": 313
+      },
+      "sv1-ef1": {
+        "success": 1504,
+        "failure": 296
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": 0.6243865440716576,
+      "se": 0.2225705185888814,
+      "z": 2.805342540558959,
+      "p": 0.005026313274129851,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 1.9715525796686517,
+          "se": 0.16090938347172667,
+          "z": 12.25256437586856,
+          "p": 1.6276642443548082e-34
+        },
+        "selfVerification": {
+          "estimate": -0.4132398237486499,
+          "se": 0.17250858768320212,
+          "z": -2.3954739256664195,
+          "p": 0.016598894789903628
+        },
+        "envFeedback": {
+          "estimate": -0.5571752498059364,
+          "se": 0.20402691149521548,
+          "z": -2.73089096787608,
+          "p": 0.0063163364445227126
+        },
+        "interaction": {
+          "estimate": 0.6243865440716592,
+          "se": 0.2225705185887791,
+          "z": 2.8053425405602557,
+          "p": 0.005026313274109629
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 1.9715525796686517,
+          "se": 0.16113333540097255,
+          "z": 12.235535091249355,
+          "p": 2.0077732516646516e-34
+        },
+        "selfVerification": {
+          "estimate": -0.4132398237486499,
+          "se": 0.1099634978761052,
+          "z": -3.7579727066725654,
+          "p": 0.00017129555990825484
+        },
+        "envFeedback": {
+          "estimate": -0.5571752498059364,
+          "se": 0.042395792578636717,
+          "z": -13.142229827935745,
+          "p": 1.8858636378345768e-39
+        },
+        "interaction": {
+          "estimate": 0.6243865440716592,
+          "se": 0.06991513181429257,
+          "z": 8.930635298380679,
+          "p": 4.235692892702133e-19
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 1.9715525796686517,
+          "se": 0.4438036500372928,
+          "z": 4.4423982982181025,
+          "p": 0.000008896168584551962
+        },
+        "selfVerification": {
+          "estimate": -0.4132398237486499,
+          "se": 0.32579231898865385,
+          "z": -1.2684148755607758,
+          "p": 0.20464983212457666
+        },
+        "envFeedback": {
+          "estimate": -0.5571752498059364,
+          "se": 0.12632767237097192,
+          "z": -4.4105558136917455,
+          "p": 0.000010310562524621178
+        },
+        "interaction": {
+          "estimate": 0.6243865440716592,
+          "se": 0.19299887028675267,
+          "z": 3.2351823777204602,
+          "p": 0.0012156505438821938
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -636.5660761207586,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 15.142044947996643,
+          "se": 3.358272841331843,
+          "z": 4.508878719333455,
+          "p": 0.000006517114911088471
+        },
+        "selfVerification": {
+          "estimate": -1.431791916856672,
+          "se": 0.3504986849719422,
+          "z": -4.085013662665491,
+          "p": 0.000044074223127642195
+        },
+        "envFeedback": {
+          "estimate": -0.057227451939554336,
+          "se": 0.4450615649392083,
+          "z": -0.1285832263394192,
+          "p": 0.8976874395566038
+        },
+        "interaction": {
+          "estimate": 0.2652344562962987,
+          "se": 0.47176949824752895,
+          "z": 0.5622119642782311,
+          "p": 0.5739716107900213
+        }
+      },
+      "logSigmaSe": 0.34149424092400793
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 11,
+      "informativeSkills": 1177,
+      "effects": {
+        "selfVerification": {
+          "estimate": -1.4161360179138567,
+          "se": 0.3490579127083686,
+          "z": -4.0570231080737935,
+          "p": 0.00004970216609472065
+        },
+        "envFeedback": {
+          "estimate": -0.053170363463689634,
+          "se": 0.44369724770143176,
+          "z": -0.11983478315256194,
+          "p": 0.9046140275034932
+        },
+        "interaction": {
+          "estimate": 0.25820993379081286,
+          "se": 0.47010844074048896,
+          "z": 0.5492561107477559,
+          "p": 0.5828297024159941
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 316,
+          "failure": 44
+        },
+        "sv0-ef1": {
+          "success": 325,
+          "failure": 35
+        },
+        "sv1-ef0": {
+          "success": 301,
+          "failure": 59
+        },
+        "sv1-ef1": {
+          "success": 313,
+          "failure": 47
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": 0.009558226815265636,
+        "se": 0.31981725553795526,
+        "z": 0.02988652628885837,
+        "p": 0.9761575515144458,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 1.97155257966865,
+            "se": 0.16090938347186015,
+            "z": 12.252564375858386,
+            "p": 1.6276642445590662e-34
+          },
+          "selfVerification": {
+            "estimate": -0.34197975882549403,
+            "se": 0.2148563272698287,
+            "z": -1.591667153446296,
+            "p": 0.1114595124277894
+          },
+          "envFeedback": {
+            "estimate": 0.2569245411716732,
+            "se": 0.23987534541142952,
+            "z": 1.0710752317250496,
+            "p": 0.28413560394422166
+          },
+          "interaction": {
+            "estimate": 0.009558226815265502,
+            "se": 0.3198172555357696,
+            "z": 0.0298865262890622,
+            "p": 0.9761575515142832
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 1.97155257966865,
+            "se": 0.16113333540133037,
+            "z": 12.235535091222173,
+            "p": 2.0077732523368207e-34
+          },
+          "selfVerification": {
+            "estimate": -0.34197975882549403,
+            "se": 0.13450819570922048,
+            "z": -2.5424455143594753,
+            "p": 0.011007976235055287
+          },
+          "envFeedback": {
+            "estimate": 0.2569245411716732,
+            "se": 0.08491501823379066,
+            "z": 3.0256666784702393,
+            "p": 0.0024808562541680425
+          },
+          "interaction": {
+            "estimate": 0.009558226815265502,
+            "se": 0.11968762486565207,
+            "z": 0.0798597751939225,
+            "p": 0.9363487823509865
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 1.97155257966865,
+            "se": 0.4438036500380776,
+            "z": 4.442398298210242,
+            "p": 0.000008896168584877059
+          },
+          "selfVerification": {
+            "estimate": -0.34197975882549403,
+            "se": 0.3888725063706865,
+            "z": -0.8794135692882008,
+            "p": 0.3791770774252151
+          },
+          "envFeedback": {
+            "estimate": 0.2569245411716732,
+            "se": 0.25184223528196337,
+            "z": 1.020180514535299,
+            "p": 0.30764285709880834
+          },
+          "interaction": {
+            "estimate": 0.009558226815265502,
+            "se": 0.3294522702158118,
+            "z": 0.029012478223337988,
+            "p": 0.9768546386011261
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -128.0197201493278,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 14.079741668541288,
+            "se": 3.3318755134402958,
+            "z": 4.225770624306245,
+            "p": 0.000023812445519959427
+          },
+          "selfVerification": {
+            "estimate": -1.7595210028372232,
+            "se": 0.5229513724673627,
+            "z": -3.3645977340790605,
+            "p": 0.0007665532999082992
+          },
+          "envFeedback": {
+            "estimate": 2.0809470902824763,
+            "se": 0.8028202943709447,
+            "z": 2.592045947110762,
+            "p": 0.009540702845148952
+          },
+          "interaction": {
+            "estimate": -0.743472022151566,
+            "se": 0.928219025005686,
+            "z": -0.8009661535939879,
+            "p": 0.4231512404591137
+          }
+        },
+        "logSigmaSe": 0.3592499527257708
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 7,
+        "informativeSkills": 240,
+        "effects": {
+          "selfVerification": {
+            "estimate": -1.6829745647152472,
+            "se": 0.5116302393388488,
+            "z": -3.289435290005652,
+            "p": 0.0010038863723916597
+          },
+          "envFeedback": {
+            "estimate": 2.1055896124369267,
+            "se": 0.8274642725217134,
+            "z": 2.5446290339764177,
+            "p": 0.010939388607752941
+          },
+          "interaction": {
+            "estimate": -0.8329648335893673,
+            "se": 0.9450606051167689,
+            "z": -0.8813877428384063,
+            "p": 0.3781079895750583
+          }
+        }
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 38,
+        "informativeSkills": 152,
+        "effects": {
+          "selfVerification": {
+            "estimate": -1.2282839090017919,
+            "se": 0.43441546383969787,
+            "z": -2.8274405753084255,
+            "p": 0.004692172314313626
+          },
+          "envFeedback": {
+            "estimate": 2.398697317789024,
+            "se": 1.059066292993056,
+            "z": 2.2649170629441904,
+            "p": 0.02351776948617644
+          },
+          "interaction": {
+            "estimate": -1.4727345068376643,
+            "se": 1.1363894820542235,
+            "z": -1.2959768900495612,
+            "p": 0.1949834468800965
+          }
+        }
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 24,
+      "c": 3,
+      "tasksWithDiscordantPairs": 5,
+      "largestTaskShareOfDiscordant": 0.3333333333333333,
+      "clusteredChiSquare": 2.238578680203046,
+      "clusteredP": 0.13460465781116093,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 3600,
+      "tasks": 44,
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2991,
+        "tn": 609
+      },
+      "usableShare": 0.8308333333333333,
+      "hallucinationRate": {
+        "numerator": 0,
+        "denominator": 609,
+        "estimate": 0,
+        "wilson95": [
+          0,
+          0.006268275041454179
+        ],
+        "taskBootstrap95": [
+          0,
+          0
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0
+        ]
+      },
+      "missRate": {
+        "numerator": 2991,
+        "denominator": 2991,
+        "estimate": 1,
+        "wilson95": [
+          0.998717308120141,
+          1
+        ],
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "agreement": {
+        "numerator": 609,
+        "denominator": 3600,
+        "estimate": 0.16916666666666666,
+        "wilson95": [
+          0.15727428540511745,
+          0.18176434123317103
+        ],
+        "taskBootstrap95": [
+          0.08735955056179776,
+          0.2664804469273743
+        ],
+        "taskBootstrapBca95": [
+          0.09473684210526316,
+          0.28066649999652854
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 0,
+        "denominator": 0,
+        "estimate": null
+      },
+      "falseOmissionRate": {
+        "numerator": 2991,
+        "denominator": 3600,
+        "estimate": 0.8308333333333333,
+        "wilson95": [
+          0.8182356587668289,
+          0.8427257145948825
+        ],
+        "taskBootstrap95": [
+          0.7335195530726257,
+          0.9126404494382022
+        ],
+        "taskBootstrapBca95": [
+          0.7193335000034714,
+          0.9052631578947369
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": 1,
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "shareOfResamplesAboveZero": 1,
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": 0.00003955774442256648,
+      "p": 0.9993805413540484
+    },
+    "loop": {
+      "regenerations": 2924,
+      "regenerationsWithChangedCode": 1193,
+      "recoveries": 2365,
+      "recoveriesWithChangedCode": 831
+    },
+    "run": "experiments/rq-c/rq-c-s42-ollama-t30-r5"
+  },
+  "1.5B, T = 0.4 (exploratory)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 4385,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 295,
+        "failure": 65
+      },
+      "sv0-ef1": {
+        "success": 312,
+        "failure": 113
+      },
+      "sv1-ef0": {
+        "success": 1447,
+        "failure": 353
+      },
+      "sv1-ef1": {
+        "success": 1520,
+        "failure": 280
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": 0.7778690583199264,
+      "se": 0.1964240339720928,
+      "z": 3.9601521391747974,
+      "p": 0.00007490202869021933,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 1.512588086444182,
+          "se": 0.13701987408064079,
+          "z": 11.039187538254293,
+          "p": 2.472587221847272e-28
+        },
+        "selfVerification": {
+          "estimate": -0.10180841674599295,
+          "se": 0.14932646144047027,
+          "z": -0.6817841644669212,
+          "p": 0.49537543889469293
+        },
+        "envFeedback": {
+          "estimate": -0.496972717347041,
+          "se": 0.17558226453810172,
+          "z": -2.8304266302431524,
+          "p": 0.004648597167528063
+        },
+        "interaction": {
+          "estimate": 0.7778690583199228,
+          "se": 0.19642403397205785,
+          "z": 3.960152139175484,
+          "p": 0.00007490202869000394
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 1.512588086444182,
+          "se": 0.1372105768508258,
+          "z": 11.023844671163035,
+          "p": 2.9325988108240214e-28
+        },
+        "selfVerification": {
+          "estimate": -0.10180841674599295,
+          "se": 0.09359005487742288,
+          "z": -1.0878123415926388,
+          "p": 0.2766779600455562
+        },
+        "envFeedback": {
+          "estimate": -0.496972717347041,
+          "se": 0.06423326007069216,
+          "z": -7.736999753711641,
+          "p": 1.0179025611373684e-14
+        },
+        "interaction": {
+          "estimate": 0.7778690583199228,
+          "se": 0.09336365817802997,
+          "z": 8.331604325492982,
+          "p": 7.975411293084251e-17
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 1.512588086444182,
+          "se": 0.3710255085845549,
+          "z": 4.076776532736618,
+          "p": 0.00004566434037620058
+        },
+        "selfVerification": {
+          "estimate": -0.10180841674599295,
+          "se": 0.2351666822903867,
+          "z": -0.43292024088802966,
+          "p": 0.6650727147166329
+        },
+        "envFeedback": {
+          "estimate": -0.496972717347041,
+          "se": 0.11824943497273102,
+          "z": -4.202749192515344,
+          "p": 0.0000263692706542186
+        },
+        "interaction": {
+          "estimate": 0.7778690583199228,
+          "se": 0.20796096173715528,
+          "z": 3.740457111864496,
+          "p": 0.00018368588856243948
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -569.6612766559153,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 13.76431970471933,
+          "se": 3.49987620054366,
+          "z": 3.932801880986883,
+          "p": 0.00008396143607077899
+        },
+        "selfVerification": {
+          "estimate": -0.3983703308184185,
+          "se": 0.2974776170145883,
+          "z": -1.3391606898574908,
+          "p": 0.18051836661162568
+        },
+        "envFeedback": {
+          "estimate": 0.23232165752009823,
+          "se": 0.3642149794499691,
+          "z": 0.6378695842519883,
+          "p": 0.5235585785236957
+        },
+        "interaction": {
+          "estimate": 0.9150657108027053,
+          "se": 0.4063635052729459,
+          "z": 2.251840283216562,
+          "p": 0.02433236699962032
+        }
+      },
+      "logSigmaSe": 0.3468765510677245
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 13,
+      "informativeSkills": 1209,
+      "effects": {
+        "selfVerification": {
+          "estimate": -0.39124869458992445,
+          "se": 0.29495673907803344,
+          "z": -1.3264612831457163,
+          "p": 0.18468695131411983
+        },
+        "envFeedback": {
+          "estimate": 0.23109377459778374,
+          "se": 0.3614568102657659,
+          "z": 0.6393399378140613,
+          "p": 0.5226018126237488
+        },
+        "interaction": {
+          "estimate": 0.898523277905369,
+          "se": 0.40327911843658243,
+          "z": 2.228043151325888,
+          "p": 0.025877637616885284
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 295,
+          "failure": 65
+        },
+        "sv0-ef1": {
+          "success": 312,
+          "failure": 48
+        },
+        "sv1-ef0": {
+          "success": 294,
+          "failure": 66
+        },
+        "sv1-ef1": {
+          "success": 308,
+          "failure": 52
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": -0.07428305137751745,
+        "se": 0.2895570852263968,
+        "z": -0.25654026500314286,
+        "p": 0.7975336934294165,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 1.5125880864441819,
+            "se": 0.13701987408069868,
+            "z": 11.039187538249626,
+            "p": 2.4725872219756743e-28
+          },
+          "selfVerification": {
+            "estimate": -0.018663061131925503,
+            "se": 0.1932027991226412,
+            "z": -0.09659829576319219,
+            "p": 0.9230454099506883
+          },
+          "envFeedback": {
+            "estimate": 0.35921409045741015,
+            "se": 0.20691280151685057,
+            "z": 1.7360650855049027,
+            "p": 0.08255232698204606
+          },
+          "interaction": {
+            "estimate": -0.0742830513775195,
+            "se": 0.2895570852263972,
+            "z": -0.2565402650031495,
+            "p": 0.7975336934294113
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 1.5125880864441819,
+            "se": 0.13721057685090313,
+            "z": 11.023844671156821,
+            "p": 2.932598811026521e-28
+          },
+          "selfVerification": {
+            "estimate": -0.018663061131925503,
+            "se": 0.11056304604998796,
+            "z": -0.16880017147399798,
+            "p": 0.8659538234439814
+          },
+          "envFeedback": {
+            "estimate": 0.35921409045741015,
+            "se": 0.09560635187303876,
+            "z": 3.757219927546566,
+            "p": 0.00017181148988605602
+          },
+          "interaction": {
+            "estimate": -0.0742830513775195,
+            "se": 0.1378912021086822,
+            "z": -0.5387076930330302,
+            "p": 0.5900885646342854
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 1.5125880864441819,
+            "se": 0.3710255085848862,
+            "z": 4.0767765327329775,
+            "p": 0.00004566434037691524
+          },
+          "selfVerification": {
+            "estimate": -0.018663061131925503,
+            "se": 0.29401689442983614,
+            "z": -0.0634761521718584,
+            "p": 0.9493873487500233
+          },
+          "envFeedback": {
+            "estimate": 0.35921409045741015,
+            "se": 0.23798951588275763,
+            "z": 1.5093693901809195,
+            "p": 0.1312044109252245
+          },
+          "interaction": {
+            "estimate": -0.0742830513775195,
+            "se": 0.3373876094245431,
+            "z": -0.2201712490396982,
+            "p": 0.8257377871770248
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -165.3686276703162,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 12.578518084173735,
+            "se": 3.433740295902873,
+            "z": 3.663211833225238,
+            "p": 0.00024907239150150957
+          },
+          "selfVerification": {
+            "estimate": -0.09227368353462685,
+            "se": 0.42967693473487667,
+            "z": -0.2147513074946935,
+            "p": 0.829961218079559
+          },
+          "envFeedback": {
+            "estimate": 2.067511316505223,
+            "se": 0.5495461070191763,
+            "z": 3.7622162910401213,
+            "p": 0.0001684143026523225
+          },
+          "interaction": {
+            "estimate": -0.5207547092707171,
+            "se": 0.7063925548525939,
+            "z": -0.7372029980969793,
+            "p": 0.46099891050965613
+          }
+        },
+        "logSigmaSe": 0.3671632103726402
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 10,
+        "informativeSkills": 316,
+        "effects": {
+          "selfVerification": {
+            "estimate": -0.08639534310832261,
+            "se": 0.41575897033440423,
+            "z": -0.20780151307098174,
+            "p": 0.8353839511437893
+          },
+          "envFeedback": {
+            "estimate": 1.9843432722218322,
+            "se": 0.5399415891809918,
+            "z": 3.675107293053264,
+            "p": 0.00023774947983224958
+          },
+          "interaction": {
+            "estimate": -0.5119449788918495,
+            "se": 0.6929677352367039,
+            "z": -0.7387717390867836,
+            "p": 0.46004561534061195
+          }
+        }
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 45,
+        "informativeSkills": 180,
+        "effects": {
+          "selfVerification": {
+            "estimate": -0.06780943462731655,
+            "se": 0.36835878255475385,
+            "z": -0.18408529357444375,
+            "p": 0.8539465433504279
+          },
+          "envFeedback": {
+            "estimate": 1.78647986263621,
+            "se": 0.5139897829319277,
+            "z": 3.4757108447675304,
+            "p": 0.0005095013100594732
+          },
+          "interaction": {
+            "estimate": -0.47900585209502206,
+            "se": 0.6453790520780064,
+            "z": -0.7422085525594733,
+            "p": 0.45796098754704007
+          }
+        }
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 38,
+      "c": 7,
+      "tasksWithDiscordantPairs": 10,
+      "largestTaskShareOfDiscordant": 0.2222222222222222,
+      "clusteredChiSquare": 5.554913294797688,
+      "clusteredP": 0.018428885761314653,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 3600,
+      "tasks": 44,
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2967,
+        "tn": 633
+      },
+      "usableShare": 0.8241666666666667,
+      "hallucinationRate": {
+        "numerator": 0,
+        "denominator": 633,
+        "estimate": 0,
+        "wilson95": [
+          0,
+          0.006032048899278254
+        ],
+        "taskBootstrap95": [
+          0,
+          0
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0
+        ]
+      },
+      "missRate": {
+        "numerator": 2967,
+        "denominator": 2967,
+        "estimate": 1,
+        "wilson95": [
+          0.9987069458690604,
+          0.9999999999999999
+        ],
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "agreement": {
+        "numerator": 633,
+        "denominator": 3600,
+        "estimate": 0.17583333333333334,
+        "wilson95": [
+          0.1637454378818024,
+          0.1886123096302737
+        ],
+        "taskBootstrap95": [
+          0.08976377952755905,
+          0.2791411042944785
+        ],
+        "taskBootstrapBca95": [
+          0.09838541905817856,
+          0.29469619188246415
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 0,
+        "denominator": 0,
+        "estimate": null
+      },
+      "falseOmissionRate": {
+        "numerator": 2967,
+        "denominator": 3600,
+        "estimate": 0.8241666666666667,
+        "wilson95": [
+          0.8113876903697264,
+          0.8362545621181976
+        ],
+        "taskBootstrap95": [
+          0.7208588957055214,
+          0.9102362204724409
+        ],
+        "taskBootstrapBca95": [
+          0.7053038081175361,
+          0.9016145809418217
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": 1,
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "shareOfResamplesAboveZero": 1,
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": 0.026428697214909466,
+      "p": 0.6103320921996117
+    },
+    "loop": {
+      "regenerations": 2945,
+      "regenerationsWithChangedCode": 1612,
+      "recoveries": 2389,
+      "recoveriesWithChangedCode": 1300
+    },
+    "run": "experiments/rq-c/sweep-1.5b/rq-c-s42-ollama-t30-r5-T0.4"
+  },
+  "1.5B, T = 0.8 (exploratory)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 4413,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 266,
+        "failure": 94
+      },
+      "sv0-ef1": {
+        "success": 311,
+        "failure": 142
+      },
+      "sv1-ef0": {
+        "success": 1304,
+        "failure": 496
+      },
+      "sv1-ef1": {
+        "success": 1289,
+        "failure": 511
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": 0.21487226890753397,
+      "se": 0.17369837801115975,
+      "z": 1.2370424604294743,
+      "p": 0.21607131954818004,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 1.0402015265116953,
+          "se": 0.11999040115182177,
+          "z": 8.669039494213761,
+          "p": 4.357808010937581e-18
+        },
+        "selfVerification": {
+          "estimate": -0.0735857107500259,
+          "se": 0.13107515617567367,
+          "z": -0.56140090080383,
+          "p": 0.5745242700872768
+        },
+        "envFeedback": {
+          "estimate": -0.2562356719337211,
+          "se": 0.15702032980892427,
+          "z": -1.6318630348409693,
+          "p": 0.10270834268157536
+        },
+        "interaction": {
+          "estimate": 0.2148722689075342,
+          "se": 0.1736983780111432,
+          "z": 1.2370424604295935,
+          "p": 0.21607131954813585
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 1.0402015265116953,
+          "se": 0.12015740248686131,
+          "z": 8.656990788606942,
+          "p": 4.8438182755137596e-18
+        },
+        "selfVerification": {
+          "estimate": -0.0735857107500259,
+          "se": 0.08023913557439313,
+          "z": -0.9170800535581722,
+          "p": 0.35910069243362963
+        },
+        "envFeedback": {
+          "estimate": -0.2562356719337211,
+          "se": 0.060041381035543066,
+          "z": -4.267651201794237,
+          "p": 0.00001975418751202615
+        },
+        "interaction": {
+          "estimate": 0.2148722689075342,
+          "se": 0.07584403879703476,
+          "z": 2.8330805204421017,
+          "p": 0.004610177158454078
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 1.0402015265116953,
+          "se": 0.34265057502791635,
+          "z": 3.0357501265741296,
+          "p": 0.0023993811771642337
+        },
+        "selfVerification": {
+          "estimate": -0.0735857107500259,
+          "se": 0.21447159646489,
+          "z": -0.34310235930039445,
+          "p": 0.7315214562785322
+        },
+        "envFeedback": {
+          "estimate": -0.2562356719337211,
+          "se": 0.15715686227634632,
+          "z": -1.6304453284588587,
+          "p": 0.10300741111607359
+        },
+        "interaction": {
+          "estimate": 0.2148722689075342,
+          "se": 0.18134364890640328,
+          "z": 1.184889960047269,
+          "p": 0.23606095751904066
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -1351.9990257002983,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 7.067944317921786,
+          "se": 0.22824045609148455,
+          "z": 30.96709688964508,
+          "p": 1.4956605505783782e-210
+        },
+        "selfVerification": {
+          "estimate": -0.16538907784088627,
+          "se": 0.19612505596938146,
+          "z": -0.8432837763814655,
+          "p": 0.39906975404022527
+        },
+        "envFeedback": {
+          "estimate": 0.4682773776614041,
+          "se": 0.23596958444966187,
+          "z": 1.9844819354729135,
+          "p": 0.047202139942512766
+        },
+        "interaction": {
+          "estimate": -0.5622464846779137,
+          "se": 0.2613848077686253,
+          "z": -2.151029700148478,
+          "p": 0.03147385552121835
+        }
+      },
+      "logSigmaSe": 0.3148499421800633
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 28,
+      "informativeSkills": 2833,
+      "effects": {
+        "selfVerification": {
+          "estimate": -0.16221997698973672,
+          "se": 0.19424659117551962,
+          "z": -0.8351239319466671,
+          "p": 0.40364793329702386
+        },
+        "envFeedback": {
+          "estimate": 0.4594676438880124,
+          "se": 0.2336265751387341,
+          "z": 1.9666754247249802,
+          "p": 0.04922064183685093
+        },
+        "interaction": {
+          "estimate": -0.5516072747137009,
+          "se": 0.25879815048327837,
+          "z": -2.1314189212080232,
+          "p": 0.03305464544936191
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 266,
+          "failure": 94
+        },
+        "sv0-ef1": {
+          "success": 311,
+          "failure": 49
+        },
+        "sv1-ef0": {
+          "success": 284,
+          "failure": 76
+        },
+        "sv1-ef1": {
+          "success": 258,
+          "failure": 102
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": -1.1980252137944407,
+        "se": 0.26149609132025176,
+        "z": -4.581426849425564,
+        "p": 0.000004618141445410561,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 1.040201526511695,
+            "se": 0.11999040115184695,
+            "z": 8.66903949421194,
+            "p": 4.357808011007277e-18
+          },
+          "selfVerification": {
+            "estimate": 0.27803937136318013,
+            "se": 0.1762858980916711,
+            "z": 1.577207107165179,
+            "p": 0.11474787819416121
+          },
+          "envFeedback": {
+            "estimate": 0.8077710875569112,
+            "se": 0.19499049647992775,
+            "z": 4.142617728244324,
+            "p": 0.000034336400781715335
+          },
+          "interaction": {
+            "estimate": -1.1980252137944403,
+            "se": 0.26149609132025303,
+            "z": -4.58142684942554,
+            "p": 0.000004618141445411092
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 1.040201526511695,
+            "se": 0.1201574024868789,
+            "z": 8.656990788605674,
+            "p": 4.8438182755676255e-18
+          },
+          "selfVerification": {
+            "estimate": 0.27803937136318013,
+            "se": 0.12129877661105226,
+            "z": 2.2921861137538158,
+            "p": 0.021894905901972288
+          },
+          "envFeedback": {
+            "estimate": 0.8077710875569112,
+            "se": 0.11879346512985497,
+            "z": 6.7997939674032075,
+            "p": 1.0476887502613953e-11
+          },
+          "interaction": {
+            "estimate": -1.1980252137944403,
+            "se": 0.17627203214967718,
+            "z": -6.796456585791022,
+            "p": 1.0722359692084888e-11
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 1.040201526511695,
+            "se": 0.34265057502806917,
+            "z": 3.0357501265727747,
+            "p": 0.0023993811771750146
+          },
+          "selfVerification": {
+            "estimate": 0.27803937136318013,
+            "se": 0.3203719865363411,
+            "z": 0.8678641799152468,
+            "p": 0.38546869030370223
+          },
+          "envFeedback": {
+            "estimate": 0.8077710875569112,
+            "se": 0.3368197377881717,
+            "z": 2.3982296668876457,
+            "p": 0.01647453205045771
+          },
+          "interaction": {
+            "estimate": -1.1980252137944403,
+            "se": 0.45494976215620836,
+            "z": -2.6333131994980463,
+            "p": 0.00845563342113463
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -389.15802492561556,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 11.727728393173797,
+            "se": 10.82870574888416,
+            "z": 1.0830221695129427,
+            "p": 0.2787985828980759
+          },
+          "selfVerification": {
+            "estimate": 0.7232995189455219,
+            "se": 0.2867979919781974,
+            "z": 2.521982507466467,
+            "p": 0.011669551108553762
+          },
+          "envFeedback": {
+            "estimate": 2.085367391534856,
+            "se": 0.33781574716277174,
+            "z": 6.173091127483915,
+            "p": 6.696758687623584e-10
+          },
+          "interaction": {
+            "estimate": -3.1151583061344525,
+            "se": 0.4538944614700281,
+            "z": -6.863177611917512,
+            "p": 6.73454070834845e-12
+          }
+        },
+        "logSigmaSe": 0.9277068639879645
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 23,
+        "informativeSkills": 752,
+        "effects": {
+          "selfVerification": {
+            "estimate": 0.6807137218014514,
+            "se": 0.27808052846209724,
+            "z": 2.4479014246919255,
+            "p": 0.014369096182683594
+          },
+          "envFeedback": {
+            "estimate": 1.9679104827001808,
+            "se": 0.32708390116460917,
+            "z": 6.0165311581929695,
+            "p": 1.781942123642506e-9
+          },
+          "interaction": {
+            "estimate": -2.935417897065991,
+            "se": 0.43871534307156107,
+            "z": -6.690939679734839,
+            "p": 2.217420588227904e-11
+          }
+        }
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 111,
+        "informativeSkills": 444,
+        "effects": {
+          "selfVerification": {
+            "estimate": 0.566649598195642,
+            "se": 0.25391238977252695,
+            "z": 2.2316736836012123,
+            "p": 0.025636537782860087
+          },
+          "envFeedback": {
+            "estimate": 1.7300630446060101,
+            "se": 0.3110640517838827,
+            "z": 5.561758212446877,
+            "p": 2.6707014889659645e-8
+          },
+          "interaction": {
+            "estimate": -2.545673543426206,
+            "se": 0.4062736680019108,
+            "z": -6.265908287746163,
+            "p": 3.7065845067396997e-10
+          }
+        }
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 68,
+      "c": 49,
+      "tasksWithDiscordantPairs": 22,
+      "largestTaskShareOfDiscordant": 0.1623931623931624,
+      "clusteredChiSquare": 0.64349376114082,
+      "clusteredP": 0.4224484800889097,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 3600,
+      "tasks": 44,
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2593,
+        "tn": 1007
+      },
+      "usableShare": 0.7202777777777778,
+      "hallucinationRate": {
+        "numerator": 0,
+        "denominator": 1007,
+        "estimate": 0,
+        "wilson95": [
+          0,
+          0.0038002584749301763
+        ],
+        "taskBootstrap95": [
+          0,
+          0
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0
+        ]
+      },
+      "missRate": {
+        "numerator": 2593,
+        "denominator": 2593,
+        "estimate": 1,
+        "wilson95": [
+          0.9985207187725512,
+          0.9999999999999999
+        ],
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "agreement": {
+        "numerator": 1007,
+        "denominator": 3600,
+        "estimate": 0.2797222222222222,
+        "wilson95": [
+          0.265300381818682,
+          0.2946136659765848
+        ],
+        "taskBootstrap95": [
+          0.18587570621468927,
+          0.38498659517426276
+        ],
+        "taskBootstrapBca95": [
+          0.18945495595204864,
+          0.38975830243332515
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 0,
+        "denominator": 0,
+        "estimate": null
+      },
+      "falseOmissionRate": {
+        "numerator": 2593,
+        "denominator": 3600,
+        "estimate": 0.7202777777777778,
+        "wilson95": [
+          0.7053863340234151,
+          0.734699618181318
+        ],
+        "taskBootstrap95": [
+          0.6150134048257373,
+          0.8141242937853107
+        ],
+        "taskBootstrapBca95": [
+          0.6102416975666756,
+          0.8105450440479515
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": 1,
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "shareOfResamplesAboveZero": 1,
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": -0.07915811642146384,
+      "p": 0.14821174534315307
+    },
+    "loop": {
+      "regenerations": 2973,
+      "regenerationsWithChangedCode": 2305,
+      "recoveries": 2081,
+      "recoveriesWithChangedCode": 1564
+    },
+    "run": "experiments/rq-c/sweep-1.5b/rq-c-s42-ollama-t30-r5-T0.8"
+  },
+  "second family (llama3.1:8b)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 1519,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 332,
+        "failure": 28
+      },
+      "sv0-ef1": {
+        "success": 346,
+        "failure": 43
+      },
+      "sv1-ef0": {
+        "success": 340,
+        "failure": 30
+      },
+      "sv1-ef1": {
+        "success": 333,
+        "failure": 67
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": -0.43660656598145087,
+      "se": 0.34507275640392526,
+      "z": -1.2652594500111176,
+      "p": 0.20577833748546404,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 2.4729304587412853,
+          "se": 0.19679007573315038,
+          "z": 12.566337248096838,
+          "p": 3.2336099225072064e-36
+        },
+        "selfVerification": {
+          "estimate": -0.045182222793233556,
+          "se": 0.27386281914670474,
+          "z": -0.1649812228400016,
+          "p": 0.8689587615243318
+        },
+        "envFeedback": {
+          "estimate": -0.3876917993771221,
+          "se": 0.2547004540061761,
+          "z": -1.5221480499116864,
+          "p": 0.12797198861359094
+        },
+        "interaction": {
+          "estimate": -0.43660656598145337,
+          "se": 0.3450727564039291,
+          "z": -1.265259450011111,
+          "p": 0.20577833748546648
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 2.4729304587412853,
+          "se": 0.19706396601981754,
+          "z": 12.54887186474567,
+          "p": 4.032135878462731e-36
+        },
+        "selfVerification": {
+          "estimate": -0.045182222793233556,
+          "se": 0.08964865215941616,
+          "z": -0.5039922152191318,
+          "p": 0.6142668475009401
+        },
+        "envFeedback": {
+          "estimate": -0.3876917993771221,
+          "se": 0.08545895808897361,
+          "z": -4.536584672299489,
+          "p": 0.000005717254152343464
+        },
+        "interaction": {
+          "estimate": -0.43660656598145337,
+          "se": 0.1314856406951005,
+          "z": -3.320564615826696,
+          "p": 0.0008983556082806486
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 2.4729304587412853,
+          "se": 0.5194877644990636,
+          "z": 4.7603247424429815,
+          "p": 0.00000193281710064183
+        },
+        "selfVerification": {
+          "estimate": -0.045182222793233556,
+          "se": 0.06441347253633452,
+          "z": -0.7014405684734207,
+          "p": 0.4830281118611791
+        },
+        "envFeedback": {
+          "estimate": -0.3876917993771221,
+          "se": 0.16788071337068455,
+          "z": -2.3093289967209607,
+          "p": 0.02092533177132437
+        },
+        "interaction": {
+          "estimate": -0.43660656598145337,
+          "se": 0.26524403610337877,
+          "z": -1.646056108915814,
+          "p": 0.09975220770070381
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -81.99116872369378,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 13.96470876859939,
+          "se": 4.000682021238006,
+          "z": 3.4905820293805876,
+          "p": 0.00048196962915435324
+        },
+        "selfVerification": {
+          "estimate": 1.657126065901654,
+          "se": 0.9323118878271696,
+          "z": 1.7774374514989015,
+          "p": 0.07549629343768371
+        },
+        "envFeedback": {
+          "estimate": 2.411831734361826,
+          "se": 0.9089722734383893,
+          "z": 2.653361169355075,
+          "p": 0.00796945467440176
+        },
+        "interaction": {
+          "estimate": -4.480409452801133,
+          "se": 1.2346783285885545,
+          "z": -3.628807073922644,
+          "p": 0.000284733923327127
+        }
+      },
+      "logSigmaSe": 0.4495344951811577
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 4,
+      "informativeSkills": 142,
+      "effects": {
+        "selfVerification": {
+          "estimate": 1.613180707828793,
+          "se": 0.9327511564638535,
+          "z": 1.729486687472478,
+          "p": 0.08372202706586063
+        },
+        "envFeedback": {
+          "estimate": 2.3221560611852805,
+          "se": 0.9076560694717031,
+          "z": 2.5584096656092217,
+          "p": 0.0105152135967049
+        },
+        "interaction": {
+          "estimate": -4.32475675701065,
+          "se": 1.2160852762270804,
+          "z": -3.556293988221173,
+          "p": 0.00037612316846463977
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 332,
+          "failure": 28
+        },
+        "sv0-ef1": {
+          "success": 346,
+          "failure": 14
+        },
+        "sv1-ef0": {
+          "success": 339,
+          "failure": 21
+        },
+        "sv1-ef1": {
+          "success": 333,
+          "failure": 27
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": -1.0036230323820936,
+        "se": 0.451280421592268,
+        "z": -2.2239454325117327,
+        "p": 0.026152115814418196,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 2.4729304587412844,
+            "se": 0.19679007573314758,
+            "z": 12.566337248097012,
+            "p": 3.2336099225000855e-36
+          },
+          "selfVerification": {
+            "estimate": 0.3085472109157459,
+            "se": 0.2988230814938485,
+            "z": 1.0325414267642425,
+            "p": 0.30181855127426305
+          },
+          "envFeedback": {
+            "estimate": 0.7344509867011821,
+            "se": 0.33622177017679666,
+            "z": 2.1844242456845766,
+            "p": 0.028931088219686357
+          },
+          "interaction": {
+            "estimate": -1.003623032382096,
+            "se": 0.45128042158648946,
+            "z": -2.2239454325402153,
+            "p": 0.02615211581250164
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 2.4729304587412844,
+            "se": 0.19706396601981485,
+            "z": 12.548871864745838,
+            "p": 4.032135878454255e-36
+          },
+          "selfVerification": {
+            "estimate": 0.3085472109157459,
+            "se": 0.14606347557939584,
+            "z": 2.112418656969645,
+            "p": 0.034650556147344025
+          },
+          "envFeedback": {
+            "estimate": 0.7344509867011821,
+            "se": 0.19706396600654508,
+            "z": 3.7269674491215143,
+            "p": 0.0001937974757587647
+          },
+          "interaction": {
+            "estimate": -1.003623032382096,
+            "se": 0.29518296043917325,
+            "z": -3.400003275557998,
+            "p": 0.0006738504589880075
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 2.4729304587412844,
+            "se": 0.5194877644990495,
+            "z": 4.7603247424431085,
+            "p": 0.000001932817100640615
+          },
+          "selfVerification": {
+            "estimate": 0.3085472109157459,
+            "se": 0.3027767760477687,
+            "z": 1.019058380049158,
+            "p": 0.3081752515597662
+          },
+          "envFeedback": {
+            "estimate": 0.7344509867011821,
+            "se": 0.5131150939248836,
+            "z": 1.4313572050341994,
+            "p": 0.15232786675234655
+          },
+          "interaction": {
+            "estimate": -1.003623032382096,
+            "se": 0.8010767360298957,
+            "z": -1.2528425645663006,
+            "p": 0.21026300770427875
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -48.95928764749368,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 13.348360818678577,
+            "se": 3.6231977876888752,
+            "z": 3.6841380462403848,
+            "p": 0.000229477856225645
+          },
+          "selfVerification": {
+            "estimate": 2.851157257959739,
+            "se": 1.0594980314932074,
+            "z": 2.6910453565840515,
+            "p": 0.0071228510151597904
+          },
+          "envFeedback": {
+            "estimate": 11.410454397682647,
+            "se": 5.2273633581654995,
+            "z": 2.1828316908291323,
+            "p": 0.02904820696375093
+          },
+          "interaction": {
+            "estimate": -13.787640071418814,
+            "se": 5.428930018496043,
+            "z": -2.5396606742848298,
+            "p": 0.011096006504254886
+          }
+        },
+        "logSigmaSe": 0.402359327655035
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 4,
+        "informativeSkills": 92,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 16,
+        "informativeSkills": 64,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 16,
+      "c": 8,
+      "tasksWithDiscordantPairs": 4,
+      "largestTaskShareOfDiscordant": 0.6666666666666666,
+      "clusteredChiSquare": 2.4615384615384617,
+      "clusteredP": 0.11666446478102344,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 770,
+      "tasks": 44,
+      "confusion": {
+        "tp": 672,
+        "fp": 76,
+        "fn": 1,
+        "tn": 21
+      },
+      "usableShare": 0.874025974025974,
+      "hallucinationRate": {
+        "numerator": 76,
+        "denominator": 97,
+        "estimate": 0.7835051546391752,
+        "wilson95": [
+          0.6915983782533729,
+          0.8538122161906773
+        ],
+        "taskBootstrap95": [
+          0.5588235294117647,
+          1
+        ],
+        "taskBootstrapBca95": [
+          0.5135135135135135,
+          1
+        ]
+      },
+      "missRate": {
+        "numerator": 1,
+        "denominator": 673,
+        "estimate": 0.0014858841010401188,
+        "wilson95": [
+          0.0002623432013077881,
+          0.008368125196523643
+        ],
+        "taskBootstrap95": [
+          0,
+          0.004694835680751174
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0.007780262727865766
+        ]
+      },
+      "agreement": {
+        "numerator": 693,
+        "denominator": 770,
+        "estimate": 0.9,
+        "wilson95": [
+          0.876784279525715,
+          0.9192444069429078
+        ],
+        "taskBootstrap95": [
+          0.8046398046398047,
+          0.9787835926449788
+        ],
+        "taskBootstrapBca95": [
+          0.7756939131103091,
+          0.9651064353515785
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 76,
+        "denominator": 748,
+        "estimate": 0.10160427807486631,
+        "wilson95": [
+          0.08194804796121437,
+          0.12533163446696707
+        ],
+        "taskBootstrap95": [
+          0.020080321285140562,
+          0.2035623409669211
+        ],
+        "taskBootstrapBca95": [
+          0.033291483036548296,
+          0.2347720067582395
+        ]
+      },
+      "falseOmissionRate": {
+        "numerator": 1,
+        "denominator": 22,
+        "estimate": 0.045454545454545456,
+        "wilson95": [
+          0.00806942762126385,
+          0.21798045838657332
+        ],
+        "taskBootstrap95": [
+          0,
+          1
+        ],
+        "taskBootstrapBca95": [
+          0,
+          1
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": -0.7820192705381351,
+        "taskBootstrap95": [
+          -1,
+          -0.5580516331479105
+        ],
+        "shareOfResamplesAboveZero": 0,
+        "taskBootstrapBca95": [
+          -0.9985486211901307,
+          -0.5120727399917036
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": -0.03168475379139697,
+      "p": 0.517035920836203
+    },
+    "loop": {
+      "regenerations": 79,
+      "regenerationsWithChangedCode": 79,
+      "recoveries": 26,
+      "recoveriesWithChangedCode": 26
+    },
+    "verdictFallback": {
+      "what": "exploratory: non-conforming verifier replies read by their last explicit verdict; unreadable ones stay FAIL",
+      "judged": 770,
+      "nonConforming": 3,
+      "readPass": 0,
+      "readFail": 0,
+      "unreadable": 3,
+      "diagnostics": {
+        "n": 770,
+        "tasks": 44,
+        "confusion": {
+          "tp": 672,
+          "fp": 76,
+          "fn": 1,
+          "tn": 21
+        },
+        "usableShare": 0.874025974025974,
+        "hallucinationRate": {
+          "numerator": 76,
+          "denominator": 97,
+          "estimate": 0.7835051546391752,
+          "wilson95": [
+            0.6915983782533729,
+            0.8538122161906773
+          ],
+          "taskBootstrap95": [
+            0.5588235294117647,
+            1
+          ],
+          "taskBootstrapBca95": [
+            0.5135135135135135,
+            1
+          ]
+        },
+        "missRate": {
+          "numerator": 1,
+          "denominator": 673,
+          "estimate": 0.0014858841010401188,
+          "wilson95": [
+            0.0002623432013077881,
+            0.008368125196523643
+          ],
+          "taskBootstrap95": [
+            0,
+            0.004694835680751174
+          ],
+          "taskBootstrapBca95": [
+            0,
+            0.007780262727865766
+          ]
+        },
+        "agreement": {
+          "numerator": 693,
+          "denominator": 770,
+          "estimate": 0.9,
+          "wilson95": [
+            0.876784279525715,
+            0.9192444069429078
+          ],
+          "taskBootstrap95": [
+            0.8046398046398047,
+            0.9787835926449788
+          ],
+          "taskBootstrapBca95": [
+            0.7756939131103091,
+            0.9651064353515785
+          ]
+        },
+        "falseDiscoveryRate": {
+          "numerator": 76,
+          "denominator": 748,
+          "estimate": 0.10160427807486631,
+          "wilson95": [
+            0.08194804796121437,
+            0.12533163446696707
+          ],
+          "taskBootstrap95": [
+            0.020080321285140562,
+            0.2035623409669211
+          ],
+          "taskBootstrapBca95": [
+            0.033291483036548296,
+            0.2347720067582395
+          ]
+        },
+        "falseOmissionRate": {
+          "numerator": 1,
+          "denominator": 22,
+          "estimate": 0.045454545454545456,
+          "wilson95": [
+            0.00806942762126385,
+            0.21798045838657332
+          ],
+          "taskBootstrap95": [
+            0,
+            1
+          ],
+          "taskBootstrapBca95": [
+            0,
+            1
+          ]
+        },
+        "missMinusHallucination": {
+          "estimate": -0.7820192705381351,
+          "taskBootstrap95": [
+            -1,
+            -0.5580516331479105
+          ],
+          "shareOfResamplesAboveZero": 0,
+          "taskBootstrapBca95": [
+            -0.9985486211901307,
+            -0.5120727399917036
+          ]
+        },
+        "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+        "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+      }
+    },
+    "run": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5"
+  },
+  "prompt template A (7B, GPU host)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 1602,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 329,
+        "failure": 31
+      },
+      "sv0-ef1": {
+        "success": 344,
+        "failure": 46
+      },
+      "sv1-ef0": {
+        "success": 358,
+        "failure": 54
+      },
+      "sv1-ef1": {
+        "success": 364,
+        "failure": 76
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": 0.024941872909905793,
+      "se": 0.31170602731565533,
+      "z": 0.08001729425863141,
+      "p": 0.9362235012452441,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 2.362070546280225,
+          "se": 0.18787649718348995,
+          "z": 12.572464260781402,
+          "p": 2.9924869207767735e-36
+        },
+        "selfVerification": {
+          "estimate": -0.4705216064437988,
+          "se": 0.23792728469396202,
+          "z": -1.9775857445228073,
+          "p": 0.047975458761084666
+        },
+        "envFeedback": {
+          "estimate": -0.3500702853959215,
+          "se": 0.2448339955416861,
+          "z": -1.4298271145777939,
+          "p": 0.15276664489699632
+        },
+        "interaction": {
+          "estimate": 0.02494187290990614,
+          "se": 0.31170602731565034,
+          "z": 0.08001729425863381,
+          "p": 0.9362235012452422
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 2.362070546280225,
+          "se": 0.18813798164842396,
+          "z": 12.554990361777447,
+          "p": 3.7322669951444756e-36
+        },
+        "selfVerification": {
+          "estimate": -0.4705216064437988,
+          "se": 0.13818724568255764,
+          "z": -3.404956833170236,
+          "p": 0.0006617451331465111
+        },
+        "envFeedback": {
+          "estimate": -0.3500702853959215,
+          "se": 0.07613354236066933,
+          "z": -4.5981084623322115,
+          "p": 0.000004263440376719956
+        },
+        "interaction": {
+          "estimate": 0.02494187290990614,
+          "se": 0.06799226169626192,
+          "z": 0.3668339938642958,
+          "p": 0.7137428492051738
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 2.362070546280225,
+          "se": 0.5021822142317759,
+          "z": 4.703612512230553,
+          "p": 0.000002555981362633093
+        },
+        "selfVerification": {
+          "estimate": -0.4705216064437988,
+          "se": 0.3949941342750988,
+          "z": -1.1912116297810589,
+          "p": 0.233570515136165
+        },
+        "envFeedback": {
+          "estimate": -0.3500702853959215,
+          "se": 0.18408379217992965,
+          "z": -1.9016898839945187,
+          "p": 0.057211709147462986
+        },
+        "interaction": {
+          "estimate": 0.02494187290990614,
+          "se": 0.151728995546713,
+          "z": 0.1643843539597364,
+          "p": 0.8694285797569261
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -193.62340059203981,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 13.891728451339896,
+          "se": 3.7882837963567266,
+          "z": 3.667024224716181,
+          "p": 0.0002453895557033236
+        },
+        "selfVerification": {
+          "estimate": -0.16638655005181624,
+          "se": 0.4656624937352538,
+          "z": -0.35731146976679873,
+          "p": 0.7208586443597972
+        },
+        "envFeedback": {
+          "estimate": 1.11665537480688,
+          "se": 0.529791305662308,
+          "z": 2.107726878248626,
+          "p": 0.03505462097086337
+        },
+        "interaction": {
+          "estimate": -1.0350205255449136,
+          "se": 0.6178014418812455,
+          "z": -1.6753287632240044,
+          "p": 0.09386974498666822
+        }
+      },
+      "logSigmaSe": 0.431965044995462
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 5,
+      "informativeSkills": 266,
+      "effects": {
+        "selfVerification": {
+          "estimate": -0.1576653531269022,
+          "se": 0.4610460201600503,
+          "z": -0.34197313550644964,
+          "p": 0.7323711095190555
+        },
+        "envFeedback": {
+          "estimate": 1.093962655328497,
+          "se": 0.5231117016966834,
+          "z": 2.0912601491809313,
+          "p": 0.03650475004158918
+        },
+        "interaction": {
+          "estimate": -1.011219065735895,
+          "se": 0.6103646724452679,
+          "z": -1.6567457315062286,
+          "p": 0.09757089295303945
+        }
+      }
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 329,
+          "failure": 31
+        },
+        "sv0-ef1": {
+          "success": 344,
+          "failure": 16
+        },
+        "sv1-ef0": {
+          "success": 334,
+          "failure": 26
+        },
+        "sv1-ef1": {
+          "success": 330,
+          "failure": 30
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": -0.861131571010239,
+        "se": 0.42252069977617585,
+        "z": -2.0380813803120432,
+        "p": 0.04154179493164314,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 2.362070546280226,
+            "se": 0.18787649718349766,
+            "z": 12.57246426078089,
+            "p": 2.9924869207961584e-36
+          },
+          "selfVerification": {
+            "estimate": 0.19097390867499278,
+            "se": 0.27704355006303405,
+            "z": 0.6893281169388049,
+            "p": 0.4906168078810711
+          },
+          "envFeedback": {
+            "estimate": 0.7059823888533874,
+            "se": 0.3173398098848654,
+            "z": 2.224689014307805,
+            "p": 0.026102122266380177
+          },
+          "interaction": {
+            "estimate": -0.8611315710102364,
+            "se": 0.42252069977574686,
+            "z": -2.0380813803141065,
+            "p": 0.04154179493143683
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 2.362070546280226,
+            "se": 0.18813798164849913,
+            "z": 12.554990361772436,
+            "p": 3.7322669953807494e-36
+          },
+          "selfVerification": {
+            "estimate": 0.19097390867499278,
+            "se": 0.13774518157361615,
+            "z": 1.3864289588447725,
+            "p": 0.1656159588886158
+          },
+          "envFeedback": {
+            "estimate": 0.7059823888533874,
+            "se": 0.18242839827484508,
+            "z": 3.869914966801168,
+            "p": 0.00010887332037607022
+          },
+          "interaction": {
+            "estimate": -0.8611315710102364,
+            "se": 0.21144193382624468,
+            "z": -4.072662198208437,
+            "p": 0.000046478810998905243
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 2.362070546280226,
+            "se": 0.5021822142318235,
+            "z": 4.703612512230109,
+            "p": 0.0000025559813626386558
+          },
+          "selfVerification": {
+            "estimate": 0.19097390867499278,
+            "se": 0.3414557038277151,
+            "z": 0.5592933623136973,
+            "p": 0.5759615246506751
+          },
+          "envFeedback": {
+            "estimate": 0.7059823888533874,
+            "se": 0.48036286211527734,
+            "z": 1.4696856158792015,
+            "p": 0.14164692023647352
+          },
+          "interaction": {
+            "estimate": -0.8611315710102364,
+            "se": 0.599080485251733,
+            "z": -1.4374221698247938,
+            "p": 0.15059807311360496
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -91.26567203201486,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 13.421557179005204,
+            "se": 3.6115344826890214,
+            "z": 3.716303206666875,
+            "p": 0.00020215896357972035
+          },
+          "selfVerification": {
+            "estimate": 0.8070186672052193,
+            "se": 0.5771210645160264,
+            "z": 1.3983524719930038,
+            "p": 0.16200724804531264
+          },
+          "envFeedback": {
+            "estimate": 5.315126279691055,
+            "se": 2.1785190984308858,
+            "z": 2.4397887002778,
+            "p": 0.014695854877426572
+          },
+          "interaction": {
+            "estimate": -5.968556354766971,
+            "se": 2.261129108320564,
+            "z": -2.6396353630598606,
+            "p": 0.008299527149381265
+          }
+        },
+        "logSigmaSe": 0.40638668769920416
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 5,
+        "informativeSkills": 136,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 29,
+        "informativeSkills": 116,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 21,
+      "c": 10,
+      "tasksWithDiscordantPairs": 4,
+      "largestTaskShareOfDiscordant": 0.3870967741935484,
+      "clusteredChiSquare": 0.39158576051779936,
+      "clusteredP": 0.5314670343820699,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 852,
+      "tasks": 44,
+      "confusion": {
+        "tp": 654,
+        "fp": 70,
+        "fn": 68,
+        "tn": 60
+      },
+      "usableShare": 0.8474178403755869,
+      "hallucinationRate": {
+        "numerator": 70,
+        "denominator": 130,
+        "estimate": 0.5384615384615384,
+        "wilson95": [
+          0.4528937288666052,
+          0.6218215356568999
+        ],
+        "taskBootstrap95": [
+          0.14893617021276595,
+          1
+        ],
+        "taskBootstrapBca95": [
+          0.07317073170731707,
+          0.9603960396039604
+        ]
+      },
+      "missRate": {
+        "numerator": 68,
+        "denominator": 722,
+        "estimate": 0.09418282548476455,
+        "wilson95": [
+          0.07497356502007435,
+          0.1176875968924741
+        ],
+        "taskBootstrap95": [
+          0,
+          0.2532299741602067
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0.3675299531798257
+        ]
+      },
+      "agreement": {
+        "numerator": 714,
+        "denominator": 852,
+        "estimate": 0.8380281690140845,
+        "wilson95": [
+          0.8117811917082947,
+          0.861240656045726
+        ],
+        "taskBootstrap95": [
+          0.7138643067846607,
+          0.961439588688946
+        ],
+        "taskBootstrapBca95": [
+          0.6722641575333979,
+          0.9403973509933775
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 70,
+        "denominator": 724,
+        "estimate": 0.09668508287292818,
+        "wilson95": [
+          0.07723861410118592,
+          0.12038884594177089
+        ],
+        "taskBootstrap95": [
+          0.01749271137026239,
+          0.19558359621451105
+        ],
+        "taskBootstrapBca95": [
+          0.034214923997136,
+          0.2356725949314756
+        ]
+      },
+      "falseOmissionRate": {
+        "numerator": 68,
+        "denominator": 128,
+        "estimate": 0.53125,
+        "wilson95": [
+          0.44515370795994524,
+          0.6155252322729605
+        ],
+        "taskBootstrap95": [
+          0,
+          0.6666666666666666
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0.6666666666666666
+        ]
+      },
+      "missMinusHallucination": {
+        "estimate": -0.4442787129767739,
+        "taskBootstrap95": [
+          -1,
+          0.04422587983406931
+        ],
+        "shareOfResamplesAboveZero": 0.037522513508104864,
+        "taskBootstrapBca95": [
+          -0.9396215380071085,
+          0.15195553888290173
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": -0.012598269369454072,
+      "p": 0.7976522599984931
+    },
+    "loop": {
+      "regenerations": 162,
+      "regenerationsWithChangedCode": 159,
+      "recoveries": 76,
+      "recoveriesWithChangedCode": 76
+    },
+    "run": "experiments/rq-c/template-gpu/A/rq-c-s42-ollama-t30-r5"
+  },
+  "prompt template B (7B, GPU host)": {
+    "unit": "skill",
+    "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+    "nSkills": 1500,
+    "nTasks": 44,
+    "nBlocks": 360,
+    "cells": {
+      "sv0-ef0": {
+        "success": 330,
+        "failure": 30
+      },
+      "sv0-ef1": {
+        "success": 344,
+        "failure": 46
+      },
+      "sv1-ef0": {
+        "success": 330,
+        "failure": 30
+      },
+      "sv1-ef1": {
+        "success": 344,
+        "failure": 46
+      }
+    },
+    "skillLevelInteraction": {
+      "estimate": 0,
+      "se": 0.3493128784989326,
+      "z": 0,
+      "p": 1,
+      "correction": "none"
+    },
+    "logisticRegression": {
+      "method": "maximum likelihood (IRLS)",
+      "modelBased": {
+        "intercept": {
+          "estimate": 2.39789527279837,
+          "se": 0.1906925178491186,
+          "z": 12.574668895481539,
+          "p": 2.910169942135574e-36
+        },
+        "selfVerification": {
+          "estimate": 2.1095767261572491e-16,
+          "se": 0.2696799449852969,
+          "z": 7.822519862469804e-16,
+          "p": 0.9999999999999993
+        },
+        "envFeedback": {
+          "estimate": -0.38589501191406644,
+          "se": 0.24700150514238822,
+          "z": -1.5623184631673022,
+          "p": 0.11821298461153551
+        },
+        "interaction": {
+          "estimate": -1.9489291272827994e-15,
+          "se": 0.3493128784989331,
+          "z": -5.579322284531093e-15,
+          "p": 0.9999999999999956
+        }
+      },
+      "clusterRobustByBlock": {
+        "intercept": {
+          "estimate": 2.39789527279837,
+          "se": 0.19095792162103636,
+          "z": 12.557191932351929,
+          "p": 3.6298797455997744e-36
+        },
+        "selfVerification": {
+          "estimate": 2.1095767261572491e-16,
+          "se": null,
+          "z": null,
+          "p": null
+        },
+        "envFeedback": {
+          "estimate": -0.38589501191406644,
+          "se": 0.06788602467441776,
+          "z": -5.684454403757236,
+          "p": 1.3123092768787465e-8
+        },
+        "interaction": {
+          "estimate": -1.9489291272827994e-15,
+          "se": null,
+          "z": null,
+          "p": null
+        },
+        "clusters": 360
+      },
+      "clusterRobustByTask": {
+        "intercept": {
+          "estimate": 2.39789527279837,
+          "se": 0.5169251893627343,
+          "z": 4.638766541352911,
+          "p": 0.0000035049469964183478
+        },
+        "selfVerification": {
+          "estimate": 2.1095767261572491e-16,
+          "se": 8.984467194375036e-16,
+          "z": 0.2348026522349601,
+          "p": 0.8143619091011702
+        },
+        "envFeedback": {
+          "estimate": -0.38589501191406644,
+          "se": 0.18206870339605913,
+          "z": -2.119502169873854,
+          "p": 0.034048050572509723
+        },
+        "interaction": {
+          "estimate": -1.9489291272827994e-15,
+          "se": null,
+          "z": null,
+          "p": null
+        },
+        "clusters": 44
+      }
+    },
+    "mixedLogistic": {
+      "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+      "logLik": -64.79822821656637,
+      "sigmaTask": 19.999999999999996,
+      "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+      "fixedEffects": {
+        "intercept": {
+          "estimate": 13.566781287602348,
+          "se": 3.8116904010795443,
+          "z": 3.5592558314179907,
+          "p": 0.00037190711788098074
+        },
+        "selfVerification": {
+          "estimate": 4.618827021208271e-7,
+          "se": 2.480644284648043,
+          "z": 1.8619465313075292e-7,
+          "p": 0.999999851438161
+        },
+        "envFeedback": {
+          "estimate": 4.498917838592668,
+          "se": 2.227904463422958,
+          "z": 2.0193495333639753,
+          "p": 0.043450902929010944
+        },
+        "interaction": {
+          "estimate": -5.042592992051144e-7,
+          "se": 2.5388376981570944,
+          "z": -1.9861817065783643e-7,
+          "p": 0.9999998415256282
+        }
+      },
+      "logSigmaSe": 0.40241471159515735
+    },
+    "conditionalLogistic": {
+      "method": "conditional maximum likelihood, stratified by task",
+      "informativeStrata": 2,
+      "informativeSkills": 84,
+      "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+    },
+    "slotLevel": {
+      "unit": "slot (trial × task × condition; the last skill generated for it)",
+      "outcome": "Y_s (skill usable: success/calls ≥ 0.5)",
+      "nSkills": 1440,
+      "nTasks": 44,
+      "nBlocks": 360,
+      "cells": {
+        "sv0-ef0": {
+          "success": 330,
+          "failure": 30
+        },
+        "sv0-ef1": {
+          "success": 344,
+          "failure": 16
+        },
+        "sv1-ef0": {
+          "success": 330,
+          "failure": 30
+        },
+        "sv1-ef1": {
+          "success": 344,
+          "failure": 16
+        }
+      },
+      "skillLevelInteraction": {
+        "estimate": 0,
+        "se": 0.45115543465156754,
+        "z": 0,
+        "p": 1,
+        "correction": "none"
+      },
+      "logisticRegression": {
+        "method": "maximum likelihood (IRLS)",
+        "modelBased": {
+          "intercept": {
+            "estimate": 2.3978952727983716,
+            "se": 0.19069251784912658,
+            "z": 12.574668895481022,
+            "p": 2.9101699421546328e-36
+          },
+          "selfVerification": {
+            "estimate": -1.6799549262309416e-15,
+            "se": 0.26967994498530334,
+            "z": -6.229439591151257e-15,
+            "p": 0.999999999999995
+          },
+          "envFeedback": {
+            "estimate": 0.6701576623352444,
+            "se": 0.3190150672107155,
+            "z": 2.100708496920594,
+            "p": 0.03566656298777873
+          },
+          "interaction": {
+            "estimate": 2.780580181323691e-15,
+            "se": 0.45115543465075764,
+            "z": 6.1632421284610175e-15,
+            "p": 0.9999999999999951
+          }
+        },
+        "clusterRobustByBlock": {
+          "intercept": {
+            "estimate": 2.3978952727983716,
+            "se": 0.19095792162106437,
+            "z": 12.557191932350097,
+            "p": 3.62987974568376e-36
+          },
+          "selfVerification": {
+            "estimate": -1.6799549262309416e-15,
+            "se": null,
+            "z": null,
+            "p": null
+          },
+          "envFeedback": {
+            "estimate": 0.6701576623352444,
+            "se": 0.17914328502855228,
+            "z": 3.740903055497911,
+            "p": 0.00018336024192758038
+          },
+          "interaction": {
+            "estimate": 2.780580181323691e-15,
+            "se": null,
+            "z": null,
+            "p": null
+          },
+          "clusters": 360
+        },
+        "clusterRobustByTask": {
+          "intercept": {
+            "estimate": 2.3978952727983716,
+            "se": 0.5169251893627773,
+            "z": 4.6387665413525285,
+            "p": 0.000003504946996424835
+          },
+          "selfVerification": {
+            "estimate": -1.6799549262309416e-15,
+            "se": 3.799059404261015e-14,
+            "z": -0.044220285798814006,
+            "p": 0.9647288121393652
+          },
+          "envFeedback": {
+            "estimate": 0.6701576623352444,
+            "se": 0.4797812440965854,
+            "z": 1.3967983754703301,
+            "p": 0.1624742109644186
+          },
+          "interaction": {
+            "estimate": 2.780580181323691e-15,
+            "se": 5.497436825202303e-14,
+            "z": 0.05057957498622764,
+            "p": 0.959660538789007
+          },
+          "clusters": 44
+        }
+      },
+      "mixedLogistic": {
+        "method": "maximum likelihood, random intercept per task, 20-point adaptive Gauss–Hermite quadrature",
+        "logLik": -23.988410560475025,
+        "sigmaTask": 19.999999999999996,
+        "warning": "task standard deviation at its upper bound (20): outcomes are nearly determined by the task, so the random-intercept model is at the edge of estimability",
+        "fixedEffects": {
+          "intercept": {
+            "estimate": 13.404704713200772,
+            "se": 3.7217031269292713,
+            "z": 3.6017662494914844,
+            "p": 0.0003160624960289689
+          },
+          "selfVerification": {
+            "estimate": 2.2208298158985336e-8,
+            "se": 2.3547885422317676,
+            "z": 9.431122056478696e-9,
+            "p": 0.9999999924750533
+          },
+          "envFeedback": {
+            "estimate": 12.339163287718868,
+            "se": 6.480991749068568,
+            "z": 1.903900477807617,
+            "p": 0.05692314688333888
+          },
+          "interaction": {
+            "estimate": 2.4861635106704113e-7,
+            "se": 3.6655271170548307,
+            "z": 6.782553862725174e-8,
+            "p": 0.9999999458830499
+          }
+        },
+        "logSigmaSe": 0.3999562678630055
+      },
+      "conditionalLogistic": {
+        "method": "conditional maximum likelihood, stratified by task",
+        "informativeStrata": 2,
+        "informativeSkills": 56,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      },
+      "conditionalLogisticByBlock": {
+        "method": "conditional maximum likelihood, stratified by block (trial × task)",
+        "informativeStrata": 14,
+        "informativeSkills": 56,
+        "note": "not estimable: quasi-separation within strata (the estimates diverge)"
+      }
+    },
+    "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 28,
+      "c": 0,
+      "tasksWithDiscordantPairs": 2,
+      "largestTaskShareOfDiscordant": 0.5714285714285714,
+      "clusteredChiSquare": 1.96,
+      "clusteredP": 0.16151331846754235,
+      "method": "Durkalski et al. (2003) clustered McNemar, clusters = tasks"
+    },
+    "diagnostics": {
+      "n": 750,
+      "tasks": 44,
+      "confusion": {
+        "tp": 674,
+        "fp": 76,
+        "fn": 0,
+        "tn": 0
+      },
+      "usableShare": 0.8986666666666666,
+      "hallucinationRate": {
+        "numerator": 76,
+        "denominator": 76,
+        "estimate": 1,
+        "wilson95": [
+          0.9518864149348628,
+          1.0000000000000002
+        ],
+        "taskBootstrap95": [
+          1,
+          1
+        ],
+        "taskBootstrapBca95": [
+          1,
+          1
+        ]
+      },
+      "missRate": {
+        "numerator": 0,
+        "denominator": 674,
+        "estimate": 0,
+        "wilson95": [
+          4.336808689942018e-19,
+          0.00566719366410175
+        ],
+        "taskBootstrap95": [
+          0,
+          0
+        ],
+        "taskBootstrapBca95": [
+          0,
+          0
+        ]
+      },
+      "agreement": {
+        "numerator": 674,
+        "denominator": 750,
+        "estimate": 0.8986666666666666,
+        "wilson95": [
+          0.8749976632856967,
+          0.9182725833992073
+        ],
+        "taskBootstrap95": [
+          0.7990196078431373,
+          0.9792746113989638
+        ],
+        "taskBootstrapBca95": [
+          0.7670185395005291,
+          0.964713126076261
+        ]
+      },
+      "falseDiscoveryRate": {
+        "numerator": 76,
+        "denominator": 750,
+        "estimate": 0.10133333333333333,
+        "wilson95": [
+          0.08172741660079268,
+          0.12500233671430325
+        ],
+        "taskBootstrap95": [
+          0.02072538860103627,
+          0.20098039215686275
+        ],
+        "taskBootstrapBca95": [
+          0.03528687392373845,
+          0.23298146049946458
+        ]
+      },
+      "falseOmissionRate": {
+        "numerator": 0,
+        "denominator": 0,
+        "estimate": null
+      },
+      "missMinusHallucination": {
+        "estimate": -1,
+        "taskBootstrap95": [
+          -1,
+          -1
+        ],
+        "shareOfResamplesAboveZero": 0,
+        "taskBootstrapBca95": [
+          -1,
+          -1
+        ]
+      },
+      "definitions": "positive = self-pass, truth = oracle-usable; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP), falseDiscoveryRate = FP/(FP+TP), falseOmissionRate = FN/(FN+TN)",
+      "bootstrap": "10000 resamples of the 44 tasks; percentile and BCa (acceleration from the leave-one-task-out jackknife)"
+    },
+    "harnessInteraction": {
+      "what": "log(S00·S11 / (S01·S10)) over each cell's count of successful executions",
+      "estimate": 0,
+      "p": 1
+    },
+    "loop": {
+      "regenerations": 60,
+      "regenerationsWithChangedCode": 60,
+      "recoveries": 28,
+      "recoveriesWithChangedCode": 28
+    },
+    "run": "experiments/rq-c/template-gpu/B/rq-c-s42-ollama-t30-r5"
+  },
+  "runtime": ".NET 10.0.13"
+}

@@ -1,0 +1,55 @@
+@implements IAsyncDisposable
+@inject AppState State
+@inject IJSRuntime JS
+
+<figure class="bubble assistant image">
+    @if (src is not null)
+    {
+        <img src="@src" alt="@Image.Prompt" loading="lazy" />
+    }
+    else if (failed)
+    {
+        <span class="meta">@State.Text["chat.imageUnavailable"]</span>
+    }
+    else
+    {
+        <span class="meta">@State.Text["common.loading"]</span>
+    }
+    <figcaption>@Image.Prompt</figcaption>
+</figure>
+
+@code {
+    [Parameter, EditorRequired] public ImageInfo Image { get; set; } = null!;
+
+    private string? src;
+    private bool failed;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (src is not null)
+            return;
+        try
+        {
+            var (bytes, mime) = await State.Api.ImageBytesAsync(Image.Id);
+            src = await JS.InvokeAsync<string>("aijadeBlobUrl", bytes, mime);
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        {
+            failed = true;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (src is not null)
+        {
+            try
+            {
+                await JS.InvokeVoidAsync("aijadeRevokeUrl", src);
+            }
+            catch (JSDisconnectedException)
+            {
+            }
+        }
+    }
+}

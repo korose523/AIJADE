@@ -1,0 +1,326 @@
+@page "/admin"
+@page "/admin/{Tab}"
+@inject AppState State
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+
+<h1>@State.Text["nav.admin"]</h1>
+
+@if (State.Account?.IsAdmin != true)
+{
+    <p class="error" role="alert">@State.Text["admin.forbidden"]</p>
+}
+else
+{
+    <nav class="tabs" aria-label="@State.Text["nav.admin"]">
+        @foreach (var t in Tabs)
+        {
+            <a href="admin/@t" class="@(t == current ? "active" : "")" aria-current="@(t == current ? "page" : null)">@State.Text[$"admin.{t}"]</a>
+        }
+    </nav>
+
+    @if (error is not null)
+    {
+        <p class="error" role="alert">@error</p>
+    }
+    @if (status is not null)
+    {
+        <p class="status" role="status">@status</p>
+    }
+
+    @switch (current)
+    {
+        case "overview":
+            <section>
+                <h2>@State.Text["admin.pipeline"]</h2>
+                <table class="grid">
+                    <tbody>
+                        @foreach (var (k, v) in stats)
+                        {
+                            <tr><th scope="row">@k</th><td class="num">@v</td></tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row">
+                    <button @onclick="() => BackfillAsync(true)">@State.Text["admin.backfill.dryRun"]</button>
+                    <button @onclick="() => BackfillAsync(false)">@State.Text["admin.backfill.run"]</button>
+                </div>
+                @if (backfill is not null)
+                {
+                    <p class="status">@State.Text.Format("admin.backfill.result", Num("scannedEvents"), Num("plannedRows"), Num("inserted"), Num("skippedExisting"), Num("skippedConflict"))</p>
+                }
+            </section>
+            <section>
+                <h2>@State.Text["admin.events"]</h2>
+                <table class="grid">
+                    <thead><tr><th>feature</th><th>action</th><th>status</th><th class="num">@State.Text["admin.count"]</th><th class="num">@State.Text["admin.users"]</th></tr></thead>
+                    <tbody>
+                        @foreach (var r in events)
+                        {
+                            <tr><td>@r!["feature"]</td><td>@r["action"]</td><td>@r["status"]</td><td class="num">@r["eventCount"]</td><td class="num">@r["distinctUsers"]</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+            break;
+
+        case "users":
+            <div class="row">
+                <input class="grow" placeholder="@State.Text["admin.search"]" @bind="query" @bind:event="oninput" @bind:after="LoadUsersAsync" />
+            </div>
+            <table class="grid">
+                <thead><tr><th>@State.Text["auth.email"]</th><th>@State.Text["auth.name"]</th><th>@State.Text["admin.role"]</th><th class="num">@State.Text["admin.flux"]</th><th></th></tr></thead>
+                <tbody>
+                    @foreach (var u in users)
+                    {
+                        <tr class="@(u.Banned ? "banned" : "")">
+                            <td>
+                                @u.Email
+                                @if (u.Banned)
+                                {
+                                    <span class="meta"> · @State.Text["admin.banned"]</span>
+                                }
+                            </td>
+                            <td>@u.Name</td>
+                            <td>@u.Role</td>
+                            <td class="num">@u.Flux</td>
+                            <td class="actions">
+                                @if (u.Id != State.Account.Id)
+                                {
+                                    <button @onclick="() => ToggleRoleAsync(u)">@State.Text[u.IsAdmin ? "admin.makeUser" : "admin.makeAdmin"]</button>
+                                    <button class="@(u.Banned ? "" : "danger")" @onclick="() => SetBannedAsync(u, !u.Banned)">@State.Text[u.Banned ? "admin.unban" : "admin.ban"]</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            break;
+
+        case "flux":
+            <form class="stack" @onsubmit="GrantAsync">
+                <label>@State.Text["admin.flux.user"]
+                    <select @bind="grantUserId" required>
+                        <option value="">—</option>
+                        @foreach (var u in users)
+                        {
+                            <option value="@u.Id">@u.Email (@u.Flux)</option>
+                        }
+                    </select>
+                </label>
+                <label>@State.Text["admin.flux.amount"]<input type="number" step="1" @bind="grantAmount" required /></label>
+                <label>@State.Text["admin.flux.reason"]<input @bind="grantReason" /></label>
+                <button type="submit" class="primary" disabled="@(string.IsNullOrEmpty(grantUserId) || grantAmount == 0 || busy)">@State.Text["admin.flux.submit"]</button>
+            </form>
+            break;
+
+        case "gateway":
+            <p class="hint">@State.Text["admin.gateway.help"]</p>
+            <textarea class="code" rows="18" spellcheck="false" aria-label="@State.Text["admin.gateway"]" @bind="routesText"></textarea>
+            <div class="row">
+                <button class="primary" disabled="@busy" @onclick="SaveRoutesAsync">@State.Text["common.save"]</button>
+                <button @onclick="LoadRoutesAsync">@State.Text["admin.reload"]</button>
+            </div>
+            break;
+
+        case "tools":
+            <p class="hint">@State.Text["admin.tools.help"]</p>
+            @foreach (var (provider, problem) in toolProblems)
+            {
+                <p class="error">@provider: @problem</p>
+            }
+            <textarea class="code" rows="18" spellcheck="false" aria-label="@State.Text["admin.tools"]" @bind="toolsText"></textarea>
+            <div class="row">
+                <button class="primary" disabled="@busy" @onclick="SaveToolsAsync">@State.Text["common.save"]</button>
+                <button @onclick="LoadToolsAsync">@State.Text["admin.reload"]</button>
+            </div>
+            break;
+
+        case "requests":
+            <table class="grid">
+                <thead><tr><th>@State.Text["admin.time"]</th><th>@State.Text["settings.model"]</th><th>upstream</th><th class="num">HTTP</th><th class="num">tokens</th><th class="num">@State.Text["admin.flux"]</th><th class="num">ms</th></tr></thead>
+                <tbody>
+                    @foreach (var r in requests)
+                    {
+                        <tr>
+                            <td>@(r!["createdAt"]?.GetValue<DateTimeOffset>().ToLocalTime().ToString("g"))</td>
+                            <td>@r["model"]</td>
+                            <td>@r["upstream"]</td>
+                            <td class="num">@r["status"]</td>
+                            <td class="num">@r["promptTokens"] / @r["completionTokens"]</td>
+                            <td class="num">@r["fluxCharged"]</td>
+                            <td class="num">@r["durationMs"]</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            break;
+    }
+}
+
+@code {
+    private static readonly string[] Tabs = ["overview", "users", "flux", "gateway", "tools", "requests"];
+
+    [Parameter] public string? Tab { get; set; }
+
+    private string current = "overview";
+    private string? error;
+    private string? status;
+    private bool busy;
+    private List<(string Key, string Value)> stats = [];
+    private JsonArray events = [];
+    private JsonObject? backfill;
+    private IReadOnlyList<AdminUser> users = [];
+    private string query = "";
+    private string grantUserId = "";
+    private long grantAmount;
+    private string grantReason = "";
+    private string grantKey = NewKey();
+    private string routesText = "";
+    private JsonArray requests = [];
+
+    private string Num(string key) => backfill?[key]?.ToJsonString() ?? "0";
+
+    // Shown in a text box, never embedded in HTML or script, so non-ASCII (the "…" of masked keys, CJK names) stays readable.
+    private static readonly System.Text.Json.JsonSerializerOptions Pretty = new()
+    {
+        WriteIndented = true,
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
+
+    private static string NewKey() => $"admin-grant-{Guid.NewGuid():N}";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        current = Tabs.Contains(Tab) ? Tab! : "overview";
+        error = null;
+        status = null;
+        if (State.Account?.IsAdmin != true)
+            return;
+        await RunAsync(current switch
+        {
+            "users" or "flux" => LoadUsersAsync,
+            "gateway" => LoadRoutesAsync,
+            "tools" => LoadToolsAsync,
+            "requests" => async () => requests = await State.Api.AdminLlmRequestsAsync(),
+            _ => LoadOverviewAsync,
+        });
+    }
+
+    private async Task RunAsync(Func<Task> action)
+    {
+        busy = true;
+        error = null;
+        try
+        {
+            await action();
+        }
+        catch (AijadeApiException e)
+        {
+            error = e.Message;
+        }
+        catch (HttpRequestException e)
+        {
+            error = e.Message;
+        }
+        finally
+        {
+            busy = false;
+        }
+    }
+
+    private async Task LoadOverviewAsync()
+    {
+        var s = await State.Api.AdminV9StatsAsync();
+        stats = [.. s.Select(kv => (kv.Key, kv.Value?.ToJsonString() ?? ""))];
+        events = await State.Api.AdminProductEventsAsync(DateTimeOffset.UtcNow.AddDays(-30));
+    }
+
+    private Task BackfillAsync(bool dryRun) => RunAsync(async () =>
+    {
+        if (!dryRun && !await JS.InvokeAsync<bool>("confirm", State.Text["admin.backfill.confirm"]))
+            return;
+        backfill = await State.Api.AdminRenderTraceBackfillAsync(dryRun);
+        if (!dryRun)
+            await LoadOverviewAsync();
+    });
+
+    private Task LoadUsersAsync() => RunAsync(async () => users = await State.Api.AdminUsersAsync(query));
+
+    private Task ToggleRoleAsync(AdminUser u) => RunAsync(async () =>
+    {
+        await State.Api.AdminUpdateUserAsync(u.Id, role: u.IsAdmin ? "user" : "admin");
+        users = await State.Api.AdminUsersAsync(query);
+    });
+
+    private Task SetBannedAsync(AdminUser u, bool banned) => RunAsync(async () =>
+    {
+        string? reason = null;
+        if (banned)
+        {
+            reason = await JS.InvokeAsync<string?>("prompt", State.Text.Format("admin.banConfirm", u.Email), "");
+            if (reason is null)
+                return;
+        }
+        await State.Api.AdminUpdateUserAsync(u.Id, banned: banned, banReason: reason);
+        users = await State.Api.AdminUsersAsync(query);
+    });
+
+    private Task GrantAsync() => RunAsync(async () =>
+    {
+        await State.Api.AdminGrantFluxAsync(grantUserId, grantAmount, string.IsNullOrWhiteSpace(grantReason) ? null : grantReason, grantKey);
+        status = State.Text["admin.flux.done"];
+        grantKey = NewKey();
+        grantAmount = 0;
+        grantReason = "";
+        users = await State.Api.AdminUsersAsync(query);
+    });
+
+    private string toolsText = "";
+    private List<(string Provider, string Problem)> toolProblems = [];
+
+    private Task LoadToolsAsync() => RunAsync(async () =>
+    {
+        var doc = await State.Api.SendAsync(HttpMethod.Get, "/api/v1/admin/tools") as JsonObject ?? [];
+        toolProblems = [.. (doc["problems"] as JsonObject ?? []).Select(kv => (kv.Key, kv.Value?.ToString() ?? ""))];
+        doc.Remove("problems");
+        toolsText = doc.ToJsonString(Pretty);
+    });
+
+    private Task SaveToolsAsync() => RunAsync(async () =>
+    {
+        JsonObject doc;
+        try
+        {
+            doc = JsonNode.Parse(toolsText) as JsonObject ?? throw new FormatException();
+        }
+        catch (Exception e) when (e is System.Text.Json.JsonException or FormatException)
+        {
+            error = State.Text["admin.gateway.invalid"];
+            return;
+        }
+        await State.Api.SendAsync(HttpMethod.Put, "/api/v1/admin/tools", doc);
+        status = State.Text["common.saved"];
+        await LoadToolsAsync();
+    });
+
+    private Task LoadRoutesAsync() => RunAsync(async () =>
+        routesText = (await State.Api.AdminGatewayRoutesAsync()).ToJsonString(Pretty));
+
+    private Task SaveRoutesAsync() => RunAsync(async () =>
+    {
+        JsonObject doc;
+        try
+        {
+            doc = JsonNode.Parse(routesText) as JsonObject ?? throw new FormatException();
+        }
+        catch (Exception e) when (e is System.Text.Json.JsonException or FormatException)
+        {
+            error = State.Text["admin.gateway.invalid"];
+            return;
+        }
+        await State.Api.AdminSaveGatewayRoutesAsync(doc);
+        status = State.Text["common.saved"];
+        await LoadRoutesAsync();
+    });
+}

@@ -1,0 +1,205 @@
+{
+  "experiment": "nested cross-validation audit of the learned salience model: standardisation and feature-selection leakage",
+  "rows": 5882,
+  "positives": 1425,
+  "features": 13,
+  "pooledAuc": {
+    "locvOriginal": 0.8115550149774257,
+    "locvTrainStd": 0.8115384827336458,
+    "nestedTrain": 0.8147159799881125
+  },
+  "leak": {
+    "standardization": 0.000016532243779843192,
+    "featureSelection": -0.003177497254466699
+  },
+  "folds": [
+    {
+      "fold": 0,
+      "auc": 0.8255954571744045,
+      "selected": [
+        "length",
+        "secondPerson",
+        "temporal",
+        "meanIdf",
+        "selfDisclosure",
+        "isQuestion",
+        "noveltyIdf",
+        "isBackchannel",
+        "contentDensity",
+        "commitment",
+        "possessive",
+        "pastVerb"
+      ]
+    },
+    {
+      "fold": 1,
+      "auc": 0.8042176870748299,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "secondPerson",
+        "length",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "isBackchannel",
+        "contentDensity",
+        "commitment",
+        "possessive",
+        "pastVerb"
+      ]
+    },
+    {
+      "fold": 2,
+      "auc": 0.8831191588785047,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "length",
+        "secondPerson",
+        "meanIdf",
+        "isQuestion",
+        "noveltyIdf",
+        "contentDensity",
+        "isBackchannel",
+        "commitment",
+        "possessive",
+        "pastVerb"
+      ]
+    },
+    {
+      "fold": 3,
+      "auc": 0.7859069537243256,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "length",
+        "secondPerson",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "contentDensity",
+        "isBackchannel",
+        "commitment",
+        "possessive",
+        "pastVerb"
+      ]
+    },
+    {
+      "fold": 4,
+      "auc": 0.8180919828869048,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "length",
+        "secondPerson",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "contentDensity",
+        "isBackchannel",
+        "possessive",
+        "pastVerb",
+        "commitment"
+      ]
+    },
+    {
+      "fold": 5,
+      "auc": 0.8173012981756151,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "secondPerson",
+        "length",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "contentDensity",
+        "commitment",
+        "isBackchannel",
+        "possessive",
+        "pastVerb"
+      ]
+    },
+    {
+      "fold": 6,
+      "auc": 0.801602197921767,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "length",
+        "secondPerson",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "contentDensity",
+        "commitment",
+        "isBackchannel",
+        "pastVerb",
+        "possessive"
+      ]
+    },
+    {
+      "fold": 7,
+      "auc": 0.8426099972152604,
+      "selected": [
+        "length",
+        "secondPerson",
+        "temporal",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "selfDisclosure",
+        "isBackchannel",
+        "contentDensity",
+        "commitment",
+        "pastVerb",
+        "possessive"
+      ]
+    },
+    {
+      "fold": 8,
+      "auc": 0.782773801122425,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "secondPerson",
+        "length",
+        "meanIdf",
+        "noveltyIdf",
+        "isQuestion",
+        "isBackchannel",
+        "contentDensity",
+        "commitment",
+        "possessive",
+        "pastVerb",
+        "entity"
+      ]
+    },
+    {
+      "fold": 9,
+      "auc": 0.8603059372569355,
+      "selected": [
+        "selfDisclosure",
+        "temporal",
+        "length",
+        "secondPerson",
+        "meanIdf",
+        "isQuestion",
+        "noveltyIdf",
+        "isBackchannel",
+        "contentDensity",
+        "pastVerb",
+        "commitment",
+        "possessive"
+      ]
+    }
+  ],
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.12",
+    "generatedAt": "2026-10-13T23:49:41.9370690+00:00"
+  }
+}

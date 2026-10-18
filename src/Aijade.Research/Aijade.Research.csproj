@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../Aijade.Memory/Aijade.Memory.csproj" />
+    <ProjectReference Include="../Aijade.Learning/Aijade.Learning.csproj" />
+    <ProjectReference Include="../Aijade.Telemetry/Aijade.Telemetry.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Jint" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SkillBench/bench-data.json" LogicalName="Aijade.Research.SkillBench.bench-data.json" />
+  </ItemGroup>
+</Project>

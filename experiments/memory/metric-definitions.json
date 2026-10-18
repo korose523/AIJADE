@@ -1,0 +1,1083 @@
+{
+  "experiment": "two definition defects of recall@K: aggregation caliber (macro vs micro) and duplicate fact copies over kept fractions q, with and without retrieval-time content dedupe",
+  "aggregationCaliber": [
+    {
+      "scoreMode": "additive",
+      "macro": {
+        "1": 0.03961785425311119,
+        "2": 0.05009126799488848,
+        "4": 0.06329962844622758,
+        "8": 0.07969649340090265
+      },
+      "micro": {
+        "1": 0.039778449144008056,
+        "2": 0.0513595166163142,
+        "4": 0.06545820745216516,
+        "8": 0.08207452165156093
+      }
+    },
+    {
+      "scoreMode": "standardized",
+      "macro": {
+        "1": 0.107628677817079,
+        "2": 0.13407518610544006,
+        "4": 0.16665404371068815,
+        "8": 0.19853236649084932
+      },
+      "micro": {
+        "1": 0.11178247734138973,
+        "2": 0.13997985901309165,
+        "4": 0.17472306143001007,
+        "8": 0.20644511581067473
+      }
+    },
+    {
+      "scoreMode": "rrf",
+      "macro": {
+        "1": 0.03292051335997748,
+        "2": 0.047578962603934905,
+        "4": 0.0655588178146729,
+        "8": 0.07214689913233054
+      },
+      "micro": {
+        "1": 0.03423967774420947,
+        "2": 0.048841893252769386,
+        "4": 0.06797583081570997,
+        "8": 0.07452165156092648
+      }
+    }
+  ],
+  "duplication": [
+    {
+      "salience": "oracle",
+      "q": 1,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.11404052759473593,
+        "2": 0.14712363742611195,
+        "4": 0.1834851799182125,
+        "8": 0.2224431438088308
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 1176.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 1,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.11454304015755001,
+        "2": 0.14720773994708503,
+        "4": 0.18255175566216514,
+        "8": 0.2223352380611981
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 588.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 1,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.13299730438315244,
+        "2": 0.13785773286999065,
+        "4": 0.1727288821818419,
+        "8": 0.20341281132064815
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 1176.4,
+      "effectiveTop8": 4.663015795154222
+    },
+    {
+      "salience": "oracle",
+      "q": 1,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.11454304015755001,
+        "2": 0.14720773994708503,
+        "4": 0.18255175566216514,
+        "8": 0.2223352380611981
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 588.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.9,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1262252253475265,
+        "2": 0.15883968689251782,
+        "4": 0.20845268172806372,
+        "8": 0.27994082293354444
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 529.4,
+      "poolSize": 1058.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.9,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.12289967416141481,
+        "2": 0.1572792126835068,
+        "4": 0.20738236719973177,
+        "8": 0.28006157070358856
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 529.4,
+      "poolSize": 529.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.9,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1331990018538844,
+        "2": 0.14245268332815747,
+        "4": 0.18097296613724131,
+        "8": 0.21234374523561478
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 529.4,
+      "poolSize": 1058.8,
+      "effectiveTop8": 4.454410010979149
+    },
+    {
+      "salience": "oracle",
+      "q": 0.9,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.12289967416141481,
+        "2": 0.1572792126835068,
+        "4": 0.20738236719973177,
+        "8": 0.28047998074542957
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 529.4,
+      "poolSize": 529.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.8,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.13847648206808266,
+        "2": 0.17740224923830228,
+        "4": 0.22314673485266606,
+        "8": 0.29899630441918734
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 470.4,
+      "poolSize": 940.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.8,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1355927617783473,
+        "2": 0.17315226738339878,
+        "4": 0.22314673485266606,
+        "8": 0.299522620208661
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 470.4,
+      "poolSize": 470.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.8,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1379252645303212,
+        "2": 0.15002186623257946,
+        "4": 0.18718123195922942,
+        "8": 0.21952283942742928
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 470.4,
+      "poolSize": 940.8,
+      "effectiveTop8": 4.436011234176117
+    },
+    {
+      "salience": "oracle",
+      "q": 0.8,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1355927617783473,
+        "2": 0.17315226738339878,
+        "4": 0.22314673485266606,
+        "8": 0.299522620208661
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 470.4,
+      "poolSize": 470.4,
+      "effectiveTop8": 7.999581589958159
+    },
+    {
+      "salience": "oracle",
+      "q": 0.7,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.14858396506414473,
+        "2": 0.1875729244421431,
+        "4": 0.23408881405271828,
+        "8": 0.3056038970120075
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 411.6,
+      "poolSize": 823.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.7,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.14488215913152222,
+        "2": 0.18581617193301203,
+        "4": 0.23444730115685736,
+        "8": 0.3061260773915463
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 411.6,
+      "poolSize": 411.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.7,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1501717849905776,
+        "2": 0.16068151753092527,
+        "4": 0.19432044687842814,
+        "8": 0.22927604871598484
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 411.6,
+      "poolSize": 823.2,
+      "effectiveTop8": 4.444711412758376
+    },
+    {
+      "salience": "oracle",
+      "q": 0.7,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.14488215913152222,
+        "2": 0.18581617193301203,
+        "4": 0.23444730115685736,
+        "8": 0.3061260773915463
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 411.6,
+      "poolSize": 411.6,
+      "effectiveTop8": 7.999581589958159
+    },
+    {
+      "salience": "oracle",
+      "q": 0.6,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.151276773700544,
+        "2": 0.1907012272223641,
+        "4": 0.24630073014400372,
+        "8": 0.31434863411766467
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 352.8,
+      "poolSize": 705.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.6,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1505854492451786,
+        "2": 0.18944599709684104,
+        "4": 0.2429207186406313,
+        "8": 0.31485114668047876
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 352.8,
+      "poolSize": 352.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.6,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.15108741351038257,
+        "2": 0.1645609042581047,
+        "4": 0.1952746745846796,
+        "8": 0.2241344601924194
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 352.8,
+      "poolSize": 705.6,
+      "effectiveTop8": 4.450908072606007
+    },
+    {
+      "salience": "oracle",
+      "q": 0.6,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1505854492451786,
+        "2": 0.18944599709684104,
+        "4": 0.2429207186406313,
+        "8": 0.31485114668047876
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 352.8,
+      "poolSize": 352.8,
+      "effectiveTop8": 7.999581589958159
+    },
+    {
+      "salience": "oracle",
+      "q": 0.5,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.154681522295415,
+        "2": 0.19429073658067875,
+        "4": 0.25089478054938064,
+        "8": 0.3215841512757583
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 294.5,
+      "poolSize": 589,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.5,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.15103417688682227,
+        "2": 0.19300288154079287,
+        "4": 0.24741201380196834,
+        "8": 0.3206755451554859
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 294.5,
+      "poolSize": 294.5,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.5,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.14857186007289042,
+        "2": 0.160789744338478,
+        "4": 0.1930270987872912,
+        "8": 0.2266287608920261
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 294.5,
+      "poolSize": 589,
+      "effectiveTop8": 4.447435037263471
+    },
+    {
+      "salience": "oracle",
+      "q": 0.5,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.15103417688682227,
+        "2": 0.19300288154079287,
+        "4": 0.24741201380196834,
+        "8": 0.3206755451554859
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 294.5,
+      "poolSize": 294.5,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.4,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.15768103919033036,
+        "2": 0.1983995466774255,
+        "4": 0.2513186698430813,
+        "8": 0.32090798006945787
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 235.4,
+      "poolSize": 470.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.4,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1565456152351112,
+        "2": 0.19518397293567252,
+        "4": 0.2502898414907936,
+        "8": 0.319976622213936
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 235.4,
+      "poolSize": 235.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.4,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.15094254212125707,
+        "2": 0.1610795515167843,
+        "4": 0.19374038462033455,
+        "8": 0.22406966608466986
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 235.4,
+      "poolSize": 470.8,
+      "effectiveTop8": 4.468770797078628
+    },
+    {
+      "salience": "oracle",
+      "q": 0.4,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1565456152351112,
+        "2": 0.19518397293567252,
+        "4": 0.2502898414907936,
+        "8": 0.319976622213936
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 235.4,
+      "poolSize": 235.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.3,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1558230181129001,
+        "2": 0.1943904842522744,
+        "4": 0.24070067165275022,
+        "8": 0.3165018449581682
+      },
+      "evidenceSurvival": 0.9791004437273093,
+      "distinctEpisodes": 176.6,
+      "poolSize": 353.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.3,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.15236245769466406,
+        "2": 0.1943904842522744,
+        "4": 0.2410217686062457,
+        "8": 0.31493420476836737
+      },
+      "evidenceSurvival": 0.9791004437273093,
+      "distinctEpisodes": 176.6,
+      "poolSize": 176.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "oracle",
+      "q": 0.3,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.14387058998885177,
+        "2": 0.1516073784677851,
+        "4": 0.18319514850823834,
+        "8": 0.21527169167471555
+      },
+      "evidenceSurvival": 0.9791004437273093,
+      "distinctEpisodes": 176.6,
+      "poolSize": 353.2,
+      "effectiveTop8": 4.513432650995286
+    },
+    {
+      "salience": "oracle",
+      "q": 0.3,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.15236245769466406,
+        "2": 0.1943904842522744,
+        "4": 0.2410217686062457,
+        "8": 0.31493420476836737
+      },
+      "evidenceSurvival": 0.9791004437273093,
+      "distinctEpisodes": 176.6,
+      "poolSize": 176.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 1,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1048642456602302,
+        "2": 0.13307871541251542,
+        "4": 0.1685470740597138,
+        "8": 0.1984688004513847
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 1176.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 1,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.1023034160972603,
+        "2": 0.13120263172567898,
+        "4": 0.16637133500993,
+        "8": 0.19689116322766492
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 588.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 1,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.12688285451111947,
+        "2": 0.13162576258853043,
+        "4": 0.16492283889875226,
+        "8": 0.19486436888920317
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 1176.4,
+      "effectiveTop8": 4.893946979187764
+    },
+    {
+      "salience": "predicted",
+      "q": 1,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1023034160972603,
+        "2": 0.13120263172567898,
+        "4": 0.16637133500993,
+        "8": 0.19689116322766492
+      },
+      "evidenceSurvival": 1,
+      "distinctEpisodes": 588.2,
+      "poolSize": 588.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.9,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10753818699873445,
+        "2": 0.1358303664652861,
+        "4": 0.17019168057134842,
+        "8": 0.20321617670977593
+      },
+      "evidenceSurvival": 0.982596676443223,
+      "distinctEpisodes": 529.4,
+      "poolSize": 1058.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.9,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10619360600271681,
+        "2": 0.1338814818327439,
+        "4": 0.16931686910830165,
+        "8": 0.20183885268391513
+      },
+      "evidenceSurvival": 0.982596676443223,
+      "distinctEpisodes": 529.4,
+      "poolSize": 529.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.9,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.12432685190733708,
+        "2": 0.13071720398107092,
+        "4": 0.16498993664712855,
+        "8": 0.19730145524282894
+      },
+      "evidenceSurvival": 0.982596676443223,
+      "distinctEpisodes": 529.4,
+      "poolSize": 1058.8,
+      "effectiveTop8": 4.891322930173946
+    },
+    {
+      "salience": "predicted",
+      "q": 0.9,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.10619360600271681,
+        "2": 0.1338814818327439,
+        "4": 0.16931686910830165,
+        "8": 0.20183885268391513
+      },
+      "evidenceSurvival": 0.982596676443223,
+      "distinctEpisodes": 529.4,
+      "poolSize": 529.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.8,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10619929867948615,
+        "2": 0.13776095486386497,
+        "4": 0.16534789732710922,
+        "8": 0.19922085785673663
+      },
+      "evidenceSurvival": 0.9465631616677733,
+      "distinctEpisodes": 470.4,
+      "poolSize": 940.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.8,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10609957400630124,
+        "2": 0.13643680054928004,
+        "4": 0.16309930069673786,
+        "8": 0.19935437718714716
+      },
+      "evidenceSurvival": 0.9465631616677733,
+      "distinctEpisodes": 470.4,
+      "poolSize": 470.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.8,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1271366269541442,
+        "2": 0.13538070728695295,
+        "4": 0.17461302100324355,
+        "8": 0.2038443513719881
+      },
+      "evidenceSurvival": 0.9465631616677733,
+      "distinctEpisodes": 470.4,
+      "poolSize": 940.8,
+      "effectiveTop8": 4.842465048646763
+    },
+    {
+      "salience": "predicted",
+      "q": 0.8,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.10609957400630124,
+        "2": 0.13643680054928004,
+        "4": 0.16309930069673786,
+        "8": 0.19935437718714716
+      },
+      "evidenceSurvival": 0.9465631616677733,
+      "distinctEpisodes": 470.4,
+      "poolSize": 470.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.7,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10722486709927326,
+        "2": 0.13558100053814975,
+        "4": 0.17482265001725897,
+        "8": 0.20469868402833394
+      },
+      "evidenceSurvival": 0.9109432418853494,
+      "distinctEpisodes": 411.6,
+      "poolSize": 823.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.7,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10671466301764061,
+        "2": 0.1351464787884677,
+        "4": 0.17440942687676309,
+        "8": 0.20522499981780765
+      },
+      "evidenceSurvival": 0.9109432418853494,
+      "distinctEpisodes": 411.6,
+      "poolSize": 411.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.7,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.1288137040390332,
+        "2": 0.1362946738798862,
+        "4": 0.17631365658738898,
+        "8": 0.20733313710068155
+      },
+      "evidenceSurvival": 0.9109432418853494,
+      "distinctEpisodes": 411.6,
+      "poolSize": 823.2,
+      "effectiveTop8": 4.805430413213237
+    },
+    {
+      "salience": "predicted",
+      "q": 0.7,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.10671466301764061,
+        "2": 0.1351464787884677,
+        "4": 0.17440942687676309,
+        "8": 0.20522499981780765
+      },
+      "evidenceSurvival": 0.9109432418853494,
+      "distinctEpisodes": 411.6,
+      "poolSize": 411.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.6,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10492081247744414,
+        "2": 0.13173934658083802,
+        "4": 0.16914113924269647,
+        "8": 0.20127382650388986
+      },
+      "evidenceSurvival": 0.8597502301086901,
+      "distinctEpisodes": 352.8,
+      "poolSize": 705.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.6,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10358196938657727,
+        "2": 0.12898863099461153,
+        "4": 0.16925591592007563,
+        "8": 0.2002811178626444
+      },
+      "evidenceSurvival": 0.8597502301086901,
+      "distinctEpisodes": 352.8,
+      "poolSize": 352.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.6,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.12925041404959725,
+        "2": 0.1397511145164136,
+        "4": 0.17189861858218627,
+        "8": 0.20164612232615106
+      },
+      "evidenceSurvival": 0.8597502301086901,
+      "distinctEpisodes": 352.8,
+      "poolSize": 705.6,
+      "effectiveTop8": 4.782590534875109
+    },
+    {
+      "salience": "predicted",
+      "q": 0.6,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.10358196938657727,
+        "2": 0.12898863099461153,
+        "4": 0.16925591592007563,
+        "8": 0.2002811178626444
+      },
+      "evidenceSurvival": 0.8597502301086901,
+      "distinctEpisodes": 352.8,
+      "poolSize": 352.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.5,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10446148504843092,
+        "2": 0.1326447060085462,
+        "4": 0.1671745710392814,
+        "8": 0.2039497338864486
+      },
+      "evidenceSurvival": 0.7796496350900186,
+      "distinctEpisodes": 294.5,
+      "poolSize": 589,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.5,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.10142767845110445,
+        "2": 0.13089728689798388,
+        "4": 0.1663725605219404,
+        "8": 0.20209226652492665
+      },
+      "evidenceSurvival": 0.7796496350900186,
+      "distinctEpisodes": 294.5,
+      "poolSize": 294.5,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.5,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.12912711559302434,
+        "2": 0.13822082704736413,
+        "4": 0.16053347990633773,
+        "8": 0.18833743450382023
+      },
+      "evidenceSurvival": 0.7796496350900186,
+      "distinctEpisodes": 294.5,
+      "poolSize": 589,
+      "effectiveTop8": 4.81112292672922
+    },
+    {
+      "salience": "predicted",
+      "q": 0.5,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.10142767845110445,
+        "2": 0.13089728689798388,
+        "4": 0.1663725605219404,
+        "8": 0.20209226652492665
+      },
+      "evidenceSurvival": 0.7796496350900186,
+      "distinctEpisodes": 294.5,
+      "poolSize": 294.5,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.4,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.098439915289364,
+        "2": 0.12309196428558389,
+        "4": 0.15254909709125072,
+        "8": 0.19608715100651383
+      },
+      "evidenceSurvival": 0.7015635088635553,
+      "distinctEpisodes": 235.4,
+      "poolSize": 470.8,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.4,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.0975189926847089,
+        "2": 0.1207680789302209,
+        "4": 0.14969889594641403,
+        "8": 0.19412422927889278
+      },
+      "evidenceSurvival": 0.7015635088635553,
+      "distinctEpisodes": 235.4,
+      "poolSize": 235.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.4,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.11320754666846429,
+        "2": 0.12081362695350133,
+        "4": 0.13868084166305267,
+        "8": 0.16652993105010067
+      },
+      "evidenceSurvival": 0.7015635088635553,
+      "distinctEpisodes": 235.4,
+      "poolSize": 470.8,
+      "effectiveTop8": 4.726073325509217
+    },
+    {
+      "salience": "predicted",
+      "q": 0.4,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.0975189926847089,
+        "2": 0.1207680789302209,
+        "4": 0.14969889594641403,
+        "8": 0.19412422927889278
+      },
+      "evidenceSurvival": 0.7015635088635553,
+      "distinctEpisodes": 235.4,
+      "poolSize": 235.4,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.3,
+      "facts": true,
+      "dedupe": true,
+      "recall": {
+        "1": 0.09180530268999004,
+        "2": 0.11290092014160276,
+        "4": 0.13919169348586719,
+        "8": 0.19118893743225635
+      },
+      "evidenceSurvival": 0.6075425345388447,
+      "distinctEpisodes": 176.6,
+      "poolSize": 353.2,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.3,
+      "facts": false,
+      "dedupe": true,
+      "recall": {
+        "1": 0.09075499616485938,
+        "2": 0.11146055267722048,
+        "4": 0.13823878658010474,
+        "8": 0.18926761466753722
+      },
+      "evidenceSurvival": 0.6075425345388447,
+      "distinctEpisodes": 176.6,
+      "poolSize": 176.6,
+      "effectiveTop8": 8
+    },
+    {
+      "salience": "predicted",
+      "q": 0.3,
+      "facts": true,
+      "dedupe": false,
+      "recall": {
+        "1": 0.0934000804660298,
+        "2": 0.09724258875343114,
+        "4": 0.1168895994904043,
+        "8": 0.1389793275503013
+      },
+      "evidenceSurvival": 0.6075425345388447,
+      "distinctEpisodes": 176.6,
+      "poolSize": 353.2,
+      "effectiveTop8": 4.785134852337123
+    },
+    {
+      "salience": "predicted",
+      "q": 0.3,
+      "facts": false,
+      "dedupe": false,
+      "recall": {
+        "1": 0.09075499616485938,
+        "2": 0.11146055267722048,
+        "4": 0.13823878658010474,
+        "8": 0.18926761466753722
+      },
+      "evidenceSurvival": 0.6075425345388447,
+      "distinctEpisodes": 176.6,
+      "poolSize": 176.6,
+      "effectiveTop8": 8
+    }
+  ],
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.12",
+    "generatedAt": "2026-10-14T00:36:02.6969970+00:00"
+  }
+}

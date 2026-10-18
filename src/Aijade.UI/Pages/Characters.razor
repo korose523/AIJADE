@@ -1,0 +1,70 @@
+@page "/characters"
+@inject AppState State
+@inject NavigationManager Nav
+
+<h1>@State.Text["nav.characters"]</h1>
+<div class="cards">
+    @foreach (var c in characters)
+    {
+        <div class="card @(c.Id == State.Settings.Current.ActiveCharacterId ? "active" : "")">
+            <h3>@c.Name</h3>
+            <p>@c.Description</p>
+            <div class="row">
+                <button class="primary" @onclick="() => TalkToAsync(c.Id)">@State.Text["character.use"]</button>
+                <button @onclick="() => Edit(c)">✎</button>
+                <button @onclick="() => DeleteAsync(c.Id)">@State.Text["character.delete"]</button>
+            </div>
+        </div>
+    }
+    <div class="card new">
+        <h3>@(editingId is null ? State.Text["character.new"] : name)</h3>
+        <label>@State.Text["character.name"]<input @bind="name" /></label>
+        <label>@State.Text["character.description"]<input @bind="description" /></label>
+        <label>@State.Text["character.persona"]<textarea rows="4" @bind="persona"></textarea></label>
+        <label>@State.Text["character.greeting"]<input @bind="greeting" /></label>
+        <label class="check"><input type="checkbox" @bind="isPublic" /> @State.Text["character.public"]</label>
+        <button class="primary" disabled="@string.IsNullOrWhiteSpace(name)" @onclick="SaveAsync">@State.Text["character.save"]</button>
+    </div>
+</div>
+<button class="link" @onclick="() => UseAsync(null)">@State.Text["character.none"]</button>
+
+@code {
+    private IReadOnlyList<Character> characters = [];
+    private string? editingId;
+    private string name = "", description = "", persona = "", greeting = "";
+    private bool isPublic;
+
+    protected override async Task OnInitializedAsync() => characters = await State.Api.CharactersAsync();
+
+    private void Edit(Character c)
+    {
+        (editingId, name, description, persona, greeting, isPublic) = (c.Id, c.Name, c.Description, c.Persona, c.Greeting, c.Visibility == "public");
+    }
+
+    private async Task SaveAsync()
+    {
+        var body = new { name, description, persona, greeting, visibility = isPublic ? "public" : "private" };
+        if (editingId is null)
+            await State.Api.CreateCharacterAsync(body);
+        else
+            await State.Api.UpdateCharacterAsync(editingId, body);
+        (editingId, name, description, persona, greeting, isPublic) = (null, "", "", "", "", false);
+        characters = await State.Api.CharactersAsync();
+    }
+
+    private async Task DeleteAsync(string id)
+    {
+        await State.Api.DeleteCharacterAsync(id);
+        if (State.Settings.Current.ActiveCharacterId == id)
+            await UseAsync(null);
+        characters = await State.Api.CharactersAsync();
+    }
+
+    private async Task TalkToAsync(string id)
+    {
+        await UseAsync(id);
+        Nav.NavigateTo("");
+    }
+
+    private Task UseAsync(string? id) => State.Settings.UpdateAsync(s => s with { ActiveCharacterId = id });
+}

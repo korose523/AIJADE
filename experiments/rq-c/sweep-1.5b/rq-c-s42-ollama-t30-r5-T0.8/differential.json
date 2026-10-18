@@ -1,0 +1,332 @@
+{
+  "experiment": "differential testing: distinct test-passing candidates against the reference solution on perturbed test arguments (inputs on which the reference throws are dropped)",
+  "run": "rq-c-s42-ollama-t30-r5-T0.8",
+  "tasks": 42,
+  "tasksWithHiddenSuite": 42,
+  "hiddenCases": 862,
+  "candidates": 269,
+  "disagreeing": 39,
+  "tasksWithDisagreement": 9,
+  "perTask": [
+    {
+      "task": "arr-chunk",
+      "hiddenCases": 35,
+      "candidates": 9,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-flatten",
+      "hiddenCases": 19,
+      "candidates": 3,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-intersection",
+      "hiddenCases": 32,
+      "candidates": 5,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-max",
+      "hiddenCases": 18,
+      "candidates": 6,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-remove-falsy",
+      "hiddenCases": 13,
+      "candidates": 2,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-second-largest",
+      "hiddenCases": 23,
+      "candidates": 6,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-sum",
+      "hiddenCases": 19,
+      "candidates": 7,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-sum-evens",
+      "hiddenCases": 21,
+      "candidates": 5,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "arr-unique",
+      "hiddenCases": 19,
+      "candidates": 10,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "date-add-days",
+      "hiddenCases": 16,
+      "candidates": 4,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "date-day-of-week",
+      "hiddenCases": 16,
+      "candidates": 10,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "date-format-iso",
+      "hiddenCases": 16,
+      "candidates": 2,
+      "disagreeing": 1,
+      "examples": [
+        "args [\"Z000.00:00:00T92-20-4202\"]: reference \"NaN-NaN-NaN\", candidate RangeError: Invalid time value"
+      ]
+    },
+    {
+      "task": "date-is-leap-year",
+      "hiddenCases": 16,
+      "candidates": 7,
+      "disagreeing": 3,
+      "examples": [
+        "args [\"2024-02-29T00:00:00.000Za\"]: reference false, candidate true",
+        "args [\"2024-02-29T00:00:00.000Za\"]: reference false, candidate true"
+      ]
+    },
+    {
+      "task": "date-seconds-since",
+      "hiddenCases": 29,
+      "candidates": 2,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "logic-fizzbuzz",
+      "hiddenCases": 19,
+      "candidates": 8,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "logic-pangram",
+      "hiddenCases": 17,
+      "candidates": 4,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "logic-roman-to-int",
+      "hiddenCases": 16,
+      "candidates": 15,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "logic-valid-parentheses",
+      "hiddenCases": 18,
+      "candidates": 14,
+      "disagreeing": 14,
+      "examples": [
+        "args [\"()a\"]: reference true, candidate false",
+        "args [\"()a\"]: reference true, candidate false"
+      ]
+    },
+    {
+      "task": "logic-xor",
+      "hiddenCases": 4,
+      "candidates": 2,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "math-average",
+      "hiddenCases": 21,
+      "candidates": 6,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "math-clamp",
+      "hiddenCases": 38,
+      "candidates": 5,
+      "disagreeing": 3,
+      "examples": [
+        "args [3,4,3]: reference 3, candidate 4",
+        "args [3,4,3]: reference 3, candidate 4"
+      ]
+    },
+    {
+      "task": "math-factorial",
+      "hiddenCases": 13,
+      "candidates": 5,
+      "disagreeing": 2,
+      "examples": [
+        "args [-1]: reference 1, candidate RangeError: Maximum call stack size exceeded",
+        "args [-1]: reference 1, candidate RangeError: Maximum call stack size exceeded"
+      ]
+    },
+    {
+      "task": "math-fib",
+      "hiddenCases": 18,
+      "candidates": 7,
+      "disagreeing": 6,
+      "examples": [
+        "args [-1]: reference 0, candidate undefined",
+        "args [-1]: reference 0, candidate undefined"
+      ]
+    },
+    {
+      "task": "math-gcd",
+      "hiddenCases": 43,
+      "candidates": 5,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "math-is-prime",
+      "hiddenCases": 20,
+      "candidates": 3,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "math-round-to",
+      "hiddenCases": 37,
+      "candidates": 7,
+      "disagreeing": 2,
+      "examples": [
+        "args [2.5,-1]: reference 0, candidate Error: Decimals must be a non-negative integer.",
+        "args [2.5,-1]: reference 0, candidate Error: Decimals must be a non-negative integer."
+      ]
+    },
+    {
+      "task": "obj-count-keys",
+      "hiddenCases": 6,
+      "candidates": 7,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "obj-get-nested",
+      "hiddenCases": 20,
+      "candidates": 16,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "obj-group-by",
+      "hiddenCases": 19,
+      "candidates": 7,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "obj-merge",
+      "hiddenCases": 20,
+      "candidates": 5,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "parse-json-safe",
+      "hiddenCases": 20,
+      "candidates": 13,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "parse-query-string",
+      "hiddenCases": 21,
+      "candidates": 3,
+      "disagreeing": 3,
+      "examples": [
+        "args [\"a\"]: reference {\"a\":\"\"}, candidate {\"a\":undefined}",
+        "args [\"a\"]: reference {\"a\":\"\"}, candidate {\"a\":undefined}"
+      ]
+    },
+    {
+      "task": "parse-version",
+      "hiddenCases": 15,
+      "candidates": 5,
+      "disagreeing": 5,
+      "examples": [
+        "args [\"1.2.3a\"]: reference null, candidate [1,2,NaN]",
+        "args [\"\"]: reference null, candidate [0]"
+      ]
+    },
+    {
+      "task": "str-capitalize-words",
+      "hiddenCases": 15,
+      "candidates": 10,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-count-vowels",
+      "hiddenCases": 20,
+      "candidates": 9,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-is-palindrome",
+      "hiddenCases": 18,
+      "candidates": 6,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-reverse",
+      "hiddenCases": 15,
+      "candidates": 7,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-rot13",
+      "hiddenCases": 17,
+      "candidates": 6,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-slugify",
+      "hiddenCases": 19,
+      "candidates": 7,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-to-camel",
+      "hiddenCases": 18,
+      "candidates": 2,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-truncate",
+      "hiddenCases": 42,
+      "candidates": 3,
+      "disagreeing": 0,
+      "examples": []
+    },
+    {
+      "task": "str-unique-chars",
+      "hiddenCases": 21,
+      "candidates": 4,
+      "disagreeing": 0,
+      "examples": []
+    }
+  ]
+}

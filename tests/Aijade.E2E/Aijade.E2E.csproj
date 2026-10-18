@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Test names use underscores (Method_condition_result); test classes need not be internal. -->
+    <NoWarn>$(NoWarn);CA1707;CA1515</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.Playwright" />
+    <PackageReference Include="Npgsql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../integrations/browser-extension/extract.js" Link="fixtures/extract.js" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Built first, then run as its own process exactly as deployed (static web assets included). -->
+    <ProjectReference Include="../../src/Aijade.Server/Aijade.Server.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+  <Target Name="RecordServerPath" BeforeTargets="GetAssemblyAttributes">
+    <MSBuild Projects="../../src/Aijade.Server/Aijade.Server.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" PropertyName="AijadeServerDll" />
+    </MSBuild>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>AijadeServerDll</_Parameter1>
+        <_Parameter2>$(AijadeServerDll)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+</Project>

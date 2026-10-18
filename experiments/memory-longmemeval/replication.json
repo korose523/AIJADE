@@ -1,0 +1,144 @@
+{
+  "experiment": "replication of the scorer diagnosis (recency bias, weight ablation) and the gating contrasts on LongMemEval_s; each question has its own haystack, so the question is the unit of resampling",
+  "provenance": {
+    "corpus": "LongMemEval_s (cleaned)",
+    "corpusSha256": "d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442",
+    "questions": 479,
+    "episodes": 236184,
+    "runtimeSeconds": 5551,
+    "generatedAt": "2026-10-15T12:27:18.6498040+00:00"
+  },
+  "recencyBias": {
+    "meanNewerInTopK": 6.701461377870563,
+    "baselineIfUnbiased": 2.629863848957281,
+    "meanSlotAgePercentile": 0.9088080897403596,
+    "scanned": 479
+  },
+  "recallByWeights": {
+    "current": {
+      "1": 0.15657620041753653,
+      "2": 0.1941544885177453,
+      "4": 0.20250521920668058,
+      "8": 0.21711899791231734
+    },
+    "sim-only": {
+      "1": 0.20876826722338204,
+      "2": 0.24843423799582465,
+      "4": 0.2651356993736952,
+      "8": 0.2839248434237996
+    },
+    "sim+ctx": {
+      "1": 0.20876826722338204,
+      "2": 0.24843423799582465,
+      "4": 0.2651356993736952,
+      "8": 0.2839248434237996
+    },
+    "sim+str": {
+      "1": 0.19624217118997914,
+      "2": 0.24425887265135698,
+      "4": 0.2651356993736952,
+      "8": 0.2797494780793319
+    },
+    "no-recency": {
+      "1": 0.19624217118997914,
+      "2": 0.24425887265135698,
+      "4": 0.2651356993736952,
+      "8": 0.2797494780793319
+    },
+    "sim-heavy": {
+      "1": 0.1941544885177453,
+      "2": 0.24425887265135698,
+      "4": 0.2651356993736952,
+      "8": 0.27348643006263046
+    },
+    "str-only": {
+      "1": 0.008350730688935281,
+      "2": 0.012526096033402923,
+      "4": 0.018789144050104383,
+      "8": 0.04175365344467641
+    },
+    "rec-only": {
+      "1": 0.008350730688935281,
+      "2": 0.012526096033402923,
+      "4": 0.018789144050104383,
+      "8": 0.04175365344467641
+    }
+  },
+  "contrasts": [
+    {
+      "key": "weights: sim-only vs current",
+      "caliber": "micro",
+      "a": 0.2839248434237996,
+      "b": 0.21711899791231734,
+      "difference": 0.06680584551148225,
+      "bootstrap95": [
+        0.04384133611691024,
+        0.08977035490605431
+      ],
+      "signFlipP": 0.00009999000099990002,
+      "unitsPositive": 33,
+      "unitsNegative": 1,
+      "units": 479
+    },
+    {
+      "key": "gating (predicted, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.4091858037578288,
+      "b": 0.4592901878914405,
+      "difference": -0.05010438413361169,
+      "bootstrap95": [
+        -0.07515657620041753,
+        -0.025052192066805846
+      ],
+      "signFlipP": 0.00029997000299970003,
+      "unitsPositive": 8,
+      "unitsNegative": 32,
+      "units": 479
+    },
+    {
+      "key": "gating (oracle, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 1,
+      "b": 0.4592901878914405,
+      "difference": 0.5407098121085595,
+      "bootstrap95": [
+        0.4968684759916493,
+        0.5845511482254697
+      ],
+      "signFlipP": 0.00009999000099990002,
+      "unitsPositive": 259,
+      "unitsNegative": 0,
+      "units": 479
+    },
+    {
+      "key": "gating (predicted, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.18162839248434237,
+      "b": 0.18162839248434237,
+      "difference": 0,
+      "bootstrap95": [
+        -0.010438413361169102,
+        0.012526096033402923
+      ],
+      "signFlipP": 1,
+      "unitsPositive": 4,
+      "unitsNegative": 4,
+      "units": 479
+    },
+    {
+      "key": "gating (oracle, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.6200417536534447,
+      "b": 0.18162839248434237,
+      "difference": 0.4384133611691023,
+      "bootstrap95": [
+        0.38413361169102295,
+        0.4906054279749478
+      ],
+      "signFlipP": 0.00009999000099990002,
+      "unitsPositive": 237,
+      "unitsNegative": 27,
+      "units": 479
+    }
+  ]
+}

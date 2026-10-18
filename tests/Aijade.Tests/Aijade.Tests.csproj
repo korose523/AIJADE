@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Test names use underscores (Method_condition_result); test classes need not be internal. -->
+    <NoWarn>$(NoWarn);CA1707;CA1515</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Aijade.Client/Aijade.Client.csproj" />
+    <ProjectReference Include="../../src/Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../../src/Aijade.Growth/Aijade.Growth.csproj" />
+    <ProjectReference Include="../../src/Aijade.Memory/Aijade.Memory.csproj" />
+    <ProjectReference Include="../../src/Aijade.Research/Aijade.Research.csproj" />
+    <ProjectReference Include="../../src/Aijade.Server/Aijade.Server.csproj" />
+    <ProjectReference Include="../../src/Aijade.Integrations/Aijade.Integrations.csproj" />
+    <ProjectReference Include="../../src/Aijade.Bots/Aijade.Bots.csproj" />
+    <ProjectReference Include="../../src/Aijade.ComputerUse/Aijade.ComputerUse.csproj" />
+    <ProjectReference Include="../../src/Aijade.Learning/Aijade.Learning.csproj" />
+    <ProjectReference Include="../../src/Aijade.Providers/Aijade.Providers.csproj" />
+    <ProjectReference Include="../../tools/Aijade.P1/Aijade.P1.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Golden/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <!-- The computer-use MCP server is started as its own process, from its own build output (with its own deps). -->
+  <Target Name="RecordComputerUsePath" BeforeTargets="GetAssemblyAttributes">
+    <MSBuild Projects="../../src/Aijade.ComputerUse/Aijade.ComputerUse.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" PropertyName="AijadeComputerUseDll" />
+    </MSBuild>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>AijadeComputerUseDll</_Parameter1>
+        <_Parameter2>$(AijadeComputerUseDll)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+</Project>

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <!-- Structured logging through extension methods is fine for this host; LoggerMessage source generation is not required. -->
+    <NoWarn>$(NoWarn);CA1848</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../Aijade.Memory/Aijade.Memory.csproj" />
+    <ProjectReference Include="../Aijade.Growth/Aijade.Growth.csproj" />
+    <ProjectReference Include="../Aijade.Providers/Aijade.Providers.csproj" />
+    <ProjectReference Include="../Aijade.Web/Aijade.Web.csproj" />
+    <ProjectReference Include="../Aijade.Client/Aijade.Client.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="StackExchange.Redis" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations/*.sql" LogicalName="Aijade.Server.Migrations.%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Aijade.Tests" />
+  </ItemGroup>
+</Project>

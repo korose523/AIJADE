@@ -1,0 +1,77 @@
+@implements IAsyncDisposable
+@inject StageHost Stage
+@inject AppState State
+@inject BeatSyncSession BeatSync
+
+<div class="stage" style="@Stage.BackgroundStyle(State.Settings.Current.Stage)">
+    <canvas id="@canvasId"></canvas>
+    @if (fallback is not null)
+    {
+        <div class="stage-note" title="@fallback">avatar</div>
+    }
+    else if (notes.Count > 0)
+    {
+        <div class="stage-note" title="@string.Join("; ", notes)">ⓘ</div>
+    }
+    @if (State.Settings.Current.Stage.BeatSync)
+    {
+        <div class="stage-beat" role="group" aria-label="@State.Text["settings.stage.beatSync"]">
+            @if (BeatSync.Listening)
+            {
+                <span role="status">♪ @(BeatSync.Bpm is { } bpm ? $"{bpm:0} BPM · {BeatSync.Confidence:P0}" : State.Text["beat.listening"])</span>
+                <button type="button" @onclick="BeatSync.StopAsync">@State.Text["beat.stop"]</button>
+            }
+            else
+            {
+                <button type="button" @onclick='() => BeatSync.StartAsync("mic")'>🎤 @State.Text["beat.mic"]</button>
+                <button type="button" @onclick='() => BeatSync.StartAsync("tab")'>🔊 @State.Text["beat.tab"]</button>
+                @if (BeatSync.LastError is { } beatError)
+                {
+                    <span class="error">@beatError</span>
+                }
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private void OnBeat(Aijade.Client.Chat.Beat beat) => _ = Stage.BeatAsync(beat.Strength);
+
+    private void OnBeatSyncChanged() => _ = InvokeAsync(StateHasChanged);
+
+    protected override void OnInitialized()
+    {
+        BeatSync.Beat += OnBeat;
+        BeatSync.Changed += OnBeatSyncChanged;
+    }
+
+    private readonly string canvasId = $"stage-{Guid.NewGuid():N}";
+    private string? fallback;
+    private List<string> notes = [];
+
+    /// <summary>The renderer's asset version hash (part of every render receipt).</summary>
+    public string? AssetVersionHash { get; private set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+        var mounted = await Stage.MountAsync(canvasId, State.Settings.Current.Stage);
+        AssetVersionHash = mounted["assetVersionHash"]?.GetValue<string>();
+        fallback = mounted["fallbackReason"]?.GetValue<string>();
+        notes = [.. (mounted["notes"] as JsonArray ?? []).Select(n => n!.GetValue<string>())];
+        if (fallback is not null || notes.Count > 0)
+            StateHasChanged();
+    }
+
+    public Task<JsonObject> ApplyAsync(Aijade.Memory.Contracts.PerformanceIntent intent) => Stage.ApplyAsync(intent);
+
+    public Task MouthAsync(double open) => Stage.MouthAsync(open);
+
+    public ValueTask DisposeAsync()
+    {
+        BeatSync.Beat -= OnBeat;
+        BeatSync.Changed -= OnBeatSyncChanged;
+        return Stage.DisposeAsync();
+    }
+}

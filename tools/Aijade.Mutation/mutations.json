@@ -1,0 +1,261 @@
+[
+  {
+    "id": "FU-01",
+    "file": "src/Aijade.Memory/Kernel/Events.cs",
+    "match": "Payloads.ToDictionary(kv => kv.Key, kv => Obj(EnvelopeFields).Extend(",
+    "replace": "Payloads.ToDictionary(kv => kv.Key, kv => Obj(EnvelopeFields, strict: false).Extend(",
+    "classHint": "kernel",
+    "expectedCapture": "kernel",
+    "expectedContains": [
+      "envelope with unknown extra field"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Topic events stop rejecting unknown keys in the kernel: the kernel assertion of the unknown-envelope-field negative turns red."
+  },
+  {
+    "id": "FU-02",
+    "file": "src/Aijade.Memory/Kernel/Events.cs",
+    "match": "(\"tick\", Whole(0, 2_147_483_647).Optional())",
+    "replace": "(\"tick\", Whole(0).Optional())",
+    "classHint": "kernel",
+    "expectedCapture": "kernel",
+    "expectedContains": [
+      "tick beyond int32"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Kernel tick upper bound removed: the kernel accepts 2^31; only the kernel assertion turns red (the boundary still refuses)."
+  },
+  {
+    "id": "FU-03",
+    "file": "src/Aijade.Server/V9/Boundary.cs",
+    "match": "private static readonly Rule Tick = R.Whole(0, Int32Max);",
+    "replace": "private static readonly Rule Tick = R.Whole(0);",
+    "classHint": "http",
+    "expectedCapture": "http",
+    "expectedContains": [
+      "tick beyond int32"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Boundary tick upper bound removed: the out-of-range tick reaches the int32 column and leaks as a 500; the HTTP 400 assertion turns red."
+  },
+  {
+    "id": "FU-04",
+    "file": "src/Aijade.Server/V9/V9Endpoints.cs",
+    "match": "var payloadIssues = V9Boundary.Payloads[topic].Validate(payload);",
+    "replace": "var payloadIssues = new List<BoundaryIssue>();",
+    "classHint": "http",
+    "expectedCapture": "http",
+    "expectedContains": [
+      "must be 400"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Per-topic payload validation skipped (payload passed through)."
+  },
+  {
+    "id": "FU-05",
+    "file": "src/Aijade.Server/V9/Boundary.cs",
+    "match": "public static R.StrictRule Envelope { get; } = R.Strict(",
+    "replace": "public static R.StrictRule Envelope { get; } = R.Loose(",
+    "classHint": "http",
+    "expectedCapture": "http+no-write",
+    "expectedContains": [
+      "envelope with unknown extra field"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Boundary envelope no longer strict: an unknown envelope key is accepted and written."
+  },
+  {
+    "id": "FU-06",
+    "file": "src/Aijade.Memory/Kernel/Events.cs",
+    "match": "        (\"risk_level\", Enum(\"low\", \"medium\", \"high\")),\n",
+    "replace": "",
+    "classHint": "guard+kernel",
+    "expectedCapture": "guard+kernel",
+    "expectedContains": [
+      "risk_level",
+      "envelope declares exactly"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Kernel envelope loses risk_level: the field-set guard and every kernel acceptance of an envelope carrying it turn red."
+  },
+  {
+    "id": "FU-07a",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "if (renderRef == input.TraceId || renderRef == input.EventId || renderRef == input.IdempotencyKey)",
+    "replace": "if (false)",
+    "classHint": "http+no-write",
+    "expectedCapture": "http+no-write",
+    "expectedContains": [
+      "self-reference"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Learning-branch self-reference guard removed."
+  },
+  {
+    "id": "FU-07b",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "if (!string.IsNullOrEmpty(value) && envelopeIds.Contains(value))",
+    "replace": "if (false)",
+    "classHint": "http+no-write",
+    "expectedCapture": "http+no-write",
+    "expectedContains": [
+      "self-reference"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Projection self-reference guard removed."
+  },
+  {
+    "id": "FU-08",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "if (trace.AppliedParamsHash != Str(p, \"applied_params_hash\"))",
+    "replace": "if (false)",
+    "classHint": "none",
+    "expectedCapture": "http",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "applied_params_hash mismatch refusal removed; the matrix has no hash-mismatch negative (fixtures use the seed hashes)."
+  },
+  {
+    "id": "FU-09",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "if (input.Topic is not (PersonaRenderRequested or LpmRenderReady))",
+    "replace": "if (true)",
+    "classHint": "none",
+    "expectedCapture": "no-write",
+    "expectedContains": [],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "The render-trace projection is never written: learning proposals then reference a missing projection."
+  },
+  {
+    "id": "FU-10",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "!string.IsNullOrEmpty(renderRef) && !string.IsNullOrEmpty(intentRef) ? \"paired\" : \"partial\"",
+    "replace": "\"paired\"",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "projection_status always 'paired'; the matrix has no projection_status assertion (only the e2e P1b does)."
+  },
+  {
+    "id": "FU-11",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "existing.RenderRef is { Length: > 0 } r0 && r0 != renderRef",
+    "replace": "false",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "Append-only render_ref conflict refusal removed; only the e2e N8 covers a second receipt on one trace."
+  },
+  {
+    "id": "FU-12",
+    "file": "src/Aijade.Server/V9/ServerRuntime.cs",
+    "match": "e.Tick!.Value, e.InputHash!,",
+    "replace": "e.Tick!.Value, \"CONSTANT_FINGERPRINT\",",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "Dispatch replaces the observation's input hash with a constant; the matrix checks presence, not value↔content consistency."
+  },
+  {
+    "id": "FU-13",
+    "file": "src/Aijade.Server/V9/V9Endpoints.cs",
+    "match": "if (V9Boundary.RequiresV10(topic))",
+    "replace": "if (false)",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "The v10 tick/causality requirement is skipped; the matrix has no missing-tick negative for v10 topics (only the e2e N2/N3)."
+  },
+  {
+    "id": "FU-14",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "if (!input.Topic.StartsWith(\"aijade.learning.proposed.\", StringComparison.Ordinal))",
+    "replace": "if (false)",
+    "classHint": "http+no-write",
+    "expectedCapture": "http+no-write",
+    "expectedContains": [
+      "self-reference"
+    ],
+    "predictedVerdict": "caught",
+    "implementable": true,
+    "note": "Learning-reference validation applied to every topic: every non-learning positive is refused."
+  },
+  {
+    "id": "FU-15",
+    "file": "src/Aijade.Server/V9/V9EventService.cs",
+    "match": "if (found > 0)\n            return false;",
+    "replace": "if (false)\n            return false;",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "Every render_ready is audited as unpaired; the matrix counts only events and render_traces, not audit_log_entries."
+  },
+  {
+    "id": "FU-16",
+    "file": "src/Aijade.Memory/BioticMemory.cs",
+    "match": "",
+    "replace": "",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "notImplemented",
+    "implementable": false,
+    "note": "Not injectable: the matrix never constructs the in-memory store (BioticMemory), so its persistence is outside the observed domain."
+  },
+  {
+    "id": "FU-17",
+    "file": "src/Aijade.Server/V9/Boundary.cs",
+    "match": "private static readonly Rule Tick = R.Whole(0, Int32Max);",
+    "replace": "private static readonly Rule Tick = R.Num(0, Int32Max);",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "Tick no longer required to be an integer; the matrix has no fractional-tick negative."
+  },
+  {
+    "id": "FU-18",
+    "file": "src/Aijade.Memory/Kernel/Events.cs",
+    "match": "public static readonly ObjectSchema Envelope = Obj(EnvelopeFields);",
+    "replace": "public static readonly ObjectSchema Envelope = Obj(EnvelopeFields, strict: false);",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "survived",
+    "implementable": true,
+    "note": "Only the standalone envelope schema loosened; the decisive check is the topic-event schema, so nothing turns red (the shadowing surface)."
+  },
+  {
+    "id": "FU-19",
+    "file": "src/Aijade.Memory/Kernel/Events.cs",
+    "match": "",
+    "replace": "",
+    "classHint": "none",
+    "expectedCapture": "none",
+    "expectedContains": [],
+    "predictedVerdict": "notImplemented",
+    "implementable": false,
+    "note": "Semantically equivalent rewrite (comments / field order): no observable anchor; excluded from the score denominator."
+  }
+]

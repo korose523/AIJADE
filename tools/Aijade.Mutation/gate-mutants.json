@@ -1,0 +1,202 @@
+[
+  {
+    "id": "P1",
+    "file": "src/Aijade.Server/V9/PromotionService.cs",
+    "what": "drop the integrity anchor check",
+    "match": "if (!anchor.Ok)",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "P2",
+    "file": "src/Aijade.Server/V9/PromotionService.cs",
+    "what": "drop the job-header / proposal hash agreement",
+    "match": "if (job.InputHash != job.Proposal.InputHash)",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "P3",
+    "file": "src/Aijade.Server/V9/PromotionService.cs",
+    "what": "drop the evidence gate",
+    "match": "if (!evidenceGate.Ok)",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "P4",
+    "file": "src/Aijade.Server/V9/PromotionService.cs",
+    "what": "drop the PGC gate",
+    "match": "if (!commitPossible)",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "P5",
+    "file": "src/Aijade.Server/V9/PromotionService.cs",
+    "what": "PGC verdict ignored (always commit)",
+    "match": "var commitPossible = v6 is not null ? v6.CommitPossible : entry?.Decision == PgcDecision.Commit;",
+    "replace": "var commitPossible = true;",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "A1",
+    "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+    "what": "shadow_params anchor: hash comparison removed",
+    "match": "return expected == p.InputHash ? Contracts.Validation.Pass",
+    "replace": "return true ? Contracts.Validation.Pass",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "A2",
+    "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+    "what": "anchor kinds swapped",
+    "match": "if (p.AnchorKind == ShadowParamsAnchorKind.ShadowParams)",
+    "replace": "if (p.AnchorKind != ShadowParamsAnchorKind.ShadowParams)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "E1",
+    "file": "src/Aijade.Memory/Development/Vse.cs",
+    "what": "evidence: unit/contract/property tests ignored",
+    "match": "if (!pack.UnitContractPropertyTests.Passed)",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "E2",
+    "file": "src/Aijade.Memory/Development/Vse.cs",
+    "what": "evidence: static analysis ignored",
+    "match": "if (pack.StaticAnalysis is { Passed: false })",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "E3",
+    "file": "src/Aijade.Memory/Development/Vse.cs",
+    "what": "evidence: dependency/license scan ignored",
+    "match": "if (pack.DependencyLicenseScan is { Passed: false })",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "E4",
+    "file": "src/Aijade.Memory/Development/Vse.cs",
+    "what": "evidence: security sandbox ignored",
+    "match": "if (pack.SecuritySandbox is { Passed: false })",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "E5",
+    "file": "src/Aijade.Memory/Development/Vse.cs",
+    "what": "evidence: historical replay ignored",
+    "match": "if (pack.HistoricalReplay is { Passed: false })",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "E6",
+    "file": "src/Aijade.Memory/Development/Vse.cs",
+    "what": "evidence: adversarial evaluation ignored",
+    "match": "if (pack.AdversarialEval is { Passed: false })",
+    "replace": "if (false)",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G1",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: w_max_global below theta ignored",
+    "match": "if (wMaxGlobal < th)\n            return (false, CommitReason.WMaxBelowTheta);",
+    "replace": "if (false)\n            return (false, CommitReason.WMaxBelowTheta);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G2",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: high contradiction ignored",
+    "match": "if (level == ContradictionLevel.High)\n            return (false, CommitReason.ContradictionHigh);",
+    "replace": "if (false)\n            return (false, CommitReason.ContradictionHigh);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G3",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: insufficient evidence ignored",
+    "match": "if (!evidenceSufficient)\n            return (false, CommitReason.EvidenceInsufficient);",
+    "replace": "if (false)\n            return (false, CommitReason.EvidenceInsufficient);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G4",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: fatigue deferral ignored",
+    "match": "if (decision == PgcDecision.Defer)\n            return (false, CommitReason.FatigueDeferred);",
+    "replace": "if (false)\n            return (false, CommitReason.FatigueDeferred);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G5",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: w below theta ignored",
+    "match": "if (w < th)\n            return (false, CommitReason.WBelowTheta);",
+    "replace": "if (false)\n            return (false, CommitReason.WBelowTheta);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G6",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: w_max_global boundary < to <=",
+    "match": "if (wMaxGlobal < th)\n            return (false, CommitReason.WMaxBelowTheta);",
+    "replace": "if (wMaxGlobal <= th)\n            return (false, CommitReason.WMaxBelowTheta);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  },
+  {
+    "id": "G7",
+    "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+    "what": "PGC: w boundary < to <=",
+    "match": "if (w < th)\n            return (false, CommitReason.WBelowTheta);",
+    "replace": "if (w <= th)\n            return (false, CommitReason.WBelowTheta);",
+    "implementable": true,
+    "expectedCapture": "tamper matrix",
+    "predictedVerdict": "caught"
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "experiment": "gating ON - OFF at K = 8 (macro) under each score mode and salience source, with the conflict penalty switched off (1.0); unit bootstrap and sign-flip test as in uncertainty.json",
+  "conflictPenalty": 1,
+  "contrasts": [
+    {
+      "key": "gating (predicted, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.0890336008859097,
+      "b": 0.10307558812460664,
+      "difference": -0.014041987238696953,
+      "bootstrap95": [
+        -0.018178344416449305,
+        -0.009503940615088831
+      ],
+      "signFlipP": 0.00390625,
+      "unitsPositive": 0,
+      "unitsNegative": 9,
+      "units": 10
+    },
+    {
+      "key": "gating (oracle, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.4668099742700008,
+      "b": 0.10307558812460664,
+      "difference": 0.36373438614539416,
+      "bootstrap95": [
+        0.29820901400457067,
+        0.43330339038108107
+      ],
+      "signFlipP": 0.001953125,
+      "unitsPositive": 10,
+      "unitsNegative": 0,
+      "units": 10
+    },
+    {
+      "key": "gating (predicted, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.5578435175498411,
+      "b": 0.5478435560079876,
+      "difference": 0.009999961541853498,
+      "bootstrap95": [
+        0.005953176768926749,
+        0.014557552350423875
+      ],
+      "signFlipP": 0.00390625,
+      "unitsPositive": 9,
+      "unitsNegative": 0,
+      "units": 10
+    },
+    {
+      "key": "gating (oracle, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.6482387355693179,
+      "b": 0.5478435560079876,
+      "difference": 0.1003951795613303,
+      "bootstrap95": [
+        0.07930698970640798,
+        0.12061705824329905
+      ],
+      "signFlipP": 0.001953125,
+      "unitsPositive": 10,
+      "unitsNegative": 0,
+      "units": 10
+    }
+  ],
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.13",
+    "generatedAt": "2026-10-15T15:59:48.6614720+00:00"
+  }
+}

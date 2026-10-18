@@ -1,0 +1,73 @@
+{
+  "experiment": "gating ON - OFF at K = 8 (macro) under each score mode and salience source, with the conflict penalty switched off (1.0); unit bootstrap and sign-flip test as in uncertainty.json",
+  "conflictPenalty": 1,
+  "contrasts": [
+    {
+      "key": "gating (predicted, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.6346555323590815,
+      "b": 0.6450939457202505,
+      "difference": -0.010438413361169102,
+      "bootstrap95": [
+        -0.022964509394572025,
+        0.0020876826722338203
+      ],
+      "signFlipP": 0.17898210178982102,
+      "unitsPositive": 2,
+      "unitsNegative": 7,
+      "units": 479
+    },
+    {
+      "key": "gating (oracle, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 1,
+      "b": 0.6450939457202505,
+      "difference": 0.35490605427974947,
+      "bootstrap95": [
+        0.31315240083507306,
+        0.3966597077244259
+      ],
+      "signFlipP": 0.00009999000099990002,
+      "unitsPositive": 170,
+      "unitsNegative": 0,
+      "units": 479
+    },
+    {
+      "key": "gating (predicted, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.8705636743215032,
+      "b": 0.8663883089770354,
+      "difference": 0.0041753653444676405,
+      "bootstrap95": [
+        0,
+        0.010438413361169102
+      ],
+      "signFlipP": 0.49595040495950404,
+      "unitsPositive": 2,
+      "unitsNegative": 0,
+      "units": 479
+    },
+    {
+      "key": "gating (oracle, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.6200417536534447,
+      "b": 0.8663883089770354,
+      "difference": -0.24634655532359082,
+      "bootstrap95": [
+        -0.2964509394572025,
+        -0.19624217118997914
+      ],
+      "signFlipP": 0.00009999000099990002,
+      "unitsPositive": 31,
+      "unitsNegative": 149,
+      "units": 479
+    }
+  ],
+  "provenance": {
+    "corpus": "LongMemEval_s (cleaned)",
+    "corpusSha256": "d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442",
+    "questions": 479,
+    "runtime": ".NET 10.0.13",
+    "generatedAt": "2026-10-15T16:52:57.2515550+00:00"
+  }
+}

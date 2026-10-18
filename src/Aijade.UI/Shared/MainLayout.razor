@@ -1,0 +1,49 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject AppState State
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<div class="shell theme-@Theme">
+    @if (!State.Ready)
+    {
+        <div class="splash">@State.Text["common.loading"]</div>
+    }
+    else if (State.Account is null && !Nav.Uri.Contains("/login", StringComparison.Ordinal))
+    {
+        <Login />
+    }
+    else
+    {
+        <nav class="sidebar">
+            <div class="brand">@State.Text["app.title"]</div>
+            <NavLink href="" Match="NavLinkMatch.All">💬 <span>@State.Text["nav.chat"]</span></NavLink>
+            <NavLink href="characters">🎭 <span>@State.Text["nav.characters"]</span></NavLink>
+            <NavLink href="memory">🧠 <span>@State.Text["nav.memory"]</span></NavLink>
+            <NavLink href="chess">♟️ <span>@State.Text["nav.chess"]</span></NavLink>
+            <NavLink href="settings">⚙️ <span>@State.Text["nav.settings"]</span></NavLink>
+            @if (State.Account?.IsAdmin == true)
+            {
+                <NavLink href="admin">🛠️ <span>@State.Text["nav.admin"]</span></NavLink>
+            }
+            <div class="spacer"></div>
+            <div class="account">@State.Account?.Email</div>
+        </nav>
+        <main class="content">@Body</main>
+    }
+</div>
+
+@code {
+    private string Theme => State.Settings.Current.Theme;
+
+    protected override async Task OnInitializedAsync()
+    {
+        State.Changed += OnChanged;
+        if (!State.Ready)
+            await State.InitializeAsync(await JS.InvokeAsync<string>("eval", "navigator.language"));
+    }
+
+    private void OnChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => State.Changed -= OnChanged;
+}

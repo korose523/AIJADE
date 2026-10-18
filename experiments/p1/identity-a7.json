@@ -1,0 +1,68 @@
+{
+  "experiment": "P1 Appendix A.7 positive control (CDI rejection stages)",
+  "shipped": [
+    {
+      "case": "①",
+      "expected": "constraint",
+      "got": "constraint",
+      "stageMatches": true
+    },
+    {
+      "case": "②",
+      "expected": "constraint",
+      "got": "validation",
+      "stageMatches": false
+    },
+    {
+      "case": "③",
+      "expected": "safety",
+      "got": "safety",
+      "stageMatches": true
+    },
+    {
+      "case": "④",
+      "expected": "consent",
+      "got": "consent",
+      "stageMatches": true
+    },
+    {
+      "case": "legit",
+      "expected": "ok",
+      "got": "ok",
+      "stageMatches": true
+    }
+  ],
+  "consentAlsoSafetyBound": [
+    {
+      "case": "①",
+      "expected": "constraint",
+      "got": "constraint",
+      "stageMatches": true
+    },
+    {
+      "case": "②",
+      "expected": "constraint",
+      "got": "validation",
+      "stageMatches": false
+    },
+    {
+      "case": "③",
+      "expected": "safety",
+      "got": "safety",
+      "stageMatches": true
+    },
+    {
+      "case": "④",
+      "expected": "consent",
+      "got": "safety",
+      "stageMatches": false
+    },
+    {
+      "case": "legit",
+      "expected": "ok",
+      "got": "ok",
+      "stageMatches": true
+    }
+  ],
+  "runtime": ".NET 10.0.12"
+}

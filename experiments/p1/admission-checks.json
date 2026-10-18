@@ -1,0 +1,49 @@
+{
+  "generatedBy": "tests/Aijade.Tests/AdmissionChecksTests.cs (V9EventService on PostgreSQL)",
+  "cases": 6,
+  "asExpected": 6,
+  "results": [
+    {
+      "case": "honest proposal",
+      "expected": "admitted",
+      "got": "admitted",
+      "eventsWritten": 1,
+      "asExpected": true
+    },
+    {
+      "case": "reference to a render that does not exist",
+      "expected": "render_ref_not_found",
+      "got": "render_ref_not_found",
+      "eventsWritten": 0,
+      "asExpected": true
+    },
+    {
+      "case": "reference to an unpaired trace (no request-side intent)",
+      "expected": "intent_ref_missing",
+      "got": "intent_ref_missing",
+      "eventsWritten": 0,
+      "asExpected": true
+    },
+    {
+      "case": "tampered parameter fingerprint",
+      "expected": "applied_params_hash_mismatch",
+      "got": "applied_params_hash_mismatch",
+      "eventsWritten": 0,
+      "asExpected": true
+    },
+    {
+      "case": "tampered asset version",
+      "expected": "asset_version_hash_mismatch",
+      "got": "asset_version_hash_mismatch",
+      "eventsWritten": 0,
+      "asExpected": true
+    },
+    {
+      "case": "self-reference (render_ref = own trace id)",
+      "expected": "self_reference",
+      "got": "self_reference",
+      "eventsWritten": 0,
+      "asExpected": true
+    }
+  ]
+}

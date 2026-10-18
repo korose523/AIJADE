@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "AIJADE — share what I'm watching",
+  "version": "0.1.0",
+  "description": "Lets your AIJADE companion know which video or page you are on (title and on-screen subtitles), only on the sites you allow and only while sharing is on.",
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*",
+    "https://www.bilibili.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.bilibili.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AIJADE"
+  },
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "extract.js"
+      ],
+      "matches": [
+        "https://www.youtube.com/*",
+        "https://www.bilibili.com/*"
+      ]
+    }
+  ]
+}

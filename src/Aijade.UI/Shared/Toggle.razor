@@ -1,0 +1,9 @@
+<label class="toggle"><input type="checkbox" checked="@Value" @onchange="e => Changed.InvokeAsync(e.Value is true)" /> <span>@Label</span></label>
+
+@code {
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+
+    [Parameter] public bool Value { get; set; }
+
+    [Parameter] public EventCallback<bool> Changed { get; set; }
+}

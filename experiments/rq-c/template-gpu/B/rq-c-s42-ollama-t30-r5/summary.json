@@ -1,0 +1,344 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 30,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:7b-instruct",
+    "rounds": 5,
+    "pCorrect": 0.5,
+    "tasks": 12,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "maxReplyTokens": 4096,
+    "numCtx": 4096,
+    "verifyTemplate": "B"
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "qwen2.5-coder:7b-instruct",
+    "temperature": 0,
+    "seed": 3759066737,
+    "ollamaVersion": "0.40.0",
+    "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+    "abortedReplies": 0,
+    "lengthLimitedReplies": 0,
+    "nonConformingVerdicts": 0,
+    "warmUp": true
+  },
+  "analysisUnit": "skill",
+  "nSkills": 1500,
+  "nExecutions": 7200,
+  "fingerprint": "d635fe49",
+  "gitHash": "unknown",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9166666666666666,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 390,
+      "precision": 0.9322222222222222,
+      "retiredRate": 0.07692307692307693,
+      "meanCallsPerSkill": 4.615384615384615
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9166666666666666,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 390,
+      "precision": 0.9322222222222222,
+      "retiredRate": 0.07692307692307693,
+      "meanCallsPerSkill": 4.615384615384615
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8861111111111111,
+        "hi": 0.9444444444444444
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.9322222222222222,
+        "lo": 0.9114642451759364,
+        "hi": 0.9509271911547048
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.9166666666666666,
+        "lo": 0.8888888888888888,
+        "hi": 0.9444444444444444
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.9322222222222222,
+        "lo": 0.9122108353353601,
+        "hi": 0.9512869278474235
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 750,
+    "hallucinationRate": 1,
+    "missRate": 0,
+    "agreement": 0.8986666666666666,
+    "falseDiscoveryRate": 0.10133333333333333,
+    "falseOmissionRate": null
+  },
+  "diffInDiff": {
+    "estimate": 0,
+    "ci": {
+      "mean": 0,
+      "lo": -0.04799602219444759,
+      "hi": 0.048935975095904326
+    },
+    "cellMeans": {
+      "a": 0.9166666666666666,
+      "b": 0.9322222222222222,
+      "c": 0.9166666666666666,
+      "d": 0.9322222222222222
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 0.6798418972332015,
+    "riskDifference": -0.0346153846153846,
+    "cramersV": 0.05509713439331648,
+    "cohensH": -0.11546177051244078,
+    "interactionLogOdds": {
+      "estimate": 0,
+      "se": 0.049030769169484255,
+      "z": 0,
+      "p": 1
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 0.03285073502340684,
+        "adjustedP": 0.29565661521066156,
+        "reject": false
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 3.3515963066077403e-7,
+        "adjustedP": 0.0000033515963066077404,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 0.1475198832809569,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 0.1475198832809569,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 0.1475198832809569,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 0.1475198832809569,
+        "adjustedP": 1,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": 0,
+    "se": 0.049030769169484255,
+    "z": 0,
+    "p": 1
+  },
+  "chiSquare": {
+    "statistic": 4.553541327532767,
+    "p": 0.03285073502340684,
+    "table": [
+      [
+        688,
+        92
+      ],
+      [
+        660,
+        60
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareSelfVerification": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        674,
+        76
+      ],
+      [
+        674,
+        76
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 6.015138928167421,
+    "p": 0.014183661855111204,
+    "table": [
+      [
+        3356,
+        244
+      ],
+      [
+        3300,
+        300
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 32,
+    "b": 28,
+    "c": 0,
+    "d": 660,
+    "nPairs": 720,
+    "chiSquare": 26.035714285714285,
+    "pChiSquare": 3.3515963066077403e-7,
+    "pExact": null,
+    "p": 3.3515963066077403e-7,
+    "usedExact": false
+  },
+  "power": {
+    "minDetectableEffectAt80": 10.176830259356315,
+    "nSkillsPerCell": 375,
+    "powerAtDelta10pp": 0.790009120254173,
+    "powerAtDelta5pp": 0.27852745574879556
+  },
+  "powerReference": [
+    {
+      "nPerCell": 240,
+      "minDetectableEffectAt80pp": 12.68,
+      "powerAtDelta10pp": 0.5999,
+      "powerAtDelta5pp": 0.1944
+    },
+    {
+      "nPerCell": 360,
+      "minDetectableEffectAt80pp": 10.38,
+      "powerAtDelta10pp": 0.7735,
+      "powerAtDelta5pp": 0.2693
+    }
+  ],
+  "preregistrationDeviation": [],
+  "degeneracy": {
+    "allCellsIdenticalPrecision": false,
+    "totalRegenerations": 60,
+    "totalRecoveries": 28,
+    "recoveredRate": 0.4666666666666667,
+    "manipulationReachable": true,
+    "note": "reachable: cells differ and 28/60 regenerations recovered with changed code (28 recovered in all)",
+    "totalRecoveriesWithChangedCode": 28
+  },
+  "loopDiagnostics": [
+    {
+      "condition": "sv0-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv0-ef1",
+      "loop": {
+        "regenerations": 30,
+        "regenerationsWithSignal": 30,
+        "recoveries": 14,
+        "recoveredRate": 0.4666666666666667
+      }
+    },
+    {
+      "condition": "sv1-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv1-ef1",
+      "loop": {
+        "regenerations": 30,
+        "regenerationsWithSignal": 30,
+        "recoveries": 14,
+        "recoveredRate": 0.4666666666666667
+      }
+    }
+  ]
+}

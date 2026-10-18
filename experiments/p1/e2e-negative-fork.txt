@@ -1,0 +1,11 @@
+PASS  P0 前提：起点库内渲染轨迹为 0（真正的"无渲染身份"场景）  — render_traces=0
+PASS  P1.1 零渲染身份：观察被正常受理（201，不因缺身份而拒绝）  — status=201
+PASS  P1.2 零渲染身份：不产出提案（宁缺勿伪造 · 负向分支）  — proposals 0 → 0（期望不变）
+PASS  P1.3 零渲染身份：观察照常落库（跳过派发 ≠ 拒绝受理）  — events 0 → 1
+PASS  P1.4 零渲染身份：未产生任何伪造渲染轨迹  — render_traces=0
+PASS  P2.1 补齐：渲染请求/回执 201 配对  — req=201 ready=201
+PASS  P2.2 有真实回执 ⇒ 产出提案（增量 > 0）  — obs=201 proposals 0 → 1
+PASS  P3.1 提案引用与投影真源逐字一致  — projection=render-nf2-5f8aa6d9 | contained=True
+PASS  P3.2 无悬空引用（所有提案 render_ref 均可在投影表定位）  — dangling=0
+
+===== e2e-negative-fork: 9/9 passed =====

@@ -1,0 +1,28 @@
+{
+  "generatedBy": "tests/Aijade.Tests/ValidationOverheadTests.cs",
+  "runtime": ".NET 10.0.12",
+  "cpus": 8,
+  "batch": 2000,
+  "repeats": 31,
+  "warmup": 5,
+  "topic": "aijade.learning.constraint.opinion_evaluation",
+  "behaviourOnUnknownField": {
+    "strict": "rejects unknown field",
+    "liberal": "accepts unknown field"
+  },
+  "perEnvelopeMedianUs": {
+    "jsonParse": 8.796700000000001,
+    "strictCheck": 78.33735,
+    "liberalCheck": 73.13975
+  },
+  "validationOnlyUs": {
+    "strict": 69.54065,
+    "liberal": 64.34305
+  },
+  "strictMinusLiberalUs": 5.197599999999994,
+  "ingestP50Ms": 10.2773,
+  "shareOfIngestP50": {
+    "strictValidation": 0.0067664318449398185,
+    "strictMinusLiberal": 0.0005057359423194803
+  }
+}

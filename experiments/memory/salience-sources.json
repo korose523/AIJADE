@@ -1,0 +1,222 @@
+{
+  "experiment": "salience source (oracle / predicted / shuffled) × gating ON/OFF, plus ON without selective consolidation; macro recall@K",
+  "byScoreMode": {
+    "additive": {
+      "auc": {
+        "oracle": 1,
+        "predicted": 0.7656791406382233,
+        "shuffled": 0.4944672090817126
+      },
+      "conditions": {
+        "predicted-ON": {
+          "recall": {
+            "1": 0.030546955895253254,
+            "2": 0.041062654567425236,
+            "4": 0.050963203416919046,
+            "8": 0.0691347697772432
+          },
+          "hitScoreMean": 0.7572850542024204,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "predicted-OFF": {
+          "recall": {
+            "1": 0.03961785425311119,
+            "2": 0.05009126799488848,
+            "4": 0.06329962844622758,
+            "8": 0.07969649340090265
+          },
+          "hitScoreMean": 0.6819182869872055,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "predicted-ON-noprune": {
+          "recall": {
+            "1": 0.030546955895253254,
+            "2": 0.041062654567425236,
+            "4": 0.050963203416919046,
+            "8": 0.0691347697772432
+          },
+          "hitScoreMean": 0.7572844357057698,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "oracle-ON": {
+          "recall": {
+            "1": 0.05539135187596569,
+            "2": 0.092428295535704,
+            "4": 0.2132205279294364,
+            "8": 0.36964705448631047
+          },
+          "hitScoreMean": 0.5347711159038548,
+          "evidenceSurvival": 1,
+          "prunedTotal": 446,
+          "poolSize": 285
+        },
+        "oracle-OFF": {
+          "recall": {
+            "1": 0.03961785425311119,
+            "2": 0.05009126799488848,
+            "4": 0.06329962844622758,
+            "8": 0.07969649340090265
+          },
+          "hitScoreMean": 0.6819182869872055,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "oracle-ON-noprune": {
+          "recall": {
+            "1": 0.04479530840998873,
+            "2": 0.05964314628447488,
+            "4": 0.08206075105511904,
+            "8": 0.11189991704779516
+          },
+          "hitScoreMean": 0.7118933255842723,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "shuffled-ON": {
+          "recall": {
+            "1": 0.026097414802309916,
+            "2": 0.03560665434934705,
+            "4": 0.04744903733797985,
+            "8": 0.061216309389245535
+          },
+          "hitScoreMean": 0.7602129591340425,
+          "evidenceSurvival": 0.9986528822055138,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "shuffled-OFF": {
+          "recall": {
+            "1": 0.03961785425311119,
+            "2": 0.05009126799488848,
+            "4": 0.06329962844622758,
+            "8": 0.07969649340090265
+          },
+          "hitScoreMean": 0.6819182869872055,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        }
+      }
+    },
+    "standardized": {
+      "auc": {
+        "oracle": 1,
+        "predicted": 0.7656791406382233,
+        "shuffled": 0.4944672090817126
+      },
+      "conditions": {
+        "predicted-ON": {
+          "recall": {
+            "1": 0.1048642456602302,
+            "2": 0.13307871541251542,
+            "4": 0.1685470740597138,
+            "8": 0.1984688004513847
+          },
+          "hitScoreMean": 8.884450285683805,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "predicted-OFF": {
+          "recall": {
+            "1": 0.107628677817079,
+            "2": 0.13407518610544006,
+            "4": 0.16665404371068815,
+            "8": 0.19853236649084932
+          },
+          "hitScoreMean": 8.70931735471834,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "predicted-ON-noprune": {
+          "recall": {
+            "1": 0.1048642456602302,
+            "2": 0.13307871541251542,
+            "4": 0.1685470740597138,
+            "8": 0.1984688004513847
+          },
+          "hitScoreMean": 8.896057946146467,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "oracle-ON": {
+          "recall": {
+            "1": 0.14803540243424268,
+            "2": 0.17942537758754143,
+            "4": 0.24269478417366347,
+            "8": 0.3289959920253717
+          },
+          "hitScoreMean": 6.009709901515846,
+          "evidenceSurvival": 1,
+          "prunedTotal": 446,
+          "poolSize": 285
+        },
+        "oracle-OFF": {
+          "recall": {
+            "1": 0.107628677817079,
+            "2": 0.13407518610544006,
+            "4": 0.16665404371068815,
+            "8": 0.19853236649084932
+          },
+          "hitScoreMean": 8.70931735471834,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "oracle-ON-noprune": {
+          "recall": {
+            "1": 0.11404052759473593,
+            "2": 0.14712363742611195,
+            "4": 0.1834851799182125,
+            "8": 0.2224431438088308
+          },
+          "hitScoreMean": 8.567712550173617,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "shuffled-ON": {
+          "recall": {
+            "1": 0.10952992001070953,
+            "2": 0.13530991637612738,
+            "4": 0.16635706493666536,
+            "8": 0.19837089191457719
+          },
+          "hitScoreMean": 8.856316104887355,
+          "evidenceSurvival": 0.9986528822055138,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        },
+        "shuffled-OFF": {
+          "recall": {
+            "1": 0.107628677817079,
+            "2": 0.13407518610544006,
+            "4": 0.16665404371068815,
+            "8": 0.19853236649084932
+          },
+          "hitScoreMean": 8.70931735471834,
+          "evidenceSurvival": 1,
+          "prunedTotal": 0,
+          "poolSize": 1176
+        }
+      }
+    }
+  },
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.12",
+    "generatedAt": "2026-10-13T23:49:41.9370690+00:00"
+  }
+}

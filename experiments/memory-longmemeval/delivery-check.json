@@ -1,0 +1,40 @@
+{
+  "experiment": "delivery track without gating: recall@8 (macro) per score mode with the conflict penalty at its default and switched off (1.0); share of top-8 slots penalised; share of questions with a penalised gold item in the scanned head (8 additive, 150 standardised)",
+  "rows": [
+    {
+      "mode": "additive",
+      "conflictPenalty": 0.5,
+      "recall8Macro": 0.4592901878914405,
+      "penalizedShareOfTop8": 0.008350730688935281,
+      "goldPenalizedShare": 0.04384133611691023
+    },
+    {
+      "mode": "additive",
+      "conflictPenalty": 1,
+      "recall8Macro": 0.6450939457202505,
+      "penalizedShareOfTop8": 0.3930062630480167,
+      "goldPenalizedShare": 0.35281837160751567
+    },
+    {
+      "mode": "standardized",
+      "conflictPenalty": 0.5,
+      "recall8Macro": 0.18162839248434237,
+      "penalizedShareOfTop8": 0.06837160751565761,
+      "goldPenalizedShare": 0.23799582463465555
+    },
+    {
+      "mode": "standardized",
+      "conflictPenalty": 1,
+      "recall8Macro": 0.8663883089770354,
+      "penalizedShareOfTop8": 0.8517745302713987,
+      "goldPenalizedShare": 0.9331941544885177
+    }
+  ],
+  "provenance": {
+    "corpus": "LongMemEval_s (cleaned)",
+    "corpusSha256": "d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442",
+    "questions": 479,
+    "runtime": ".NET 10.0.13",
+    "generatedAt": "2026-10-15T17:15:14.6796130+00:00"
+  }
+}

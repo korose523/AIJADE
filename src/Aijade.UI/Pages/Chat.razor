@@ -1,0 +1,349 @@
+@page "/"
+@page "/chat/{ChatId}"
+@implements IAsyncDisposable
+@inject AppState State
+@inject NavigationManager Nav
+@inject VoiceInput Voice
+@inject AudioOutput Audio
+@inject AgentCapabilitiesHost Capabilities
+@inject VisionSession Vision
+
+<div class="chat-page">
+    <aside class="chat-list">
+        <button class="primary" @onclick="NewChatAsync">＋ @State.Text["chat.new"]</button>
+        @foreach (var c in chats)
+        {
+            <div class="chat-item @(c.Id == ChatId ? "active" : "")">
+                <a href="chat/@c.Id">@(string.IsNullOrEmpty(c.Title) ? c.UpdatedAt.ToLocalTime().ToString("g") : c.Title)</a>
+                <button class="icon" title="@State.Text["chat.delete"]" @onclick="() => DeleteChatAsync(c.Id)">🗑</button>
+            </div>
+        }
+    </aside>
+    <section class="conversation">
+        <StagePanel @ref="stage" />
+        <div class="messages" aria-live="polite">
+            @if (messages.Count == 0 && streaming.Length == 0)
+            {
+                <p class="empty">@(character?.Greeting is { Length: > 0 } g ? g : State.Text["chat.empty"])</p>
+            }
+            @foreach (var m in messages.Where(m => m.Role is "user" or "assistant"))
+            {
+                if (Artistry.ImageOf(m) is { } image)
+                {
+                    <ChatImage @key="m.Id" Image="image" />
+                }
+                else
+                {
+                    <div class="bubble @m.Role">@m.Content</div>
+                }
+            }
+            @if (drawing)
+            {
+                <div class="bubble assistant streaming">@State.Text["chat.drawing"]</div>
+            }
+            @if (busy)
+            {
+                <div class="bubble assistant streaming">@(streaming.Length > 0 ? streaming : State.Text["chat.thinking"])</div>
+            }
+            @if (error is not null)
+            {
+                <p class="error" role="alert">@error</p>
+            }
+        </div>
+        @if (State.Settings.Current.Modules.Vision)
+        {
+            <div class="vision-bar" role="group" aria-label="@State.Text["module.vision"]">
+                @if (Vision.Sharing is null)
+                {
+                    <button type="button" @onclick="() => Vision.StartAsync(VisionSource.Screen)">🖥️ @State.Text["vision.shareScreen"]</button>
+                    <button type="button" @onclick="() => Vision.StartAsync(VisionSource.Camera)">📷 @State.Text["vision.camera"]</button>
+                }
+                else
+                {
+                    <span class="vision-live" role="status">● @State.Text[Vision.Sharing == VisionSource.Camera ? "vision.watchingCamera" : "vision.watchingScreen"]@(Vision.Looking ? " …" : "")</span>
+                    <button type="button" @onclick="Vision.StopAsync">@State.Text["vision.stop"]</button>
+                }
+                <label class="button">📎 @State.Text["vision.attach"]<InputFile OnChange="AttachAsync" accept="image/*" hidden /></label>
+                @if (attached)
+                {
+                    <span class="meta" role="status">@State.Text["vision.attached"]</span>
+                }
+                @if (Vision.LastError is { } visionError)
+                {
+                    <span class="error">@State.Text.Format("vision.failed", visionError)</span>
+                }
+            </div>
+        }
+        <form class="composer" @onsubmit="SendAsync">
+            <button type="button" class="icon mic @(listening ? "on" : "")" title="@State.Text["settings.voice"]" @onclick="ToggleVoiceAsync">🎙</button>
+            <div class="level" style="width:@(Math.Min(100, level * 800).ToString("F0", System.Globalization.CultureInfo.InvariantCulture))%"></div>
+            <input @bind="draft" @bind:event="oninput" placeholder="@State.Text["chat.placeholder"]" disabled="@busy" />
+            @if (busy)
+            {
+                <button type="button" @onclick="Stop">@State.Text["chat.stop"]</button>
+            }
+            else
+            {
+                <button type="submit" class="primary" disabled="@string.IsNullOrWhiteSpace(draft)">@State.Text["chat.send"]</button>
+            }
+        </form>
+    </section>
+</div>
+
+@code {
+    [Parameter] public string? ChatId { get; set; }
+
+    private StagePanel? stage;
+    private IReadOnlyList<ChatSummary> chats = [];
+    private List<StoredMessage> messages = [];
+    private Character? character;
+    private string draft = "";
+    private string streaming = "";
+    private string? error;
+    private bool busy;
+    private bool drawing;
+    private bool attached;
+
+    private async Task AttachAsync(InputFileChangeEventArgs e)
+    {
+        attached = false;
+        await using var stream = e.File.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+        using var buffer = new MemoryStream();
+        await stream.CopyToAsync(buffer);
+        attached = await Vision.AttachAsync(buffer.ToArray(), e.File.ContentType) is not null;
+    }
+
+    private void OnVisionChanged() => _ = InvokeAsync(StateHasChanged);
+    private bool canDraw;
+    private bool listening;
+    private double level;
+    private CancellationTokenSource? cts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Voice.Transcript += OnTranscript;
+        Voice.Level += OnLevel;
+        Voice.Failed += OnVoiceFailed;
+        Vision.Changed += OnVisionChanged;
+        await LoadChatsAsync();
+    }
+
+    private string? loadedChatId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Reload only when the chat changes (a navigation after the first message must not clobber the turn in progress).
+        if (ChatId == loadedChatId && (busy || messages.Count > 0))
+            return;
+        loadedChatId = ChatId;
+        messages = ChatId is null ? [] : [.. await State.Api.MessagesAsync(ChatId)];
+        var characterId = State.Settings.Current.ActiveCharacterId;
+        character = characterId is null ? null : (await State.Api.CharactersAsync()).FirstOrDefault(c => c.Id == characterId);
+    }
+
+    private async Task LoadChatsAsync() => chats = await State.Api.ChatsAsync();
+
+    private async Task NewChatAsync()
+    {
+        var chat = await State.Api.CreateChatAsync(State.Settings.Current.ActiveCharacterId, "");
+        await LoadChatsAsync();
+        Nav.NavigateTo($"chat/{chat.Id}");
+    }
+
+    private async Task DeleteChatAsync(string id)
+    {
+        await State.Api.DeleteChatAsync(id);
+        await LoadChatsAsync();
+        if (id == ChatId)
+            Nav.NavigateTo("");
+    }
+
+    private ChatOrchestrator Orchestrator()
+    {
+        var s = State.Settings.Current;
+        var learning = Capabilities.For(State.Account?.Id ?? "anonymous");
+        return new ChatOrchestrator(State.Api, [new MemoryRecallProvider(State.Api, () => State.Settings.Current.Modules.Memory), learning, Vision.Context,
+            new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.BrowserContext),
+            new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.IdeContext, "ide")],
+            new OrchestratorOptions
+            {
+                Model = s.Model, Temperature = s.Temperature, AgentId = character?.Id ?? "aijade", UserScope = State.Account?.Id ?? "default",
+                Drawing = () => canDraw && State.Settings.Current.Modules.Artistry,
+                Tools = () => State.Settings.Current.Modules.Mcp,
+            },
+            observers: [learning]);
+    }
+
+    private async Task SendAsync()
+    {
+        var text = draft.Trim();
+        if (text.Length == 0 || busy)
+            return;
+        busy = true; // before any navigation, so the parameter reload leaves this turn alone
+        if (ChatId is null)
+        {
+            try
+            {
+                var chat = await State.Api.CreateChatAsync(State.Settings.Current.ActiveCharacterId, text.Length > 40 ? text[..40] : text);
+                ChatId = chat.Id;
+                loadedChatId = chat.Id;
+                await LoadChatsAsync();
+                Nav.NavigateTo($"chat/{chat.Id}", replace: true);
+            }
+            catch (AijadeApiException e)
+            {
+                error = State.Text.Format("chat.error", e.Message);
+                busy = false;
+                return;
+            }
+        }
+        draft = "";
+        attached = false; // the attachment's description goes with this message
+        error = null;
+        streaming = "";
+        cts = new CancellationTokenSource();
+        var history = messages.ToList();
+        messages.Add(new StoredMessage("pending", 0, "user", text, DateTimeOffset.Now));
+        var settings = State.Settings.Current;
+        try
+        {
+            if (settings.RecordConversations && settings.Modules.Memory)
+                _ = new ConversationRecorder(State.Api, State.MemorySessionId, State.DeviceId).RecordAsync(text);
+            canDraw = (await State.CapabilitiesAsync()).Images;
+            var drawRequests = new List<string>();
+            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", cts.Token))
+            {
+                switch (e)
+                {
+                    case TextDelta d:
+                        streaming += d.Text;
+                        StateHasChanged();
+                        break;
+                    case TurnFailed f:
+                        error = f.Code == "INSUFFICIENT_FLUX" ? State.Text["chat.noFlux"] : State.Text.Format("chat.error", f.Message);
+                        messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        break;
+                    case DrawRequest draw:
+                        drawRequests.Add(draw.Prompt);
+                        break;
+                    case TurnCompleted done:
+                        messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        await PerformAsync(done);
+                        break;
+                }
+            }
+            foreach (var prompt in drawRequests)
+                await DrawAsync(ChatId, prompt, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        finally
+        {
+            busy = false;
+            streaming = "";
+        }
+    }
+
+    private async Task DrawAsync(string chatId, string prompt, CancellationToken ct)
+    {
+        drawing = true;
+        streaming = "";
+        StateHasChanged();
+        try
+        {
+            await Artistry.DrawIntoChatAsync(State.Api, chatId, prompt, ct);
+            messages = [.. await State.Api.MessagesAsync(chatId)];
+        }
+        catch (AijadeApiException e)
+        {
+            error = e.Code == "INSUFFICIENT_FLUX" ? State.Text["chat.noFlux"] : State.Text.Format("chat.drawFailed", e.Message);
+        }
+        finally
+        {
+            drawing = false;
+        }
+    }
+
+    /// <summary>Show the reply on the stage, report the render receipt, and speak it with lip sync.</summary>
+    private async Task PerformAsync(TurnCompleted done)
+    {
+        if (stage is not null)
+        {
+            var applied = await stage.ApplyAsync(done.Intent);
+            if (applied.Count > 0)
+            {
+                try
+                {
+                    await new RenderReporter(State.Api, State.MemorySessionId, State.DeviceId).ReportAsync(done.Intent, applied, stage.AssetVersionHash);
+                }
+                catch (AijadeApiException)
+                {
+                    // A receipt that the server refuses is a visible gap there; the conversation goes on.
+                }
+            }
+        }
+        var voice = State.Settings.Current.Voice;
+        if (voice.SpeakReplies && State.Settings.Current.Modules.Speech && done.Reply.Content.Length > 0)
+        {
+            try
+            {
+                var audio = await State.Api.SpeechAsync(done.Reply.Content, voice.TtsVoice);
+                var sink = voice.LipSync && stage is not null ? DotNetObjectReference.Create(new LipSyncSink(v => stage.MouthAsync(v))) : null;
+                await Audio.PlayAsync(audio, sink);
+                sink?.Dispose();
+            }
+            catch (AijadeApiException)
+            {
+                // Speech is optional (unconfigured or out of flux): the text reply stands.
+            }
+        }
+    }
+
+    private void Stop() => cts?.Cancel();
+
+    private async Task ToggleVoiceAsync()
+    {
+        if (listening)
+        {
+            await Voice.StopAsync();
+            listening = false;
+            return;
+        }
+        error = null;
+        listening = true;
+        await Voice.StartAsync(State.Settings.Current.Voice, State.Text.Locale);
+    }
+
+    private void OnTranscript(string text, bool final)
+    {
+        draft = text;
+        if (final && State.Settings.Current.Voice.AutoSend)
+            _ = InvokeAsync(SendAsync);
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void OnLevel(double v)
+    {
+        level = v;
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void OnVoiceFailed(string message)
+    {
+        listening = false;
+        error = State.Text.Format("settings.voice.unavailable", message);
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Voice.Transcript -= OnTranscript;
+        Voice.Level -= OnLevel;
+        Voice.Failed -= OnVoiceFailed;
+        Vision.Changed -= OnVisionChanged;
+        cts?.Cancel();
+        cts?.Dispose();
+        await Voice.StopAsync();
+    }
+}

@@ -1,0 +1,320 @@
+{
+  "generatedBy": "tools/Aijade.Mutation",
+  "matrix": "Aijade.Tests.PromotionGateMatrixTests.Tampered_candidates_are_refused_without_writes_and_the_control_and_probes_are_promoted (PostgreSQL)",
+  "catalogue": "tools/Aijade.Mutation/gate-mutants.json",
+  "baseline": {
+    "assertions": 16,
+    "failures": 0
+  },
+  "mutants": [
+    {
+      "id": "P1",
+      "file": "src/Aijade.Server/V9/PromotionService.cs",
+      "what": "drop the integrity anchor check",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 3,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] integrity: parameters changed, hash not updated — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] integrity: dangling hash (inputHash = \"\") — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] integrity: missing hash — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "P2",
+      "file": "src/Aijade.Server/V9/PromotionService.cs",
+      "what": "drop the job-header / proposal hash agreement",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] integrity: cross-trace (job header hash ≠ proposal hash) — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "P3",
+      "file": "src/Aijade.Server/V9/PromotionService.cs",
+      "what": "drop the evidence gate",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 5,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] evidence: unit/contract/property tests failed — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] evidence: static analysis failed — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] evidence: security sandbox escape — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] evidence: adversarial evaluation failed — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] evidence: historical replay regression — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "P4",
+      "file": "src/Aijade.Server/V9/PromotionService.cs",
+      "what": "drop the PGC gate",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 2,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] pgc: f high (load-bearing axis) — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] pgc: all axes high — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "P5",
+      "file": "src/Aijade.Server/V9/PromotionService.cs",
+      "what": "PGC verdict ignored (always commit)",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 2,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] pgc: f high (load-bearing axis) — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] pgc: all axes high — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "A1",
+      "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+      "what": "shadow_params anchor: hash comparison removed",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 3,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] integrity: parameters changed, hash not updated — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] integrity: dangling hash (inputHash = \"\") — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] integrity: missing hash — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "A2",
+      "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+      "what": "anchor kinds swapped",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 5,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [legal] integrity: LEGAL (control) — promoted=False writes=0 stage=integrity_gate",
+        "FAIL [probe] integrity: anchorVerified = false (not load-bearing: the gate recomputes the hash) — promoted=False writes=0 stage=integrity_gate",
+        "FAIL [probe] pgc: a high (not load-bearing) — promoted=False writes=0 stage=integrity_gate",
+        "FAIL [probe] pgc: c high (not load-bearing) — promoted=False writes=0 stage=integrity_gate",
+        "FAIL [probe] pgc: d high (not load-bearing) — promoted=False writes=0 stage=integrity_gate"
+      ]
+    },
+    {
+      "id": "E1",
+      "file": "src/Aijade.Memory/Development/Vse.cs",
+      "what": "evidence: unit/contract/property tests ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] evidence: unit/contract/property tests failed — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "E2",
+      "file": "src/Aijade.Memory/Development/Vse.cs",
+      "what": "evidence: static analysis ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] evidence: static analysis failed — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "E3",
+      "file": "src/Aijade.Memory/Development/Vse.cs",
+      "what": "evidence: dependency/license scan ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "E4",
+      "file": "src/Aijade.Memory/Development/Vse.cs",
+      "what": "evidence: security sandbox ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] evidence: security sandbox escape — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "E5",
+      "file": "src/Aijade.Memory/Development/Vse.cs",
+      "what": "evidence: historical replay ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] evidence: historical replay regression — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "E6",
+      "file": "src/Aijade.Memory/Development/Vse.cs",
+      "what": "evidence: adversarial evaluation ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] evidence: adversarial evaluation failed — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "G1",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: w_max_global below theta ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "G2",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: high contradiction ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "G3",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: insufficient evidence ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "G4",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: fatigue deferral ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "G5",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: w below theta ignored",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "caught",
+      "assertions": 16,
+      "newRed": 2,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [tamper] pgc: f high (load-bearing axis) — promoted=True writes=2 stage=promoted",
+        "FAIL [tamper] pgc: all axes high — promoted=True writes=2 stage=promoted"
+      ]
+    },
+    {
+      "id": "G6",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: w_max_global boundary < to <=",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "G7",
+      "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "what": "PGC: w boundary < to <=",
+      "implementable": true,
+      "expectedCapture": "tamper matrix",
+      "predictedVerdict": "caught",
+      "observedVerdict": "survived",
+      "assertions": 16,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "caught": 13,
+    "survived": 7,
+    "notImplemented": 0,
+    "mutationError": 0,
+    "diffScore": 0.65
+  }
+}

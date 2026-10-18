@@ -1,0 +1,40 @@
+{
+  "experiment": "delivery track without gating: recall@8 (macro) per score mode with the conflict penalty at its default and switched off (1.0); share of top-8 slots penalised; share of questions with a penalised gold item in the scanned head (8 additive, 150 standardised)",
+  "rows": [
+    {
+      "mode": "additive",
+      "conflictPenalty": 0.5,
+      "recall8Macro": 0.07969649340090265,
+      "penalizedShareOfTop8": 0,
+      "goldPenalizedShare": 0
+    },
+    {
+      "mode": "additive",
+      "conflictPenalty": 1,
+      "recall8Macro": 0.10307558812460664,
+      "penalizedShareOfTop8": 0.20461983887210472,
+      "goldPenalizedShare": 0.030211480362537766
+    },
+    {
+      "mode": "standardized",
+      "conflictPenalty": 0.5,
+      "recall8Macro": 0.19853236649084932,
+      "penalizedShareOfTop8": 0.053121852970795566,
+      "goldPenalizedShare": 0.256797583081571
+    },
+    {
+      "mode": "standardized",
+      "conflictPenalty": 1,
+      "recall8Macro": 0.5478435560079876,
+      "penalizedShareOfTop8": 0.6352593152064451,
+      "goldPenalizedShare": 0.634944612286002
+    }
+  ],
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.13",
+    "generatedAt": "2026-10-15T15:33:35.1492810+00:00"
+  }
+}

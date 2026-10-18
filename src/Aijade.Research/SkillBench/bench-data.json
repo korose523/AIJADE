@@ -1,0 +1,1369 @@
+{
+ "tasks": [
+  {
+   "id": "str-slugify",
+   "instruction": "Write a function `slugify(s)` that converts a string to a URL slug: lowercase, trim, replace every run of non-alphanumeric characters with a single hyphen, and strip leading/trailing hyphens.",
+   "category": "string",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"Hello World\"]",
+     "expected": "\"hello-world\""
+    },
+    {
+     "args": "[\"  Foo   Bar!! \"]",
+     "expected": "\"foo-bar\""
+    },
+    {
+     "args": "[\"a---b\"]",
+     "expected": "\"a-b\""
+    },
+    {
+     "args": "[\"---\"]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"Already-Slug\"]",
+     "expected": "\"already-slug\""
+    }
+   ]
+  },
+  {
+   "id": "str-reverse",
+   "instruction": "Write a function `reverse(s)` that returns the reversed string.",
+   "category": "string",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello\"]",
+     "expected": "\"olleh\""
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"a\"]",
+     "expected": "\"a\""
+    },
+    {
+     "args": "[\"racecar\"]",
+     "expected": "\"racecar\""
+    },
+    {
+     "args": "[\"ab c\"]",
+     "expected": "\"c ba\""
+    }
+   ]
+  },
+  {
+   "id": "str-is-palindrome",
+   "instruction": "Write a function `isPalindrome(s)` that returns true iff the string is a palindrome, ignoring case and all non-alphanumeric characters.",
+   "category": "string",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"RaceCar\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"A man, a plan, a canal: Panama\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"hello\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"  \"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"a\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "true"
+    }
+   ]
+  },
+  {
+   "id": "str-capitalize-words",
+   "instruction": "Write a function `titleCase(s)` that lowercases the whole string, then capitalizes the first letter of every word (words separated by whitespace), preserving the original whitespace.",
+   "category": "string",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello world\"]",
+     "expected": "\"Hello World\""
+    },
+    {
+     "args": "[\"HELLO WORLD\"]",
+     "expected": "\"Hello World\""
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"a\"]",
+     "expected": "\"A\""
+    },
+    {
+     "args": "[\"  foo  bar \"]",
+     "expected": "\"  Foo  Bar \""
+    }
+   ]
+  },
+  {
+   "id": "str-count-vowels",
+   "instruction": "Write a function `countVowels(s)` that counts the vowels (a, e, i, o, u), case-insensitive.",
+   "category": "string",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello\"]",
+     "expected": "2"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "0"
+    },
+    {
+     "args": "[\"BCDFG\"]",
+     "expected": "0"
+    },
+    {
+     "args": "[\"AEIOU\"]",
+     "expected": "5"
+    },
+    {
+     "args": "[\"rhythm\"]",
+     "expected": "0"
+    },
+    {
+     "args": "[\"xyzAEIOU\"]",
+     "expected": "5"
+    }
+   ]
+  },
+  {
+   "id": "str-truncate",
+   "instruction": "Write a function `truncate(s, maxLen)` that returns s unchanged if s.length <= maxLen, otherwise the first maxLen characters followed by the ellipsis character \"…\". If maxLen <= 0 return an empty string.",
+   "category": "string",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello world\",5]",
+     "expected": "\"hello…\""
+    },
+    {
+     "args": "[\"hello\",5]",
+     "expected": "\"hello\""
+    },
+    {
+     "args": "[\"\",5]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"abc\",0]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"abcdef\",3]",
+     "expected": "\"abc…\""
+    },
+    {
+     "args": "[\"hi\",10]",
+     "expected": "\"hi\""
+    }
+   ]
+  },
+  {
+   "id": "str-unique-chars",
+   "instruction": "Write a function `uniqueChars(s)` that removes duplicate characters, keeping only the first occurrence of each character, preserving order.",
+   "category": "string",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello\"]",
+     "expected": "\"helo\""
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"aaa\"]",
+     "expected": "\"a\""
+    },
+    {
+     "args": "[\"abab\"]",
+     "expected": "\"ab\""
+    },
+    {
+     "args": "[\"abcabc\"]",
+     "expected": "\"abc\""
+    },
+    {
+     "args": "[\"aabbcc\"]",
+     "expected": "\"abc\""
+    }
+   ]
+  },
+  {
+   "id": "str-to-camel",
+   "instruction": "Write a function `toCamel(s)` that converts a kebab-case or snake-case identifier to camelCase (the first word stays lowercase; each following word is capitalized).",
+   "category": "string",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello-world\"]",
+     "expected": "\"helloWorld\""
+    },
+    {
+     "args": "[\"hello_world\"]",
+     "expected": "\"helloWorld\""
+    },
+    {
+     "args": "[\"foo-bar-baz\"]",
+     "expected": "\"fooBarBaz\""
+    },
+    {
+     "args": "[\"a\"]",
+     "expected": "\"a\""
+    },
+    {
+     "args": "[\"Hello-World\"]",
+     "expected": "\"HelloWorld\""
+    }
+   ]
+  },
+  {
+   "id": "str-rot13",
+   "instruction": "Write a function `rot13(s)` that applies the ROT13 cipher to letters (a-z, A-Z), leaving all other characters unchanged.",
+   "category": "string",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"hello\"]",
+     "expected": "\"uryyb\""
+    },
+    {
+     "args": "[\"HELLO\"]",
+     "expected": "\"URYYB\""
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "\"\""
+    },
+    {
+     "args": "[\"abc123\"]",
+     "expected": "\"nop123\""
+    },
+    {
+     "args": "[\"Test!\"]",
+     "expected": "\"Grfg!\""
+    }
+   ]
+  },
+  {
+   "id": "arr-sum",
+   "instruction": "Write a function `sum(nums)` that returns the sum of an array of numbers (0 for an empty array).",
+   "category": "array",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[1,2,3]]",
+     "expected": "6"
+    },
+    {
+     "args": "[[]]",
+     "expected": "0"
+    },
+    {
+     "args": "[[-1,-2,-3]]",
+     "expected": "-6"
+    },
+    {
+     "args": "[[5]]",
+     "expected": "5"
+    },
+    {
+     "args": "[[1,2,3,4,5]]",
+     "expected": "15"
+    }
+   ]
+  },
+  {
+   "id": "arr-max",
+   "instruction": "Write a function `max(nums)` that returns the largest number in the array. For an empty array return -Infinity.",
+   "category": "array",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[3,1,2]]",
+     "expected": "3"
+    },
+    {
+     "args": "[[-5,-1,-9]]",
+     "expected": "-1"
+    },
+    {
+     "args": "[[7]]",
+     "expected": "7"
+    },
+    {
+     "args": "[[]]",
+     "expected": "-Infinity"
+    },
+    {
+     "args": "[[1,1,1]]",
+     "expected": "1"
+    }
+   ]
+  },
+  {
+   "id": "arr-unique",
+   "instruction": "Write a function `unique(arr)` that removes duplicate elements, keeping the first occurrence of each, preserving order.",
+   "category": "array",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[1,2,2,3,3,3]]",
+     "expected": "[1,2,3]"
+    },
+    {
+     "args": "[[]]",
+     "expected": "[]"
+    },
+    {
+     "args": "[[1,1,1]]",
+     "expected": "[1]"
+    },
+    {
+     "args": "[[3,1,3,2,1]]",
+     "expected": "[3,1,2]"
+    },
+    {
+     "args": "[[\"a\",\"a\",\"b\"]]",
+     "expected": "[\"a\",\"b\"]"
+    }
+   ]
+  },
+  {
+   "id": "arr-flatten",
+   "instruction": "Write a function `flatten(arr)` that flattens the array one level deep.",
+   "category": "array",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[[1,2],[3,4]]]",
+     "expected": "[1,2,3,4]"
+    },
+    {
+     "args": "[[[]]]",
+     "expected": "[]"
+    },
+    {
+     "args": "[[[1],[2],[3]]]",
+     "expected": "[1,2,3]"
+    },
+    {
+     "args": "[[[1,[2]],3]]",
+     "expected": "[1,[2],3]"
+    },
+    {
+     "args": "[[[1,2,3]]]",
+     "expected": "[1,2,3]"
+    }
+   ]
+  },
+  {
+   "id": "arr-chunk",
+   "instruction": "Write a function `chunk(arr, size)` that splits the array into chunks of the given size. For size <= 0 return an empty array. The last chunk may be shorter.",
+   "category": "array",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[1,2,3,4,5],2]",
+     "expected": "[[1,2],[3,4],[5]]"
+    },
+    {
+     "args": "[[1,2,3,4,5],1]",
+     "expected": "[[1],[2],[3],[4],[5]]"
+    },
+    {
+     "args": "[[1,2,3,4,5],10]",
+     "expected": "[[1,2,3,4,5]]"
+    },
+    {
+     "args": "[[1,2,3],0]",
+     "expected": "[]"
+    },
+    {
+     "args": "[[],3]",
+     "expected": "[]"
+    }
+   ]
+  },
+  {
+   "id": "arr-intersection",
+   "instruction": "Write a function `intersection(a, b)` that returns the array of elements present in both arrays, with duplicates removed, preserving the order they appear in `a`.",
+   "category": "array",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[1,2,3],[2,3,4]]",
+     "expected": "[2,3]"
+    },
+    {
+     "args": "[[1,2,2],[2,2,3]]",
+     "expected": "[2]"
+    },
+    {
+     "args": "[[],[]]",
+     "expected": "[]"
+    },
+    {
+     "args": "[[5,6],[1,2]]",
+     "expected": "[]"
+    },
+    {
+     "args": "[[9,9,9],[9]]",
+     "expected": "[9]"
+    }
+   ]
+  },
+  {
+   "id": "arr-remove-falsy",
+   "instruction": "Write a function `removeFalsy(arr)` that returns a new array with all falsy values (false, 0, \"\", null, undefined, NaN) removed.",
+   "category": "array",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[0,1,2,\"\",3,null,false,undefined,4]]",
+     "expected": "[1,2,3,4]"
+    },
+    {
+     "args": "[[false,0,\"\"]]",
+     "expected": "[]"
+    },
+    {
+     "args": "[[\"a\",1,true]]",
+     "expected": "[\"a\",1,true]"
+    },
+    {
+     "args": "[[0,0,0]]",
+     "expected": "[]"
+    }
+   ]
+  },
+  {
+   "id": "arr-second-largest",
+   "instruction": "Write a function `secondLargest(nums)` that returns the second largest DISTINCT value in the array, or null if fewer than two distinct values exist.",
+   "category": "array",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[3,1,4,1,4,2]]",
+     "expected": "3"
+    },
+    {
+     "args": "[[10]]",
+     "expected": "null"
+    },
+    {
+     "args": "[[5,5,5]]",
+     "expected": "null"
+    },
+    {
+     "args": "[[-1,-2,-3]]",
+     "expected": "-2"
+    },
+    {
+     "args": "[[2,2,1]]",
+     "expected": "1"
+    }
+   ]
+  },
+  {
+   "id": "arr-sum-evens",
+   "instruction": "Write a function `sumEvens(nums)` that returns the sum of all even numbers in the array.",
+   "category": "array",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[1,2,3,4]]",
+     "expected": "6"
+    },
+    {
+     "args": "[[1,3,5]]",
+     "expected": "0"
+    },
+    {
+     "args": "[[]]",
+     "expected": "0"
+    },
+    {
+     "args": "[[-2,-4]]",
+     "expected": "-6"
+    },
+    {
+     "args": "[[2,4,6]]",
+     "expected": "12"
+    }
+   ]
+  },
+  {
+   "id": "obj-pick",
+   "instruction": "Write a function `pick(obj, keys)` that returns a new object containing only the given keys that exist on obj.",
+   "category": "object",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[{\"a\":1,\"b\":2,\"c\":3},[\"a\",\"c\"]]",
+     "expected": "{\"a\":1,\"c\":3}"
+    },
+    {
+     "args": "[{},[]]",
+     "expected": "{}"
+    },
+    {
+     "args": "[{\"a\":1,\"b\":2},[]]",
+     "expected": "{}"
+    },
+    {
+     "args": "[{\"a\":1},[\"x\"]]",
+     "expected": "{}"
+    },
+    {
+     "args": "[{\"a\":1,\"b\":2},[\"a\",\"b\",\"c\"]]",
+     "expected": "{\"a\":1,\"b\":2}"
+    }
+   ]
+  },
+  {
+   "id": "obj-merge",
+   "instruction": "Write a function `merge(a, b)` that returns a new object shallow-merging `a` and `b`, with `b` winning on key conflicts.",
+   "category": "object",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[{\"a\":1},{\"b\":2}]",
+     "expected": "{\"a\":1,\"b\":2}"
+    },
+    {
+     "args": "[{\"a\":1},{\"a\":2}]",
+     "expected": "{\"a\":2}"
+    },
+    {
+     "args": "[{},{}]",
+     "expected": "{}"
+    },
+    {
+     "args": "[{\"a\":{\"x\":1}},{\"a\":{\"y\":2}}]",
+     "expected": "{\"a\":{\"y\":2}}"
+    },
+    {
+     "args": "[{\"x\":1,\"y\":2},{\"y\":3,\"z\":4}]",
+     "expected": "{\"x\":1,\"y\":3,\"z\":4}"
+    }
+   ]
+  },
+  {
+   "id": "obj-count-keys",
+   "instruction": "Write a function `countKeys(obj)` that returns the number of own enumerable keys of the object (0 for an empty object).",
+   "category": "object",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[{\"a\":1,\"b\":2}]",
+     "expected": "2"
+    },
+    {
+     "args": "[{}]",
+     "expected": "0"
+    },
+    {
+     "args": "[{\"a\":1,\"b\":2,\"c\":3}]",
+     "expected": "3"
+    },
+    {
+     "args": "[{\"a\":1}]",
+     "expected": "1"
+    }
+   ]
+  },
+  {
+   "id": "obj-group-by",
+   "instruction": "Write a function `groupBy(arr, key)` that groups the array of objects by the value of `key`, returning an object mapping each key value to the array of matching items (in original order).",
+   "category": "object",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[{\"type\":\"a\",\"v\":1},{\"type\":\"b\",\"v\":2},{\"type\":\"a\",\"v\":3}],\"type\"]",
+     "expected": "{\"a\":[{\"type\":\"a\",\"v\":1},{\"type\":\"a\",\"v\":3}],\"b\":[{\"type\":\"b\",\"v\":2}]}"
+    },
+    {
+     "args": "[[],\"x\"]",
+     "expected": "{}"
+    },
+    {
+     "args": "[[{\"k\":1},{\"k\":1},{\"k\":2}],\"k\"]",
+     "expected": "{\"1\":[{\"k\":1},{\"k\":1}],\"2\":[{\"k\":2}]}"
+    }
+   ]
+  },
+  {
+   "id": "obj-get-nested",
+   "instruction": "Write a function `get(obj, path)` that safely returns the nested value at the given array path, or undefined if any segment is missing. An empty path returns the object itself.",
+   "category": "object",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[{\"a\":{\"b\":{\"c\":42}}},[\"a\",\"b\",\"c\"]]",
+     "expected": "42"
+    },
+    {
+     "args": "[{\"a\":{\"b\":1}},[\"a\",\"x\"]]",
+     "expected": "undefined"
+    },
+    {
+     "args": "[{\"a\":1},[]]",
+     "expected": "{\"a\":1}"
+    },
+    {
+     "args": "[null,[\"a\"]]",
+     "expected": "undefined"
+    }
+   ]
+  },
+  {
+   "id": "math-clamp",
+   "instruction": "Write a function `clamp(n, min, max)` that returns n constrained to the inclusive range [min, max].",
+   "category": "math",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[5,0,10]",
+     "expected": "5"
+    },
+    {
+     "args": "[-1,0,10]",
+     "expected": "0"
+    },
+    {
+     "args": "[100,0,10]",
+     "expected": "10"
+    },
+    {
+     "args": "[3,3,3]",
+     "expected": "3"
+    },
+    {
+     "args": "[7,1,5]",
+     "expected": "5"
+    }
+   ]
+  },
+  {
+   "id": "math-factorial",
+   "instruction": "Write a function `factorial(n)` that returns n! for a non-negative integer n (factorial(0) = 1).",
+   "category": "math",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[0]",
+     "expected": "1"
+    },
+    {
+     "args": "[1]",
+     "expected": "1"
+    },
+    {
+     "args": "[5]",
+     "expected": "120"
+    },
+    {
+     "args": "[3]",
+     "expected": "6"
+    },
+    {
+     "args": "[10]",
+     "expected": "3628800"
+    }
+   ]
+  },
+  {
+   "id": "math-is-prime",
+   "instruction": "Write a function `isPrime(n)` that returns true iff n is a prime number (n < 2 is not prime).",
+   "category": "math",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[2]",
+     "expected": "true"
+    },
+    {
+     "args": "[1]",
+     "expected": "false"
+    },
+    {
+     "args": "[0]",
+     "expected": "false"
+    },
+    {
+     "args": "[9]",
+     "expected": "false"
+    },
+    {
+     "args": "[17]",
+     "expected": "true"
+    },
+    {
+     "args": "[97]",
+     "expected": "true"
+    },
+    {
+     "args": "[-3]",
+     "expected": "false"
+    }
+   ]
+  },
+  {
+   "id": "math-gcd",
+   "instruction": "Write a function `gcd(a, b)` that returns the greatest common divisor of two integers (absolute value). gcd(x, 0) = |x|.",
+   "category": "math",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[12,8]",
+     "expected": "4"
+    },
+    {
+     "args": "[5,0]",
+     "expected": "5"
+    },
+    {
+     "args": "[0,7]",
+     "expected": "7"
+    },
+    {
+     "args": "[7,7]",
+     "expected": "7"
+    },
+    {
+     "args": "[48,18]",
+     "expected": "6"
+    },
+    {
+     "args": "[-12,8]",
+     "expected": "4"
+    }
+   ]
+  },
+  {
+   "id": "math-fib",
+   "instruction": "Write a function `fib(n)` returning the 0-indexed Fibonacci number: fib(0)=0, fib(1)=1, fib(2)=1, fib(3)=2, ...",
+   "category": "math",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[0]",
+     "expected": "0"
+    },
+    {
+     "args": "[1]",
+     "expected": "1"
+    },
+    {
+     "args": "[2]",
+     "expected": "1"
+    },
+    {
+     "args": "[10]",
+     "expected": "55"
+    },
+    {
+     "args": "[7]",
+     "expected": "13"
+    },
+    {
+     "args": "[12]",
+     "expected": "144"
+    }
+   ]
+  },
+  {
+   "id": "math-average",
+   "instruction": "Write a function `average(nums)` that returns the arithmetic mean of the array (0 for an empty array).",
+   "category": "math",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[[1,2,3]]",
+     "expected": "2"
+    },
+    {
+     "args": "[[]]",
+     "expected": "0"
+    },
+    {
+     "args": "[[2,4]]",
+     "expected": "3"
+    },
+    {
+     "args": "[[-2,2]]",
+     "expected": "0"
+    },
+    {
+     "args": "[[1,2,3,4]]",
+     "expected": "2.5"
+    }
+   ]
+  },
+  {
+   "id": "math-round-to",
+   "instruction": "Write a function `roundTo(n, decimals)` that rounds n to the given number of decimal places using standard round-half-up.",
+   "category": "math",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[3.14159,2]",
+     "expected": "3.14"
+    },
+    {
+     "args": "[2.5,0]",
+     "expected": "3"
+    },
+    {
+     "args": "[1.234,1]",
+     "expected": "1.2"
+    },
+    {
+     "args": "[0,2]",
+     "expected": "0"
+    },
+    {
+     "args": "[9.999,1]",
+     "expected": "10"
+    },
+    {
+     "args": "[-1.5,0]",
+     "expected": "-1"
+    }
+   ]
+  },
+  {
+   "id": "date-format-iso",
+   "instruction": "Write a function `formatDate(iso)` that takes a UTC ISO-8601 string and returns the \"YYYY-MM-DD\" date part computed in UTC (never local time).",
+   "category": "date",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"2024-02-29T00:00:00.000Z\"]",
+     "expected": "\"2024-02-29\""
+    },
+    {
+     "args": "[\"2023-12-01T23:59:59.000Z\"]",
+     "expected": "\"2023-12-01\""
+    },
+    {
+     "args": "[\"2000-01-01T00:00:00.000Z\"]",
+     "expected": "\"2000-01-01\""
+    },
+    {
+     "args": "[\"1999-07-15T12:00:00.000Z\"]",
+     "expected": "\"1999-07-15\""
+    },
+    {
+     "args": "[\"2024-02-29T12:34:56.000Z\"]",
+     "expected": "\"2024-02-29\""
+    }
+   ]
+  },
+  {
+   "id": "date-day-of-week",
+   "instruction": "Write a function `dayOfWeek(iso)` that returns the English weekday name (e.g. \"Thursday\") of the given UTC ISO-8601 string.",
+   "category": "date",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"2024-02-29T00:00:00.000Z\"]",
+     "expected": "\"Thursday\""
+    },
+    {
+     "args": "[\"2023-01-01T00:00:00.000Z\"]",
+     "expected": "\"Sunday\""
+    },
+    {
+     "args": "[\"2024-01-01T00:00:00.000Z\"]",
+     "expected": "\"Monday\""
+    },
+    {
+     "args": "[\"2023-12-25T00:00:00.000Z\"]",
+     "expected": "\"Monday\""
+    },
+    {
+     "args": "[\"2000-01-01T00:00:00.000Z\"]",
+     "expected": "\"Saturday\""
+    }
+   ]
+  },
+  {
+   "id": "date-is-leap-year",
+   "instruction": "Write a function `isLeapYear(iso)` that returns true iff the UTC year of the given ISO-8601 string is a leap year (divisible by 4, not by 100 unless by 400).",
+   "category": "date",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"2024-02-29T00:00:00.000Z\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"2023-01-01T00:00:00.000Z\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"2000-01-01T00:00:00.000Z\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"1900-01-01T00:00:00.000Z\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"2020-06-01T00:00:00.000Z\"]",
+     "expected": "true"
+    }
+   ]
+  },
+  {
+   "id": "date-add-days",
+   "instruction": "Write a function `addDays(iso, days)` that adds an integer number of days to a UTC ISO-8601 string and returns a new UTC ISO-8601 string (negative days subtract).",
+   "category": "date",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"2024-02-28T00:00:00.000Z\",1]",
+     "expected": "\"2024-02-29T00:00:00.000Z\""
+    },
+    {
+     "args": "[\"2024-02-28T00:00:00.000Z\",2]",
+     "expected": "\"2024-03-01T00:00:00.000Z\""
+    },
+    {
+     "args": "[\"2023-12-31T00:00:00.000Z\",1]",
+     "expected": "\"2024-01-01T00:00:00.000Z\""
+    },
+    {
+     "args": "[\"2024-03-01T00:00:00.000Z\",-1]",
+     "expected": "\"2024-02-29T00:00:00.000Z\""
+    }
+   ]
+  },
+  {
+   "id": "date-seconds-since",
+   "instruction": "Write a function `secondsBetween(a, b)` that returns the whole number of seconds from UTC ISO string `a` to `b` (b - a).",
+   "category": "date",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"2024-01-01T00:00:00.000Z\",\"2024-01-01T00:01:00.000Z\"]",
+     "expected": "60"
+    },
+    {
+     "args": "[\"2024-01-01T00:00:00.000Z\",\"2024-01-01T01:00:00.000Z\"]",
+     "expected": "3600"
+    },
+    {
+     "args": "[\"2024-01-01T00:00:00.000Z\",\"2024-01-01T00:00:00.000Z\"]",
+     "expected": "0"
+    },
+    {
+     "args": "[\"2024-01-02T00:00:00.000Z\",\"2024-01-01T00:00:00.000Z\"]",
+     "expected": "-86400"
+    }
+   ]
+  },
+  {
+   "id": "parse-query-string",
+   "instruction": "Write a function `parseQuery(qs)` that parses a URL query string (\"a=1&b=2\") into an object, URL-decoding values. An empty string yields an empty object. On duplicate keys keep the last value.",
+   "category": "parsing",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"a=1&b=2\"]",
+     "expected": "{\"a\":\"1\",\"b\":\"2\"}"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "{}"
+    },
+    {
+     "args": "[\"x=hello%20world\"]",
+     "expected": "{\"x\":\"hello world\"}"
+    },
+    {
+     "args": "[\"a=1&a=2\"]",
+     "expected": "{\"a\":\"2\"}"
+    },
+    {
+     "args": "[\"k=\"]",
+     "expected": "{\"k\":\"\"}"
+    },
+    {
+     "args": "[\"foo=bar&baz=qux\"]",
+     "expected": "{\"foo\":\"bar\",\"baz\":\"qux\"}"
+    }
+   ]
+  },
+  {
+   "id": "parse-json-safe",
+   "instruction": "Write a function `parseJson(s)` that parses a JSON string and returns the parsed value, or null if parsing fails.",
+   "category": "parsing",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"{\\\"a\\\":1}\"]",
+     "expected": "{\"a\":1}"
+    },
+    {
+     "args": "[\"[1,2,3]\"]",
+     "expected": "[1,2,3]"
+    },
+    {
+     "args": "[\"not json\"]",
+     "expected": "null"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "null"
+    },
+    {
+     "args": "[\"{\\\"n\\\":null}\"]",
+     "expected": "{\"n\":null}"
+    },
+    {
+     "args": "[\"42\"]",
+     "expected": "42"
+    }
+   ]
+  },
+  {
+   "id": "parse-csv-line",
+   "instruction": "Write a function `parseCsv(line)` that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \"\" inside a quoted field represents a single quote; commas inside quotes are not separators.",
+   "category": "parsing",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"a,b,c\"]",
+     "expected": "[\"a\",\"b\",\"c\"]"
+    },
+    {
+     "args": "[\"\\\"hello, world\\\",x\"]",
+     "expected": "[\"hello, world\",\"x\"]"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "[\"\"]"
+    },
+    {
+     "args": "[\"\\\"a\\\"\\\"b\\\"\"]",
+     "expected": "[\"a\\\"b\"]"
+    },
+    {
+     "args": "[\"1,,3\"]",
+     "expected": "[\"1\",\"\",\"3\"]"
+    }
+   ]
+  },
+  {
+   "id": "parse-version",
+   "instruction": "Write a function `parseVersion(v)` that parses a dotted version string like \"1.2.3\" into an array of integers [1,2,3]. Return null if any segment is not a non-negative integer.",
+   "category": "parsing",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"1.2.3\"]",
+     "expected": "[1,2,3]"
+    },
+    {
+     "args": "[\"0.0.1\"]",
+     "expected": "[0,0,1]"
+    },
+    {
+     "args": "[\"10.20.30\"]",
+     "expected": "[10,20,30]"
+    },
+    {
+     "args": "[\"1\"]",
+     "expected": "[1]"
+    },
+    {
+     "args": "[\"a.b.c\"]",
+     "expected": "null"
+    }
+   ]
+  },
+  {
+   "id": "logic-xor",
+   "instruction": "Write a function `xor(a, b)` that returns true iff exactly one of the two boolean arguments is true.",
+   "category": "logic",
+   "tier": "easy",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[true,false]",
+     "expected": "true"
+    },
+    {
+     "args": "[false,false]",
+     "expected": "false"
+    },
+    {
+     "args": "[true,true]",
+     "expected": "false"
+    },
+    {
+     "args": "[false,true]",
+     "expected": "true"
+    }
+   ]
+  },
+  {
+   "id": "logic-valid-parentheses",
+   "instruction": "Write a function `isValidParens(s)` that returns true iff the bracket string is balanced, supporting (), [], and {}.",
+   "category": "logic",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"()\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"()[]{}\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"(\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\")(\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"([)]\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"{[]}\"]",
+     "expected": "true"
+    }
+   ]
+  },
+  {
+   "id": "logic-fizzbuzz",
+   "instruction": "Write a function `fizzBuzz(n)` that returns \"Fizz\" if n is divisible by 3, \"Buzz\" if by 5, \"FizzBuzz\" if by both, otherwise the decimal string of n.",
+   "category": "logic",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[3]",
+     "expected": "\"Fizz\""
+    },
+    {
+     "args": "[5]",
+     "expected": "\"Buzz\""
+    },
+    {
+     "args": "[15]",
+     "expected": "\"FizzBuzz\""
+    },
+    {
+     "args": "[1]",
+     "expected": "\"1\""
+    },
+    {
+     "args": "[0]",
+     "expected": "\"FizzBuzz\""
+    },
+    {
+     "args": "[7]",
+     "expected": "\"7\""
+    },
+    {
+     "args": "[30]",
+     "expected": "\"FizzBuzz\""
+    }
+   ]
+  },
+  {
+   "id": "logic-roman-to-int",
+   "instruction": "Write a function `romanToInt(s)` that converts a Roman numeral (I,V,X,L,C,D,M) to its integer value.",
+   "category": "logic",
+   "tier": "hard",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"III\"]",
+     "expected": "3"
+    },
+    {
+     "args": "[\"IV\"]",
+     "expected": "4"
+    },
+    {
+     "args": "[\"IX\"]",
+     "expected": "9"
+    },
+    {
+     "args": "[\"LVIII\"]",
+     "expected": "58"
+    },
+    {
+     "args": "[\"MCMXCIV\"]",
+     "expected": "1994"
+    },
+    {
+     "args": "[\"I\"]",
+     "expected": "1"
+    }
+   ]
+  },
+  {
+   "id": "logic-pangram",
+   "instruction": "Write a function `isPangram(s)` that returns true iff the string contains every letter a-z at least once (case-insensitive).",
+   "category": "logic",
+   "tier": "medium",
+   "timeoutMs": null,
+   "tests": [
+    {
+     "args": "[\"The quick brown fox jumps over the lazy dog\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"hello world\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"\"]",
+     "expected": "false"
+    },
+    {
+     "args": "[\"PACK MY BOX WITH FIVE DOZEN LIQUOR JUGS\"]",
+     "expected": "true"
+    },
+    {
+     "args": "[\"the five boxing wizards jump quickly\"]",
+     "expected": "true"
+    }
+   ]
+  }
+ ],
+ "references": {
+  "str-slugify": "function solve(...args){ return (s=>s.trim().toLowerCase().replace(/[^a-z0-9]+/g,\"-\").replace(/^-+|-+$/g,\"\"))(...args) }",
+  "str-reverse": "function solve(...args){ return (s=>s.split(\"\").reverse().join(\"\"))(...args) }",
+  "str-is-palindrome": "function solve(...args){ return (s=>{const t=s.toLowerCase().replace(/[^a-z0-9]/g,\"\");let i=0;let j=t.length-1;while(i<j){if(t[i]!==t[j])return false;i++;j--}return true})(...args) }",
+  "str-capitalize-words": "function solve(...args){ return (s=>s.toLowerCase().replace(/(^|\\s)\\w/g,c=>c.toUpperCase()))(...args) }",
+  "str-count-vowels": "function solve(...args){ return (s=>{let n=0;const v=\"aeiou\";const low=s.toLowerCase();for(const c of low){if(v.includes(c))n++}return n})(...args) }",
+  "str-truncate": "function solve(...args){ return ((s,maxLen)=>{if(maxLen<=0)return\"\";if(s.length<=maxLen)return s;return`${s.slice(0,maxLen)}\\u2026`})(...args) }",
+  "str-unique-chars": "function solve(...args){ return (s=>{let out=\"\";for(const c of s){if(!out.includes(c))out+=c}return out})(...args) }",
+  "str-to-camel": "function solve(...args){ return (s=>s.replace(/[-_]+(\\w)?/g,(_,c)=>c?c.toUpperCase():\"\"))(...args) }",
+  "str-rot13": "function solve(...args){ return (s=>{return s.replace(/[a-z]/gi,c=>{const base=c<=\"Z\"?65:97;const code=c.charCodeAt(0)-base;return String.fromCharCode((code+13)%26+base)})})(...args) }",
+  "arr-sum": "function solve(...args){ return (nums=>nums.reduce((s,x)=>s+x,0))(...args) }",
+  "arr-max": "function solve(...args){ return (nums=>nums.length?Math.max.apply(null,nums):-Infinity)(...args) }",
+  "arr-unique": "function solve(...args){ return (arr=>{const seen=new Set;const out=[];for(const x of arr){if(!seen.has(x)){seen.add(x);out.push(x)}}return out})(...args) }",
+  "arr-flatten": "function solve(...args){ return (arr=>arr.reduce((acc,x)=>acc.concat(Array.isArray(x)?x:[x]),[]))(...args) }",
+  "arr-chunk": "function solve(...args){ return ((arr,size)=>{if(size<=0)return[];const out=[];for(let i=0;i<arr.length;i+=size)out.push(arr.slice(i,i+size));return out})(...args) }",
+  "arr-intersection": "function solve(...args){ return ((a,b)=>{const sb=new Set(b);const out=[];const seen=new Set;for(const x of a){if(sb.has(x)&&!seen.has(x)){seen.add(x);out.push(x)}}return out})(...args) }",
+  "arr-remove-falsy": "function solve(...args){ return (arr=>arr.filter(Boolean))(...args) }",
+  "arr-second-largest": "function solve(...args){ return (nums=>{const u=[...new Set(nums)].sort((x,y)=>y-x);return u.length>=2?u[1]:null})(...args) }",
+  "arr-sum-evens": "function solve(...args){ return (nums=>nums.reduce((s,x)=>s+(x%2===0?x:0),0))(...args) }",
+  "obj-pick": "function solve(...args){ return ((obj,keys)=>{const out={};for(const k of keys){if(k in obj)out[k]=obj[k]}return out})(...args) }",
+  "obj-merge": "function solve(...args){ return ((a,b)=>Object.assign({},a,b))(...args) }",
+  "obj-count-keys": "function solve(...args){ return (obj=>Object.keys(obj).length)(...args) }",
+  "obj-group-by": "function solve(...args){ return ((arr,key)=>{const out={};for(const item of arr){const k=item[key];if(!out[k])out[k]=[];out[k].push(item)}return out})(...args) }",
+  "obj-get-nested": "function solve(...args){ return ((obj,path)=>{let cur=obj;for(const k of path){if(cur===null||cur===void 0)return void 0;cur=cur[k]}return cur})(...args) }",
+  "math-clamp": "function solve(...args){ return ((n,min,max)=>Math.min(Math.max(n,min),max))(...args) }",
+  "math-factorial": "function solve(...args){ return (n=>{let r=1;for(let i=2;i<=n;i++)r*=i;return r})(...args) }",
+  "math-is-prime": "function solve(...args){ return (n=>{if(n<2)return false;for(let i=2;i*i<=n;i++){if(n%i===0)return false}return true})(...args) }",
+  "math-gcd": "function solve(...args){ return ((a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=b;b=a%b;a=t}return a})(...args) }",
+  "math-fib": "function solve(...args){ return (n=>{let a=0;let b=1;for(let i=0;i<n;i++){const t=a;a=b;b=t+b}return a})(...args) }",
+  "math-average": "function solve(...args){ return (nums=>nums.length?nums.reduce((s,x)=>s+x,0)/nums.length:0)(...args) }",
+  "math-round-to": "function solve(...args){ return ((n,d)=>Math.round(n*10**d)/10**d)(...args) }",
+  "date-format-iso": "function solve(...args){ return (iso=>{const d=new Date(iso);const y=d.getUTCFullYear();const m=String(d.getUTCMonth()+1).padStart(2,\"0\");const day=String(d.getUTCDate()).padStart(2,\"0\");return`${y}-${m}-${day}`})(...args) }",
+  "date-day-of-week": "function solve(...args){ return (iso=>{const days=[\"Sunday\",\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\"];return days[new Date(iso).getUTCDay()]})(...args) }",
+  "date-is-leap-year": "function solve(...args){ return (iso=>{const y=new Date(iso).getUTCFullYear();return y%4===0&&y%100!==0||y%400===0})(...args) }",
+  "date-add-days": "function solve(...args){ return ((iso,days)=>{const d=new Date(iso);d.setUTCDate(d.getUTCDate()+days);return d.toISOString()})(...args) }",
+  "date-seconds-since": "function solve(...args){ return ((a,b)=>Math.floor((new Date(b).getTime()-new Date(a).getTime())/1e3))(...args) }",
+  "parse-query-string": "function solve(...args){ return (qs=>{const out={};if(qs===\"\")return out;const pairs=qs.split(\"&\");for(const pair of pairs){const i=pair.indexOf(\"=\");const end=i<0?pair.length:i;const k=decodeURIComponent(pair.slice(0,end));const val=i<0?\"\":decodeURIComponent(pair.slice(i+1));out[k]=val}return out})(...args) }",
+  "parse-json-safe": "function solve(...args){ return (s=>{try{return JSON.parse(s)}catch{return null}})(...args) }",
+  "parse-csv-line": "function solve(...args){ return (line=>{const res=[];let cur=\"\";let inQ=false;for(let i=0;i<line.length;i++){const c=line[i];if(inQ){if(c==='\"'){if(line[i+1]==='\"'){cur+='\"';i++}else{inQ=false}}else{cur+=c}}else if(c===\",\"){res.push(cur);cur=\"\"}else if(c==='\"'){inQ=true}else{cur+=c}}res.push(cur);return res})(...args) }",
+  "parse-version": "function solve(...args){ return (v=>{const parts=v.split(\".\");for(const p of parts){if(!/^\\d+$/.test(p))return null}return parts.map(Number)})(...args) }",
+  "logic-xor": "function solve(...args){ return ((a,b)=>a&&!b||!a&&b)(...args) }",
+  "logic-valid-parentheses": "function solve(...args){ return (s=>{const st=[];for(const c of s){if(c===\"(\"||c===\"[\"||c===\"{\"){st.push(c)}else{const t=st.pop();if(c===\")\"&&t!==\"(\")return false;if(c===\"]\"&&t!==\"[\")return false;if(c===\"}\"&&t!==\"{\")return false}}return st.length===0})(...args) }",
+  "logic-fizzbuzz": "function solve(...args){ return (n=>{if(n%15===0)return\"FizzBuzz\";if(n%3===0)return\"Fizz\";if(n%5===0)return\"Buzz\";return String(n)})(...args) }",
+  "logic-roman-to-int": "function solve(...args){ return (s=>{const m={I:1,V:5,X:10,L:50,C:100,D:500,M:1e3};let total=0;for(let i=0;i<s.length;i++){const cur=m[s[i]];const nxt=m[s[i+1]];if(nxt>cur)total-=cur;else total+=cur}return total})(...args) }",
+  "logic-pangram": "function solve(...args){ return (s=>{const seen=new Set;const low=s.toLowerCase();for(const c of low){if(c>=\"a\"&&c<=\"z\")seen.add(c)}return seen.size===26})(...args) }"
+ },
+ "wrong": [
+  "function solve(...args){ return undefined }",
+  "function solve(...args){ return null }",
+  "function solve(...args){ return 0 }",
+  "function solve(...args){ return '' }",
+  "function solve(...args){ return false }",
+  "function solve(...args){ return [] }",
+  "function solve(...args){ return {} }",
+  "function solve(...args){ return args[0] }",
+  "function solve(...args){ return args }"
+ ]
+}

@@ -1,0 +1,356 @@
+@page "/settings"
+@inject AppState State
+@inject VoiceInput Voice
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject BrowserTelemetryStorage Telemetry
+@inject StageHost StageService
+
+<h1>@State.Text["nav.settings"]</h1>
+
+<section>
+    <h2>@State.Text["settings.general"]</h2>
+    <label>@State.Text["settings.language"]
+        <select value="@s.Locale" @onchange="e => Save(s with { Locale = (string)e.Value! })">
+            @foreach (var locale in Strings.Locales)
+            {
+                <option value="@locale.Code">@locale.Name</option>
+            }
+        </select>
+    </label>
+    <label>@State.Text["settings.theme"]
+        <select value="@s.Theme" @onchange="e => Save(s with { Theme = (string)e.Value! })">
+            <option value="system">@State.Text["settings.theme.system"]</option>
+            <option value="light">@State.Text["settings.theme.light"]</option>
+            <option value="dark">@State.Text["settings.theme.dark"]</option>
+        </select>
+    </label>
+    <label>@State.Text["settings.model"]
+        <select value="@s.Model" @onchange="e => Save(s with { Model = (string)e.Value! })">
+            @foreach (var m in models.DefaultIfEmpty(s.Model))
+            {
+                <option value="@m">@m</option>
+            }
+        </select>
+    </label>
+</section>
+
+<section>
+    <h2>@State.Text["settings.providers"]</h2>
+    <ul>
+        @foreach (var p in providers)
+        {
+            <li>@p.Name (@p.Kind) @(p.HasSecret ? $"· {State.Text["settings.provider.secretStored"]}" : "") <button class="icon" @onclick="() => RemoveProviderAsync(p.Id)">✕</button></li>
+        }
+    </ul>
+    <div class="row">
+        <input placeholder="@State.Text["settings.provider.kind"]" @bind="providerKind" />
+        <input placeholder="@State.Text["auth.name"]" @bind="providerName" />
+        <input placeholder="@State.Text["settings.provider.baseUrl"]" @bind="providerUrl" />
+        <input type="password" placeholder="@State.Text["settings.provider.apiKey"]" @bind="providerKey" autocomplete="off" />
+        <button @onclick="AddProviderAsync" disabled="@string.IsNullOrWhiteSpace(providerName)">@State.Text["settings.provider.add"]</button>
+    </div>
+</section>
+
+<section>
+    <h2>@State.Text["settings.modules"]</h2>
+    <div class="toggles">
+        <Toggle Label="@State.Text["module.memory"]" Value="s.Modules.Memory" Changed="v => Save(s with { Modules = s.Modules with { Memory = v } })" />
+        <Toggle Label="@State.Text["module.learning"]" Value="s.Modules.Learning" Changed="v => Save(s with { Modules = s.Modules with { Learning = v } })" />
+        <Toggle Label="@State.Text["module.hearing"]" Value="s.Modules.Hearing" Changed="v => Save(s with { Modules = s.Modules with { Hearing = v } })" />
+        <Toggle Label="@State.Text["module.speech"]" Value="s.Modules.Speech" Changed="v => Save(s with { Modules = s.Modules with { Speech = v } })" />
+        <Toggle Label="@State.Text["module.browserContext"]" Value="s.Modules.BrowserContext" Changed="v => Save(s with { Modules = s.Modules with { BrowserContext = v } })" />
+        <Toggle Label="@State.Text["module.ideContext"]" Value="s.Modules.IdeContext" Changed="v => Save(s with { Modules = s.Modules with { IdeContext = v } })" />
+        <Toggle Label="@State.Text["module.artistry"]" Value="s.Modules.Artistry" Changed="v => Save(s with { Modules = s.Modules with { Artistry = v } })" />
+        <Toggle Label="@State.Text["module.vision"]" Value="s.Modules.Vision" Changed="v => Save(s with { Modules = s.Modules with { Vision = v } })" />
+        <Toggle Label="@State.Text["module.mcp"]" Value="s.Modules.Mcp" Changed="v => Save(s with { Modules = s.Modules with { Mcp = v } })" />
+        <Toggle Label="@State.Text["module.gaming"]" Value="s.Modules.Gaming" Changed="v => Save(s with { Modules = s.Modules with { Gaming = v } })" />
+        <Toggle Label="@State.Text["module.discord"]" Value="s.Modules.Discord" Changed="v => Save(s with { Modules = s.Modules with { Discord = v } })" />
+        <Toggle Label="@State.Text["module.x"]" Value="s.Modules.X" Changed="v => Save(s with { Modules = s.Modules with { X = v } })" />
+    </div>
+</section>
+
+<section>
+    <h2>@State.Text["settings.voice"]</h2>
+    <label>@State.Text["settings.voice.device"]
+        <select value="@(s.Voice.InputDeviceId ?? "")" @onchange="e => Save(s with { Voice = s.Voice with { InputDeviceId = (string)e.Value! is { Length: > 0 } d ? d : null } })">
+            <option value="">default</option>
+            @foreach (var (id, label) in devices)
+            {
+                <option value="@id">@label</option>
+            }
+        </select>
+    </label>
+    <label>@State.Text["settings.voice.recognition"]
+        <select value="@s.Voice.Recognition" @onchange="e => Save(s with { Voice = s.Voice with { Recognition = (string)e.Value! } })">
+            <option value="auto">@State.Text["settings.voice.recognition.auto"]</option>
+            <option value="browser">@State.Text["settings.voice.recognition.browser"]</option>
+            <option value="server">@State.Text["settings.voice.recognition.server"]</option>
+        </select>
+    </label>
+    <Toggle Label="@State.Text["settings.voice.vad"]" Value="s.Voice.VadEnabled" Changed="v => Save(s with { Voice = s.Voice with { VadEnabled = v } })" />
+    @if (!s.Voice.VadEnabled)
+    {
+        <label>@State.Text["settings.voice.pushToTalk"]<input value="@s.Voice.PushToTalkKey" @onchange="e => Save(s with { Voice = s.Voice with { PushToTalkKey = (string)e.Value! } })" /></label>
+    }
+    <Toggle Label="@State.Text["settings.voice.autoSend"]" Value="s.Voice.AutoSend" Changed="v => Save(s with { Voice = s.Voice with { AutoSend = v } })" />
+    <Toggle Label="@State.Text["settings.voice.speak"]" Value="s.Voice.SpeakReplies" Changed="v => Save(s with { Voice = s.Voice with { SpeakReplies = v } })" />
+    <Toggle Label="@State.Text["settings.voice.lipSync"]" Value="s.Voice.LipSync" Changed="v => Save(s with { Voice = s.Voice with { LipSync = v } })" />
+</section>
+
+<section>
+    <h2>@State.Text["module.vision"]</h2>
+    <label>@State.Text["settings.vision.model"]<input value="@s.VisionCapture.Model" placeholder="@s.Model" @onchange="SetVisionModel" /></label>
+    <label>@State.Text["settings.vision.interval"]<input type="number" min="5" max="600" value="@s.VisionCapture.IntervalSeconds" @onchange="SetVisionInterval" /></label>
+    <p class="hint">@State.Text["settings.vision.privacy"]</p>
+</section>
+
+<section>
+    <h2>@State.Text["settings.stage"]</h2>
+    <label>@State.Text["settings.stage.model"]<input value="@s.Stage.ModelUrl" @onchange="e => Save(s with { Stage = s.Stage with { ModelUrl = NullIfEmpty(e.Value) } })" /></label>
+    <label>@State.Text["settings.stage.motion"]<input value="@s.Stage.IdleMotionUrl" @onchange="e => Save(s with { Stage = s.Stage with { IdleMotionUrl = NullIfEmpty(e.Value) } })" /></label>
+    <p class="hint">@State.Text["settings.stage.license"]</p>
+    <Toggle Label="@State.Text["settings.stage.physics"]" Value="s.Stage.Physics" Changed="v => Save(s with { Stage = s.Stage with { Physics = v } })" />
+    <label>@State.Text["settings.stage.background"]<input type="color" value="@s.Stage.Background" @onchange="e => Save(s with { Stage = s.Stage with { Background = (string)e.Value! } })" /></label>
+    <label>@State.Text["settings.stage.image"]<input id="stage-image-url" value="@(s.Stage.BackgroundImage is { } img && img.StartsWith("data:", StringComparison.Ordinal) ? State.Text["settings.stage.image.uploaded"] : s.Stage.BackgroundImage)" @onchange="SetBackgroundUrl" /></label>
+    <div class="row">
+        <label class="button">@State.Text["settings.stage.image.upload"]<InputFile id="stage-image-file" OnChange="UploadBackgroundAsync" accept="image/*" hidden /></label>
+        @if (s.Stage.BackgroundImage is not null)
+        {
+            <button type="button" @onclick="() => Save(s with { Stage = s.Stage with { BackgroundImage = null } })">@State.Text["settings.stage.image.clear"]</button>
+        }
+        @if (imageError is not null)
+        {
+            <span class="error" role="alert">@imageError</span>
+        }
+    </div>
+    <label>@State.Text["settings.stage.fit"]
+        <select value="@s.Stage.BackgroundFit" @onchange="e => Save(s with { Stage = s.Stage with { BackgroundFit = (string)e.Value! } })">
+            <option value="cover">@State.Text["settings.stage.fit.cover"]</option>
+            <option value="contain">@State.Text["settings.stage.fit.contain"]</option>
+        </select>
+    </label>
+    <label>@State.Text["settings.stage.scale"]<input type="range" min="0.5" max="2" step="0.1" value="@s.Stage.Scale.ToString(System.Globalization.CultureInfo.InvariantCulture)" @onchange="SetScale" /></label>
+    <h3>@State.Text["settings.stage.scenes"]</h3>
+    <div class="row">
+        <input id="stage-scene-name" placeholder="@State.Text["settings.stage.scene.name"]" @bind="sceneName" @bind:event="oninput" />
+        <button type="button" id="stage-scene-save" disabled="@string.IsNullOrWhiteSpace(sceneName)" @onclick="SaveScene">@State.Text["settings.stage.scene.save"]</button>
+    </div>
+    @if (s.Stage.Scenes.Count > 0)
+    {
+        <ul class="scene-list">
+            @foreach (var scene in s.Stage.Scenes)
+            {
+                <li>
+                    <span class="scene-swatch" style="background:@scene.Background"></span>
+                    <span class="scene-name">@scene.Name</span>
+                    <button type="button" @onclick="() => Save(s with { Stage = scene.ApplyTo(s.Stage) })">@State.Text["settings.stage.scene.apply"]</button>
+                    <button type="button" class="danger" @onclick="() => Save(s with { Stage = s.Stage with { Scenes = s.Stage.Scenes.Where(x => x != scene).ToList() } })">@State.Text["settings.stage.scene.delete"]</button>
+                </li>
+            }
+        </ul>
+    }
+    <Toggle Label="@State.Text["settings.stage.beatSync"]" Value="s.Stage.BeatSync" Changed="v => Save(s with { Stage = s.Stage with { BeatSync = v } })" />
+</section>
+
+<section>
+    <h2>@State.Text["settings.data"]</h2>
+    <div class="row">
+        <button @onclick="ExportAsync">@State.Text["settings.data.export"]</button>
+        <label class="button">@State.Text["settings.data.import"]<InputFile OnChange="ImportAsync" accept=".json" hidden /></label>
+        <button class="danger" @onclick="ClearAsync">@State.Text["settings.data.clear"]</button>
+    </div>
+    <h3>@State.Text["settings.research"]</h3>
+    <Toggle Label="@State.Text["settings.research.consent"]" Value="s.ResearchConsent" Changed="SetResearchConsentAsync" />
+    <p class="hint">@State.Text["settings.research.hint"]</p>
+    <div class="row">
+        <button @onclick="ExportResearchAsync">@State.Text["settings.research.export"]</button>
+        @if (researchStatus is not null)
+        {
+            <span class="status" role="status">@researchStatus</span>
+        }
+    </div>
+</section>
+
+<section>
+    <h2>@State.Text["nav.account"]</h2>
+    <p>@State.Account?.Email · @State.Text["settings.flux"]: @flux</p>
+    <div class="row">
+        <button @onclick="SignOutAsync">@State.Text["auth.signOut"]</button>
+        <button class="danger" @onclick="DeleteAccountAsync">@State.Text["settings.account.delete"]</button>
+    </div>
+</section>
+@if (saved)
+{
+    <p class="status">@State.Text["common.saved"]</p>
+}
+
+@code {
+    private AppSettings s => State.Settings.Current;
+    private IReadOnlyList<string> models = [];
+    private IReadOnlyList<ProviderInfo> providers = [];
+    private IReadOnlyList<(string Id, string Label)> devices = [];
+    private long flux;
+    private bool saved;
+    private string providerKind = "openai", providerName = "", providerUrl = "", providerKey = "";
+
+    private static string? NullIfEmpty(object? v) => v is string str && str.Length > 0 ? str : null;
+
+    private string? sceneName;
+    private string? imageError;
+
+    private async Task SetBackgroundUrl(ChangeEventArgs e)
+    {
+        var s = State.Settings.Current;
+        var value = NullIfEmpty(e.Value);
+        // The field shows a placeholder for an uploaded picture; leaving it untouched must not replace the picture.
+        if (value == State.Text["settings.stage.image.uploaded"])
+            return;
+        await Save(s with { Stage = s.Stage with { BackgroundImage = value } });
+    }
+
+    private async Task UploadBackgroundAsync(InputFileChangeEventArgs e)
+    {
+        imageError = null;
+        try
+        {
+            using var ms = new MemoryStream();
+            await e.File.OpenReadStream(20_000_000).CopyToAsync(ms);
+            var dataUrl = await StageService.FitImageAsync(ms.ToArray(), e.File.ContentType);
+            var s = State.Settings.Current;
+            await Save(s with { Stage = s.Stage with { BackgroundImage = dataUrl } });
+        }
+        catch (Exception ex) when (ex is IOException or JSException or InvalidOperationException)
+        {
+            imageError = $"{State.Text["settings.stage.image.error"]}: {ex.Message}";
+        }
+    }
+
+    private async Task SetScale(ChangeEventArgs e)
+    {
+        if (double.TryParse(e.Value as string, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var scale))
+        {
+            var s = State.Settings.Current;
+            await Save(s with { Stage = s.Stage with { Scale = Math.Clamp(scale, 0.5, 2) } });
+        }
+    }
+
+    private async Task SaveScene()
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+            return;
+        var s = State.Settings.Current;
+        var name = sceneName.Trim();
+        var scenes = s.Stage.Scenes.Where(x => x.Name != name).Append(StageScene.From(name, s.Stage)).ToList();
+        sceneName = null;
+        await Save(s with { Stage = s.Stage with { Scenes = scenes } });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            models = await State.Api.ModelsAsync();
+        }
+        catch (AijadeApiException)
+        {
+            models = [];
+        }
+        providers = await State.Api.ProvidersAsync();
+        devices = await Voice.DevicesAsync();
+        flux = await State.Api.FluxBalanceAsync();
+    }
+
+    private async Task Save(AppSettings next)
+    {
+        await State.Settings.SaveAsync(next);
+        saved = true;
+    }
+
+    private async Task AddProviderAsync()
+    {
+        await State.Api.AddProviderAsync(providerKind, providerName, NullIfEmpty(providerUrl), NullIfEmpty(providerKey));
+        providerName = providerUrl = providerKey = "";
+        providers = await State.Api.ProvidersAsync();
+    }
+
+    private async Task RemoveProviderAsync(string id)
+    {
+        await State.Api.DeleteProviderAsync(id);
+        providers = await State.Api.ProvidersAsync();
+    }
+
+    private Task ExportAsync() => JS.InvokeVoidAsync("aijadeDownload", "aijade-settings.json", State.Settings.Export().ToJsonString()).AsTask();
+
+    private async Task ImportAsync(InputFileChangeEventArgs e)
+    {
+        using var reader = new StreamReader(e.File.OpenReadStream(1_000_000));
+        if (JsonNode.Parse(await reader.ReadToEndAsync()) is JsonObject doc)
+            await State.Settings.ImportAsync(doc);
+    }
+
+    private async Task ClearAsync()
+    {
+        if (await JS.InvokeAsync<bool>("confirm", State.Text["settings.data.clearConfirm"]))
+            await State.Settings.ResetAsync();
+    }
+
+    private async Task SignOutAsync()
+    {
+        await State.Api.SignOutAsync();
+        State.SetAccount(null);
+        Nav.NavigateTo("");
+    }
+
+    private async Task DeleteAccountAsync()
+    {
+        if (!await JS.InvokeAsync<bool>("confirm", State.Text["settings.account.deleteConfirm"]))
+            return;
+        await State.Api.DeleteAccountAsync();
+        await SignOutAsync();
+    }
+
+    private Task SetVisionModel(ChangeEventArgs e)
+    {
+        var current = State.Settings.Current;
+        return Save(current with { VisionCapture = current.VisionCapture with { Model = (e.Value as string ?? string.Empty).Trim() } });
+    }
+
+    private Task SetVisionInterval(ChangeEventArgs e)
+    {
+        var current = State.Settings.Current;
+        var seconds = int.TryParse(e.Value as string, out var n) ? Math.Clamp(n, 5, 600) : 30;
+        return Save(current with { VisionCapture = current.VisionCapture with { IntervalSeconds = seconds } });
+    }
+
+    private string? researchStatus;
+
+    private async Task SetResearchConsentAsync(bool granted)
+    {
+        await Save(State.Settings.Current with { ResearchConsent = granted });
+        if (!granted)
+        {
+            // Withdrawing consent removes what was recorded on this device right away.
+            await Telemetry.ClearAsync();
+            researchStatus = State.Text["settings.research.cleared"];
+        }
+        else
+        {
+            researchStatus = null;
+        }
+    }
+
+    private async Task ExportResearchAsync()
+    {
+        var (sessions, turns) = await Telemetry.ExportAsync();
+        var count = turns.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+        if (count == 0)
+        {
+            researchStatus = State.Text["settings.research.empty"];
+            return;
+        }
+        await JS.InvokeVoidAsync("aijadeDownload", "aijade-research-sessions.jsonl", sessions);
+        await JS.InvokeVoidAsync("aijadeDownload", "aijade-research-turns.jsonl", turns);
+        researchStatus = State.Text.Format("settings.research.exported", count);
+    }
+}

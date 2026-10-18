@@ -1,0 +1,88 @@
+{
+  "experiment": "uncertainty of the headline contrasts of P4 §5, the conversation as the unit of dependence: conversation bootstrap (10,000 resamples, percentile 95%) and exact sign-flip randomisation over the paired per-conversation differences",
+  "k": 8,
+  "contrasts": [
+    {
+      "key": "weights: sim-only vs current",
+      "caliber": "micro",
+      "a": 0.3580060422960725,
+      "b": 0.09063444108761329,
+      "difference": 0.26737160120845926,
+      "bootstrap95": [
+        0.19602272727272727,
+        0.3373702422145328
+      ],
+      "signFlipP": 0.001953125,
+      "conversationsPositive": 10,
+      "conversationsNegative": 0,
+      "conversations": 10
+    },
+    {
+      "key": "gating (predicted, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.0691347697772432,
+      "b": 0.07969649340090265,
+      "difference": -0.010561723623659456,
+      "bootstrap95": [
+        -0.019480063713742307,
+        -0.0026899276662517907
+      ],
+      "signFlipP": 0.02734375,
+      "conversationsPositive": 2,
+      "conversationsNegative": 8,
+      "conversations": 10
+    },
+    {
+      "key": "gating (oracle, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.36964705448631047,
+      "b": 0.07969649340090265,
+      "difference": 0.28995056108540784,
+      "bootstrap95": [
+        0.24285928491551984,
+        0.3379531931355927
+      ],
+      "signFlipP": 0.001953125,
+      "conversationsPositive": 10,
+      "conversationsNegative": 0,
+      "conversations": 10
+    },
+    {
+      "key": "gating (predicted, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.1984688004513847,
+      "b": 0.19853236649084932,
+      "difference": -0.0000635660394646187,
+      "bootstrap95": [
+        -0.007448022247928512,
+        0.007263674657238312
+      ],
+      "signFlipP": 1,
+      "conversationsPositive": 3,
+      "conversationsNegative": 4,
+      "conversations": 10
+    },
+    {
+      "key": "gating (oracle, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.3289959920253717,
+      "b": 0.19853236649084932,
+      "difference": 0.13046362553452245,
+      "bootstrap95": [
+        0.10346163973696816,
+        0.16157903806505194
+      ],
+      "signFlipP": 0.001953125,
+      "conversationsPositive": 10,
+      "conversationsNegative": 0,
+      "conversations": 10
+    }
+  ],
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.13",
+    "generatedAt": "2026-10-15T10:28:08.5909770+00:00"
+  }
+}

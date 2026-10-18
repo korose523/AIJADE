@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Research telemetry (sessions, turns, persona trajectories) without the rest of Aijade.Research, so the web client can
+       record locally without shipping the benchmark sandbox. Namespace kept as Aijade.Research.Telemetry. -->
+  <ItemGroup>
+    <ProjectReference Include="../Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../Aijade.Learning/Aijade.Learning.csproj" />
+  </ItemGroup>
+</Project>

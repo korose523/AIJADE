@@ -1,0 +1,364 @@
+{
+  "generatedBy": "tools/Aijade.Mutation",
+  "matrix": "ContractDriftMatrixTests (PostgreSQL)",
+  "baseline": {
+    "assertions": 287,
+    "failures": 0
+  },
+  "mutants": [
+    {
+      "id": "FU-01",
+      "file": "src/Aijade.Memory/Kernel/Events.cs",
+      "classHint": "kernel",
+      "expectedCapture": "kernel",
+      "expectedContains": [
+        "envelope with unknown extra field"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Topic events stop rejecting unknown keys in the kernel: the kernel assertion of the unknown-envelope-field negative turns red.",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [kernel] envelope with unknown extra field: must be rejected"
+      ]
+    },
+    {
+      "id": "FU-02",
+      "file": "src/Aijade.Memory/Kernel/Events.cs",
+      "classHint": "kernel",
+      "expectedCapture": "kernel",
+      "expectedContains": [
+        "tick beyond int32"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Kernel tick upper bound removed: the kernel accepts 2^31; only the kernel assertion turns red (the boundary still refuses).",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 1,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [kernel] tick beyond int32: must be rejected"
+      ]
+    },
+    {
+      "id": "FU-03",
+      "file": "src/Aijade.Server/V9/Boundary.cs",
+      "classHint": "http",
+      "expectedCapture": "http",
+      "expectedContains": [
+        "tick beyond int32"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Boundary tick upper bound removed: the out-of-range tick reaches the int32 column and leaks as a 500; the HTTP 400 assertion turns red.",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 2,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [http] tick beyond int32: must be 400 (got 201)",
+        "FAIL [no-write] tick beyond int32: events unchanged (13 -> 14)"
+      ]
+    },
+    {
+      "id": "FU-04",
+      "file": "src/Aijade.Server/V9/V9Endpoints.cs",
+      "classHint": "http",
+      "expectedCapture": "http",
+      "expectedContains": [
+        "must be 400"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Per-topic payload validation skipped (payload passed through).",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 97,
+      "falseRed": 51,
+      "redSample": [
+        "FAIL [http] aijade.active_learning.requested / missing quest_ref: must be 400 (got 201)",
+        "FAIL [no-write] aijade.active_learning.requested / missing quest_ref: events unchanged (13 -> 14)",
+        "FAIL [http] aijade.active_learning.requested / blank quest_ref: must be 400 (got 201)",
+        "FAIL [no-write] aijade.active_learning.requested / blank quest_ref: events unchanged (14 -> 15)",
+        "FAIL [http] aijade.active_learning.requested / empty stop_conditions: must be 400 (got 201)"
+      ]
+    },
+    {
+      "id": "FU-05",
+      "file": "src/Aijade.Server/V9/Boundary.cs",
+      "classHint": "http",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "envelope with unknown extra field"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Boundary envelope no longer strict: an unknown envelope key is accepted and written.",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 2,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [http] envelope with unknown extra field: must be 400 (got 201)",
+        "FAIL [no-write] envelope with unknown extra field: events unchanged (13 -> 14)"
+      ]
+    },
+    {
+      "id": "FU-06",
+      "file": "src/Aijade.Memory/Kernel/Events.cs",
+      "classHint": "guard+kernel",
+      "expectedCapture": "guard+kernel",
+      "expectedContains": [
+        "risk_level",
+        "envelope declares exactly"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Kernel envelope loses risk_level: the field-set guard and every kernel acceptance of an envelope carrying it turn red.",
+      "observedVerdict": "caught",
+      "assertions": 274,
+      "newRed": 21,
+      "falseRed": 19,
+      "redSample": [
+        "FAIL kernel envelope declares exactly 13 required + 3 optional fields (got: causal_context_refs, causality, core_state_node, correlation_id, event_id, evidence_refs, idempotency_key, origin_device, privacy_level, producer, replay_mode, risk_score, tick, timestamp, trace_id)",
+        "FAIL [kernel] aijade.active_learning.requested / valid payload: valid payload accepted",
+        "FAIL [kernel] aijade.active_learning.completed / valid payload: valid payload accepted",
+        "FAIL [kernel] aijade.evidence.weave_candidate_ready / valid payload: valid payload accepted",
+        "FAIL [kernel] aijade.pgc.write_plan_ready / valid payload: valid payload accepted"
+      ]
+    },
+    {
+      "id": "FU-07a",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "http+no-write",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "self-reference"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Learning-branch self-reference guard removed.",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-07b",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "http+no-write",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "self-reference"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Projection self-reference guard removed.",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 3,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [http] aijade.persona.render_requested / intent_ref self-reference: must be 400 (got 201)",
+        "FAIL [no-write] aijade.persona.render_requested / intent_ref self-reference: events unchanged (13 -> 14)",
+        "FAIL [no-write] aijade.persona.render_requested / intent_ref self-reference: render_traces unchanged (4 -> 5)"
+      ]
+    },
+    {
+      "id": "FU-08",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "none",
+      "expectedCapture": "http",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "applied_params_hash mismatch refusal removed; the matrix has no hash-mismatch negative (fixtures use the seed hashes).",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-09",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "none",
+      "expectedCapture": "no-write",
+      "expectedContains": [],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "The render-trace projection is never written: learning proposals then reference a missing projection.",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 2,
+      "falseRed": 0,
+      "redSample": [
+        "FAIL [http] aijade.persona.render_requested / intent_ref self-reference: must be 400 (got 201)",
+        "FAIL [no-write] aijade.persona.render_requested / intent_ref self-reference: events unchanged (13 -> 14)"
+      ]
+    },
+    {
+      "id": "FU-10",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "projection_status always 'paired'; the matrix has no projection_status assertion (only the e2e P1b does).",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-11",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "Append-only render_ref conflict refusal removed; only the e2e N8 covers a second receipt on one trace.",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-12",
+      "file": "src/Aijade.Server/V9/ServerRuntime.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "Dispatch replaces the observation's input hash with a constant; the matrix checks presence, not value↔content consistency.",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-13",
+      "file": "src/Aijade.Server/V9/V9Endpoints.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "The v10 tick/causality requirement is skipped; the matrix has no missing-tick negative for v10 topics (only the e2e N2/N3).",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-14",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "http+no-write",
+      "expectedCapture": "http+no-write",
+      "expectedContains": [
+        "self-reference"
+      ],
+      "predictedVerdict": "caught",
+      "implementable": true,
+      "note": "Learning-reference validation applied to every topic: every non-learning positive is refused.",
+      "observedVerdict": "caught",
+      "assertions": 287,
+      "newRed": 11,
+      "falseRed": 11,
+      "redSample": [
+        "FAIL [http] aijade.active_learning.requested / valid payload: valid payload -> 201 (got 400)",
+        "FAIL [http] aijade.active_learning.completed / valid payload: valid payload -> 201 (got 400)",
+        "FAIL [http] aijade.evidence.weave_candidate_ready / valid payload: valid payload -> 201 (got 400)",
+        "FAIL [http] aijade.pgc.write_plan_ready / valid payload: valid payload -> 201 (got 400)",
+        "FAIL [http] aijade.memory_tx.committed / valid payload: valid payload -> 201 (got 400)"
+      ]
+    },
+    {
+      "id": "FU-15",
+      "file": "src/Aijade.Server/V9/V9EventService.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "Every render_ready is audited as unpaired; the matrix counts only events and render_traces, not audit_log_entries.",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-16",
+      "file": "src/Aijade.Memory/BioticMemory.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "notImplemented",
+      "implementable": false,
+      "note": "Not injectable: the matrix never constructs the in-memory store (BioticMemory), so its persistence is outside the observed domain.",
+      "observedVerdict": "notImplemented"
+    },
+    {
+      "id": "FU-17",
+      "file": "src/Aijade.Server/V9/Boundary.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "Tick no longer required to be an integer; the matrix has no fractional-tick negative.",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-18",
+      "file": "src/Aijade.Memory/Kernel/Events.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "survived",
+      "implementable": true,
+      "note": "Only the standalone envelope schema loosened; the decisive check is the topic-event schema, so nothing turns red (the shadowing surface).",
+      "observedVerdict": "survived",
+      "assertions": 287,
+      "newRed": 0,
+      "falseRed": 0,
+      "redSample": []
+    },
+    {
+      "id": "FU-19",
+      "file": "src/Aijade.Memory/Kernel/Events.cs",
+      "classHint": "none",
+      "expectedCapture": "none",
+      "expectedContains": [],
+      "predictedVerdict": "notImplemented",
+      "implementable": false,
+      "note": "Semantically equivalent rewrite (comments / field order): no observable anchor; excluded from the score denominator.",
+      "observedVerdict": "notImplemented"
+    }
+  ],
+  "summary": {
+    "total": 20,
+    "caught": 9,
+    "survived": 9,
+    "notImplemented": 2,
+    "mutationError": 0,
+    "diffScore": 0.5
+  }
+}

@@ -1,0 +1,89 @@
+@inject AppState State
+@inject NavigationManager Nav
+@inject IClientHost Host
+
+<div class="login">
+    <h1>@State.Text["app.title"]</h1>
+    <form @onsubmit="SubmitAsync">
+        @if (Host.ServerConfigurable)
+        {
+            <label>@State.Text["auth.server"]<input type="url" @bind="server" placeholder="https://" autocomplete="url" required /></label>
+        }
+        @if (signUp)
+        {
+            <label>@State.Text["auth.name"]<input @bind="name" autocomplete="name" /></label>
+        }
+        <label>@State.Text["auth.email"]<input type="email" @bind="email" autocomplete="email" required /></label>
+        <label>@State.Text["auth.password"]<input type="password" @bind="password" autocomplete="@(signUp ? "new-password" : "current-password")" required /></label>
+        <button type="submit" class="primary" disabled="@busy">@State.Text[signUp ? "auth.signUp" : "auth.signIn"]</button>
+    </form>
+    @if (oidc)
+    {
+        <a class="button" href="/api/v1/auth/oidc/login?returnUrl=%2F">@State.Text["auth.oidc"]</a>
+    }
+    <button class="link" @onclick="() => signUp = !signUp">@State.Text[signUp ? "auth.haveAccount" : "auth.noAccount"]</button>
+    @if (error is not null)
+    {
+        <p class="error" role="alert">@State.Text.Format("auth.failed", error)</p>
+    }
+</div>
+
+@code {
+    private bool signUp;
+    private bool busy;
+    private bool oidc;
+    private string email = "";
+    private string password = "";
+    private string name = "";
+    private string? error;
+    private string server = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        server = Host.Server?.ToString() ?? "";
+        if (Host.ServerConfigurable && Host.Server is null)
+            return; // nothing to ask yet: the user names the server first
+        try
+        {
+            oidc = (await State.Api.SendAsync(HttpMethod.Get, "/api/v1/auth/providers"))?["oidc"] is JsonObject;
+        }
+        catch (Exception e) when (e is HttpRequestException or AijadeApiException)
+        {
+            oidc = false;
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        busy = true;
+        error = null;
+        if (Host.ServerConfigurable)
+        {
+            if (ServerAddressHandler.ParseServer(server) is not { } chosen)
+            {
+                error = State.Text["auth.serverInvalid"];
+                busy = false;
+                return;
+            }
+            await Host.SetServerAsync(chosen);
+        }
+        try
+        {
+            var account = signUp ? await State.Api.SignUpAsync(email, password, name) : await State.Api.SignInAsync(email, password);
+            State.SetAccount(account);
+            Nav.NavigateTo("");
+        }
+        catch (AijadeApiException e)
+        {
+            error = e.Message;
+        }
+        catch (HttpRequestException e)
+        {
+            error = e.Message;
+        }
+        finally
+        {
+            busy = false;
+        }
+    }
+}

@@ -1,0 +1,344 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 30,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:1.5b",
+    "rounds": 5,
+    "pCorrect": 0.5,
+    "tasks": 12,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "temperature": 0.4
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "qwen2.5-coder:1.5b",
+    "temperature": 0.4,
+    "seed": 3759066737,
+    "ollamaVersion": "0.35.1",
+    "warmUp": true
+  },
+  "analysisUnit": "skill",
+  "nSkills": 4385,
+  "nExecutions": 7200,
+  "fingerprint": "8144ecc5",
+  "gitHash": "unknown",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.8194444444444444,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 425,
+      "precision": 0.8383333333333334,
+      "retiredRate": 0.15294117647058825,
+      "meanCallsPerSkill": 4.235294117647059
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 1800,
+      "precision": 0.8038888888888889,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 1
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 1800,
+      "precision": 0.8444444444444444,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 1
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.8194444444444444,
+        "lo": 0.7805555555555556,
+        "hi": 0.8583333333333333
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.8383333333333334,
+        "lo": 0.806907974382005,
+        "hi": 0.8669934137523715
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.8038888888888889,
+        "lo": 0.7855555555555556,
+        "hi": 0.8222222222222222
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.8444444444444444,
+        "lo": 0.8272222222222222,
+        "hi": 0.8611111111111112
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 3600,
+    "hallucinationRate": null,
+    "missRate": 0.8241666666666667,
+    "agreement": 0.17583333333333334
+  },
+  "diffInDiff": {
+    "estimate": 0.021666666666666612,
+    "ci": {
+      "mean": 0.021666666666666612,
+      "lo": -0.03480438304103137,
+      "hi": 0.0766017619485959
+    },
+    "cellMeans": {
+      "a": 0.8194444444444444,
+      "b": 0.8383333333333334,
+      "c": 0.8038888888888889,
+      "d": 0.8444444444444444
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 1.1185645466151333,
+    "riskDifference": 0.01688930503537245,
+    "cramersV": 0.021160396334571018,
+    "cohensH": 0.04349926600219689,
+    "interactionLogOdds": {
+      "estimate": 0.026428697214909466,
+      "se": 0.0518617042288234,
+      "z": 0.5095994743693956,
+      "p": 0.6103320921996117
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 0.16114610673605212,
+        "adjustedP": 0.6445844269442085,
+        "reject": false
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 0.001043231243371504,
+        "adjustedP": 0.008345849946972033,
+        "reject": true
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 0.6103320921996117,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 0.00000774421643104407,
+        "adjustedP": 0.00006969794787939663,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 0.005791935829818401,
+        "adjustedP": 0.028959679149092005,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 0.5425687052226817,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 0.26995239973393936,
+        "adjustedP": 0.8098571992018181,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 0.0018510845195579217,
+        "adjustedP": 0.011340529468343158,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 1.1989974492622492e-7,
+        "adjustedP": 0.0000011989974492622493,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 0.0016200756383347367,
+        "adjustedP": 0.011340529468343158,
+        "reject": true
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": 0.026428697214909466,
+    "se": 0.0518617042288234,
+    "z": 0.5095994743693956,
+    "p": 0.6103320921996117
+  },
+  "chiSquare": {
+    "statistic": 1.9634380057634149,
+    "p": 0.16114610673605212,
+    "table": [
+      [
+        1832,
+        393
+      ],
+      [
+        1742,
+        418
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareSelfVerification": {
+    "statistic": 10.749222749700241,
+    "p": 0.001043231243371504,
+    "table": [
+      [
+        2967,
+        633
+      ],
+      [
+        607,
+        178
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 10.884082833398294,
+    "p": 0.0009699419841549159,
+    "table": [
+      [
+        3029,
+        571
+      ],
+      [
+        2922,
+        678
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 93,
+    "b": 38,
+    "c": 7,
+    "d": 582,
+    "nPairs": 720,
+    "chiSquare": 20,
+    "pChiSquare": 0.00000774421643104407,
+    "pExact": null,
+    "p": 0.00000774421643104407,
+    "usedExact": false
+  },
+  "power": {
+    "minDetectableEffectAt80": 5.973204912210317,
+    "nSkillsPerCell": 1096,
+    "powerAtDelta10pp": 0.9971923825135393,
+    "powerAtDelta5pp": 0.6505664583610631
+  },
+  "powerReference": [
+    {
+      "nPerCell": 240,
+      "minDetectableEffectAt80pp": 12.68,
+      "powerAtDelta10pp": 0.5999,
+      "powerAtDelta5pp": 0.1944
+    },
+    {
+      "nPerCell": 360,
+      "minDetectableEffectAt80pp": 10.38,
+      "powerAtDelta10pp": 0.7735,
+      "powerAtDelta5pp": 0.2693
+    }
+  ],
+  "preregistrationDeviation": [
+    "temperature: run=0.4 preregistered=0",
+    "resumed: steps 0–6104 replayed from the interrupted run after an infrastructure timeout"
+  ],
+  "resumed": {
+    "replayedSteps": 6105,
+    "replayedGenerations": 3290,
+    "replayedVerifications": 2505,
+    "note": "the run was interrupted by an infrastructure timeout; the recorded generations and self-verification replies of the interrupted run were replayed (and checked step by step) before the live backend took over"
+  },
+  "degeneracy": {
+    "allCellsIdenticalPrecision": false,
+    "totalRegenerations": 2945,
+    "totalRecoveries": 2389,
+    "recoveredRate": 0.8112054329371816,
+    "manipulationReachable": true,
+    "note": "reachable: cells differ and 2389/2945 regenerations recovered"
+  },
+  "loopDiagnostics": [
+    {
+      "condition": "sv0-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv0-ef1",
+      "loop": {
+        "regenerations": 65,
+        "regenerationsWithSignal": 65,
+        "recoveries": 17,
+        "recoveredRate": 0.26153846153846155
+      }
+    },
+    {
+      "condition": "sv1-ef0",
+      "loop": {
+        "regenerations": 1440,
+        "regenerationsWithSignal": 1440,
+        "recoveries": 1154,
+        "recoveredRate": 0.8013888888888889
+      }
+    },
+    {
+      "condition": "sv1-ef1",
+      "loop": {
+        "regenerations": 1440,
+        "regenerationsWithSignal": 1440,
+        "recoveries": 1218,
+        "recoveredRate": 0.8458333333333333
+      }
+    }
+  ]
+}

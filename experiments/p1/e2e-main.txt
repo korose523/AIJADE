@@ -1,0 +1,20 @@
+PASS  N1 未认证请求被 401 拒绝  — status=401
+PASS  P1 persona.render_requested → 201 落库  — {"ok":true,"deduped":false,"eventId":"evt-aijade.persona.render_requested-71d0d786","pairingMissing":false}
+PASS  P1b 投影行建立且为 partial（intent 端先到）  — rows=1 status=partial
+PASS  P2 lpm.render_ready → 201  — status=201
+PASS  P2b 身份链配对为 paired 且三元组齐备  — intent-e2e-1|render-e2e-1|hash-e2e-1
+PASS  P3 同幂等键重放 → 200 deduped 且事件数不变  — status=200 deduped=true 2→2
+PASS  P4 video.observation → 201（tick+causality 合规）  — status=201 eventId=evt-aijade.video.observation.webpage_text-eaf8a07f
+PASS  P4b R1 闭环：worker 产出 learning.proposed.evidence（端到端首次真实贯通）  — rows=1
+PASS  P4c 提案引用真实渲染身份（render_ref=render-e2e-1，非合成）  — {"claim_text": "The page claims that spaced repetition improves retention by 40 percent.", "confidence": 0.6, "render_ref": "render-e2e-1", "session_id": "e2e-i
+PASS  P5 opinion_evaluation → 201 且落库（C 路真实投递）  — status=201 rows=1
+PASS  N2 video topic 缺 tick → 400 不落库  — status=400 writes=clean
+PASS  N3 causality.inputHash 空串 → 400 不落库  — status=400 writes=clean
+PASS  N4 信封未知多余字段（strict）→ 400 不落库  — status=400 writes=clean
+PASS  N5 未知 topic → 400 不落库  — status=400 writes=clean
+PASS  N6 render_requested 缺 intent_ref → 400 不落库  — status=400 writes=clean
+PASS  N7 render_ref 自引用信封标识（§11.2）→ 400 不落库  — status=400 writes=clean
+PASS  N8 同 trace 二次 render_ready 不同 render_ref（append-only）→ 400 不落库  — status=400 writes=clean
+PASS  N9 畸形 JSON → 400 不落库  — status=400
+
+===== e2e-main: 18/18 passed =====
