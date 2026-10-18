@@ -207,6 +207,8 @@ public class ComputerUseTests
     [Fact]
     public async Task The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions()
     {
+        if (!OperatingSystem.IsMacOS() && !OperatingSystem.IsWindows())
+            Assert.Skip("the computer-use server is implemented for macOS and Windows only");
         var ct = TestContext.Current.CancellationToken;
         var dll = typeof(ComputerUseTests).Assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyMetadataAttribute), false)
             .Cast<System.Reflection.AssemblyMetadataAttribute>().Single(a => a.Key == "AijadeComputerUseDll").Value!;
