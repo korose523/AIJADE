@@ -24,11 +24,20 @@ public sealed partial class MemoryRecallProvider(AijadeApi api, Func<bool> enabl
         if (!enabled())
             return null;
         var items = new Dictionary<string, MemoryItem>(StringComparer.Ordinal);
+        // Callers record the utterance in the background while the turn runs; once stored it matches itself, and that echo
+        // must not count as a recalled memory (or it would stand in for the real ones and skip the term search).
+        void Add(IEnumerable<MemoryItem> found)
+        {
+            foreach (var item in found)
+            {
+                if (!string.Equals(item.Content.Trim(), turn.UserText.Trim(), StringComparison.OrdinalIgnoreCase))
+                    items.TryAdd(item.Id, item);
+            }
+        }
         // The whole utterance first: with semantic search on the server this finds related memories by meaning.
         try
         {
-            foreach (var item in await api.MemoryItemsAsync(turn.UserText, maxItems, session, ct).ConfigureAwait(false))
-                items.TryAdd(item.Id, item);
+            Add(await api.MemoryItemsAsync(turn.UserText, maxItems + 1, session, ct).ConfigureAwait(false));
         }
         catch (AijadeApiException)
         {
@@ -38,8 +47,7 @@ public sealed partial class MemoryRecallProvider(AijadeApi api, Func<bool> enabl
         {
             try
             {
-                foreach (var item in await api.MemoryItemsAsync(term, maxItems, session, ct).ConfigureAwait(false))
-                    items.TryAdd(item.Id, item);
+                Add(await api.MemoryItemsAsync(term, maxItems + 1, session, ct).ConfigureAwait(false));
             }
             catch (AijadeApiException)
             {

@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 
 using Aijade.Bots;
 using Aijade.Client.Api;
+using Aijade.Client.Chat;
 using Aijade.Integrations;
 using Aijade.Server.Product;
 
@@ -77,6 +78,9 @@ public class IntegrationTests
         time.Advance(TimeSpan.FromSeconds(5));
         await bridge.AnswerAsync(bobAsks, ct);
         Assert.DoesNotContain("Mochi", SystemPrompt(llm.Chats[^1]), StringComparison.Ordinal);
+        // The bridge records Alice's question in the background while it recalls; on a loaded machine it is stored first and
+        // matches itself. Store it up front so recall always has to see past that echo.
+        await new ConversationRecorder(api, CompanionBridge.MemorySession(aliceDm), "test").RecordAsync("what is my cat called?", ct);
         await bridge.AnswerAsync(aliceDm with { Text = "what is my cat called?" }, ct);
         Assert.Contains("Mochi", SystemPrompt(llm.Chats[^1]), StringComparison.Ordinal);
 
