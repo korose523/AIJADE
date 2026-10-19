@@ -9,7 +9,7 @@ public sealed record PairedContrast(
     double SignFlipP, int ConversationsPositive, int ConversationsNegative, int Conversations);
 
 /// <summary>
-/// Uncertainty of the headline contrasts of P4 §5 with the conversation as the unit of dependence: questions of one dialogue
+/// Uncertainty of the headline contrasts of P3 §5 with the conversation as the unit of dependence: questions of one dialogue
 /// share its memory store, so they are not independent. Each contrast is computed per conversation by running the existing
 /// ablations on that conversation alone, then summarised by a conversation bootstrap (percentile interval) and an exact
 /// sign-flip randomisation test over the paired per-conversation differences (2^n assignments, n = 10 for LoCoMo).

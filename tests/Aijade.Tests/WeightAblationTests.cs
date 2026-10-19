@@ -6,7 +6,7 @@ using Aijade.Research.MemoryEval;
 namespace Aijade.Tests;
 
 /// <summary>
-/// P4's central numbers must come out of the memory kernel from the raw corpus. LoCoMo is not redistributed: set
+/// P3's central numbers must come out of the memory kernel from the raw corpus. LoCoMo is not redistributed: set
 /// AIJADE_LOCOMO to a local locomo10.json (SHA-256 checked); the test is skipped when no copy is available.
 /// </summary>
 public class WeightAblationTests

@@ -6,7 +6,7 @@ using Aijade.Research.MemoryEval;
 namespace Aijade.Tests;
 
 /// <summary>
-/// The P4 experiments read recall@k for every k from one top-8 ranking. That is only valid when the ranking does not depend
+/// The P3 experiments read recall@k for every k from one top-8 ranking. That is only valid when the ranking does not depend
 /// on K: in the standardised and RRF modes the conflict rerank scans a constant head, so the first k of a top-8 call must
 /// equal a top-k call; in the additive mode the penalty only scans the top-K, so the two may differ.
 /// </summary>

@@ -339,7 +339,7 @@ public sealed partial class BioticMemory
         scored = StableSortDescending(scored);
         IReadOnlyList<ScoredCandidate> final = scored.Take(topK).Select(s => new ScoredCandidate(s.Item.Kind, s.Item.Id, s.Item.Content, s.Score, s.Parts)).ToList();
 
-        // §38 / J1-C5 opt-in fault injection. Default off, so the default path is unchanged (H2c). A component crash is
+        // §38 opt-in fault injection. Default off, so the default path is unchanged (H2c). A component crash is
         // caught and degrades to the remaining healthy stores: the fail-closed path.
         LastFaultReport = null;
         if (Config.FaultInjection is { Enabled: true } fault)

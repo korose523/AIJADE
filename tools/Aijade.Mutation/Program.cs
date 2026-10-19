@@ -14,7 +14,7 @@ using Aijade.Core.Js;
 //
 //   aijade-mutation [all | baseline-only | ID ...] --db <postgres url> [--repo .] [--out experiments/p1/mutation]
 //                   [--catalogue tools/Aijade.Mutation/mutations.json] [--test <fully qualified test method>] [--title "..."]
-// The default catalogue and test are the J1 contract-drift matrix; gate-mutants.json with PromotionGateMatrixTests is the
+// The default catalogue and test are the P1 contract-drift matrix; gate-mutants.json with PromotionGateMatrixTests is the
 // P1 limitation-11 experiment (mutants in the promotion gates against the tamper matrix).
 // Verdicts: caught (≥1 assertion turned red), survived (all green), notImplemented, mutationError (no match / build failure).
 // diffScore = caught / (caught + survived).
@@ -34,7 +34,7 @@ if (db.Length == 0)
 }
 var cataloguePath = Path.GetFullPath(Opt("catalogue", Path.Combine(repo, "tools", "Aijade.Mutation", "mutations.json")), repo);
 var testMethod = Opt("test", "Aijade.Tests.ContractDriftMatrixTests.Matrix_log_equals_the_recorded_baseline_line_by_line");
-var title = Opt("title", "J1 mutation experiment (.NET implementation)");
+var title = Opt("title", "P1 mutation experiment (.NET implementation)");
 var catalogue = JsonNode.Parse(File.ReadAllText(cataloguePath))!.AsArray().Select(n => n!.AsObject()).ToList();
 var positional = args.TakeWhile(a => !a.StartsWith("--", StringComparison.Ordinal)).ToList();
 var ids = positional.Count == 0 || positional[0] == "all" ? catalogue.Select(m => m["id"]!.GetValue<string>()).ToList()

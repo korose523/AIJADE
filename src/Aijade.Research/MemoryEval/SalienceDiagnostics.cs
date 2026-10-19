@@ -6,7 +6,7 @@ using Aijade.Memory.Salience;
 
 namespace Aijade.Research.MemoryEval;
 
-// P4 / J5 §5.4: which part of salience gating moves recall — pruning or the encode-time reweighting — and does it depend on
+// P3 §5.4: which part of salience gating moves recall — pruning or the encode-time reweighting — and does it depend on
 // the quality of the salience signal? Ported from the author's own diag-oracle-vs-predicted-salience / eval-metrics scripts.
 // Three salience sources (oracle: gold evidence = 1; predicted: the deployed zero-label predictor; shuffled: the predicted
 // values permuted across episodes, same marginal, AUC ≈ 0.5) × gating ON/OFF, plus ON without selective consolidation (the

@@ -1,8 +1,12 @@
 # Experiments
 
-Every number the papers report is computed from the files in this directory; the paper toolchain
-(`docs/08_论文工程/_工具/facts.py` in the papers workspace) reads them directly. Each file is produced by a driver in this
-repository, listed below; re-running the driver regenerates it.
+Every number the papers report is computed from the files in this directory; the paper toolchain (`_工具/facts.py` in
+the separate papers repository) reads them directly. Each file is produced by a driver in this repository, listed below;
+re-running the driver regenerates it.
+
+The papers are numbered P1, P2 and P3. Run records written before 19 October 2026 (for example the `experiment` field of
+`memory/uncertainty.json` and the title of `p1/mutation/mutation-report.md`) still use the earlier labels: P4 for the
+retrieval-scoring paper, now P3, and J1 for the Chinese version of P1. Records are kept as they were produced.
 
 | Directory | Paper | Contents | Produced by |
 |---|---|---|---|
@@ -12,8 +16,8 @@ repository, listed below; re-running the driver regenerates it.
 | `p1/admission-checks.json`, `p1/validation-overhead.json` | P1 | Admission checks; strict-validation overhead | `AdmissionChecksTests`, `ValidationOverheadTests` with `AIJADE_EXPERIMENT_DIR=experiments/p1` |
 | `p1/identity-a7.json` | P1 | Appendix A.7 positive control of the identity layer | `aijade-experiments identity-a7` |
 | `growth-pilot/` | P1 | Mechanism-level pilot of the growth and identity layer | `aijade-experiments growth-pilot` |
-| `memory/` | P4 | Weight ablation, score-combination ablation, component scales, K-dependence and retrieval floor, gating interference, salience sources, leakage audit, metric definitions, conversation-clustered intervals of the headline contrasts (`uncertainty.json`), coverage of the 150-candidate pool and the diagnostic over the whole store (`pool-check.json`), delivery with the conflict penalty on and off (`delivery-check.json`), gating contrasts without the penalty (`gating-penalty-off.json`) (LoCoMo) | `aijade-experiments memory` (or one part: `component-scales`, `k-dependence`, `metric-definitions`); `aijade-experiments memory-uncertainty`, `pool-check`, `delivery-check`, `gating-check` |
-| `memory-longmemeval/` | P4 | Replication on LongMemEval_s: component diagnosis and gating contrasts (`replication.json`, question-level bootstrap intervals), and the same pool, component-scale, delivery and gating checks as for LoCoMo | `aijade-experiments longmemeval`; `pool-check`, `component-scales`, `delivery-check`, `gating-check` with `--corpus longmemeval` |
+| `memory/` | P3 | Weight ablation, score-combination ablation, component scales, K-dependence and retrieval floor, gating interference, salience sources, leakage audit, metric definitions, conversation-clustered intervals of the headline contrasts (`uncertainty.json`), coverage of the 150-candidate pool and the diagnostic over the whole store (`pool-check.json`), delivery with the conflict penalty on and off (`delivery-check.json`), gating contrasts without the penalty (`gating-penalty-off.json`) (LoCoMo) | `aijade-experiments memory` (or one part: `component-scales`, `k-dependence`, `metric-definitions`); `aijade-experiments memory-uncertainty`, `pool-check`, `delivery-check`, `gating-check` |
+| `memory-longmemeval/` | P3 | Replication on LongMemEval_s: component diagnosis and gating contrasts (`replication.json`, question-level bootstrap intervals), and the same pool, component-scale, delivery and gating checks as for LoCoMo | `aijade-experiments longmemeval`; `pool-check`, `component-scales`, `delivery-check`, `gating-check` with `--corpus longmemeval` |
 | `rq-c/` | P2 | RQ-C runs (`summary.json`, `trials.jsonl`, `candidates.jsonl`), temperature sweep, model-based analysis (`p2-models.json`), sandbox isolation (`<run>/sandbox-isolation.json`), differential testing (`<run>/differential.json`), determinism pre-check and its repeat on the loaded model (`determinism-7b.json`, `determinism-7b-repeat.json`), model weight digests (`model-digests.json`) | `tools/Aijade.Rqc` (`run-redo.sh`, `run-sweep.sh`), `aijade-experiments p2-models`, `aijade-experiments sandbox-isolation`, `aijade-experiments differential --run <dir>` |
 | `rq-c/family/` | P2 | First attempt at the second-family control (llava-phi3), abandoned at step 5,505 because its verifier ignores the verdict format (`ABANDONED.md`); kept as data | `run-family.sh` |
 | `rq-c/family-gpu/` | P2 | Second-family control: llama3.1:8b on the Windows GPU host over Tailscale (Ollama 0.40.0, context 4096), same design as the main run; determinism pre-checks (`determinism-llama3.1-8b*.json`) | `AIJADE_OLLAMA_URL=http://<host>:11434 run-family-gpu.sh llama3.1:8b`, then `finish-family.sh` |

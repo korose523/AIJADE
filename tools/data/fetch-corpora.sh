@@ -1,5 +1,5 @@
 #!/bin/sh
-# Fetch the two third-party corpora of the P4 memory experiments into the paths the drivers read by default, and check each
+# Fetch the two third-party corpora of the P3 memory experiments into the paths the drivers read by default, and check each
 # against the SHA-256 the code pins (src/Aijade.Memory/Locomo/Locomo.cs, LongMemEval.cs). Neither corpus is part of this
 # repository; both are downloaded from their authors' release locations:
 #   LoCoMo (snap-research/locomo, data/locomo10.json)                    -> ~/.local/share/aijade-data/locomo10.json

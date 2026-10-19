@@ -5,7 +5,7 @@ using Aijade.Memory.Model;
 namespace Aijade.Research.MemoryEval;
 
 // The
-// P4 / J5 experiment: re-rank the SAME candidate pool under different component weights, and count how many of the
+// P3 experiment: re-rank the SAME candidate pool under different component weights, and count how many of the
 // top-8 are newer than the gold evidence.
 
 public sealed record AblationWeights(string Key, double Similarity, double Strength, double Recency, double Context);

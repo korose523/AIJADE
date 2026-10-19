@@ -15,12 +15,12 @@ using Aijade.Research.RqC;
 //   aijade-experiments differential [--run <rq-c run dir>]             (P2 §7: test-passing candidates vs the reference on perturbed inputs)
 //   aijade-experiments identity-a7 [--out experiments/p1/identity-a7.json]   (P1 §5.8.2 positive control)
 //   aijade-experiments p2-models [--out experiments/rq-c/p2-models.json]   (P2 §5 model-based analysis of every run)
-//   aijade-experiments memory-uncertainty [--locomo <locomo10.json>]    (P4 §5: conversation-clustered intervals of the headline contrasts)
-//   aijade-experiments longmemeval [--data <longmemeval_s_cleaned.json>] [--out experiments/memory-longmemeval]   (P4 §5.8 replication)
-//   aijade-experiments pool-check [--corpus locomo|longmemeval]   (P4 §4.2: coverage of the 150-candidate pool; the diagnostic on the whole store)
-//   aijade-experiments delivery-check [--corpus locomo|longmemeval]   (P4 §5.4: delivered recall with the conflict penalty on and off)
-//   aijade-experiments gating-check [--corpus locomo|longmemeval]     (P4 §5.5: gating contrasts with the conflict penalty off)
-//   aijade-experiments component-scales --corpus longmemeval          (P4 §5.8: component means and spreads on LongMemEval)
+//   aijade-experiments memory-uncertainty [--locomo <locomo10.json>]    (P3 §5: conversation-clustered intervals of the headline contrasts)
+//   aijade-experiments longmemeval [--data <longmemeval_s_cleaned.json>] [--out experiments/memory-longmemeval]   (P3 §5.8 replication)
+//   aijade-experiments pool-check [--corpus locomo|longmemeval]   (P3 §4.2: coverage of the 150-candidate pool; the diagnostic on the whole store)
+//   aijade-experiments delivery-check [--corpus locomo|longmemeval]   (P3 §5.4: delivered recall with the conflict penalty on and off)
+//   aijade-experiments gating-check [--corpus locomo|longmemeval]     (P3 §5.5: gating contrasts with the conflict penalty off)
+//   aijade-experiments component-scales --corpus longmemeval          (P3 §5.8: component means and spreads on LongMemEval)
 //   aijade-experiments format-precheck --model M [--ollama-base-url U] [--out F]   (P2: verdict-format pre-check for a control model)
 // The LoCoMo corpus is third-party data (snap-research/locomo) and is not part of the repository: by default it is read from
 // $AIJADE_LOCOMO or ~/.local/share/aijade-data/locomo10.json (tools/data/fetch-corpora.sh fetches and verifies it, and LongMemEval_s).
@@ -287,7 +287,7 @@ static JsonObject P2Models(string root)
 
 static JsonObject UncertaintyReport(IReadOnlyList<LocomoConversation> corpus) => new()
 {
-    ["experiment"] = "uncertainty of the headline contrasts of P4 §5, the conversation as the unit of dependence: conversation bootstrap (10,000 resamples, percentile 95%) and exact sign-flip randomisation over the paired per-conversation differences",
+    ["experiment"] = "uncertainty of the headline contrasts of P3 §5, the conversation as the unit of dependence: conversation bootstrap (10,000 resamples, percentile 95%) and exact sign-flip randomisation over the paired per-conversation differences",
     ["k"] = MemoryUncertainty.K,
     ["contrasts"] = new JsonArray([.. MemoryUncertainty.Run(corpus).Select(c => (JsonNode)new JsonObject
     {

@@ -5,7 +5,7 @@ using Aijade.Memory.Model;
 
 namespace Aijade.Memory.Interventions;
 
-// v7 §38 / J1-C5 opt-in fault injection on the memory-retrieval path, using the AgentChaos taxonomy. Default off; the
+// v7 §38 opt-in fault injection on the memory-retrieval path, using the AgentChaos taxonomy. Default off; the
 // selection is drawn from the §38 intervention RNG in id-sorted order, so the same (config, candidates) always gives the
 // same perturbation. component_crash throws so the store's fail-closed degradation is exercised.
 // Scope (stated): it perturbs retrieval results, not the event bus or scheduler.
@@ -65,7 +65,7 @@ public static class FaultInjection
         var manifest = ExperimentManifests.Build(new ManifestSpec(
             $"fault:{kind}",
             $"Fault injection ({kind})",
-            [new ExperimentCondition(kind, "AgentChaos-style fault injected into the memory-retrieval result (J1-C5).", new OrderedDictionary<string, object?>
+            [new ExperimentCondition(kind, "AgentChaos-style fault injected into the memory-retrieval result.", new OrderedDictionary<string, object?>
             {
                 ["kind"] = kind,
                 ["target"] = config.Target,
@@ -75,7 +75,7 @@ public static class FaultInjection
             })],
             metrics ?? ["fault.kind", "fault.rate", "fault.applied"],
             Seed: config.Seed,
-            Notes: "§38/J1-C5 fault-injection harness (AgentChaos taxonomy). Opt-in, default-off, deterministic via interventionRng(seed)."));
+            Notes: "§38 fault-injection harness (AgentChaos taxonomy). Opt-in, default-off, deterministic via interventionRng(seed)."));
         registry.Register(manifest);
         return manifest;
     }

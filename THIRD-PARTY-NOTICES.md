@@ -31,4 +31,4 @@ Every third-party component must be listed here with its licence before it is me
 
 | Dataset | Used for | Licence | How to obtain |
 |---|---|---|---|
-| LoCoMo (Maharana et al., ACL 2024), `locomo10.json`, SHA-256 `79fa87e9…98ff4` | memory retrieval evaluation (P4) | see the dataset's own terms | download separately; point `AIJADE_LOCOMO` at it |
+| LoCoMo (Maharana et al., ACL 2024), `locomo10.json`, SHA-256 `79fa87e9…98ff4` | memory retrieval evaluation (P3) | see the dataset's own terms | download separately; point `AIJADE_LOCOMO` at it |

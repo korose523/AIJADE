@@ -3,7 +3,7 @@ using Aijade.Memory.Salience;
 
 namespace Aijade.Research.MemoryEval;
 
-// P4 / J5 §5.5, a negative audit: does the leave-one-conversation-out AUC of the learned salience model owe anything to
+// P3 §5.5, a negative audit: does the leave-one-conversation-out AUC of the learned salience model owe anything to
 // leakage? Ported from the author's own p2-salience-nested audit. Three estimates with the same features and the same fit
 // (L2-regularised logistic regression, plain gradient descent):
 //   1. LOCV-original — standardisation statistics over the whole corpus, all features, leave one conversation out;

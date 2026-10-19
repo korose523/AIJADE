@@ -5,7 +5,7 @@ using Aijade.Memory.Salience;
 
 namespace Aijade.Research.MemoryEval;
 
-// P4 / J5 §5.6, two definition defects of recall@K on this store:
+// P3 §5.6, two definition defects of recall@K on this store:
 //   1. aggregation caliber — the per-conversation (macro) mean and the question-level (micro) mean differ whenever the
 //      conversations have unequal question counts; neither is wrong, but figures in the two calibers cannot be compared;
 //   2. duplicate copies — the lexical distiller writes a fact with the same content as its episode and recall counts either

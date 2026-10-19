@@ -5,7 +5,7 @@ using Aijade.Memory.Retrieval;
 
 namespace Aijade.Research.MemoryEval;
 
-// P4 / J5 retrieval experiments on LoCoMo:
+// P3 retrieval experiments on LoCoMo:
 //   1. gating interference — gating ON (DEFAULT) vs OFF (NONE): recall@K and the share of top-K slots that are not gold
 //      evidence, under the default and the corrected (recency = 0) weights, for each retrieval score mode;
 //   2. the score-combination ablation — the SAME 150-candidate pool per question re-ranked by additive weighted sums,

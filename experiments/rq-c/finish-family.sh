@@ -1,7 +1,7 @@
 #!/bin/sh
 # After run-family.sh has finished: rebuild the Release tools (the run used them, so they are not rebuilt while it runs),
 # recompute the model-based analysis with the second-family run included, run differential testing on it, and re-render
-# the papers so that every p2.fam.* fact is available. Writing the control into P2 / J3 is left to the author's reading of
+# the papers so that every p2.fam.* fact is available. Writing the control into P2 and its Chinese translation is left to the author's reading of
 # the results: the differential classification in facts.py was made for the Qwen runs' tasks and must be checked against
 # any new disagreeing task first.
 set -eu

@@ -151,14 +151,14 @@ public sealed record RetrievalWeights(double Similarity = 1, double Strength = 0
 {
     public static RetrievalWeights Default { get; } = new();
 
-    /// <summary>Recency zeroed — the "dimensional mismatch" correction studied in P4.</summary>
+    /// <summary>Recency zeroed — the "dimensional mismatch" correction studied in P3.</summary>
     public static RetrievalWeights Corrected { get; } = new(Recency: 0);
 }
 
 public enum RetrievalScoreMode
 {
     /// <summary>
-    /// Legacy raw weighted sum, kept so pre-fix numbers (P4) stay reproducible. Its conflict penalty scans only the top K, so the
+    /// Legacy raw weighted sum, kept so pre-fix numbers (P3) stay reproducible. Its conflict penalty scans only the top K, so the
     /// order can change with K; the other modes scan a constant head. Do not use it for new work.
     /// </summary>
     Additive,
@@ -179,7 +179,7 @@ public sealed record MemoryConfig
     /// <summary>
     /// The score a candidate must exceed to count as delivered in the memory evaluations. It is an absolute value set for the
     /// additive and standardized score domains; Reciprocal Rank Fusion scores lie below about 0.04, so the floor is not
-    /// meaningful there (P4 §5.4) and RRF results should be read by rank. <see cref="BioticMemory.Retrieve"/> does not apply it.
+    /// meaningful there (P3 §5.4) and RRF results should be read by rank. <see cref="BioticMemory.Retrieve"/> does not apply it.
     /// </summary>
     public double RetrievalFloor { get; init; } = 0.02;
     public RetrievalScoreMode RetrievalScoreMode { get; init; } = RetrievalScoreMode.Standardized;
@@ -188,7 +188,7 @@ public sealed record MemoryConfig
     /// <summary>
     /// Multiplier for the older side of a conflicting pair among the leading candidates (same entity token, different
     /// negation). It is applied once per pair, so it compounds, and the older item always loses: it acts as a second recency
-    /// bias. P4 measures its cost (switching it off raises standardised delivered recall@8 from 0.199 to 0.548 on LoCoMo);
+    /// bias. P3 measures its cost (switching it off raises standardised delivered recall@8 from 0.199 to 0.548 on LoCoMo);
     /// the precision of the conflict test on genuine contradictions has not been evaluated. Research kernel only.
     /// </summary>
     public double ConflictPenalty { get; init; } = 0.5;
