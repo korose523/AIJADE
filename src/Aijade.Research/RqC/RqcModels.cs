@@ -744,7 +744,7 @@ public static class RqcModels
 
     // ---- small dense linear algebra ----------------------------------------------------------------------------------
 
-    private static double Dot(double[] a, double[] b)
+    internal static double Dot(double[] a, double[] b)
     {
         double s = 0;
         for (var i = 0; i < Math.Min(a.Length, b.Length); i++)
@@ -760,7 +760,7 @@ public static class RqcModels
         return m;
     }
 
-    private static double[,] Mul(double[,] a, double[,] b)
+    internal static double[,] Mul(double[,] a, double[,] b)
     {
         int n = a.GetLength(0), m = b.GetLength(1), k = a.GetLength(1);
         var c = new double[n, m];
@@ -775,7 +775,7 @@ public static class RqcModels
         return c;
     }
 
-    private static double[] Solve(double[,] a, double[] b)
+    internal static double[] Solve(double[,] a, double[] b)
     {
         var inv = Invert(a);
         var k = b.Length;
@@ -788,7 +788,7 @@ public static class RqcModels
         return x;
     }
 
-    private static double[,] Invert(double[,] a)
+    internal static double[,] Invert(double[,] a)
     {
         var k = a.GetLength(0);
         var m = new double[k, 2 * k];

@@ -22,6 +22,8 @@ using Aijade.Research.RqC;
 //   aijade-experiments gating-check [--corpus locomo|longmemeval]     (P3 §5.5: gating contrasts with the conflict penalty off)
 //   aijade-experiments component-scales --corpus longmemeval          (P3 §5.8: component means and spreads on LongMemEval)
 //   aijade-experiments format-precheck --model M [--ollama-base-url U] [--out F]   (P2: verdict-format pre-check for a control model)
+//   aijade-experiments answerable-check [--locomo <locomo10.json>] [--out experiments/memory]   (P3-A/B of experiments/plans/2026-10-22-followup-analyses.md)
+//   aijade-experiments verifier-feedback [--out experiments/rq-c/verifier-feedback.json]       (P2-C of the same plan)
 // The LoCoMo corpus is third-party data (snap-research/locomo) and is not part of the repository: by default it is read from
 // $AIJADE_LOCOMO or ~/.local/share/aijade-data/locomo10.json (tools/data/fetch-corpora.sh fetches and verifies it, and LongMemEval_s).
 
@@ -79,6 +81,11 @@ switch (command)
     case "pool-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "pool-check.json",
             corpus => PoolCheckReport(corpus, null, null));
+    case "answerable-check":
+        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "answerable-reanalysis.json",
+            corpus => AnswerableCheckReport(corpus, root));
+    case "verifier-feedback":
+        return WriteJson(Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "rq-c", "verifier-feedback.json")), VerifierFeedbackReport(root));
     case "memory":
         return Memory(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")));
     default:
@@ -502,6 +509,123 @@ static int WithLongMemEval(string? dataArg, Func<IReadOnlyList<LocomoConversatio
     File.WriteAllText(outFile, JsFormat.Stringify(report, 2) + "\n");
     Console.WriteLine($"wrote {outFile}");
     return 0;
+}
+
+// The plan of the follow-up analyses was committed before their code was written; every output names it and the code commit.
+static JsonObject FollowUp(JsonObject body, string root)
+{
+    var dirty = RunGit(root, "status --porcelain --untracked-files=no");
+    var o = new JsonObject
+    {
+        ["plan"] = "experiments/plans/2026-10-22-followup-analyses.md", ["planCommit"] = "aee0429a3617ad1b01d6cb64b4ca8fbc147d496c",
+        ["codeCommit"] = RqcRunner.GitHash(), ["codeTreeDirty"] = dirty is null ? null : dirty.Length > 0,
+        ["deviations"] = new JsonArray(),
+    };
+    foreach (var (k, v) in body.ToList())
+    {
+        body.Remove(k);
+        o[k] = v;
+    }
+    return o;
+}
+
+static string? RunGit(string root, string arguments)
+{
+    try
+    {
+        using var p = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("git", arguments)
+            { WorkingDirectory = root, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false });
+        var s = p!.StandardOutput.ReadToEnd().Trim();
+        p.WaitForExit();
+        return p.ExitCode == 0 ? s : null;
+    }
+    catch (Exception e) when (e is System.ComponentModel.Win32Exception or InvalidOperationException)
+    {
+        return null;
+    }
+}
+
+// P3-A/B, with the all-question values checked against the archived files they must reproduce (the plan's precondition).
+static JsonObject AnswerableCheckReport(IReadOnlyList<LocomoConversation> corpus, string root)
+{
+    var report = FollowUp(AnswerableReanalysis.Report(corpus), root);
+    var all = report["subsets"]!["all"]!;
+    JsonNode Archived(string name) => JsonNode.Parse(File.ReadAllText(Path.Combine(root, "experiments", "memory", name)))!;
+    JsonNode Contrast(JsonNode file, string key) => file["contrasts"]!.AsArray().First(c => (string)c!["key"]! == key)!;
+    JsonNode Mine(string section, string key) =>
+        (all[section] as JsonArray ?? all[section]!["contrasts"]!.AsArray()).First(c => (string)c!["key"]! == key)!;
+    var checks = new JsonArray();
+    void Check(string what, double archived, double recomputed) => checks.Add(new JsonObject
+    {
+        ["what"] = what, ["archived"] = archived, ["recomputed"] = recomputed, ["match"] = Math.Abs(archived - recomputed) <= 1e-12 * Math.Max(1, Math.Abs(archived)),
+    });
+    void CheckContrast(string what, JsonNode archived, JsonNode recomputed)
+    {
+        foreach (var f in new[] { "a", "b", "difference", "signFlipP" })
+            Check($"{what}: {f}", (double)archived[f]!, (double)recomputed[f]!);
+        for (var i = 0; i < 2; i++)
+            Check($"{what}: bootstrap95[{i}]", (double)archived["bootstrap95"]![i]!, (double)recomputed["bootstrap95"]![i]!);
+    }
+    var uncertainty = Archived("uncertainty.json");
+    var pool = Archived("pool-check.json");
+    var delivery = Archived("delivery-check.json");
+    var penaltyOff = Archived("gating-penalty-off.json");
+    CheckContrast("uncertainty.json weights", Contrast(uncertainty, "weights: sim-only vs current"), Mine("diagnostic", "weights (150-candidate pool, floor): sim-only vs current"));
+    CheckContrast("pool-check.json whole store", Contrast(pool, "weights (whole store, rank alone): sim-only vs current"), Mine("diagnostic", "weights (whole store, rank alone): sim-only vs current"));
+    Check("pool-check.json recency: meanNewerInTopK", (double)pool["published"]!["recencyBias"]!["meanNewerInTopK"]!, (double)all["recencyBias"]!["meanNewerInTopK"]!);
+    Check("pool-check.json recency: baselineIfUnbiased", (double)pool["published"]!["recencyBias"]!["baselineIfUnbiased"]!, (double)all["recencyBias"]!["baselineIfUnbiased"]!);
+    foreach (var mode in new[] { "additive", "standardized" })
+    {
+        CheckContrast($"uncertainty.json gating {mode}", Contrast(uncertainty, $"gating (predicted, {mode}): ON vs OFF"), Mine("gatingContrasts", $"gating (predicted, {mode}): ON vs OFF"));
+        CheckContrast($"gating-penalty-off.json gating {mode}", Contrast(penaltyOff, $"gating (predicted, {mode}): ON vs OFF"), Mine("gatingContrasts", $"gating (predicted, {mode}, penalty off): ON vs OFF"));
+        foreach (var row in delivery["rows"]!.AsArray().Where(r => (string)r!["mode"]! == mode))
+        {
+            var off = (double)row!["conflictPenalty"]! == 1.0;
+            Check($"delivery-check.json {mode}, penalty {(off ? "off" : "on")}", (double)row["recall8Macro"]!, (double)all["delivery"]![off ? $"{mode}, penalty off" : mode]!["gatingOff"]!);
+        }
+    }
+    report["reproduction"] = new JsonObject { ["allMatch"] = checks.All(c => (bool)c!["match"]!), ["checks"] = checks };
+    Console.WriteLine($"reproduction of the archived all-question values: {checks.Count(c => (bool)c!["match"]!)}/{checks.Count} match");
+    return report;
+}
+
+// P2-C on the runs the plan names; each input file's SHA-256 is checked against the plan.
+static JsonObject VerifierFeedbackReport(string root)
+{
+    var rqc = Path.Combine(root, "experiments", "rq-c");
+    var runs = new (string Name, string Dir, string TrialsSha, string CandidatesSha)[]
+    {
+        ("main (7B)", Path.Combine(rqc, "redo", "rq-c-s42-ollama-t30-r5"),
+            "d7532c6f81dc3435f752e5a60f360e97a6d12fd29ade5eb2fcbd55a9bd8b6dae", "bbd6e0b8f95976fff16bc7c35302d10d97854c94b564c504e2f498e2e02371a0"),
+        ("second family (llama3.1:8b)", Path.Combine(rqc, "family-gpu", "rq-c-s42-ollama-t30-r5"),
+            "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121", "9f53d82b6e38ff5286fc62c062cc54579d7a6e8fa9a1b1232f84bea486ce4d61"),
+        ("prompt template A (7B, GPU host)", Path.Combine(rqc, "template-gpu", "A", "rq-c-s42-ollama-t30-r5"),
+            "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436", "928a99838f7b57696c2e7fe4731bc3b2890b16c2ed7ef9461d1ad3dae61d2ae3"),
+        ("prompt template B (7B, GPU host)", Path.Combine(rqc, "template-gpu", "B", "rq-c-s42-ollama-t30-r5"),
+            "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0", "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2"),
+        ("positive control (mock; injected 0.30 / 0.10, independent of feedback)", Path.Combine(rqc, "rq-c-s42-mock-t30-r5"),
+            "dfa9ac6645de0f2b938a453c8131545f367d1fc8c08964fe736646cc0c7aeb7f", "b63d55fd3b089831d2d6db1f31e0daa8defebe2f00571d99787e51208b33a1e9"),
+    };
+    var result = new JsonObject
+    {
+        ["experiment"] = "P2-C (experiments/plans/2026-10-22-followup-analyses.md): verifier error rates by environment feedback and by round, in the self-verification-on cells",
+    };
+    var byRun = new JsonObject();
+    foreach (var (name, dir, trialsSha, candidatesSha) in runs)
+    {
+        var summary = JsonNode.Parse(File.ReadAllText(Path.Combine(dir, "summary.json")))!;
+        var steps = StepRecord.ReadJsonl(Path.Combine(dir, "trials.jsonl"));
+        var codes = File.ReadLines(Path.Combine(dir, "candidates.jsonl")).Where(l => l.Length > 0).Select(l => JsonNode.Parse(l)!)
+            .OrderBy(c => c["step"]!.GetValue<int>()).Select(c => c["code"]?.GetValue<string>()).ToList();
+        var o = VerifierFeedback.Analyze(steps, codes.Count == steps.Count ? codes : null, new RqcConfig((uint)summary["config"]!["seed"]!.GetValue<int>()));
+        o["run"] = Path.GetRelativePath(root, dir);
+        o["model"] = summary["config"]!["model"]?.DeepClone();
+        o["inputsMatchPlan"] = LocomoCorpus.FileSha256(Path.Combine(dir, "trials.jsonl")) == trialsSha
+            && LocomoCorpus.FileSha256(Path.Combine(dir, "candidates.jsonl")) == candidatesSha;
+        byRun[name] = o;
+    }
+    result["runs"] = byRun;
+    return FollowUp(result, root);
 }
 
 static string DefaultLocomo() => Environment.GetEnvironmentVariable("AIJADE_LOCOMO")
