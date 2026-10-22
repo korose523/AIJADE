@@ -254,9 +254,15 @@ public static class RqcRunner
         return rows;
     }
 
-    /// <summary>The current commit, or "unknown" outside a git checkout.</summary>
+    /// <summary>
+    /// The code commit the run is made from: <c>AIJADE_GIT_COMMIT</c> when set (for runs from a copy that is not a git
+    /// checkout, such as a remote GPU host), otherwise the current commit, or "unknown" outside a git checkout.
+    /// </summary>
     public static string GitHash()
     {
+        var pinned = Environment.GetEnvironmentVariable("AIJADE_GIT_COMMIT");
+        if (!string.IsNullOrWhiteSpace(pinned))
+            return pinned.Trim();
         try
         {
             using var p = Process.Start(new ProcessStartInfo("git", "rev-parse HEAD") { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false });
@@ -415,6 +421,8 @@ public static class RqcRunner
             summary[key] = analysis[key]?.DeepClone();
         summary["fingerprint"] = cfg.Fingerprint();
         summary["gitHash"] = gitHash ?? GitHash();
+        if ((string?)summary["gitHash"] == "unknown")
+            log?.WriteLine("[warning] no code commit recorded: not a git checkout; set AIJADE_GIT_COMMIT to the commit this copy was made from");
         foreach (var key in new[] { "conditions", "table", "perCellCI", "diagnostics", "diffInDiff", "effectSizes", "multiplicity", "factorialInteraction", "chiSquare",
                      "chiSquareSelfVerification", "chiSquareExecutionLevel", "mcnemarEnvFeedback", "power", "powerReference" })
             summary[key] = analysis[key]?.DeepClone();

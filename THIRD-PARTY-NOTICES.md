@@ -31,4 +31,5 @@ Every third-party component must be listed here with its licence before it is me
 
 | Dataset | Used for | Licence | How to obtain |
 |---|---|---|---|
-| LoCoMo (Maharana et al., ACL 2024), `locomo10.json`, SHA-256 `79fa87e9…98ff4` | memory retrieval evaluation (P3) | see the dataset's own terms | download separately; point `AIJADE_LOCOMO` at it |
+| LoCoMo (Maharana et al., ACL 2024), public release of `data/locomo10.json` (10 conversations, 1,986 questions), SHA-256 `79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4` | memory retrieval evaluation (P3) | CC BY-NC 4.0 | https://github.com/snap-research/locomo; `tools/data/fetch-corpora.sh locomo` downloads and checks it, or point `AIJADE_LOCOMO` at a copy |
+| LongMemEval_s, cleaned release (Wu et al., ICLR 2025), `longmemeval_s_cleaned.json`, SHA-256 `d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442` | replication of the memory retrieval evaluation (P3) | MIT | https://huggingface.co/datasets/xiaowu0162/longmemeval-cleaned; `tools/data/fetch-corpora.sh longmemeval` downloads and checks it |
