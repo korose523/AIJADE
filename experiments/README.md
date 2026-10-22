@@ -8,6 +8,9 @@ The papers are numbered P1, P2 and P3. Run records written before 19 October 202
 `memory/uncertainty.json` and the title of `p1/mutation/mutation-report.md`) still use the earlier labels: P4 for the
 retrieval-scoring paper, now P3, and J1 for the Chinese version of P1. Records are kept as they were produced.
 
+`plans/` holds analysis plans committed to this repository before the analyses they describe were implemented or run;
+the commit history is their timestamp. They are not registered on an external platform.
+
 | Directory | Paper | Contents | Produced by |
 |---|---|---|---|
 | `p1/` | P1 | End-to-end main flow (`e2e-main.txt`) and prefer-absence branch (`e2e-negative-fork.txt`); ingestion latency (`ingest-*.json`) and loop latency (`loop-latency.json`) | `tools/Aijade.P1` against a running API + worker |
