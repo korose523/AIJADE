@@ -1,0 +1,1124 @@
+{
+  "plan": "experiments/plans/2026-10-22-followup-analyses.md",
+  "planCommit": "aee0429a3617ad1b01d6cb64b4ca8fbc147d496c",
+  "codeCommit": "761165d38ff6c9937d4c97eda20e5f17342ccbb2",
+  "codeTreeDirty": false,
+  "deviations": [],
+  "experiment": "P3-A / P3-B (experiments/plans/2026-10-22-followup-analyses.md): the headline contrasts on the answerable questions (LoCoMo category ≠ 5) beside all questions, per-evidence recall, and the gating × scorer interaction; conversation bootstrap (10,000, percentile 95%) and exact sign-flip test, K = 8",
+  "questions": {
+    "all": 1986,
+    "answerable": 1540,
+    "adversarial": 446
+  },
+  "clarifications": [
+    "per-evidence recall: the plan's \"evidence turn present in the store\" is read as a cited turn id that resolves to a turn of the conversation; every such turn is encoded into each store, and one pruned by gating counts as a miss, so the denominator does not change with the configuration"
+  ],
+  "subsets": {
+    "all": {
+      "questions": 1986,
+      "recencyBias": {
+        "meanNewerInTopK": 7.734951947395043,
+        "baselineIfUnbiased": 3.7886679560440837,
+        "scanned": 1986,
+        "evidenceMissing": 9
+      },
+      "diagnostic": {
+        "pool150Floor": {
+          "current": 0.09063444108761329,
+          "simOnly": 0.3580060422960725
+        },
+        "wholeStoreRankOnly": {
+          "current": 0.11782477341389729,
+          "simOnly": 0.5624370594159114
+        },
+        "contrasts": [
+          {
+            "key": "weights (150-candidate pool, floor): sim-only vs current",
+            "caliber": "micro",
+            "a": 0.3580060422960725,
+            "b": 0.09063444108761329,
+            "difference": 0.26737160120845926,
+            "bootstrap95": [
+              0.19602272727272727,
+              0.3373702422145328
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          },
+          {
+            "key": "weights (whole store, rank alone): sim-only vs current",
+            "caliber": "micro",
+            "a": 0.5624370594159114,
+            "b": 0.11782477341389729,
+            "difference": 0.4446122860020141,
+            "bootstrap95": [
+              0.41108545034642036,
+              0.47429519071310117
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          }
+        ]
+      },
+      "diagnosticSelfCheck": true,
+      "delivery": {
+        "additive": {
+          "gatingOff": 0.07969649340090265,
+          "gatingOn": 0.0691347697772432
+        },
+        "additive, penalty off": {
+          "gatingOff": 0.10307558812460664,
+          "gatingOn": 0.0890336008859097
+        },
+        "standardized": {
+          "gatingOff": 0.19853236649084932,
+          "gatingOn": 0.1984688004513847
+        },
+        "standardized, penalty off": {
+          "gatingOff": 0.5478435560079876,
+          "gatingOn": 0.5578435175498411
+        }
+      },
+      "penaltyContrast": {
+        "key": "delivery (standardized, no gating): penalty off vs on",
+        "caliber": "macro",
+        "a": 0.5478435560079876,
+        "b": 0.19853236649084932,
+        "difference": 0.34931118951713835,
+        "bootstrap95": [
+          0.2921428566608625,
+          0.39670335249046745
+        ],
+        "signFlipP": 0.001953125,
+        "unitsPositive": 10,
+        "unitsNegative": 0,
+        "units": 10
+      },
+      "gatingContrasts": [
+        {
+          "key": "gating (predicted, additive): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.0691347697772432,
+          "b": 0.07969649340090265,
+          "difference": -0.010561723623659456,
+          "bootstrap95": [
+            -0.019480063713742307,
+            -0.0026899276662517907
+          ],
+          "signFlipP": 0.02734375,
+          "unitsPositive": 2,
+          "unitsNegative": 8,
+          "units": 10
+        },
+        {
+          "key": "gating (predicted, additive, penalty off): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.0890336008859097,
+          "b": 0.10307558812460664,
+          "difference": -0.014041987238696953,
+          "bootstrap95": [
+            -0.018178344416449305,
+            -0.009503940615088831
+          ],
+          "signFlipP": 0.00390625,
+          "unitsPositive": 0,
+          "unitsNegative": 9,
+          "units": 10
+        },
+        {
+          "key": "gating (predicted, standardized): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.1984688004513847,
+          "b": 0.19853236649084932,
+          "difference": -0.0000635660394646187,
+          "bootstrap95": [
+            -0.007448022247928512,
+            0.007263674657238312
+          ],
+          "signFlipP": 1,
+          "unitsPositive": 3,
+          "unitsNegative": 4,
+          "units": 10
+        },
+        {
+          "key": "gating (predicted, standardized, penalty off): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.5578435175498411,
+          "b": 0.5478435560079876,
+          "difference": 0.009999961541853498,
+          "bootstrap95": [
+            0.005953176768926749,
+            0.014557552350423875
+          ],
+          "signFlipP": 0.00390625,
+          "unitsPositive": 9,
+          "unitsNegative": 0,
+          "units": 10
+        }
+      ],
+      "perEvidenceRecall": {
+        "withEvidence": {
+          "questions": 1982,
+          "diagnostic": {
+            "current": 0.08203929061714925,
+            "simOnly": 0.3257858703731075,
+            "contrast": {
+              "key": "per-evidence, weights (150-candidate pool, floor): sim-only vs current",
+              "caliber": "micro",
+              "a": 0.3257858703731075,
+              "b": 0.08203929061714925,
+              "difference": 0.24374657975595826,
+              "bootstrap95": [
+                0.1727093455870295,
+                0.31317433950324314
+              ],
+              "signFlipP": 0.001953125,
+              "unitsPositive": 10,
+              "unitsNegative": 0,
+              "units": 10
+            }
+          },
+          "delivery": {
+            "additive": {
+              "gatingOff": 0.07095202061912494,
+              "gatingOn": 0.06169709693162663,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.06169709693162663,
+                "b": 0.07095202061912494,
+                "difference": -0.00925492368749831,
+                "bootstrap95": [
+                  -0.017435872533488706,
+                  -0.001965036558909975
+                ],
+                "signFlipP": 0.037109375,
+                "unitsPositive": 2,
+                "unitsNegative": 8,
+                "units": 10
+              }
+            },
+            "additive, penalty off": {
+              "gatingOff": 0.09424816874774802,
+              "gatingOn": 0.08168587543144343,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.08168587543144343,
+                "b": 0.09424816874774802,
+                "difference": -0.012562293316304613,
+                "bootstrap95": [
+                  -0.016295222108046965,
+                  -0.008340352749746892
+                ],
+                "signFlipP": 0.00390625,
+                "unitsPositive": 0,
+                "unitsNegative": 9,
+                "units": 10
+              }
+            },
+            "standardized": {
+              "gatingOff": 0.18069917426392387,
+              "gatingOn": 0.18039822815137785,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.18039822815137785,
+                "b": 0.18069917426392387,
+                "difference": -0.00030094611254600915,
+                "bootstrap95": [
+                  -0.0073228891430139635,
+                  0.0068707956086067655
+                ],
+                "signFlipP": 0.953125,
+                "unitsPositive": 3,
+                "unitsNegative": 4,
+                "units": 10
+              }
+            },
+            "standardized, penalty off": {
+              "gatingOff": 0.5091616412288859,
+              "gatingOn": 0.5189544114628888,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.5189544114628888,
+                "b": 0.5091616412288859,
+                "difference": 0.009792770234002912,
+                "bootstrap95": [
+                  0.006869962365746695,
+                  0.013284318397243044
+                ],
+                "signFlipP": 0.001953125,
+                "unitsPositive": 10,
+                "unitsNegative": 0,
+                "units": 10
+              }
+            }
+          },
+          "penaltyContrast": {
+            "key": "per-evidence, delivery (standardized, no gating): penalty off vs on",
+            "caliber": "macro",
+            "a": 0.5091616412288859,
+            "b": 0.18069917426392387,
+            "difference": 0.32846246696496195,
+            "bootstrap95": [
+              0.2733768167554557,
+              0.3741454601025129
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          }
+        },
+        "multiEvidence": {
+          "questions": 423,
+          "diagnostic": {
+            "current": 0.03215573050399478,
+            "simOnly": 0.1482449056252934,
+            "contrast": {
+              "key": "per-evidence, weights (150-candidate pool, floor): sim-only vs current",
+              "caliber": "micro",
+              "a": 0.1482449056252934,
+              "b": 0.03215573050399478,
+              "difference": 0.11608917512129863,
+              "bootstrap95": [
+                0.07810457516339867,
+                0.15404160550138057
+              ],
+              "signFlipP": 0.001953125,
+              "unitsPositive": 10,
+              "unitsNegative": 0,
+              "units": 10
+            }
+          },
+          "delivery": {
+            "additive": {
+              "gatingOff": 0.031869580620335736,
+              "gatingOn": 0.026774825014744215,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.026774825014744215,
+                "b": 0.031869580620335736,
+                "difference": -0.00509475560559152,
+                "bootstrap95": [
+                  -0.010189511211183042,
+                  0
+                ],
+                "signFlipP": 0.25,
+                "unitsPositive": 0,
+                "unitsNegative": 3,
+                "units": 10
+              }
+            },
+            "additive, penalty off": {
+              "gatingOff": 0.032934318256280806,
+              "gatingOn": 0.026878024189150817,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.026878024189150817,
+                "b": 0.032934318256280806,
+                "difference": -0.0060562940671299815,
+                "bootstrap95": [
+                  -0.011008447177177834,
+                  -0.0013157894736842105
+                ],
+                "signFlipP": 0.125,
+                "unitsPositive": 0,
+                "unitsNegative": 4,
+                "units": 10
+              }
+            },
+            "standardized": {
+              "gatingOff": 0.08362071718222136,
+              "gatingOn": 0.08458225564375983,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.08458225564375983,
+                "b": 0.08362071718222136,
+                "difference": 0.0009615384615384609,
+                "bootstrap95": [
+                  -0.0029858299595141745,
+                  0.004908906882591097
+                ],
+                "signFlipP": 1,
+                "unitsPositive": 2,
+                "unitsNegative": 1,
+                "units": 10
+              }
+            },
+            "standardized, penalty off": {
+              "gatingOff": 0.2218592876400586,
+              "gatingOn": 0.22884401137347538,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.22884401137347538,
+                "b": 0.2218592876400586,
+                "difference": 0.006984723733416712,
+                "bootstrap95": [
+                  0.0021830094266808847,
+                  0.013156594720439766
+                ],
+                "signFlipP": 0.0625,
+                "unitsPositive": 5,
+                "unitsNegative": 0,
+                "units": 10
+              }
+            }
+          },
+          "penaltyContrast": {
+            "key": "per-evidence, delivery (standardized, no gating): penalty off vs on",
+            "caliber": "macro",
+            "a": 0.2218592876400586,
+            "b": 0.08362071718222136,
+            "difference": 0.13823857045783722,
+            "bootstrap95": [
+              0.11110161676825196,
+              0.1660862460901161
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          }
+        }
+      }
+    },
+    "answerable": {
+      "questions": 1540,
+      "recencyBias": {
+        "meanNewerInTopK": 7.749836708033965,
+        "baselineIfUnbiased": 3.7827266128461923,
+        "scanned": 1540,
+        "evidenceMissing": 9
+      },
+      "diagnostic": {
+        "pool150Floor": {
+          "current": 0.08636363636363636,
+          "simOnly": 0.3487012987012987
+        },
+        "wholeStoreRankOnly": {
+          "current": 0.10909090909090909,
+          "simOnly": 0.5467532467532468
+        },
+        "contrasts": [
+          {
+            "key": "weights (150-candidate pool, floor): sim-only vs current",
+            "caliber": "micro",
+            "a": 0.3487012987012987,
+            "b": 0.08636363636363636,
+            "difference": 0.2623376623376623,
+            "bootstrap95": [
+              0.19487179487179487,
+              0.3282188125416945
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          },
+          {
+            "key": "weights (whole store, rank alone): sim-only vs current",
+            "caliber": "micro",
+            "a": 0.5467532467532468,
+            "b": 0.10909090909090909,
+            "difference": 0.4376623376623377,
+            "bootstrap95": [
+              0.4100765306122449,
+              0.4629283489096573
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          }
+        ]
+      },
+      "diagnosticSelfCheck": true,
+      "delivery": {
+        "additive": {
+          "gatingOff": 0.07929107296268358,
+          "gatingOn": 0.06783765042662104
+        },
+        "additive, penalty off": {
+          "gatingOff": 0.09517302102104466,
+          "gatingOn": 0.08056435036054815
+        },
+        "standardized": {
+          "gatingOff": 0.19307321503339564,
+          "gatingOn": 0.19213837791407495
+        },
+        "standardized, penalty off": {
+          "gatingOff": 0.5378325120188159,
+          "gatingOn": 0.5465937261353216
+        }
+      },
+      "penaltyContrast": {
+        "key": "delivery (standardized, no gating): penalty off vs on",
+        "caliber": "macro",
+        "a": 0.5378325120188159,
+        "b": 0.19307321503339564,
+        "difference": 0.3447592969854201,
+        "bootstrap95": [
+          0.29030746963629767,
+          0.3903778304480979
+        ],
+        "signFlipP": 0.001953125,
+        "unitsPositive": 10,
+        "unitsNegative": 0,
+        "units": 10
+      },
+      "gatingContrasts": [
+        {
+          "key": "gating (predicted, additive): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.06783765042662104,
+          "b": 0.07929107296268358,
+          "difference": -0.011453422536062536,
+          "bootstrap95": [
+            -0.02099733619371765,
+            -0.002310411965317566
+          ],
+          "signFlipP": 0.0390625,
+          "unitsPositive": 2,
+          "unitsNegative": 8,
+          "units": 10
+        },
+        {
+          "key": "gating (predicted, additive, penalty off): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.08056435036054815,
+          "b": 0.09517302102104466,
+          "difference": -0.014608670660496526,
+          "bootstrap95": [
+            -0.01996018648130086,
+            -0.00946281606315838
+          ],
+          "signFlipP": 0.00390625,
+          "unitsPositive": 0,
+          "unitsNegative": 9,
+          "units": 10
+        },
+        {
+          "key": "gating (predicted, standardized): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.19213837791407495,
+          "b": 0.19307321503339564,
+          "difference": -0.0009348371193206861,
+          "bootstrap95": [
+            -0.010090457652134201,
+            0.0076434808792532425
+          ],
+          "signFlipP": 0.84375,
+          "unitsPositive": 3,
+          "unitsNegative": 4,
+          "units": 10
+        },
+        {
+          "key": "gating (predicted, standardized, penalty off): ON vs OFF",
+          "caliber": "macro",
+          "a": 0.5465937261353216,
+          "b": 0.5378325120188159,
+          "difference": 0.008761214116505867,
+          "bootstrap95": [
+            0.004110984963327546,
+            0.013506805627862939
+          ],
+          "signFlipP": 0.015625,
+          "unitsPositive": 7,
+          "unitsNegative": 0,
+          "units": 10
+        }
+      ],
+      "perEvidenceRecall": {
+        "withEvidence": {
+          "questions": 1536,
+          "diagnostic": {
+            "current": 0.07591267838749337,
+            "simOnly": 0.3090544238798822,
+            "contrast": {
+              "key": "per-evidence, weights (150-candidate pool, floor): sim-only vs current",
+              "caliber": "micro",
+              "a": 0.3090544238798822,
+              "b": 0.07591267838749337,
+              "difference": 0.2331417454923888,
+              "bootstrap95": [
+                0.16699156698836307,
+                0.2983727753727754
+              ],
+              "signFlipP": 0.001953125,
+              "unitsPositive": 10,
+              "unitsNegative": 0,
+              "units": 10
+            }
+          },
+          "delivery": {
+            "additive": {
+              "gatingOff": 0.06871931432856035,
+              "gatingOn": 0.058940129275424705,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.058940129275424705,
+                "b": 0.06871931432856035,
+                "difference": -0.009779185053135655,
+                "bootstrap95": [
+                  -0.017790777160716566,
+                  -0.0016012380529123044
+                ],
+                "signFlipP": 0.048828125,
+                "unitsPositive": 2,
+                "unitsNegative": 8,
+                "units": 10
+              }
+            },
+            "additive, penalty off": {
+              "gatingOff": 0.08445677253473255,
+              "gatingOn": 0.07174113864408763,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.07174113864408763,
+                "b": 0.08445677253473255,
+                "difference": -0.012715633890644923,
+                "bootstrap95": [
+                  -0.017910261764006008,
+                  -0.0075397349748726195
+                ],
+                "signFlipP": 0.00390625,
+                "unitsPositive": 0,
+                "unitsNegative": 9,
+                "units": 10
+              }
+            },
+            "standardized": {
+              "gatingOff": 0.17135232921896154,
+              "gatingOn": 0.17009711953902582,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.17009711953902582,
+                "b": 0.17135232921896154,
+                "difference": -0.001255209679935708,
+                "bootstrap95": [
+                  -0.009783742544042162,
+                  0.00710788704427553
+                ],
+                "signFlipP": 0.796875,
+                "unitsPositive": 3,
+                "unitsNegative": 4,
+                "units": 10
+              }
+            },
+            "standardized, penalty off": {
+              "gatingOff": 0.48976249923553344,
+              "gatingOn": 0.4982928169618296,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.4982928169618296,
+                "b": 0.48976249923553344,
+                "difference": 0.008530317726296088,
+                "bootstrap95": [
+                  0.005106900713015727,
+                  0.012205152129324626
+                ],
+                "signFlipP": 0.00390625,
+                "unitsPositive": 9,
+                "unitsNegative": 0,
+                "units": 10
+              }
+            }
+          },
+          "penaltyContrast": {
+            "key": "per-evidence, delivery (standardized, no gating): penalty off vs on",
+            "caliber": "macro",
+            "a": 0.48976249923553344,
+            "b": 0.17135232921896154,
+            "difference": 0.3184101700165719,
+            "bootstrap95": [
+              0.26749769517841526,
+              0.36129652244668387
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          }
+        },
+        "multiEvidence": {
+          "questions": 409,
+          "diagnostic": {
+            "current": 0.030811427880659638,
+            "simOnly": 0.14109436449755283,
+            "contrast": {
+              "key": "per-evidence, weights (150-candidate pool, floor): sim-only vs current",
+              "caliber": "micro",
+              "a": 0.14109436449755283,
+              "b": 0.030811427880659638,
+              "difference": 0.1102829366168932,
+              "bootstrap95": [
+                0.07438977947178546,
+                0.14721586575133486
+              ],
+              "signFlipP": 0.001953125,
+              "unitsPositive": 10,
+              "unitsNegative": 0,
+              "units": 10
+            }
+          },
+          "delivery": {
+            "additive": {
+              "gatingOff": 0.03096109073434696,
+              "gatingOn": 0.025601183613603917,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.025601183613603917,
+                "b": 0.03096109073434696,
+                "difference": -0.005359907120743035,
+                "bootstrap95": [
+                  -0.01071981424148607,
+                  0
+                ],
+                "signFlipP": 0.25,
+                "unitsPositive": 0,
+                "unitsNegative": 3,
+                "units": 10
+              }
+            },
+            "additive, penalty off": {
+              "gatingOff": 0.032084698072018865,
+              "gatingOn": 0.025704382788010523,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, additive, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.025704382788010523,
+                "b": 0.032084698072018865,
+                "difference": -0.00638031528400834,
+                "bootstrap95": [
+                  -0.011617673385143534,
+                  -0.0013157894736842105
+                ],
+                "signFlipP": 0.125,
+                "unitsPositive": 0,
+                "unitsNegative": 4,
+                "units": 10
+              }
+            },
+            "standardized": {
+              "gatingOff": 0.08074950115909182,
+              "gatingOn": 0.08169433143828744,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.08169433143828744,
+                "b": 0.08074950115909182,
+                "difference": 0.0009448302791956055,
+                "bootstrap95": [
+                  -0.003073661897191309,
+                  0.00492776057791538
+                ],
+                "signFlipP": 1,
+                "unitsPositive": 2,
+                "unitsNegative": 1,
+                "units": 10
+              }
+            },
+            "standardized, penalty off": {
+              "gatingOff": 0.20981597763744414,
+              "gatingOn": 0.21702613003513455,
+              "gatingContrast": {
+                "key": "per-evidence, gating (predicted, standardized, penalty off): ON vs OFF",
+                "caliber": "macro",
+                "a": 0.21702613003513455,
+                "b": 0.20981597763744414,
+                "difference": 0.007210152397690425,
+                "bootstrap95": [
+                  0.002212045431326645,
+                  0.013719512195121953
+                ],
+                "signFlipP": 0.0625,
+                "unitsPositive": 5,
+                "unitsNegative": 0,
+                "units": 10
+              }
+            }
+          },
+          "penaltyContrast": {
+            "key": "per-evidence, delivery (standardized, no gating): penalty off vs on",
+            "caliber": "macro",
+            "a": 0.20981597763744414,
+            "b": 0.08074950115909182,
+            "difference": 0.12906647647835234,
+            "bootstrap95": [
+              0.10159985293988896,
+              0.15892506259793482
+            ],
+            "signFlipP": 0.001953125,
+            "unitsPositive": 10,
+            "unitsNegative": 0,
+            "units": 10
+          }
+        }
+      }
+    }
+  },
+  "interaction": {
+    "all": {
+      "contrasts": [
+        {
+          "key": "Δ1: gating effect, additive minus standardized",
+          "caliber": "macro",
+          "a": -0.010561723623659456,
+          "b": -0.0000635660394646187,
+          "difference": -0.010498157584194836,
+          "bootstrap95": [
+            -0.0207453453091224,
+            -0.0012429845685364288
+          ],
+          "signFlipP": 0.0859375,
+          "unitsPositive": 2,
+          "unitsNegative": 8,
+          "units": 10
+        },
+        {
+          "key": "Δ2: gating effect, standardized with the penalty off minus standardized",
+          "caliber": "macro",
+          "a": 0.009999961541853498,
+          "b": -0.0000635660394646187,
+          "difference": 0.010063527581318116,
+          "bootstrap95": [
+            0.004033574367945334,
+            0.01624903406841556
+          ],
+          "signFlipP": 0.013671875,
+          "unitsPositive": 8,
+          "unitsNegative": 2,
+          "units": 10
+        }
+      ]
+    },
+    "answerable": {
+      "contrasts": [
+        {
+          "key": "Δ1: gating effect, additive minus standardized",
+          "caliber": "macro",
+          "a": -0.011453422536062536,
+          "b": -0.0009348371193206861,
+          "difference": -0.010518585416741852,
+          "bootstrap95": [
+            -0.02139159695536198,
+            0.0007618272728680764
+          ],
+          "signFlipP": 0.12109375,
+          "unitsPositive": 2,
+          "unitsNegative": 8,
+          "units": 10
+        },
+        {
+          "key": "Δ2: gating effect, standardized with the penalty off minus standardized",
+          "caliber": "macro",
+          "a": 0.008761214116505867,
+          "b": -0.0009348371193206861,
+          "difference": 0.009696051235826553,
+          "bootstrap95": [
+            0.0008811850888985562,
+            0.018082753476076945
+          ],
+          "signFlipP": 0.0703125,
+          "unitsPositive": 7,
+          "unitsNegative": 3,
+          "units": 10
+        }
+      ],
+      "holm": [
+        {
+          "key": "Δ1: gating effect, additive minus standardized",
+          "p": 0.12109375,
+          "adjustedP": 0.140625,
+          "reject": false
+        },
+        {
+          "key": "Δ2: gating effect, standardized with the penalty off minus standardized",
+          "p": 0.0703125,
+          "adjustedP": 0.140625,
+          "reject": false
+        }
+      ]
+    }
+  },
+  "reproduction": {
+    "allMatch": true,
+    "checks": [
+      {
+        "what": "uncertainty.json weights: a",
+        "archived": 0.3580060422960725,
+        "recomputed": 0.3580060422960725,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json weights: b",
+        "archived": 0.09063444108761329,
+        "recomputed": 0.09063444108761329,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json weights: difference",
+        "archived": 0.26737160120845926,
+        "recomputed": 0.26737160120845926,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json weights: signFlipP",
+        "archived": 0.001953125,
+        "recomputed": 0.001953125,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json weights: bootstrap95[0]",
+        "archived": 0.19602272727272727,
+        "recomputed": 0.19602272727272727,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json weights: bootstrap95[1]",
+        "archived": 0.3373702422145328,
+        "recomputed": 0.3373702422145328,
+        "match": true
+      },
+      {
+        "what": "pool-check.json whole store: a",
+        "archived": 0.5624370594159114,
+        "recomputed": 0.5624370594159114,
+        "match": true
+      },
+      {
+        "what": "pool-check.json whole store: b",
+        "archived": 0.11782477341389729,
+        "recomputed": 0.11782477341389729,
+        "match": true
+      },
+      {
+        "what": "pool-check.json whole store: difference",
+        "archived": 0.4446122860020141,
+        "recomputed": 0.4446122860020141,
+        "match": true
+      },
+      {
+        "what": "pool-check.json whole store: signFlipP",
+        "archived": 0.001953125,
+        "recomputed": 0.001953125,
+        "match": true
+      },
+      {
+        "what": "pool-check.json whole store: bootstrap95[0]",
+        "archived": 0.41108545034642036,
+        "recomputed": 0.41108545034642036,
+        "match": true
+      },
+      {
+        "what": "pool-check.json whole store: bootstrap95[1]",
+        "archived": 0.47429519071310117,
+        "recomputed": 0.47429519071310117,
+        "match": true
+      },
+      {
+        "what": "pool-check.json recency: meanNewerInTopK",
+        "archived": 7.734951947395043,
+        "recomputed": 7.734951947395043,
+        "match": true
+      },
+      {
+        "what": "pool-check.json recency: baselineIfUnbiased",
+        "archived": 3.7886679560440837,
+        "recomputed": 3.7886679560440837,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating additive: a",
+        "archived": 0.0691347697772432,
+        "recomputed": 0.0691347697772432,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating additive: b",
+        "archived": 0.07969649340090265,
+        "recomputed": 0.07969649340090265,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating additive: difference",
+        "archived": -0.010561723623659456,
+        "recomputed": -0.010561723623659456,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating additive: signFlipP",
+        "archived": 0.02734375,
+        "recomputed": 0.02734375,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating additive: bootstrap95[0]",
+        "archived": -0.019480063713742307,
+        "recomputed": -0.019480063713742307,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating additive: bootstrap95[1]",
+        "archived": -0.0026899276662517907,
+        "recomputed": -0.0026899276662517907,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating additive: a",
+        "archived": 0.0890336008859097,
+        "recomputed": 0.0890336008859097,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating additive: b",
+        "archived": 0.10307558812460664,
+        "recomputed": 0.10307558812460664,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating additive: difference",
+        "archived": -0.014041987238696953,
+        "recomputed": -0.014041987238696953,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating additive: signFlipP",
+        "archived": 0.00390625,
+        "recomputed": 0.00390625,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating additive: bootstrap95[0]",
+        "archived": -0.018178344416449305,
+        "recomputed": -0.018178344416449305,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating additive: bootstrap95[1]",
+        "archived": -0.009503940615088831,
+        "recomputed": -0.009503940615088831,
+        "match": true
+      },
+      {
+        "what": "delivery-check.json additive, penalty on",
+        "archived": 0.07969649340090265,
+        "recomputed": 0.07969649340090265,
+        "match": true
+      },
+      {
+        "what": "delivery-check.json additive, penalty off",
+        "archived": 0.10307558812460664,
+        "recomputed": 0.10307558812460664,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating standardized: a",
+        "archived": 0.1984688004513847,
+        "recomputed": 0.1984688004513847,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating standardized: b",
+        "archived": 0.19853236649084932,
+        "recomputed": 0.19853236649084932,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating standardized: difference",
+        "archived": -0.0000635660394646187,
+        "recomputed": -0.0000635660394646187,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating standardized: signFlipP",
+        "archived": 1,
+        "recomputed": 1,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating standardized: bootstrap95[0]",
+        "archived": -0.007448022247928512,
+        "recomputed": -0.007448022247928512,
+        "match": true
+      },
+      {
+        "what": "uncertainty.json gating standardized: bootstrap95[1]",
+        "archived": 0.007263674657238312,
+        "recomputed": 0.007263674657238312,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating standardized: a",
+        "archived": 0.5578435175498411,
+        "recomputed": 0.5578435175498411,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating standardized: b",
+        "archived": 0.5478435560079876,
+        "recomputed": 0.5478435560079876,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating standardized: difference",
+        "archived": 0.009999961541853498,
+        "recomputed": 0.009999961541853498,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating standardized: signFlipP",
+        "archived": 0.00390625,
+        "recomputed": 0.00390625,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating standardized: bootstrap95[0]",
+        "archived": 0.005953176768926749,
+        "recomputed": 0.005953176768926749,
+        "match": true
+      },
+      {
+        "what": "gating-penalty-off.json gating standardized: bootstrap95[1]",
+        "archived": 0.014557552350423875,
+        "recomputed": 0.014557552350423875,
+        "match": true
+      },
+      {
+        "what": "delivery-check.json standardized, penalty on",
+        "archived": 0.19853236649084932,
+        "recomputed": 0.19853236649084932,
+        "match": true
+      },
+      {
+        "what": "delivery-check.json standardized, penalty off",
+        "archived": 0.5478435560079876,
+        "recomputed": 0.5478435560079876,
+        "match": true
+      }
+    ]
+  },
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "conversations": 10,
+    "runtime": ".NET 10.0.13",
+    "generatedAt": "2026-10-22T04:46:09.0573660+00:00"
+  }
+}

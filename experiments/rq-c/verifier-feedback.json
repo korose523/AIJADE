@@ -1,0 +1,3152 @@
+{
+  "plan": "experiments/plans/2026-10-22-followup-analyses.md",
+  "planCommit": "aee0429a3617ad1b01d6cb64b4ca8fbc147d496c",
+  "codeCommit": "761165d38ff6c9937d4c97eda20e5f17342ccbb2",
+  "codeTreeDirty": false,
+  "deviations": [],
+  "experiment": "P2-C (experiments/plans/2026-10-22-followup-analyses.md): verifier error rates by environment feedback and by round, in the self-verification-on cells",
+  "runs": {
+    "main (7B)": {
+      "skillsJudged": 871,
+      "tasks": 44,
+      "definitions": "skill unit; truth = last execution; positive = self-pass; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP); task-cluster bootstrap (10000 resamples of the 44 tasks, percentile 95%, one draw for both cells)",
+      "feedback": {
+        "ef0": {
+          "n": 417,
+          "confusion": {
+            "tp": 324,
+            "fp": 26,
+            "fn": 39,
+            "tn": 28
+          },
+          "hallucinationRate": {
+            "numerator": 26,
+            "denominator": 54,
+            "estimate": 0.48148148148148145,
+            "taskBootstrap95": [
+              0.13253012048192772,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 39,
+            "denominator": 363,
+            "estimate": 0.10743801652892562,
+            "taskBootstrap95": [
+              0,
+              0.2647058823529412
+            ]
+          },
+          "tasksWithUnusable": 7
+        },
+        "ef1": {
+          "n": 454,
+          "confusion": {
+            "tp": 330,
+            "fp": 33,
+            "fn": 39,
+            "tn": 52
+          },
+          "hallucinationRate": {
+            "numerator": 33,
+            "denominator": 85,
+            "estimate": 0.38823529411764707,
+            "taskBootstrap95": [
+              0.14285714285714285,
+              0.8461538461538461
+            ]
+          },
+          "missRate": {
+            "numerator": 39,
+            "denominator": 369,
+            "estimate": 0.10569105691056911,
+            "taskBootstrap95": [
+              0,
+              0.26119402985074625
+            ]
+          },
+          "tasksWithUnusable": 7
+        },
+        "difference": {
+          "what": "ef1 − ef0",
+          "hallucinationRate": {
+            "estimate": -0.09324618736383439,
+            "taskBootstrap95": [
+              -0.5128205128205128,
+              0.10822510822510822
+            ],
+            "detected": false
+          },
+          "missRate": {
+            "estimate": -0.0017469596183565111,
+            "taskBootstrap95": [
+              -0.007980464913238033,
+              0
+            ],
+            "detected": false
+          }
+        },
+        "hallucinationComparisonDescriptiveOnly": false,
+        "logistic": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 139,
+            "wrong": 59,
+            "clusters": 7,
+            "coefficients": {
+              "intercept": {
+                "estimate": -0.07410797215372239,
+                "se": 0.9849172499721839,
+                "z": -0.07524284111768309,
+                "p": 0.9400214986591666,
+                "wald95": [
+                  -2.0045103098514363,
+                  1.8562943655439916
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.3806281849612248,
+                "se": 0.6129879274349512,
+                "z": -0.6209391211894889,
+                "p": 0.5346396797287479,
+                "wald95": [
+                  -1.5820624456915813,
+                  0.8208060757691318
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 732,
+            "wrong": 78,
+            "clusters": 41,
+            "coefficients": {
+              "intercept": {
+                "estimate": -2.117181869662683,
+                "se": 0.8118749428459571,
+                "z": -2.6077684603013935,
+                "p": 0.009113457614210249,
+                "wald95": [
+                  -3.7084275175912738,
+                  -0.5259362217340926
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.018349138668196735,
+                "se": 0.018666787321202402,
+                "z": -0.9829832178649793,
+                "p": 0.3256156983485391,
+                "wald95": [
+                  -0.05493536952482236,
+                  0.018237092188428887
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          }
+        },
+        "distinctCandidates": {
+          "skillsWithoutCode": 0,
+          "ef0": {
+            "n": 49,
+            "confusion": {
+              "tp": 39,
+              "fp": 5,
+              "fn": 3,
+              "tn": 2
+            },
+            "hallucinationRate": {
+              "numerator": 5,
+              "denominator": 7,
+              "estimate": 0.7142857142857143,
+              "taskBootstrap95": [
+                0.3333333333333333,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 3,
+              "denominator": 42,
+              "estimate": 0.07142857142857142,
+              "taskBootstrap95": [
+                0,
+                0.15384615384615385
+              ]
+            }
+          },
+          "ef1": {
+            "n": 56,
+            "confusion": {
+              "tp": 40,
+              "fp": 7,
+              "fn": 4,
+              "tn": 5
+            },
+            "hallucinationRate": {
+              "numerator": 7,
+              "denominator": 12,
+              "estimate": 0.5833333333333334,
+              "taskBootstrap95": [
+                0.25,
+                0.8888888888888888
+              ]
+            },
+            "missRate": {
+              "numerator": 4,
+              "denominator": 44,
+              "estimate": 0.09090909090909091,
+              "taskBootstrap95": [
+                0,
+                0.2
+              ]
+            }
+          },
+          "difference": {
+            "what": "ef1 − ef0",
+            "hallucinationRate": {
+              "estimate": -0.13095238095238093,
+              "taskBootstrap95": [
+                -0.35,
+                0.0714285714285714
+              ],
+              "detected": false
+            },
+            "missRate": {
+              "estimate": 0.019480519480519487,
+              "taskBootstrap95": [
+                -0.003663003663003664,
+                0.060317460317460325
+              ],
+              "detected": false
+            }
+          }
+        },
+        "consistency": {
+          "candidates": 57,
+          "judgedInBothConditions": 48,
+          "differentVerdictsInBoth": 0,
+          "differentVerdictsAny": 0
+        }
+      },
+      "rounds": {
+        "perRound": [
+          {
+            "n": 720,
+            "confusion": {
+              "tp": 622,
+              "fp": 44,
+              "fn": 38,
+              "tn": 16
+            },
+            "hallucinationRate": {
+              "numerator": 44,
+              "denominator": 60,
+              "estimate": 0.7333333333333333,
+              "taskBootstrap95": [
+                0.2,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 38,
+              "denominator": 660,
+              "estimate": 0.05757575757575758,
+              "taskBootstrap95": [
+                0,
+                0.13664596273291926
+              ]
+            },
+            "round": 0,
+            "tasksUnusable": 5,
+            "tasksUsable": 39
+          },
+          {
+            "n": 54,
+            "confusion": {
+              "tp": 24,
+              "fp": 8,
+              "fn": 0,
+              "tn": 22
+            },
+            "hallucinationRate": {
+              "numerator": 8,
+              "denominator": 30,
+              "estimate": 0.26666666666666666,
+              "taskBootstrap95": [
+                0,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 24,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "round": 1,
+            "tasksUnusable": 3,
+            "tasksUsable": 2
+          },
+          {
+            "n": 22,
+            "confusion": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 20,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "missRate": {
+              "numerator": 20,
+              "denominator": 22,
+              "estimate": 0.9090909090909091,
+              "taskBootstrap95": [
+                0,
+                1
+              ]
+            },
+            "round": 2,
+            "tasksUnusable": 0,
+            "tasksUsable": 2
+          },
+          {
+            "n": 42,
+            "confusion": {
+              "tp": 6,
+              "fp": 7,
+              "fn": 1,
+              "tn": 28
+            },
+            "hallucinationRate": {
+              "numerator": 7,
+              "denominator": 35,
+              "estimate": 0.2,
+              "taskBootstrap95": [
+                0,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 1,
+              "denominator": 7,
+              "estimate": 0.14285714285714285,
+              "taskBootstrap95": [
+                0,
+                1
+              ]
+            },
+            "round": 3,
+            "tasksUnusable": 4,
+            "tasksUsable": 2
+          },
+          {
+            "n": 33,
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 19,
+              "tn": 14
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 14,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "missRate": {
+              "numerator": 19,
+              "denominator": 19,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "round": 4,
+            "tasksUnusable": 3,
+            "tasksUsable": 1
+          }
+        ],
+        "trend": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 139,
+            "wrong": 59,
+            "clusters": 7,
+            "coefficients": {
+              "intercept": {
+                "estimate": 0.584590520539618,
+                "se": 0.963650045916766,
+                "z": 0.6066419267208869,
+                "p": 0.5440885696160425,
+                "wald95": [
+                  -1.3041288631576127,
+                  2.4733099042368485
+                ]
+              },
+              "round": {
+                "estimate": -0.9398073813184928,
+                "se": 0.5251755499451451,
+                "z": -1.7895109195709058,
+                "p": 0.07353257049695971,
+                "wald95": [
+                  -1.9691325447719936,
+                  0.08951778213500794
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.3061687790635465,
+                "se": 0.33011793902121994,
+                "z": 0.9274527157515848,
+                "p": 0.3536915311758243,
+                "wald95": [
+                  -0.3408504920686343,
+                  0.9531880501957273
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 732,
+            "wrong": 78,
+            "clusters": 41,
+            "coefficients": {
+              "intercept": {
+                "estimate": -2.7064829806411814,
+                "se": 0.6049967898221451,
+                "z": -4.473549324843234,
+                "p": 0.000007693180140469918,
+                "wald95": [
+                  -3.892254899454935,
+                  -1.5207110618274282
+                ]
+              },
+              "round": {
+                "estimate": 1.4976514856441514,
+                "se": 0.4583624638226255,
+                "z": 3.2673955741360707,
+                "p": 0.0010854190122194566,
+                "wald95": [
+                  0.599277564686762,
+                  2.3960254066015407
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.2431304212512069,
+                "se": 0.1893890432311458,
+                "z": -1.2837618116823726,
+                "p": 0.19922530930138416,
+                "wald95": [
+                  -0.614326125050752,
+                  0.12806528254833818
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          }
+        },
+        "withinTaskExploratory": {
+          "what": "exploratory (not in the plan): tasks with judged skills in round 0 and in a later round, error counts per period; unusable: wrong = self-pass, usable: wrong = self-fail",
+          "unusable": [
+            {
+              "task": "arr-intersection",
+              "round0": {
+                "wrong": 0,
+                "n": 16
+              },
+              "later": {
+                "wrong": 0,
+                "n": 2
+              }
+            },
+            {
+              "task": "obj-get-nested",
+              "round0": {
+                "wrong": 10,
+                "n": 10
+              },
+              "later": {
+                "wrong": 5,
+                "n": 5
+              }
+            },
+            {
+              "task": "parse-query-string",
+              "round0": {
+                "wrong": 18,
+                "n": 18
+              },
+              "later": {
+                "wrong": 0,
+                "n": 18
+              }
+            },
+            {
+              "task": "parse-version",
+              "round0": {
+                "wrong": 4,
+                "n": 4
+              },
+              "later": {
+                "wrong": 2,
+                "n": 2
+              }
+            }
+          ],
+          "usable": [
+            {
+              "task": "arr-flatten",
+              "round0": {
+                "wrong": 20,
+                "n": 20
+              },
+              "later": {
+                "wrong": 40,
+                "n": 40
+              }
+            },
+            {
+              "task": "logic-roman-to-int",
+              "round0": {
+                "wrong": 10,
+                "n": 10
+              },
+              "later": {
+                "wrong": 0,
+                "n": 10
+              }
+            }
+          ]
+        }
+      },
+      "run": "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5",
+      "model": "qwen2.5-coder:7b-instruct",
+      "inputsMatchPlan": true
+    },
+    "second family (llama3.1:8b)": {
+      "skillsJudged": 770,
+      "tasks": 44,
+      "definitions": "skill unit; truth = last execution; positive = self-pass; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP); task-cluster bootstrap (10000 resamples of the 44 tasks, percentile 95%, one draw for both cells)",
+      "feedback": {
+        "ef0": {
+          "n": 370,
+          "confusion": {
+            "tp": 339,
+            "fp": 21,
+            "fn": 1,
+            "tn": 9
+          },
+          "hallucinationRate": {
+            "numerator": 21,
+            "denominator": 30,
+            "estimate": 0.7,
+            "taskBootstrap95": [
+              0.25,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 1,
+            "denominator": 340,
+            "estimate": 0.0029411764705882353,
+            "taskBootstrap95": [
+              0,
+              0.009230769230769232
+            ]
+          },
+          "tasksWithUnusable": 5
+        },
+        "ef1": {
+          "n": 400,
+          "confusion": {
+            "tp": 333,
+            "fp": 55,
+            "fn": 0,
+            "tn": 12
+          },
+          "hallucinationRate": {
+            "numerator": 55,
+            "denominator": 67,
+            "estimate": 0.8208955223880597,
+            "taskBootstrap95": [
+              0.6785714285714286,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 0,
+            "denominator": 333,
+            "estimate": 0,
+            "taskBootstrap95": [
+              0,
+              0
+            ]
+          },
+          "tasksWithUnusable": 5
+        },
+        "difference": {
+          "what": "ef1 − ef0",
+          "hallucinationRate": {
+            "estimate": 0.12089552238805978,
+            "taskBootstrap95": [
+              -0.22499999999999998,
+              0.43965517241379315
+            ],
+            "detected": false
+          },
+          "missRate": {
+            "estimate": -0.0029411764705882353,
+            "taskBootstrap95": [
+              -0.009230769230769232,
+              0
+            ],
+            "detected": false
+          }
+        },
+        "hallucinationComparisonDescriptiveOnly": false,
+        "logistic": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 97,
+            "wrong": 76,
+            "clusters": 5,
+            "coefficients": {
+              "intercept": {
+                "estimate": 0.8472978603872039,
+                "se": 1.2210363242817226,
+                "z": 0.6939169978302069,
+                "p": 0.4877342631576407,
+                "wald95": [
+                  -1.5458893590201428,
+                  3.2404850797945506
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.6751286750572674,
+                "se": 0.7031395359289472,
+                "z": 0.960163154764618,
+                "p": 0.33697310741792086,
+                "wald95": [
+                  -0.7029994914696764,
+                  2.0532568415842114
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 673,
+            "note": "not estimable: ef1 has 0 wrong of 333"
+          }
+        },
+        "distinctCandidates": {
+          "skillsWithoutCode": 0,
+          "ef0": {
+            "n": 47,
+            "confusion": {
+              "tp": 40,
+              "fp": 5,
+              "fn": 1,
+              "tn": 1
+            },
+            "hallucinationRate": {
+              "numerator": 5,
+              "denominator": 6,
+              "estimate": 0.8333333333333334,
+              "taskBootstrap95": [
+                0.6,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 1,
+              "denominator": 41,
+              "estimate": 0.024390243902439025,
+              "taskBootstrap95": [
+                0,
+                0.07317073170731707
+              ]
+            }
+          },
+          "ef1": {
+            "n": 53,
+            "confusion": {
+              "tp": 40,
+              "fp": 11,
+              "fn": 0,
+              "tn": 2
+            },
+            "hallucinationRate": {
+              "numerator": 11,
+              "denominator": 13,
+              "estimate": 0.8461538461538461,
+              "taskBootstrap95": [
+                0.7333333333333333,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 40,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            }
+          },
+          "difference": {
+            "what": "ef1 − ef0",
+            "hallucinationRate": {
+              "estimate": 0.012820512820512775,
+              "taskBootstrap95": [
+                -0.16666666666666663,
+                0.13333333333333341
+              ],
+              "detected": false
+            },
+            "missRate": {
+              "estimate": -0.024390243902439025,
+              "taskBootstrap95": [
+                -0.07317073170731707,
+                0
+              ],
+              "detected": false
+            }
+          }
+        },
+        "consistency": {
+          "candidates": 56,
+          "judgedInBothConditions": 44,
+          "differentVerdictsInBoth": 1,
+          "differentVerdictsAny": 2
+        }
+      },
+      "rounds": {
+        "perRound": [
+          {
+            "n": 720,
+            "confusion": {
+              "tp": 661,
+              "fp": 40,
+              "fn": 1,
+              "tn": 18
+            },
+            "hallucinationRate": {
+              "numerator": 40,
+              "denominator": 58,
+              "estimate": 0.6896551724137931,
+              "taskBootstrap95": [
+                0.18181818181818182,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 1,
+              "denominator": 662,
+              "estimate": 0.0015105740181268882,
+              "taskBootstrap95": [
+                0,
+                0.00482315112540193
+              ]
+            },
+            "round": 0,
+            "tasksUnusable": 5,
+            "tasksUsable": 39
+          },
+          {
+            "n": 19,
+            "confusion": {
+              "tp": 9,
+              "fp": 10,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 10,
+              "denominator": 10,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 9,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "round": 1,
+            "tasksUnusable": 1,
+            "tasksUsable": 2
+          },
+          {
+            "n": 0,
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "round": 2,
+            "tasksUnusable": 0,
+            "tasksUsable": 0
+          },
+          {
+            "n": 20,
+            "confusion": {
+              "tp": 2,
+              "fp": 16,
+              "fn": 0,
+              "tn": 2
+            },
+            "hallucinationRate": {
+              "numerator": 16,
+              "denominator": 18,
+              "estimate": 0.8888888888888888,
+              "taskBootstrap95": [
+                0.5,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 2,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "round": 3,
+            "tasksUnusable": 3,
+            "tasksUsable": 1
+          },
+          {
+            "n": 11,
+            "confusion": {
+              "tp": 0,
+              "fp": 10,
+              "fn": 0,
+              "tn": 1
+            },
+            "hallucinationRate": {
+              "numerator": 10,
+              "denominator": 11,
+              "estimate": 0.9090909090909091,
+              "taskBootstrap95": [
+                0.5,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "round": 4,
+            "tasksUnusable": 2,
+            "tasksUsable": 0
+          }
+        ],
+        "trend": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 97,
+            "wrong": 76,
+            "clusters": 5,
+            "coefficients": {
+              "intercept": {
+                "estimate": 0.8346027232791946,
+                "se": 1.2483805456946864,
+                "z": 0.6685483253944519,
+                "p": 0.5037836452655672,
+                "wald95": [
+                  -1.61217818528285,
+                  3.2813836318412393
+                ]
+              },
+              "round": {
+                "estimate": 0.41660666484231595,
+                "se": 0.6826731592077893,
+                "z": 0.6102578653096143,
+                "p": 0.5416910034497031,
+                "wald95": [
+                  -0.9214081404171295,
+                  1.7546214701017613
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.164052504633073,
+                "se": 0.11654295495055944,
+                "z": 1.4076569853807839,
+                "p": 0.15923266467456554,
+                "wald95": [
+                  -0.06436748972189751,
+                  0.3924724989880435
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 673,
+            "wrong": 1,
+            "note": "not estimable: the fit did not converge (separation)"
+          }
+        },
+        "withinTaskExploratory": {
+          "what": "exploratory (not in the plan): tasks with judged skills in round 0 and in a later round, error counts per period; unusable: wrong = self-pass, usable: wrong = self-fail",
+          "unusable": [
+            {
+              "task": "math-round-to",
+              "round0": {
+                "wrong": 18,
+                "n": 18
+              },
+              "later": {
+                "wrong": 9,
+                "n": 9
+              }
+            },
+            {
+              "task": "obj-get-nested",
+              "round0": {
+                "wrong": 10,
+                "n": 10
+              },
+              "later": {
+                "wrong": 5,
+                "n": 5
+              }
+            },
+            {
+              "task": "parse-csv-line",
+              "round0": {
+                "wrong": 8,
+                "n": 8
+              },
+              "later": {
+                "wrong": 3,
+                "n": 6
+              }
+            },
+            {
+              "task": "str-rot13",
+              "round0": {
+                "wrong": 0,
+                "n": 18
+              },
+              "later": {
+                "wrong": 19,
+                "n": 19
+              }
+            }
+          ],
+          "usable": [
+            {
+              "task": "math-fib",
+              "round0": {
+                "wrong": 1,
+                "n": 22
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            }
+          ]
+        }
+      },
+      "run": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5",
+      "model": "llama3.1:8b",
+      "inputsMatchPlan": true
+    },
+    "prompt template A (7B, GPU host)": {
+      "skillsJudged": 852,
+      "tasks": 44,
+      "definitions": "skill unit; truth = last execution; positive = self-pass; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP); task-cluster bootstrap (10000 resamples of the 44 tasks, percentile 95%, one draw for both cells)",
+      "feedback": {
+        "ef0": {
+          "n": 412,
+          "confusion": {
+            "tp": 324,
+            "fp": 26,
+            "fn": 34,
+            "tn": 28
+          },
+          "hallucinationRate": {
+            "numerator": 26,
+            "denominator": 54,
+            "estimate": 0.48148148148148145,
+            "taskBootstrap95": [
+              0.13253012048192772,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 34,
+            "denominator": 358,
+            "estimate": 0.09497206703910614,
+            "taskBootstrap95": [
+              0,
+              0.2532299741602067
+            ]
+          },
+          "tasksWithUnusable": 7
+        },
+        "ef1": {
+          "n": 440,
+          "confusion": {
+            "tp": 330,
+            "fp": 44,
+            "fn": 34,
+            "tn": 32
+          },
+          "hallucinationRate": {
+            "numerator": 44,
+            "denominator": 76,
+            "estimate": 0.5789473684210527,
+            "taskBootstrap95": [
+              0.2,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 34,
+            "denominator": 364,
+            "estimate": 0.09340659340659341,
+            "taskBootstrap95": [
+              0,
+              0.2493368700265252
+            ]
+          },
+          "tasksWithUnusable": 7
+        },
+        "difference": {
+          "what": "ef1 − ef0",
+          "hallucinationRate": {
+            "estimate": 0.0974658869395712,
+            "taskBootstrap95": [
+              -0.15384615384615385,
+              0.16830294530154277
+            ],
+            "detected": false
+          },
+          "missRate": {
+            "estimate": -0.0015654736325127344,
+            "taskBootstrap95": [
+              -0.007417929292929282,
+              0
+            ],
+            "detected": false
+          }
+        },
+        "hallucinationComparisonDescriptiveOnly": false,
+        "logistic": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 130,
+            "wrong": 70,
+            "clusters": 7,
+            "coefficients": {
+              "intercept": {
+                "estimate": -0.07410797215372174,
+                "se": 0.9849172499721843,
+                "z": -0.0752428411176824,
+                "p": 0.9400214986591672,
+                "wald95": [
+                  -2.0045103098514367,
+                  1.8562943655439932
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.39256170327225604,
+                "se": 0.22615724035835158,
+                "z": 1.735791003861882,
+                "p": 0.08260079536050335,
+                "wald95": [
+                  -0.05069834267308143,
+                  0.8358217492175934
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 722,
+            "wrong": 68,
+            "clusters": 41,
+            "coefficients": {
+              "intercept": {
+                "estimate": -2.2543829911761684,
+                "se": 0.9171997067878538,
+                "z": -2.4578976361334597,
+                "p": 0.013975300215453448,
+                "wald95": [
+                  -4.0520613831110595,
+                  -0.45670459924127726
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.018349138668196385,
+                "se": 0.018666787320131523,
+                "z": -0.9829832179213526,
+                "p": 0.3256156983207934,
+                "wald95": [
+                  -0.054935369522723126,
+                  0.018237092186330354
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          }
+        },
+        "distinctCandidates": {
+          "skillsWithoutCode": 0,
+          "ef0": {
+            "n": 47,
+            "confusion": {
+              "tp": 38,
+              "fp": 5,
+              "fn": 2,
+              "tn": 2
+            },
+            "hallucinationRate": {
+              "numerator": 5,
+              "denominator": 7,
+              "estimate": 0.7142857142857143,
+              "taskBootstrap95": [
+                0.3333333333333333,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 2,
+              "denominator": 40,
+              "estimate": 0.05,
+              "taskBootstrap95": [
+                0,
+                0.125
+              ]
+            }
+          },
+          "ef1": {
+            "n": 54,
+            "confusion": {
+              "tp": 39,
+              "fp": 9,
+              "fn": 3,
+              "tn": 3
+            },
+            "hallucinationRate": {
+              "numerator": 9,
+              "denominator": 12,
+              "estimate": 0.75,
+              "taskBootstrap95": [
+                0.42857142857142855,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 3,
+              "denominator": 42,
+              "estimate": 0.07142857142857142,
+              "taskBootstrap95": [
+                0,
+                0.18181818181818182
+              ]
+            }
+          },
+          "difference": {
+            "what": "ef1 − ef0",
+            "hallucinationRate": {
+              "estimate": 0.0357142857142857,
+              "taskBootstrap95": [
+                -0.16666666666666663,
+                0.16666666666666663
+              ],
+              "detected": false
+            },
+            "missRate": {
+              "estimate": 0.021428571428571422,
+              "taskBootstrap95": [
+                -0.0023809523809523864,
+                0.06319290465631928
+              ],
+              "detected": false
+            }
+          }
+        },
+        "consistency": {
+          "candidates": 55,
+          "judgedInBothConditions": 46,
+          "differentVerdictsInBoth": 0,
+          "differentVerdictsAny": 0
+        }
+      },
+      "rounds": {
+        "perRound": [
+          {
+            "n": 720,
+            "confusion": {
+              "tp": 632,
+              "fp": 44,
+              "fn": 28,
+              "tn": 16
+            },
+            "hallucinationRate": {
+              "numerator": 44,
+              "denominator": 60,
+              "estimate": 0.7333333333333333,
+              "taskBootstrap95": [
+                0.2,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 28,
+              "denominator": 660,
+              "estimate": 0.04242424242424243,
+              "taskBootstrap95": [
+                0,
+                0.11764705882352941
+              ]
+            },
+            "round": 0,
+            "tasksUnusable": 5,
+            "tasksUsable": 39
+          },
+          {
+            "n": 44,
+            "confusion": {
+              "tp": 16,
+              "fp": 7,
+              "fn": 0,
+              "tn": 21
+            },
+            "hallucinationRate": {
+              "numerator": 7,
+              "denominator": 28,
+              "estimate": 0.25,
+              "taskBootstrap95": [
+                0,
+                0.875
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 16,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "round": 1,
+            "tasksUnusable": 2,
+            "tasksUsable": 1
+          },
+          {
+            "n": 21,
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 20,
+              "tn": 1
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 1,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "missRate": {
+              "numerator": 20,
+              "denominator": 20,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "round": 2,
+            "tasksUnusable": 1,
+            "tasksUsable": 1
+          },
+          {
+            "n": 43,
+            "confusion": {
+              "tp": 6,
+              "fp": 16,
+              "fn": 10,
+              "tn": 11
+            },
+            "hallucinationRate": {
+              "numerator": 16,
+              "denominator": 27,
+              "estimate": 0.5925925925925926,
+              "taskBootstrap95": [
+                0,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 10,
+              "denominator": 16,
+              "estimate": 0.625,
+              "taskBootstrap95": [
+                0,
+                1
+              ]
+            },
+            "round": 3,
+            "tasksUnusable": 5,
+            "tasksUsable": 2
+          },
+          {
+            "n": 24,
+            "confusion": {
+              "tp": 0,
+              "fp": 3,
+              "fn": 10,
+              "tn": 11
+            },
+            "hallucinationRate": {
+              "numerator": 3,
+              "denominator": 14,
+              "estimate": 0.21428571428571427,
+              "taskBootstrap95": [
+                0,
+                0.75
+              ]
+            },
+            "missRate": {
+              "numerator": 10,
+              "denominator": 10,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "round": 4,
+            "tasksUnusable": 2,
+            "tasksUsable": 1
+          }
+        ],
+        "trend": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 130,
+            "wrong": 70,
+            "clusters": 7,
+            "coefficients": {
+              "intercept": {
+                "estimate": 0.2457408352337124,
+                "se": 0.8943377567339267,
+                "z": 0.274774081026328,
+                "p": 0.7834898122365408,
+                "wald95": [
+                  -1.507128957979128,
+                  1.998610628446553
+                ]
+              },
+              "round": {
+                "estimate": -0.407951881081142,
+                "se": 0.3427023664837497,
+                "z": -1.190397035383432,
+                "p": 0.23389037772619048,
+                "wald95": [
+                  -1.079636176805938,
+                  0.26373241464365393
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.7600415179983316,
+                "se": 0.4042904854268032,
+                "z": 1.8799391660082418,
+                "p": 0.06011636928679576,
+                "wald95": [
+                  -0.032353272730418214,
+                  1.5524363087270814
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 722,
+            "wrong": 68,
+            "clusters": 41,
+            "coefficients": {
+              "intercept": {
+                "estimate": -2.984346454496749,
+                "se": 0.7267967410750639,
+                "z": -4.106163781200175,
+                "p": 0.00004022842973459558,
+                "wald95": [
+                  -4.408841891084958,
+                  -1.559851017908541
+                ]
+              },
+              "round": {
+                "estimate": 1.7838482465297028,
+                "se": 0.5116291525874999,
+                "z": 3.4866039933575235,
+                "p": 0.0004891951471627608,
+                "wald95": [
+                  0.7810735340174553,
+                  2.7866229590419502
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.25762139084076885,
+                "se": 0.2366238988676242,
+                "z": -1.0887378327955428,
+                "p": 0.27626951313335557,
+                "wald95": [
+                  -0.7213957105027604,
+                  0.20615292882122266
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          }
+        },
+        "withinTaskExploratory": {
+          "what": "exploratory (not in the plan): tasks with judged skills in round 0 and in a later round, error counts per period; unusable: wrong = self-pass, usable: wrong = self-fail",
+          "unusable": [
+            {
+              "task": "obj-get-nested",
+              "round0": {
+                "wrong": 10,
+                "n": 10
+              },
+              "later": {
+                "wrong": 5,
+                "n": 5
+              }
+            },
+            {
+              "task": "parse-query-string",
+              "round0": {
+                "wrong": 18,
+                "n": 18
+              },
+              "later": {
+                "wrong": 9,
+                "n": 9
+              }
+            },
+            {
+              "task": "parse-version",
+              "round0": {
+                "wrong": 4,
+                "n": 4
+              },
+              "later": {
+                "wrong": 2,
+                "n": 2
+              }
+            }
+          ],
+          "usable": [
+            {
+              "task": "arr-flatten",
+              "round0": {
+                "wrong": 20,
+                "n": 20
+              },
+              "later": {
+                "wrong": 40,
+                "n": 40
+              }
+            }
+          ]
+        }
+      },
+      "run": "experiments/rq-c/template-gpu/A/rq-c-s42-ollama-t30-r5",
+      "model": "qwen2.5-coder:7b-instruct",
+      "inputsMatchPlan": true
+    },
+    "prompt template B (7B, GPU host)": {
+      "skillsJudged": 750,
+      "tasks": 44,
+      "definitions": "skill unit; truth = last execution; positive = self-pass; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP); task-cluster bootstrap (10000 resamples of the 44 tasks, percentile 95%, one draw for both cells)",
+      "feedback": {
+        "ef0": {
+          "n": 360,
+          "confusion": {
+            "tp": 330,
+            "fp": 30,
+            "fn": 0,
+            "tn": 0
+          },
+          "hallucinationRate": {
+            "numerator": 30,
+            "denominator": 30,
+            "estimate": 1,
+            "taskBootstrap95": [
+              1,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 0,
+            "denominator": 330,
+            "estimate": 0,
+            "taskBootstrap95": [
+              0,
+              0
+            ]
+          },
+          "tasksWithUnusable": 5
+        },
+        "ef1": {
+          "n": 390,
+          "confusion": {
+            "tp": 344,
+            "fp": 46,
+            "fn": 0,
+            "tn": 0
+          },
+          "hallucinationRate": {
+            "numerator": 46,
+            "denominator": 46,
+            "estimate": 1,
+            "taskBootstrap95": [
+              1,
+              1
+            ]
+          },
+          "missRate": {
+            "numerator": 0,
+            "denominator": 344,
+            "estimate": 0,
+            "taskBootstrap95": [
+              0,
+              0
+            ]
+          },
+          "tasksWithUnusable": 5
+        },
+        "difference": {
+          "what": "ef1 − ef0",
+          "hallucinationRate": {
+            "estimate": 0,
+            "taskBootstrap95": [
+              0,
+              0
+            ],
+            "detected": false
+          },
+          "missRate": {
+            "estimate": 0,
+            "taskBootstrap95": [
+              0,
+              0
+            ],
+            "detected": false
+          }
+        },
+        "hallucinationComparisonDescriptiveOnly": false,
+        "logistic": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 76,
+            "note": "not estimable: ef0 has 30 wrong of 30"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 674,
+            "note": "not estimable: ef0 has 0 wrong of 330"
+          }
+        },
+        "distinctCandidates": {
+          "skillsWithoutCode": 0,
+          "ef0": {
+            "n": 44,
+            "confusion": {
+              "tp": 39,
+              "fp": 5,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 5,
+              "denominator": 5,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 39,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            }
+          },
+          "ef1": {
+            "n": 49,
+            "confusion": {
+              "tp": 41,
+              "fp": 8,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 8,
+              "denominator": 8,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 41,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            }
+          },
+          "difference": {
+            "what": "ef1 − ef0",
+            "hallucinationRate": {
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ],
+              "detected": false
+            },
+            "missRate": {
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ],
+              "detected": false
+            }
+          }
+        },
+        "consistency": {
+          "candidates": 49,
+          "judgedInBothConditions": 44,
+          "differentVerdictsInBoth": 0,
+          "differentVerdictsAny": 0
+        }
+      },
+      "rounds": {
+        "perRound": [
+          {
+            "n": 720,
+            "confusion": {
+              "tp": 660,
+              "fp": 60,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 60,
+              "denominator": 60,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 660,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "round": 0,
+            "tasksUnusable": 5,
+            "tasksUsable": 39
+          },
+          {
+            "n": 0,
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "round": 1,
+            "tasksUnusable": 0,
+            "tasksUsable": 0
+          },
+          {
+            "n": 0,
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "round": 2,
+            "tasksUnusable": 0,
+            "tasksUsable": 0
+          },
+          {
+            "n": 30,
+            "confusion": {
+              "tp": 14,
+              "fp": 16,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 16,
+              "denominator": 16,
+              "estimate": 1,
+              "taskBootstrap95": [
+                1,
+                1
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 14,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "round": 3,
+            "tasksUnusable": 3,
+            "tasksUsable": 2
+          },
+          {
+            "n": 0,
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 0
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "missRate": {
+              "numerator": 0,
+              "denominator": 0,
+              "estimate": null,
+              "taskBootstrap95": [
+                null,
+                null
+              ]
+            },
+            "round": 4,
+            "tasksUnusable": 0,
+            "tasksUsable": 0
+          }
+        ],
+        "trend": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 76,
+            "wrong": 76,
+            "note": "not estimable: no wrong verdicts or only wrong verdicts"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 674,
+            "wrong": 0,
+            "note": "not estimable: no wrong verdicts or only wrong verdicts"
+          }
+        },
+        "withinTaskExploratory": {
+          "what": "exploratory (not in the plan): tasks with judged skills in round 0 and in a later round, error counts per period; unusable: wrong = self-pass, usable: wrong = self-fail",
+          "unusable": [
+            {
+              "task": "obj-get-nested",
+              "round0": {
+                "wrong": 10,
+                "n": 10
+              },
+              "later": {
+                "wrong": 5,
+                "n": 5
+              }
+            },
+            {
+              "task": "parse-query-string",
+              "round0": {
+                "wrong": 18,
+                "n": 18
+              },
+              "later": {
+                "wrong": 9,
+                "n": 9
+              }
+            },
+            {
+              "task": "parse-version",
+              "round0": {
+                "wrong": 4,
+                "n": 4
+              },
+              "later": {
+                "wrong": 2,
+                "n": 2
+              }
+            }
+          ],
+          "usable": []
+        }
+      },
+      "run": "experiments/rq-c/template-gpu/B/rq-c-s42-ollama-t30-r5",
+      "model": "qwen2.5-coder:7b-instruct",
+      "inputsMatchPlan": true
+    },
+    "positive control (mock; injected 0.30 / 0.10, independent of feedback)": {
+      "skillsJudged": 1152,
+      "tasks": 44,
+      "definitions": "skill unit; truth = last execution; positive = self-pass; hallucinationRate = FP/(FP+TN), missRate = FN/(FN+TP); task-cluster bootstrap (10000 resamples of the 44 tasks, percentile 95%, one draw for both cells)",
+      "feedback": {
+        "ef0": {
+          "n": 545,
+          "confusion": {
+            "tp": 308,
+            "fp": 51,
+            "fn": 39,
+            "tn": 147
+          },
+          "hallucinationRate": {
+            "numerator": 51,
+            "denominator": 198,
+            "estimate": 0.25757575757575757,
+            "taskBootstrap95": [
+              0.1792452830188679,
+              0.3411214953271028
+            ]
+          },
+          "missRate": {
+            "numerator": 39,
+            "denominator": 347,
+            "estimate": 0.11239193083573487,
+            "taskBootstrap95": [
+              0.08284023668639054,
+              0.1416184971098266
+            ]
+          },
+          "tasksWithUnusable": 44
+        },
+        "ef1": {
+          "n": 607,
+          "confusion": {
+            "tp": 353,
+            "fp": 65,
+            "fn": 41,
+            "tn": 148
+          },
+          "hallucinationRate": {
+            "numerator": 65,
+            "denominator": 213,
+            "estimate": 0.3051643192488263,
+            "taskBootstrap95": [
+              0.2398190045248869,
+              0.36771300448430494
+            ]
+          },
+          "missRate": {
+            "numerator": 41,
+            "denominator": 394,
+            "estimate": 0.10406091370558376,
+            "taskBootstrap95": [
+              0.07387862796833773,
+              0.13471502590673576
+            ]
+          },
+          "tasksWithUnusable": 44
+        },
+        "difference": {
+          "what": "ef1 − ef0",
+          "hallucinationRate": {
+            "estimate": 0.04758856167306874,
+            "taskBootstrap95": [
+              -0.060187510463753535,
+              0.14931778873870988
+            ],
+            "detected": false
+          },
+          "missRate": {
+            "estimate": -0.008331017130151108,
+            "taskBootstrap95": [
+              -0.04973337283365427,
+              0.034029684990920406
+            ],
+            "detected": false
+          }
+        },
+        "hallucinationComparisonDescriptiveOnly": false,
+        "logistic": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 411,
+            "wrong": 116,
+            "clusters": 44,
+            "coefficients": {
+              "intercept": {
+                "estimate": -1.0586069540544105,
+                "se": 0.21807880806198263,
+                "z": -4.854240370543166,
+                "p": 0.0000012084908178462232,
+                "wald95": [
+                  -1.4860335636473196,
+                  -0.6311803444615014
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.23578195018593234,
+                "se": 0.27099015844353136,
+                "z": 0.8700756940406171,
+                "p": 0.38425903961935703,
+                "wald95": [
+                  -0.29534900052819196,
+                  0.7669129009000566
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 741,
+            "wrong": 80,
+            "clusters": 44,
+            "coefficients": {
+              "intercept": {
+                "estimate": -2.0665381368439277,
+                "se": 0.15195163573781142,
+                "z": -13.599972957248616,
+                "p": 4.005815317978742e-42,
+                "wald95": [
+                  -2.3643578702819874,
+                  -1.768718403405868
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.08635785338506123,
+                "se": 0.2241426062849176,
+                "z": -0.38528084783349015,
+                "p": 0.7000293495848029,
+                "wald95": [
+                  -0.5256692891044409,
+                  0.35295358233431845
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          }
+        },
+        "distinctCandidates": {
+          "skillsWithoutCode": 0,
+          "ef0": {
+            "n": 201,
+            "confusion": {
+              "tp": 38,
+              "fp": 40,
+              "fn": 6,
+              "tn": 117
+            },
+            "hallucinationRate": {
+              "numerator": 40,
+              "denominator": 157,
+              "estimate": 0.25477707006369427,
+              "taskBootstrap95": [
+                0.1761006289308176,
+                0.3402777777777778
+              ]
+            },
+            "missRate": {
+              "numerator": 6,
+              "denominator": 44,
+              "estimate": 0.13636363636363635,
+              "taskBootstrap95": [
+                0.045454545454545456,
+                0.25
+              ]
+            }
+          },
+          "ef1": {
+            "n": 206,
+            "confusion": {
+              "tp": 40,
+              "fp": 48,
+              "fn": 4,
+              "tn": 114
+            },
+            "hallucinationRate": {
+              "numerator": 48,
+              "denominator": 162,
+              "estimate": 0.2962962962962963,
+              "taskBootstrap95": [
+                0.22435897435897437,
+                0.3670886075949367
+              ]
+            },
+            "missRate": {
+              "numerator": 4,
+              "denominator": 44,
+              "estimate": 0.09090909090909091,
+              "taskBootstrap95": [
+                0.022727272727272728,
+                0.18181818181818182
+              ]
+            }
+          },
+          "difference": {
+            "what": "ef1 − ef0",
+            "hallucinationRate": {
+              "estimate": 0.04151922623260201,
+              "taskBootstrap95": [
+                -0.06847133757961782,
+                0.145413870246085
+              ],
+              "detected": false
+            },
+            "missRate": {
+              "estimate": -0.04545454545454544,
+              "taskBootstrap95": [
+                -0.18181818181818182,
+                0.09090909090909091
+              ],
+              "detected": false
+            }
+          }
+        },
+        "consistency": {
+          "candidates": 295,
+          "judgedInBothConditions": 112,
+          "differentVerdictsInBoth": 77,
+          "differentVerdictsAny": 94
+        }
+      },
+      "rounds": {
+        "perRound": [
+          {
+            "n": 720,
+            "confusion": {
+              "tp": 328,
+              "fp": 101,
+              "fn": 37,
+              "tn": 254
+            },
+            "hallucinationRate": {
+              "numerator": 101,
+              "denominator": 355,
+              "estimate": 0.28450704225352114,
+              "taskBootstrap95": [
+                0.2305194805194805,
+                0.3407821229050279
+              ]
+            },
+            "missRate": {
+              "numerator": 37,
+              "denominator": 365,
+              "estimate": 0.10136986301369863,
+              "taskBootstrap95": [
+                0.07235142118863049,
+                0.13367609254498714
+              ]
+            },
+            "round": 0,
+            "tasksUnusable": 44,
+            "tasksUsable": 44
+          },
+          {
+            "n": 291,
+            "confusion": {
+              "tp": 221,
+              "fp": 8,
+              "fn": 31,
+              "tn": 31
+            },
+            "hallucinationRate": {
+              "numerator": 8,
+              "denominator": 39,
+              "estimate": 0.20512820512820512,
+              "taskBootstrap95": [
+                0.10344827586206896,
+                0.30303030303030304
+              ]
+            },
+            "missRate": {
+              "numerator": 31,
+              "denominator": 252,
+              "estimate": 0.12301587301587301,
+              "taskBootstrap95": [
+                0.08366533864541832,
+                0.16205533596837945
+              ]
+            },
+            "round": 1,
+            "tasksUnusable": 23,
+            "tasksUsable": 44
+          },
+          {
+            "n": 62,
+            "confusion": {
+              "tp": 50,
+              "fp": 3,
+              "fn": 5,
+              "tn": 4
+            },
+            "hallucinationRate": {
+              "numerator": 3,
+              "denominator": 7,
+              "estimate": 0.42857142857142855,
+              "taskBootstrap95": [
+                0,
+                0.8333333333333334
+              ]
+            },
+            "missRate": {
+              "numerator": 5,
+              "denominator": 55,
+              "estimate": 0.09090909090909091,
+              "taskBootstrap95": [
+                0.021739130434782608,
+                0.16071428571428573
+              ]
+            },
+            "round": 2,
+            "tasksUnusable": 7,
+            "tasksUsable": 30
+          },
+          {
+            "n": 66,
+            "confusion": {
+              "tp": 52,
+              "fp": 4,
+              "fn": 5,
+              "tn": 5
+            },
+            "hallucinationRate": {
+              "numerator": 4,
+              "denominator": 9,
+              "estimate": 0.4444444444444444,
+              "taskBootstrap95": [
+                0.125,
+                0.8333333333333334
+              ]
+            },
+            "missRate": {
+              "numerator": 5,
+              "denominator": 57,
+              "estimate": 0.08771929824561403,
+              "taskBootstrap95": [
+                0.021739130434782608,
+                0.16326530612244897
+              ]
+            },
+            "round": 3,
+            "tasksUnusable": 7,
+            "tasksUsable": 28
+          },
+          {
+            "n": 13,
+            "confusion": {
+              "tp": 10,
+              "fp": 0,
+              "fn": 2,
+              "tn": 1
+            },
+            "hallucinationRate": {
+              "numerator": 0,
+              "denominator": 1,
+              "estimate": 0,
+              "taskBootstrap95": [
+                0,
+                0
+              ]
+            },
+            "missRate": {
+              "numerator": 2,
+              "denominator": 12,
+              "estimate": 0.16666666666666666,
+              "taskBootstrap95": [
+                0,
+                0.42857142857142855
+              ]
+            },
+            "round": 4,
+            "tasksUnusable": 1,
+            "tasksUsable": 11
+          }
+        ],
+        "trend": {
+          "unusable": {
+            "outcome": "verdict wrong = self-pass",
+            "n": 411,
+            "wrong": 116,
+            "clusters": 44,
+            "coefficients": {
+              "intercept": {
+                "estimate": -1.0646516991430246,
+                "se": 0.21800722307205478,
+                "z": -4.883561581769888,
+                "p": 0.0000010418659054421493,
+                "wald95": [
+                  -1.4919380047338415,
+                  -0.6373653935522077
+                ]
+              },
+              "round": {
+                "estimate": 0.049257669491486356,
+                "se": 0.1853830449536331,
+                "z": 0.26570752197864905,
+                "p": 0.7904644698708424,
+                "wald95": [
+                  -0.31408642196200437,
+                  0.4126017609449771
+                ]
+              },
+              "envFeedback": {
+                "estimate": 0.22769404322072453,
+                "se": 0.27503726283248786,
+                "z": 0.8278661621185569,
+                "p": 0.4077463001213286,
+                "wald95": [
+                  -0.31136908633742855,
+                  0.7667571727788776
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          },
+          "usable": {
+            "outcome": "verdict wrong = self-fail",
+            "n": 741,
+            "wrong": 80,
+            "clusters": 44,
+            "coefficients": {
+              "intercept": {
+                "estimate": -2.082911860492547,
+                "se": 0.15373131568854626,
+                "z": -13.54904074790101,
+                "p": 8.027227103355295e-42,
+                "wald95": [
+                  -2.384219702538055,
+                  -1.7816040184470392
+                ]
+              },
+              "round": {
+                "estimate": 0.02800506917567669,
+                "se": 0.15648019245881403,
+                "z": 0.17896878023745844,
+                "p": 0.8579622156412091,
+                "wald95": [
+                  -0.278690472337495,
+                  0.3347006106888484
+                ]
+              },
+              "envFeedback": {
+                "estimate": -0.09740765091277505,
+                "se": 0.25672221605243867,
+                "z": -0.3794282100341419,
+                "p": 0.7043699053715462,
+                "wald95": [
+                  -0.6005739484068654,
+                  0.40575864658131533
+                ]
+              }
+            },
+            "standardErrors": "cluster-robust (CR1) by task"
+          }
+        },
+        "withinTaskExploratory": {
+          "what": "exploratory (not in the plan): tasks with judged skills in round 0 and in a later round, error counts per period; unusable: wrong = self-pass, usable: wrong = self-fail",
+          "unusable": [
+            {
+              "task": "arr-chunk",
+              "round0": {
+                "wrong": 2,
+                "n": 11
+              },
+              "later": {
+                "wrong": 2,
+                "n": 3
+              }
+            },
+            {
+              "task": "arr-flatten",
+              "round0": {
+                "wrong": 0,
+                "n": 6
+              },
+              "later": {
+                "wrong": 1,
+                "n": 2
+              }
+            },
+            {
+              "task": "arr-intersection",
+              "round0": {
+                "wrong": 2,
+                "n": 7
+              },
+              "later": {
+                "wrong": 1,
+                "n": 1
+              }
+            },
+            {
+              "task": "arr-second-largest",
+              "round0": {
+                "wrong": 3,
+                "n": 10
+              },
+              "later": {
+                "wrong": 1,
+                "n": 1
+              }
+            },
+            {
+              "task": "arr-sum",
+              "round0": {
+                "wrong": 0,
+                "n": 7
+              },
+              "later": {
+                "wrong": 1,
+                "n": 2
+              }
+            },
+            {
+              "task": "arr-sum-evens",
+              "round0": {
+                "wrong": 6,
+                "n": 10
+              },
+              "later": {
+                "wrong": 2,
+                "n": 4
+              }
+            },
+            {
+              "task": "arr-unique",
+              "round0": {
+                "wrong": 1,
+                "n": 7
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "date-add-days",
+              "round0": {
+                "wrong": 3,
+                "n": 7
+              },
+              "later": {
+                "wrong": 1,
+                "n": 1
+              }
+            },
+            {
+              "task": "date-day-of-week",
+              "round0": {
+                "wrong": 3,
+                "n": 7
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "date-format-iso",
+              "round0": {
+                "wrong": 4,
+                "n": 12
+              },
+              "later": {
+                "wrong": 0,
+                "n": 2
+              }
+            },
+            {
+              "task": "date-seconds-since",
+              "round0": {
+                "wrong": 2,
+                "n": 8
+              },
+              "later": {
+                "wrong": 0,
+                "n": 2
+              }
+            },
+            {
+              "task": "logic-fizzbuzz",
+              "round0": {
+                "wrong": 4,
+                "n": 13
+              },
+              "later": {
+                "wrong": 0,
+                "n": 3
+              }
+            },
+            {
+              "task": "logic-pangram",
+              "round0": {
+                "wrong": 9,
+                "n": 14
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "logic-xor",
+              "round0": {
+                "wrong": 2,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "math-fib",
+              "round0": {
+                "wrong": 1,
+                "n": 8
+              },
+              "later": {
+                "wrong": 1,
+                "n": 4
+              }
+            },
+            {
+              "task": "math-gcd",
+              "round0": {
+                "wrong": 2,
+                "n": 12
+              },
+              "later": {
+                "wrong": 1,
+                "n": 2
+              }
+            },
+            {
+              "task": "math-is-prime",
+              "round0": {
+                "wrong": 3,
+                "n": 10
+              },
+              "later": {
+                "wrong": 0,
+                "n": 4
+              }
+            },
+            {
+              "task": "math-round-to",
+              "round0": {
+                "wrong": 3,
+                "n": 9
+              },
+              "later": {
+                "wrong": 1,
+                "n": 3
+              }
+            },
+            {
+              "task": "obj-get-nested",
+              "round0": {
+                "wrong": 1,
+                "n": 5
+              },
+              "later": {
+                "wrong": 1,
+                "n": 2
+              }
+            },
+            {
+              "task": "obj-group-by",
+              "round0": {
+                "wrong": 3,
+                "n": 15
+              },
+              "later": {
+                "wrong": 1,
+                "n": 3
+              }
+            },
+            {
+              "task": "obj-pick",
+              "round0": {
+                "wrong": 0,
+                "n": 4
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "parse-json-safe",
+              "round0": {
+                "wrong": 1,
+                "n": 6
+              },
+              "later": {
+                "wrong": 0,
+                "n": 4
+              }
+            },
+            {
+              "task": "parse-query-string",
+              "round0": {
+                "wrong": 2,
+                "n": 7
+              },
+              "later": {
+                "wrong": 1,
+                "n": 3
+              }
+            },
+            {
+              "task": "str-is-palindrome",
+              "round0": {
+                "wrong": 1,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "str-slugify",
+              "round0": {
+                "wrong": 3,
+                "n": 11
+              },
+              "later": {
+                "wrong": 0,
+                "n": 1
+              }
+            },
+            {
+              "task": "str-unique-chars",
+              "round0": {
+                "wrong": 2,
+                "n": 10
+              },
+              "later": {
+                "wrong": 0,
+                "n": 3
+              }
+            }
+          ],
+          "usable": [
+            {
+              "task": "arr-chunk",
+              "round0": {
+                "wrong": 0,
+                "n": 5
+              },
+              "later": {
+                "wrong": 2,
+                "n": 11
+              }
+            },
+            {
+              "task": "arr-flatten",
+              "round0": {
+                "wrong": 1,
+                "n": 14
+              },
+              "later": {
+                "wrong": 2,
+                "n": 8
+              }
+            },
+            {
+              "task": "arr-intersection",
+              "round0": {
+                "wrong": 1,
+                "n": 9
+              },
+              "later": {
+                "wrong": 1,
+                "n": 8
+              }
+            },
+            {
+              "task": "arr-max",
+              "round0": {
+                "wrong": 1,
+                "n": 19
+              },
+              "later": {
+                "wrong": 0,
+                "n": 4
+              }
+            },
+            {
+              "task": "arr-remove-falsy",
+              "round0": {
+                "wrong": 1,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 6
+              }
+            },
+            {
+              "task": "arr-second-largest",
+              "round0": {
+                "wrong": 0,
+                "n": 10
+              },
+              "later": {
+                "wrong": 1,
+                "n": 9
+              }
+            },
+            {
+              "task": "arr-sum",
+              "round0": {
+                "wrong": 0,
+                "n": 7
+              },
+              "later": {
+                "wrong": 0,
+                "n": 6
+              }
+            },
+            {
+              "task": "arr-sum-evens",
+              "round0": {
+                "wrong": 2,
+                "n": 12
+              },
+              "later": {
+                "wrong": 0,
+                "n": 7
+              }
+            },
+            {
+              "task": "arr-unique",
+              "round0": {
+                "wrong": 1,
+                "n": 19
+              },
+              "later": {
+                "wrong": 4,
+                "n": 11
+              }
+            },
+            {
+              "task": "date-add-days",
+              "round0": {
+                "wrong": 1,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 7
+              }
+            },
+            {
+              "task": "date-day-of-week",
+              "round0": {
+                "wrong": 1,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 5
+              }
+            },
+            {
+              "task": "date-format-iso",
+              "round0": {
+                "wrong": 1,
+                "n": 6
+              },
+              "later": {
+                "wrong": 0,
+                "n": 12
+              }
+            },
+            {
+              "task": "date-is-leap-year",
+              "round0": {
+                "wrong": 0,
+                "n": 8
+              },
+              "later": {
+                "wrong": 1,
+                "n": 11
+              }
+            },
+            {
+              "task": "date-seconds-since",
+              "round0": {
+                "wrong": 0,
+                "n": 12
+              },
+              "later": {
+                "wrong": 2,
+                "n": 10
+              }
+            },
+            {
+              "task": "logic-fizzbuzz",
+              "round0": {
+                "wrong": 1,
+                "n": 7
+              },
+              "later": {
+                "wrong": 1,
+                "n": 14
+              }
+            },
+            {
+              "task": "logic-pangram",
+              "round0": {
+                "wrong": 2,
+                "n": 8
+              },
+              "later": {
+                "wrong": 3,
+                "n": 13
+              }
+            },
+            {
+              "task": "logic-roman-to-int",
+              "round0": {
+                "wrong": 1,
+                "n": 7
+              },
+              "later": {
+                "wrong": 0,
+                "n": 4
+              }
+            },
+            {
+              "task": "logic-valid-parentheses",
+              "round0": {
+                "wrong": 0,
+                "n": 8
+              },
+              "later": {
+                "wrong": 2,
+                "n": 11
+              }
+            },
+            {
+              "task": "logic-xor",
+              "round0": {
+                "wrong": 0,
+                "n": 7
+              },
+              "later": {
+                "wrong": 0,
+                "n": 3
+              }
+            },
+            {
+              "task": "math-average",
+              "round0": {
+                "wrong": 0,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 10
+              }
+            },
+            {
+              "task": "math-clamp",
+              "round0": {
+                "wrong": 1,
+                "n": 6
+              },
+              "later": {
+                "wrong": 1,
+                "n": 8
+              }
+            },
+            {
+              "task": "math-factorial",
+              "round0": {
+                "wrong": 0,
+                "n": 9
+              },
+              "later": {
+                "wrong": 0,
+                "n": 5
+              }
+            },
+            {
+              "task": "math-fib",
+              "round0": {
+                "wrong": 1,
+                "n": 14
+              },
+              "later": {
+                "wrong": 1,
+                "n": 8
+              }
+            },
+            {
+              "task": "math-gcd",
+              "round0": {
+                "wrong": 2,
+                "n": 6
+              },
+              "later": {
+                "wrong": 1,
+                "n": 15
+              }
+            },
+            {
+              "task": "math-is-prime",
+              "round0": {
+                "wrong": 2,
+                "n": 16
+              },
+              "later": {
+                "wrong": 0,
+                "n": 12
+              }
+            },
+            {
+              "task": "math-round-to",
+              "round0": {
+                "wrong": 0,
+                "n": 9
+              },
+              "later": {
+                "wrong": 0,
+                "n": 8
+              }
+            },
+            {
+              "task": "obj-count-keys",
+              "round0": {
+                "wrong": 2,
+                "n": 10
+              },
+              "later": {
+                "wrong": 0,
+                "n": 14
+              }
+            },
+            {
+              "task": "obj-get-nested",
+              "round0": {
+                "wrong": 0,
+                "n": 5
+              },
+              "later": {
+                "wrong": 2,
+                "n": 6
+              }
+            },
+            {
+              "task": "obj-group-by",
+              "round0": {
+                "wrong": 0,
+                "n": 3
+              },
+              "later": {
+                "wrong": 3,
+                "n": 16
+              }
+            },
+            {
+              "task": "obj-merge",
+              "round0": {
+                "wrong": 0,
+                "n": 6
+              },
+              "later": {
+                "wrong": 0,
+                "n": 2
+              }
+            },
+            {
+              "task": "obj-pick",
+              "round0": {
+                "wrong": 2,
+                "n": 4
+              },
+              "later": {
+                "wrong": 2,
+                "n": 8
+              }
+            },
+            {
+              "task": "parse-csv-line",
+              "round0": {
+                "wrong": 1,
+                "n": 2
+              },
+              "later": {
+                "wrong": 1,
+                "n": 5
+              }
+            },
+            {
+              "task": "parse-json-safe",
+              "round0": {
+                "wrong": 1,
+                "n": 8
+              },
+              "later": {
+                "wrong": 0,
+                "n": 7
+              }
+            },
+            {
+              "task": "parse-query-string",
+              "round0": {
+                "wrong": 3,
+                "n": 11
+              },
+              "later": {
+                "wrong": 1,
+                "n": 9
+              }
+            },
+            {
+              "task": "parse-version",
+              "round0": {
+                "wrong": 0,
+                "n": 2
+              },
+              "later": {
+                "wrong": 1,
+                "n": 3
+              }
+            },
+            {
+              "task": "str-capitalize-words",
+              "round0": {
+                "wrong": 1,
+                "n": 12
+              },
+              "later": {
+                "wrong": 1,
+                "n": 9
+              }
+            },
+            {
+              "task": "str-count-vowels",
+              "round0": {
+                "wrong": 1,
+                "n": 12
+              },
+              "later": {
+                "wrong": 3,
+                "n": 8
+              }
+            },
+            {
+              "task": "str-is-palindrome",
+              "round0": {
+                "wrong": 1,
+                "n": 3
+              },
+              "later": {
+                "wrong": 0,
+                "n": 6
+              }
+            },
+            {
+              "task": "str-reverse",
+              "round0": {
+                "wrong": 0,
+                "n": 11
+              },
+              "later": {
+                "wrong": 0,
+                "n": 3
+              }
+            },
+            {
+              "task": "str-rot13",
+              "round0": {
+                "wrong": 0,
+                "n": 6
+              },
+              "later": {
+                "wrong": 2,
+                "n": 14
+              }
+            },
+            {
+              "task": "str-slugify",
+              "round0": {
+                "wrong": 3,
+                "n": 7
+              },
+              "later": {
+                "wrong": 3,
+                "n": 15
+              }
+            },
+            {
+              "task": "str-to-camel",
+              "round0": {
+                "wrong": 0,
+                "n": 5
+              },
+              "later": {
+                "wrong": 0,
+                "n": 3
+              }
+            },
+            {
+              "task": "str-truncate",
+              "round0": {
+                "wrong": 2,
+                "n": 14
+              },
+              "later": {
+                "wrong": 0,
+                "n": 11
+              }
+            },
+            {
+              "task": "str-unique-chars",
+              "round0": {
+                "wrong": 0,
+                "n": 6
+              },
+              "later": {
+                "wrong": 2,
+                "n": 11
+              }
+            }
+          ]
+        }
+      },
+      "run": "experiments/rq-c/rq-c-s42-mock-t30-r5",
+      "model": null,
+      "inputsMatchPlan": true
+    }
+  },
+  "runtime": ".NET 10.0.13"
+}
