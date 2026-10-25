@@ -1,0 +1,7443 @@
+{
+ "experiment": "P2-A stage 0: static compatibility of EvalPlus tasks with the RQ-C JavaScript oracle (no generation, nothing from the datasets executed)",
+ "reasonCodes": {
+  "incompatible": {
+   "output-set": "returns a set or frozenset; Jint deep equality treats any two Set objects as equal",
+   "output-dict-nonstr-keys": "returns a dict with non-string keys; JavaScript object keys are strings",
+   "output-complex": "returns a complex number",
+   "bigint": "an input or expected literal exceeds 2^53 - 1; numbers would need BigInt",
+   "degenerate-oracle": "EvalPlus accepts every output for this task, so its tests cannot separate usable from unusable code"
+  },
+  "needs-adapter": {
+   "float-tolerance": "compared with a tolerance (atol > 0, abs(...) < eps / math.isclose, or EvalPlus's enforced 1e-6 for float outputs); the oracle compares exactly",
+   "special-oracle": "EvalPlus judges this task with a task-specific check instead of equality with the canonical output",
+   "set-equality-oracle": "EvalPlus compares this task's output as a set, i.e. order and duplicates are ignored",
+   "order-from-set": "the canonical solution builds its result by iterating a set, so the expected order is CPython's hash order",
+   "assert-order-insensitive": "the task's own assertion compares set(...) or sorted(...), i.e. order is not specified"
+  },
+  "direct-with-caution": {
+   "float-exact": "returns floats inside mixed-type values, which EvalPlus compares exactly; Python and .NET math may differ in the last bit",
+   "input-any": "a parameter is annotated Any; Python's type tests (bool is an int) do not carry over to JavaScript",
+   "returns-none": "may return None; the JavaScript candidate must return null, not undefined",
+   "astral-strings": "inputs contain characters outside the BMP; string length and indexing differ between Python and JavaScript",
+   "large-inputs": "inputs exceed 100,000 JSON characters in total",
+   "no-output-type": "no return annotation or literal expected value to type the output"
+  }
+ },
+ "datasets": {
+  "HumanEval+": {
+   "file": "HumanEvalPlus-v0.1.10.jsonl.gz",
+   "sha256": "272720b90ac375502c8ed23cd791c2a93dfb22a911641a494da74a426c09f101",
+   "tasks": 164,
+   "byClass": {
+    "direct": 117,
+    "direct-with-caution": 24,
+    "incompatible": 15,
+    "needs-adapter": 8
+   },
+   "byReason": {
+    "astral-strings": 4,
+    "bigint": 15,
+    "float-exact": 1,
+    "float-tolerance": 9,
+    "input-any": 1,
+    "large-inputs": 16,
+    "no-output-type": 8,
+    "returns-none": 5,
+    "special-oracle": 1
+   },
+   "perTask": [
+    {
+     "taskId": "HumanEval/0",
+     "entryPoint": "has_close_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:bool",
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 999,
+     "inputChars": 70042
+    },
+    {
+     "taskId": "HumanEval/1",
+     "entryPoint": "separate_paren_groups",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[str]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 83,
+     "inputChars": 3678
+    },
+    {
+     "taskId": "HumanEval/2",
+     "entryPoint": "truncate_number",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "annotation:float",
+      "float"
+     ],
+     "atol": 1e-06,
+     "baseCases": 3,
+     "plusCases": 971,
+     "inputChars": 20759
+    },
+    {
+     "taskId": "HumanEval/3",
+     "entryPoint": "below_zero",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:bool",
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 898,
+     "inputChars": 65022
+    },
+    {
+     "taskId": "HumanEval/4",
+     "entryPoint": "mean_absolute_deviation",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "annotation:float"
+     ],
+     "atol": 1e-06,
+     "baseCases": 3,
+     "plusCases": 785,
+     "inputChars": 66490
+    },
+    {
+     "taskId": "HumanEval/5",
+     "entryPoint": "intersperse",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 153,
+     "inputChars": 3231
+    },
+    {
+     "taskId": "HumanEval/6",
+     "entryPoint": "parse_nested_parens",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 66,
+     "inputChars": 3528
+    },
+    {
+     "taskId": "HumanEval/7",
+     "entryPoint": "filter_by_substring",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[str]",
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 178,
+     "inputChars": 29810
+    },
+    {
+     "taskId": "HumanEval/8",
+     "entryPoint": "sum_product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:tuple:Tuple[int, int]",
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 1000,
+     "inputChars": 46977
+    },
+    {
+     "taskId": "HumanEval/9",
+     "entryPoint": "rolling_max",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 959,
+     "inputChars": 54633
+    },
+    {
+     "taskId": "HumanEval/10",
+     "entryPoint": "make_palindrome",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:str",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 780,
+     "inputChars": 47406
+    },
+    {
+     "taskId": "HumanEval/11",
+     "entryPoint": "string_xor",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:str",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 405,
+     "inputChars": 18248
+    },
+    {
+     "taskId": "HumanEval/12",
+     "entryPoint": "longest",
+     "class": "direct-with-caution",
+     "reasons": [
+      "astral-strings",
+      "large-inputs",
+      "returns-none"
+     ],
+     "outputTypes": [
+      "annotation:optional:Optional[str]",
+      "none",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 933,
+     "inputChars": 116237
+    },
+    {
+     "taskId": "HumanEval/13",
+     "entryPoint": "greatest_common_divisor",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:int",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 987,
+     "inputChars": 20171
+    },
+    {
+     "taskId": "HumanEval/14",
+     "entryPoint": "all_prefixes",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[str]",
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 903,
+     "inputChars": 73174
+    },
+    {
+     "taskId": "HumanEval/15",
+     "entryPoint": "string_sequence",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:str",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 134,
+     "inputChars": 975
+    },
+    {
+     "taskId": "HumanEval/16",
+     "entryPoint": "count_distinct_characters",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:int",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 1000,
+     "inputChars": 55120
+    },
+    {
+     "taskId": "HumanEval/17",
+     "entryPoint": "parse_music",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 215,
+     "inputChars": 13681
+    },
+    {
+     "taskId": "HumanEval/18",
+     "entryPoint": "how_many_times",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:int",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 1000,
+     "inputChars": 52238
+    },
+    {
+     "taskId": "HumanEval/19",
+     "entryPoint": "sort_numbers",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:str",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 128,
+     "inputChars": 4013
+    },
+    {
+     "taskId": "HumanEval/20",
+     "entryPoint": "find_closest_elements",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "annotation:tuple:Tuple[float, float]",
+      "tuple[float]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 1000,
+     "inputChars": 94078
+    },
+    {
+     "taskId": "HumanEval/21",
+     "entryPoint": "rescale_to_unit",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "annotation:list:List[float]",
+      "list[float]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 999,
+     "inputChars": 83899
+    },
+    {
+     "taskId": "HumanEval/22",
+     "entryPoint": "filter_integers",
+     "class": "incompatible",
+     "reasons": [
+      "bigint",
+      "input-any"
+     ],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 953,
+     "inputChars": 85916
+    },
+    {
+     "taskId": "HumanEval/23",
+     "entryPoint": "strlen",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:int",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 964,
+     "inputChars": 49219
+    },
+    {
+     "taskId": "HumanEval/24",
+     "entryPoint": "largest_divisor",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:int",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 168,
+     "inputChars": 1240
+    },
+    {
+     "taskId": "HumanEval/25",
+     "entryPoint": "factorize",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 138,
+     "inputChars": 1470
+    },
+    {
+     "taskId": "HumanEval/26",
+     "entryPoint": "remove_duplicates",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[int]",
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 862,
+     "inputChars": 57632
+    },
+    {
+     "taskId": "HumanEval/27",
+     "entryPoint": "flip_case",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "annotation:str",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 973,
+     "inputChars": 122848
+    },
+    {
+     "taskId": "HumanEval/28",
+     "entryPoint": "concatenate",
+     "class": "direct-with-caution",
+     "reasons": [
+      "astral-strings",
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "annotation:str",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 861,
+     "inputChars": 101038
+    },
+    {
+     "taskId": "HumanEval/29",
+     "entryPoint": "filter_by_prefix",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "annotation:list:List[str]",
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 2,
+     "plusCases": 996,
+     "inputChars": 45695
+    },
+    {
+     "taskId": "HumanEval/30",
+     "entryPoint": "get_positive",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 999,
+     "inputChars": 40530
+    },
+    {
+     "taskId": "HumanEval/31",
+     "entryPoint": "is_prime",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 13,
+     "plusCases": 154,
+     "inputChars": 1266
+    },
+    {
+     "taskId": "HumanEval/32",
+     "entryPoint": "find_zero",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type",
+      "special-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 100,
+     "plusCases": 788,
+     "inputChars": 39769
+    },
+    {
+     "taskId": "HumanEval/33",
+     "entryPoint": "sort_third",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 955,
+     "inputChars": 63605
+    },
+    {
+     "taskId": "HumanEval/34",
+     "entryPoint": "unique",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 1,
+     "plusCases": 903,
+     "inputChars": 87805
+    },
+    {
+     "taskId": "HumanEval/35",
+     "entryPoint": "max_element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 2,
+     "plusCases": 938,
+     "inputChars": 83003
+    },
+    {
+     "taskId": "HumanEval/36",
+     "entryPoint": "fizz_buzz",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 148,
+     "inputChars": 1123
+    },
+    {
+     "taskId": "HumanEval/37",
+     "entryPoint": "sort_even",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 974,
+     "inputChars": 36612
+    },
+    {
+     "taskId": "HumanEval/38",
+     "entryPoint": "decode_cyclic",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 100,
+     "plusCases": 999,
+     "inputChars": 131336
+    },
+    {
+     "taskId": "HumanEval/39",
+     "entryPoint": "prime_fib",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 2,
+     "inputChars": 63
+    },
+    {
+     "taskId": "HumanEval/40",
+     "entryPoint": "triples_sum_to_zero",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 979,
+     "inputChars": 54224
+    },
+    {
+     "taskId": "HumanEval/41",
+     "entryPoint": "car_race_collision",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 78,
+     "inputChars": 539
+    },
+    {
+     "taskId": "HumanEval/42",
+     "entryPoint": "incr_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 999,
+     "inputChars": 49783
+    },
+    {
+     "taskId": "HumanEval/43",
+     "entryPoint": "pairs_sum_to_zero",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 974,
+     "inputChars": 52350
+    },
+    {
+     "taskId": "HumanEval/44",
+     "entryPoint": "change_base",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 466,
+     "inputChars": 5461
+    },
+    {
+     "taskId": "HumanEval/45",
+     "entryPoint": "triangle_area",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 1000,
+     "inputChars": 32323
+    },
+    {
+     "taskId": "HumanEval/46",
+     "entryPoint": "fib4",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 132,
+     "inputChars": 849
+    },
+    {
+     "taskId": "HumanEval/47",
+     "entryPoint": "median",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 995,
+     "inputChars": 65754
+    },
+    {
+     "taskId": "HumanEval/48",
+     "entryPoint": "is_palindrome",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 989,
+     "inputChars": 39838
+    },
+    {
+     "taskId": "HumanEval/49",
+     "entryPoint": "modp",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 983,
+     "inputChars": 14178
+    },
+    {
+     "taskId": "HumanEval/50",
+     "entryPoint": "decode_shift",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 100,
+     "plusCases": 1000,
+     "inputChars": 64120
+    },
+    {
+     "taskId": "HumanEval/51",
+     "entryPoint": "remove_vowels",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 997,
+     "inputChars": 43775
+    },
+    {
+     "taskId": "HumanEval/52",
+     "entryPoint": "below_threshold",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 419,
+     "inputChars": 18447
+    },
+    {
+     "taskId": "HumanEval/53",
+     "entryPoint": "add",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 105,
+     "plusCases": 866,
+     "inputChars": 26264
+    },
+    {
+     "taskId": "HumanEval/54",
+     "entryPoint": "same_chars",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 999,
+     "inputChars": 71372
+    },
+    {
+     "taskId": "HumanEval/55",
+     "entryPoint": "fib",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 45,
+     "inputChars": 294
+    },
+    {
+     "taskId": "HumanEval/56",
+     "entryPoint": "correct_bracketing",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 1000,
+     "inputChars": 131551
+    },
+    {
+     "taskId": "HumanEval/57",
+     "entryPoint": "monotonic",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 971,
+     "inputChars": 33732
+    },
+    {
+     "taskId": "HumanEval/58",
+     "entryPoint": "common",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 985,
+     "inputChars": 47056
+    },
+    {
+     "taskId": "HumanEval/59",
+     "entryPoint": "largest_prime_factor",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 174,
+     "inputChars": 1361
+    },
+    {
+     "taskId": "HumanEval/60",
+     "entryPoint": "sum_to_n",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 159,
+     "inputChars": 1164
+    },
+    {
+     "taskId": "HumanEval/61",
+     "entryPoint": "correct_bracketing",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 999,
+     "inputChars": 85487
+    },
+    {
+     "taskId": "HumanEval/62",
+     "entryPoint": "derivative",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 948,
+     "inputChars": 38475
+    },
+    {
+     "taskId": "HumanEval/63",
+     "entryPoint": "fibfib",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 63,
+     "inputChars": 417
+    },
+    {
+     "taskId": "HumanEval/64",
+     "entryPoint": "vowels_count",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 992,
+     "inputChars": 69508
+    },
+    {
+     "taskId": "HumanEval/65",
+     "entryPoint": "circular_shift",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 982,
+     "inputChars": 21625
+    },
+    {
+     "taskId": "HumanEval/66",
+     "entryPoint": "digitSum",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 1000,
+     "inputChars": 158160
+    },
+    {
+     "taskId": "HumanEval/67",
+     "entryPoint": "fruit_distribution",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 341,
+     "inputChars": 11518
+    },
+    {
+     "taskId": "HumanEval/68",
+     "entryPoint": "pluck",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 1000,
+     "inputChars": 54871
+    },
+    {
+     "taskId": "HumanEval/69",
+     "entryPoint": "search",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 25,
+     "plusCases": 1000,
+     "inputChars": 115308
+    },
+    {
+     "taskId": "HumanEval/70",
+     "entryPoint": "strange_sort_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 975,
+     "inputChars": 37543
+    },
+    {
+     "taskId": "HumanEval/71",
+     "entryPoint": "triangle_area",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 1000,
+     "inputChars": 25833
+    },
+    {
+     "taskId": "HumanEval/72",
+     "entryPoint": "will_it_fly",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 691,
+     "inputChars": 21781
+    },
+    {
+     "taskId": "HumanEval/73",
+     "entryPoint": "smallest_change",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 962,
+     "inputChars": 74494
+    },
+    {
+     "taskId": "HumanEval/74",
+     "entryPoint": "total_match",
+     "class": "direct-with-caution",
+     "reasons": [
+      "astral-strings",
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 977,
+     "inputChars": 129020
+    },
+    {
+     "taskId": "HumanEval/75",
+     "entryPoint": "is_multiply_prime",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 93,
+     "inputChars": 602
+    },
+    {
+     "taskId": "HumanEval/76",
+     "entryPoint": "is_simple_power",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 897,
+     "inputChars": 14974
+    },
+    {
+     "taskId": "HumanEval/77",
+     "entryPoint": "iscube",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 16,
+     "plusCases": 157,
+     "inputChars": 1496
+    },
+    {
+     "taskId": "HumanEval/78",
+     "entryPoint": "hex_key",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 13,
+     "plusCases": 1000,
+     "inputChars": 86858
+    },
+    {
+     "taskId": "HumanEval/79",
+     "entryPoint": "decimal_to_binary",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 198,
+     "inputChars": 2303
+    },
+    {
+     "taskId": "HumanEval/80",
+     "entryPoint": "is_happy",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 941,
+     "inputChars": 198787
+    },
+    {
+     "taskId": "HumanEval/81",
+     "entryPoint": "numerical_letter_grade",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 1000,
+     "inputChars": 107210
+    },
+    {
+     "taskId": "HumanEval/82",
+     "entryPoint": "prime_length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 16,
+     "plusCases": 962,
+     "inputChars": 60759
+    },
+    {
+     "taskId": "HumanEval/83",
+     "entryPoint": "starts_one_ends",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 104,
+     "inputChars": 766
+    },
+    {
+     "taskId": "HumanEval/84",
+     "entryPoint": "solve",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 211,
+     "inputChars": 1553
+    },
+    {
+     "taskId": "HumanEval/85",
+     "entryPoint": "add",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 994,
+     "inputChars": 50873
+    },
+    {
+     "taskId": "HumanEval/86",
+     "entryPoint": "anti_shuffle",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 1000,
+     "inputChars": 47956
+    },
+    {
+     "taskId": "HumanEval/87",
+     "entryPoint": "get_row",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[tuple[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 207,
+     "inputChars": 11379
+    },
+    {
+     "taskId": "HumanEval/88",
+     "entryPoint": "sort_array",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 1000,
+     "inputChars": 40344
+    },
+    {
+     "taskId": "HumanEval/89",
+     "entryPoint": "encrypt",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 1000,
+     "inputChars": 53432
+    },
+    {
+     "taskId": "HumanEval/90",
+     "entryPoint": "next_smallest",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "int",
+      "none"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 822,
+     "inputChars": 40573
+    },
+    {
+     "taskId": "HumanEval/91",
+     "entryPoint": "is_bored",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 1000,
+     "inputChars": 76456
+    },
+    {
+     "taskId": "HumanEval/92",
+     "entryPoint": "any_int",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 1000,
+     "inputChars": 18049
+    },
+    {
+     "taskId": "HumanEval/93",
+     "entryPoint": "encode",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 1000,
+     "inputChars": 88381
+    },
+    {
+     "taskId": "HumanEval/94",
+     "entryPoint": "skjkasdkd",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 1000,
+     "inputChars": 131452
+    },
+    {
+     "taskId": "HumanEval/95",
+     "entryPoint": "check_dict_case",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 14,
+     "plusCases": 510,
+     "inputChars": 58334
+    },
+    {
+     "taskId": "HumanEval/96",
+     "entryPoint": "count_up_to",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 180,
+     "inputChars": 1278
+    },
+    {
+     "taskId": "HumanEval/97",
+     "entryPoint": "multiply",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 16,
+     "plusCases": 969,
+     "inputChars": 17853
+    },
+    {
+     "taskId": "HumanEval/98",
+     "entryPoint": "count_upper",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 1000,
+     "inputChars": 167647
+    },
+    {
+     "taskId": "HumanEval/99",
+     "entryPoint": "closest_integer",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 710,
+     "inputChars": 14248
+    },
+    {
+     "taskId": "HumanEval/100",
+     "entryPoint": "make_a_pile",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 112,
+     "inputChars": 705
+    },
+    {
+     "taskId": "HumanEval/101",
+     "entryPoint": "words_string",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 1000,
+     "inputChars": 46437
+    },
+    {
+     "taskId": "HumanEval/102",
+     "entryPoint": "choose_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 944,
+     "inputChars": 9955
+    },
+    {
+     "taskId": "HumanEval/103",
+     "entryPoint": "rounded_avg",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 939,
+     "inputChars": 13856
+    },
+    {
+     "taskId": "HumanEval/104",
+     "entryPoint": "unique_digits",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 999,
+     "inputChars": 85873
+    },
+    {
+     "taskId": "HumanEval/105",
+     "entryPoint": "by_length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 999,
+     "inputChars": 55683
+    },
+    {
+     "taskId": "HumanEval/106",
+     "entryPoint": "f",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 104,
+     "inputChars": 641
+    },
+    {
+     "taskId": "HumanEval/107",
+     "entryPoint": "even_odd_palindrome",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 169,
+     "inputChars": 1152
+    },
+    {
+     "taskId": "HumanEval/108",
+     "entryPoint": "count_nums",
+     "class": "incompatible",
+     "reasons": [
+      "bigint",
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 1000,
+     "inputChars": 102630
+    },
+    {
+     "taskId": "HumanEval/109",
+     "entryPoint": "move_one_ball",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 953,
+     "inputChars": 23976
+    },
+    {
+     "taskId": "HumanEval/110",
+     "entryPoint": "exchange",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 1000,
+     "inputChars": 45278
+    },
+    {
+     "taskId": "HumanEval/111",
+     "entryPoint": "histogram",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "dict-str"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 655,
+     "inputChars": 67848
+    },
+    {
+     "taskId": "HumanEval/112",
+     "entryPoint": "reverse_delete",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[bool,str]"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 997,
+     "inputChars": 35044
+    },
+    {
+     "taskId": "HumanEval/113",
+     "entryPoint": "odd_count",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 983,
+     "inputChars": 95582
+    },
+    {
+     "taskId": "HumanEval/114",
+     "entryPoint": "minSubArraySum",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bigint",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 1000,
+     "inputChars": 68265
+    },
+    {
+     "taskId": "HumanEval/115",
+     "entryPoint": "max_fill",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 801,
+     "inputChars": 52449
+    },
+    {
+     "taskId": "HumanEval/116",
+     "entryPoint": "sort_array",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 722,
+     "inputChars": 47616
+    },
+    {
+     "taskId": "HumanEval/117",
+     "entryPoint": "select_words",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 14,
+     "plusCases": 1000,
+     "inputChars": 35122
+    },
+    {
+     "taskId": "HumanEval/118",
+     "entryPoint": "get_closest_vowel",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 13,
+     "plusCases": 1000,
+     "inputChars": 155239
+    },
+    {
+     "taskId": "HumanEval/119",
+     "entryPoint": "match_parens",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 648,
+     "inputChars": 23069
+    },
+    {
+     "taskId": "HumanEval/120",
+     "entryPoint": "maximum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 11,
+     "plusCases": 1000,
+     "inputChars": 41813
+    },
+    {
+     "taskId": "HumanEval/121",
+     "entryPoint": "solution",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 998,
+     "inputChars": 38921
+    },
+    {
+     "taskId": "HumanEval/122",
+     "entryPoint": "add_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 1000,
+     "inputChars": 70757
+    },
+    {
+     "taskId": "HumanEval/123",
+     "entryPoint": "get_odd_collatz",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 139,
+     "inputChars": 1529
+    },
+    {
+     "taskId": "HumanEval/124",
+     "entryPoint": "valid_date",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 16,
+     "plusCases": 985,
+     "inputChars": 54445
+    },
+    {
+     "taskId": "HumanEval/125",
+     "entryPoint": "split_words",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 804,
+     "inputChars": 47769
+    },
+    {
+     "taskId": "HumanEval/126",
+     "entryPoint": "is_sorted",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 13,
+     "plusCases": 999,
+     "inputChars": 38805
+    },
+    {
+     "taskId": "HumanEval/127",
+     "entryPoint": "intersection",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 580,
+     "inputChars": 17413
+    },
+    {
+     "taskId": "HumanEval/128",
+     "entryPoint": "prod_signs",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "int",
+      "none"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 995,
+     "inputChars": 44028
+    },
+    {
+     "taskId": "HumanEval/129",
+     "entryPoint": "minPath",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 189,
+     "inputChars": 12659
+    },
+    {
+     "taskId": "HumanEval/130",
+     "entryPoint": "tri",
+     "class": "direct-with-caution",
+     "reasons": [
+      "float-exact"
+     ],
+     "outputTypes": [
+      "list[float,int]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 115,
+     "inputChars": 788
+    },
+    {
+     "taskId": "HumanEval/131",
+     "entryPoint": "digits",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 230,
+     "inputChars": 7008
+    },
+    {
+     "taskId": "HumanEval/132",
+     "entryPoint": "is_nested",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 14,
+     "plusCases": 1000,
+     "inputChars": 76021
+    },
+    {
+     "taskId": "HumanEval/133",
+     "entryPoint": "sum_squares",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 12,
+     "plusCases": 998,
+     "inputChars": 69598
+    },
+    {
+     "taskId": "HumanEval/134",
+     "entryPoint": "check_if_last_char_is_a_letter",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 991,
+     "inputChars": 34819
+    },
+    {
+     "taskId": "HumanEval/135",
+     "entryPoint": "can_arrange",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 970,
+     "inputChars": 23049
+    },
+    {
+     "taskId": "HumanEval/136",
+     "entryPoint": "largest_smallest_integers",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int,none]",
+      "tuple[int]",
+      "tuple[none]"
+     ],
+     "atol": 0,
+     "baseCases": 11,
+     "plusCases": 998,
+     "inputChars": 39630
+    },
+    {
+     "taskId": "HumanEval/137",
+     "entryPoint": "compare_one",
+     "class": "incompatible",
+     "reasons": [
+      "bigint",
+      "float-tolerance",
+      "returns-none"
+     ],
+     "outputTypes": [
+      "float",
+      "int",
+      "none",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 1000,
+     "inputChars": 23981
+    },
+    {
+     "taskId": "HumanEval/138",
+     "entryPoint": "is_equal_to_sum_even",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 113,
+     "inputChars": 757
+    },
+    {
+     "taskId": "HumanEval/139",
+     "entryPoint": "special_factorial",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 127,
+     "inputChars": 804
+    },
+    {
+     "taskId": "HumanEval/140",
+     "entryPoint": "fix_spaces",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 1000,
+     "inputChars": 34608
+    },
+    {
+     "taskId": "HumanEval/141",
+     "entryPoint": "file_name_check",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 26,
+     "plusCases": 1000,
+     "inputChars": 86860
+    },
+    {
+     "taskId": "HumanEval/142",
+     "entryPoint": "sum_squares",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 11,
+     "plusCases": 997,
+     "inputChars": 79039
+    },
+    {
+     "taskId": "HumanEval/143",
+     "entryPoint": "words_in_sentence",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 1000,
+     "inputChars": 34665
+    },
+    {
+     "taskId": "HumanEval/144",
+     "entryPoint": "simplify",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 13,
+     "plusCases": 998,
+     "inputChars": 23670
+    },
+    {
+     "taskId": "HumanEval/145",
+     "entryPoint": "order_by_points",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 1000,
+     "inputChars": 80164
+    },
+    {
+     "taskId": "HumanEval/146",
+     "entryPoint": "specialFilter",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 988,
+     "inputChars": 39554
+    },
+    {
+     "taskId": "HumanEval/147",
+     "entryPoint": "get_max_triples",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 115,
+     "inputChars": 721
+    },
+    {
+     "taskId": "HumanEval/148",
+     "entryPoint": "bf",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[]",
+      "tuple[str]"
+     ],
+     "atol": 0,
+     "baseCases": 11,
+     "plusCases": 971,
+     "inputChars": 40711
+    },
+    {
+     "taskId": "HumanEval/149",
+     "entryPoint": "sorted_list_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 979,
+     "inputChars": 66680
+    },
+    {
+     "taskId": "HumanEval/150",
+     "entryPoint": "x_or_y",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 998,
+     "inputChars": 14650
+    },
+    {
+     "taskId": "HumanEval/151",
+     "entryPoint": "double_the_difference",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 999,
+     "inputChars": 73315
+    },
+    {
+     "taskId": "HumanEval/152",
+     "entryPoint": "compare",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 1000,
+     "inputChars": 52486
+    },
+    {
+     "taskId": "HumanEval/153",
+     "entryPoint": "Strongest_Extension",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 9,
+     "plusCases": 194,
+     "inputChars": 14575
+    },
+    {
+     "taskId": "HumanEval/154",
+     "entryPoint": "cycpattern_check",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 1000,
+     "inputChars": 104884
+    },
+    {
+     "taskId": "HumanEval/155",
+     "entryPoint": "even_odd_count",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 249,
+     "inputChars": 3092
+    },
+    {
+     "taskId": "HumanEval/156",
+     "entryPoint": "int_to_mini_roman",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 14,
+     "plusCases": 206,
+     "inputChars": 1442
+    },
+    {
+     "taskId": "HumanEval/157",
+     "entryPoint": "right_angle_triangle",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 11,
+     "plusCases": 1000,
+     "inputChars": 16086
+    },
+    {
+     "taskId": "HumanEval/158",
+     "entryPoint": "find_max",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 10,
+     "plusCases": 897,
+     "inputChars": 59352
+    },
+    {
+     "taskId": "HumanEval/159",
+     "entryPoint": "eat",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 976,
+     "inputChars": 16066
+    },
+    {
+     "taskId": "HumanEval/160",
+     "entryPoint": "do_algebra",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 449,
+     "inputChars": 21806
+    },
+    {
+     "taskId": "HumanEval/161",
+     "entryPoint": "solve",
+     "class": "direct-with-caution",
+     "reasons": [
+      "astral-strings",
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 8,
+     "plusCases": 983,
+     "inputChars": 111934
+    },
+    {
+     "taskId": "HumanEval/162",
+     "entryPoint": "string_to_md5",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "none",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 1000,
+     "inputChars": 78521
+    },
+    {
+     "taskId": "HumanEval/163",
+     "entryPoint": "generate_integers",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 982,
+     "inputChars": 14346
+    }
+   ]
+  },
+  "MBPP+": {
+   "file": "MbppPlus-v0.2.0.jsonl.gz",
+   "sha256": "af43697e8791c4c149bdfd6b489d8b5412507551ac20e28a439f650b8225db63",
+   "tasks": 378,
+   "byClass": {
+    "direct": 308,
+    "direct-with-caution": 10,
+    "incompatible": 26,
+    "needs-adapter": 34
+   },
+   "byReason": {
+    "assert-order-insensitive": 3,
+    "bigint": 18,
+    "float-exact": 2,
+    "float-tolerance": 24,
+    "large-inputs": 1,
+    "no-output-type": 24,
+    "order-from-set": 3,
+    "output-complex": 1,
+    "output-dict-nonstr-keys": 5,
+    "output-set": 2,
+    "returns-none": 6,
+    "set-equality-oracle": 7,
+    "special-oracle": 5
+   },
+   "perTask": [
+    {
+     "taskId": "Mbpp/2",
+     "entryPoint": "similar_elements",
+     "class": "needs-adapter",
+     "reasons": [
+      "order-from-set",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 6973
+    },
+    {
+     "taskId": "Mbpp/3",
+     "entryPoint": "is_not_prime",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 103,
+     "inputChars": 831
+    },
+    {
+     "taskId": "Mbpp/4",
+     "entryPoint": "heap_queue_largest",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 6140
+    },
+    {
+     "taskId": "Mbpp/6",
+     "entryPoint": "differ_At_One_Bit_Pos",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 108,
+     "inputChars": 1627
+    },
+    {
+     "taskId": "Mbpp/7",
+     "entryPoint": "find_char_long",
+     "class": "needs-adapter",
+     "reasons": [
+      "assert-order-insensitive",
+      "no-output-type",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 3694
+    },
+    {
+     "taskId": "Mbpp/8",
+     "entryPoint": "square_nums",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3969
+    },
+    {
+     "taskId": "Mbpp/9",
+     "entryPoint": "find_Rotations",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 13979
+    },
+    {
+     "taskId": "Mbpp/11",
+     "entryPoint": "remove_Occ",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 2098
+    },
+    {
+     "taskId": "Mbpp/12",
+     "entryPoint": "sort_matrix",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 9394
+    },
+    {
+     "taskId": "Mbpp/14",
+     "entryPoint": "find_Volume",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 3083
+    },
+    {
+     "taskId": "Mbpp/16",
+     "entryPoint": "text_lowercase_underscore",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 8061
+    },
+    {
+     "taskId": "Mbpp/17",
+     "entryPoint": "square_perimeter",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2007
+    },
+    {
+     "taskId": "Mbpp/18",
+     "entryPoint": "remove_dirty_chars",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 4219
+    },
+    {
+     "taskId": "Mbpp/19",
+     "entryPoint": "test_duplicate",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 4547
+    },
+    {
+     "taskId": "Mbpp/20",
+     "entryPoint": "is_woodall",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2130
+    },
+    {
+     "taskId": "Mbpp/56",
+     "entryPoint": "check",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 125,
+     "inputChars": 792
+    },
+    {
+     "taskId": "Mbpp/57",
+     "entryPoint": "find_Max_Num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 2694
+    },
+    {
+     "taskId": "Mbpp/58",
+     "entryPoint": "opposite_Signs",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 105,
+     "inputChars": 3058
+    },
+    {
+     "taskId": "Mbpp/59",
+     "entryPoint": "is_octagonal",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 631
+    },
+    {
+     "taskId": "Mbpp/61",
+     "entryPoint": "count_Substrings",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 5534
+    },
+    {
+     "taskId": "Mbpp/62",
+     "entryPoint": "smallest_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2372
+    },
+    {
+     "taskId": "Mbpp/63",
+     "entryPoint": "max_difference",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 7398
+    },
+    {
+     "taskId": "Mbpp/64",
+     "entryPoint": "subject_marks",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[int,str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 117,
+     "inputChars": 18269
+    },
+    {
+     "taskId": "Mbpp/65",
+     "entryPoint": "recursive_list_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 20719
+    },
+    {
+     "taskId": "Mbpp/66",
+     "entryPoint": "pos_count",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 4155
+    },
+    {
+     "taskId": "Mbpp/67",
+     "entryPoint": "bell_number",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bigint",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 625
+    },
+    {
+     "taskId": "Mbpp/68",
+     "entryPoint": "is_Monotonic",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 10850
+    },
+    {
+     "taskId": "Mbpp/69",
+     "entryPoint": "is_sublist",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 11994
+    },
+    {
+     "taskId": "Mbpp/70",
+     "entryPoint": "get_equal",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 118,
+     "inputChars": 6563
+    },
+    {
+     "taskId": "Mbpp/71",
+     "entryPoint": "comb_sort",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 5546
+    },
+    {
+     "taskId": "Mbpp/72",
+     "entryPoint": "dif_Square",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 686
+    },
+    {
+     "taskId": "Mbpp/74",
+     "entryPoint": "is_samepatterns",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 117,
+     "inputChars": 9590
+    },
+    {
+     "taskId": "Mbpp/75",
+     "entryPoint": "find_tuples",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 10799
+    },
+    {
+     "taskId": "Mbpp/77",
+     "entryPoint": "is_Diff",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 116,
+     "inputChars": 2271
+    },
+    {
+     "taskId": "Mbpp/79",
+     "entryPoint": "word_len",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 9559
+    },
+    {
+     "taskId": "Mbpp/80",
+     "entryPoint": "tetrahedral_number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 619
+    },
+    {
+     "taskId": "Mbpp/82",
+     "entryPoint": "volume_sphere",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 2106
+    },
+    {
+     "taskId": "Mbpp/84",
+     "entryPoint": "sequence",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 881
+    },
+    {
+     "taskId": "Mbpp/85",
+     "entryPoint": "surfacearea_sphere",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 2166
+    },
+    {
+     "taskId": "Mbpp/86",
+     "entryPoint": "centered_hexagonal_number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 745
+    },
+    {
+     "taskId": "Mbpp/87",
+     "entryPoint": "merge_dictionaries_three",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "dict-str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 20933
+    },
+    {
+     "taskId": "Mbpp/88",
+     "entryPoint": "freq_count",
+     "class": "incompatible",
+     "reasons": [
+      "output-dict-nonstr-keys"
+     ],
+     "outputTypes": [
+      "dict-nonstr"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 4298
+    },
+    {
+     "taskId": "Mbpp/89",
+     "entryPoint": "closest_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 679
+    },
+    {
+     "taskId": "Mbpp/90",
+     "entryPoint": "len_log",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 9587
+    },
+    {
+     "taskId": "Mbpp/91",
+     "entryPoint": "find_substring",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 8385
+    },
+    {
+     "taskId": "Mbpp/92",
+     "entryPoint": "is_undulating",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 937
+    },
+    {
+     "taskId": "Mbpp/93",
+     "entryPoint": "power",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 1021
+    },
+    {
+     "taskId": "Mbpp/94",
+     "entryPoint": "index_minimum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 13590
+    },
+    {
+     "taskId": "Mbpp/95",
+     "entryPoint": "Find_Min_Length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 10470
+    },
+    {
+     "taskId": "Mbpp/96",
+     "entryPoint": "divisor",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 696
+    },
+    {
+     "taskId": "Mbpp/97",
+     "entryPoint": "frequency_lists",
+     "class": "incompatible",
+     "reasons": [
+      "output-dict-nonstr-keys"
+     ],
+     "outputTypes": [
+      "dict-nonstr"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 15282
+    },
+    {
+     "taskId": "Mbpp/98",
+     "entryPoint": "multiply_num",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 3569
+    },
+    {
+     "taskId": "Mbpp/99",
+     "entryPoint": "decimal_to_binary",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 1575
+    },
+    {
+     "taskId": "Mbpp/100",
+     "entryPoint": "next_smallest_palindrome",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 704
+    },
+    {
+     "taskId": "Mbpp/101",
+     "entryPoint": "kth_element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 3757
+    },
+    {
+     "taskId": "Mbpp/102",
+     "entryPoint": "snake_to_camel",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 6626
+    },
+    {
+     "taskId": "Mbpp/103",
+     "entryPoint": "eulerian_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 871
+    },
+    {
+     "taskId": "Mbpp/104",
+     "entryPoint": "sort_sublists",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 14904
+    },
+    {
+     "taskId": "Mbpp/105",
+     "entryPoint": "count",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 6086
+    },
+    {
+     "taskId": "Mbpp/106",
+     "entryPoint": "add_lists",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 115,
+     "inputChars": 9186
+    },
+    {
+     "taskId": "Mbpp/108",
+     "entryPoint": "merge_sorted_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 118,
+     "inputChars": 8811
+    },
+    {
+     "taskId": "Mbpp/109",
+     "entryPoint": "odd_Equivalent",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 5317
+    },
+    {
+     "taskId": "Mbpp/111",
+     "entryPoint": "common_in_nested_lists",
+     "class": "needs-adapter",
+     "reasons": [
+      "assert-order-insensitive",
+      "no-output-type",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 8886
+    },
+    {
+     "taskId": "Mbpp/113",
+     "entryPoint": "check_integer",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 2222
+    },
+    {
+     "taskId": "Mbpp/116",
+     "entryPoint": "tuple_to_int",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 6864
+    },
+    {
+     "taskId": "Mbpp/118",
+     "entryPoint": "string_to_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 2901
+    },
+    {
+     "taskId": "Mbpp/119",
+     "entryPoint": "search",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 2247
+    },
+    {
+     "taskId": "Mbpp/120",
+     "entryPoint": "max_product_tuple",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 6995
+    },
+    {
+     "taskId": "Mbpp/123",
+     "entryPoint": "amicable_numbers_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 715
+    },
+    {
+     "taskId": "Mbpp/124",
+     "entryPoint": "angle_complex",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 116,
+     "inputChars": 3115
+    },
+    {
+     "taskId": "Mbpp/125",
+     "entryPoint": "find_length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 9179
+    },
+    {
+     "taskId": "Mbpp/126",
+     "entryPoint": "sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 1604
+    },
+    {
+     "taskId": "Mbpp/127",
+     "entryPoint": "multiply_int",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 3432
+    },
+    {
+     "taskId": "Mbpp/128",
+     "entryPoint": "long_words",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 3661
+    },
+    {
+     "taskId": "Mbpp/129",
+     "entryPoint": "magic_square_test",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 7698
+    },
+    {
+     "taskId": "Mbpp/130",
+     "entryPoint": "max_occurrences",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 7439
+    },
+    {
+     "taskId": "Mbpp/131",
+     "entryPoint": "reverse_vowels",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 2949
+    },
+    {
+     "taskId": "Mbpp/132",
+     "entryPoint": "tup_string",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 5185
+    },
+    {
+     "taskId": "Mbpp/133",
+     "entryPoint": "sum_negativenum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 3689
+    },
+    {
+     "taskId": "Mbpp/135",
+     "entryPoint": "hexagonal_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 712
+    },
+    {
+     "taskId": "Mbpp/137",
+     "entryPoint": "zero_count",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 4802
+    },
+    {
+     "taskId": "Mbpp/138",
+     "entryPoint": "is_Sum_Of_Powers_Of_Two",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 977
+    },
+    {
+     "taskId": "Mbpp/139",
+     "entryPoint": "circle_circumference",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 718
+    },
+    {
+     "taskId": "Mbpp/140",
+     "entryPoint": "extract_singly",
+     "class": "incompatible",
+     "reasons": [
+      "no-output-type",
+      "output-set",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 8080
+    },
+    {
+     "taskId": "Mbpp/141",
+     "entryPoint": "pancake_sort",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 7386
+    },
+    {
+     "taskId": "Mbpp/142",
+     "entryPoint": "count_samepair",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 13319
+    },
+    {
+     "taskId": "Mbpp/145",
+     "entryPoint": "max_Abs_Diff",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 2662
+    },
+    {
+     "taskId": "Mbpp/160",
+     "entryPoint": "find_solution",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "none",
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 1662
+    },
+    {
+     "taskId": "Mbpp/161",
+     "entryPoint": "remove_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 115,
+     "inputChars": 6575
+    },
+    {
+     "taskId": "Mbpp/162",
+     "entryPoint": "sum_series",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 105,
+     "inputChars": 761
+    },
+    {
+     "taskId": "Mbpp/165",
+     "entryPoint": "count_char_position",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 19877
+    },
+    {
+     "taskId": "Mbpp/166",
+     "entryPoint": "find_even_pair",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 3885
+    },
+    {
+     "taskId": "Mbpp/167",
+     "entryPoint": "next_power_of_2",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 1125
+    },
+    {
+     "taskId": "Mbpp/168",
+     "entryPoint": "frequency",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 7848
+    },
+    {
+     "taskId": "Mbpp/170",
+     "entryPoint": "sum_range_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 5361
+    },
+    {
+     "taskId": "Mbpp/171",
+     "entryPoint": "perimeter_pentagon",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 2060
+    },
+    {
+     "taskId": "Mbpp/172",
+     "entryPoint": "count_occurance",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 101,
+     "inputChars": 17140
+    },
+    {
+     "taskId": "Mbpp/222",
+     "entryPoint": "check_type",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 128,
+     "inputChars": 11856
+    },
+    {
+     "taskId": "Mbpp/223",
+     "entryPoint": "is_majority",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2011
+    },
+    {
+     "taskId": "Mbpp/224",
+     "entryPoint": "count_Set_Bits",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 785
+    },
+    {
+     "taskId": "Mbpp/226",
+     "entryPoint": "odd_values_string",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 103,
+     "inputChars": 5988
+    },
+    {
+     "taskId": "Mbpp/227",
+     "entryPoint": "min_of_three",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4466
+    },
+    {
+     "taskId": "Mbpp/230",
+     "entryPoint": "replace_blank",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 3838
+    },
+    {
+     "taskId": "Mbpp/232",
+     "entryPoint": "larg_nnum",
+     "class": "needs-adapter",
+     "reasons": [
+      "assert-order-insensitive",
+      "no-output-type",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3667
+    },
+    {
+     "taskId": "Mbpp/233",
+     "entryPoint": "lateralsuface_cylinder",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 3282
+    },
+    {
+     "taskId": "Mbpp/234",
+     "entryPoint": "volume_cube",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2163
+    },
+    {
+     "taskId": "Mbpp/235",
+     "entryPoint": "even_bit_set_number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 846
+    },
+    {
+     "taskId": "Mbpp/237",
+     "entryPoint": "check_occurences",
+     "class": "incompatible",
+     "reasons": [
+      "output-dict-nonstr-keys"
+     ],
+     "outputTypes": [
+      "dict-nonstr"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 6090
+    },
+    {
+     "taskId": "Mbpp/238",
+     "entryPoint": "number_of_substrings",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 7632
+    },
+    {
+     "taskId": "Mbpp/239",
+     "entryPoint": "get_total_number_of_sequences",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 1057
+    },
+    {
+     "taskId": "Mbpp/240",
+     "entryPoint": "replace_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 115,
+     "inputChars": 8167
+    },
+    {
+     "taskId": "Mbpp/242",
+     "entryPoint": "count_charac",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 4772
+    },
+    {
+     "taskId": "Mbpp/244",
+     "entryPoint": "next_Perfect_Square",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 2049
+    },
+    {
+     "taskId": "Mbpp/245",
+     "entryPoint": "max_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 4095
+    },
+    {
+     "taskId": "Mbpp/247",
+     "entryPoint": "lps",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 8146
+    },
+    {
+     "taskId": "Mbpp/250",
+     "entryPoint": "count_X",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 7599
+    },
+    {
+     "taskId": "Mbpp/251",
+     "entryPoint": "insert_element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 17836
+    },
+    {
+     "taskId": "Mbpp/252",
+     "entryPoint": "convert",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "tuple[float]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 122,
+     "inputChars": 2839
+    },
+    {
+     "taskId": "Mbpp/253",
+     "entryPoint": "count_integer",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 114,
+     "inputChars": 7767
+    },
+    {
+     "taskId": "Mbpp/255",
+     "entryPoint": "combinations_colors",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 6019
+    },
+    {
+     "taskId": "Mbpp/256",
+     "entryPoint": "count_Primes_nums",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 679
+    },
+    {
+     "taskId": "Mbpp/257",
+     "entryPoint": "swap_numbers",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 2235
+    },
+    {
+     "taskId": "Mbpp/259",
+     "entryPoint": "maximize_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[tuple[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 7047
+    },
+    {
+     "taskId": "Mbpp/260",
+     "entryPoint": "newman_prime",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 687
+    },
+    {
+     "taskId": "Mbpp/261",
+     "entryPoint": "division_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2995
+    },
+    {
+     "taskId": "Mbpp/262",
+     "entryPoint": "split_two_parts",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[list[int]]",
+      "tuple[list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 5749
+    },
+    {
+     "taskId": "Mbpp/264",
+     "entryPoint": "dog_age",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 646
+    },
+    {
+     "taskId": "Mbpp/265",
+     "entryPoint": "list_split",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[int]]",
+      "list[list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 7026
+    },
+    {
+     "taskId": "Mbpp/266",
+     "entryPoint": "lateralsurface_cube",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 1943
+    },
+    {
+     "taskId": "Mbpp/267",
+     "entryPoint": "square_Sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 119,
+     "inputChars": 1009
+    },
+    {
+     "taskId": "Mbpp/268",
+     "entryPoint": "find_star_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 895
+    },
+    {
+     "taskId": "Mbpp/269",
+     "entryPoint": "ascii_value",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 82,
+     "inputChars": 682
+    },
+    {
+     "taskId": "Mbpp/270",
+     "entryPoint": "sum_even_and_even_index",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 2942
+    },
+    {
+     "taskId": "Mbpp/271",
+     "entryPoint": "even_Power_Sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 845
+    },
+    {
+     "taskId": "Mbpp/272",
+     "entryPoint": "rear_extract",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 115,
+     "inputChars": 15022
+    },
+    {
+     "taskId": "Mbpp/273",
+     "entryPoint": "substract_elements",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 9241
+    },
+    {
+     "taskId": "Mbpp/274",
+     "entryPoint": "even_binomial_Coeff_Sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 638
+    },
+    {
+     "taskId": "Mbpp/276",
+     "entryPoint": "volume_cylinder",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 3733
+    },
+    {
+     "taskId": "Mbpp/277",
+     "entryPoint": "dict_filter",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "dict-str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 6809
+    },
+    {
+     "taskId": "Mbpp/278",
+     "entryPoint": "count_first_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 9261
+    },
+    {
+     "taskId": "Mbpp/279",
+     "entryPoint": "is_num_decagonal",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 2381
+    },
+    {
+     "taskId": "Mbpp/280",
+     "entryPoint": "sequential_search",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[bool,int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 7551
+    },
+    {
+     "taskId": "Mbpp/281",
+     "entryPoint": "all_unique",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3989
+    },
+    {
+     "taskId": "Mbpp/282",
+     "entryPoint": "sub_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 6402
+    },
+    {
+     "taskId": "Mbpp/283",
+     "entryPoint": "validate",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 1014
+    },
+    {
+     "taskId": "Mbpp/284",
+     "entryPoint": "check_element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 5058
+    },
+    {
+     "taskId": "Mbpp/285",
+     "entryPoint": "text_match_two_three",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 4158
+    },
+    {
+     "taskId": "Mbpp/286",
+     "entryPoint": "max_sub_array_sum_repeated",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 3751
+    },
+    {
+     "taskId": "Mbpp/287",
+     "entryPoint": "square_Sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 760
+    },
+    {
+     "taskId": "Mbpp/290",
+     "entryPoint": "max_length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int,list[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 10343
+    },
+    {
+     "taskId": "Mbpp/292",
+     "entryPoint": "find",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 899
+    },
+    {
+     "taskId": "Mbpp/293",
+     "entryPoint": "otherside_rightangle",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3322
+    },
+    {
+     "taskId": "Mbpp/294",
+     "entryPoint": "max_val",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 4349
+    },
+    {
+     "taskId": "Mbpp/296",
+     "entryPoint": "get_Inv_Count",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 5872
+    },
+    {
+     "taskId": "Mbpp/297",
+     "entryPoint": "flatten_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 117,
+     "inputChars": 10005
+    },
+    {
+     "taskId": "Mbpp/299",
+     "entryPoint": "max_aggregate",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int,str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 9969
+    },
+    {
+     "taskId": "Mbpp/300",
+     "entryPoint": "count_binary_seq",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 787
+    },
+    {
+     "taskId": "Mbpp/301",
+     "entryPoint": "dict_depth",
+     "class": "direct-with-caution",
+     "reasons": [
+      "large-inputs"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 190050
+    },
+    {
+     "taskId": "Mbpp/305",
+     "entryPoint": "start_withp",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 11222
+    },
+    {
+     "taskId": "Mbpp/306",
+     "entryPoint": "max_sum_increasing_subseq",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 3266
+    },
+    {
+     "taskId": "Mbpp/308",
+     "entryPoint": "large_product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 29269
+    },
+    {
+     "taskId": "Mbpp/309",
+     "entryPoint": "maximum",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 3552
+    },
+    {
+     "taskId": "Mbpp/310",
+     "entryPoint": "string_to_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 2843
+    },
+    {
+     "taskId": "Mbpp/311",
+     "entryPoint": "set_left_most_unset_bit",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 744
+    },
+    {
+     "taskId": "Mbpp/312",
+     "entryPoint": "volume_cone",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 3386
+    },
+    {
+     "taskId": "Mbpp/388",
+     "entryPoint": "highest_Power_of_2",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 906
+    },
+    {
+     "taskId": "Mbpp/389",
+     "entryPoint": "find_lucas",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 36,
+     "inputChars": 226
+    },
+    {
+     "taskId": "Mbpp/390",
+     "entryPoint": "add_string",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 9111
+    },
+    {
+     "taskId": "Mbpp/391",
+     "entryPoint": "convert_list_dictionary",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[dict-str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 17993
+    },
+    {
+     "taskId": "Mbpp/392",
+     "entryPoint": "get_max_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 845
+    },
+    {
+     "taskId": "Mbpp/394",
+     "entryPoint": "check_distinct",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 49,
+     "inputChars": 2316
+    },
+    {
+     "taskId": "Mbpp/395",
+     "entryPoint": "first_non_repeating_character",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "none",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 9662
+    },
+    {
+     "taskId": "Mbpp/397",
+     "entryPoint": "median_numbers",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 1603
+    },
+    {
+     "taskId": "Mbpp/398",
+     "entryPoint": "sum_of_digits",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 3942
+    },
+    {
+     "taskId": "Mbpp/404",
+     "entryPoint": "minimum",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 123,
+     "inputChars": 3473
+    },
+    {
+     "taskId": "Mbpp/405",
+     "entryPoint": "check_tuplex",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 12465
+    },
+    {
+     "taskId": "Mbpp/406",
+     "entryPoint": "find_Parity",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 1708
+    },
+    {
+     "taskId": "Mbpp/409",
+     "entryPoint": "min_product_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 10573
+    },
+    {
+     "taskId": "Mbpp/410",
+     "entryPoint": "min_val",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 8136
+    },
+    {
+     "taskId": "Mbpp/412",
+     "entryPoint": "remove_odd",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 4496
+    },
+    {
+     "taskId": "Mbpp/413",
+     "entryPoint": "extract_nth_element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 7949
+    },
+    {
+     "taskId": "Mbpp/414",
+     "entryPoint": "overlapping",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 6104
+    },
+    {
+     "taskId": "Mbpp/415",
+     "entryPoint": "max_Product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 6403
+    },
+    {
+     "taskId": "Mbpp/418",
+     "entryPoint": "Find_Max",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 10855
+    },
+    {
+     "taskId": "Mbpp/419",
+     "entryPoint": "round_and_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 7211
+    },
+    {
+     "taskId": "Mbpp/420",
+     "entryPoint": "cube_Sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 666
+    },
+    {
+     "taskId": "Mbpp/421",
+     "entryPoint": "concatenate_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 6021
+    },
+    {
+     "taskId": "Mbpp/422",
+     "entryPoint": "find_Average_Of_Cube",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 670
+    },
+    {
+     "taskId": "Mbpp/424",
+     "entryPoint": "extract_rear",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 120,
+     "inputChars": 8551
+    },
+    {
+     "taskId": "Mbpp/425",
+     "entryPoint": "count_element_in_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 12515
+    },
+    {
+     "taskId": "Mbpp/426",
+     "entryPoint": "filter_oddnumbers",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 4206
+    },
+    {
+     "taskId": "Mbpp/427",
+     "entryPoint": "change_date_format",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 5672
+    },
+    {
+     "taskId": "Mbpp/428",
+     "entryPoint": "shell_sort",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 5086
+    },
+    {
+     "taskId": "Mbpp/429",
+     "entryPoint": "and_tuples",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 5188
+    },
+    {
+     "taskId": "Mbpp/430",
+     "entryPoint": "parabola_directrix",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 1174
+    },
+    {
+     "taskId": "Mbpp/432",
+     "entryPoint": "median_trapezium",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float",
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 3469
+    },
+    {
+     "taskId": "Mbpp/433",
+     "entryPoint": "check_greater",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 16214
+    },
+    {
+     "taskId": "Mbpp/435",
+     "entryPoint": "last_Digit",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 798
+    },
+    {
+     "taskId": "Mbpp/436",
+     "entryPoint": "neg_nos",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 5980
+    },
+    {
+     "taskId": "Mbpp/437",
+     "entryPoint": "remove_odd",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3016
+    },
+    {
+     "taskId": "Mbpp/439",
+     "entryPoint": "multiple_to_single",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 9103
+    },
+    {
+     "taskId": "Mbpp/440",
+     "entryPoint": "find_adverb_position",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int,str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3445
+    },
+    {
+     "taskId": "Mbpp/441",
+     "entryPoint": "surfacearea_cube",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 2187
+    },
+    {
+     "taskId": "Mbpp/445",
+     "entryPoint": "index_multiplication",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[tuple[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 8716
+    },
+    {
+     "taskId": "Mbpp/446",
+     "entryPoint": "count_Occurrence",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 7707
+    },
+    {
+     "taskId": "Mbpp/447",
+     "entryPoint": "cube_nums",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 5887
+    },
+    {
+     "taskId": "Mbpp/448",
+     "entryPoint": "cal_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 671
+    },
+    {
+     "taskId": "Mbpp/450",
+     "entryPoint": "extract_string",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 5269
+    },
+    {
+     "taskId": "Mbpp/451",
+     "entryPoint": "remove_whitespaces",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 5352
+    },
+    {
+     "taskId": "Mbpp/453",
+     "entryPoint": "sumofFactors",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 821
+    },
+    {
+     "taskId": "Mbpp/454",
+     "entryPoint": "text_match_wordz",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 1691
+    },
+    {
+     "taskId": "Mbpp/455",
+     "entryPoint": "check_monthnumb_number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 13,
+     "inputChars": 86
+    },
+    {
+     "taskId": "Mbpp/456",
+     "entryPoint": "reverse_string_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 4854
+    },
+    {
+     "taskId": "Mbpp/457",
+     "entryPoint": "Find_Min",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 15787
+    },
+    {
+     "taskId": "Mbpp/458",
+     "entryPoint": "rectangle_area",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3642
+    },
+    {
+     "taskId": "Mbpp/459",
+     "entryPoint": "remove_uppercase",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 7767
+    },
+    {
+     "taskId": "Mbpp/460",
+     "entryPoint": "Extract",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 120,
+     "inputChars": 10358
+    },
+    {
+     "taskId": "Mbpp/462",
+     "entryPoint": "combinations_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[],list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 6094
+    },
+    {
+     "taskId": "Mbpp/463",
+     "entryPoint": "max_subarray_product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 3746
+    },
+    {
+     "taskId": "Mbpp/465",
+     "entryPoint": "drop_empty",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "dict-str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 15540
+    },
+    {
+     "taskId": "Mbpp/468",
+     "entryPoint": "max_product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 3950
+    },
+    {
+     "taskId": "Mbpp/470",
+     "entryPoint": "add_pairwise",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 3428
+    },
+    {
+     "taskId": "Mbpp/471",
+     "entryPoint": "find_remainder",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 4265
+    },
+    {
+     "taskId": "Mbpp/472",
+     "entryPoint": "check_Consecutive",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2441
+    },
+    {
+     "taskId": "Mbpp/473",
+     "entryPoint": "tuple_intersection",
+     "class": "incompatible",
+     "reasons": [
+      "output-set"
+     ],
+     "outputTypes": [
+      "set"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 10143
+    },
+    {
+     "taskId": "Mbpp/474",
+     "entryPoint": "replace_char",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 2809
+    },
+    {
+     "taskId": "Mbpp/475",
+     "entryPoint": "sort_counter",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[int,str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 10617
+    },
+    {
+     "taskId": "Mbpp/476",
+     "entryPoint": "big_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 3320
+    },
+    {
+     "taskId": "Mbpp/477",
+     "entryPoint": "is_lower",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 2372
+    },
+    {
+     "taskId": "Mbpp/478",
+     "entryPoint": "remove_lowercase",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 12808
+    },
+    {
+     "taskId": "Mbpp/479",
+     "entryPoint": "first_Digit",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 1222
+    },
+    {
+     "taskId": "Mbpp/554",
+     "entryPoint": "Split",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 5505
+    },
+    {
+     "taskId": "Mbpp/555",
+     "entryPoint": "difference",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 637
+    },
+    {
+     "taskId": "Mbpp/556",
+     "entryPoint": "find_Odd_Pair",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3101
+    },
+    {
+     "taskId": "Mbpp/557",
+     "entryPoint": "toggle_string",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 18660
+    },
+    {
+     "taskId": "Mbpp/558",
+     "entryPoint": "digit_distance_nums",
+     "class": "incompatible",
+     "reasons": [
+      "bigint",
+      "special-oracle"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 143,
+     "inputChars": 2304
+    },
+    {
+     "taskId": "Mbpp/559",
+     "entryPoint": "max_sub_array_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 6420
+    },
+    {
+     "taskId": "Mbpp/560",
+     "entryPoint": "union_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 129,
+     "inputChars": 5769
+    },
+    {
+     "taskId": "Mbpp/562",
+     "entryPoint": "Find_Max_Length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 19962
+    },
+    {
+     "taskId": "Mbpp/563",
+     "entryPoint": "extract_values",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 4844
+    },
+    {
+     "taskId": "Mbpp/564",
+     "entryPoint": "count_Pairs",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 5483
+    },
+    {
+     "taskId": "Mbpp/565",
+     "entryPoint": "split",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 3446
+    },
+    {
+     "taskId": "Mbpp/566",
+     "entryPoint": "sum_digits",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 4122
+    },
+    {
+     "taskId": "Mbpp/567",
+     "entryPoint": "issort_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4130
+    },
+    {
+     "taskId": "Mbpp/568",
+     "entryPoint": "empty_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[dict-str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 616
+    },
+    {
+     "taskId": "Mbpp/569",
+     "entryPoint": "sort_sublists",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 14886
+    },
+    {
+     "taskId": "Mbpp/572",
+     "entryPoint": "two_unique_nums",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 6512
+    },
+    {
+     "taskId": "Mbpp/573",
+     "entryPoint": "unique_product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 7678
+    },
+    {
+     "taskId": "Mbpp/576",
+     "entryPoint": "is_Sub_Array",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 8141
+    },
+    {
+     "taskId": "Mbpp/577",
+     "entryPoint": "last_Digit_Factorial",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 1992
+    },
+    {
+     "taskId": "Mbpp/578",
+     "entryPoint": "interleave_lists",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 6982
+    },
+    {
+     "taskId": "Mbpp/579",
+     "entryPoint": "find_dissimilar",
+     "class": "needs-adapter",
+     "reasons": [
+      "order-from-set",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 129,
+     "inputChars": 8812
+    },
+    {
+     "taskId": "Mbpp/580",
+     "entryPoint": "extract_even",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int,tuple[int,tuple[int]]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 8783
+    },
+    {
+     "taskId": "Mbpp/581",
+     "entryPoint": "surface_Area",
+     "class": "needs-adapter",
+     "reasons": [
+      "special-oracle"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 1204
+    },
+    {
+     "taskId": "Mbpp/583",
+     "entryPoint": "catalan_number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 18,
+     "inputChars": 119
+    },
+    {
+     "taskId": "Mbpp/585",
+     "entryPoint": "expensive_items",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[dict-str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 23019
+    },
+    {
+     "taskId": "Mbpp/586",
+     "entryPoint": "split_Arr",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 4346
+    },
+    {
+     "taskId": "Mbpp/587",
+     "entryPoint": "list_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 6612
+    },
+    {
+     "taskId": "Mbpp/588",
+     "entryPoint": "big_diff",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 3532
+    },
+    {
+     "taskId": "Mbpp/589",
+     "entryPoint": "perfect_squares",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 1348
+    },
+    {
+     "taskId": "Mbpp/590",
+     "entryPoint": "polar_rect",
+     "class": "incompatible",
+     "reasons": [
+      "float-exact",
+      "output-complex"
+     ],
+     "outputTypes": [
+      "tuple[complex,tuple[float]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 1662
+    },
+    {
+     "taskId": "Mbpp/591",
+     "entryPoint": "swap_List",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 12781
+    },
+    {
+     "taskId": "Mbpp/592",
+     "entryPoint": "sum_Of_product",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 656
+    },
+    {
+     "taskId": "Mbpp/593",
+     "entryPoint": "removezero_ip",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 5963
+    },
+    {
+     "taskId": "Mbpp/594",
+     "entryPoint": "diff_even_odd",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 5781
+    },
+    {
+     "taskId": "Mbpp/596",
+     "entryPoint": "tuple_size",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 15260
+    },
+    {
+     "taskId": "Mbpp/597",
+     "entryPoint": "find_kth",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 5185
+    },
+    {
+     "taskId": "Mbpp/598",
+     "entryPoint": "armstrong_number",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 1177
+    },
+    {
+     "taskId": "Mbpp/599",
+     "entryPoint": "sum_average",
+     "class": "direct-with-caution",
+     "reasons": [
+      "float-exact"
+     ],
+     "outputTypes": [
+      "tuple[float,int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 88,
+     "inputChars": 720
+    },
+    {
+     "taskId": "Mbpp/600",
+     "entryPoint": "is_Even",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 829
+    },
+    {
+     "taskId": "Mbpp/602",
+     "entryPoint": "first_repeated_char",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "none",
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4944
+    },
+    {
+     "taskId": "Mbpp/603",
+     "entryPoint": "get_ludic",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 704
+    },
+    {
+     "taskId": "Mbpp/604",
+     "entryPoint": "reverse_words",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 2634
+    },
+    {
+     "taskId": "Mbpp/605",
+     "entryPoint": "prime_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 983
+    },
+    {
+     "taskId": "Mbpp/606",
+     "entryPoint": "radian_degree",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 753
+    },
+    {
+     "taskId": "Mbpp/607",
+     "entryPoint": "find_literals",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int,str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 4878
+    },
+    {
+     "taskId": "Mbpp/608",
+     "entryPoint": "bell_Number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 649
+    },
+    {
+     "taskId": "Mbpp/610",
+     "entryPoint": "remove_kth_element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 3978
+    },
+    {
+     "taskId": "Mbpp/611",
+     "entryPoint": "max_of_nth",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 6878
+    },
+    {
+     "taskId": "Mbpp/612",
+     "entryPoint": "merge",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[int]]",
+      "list[list[list[int]]]",
+      "list[list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 12062
+    },
+    {
+     "taskId": "Mbpp/614",
+     "entryPoint": "cummulative_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 7234
+    },
+    {
+     "taskId": "Mbpp/615",
+     "entryPoint": "average_tuple",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "list[float]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 147,
+     "inputChars": 9699
+    },
+    {
+     "taskId": "Mbpp/616",
+     "entryPoint": "tuple_modulo",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4754
+    },
+    {
+     "taskId": "Mbpp/618",
+     "entryPoint": "div_list",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "list[float]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3769
+    },
+    {
+     "taskId": "Mbpp/619",
+     "entryPoint": "move_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 3561
+    },
+    {
+     "taskId": "Mbpp/620",
+     "entryPoint": "largest_subset",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 7646
+    },
+    {
+     "taskId": "Mbpp/622",
+     "entryPoint": "get_median",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 5383
+    },
+    {
+     "taskId": "Mbpp/623",
+     "entryPoint": "nth_nums",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 3814
+    },
+    {
+     "taskId": "Mbpp/624",
+     "entryPoint": "is_upper",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 2505
+    },
+    {
+     "taskId": "Mbpp/626",
+     "entryPoint": "triangle_area",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "int",
+      "none"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 2082
+    },
+    {
+     "taskId": "Mbpp/628",
+     "entryPoint": "replace_spaces",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 117,
+     "inputChars": 3183
+    },
+    {
+     "taskId": "Mbpp/629",
+     "entryPoint": "Split",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3857
+    },
+    {
+     "taskId": "Mbpp/630",
+     "entryPoint": "get_coordinates",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 120,
+     "inputChars": 2751
+    },
+    {
+     "taskId": "Mbpp/631",
+     "entryPoint": "replace_spaces",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 3341
+    },
+    {
+     "taskId": "Mbpp/632",
+     "entryPoint": "move_zero",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 5497
+    },
+    {
+     "taskId": "Mbpp/633",
+     "entryPoint": "pair_xor_Sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 6705
+    },
+    {
+     "taskId": "Mbpp/635",
+     "entryPoint": "heap_sort",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 762
+    },
+    {
+     "taskId": "Mbpp/637",
+     "entryPoint": "noprofit_noloss",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 1640
+    },
+    {
+     "taskId": "Mbpp/638",
+     "entryPoint": "wind_chill",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 1446
+    },
+    {
+     "taskId": "Mbpp/639",
+     "entryPoint": "sample_nam",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 6942
+    },
+    {
+     "taskId": "Mbpp/641",
+     "entryPoint": "is_nonagonal",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 733
+    },
+    {
+     "taskId": "Mbpp/643",
+     "entryPoint": "text_match_wordz_middle",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 6230
+    },
+    {
+     "taskId": "Mbpp/644",
+     "entryPoint": "reverse_Array_Upto_K",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 3609
+    },
+    {
+     "taskId": "Mbpp/720",
+     "entryPoint": "add_dict_to_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[dict-str,int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 15594
+    },
+    {
+     "taskId": "Mbpp/721",
+     "entryPoint": "maxAverageOfPath",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 101,
+     "inputChars": 10002
+    },
+    {
+     "taskId": "Mbpp/722",
+     "entryPoint": "filter_data",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "dict-str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 15134
+    },
+    {
+     "taskId": "Mbpp/723",
+     "entryPoint": "count_same_pair",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 109,
+     "inputChars": 8888
+    },
+    {
+     "taskId": "Mbpp/724",
+     "entryPoint": "power_base_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 105,
+     "inputChars": 1192
+    },
+    {
+     "taskId": "Mbpp/725",
+     "entryPoint": "extract_quotation",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 112,
+     "inputChars": 6685
+    },
+    {
+     "taskId": "Mbpp/726",
+     "entryPoint": "multiply_elements",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[]",
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 106,
+     "inputChars": 3431
+    },
+    {
+     "taskId": "Mbpp/728",
+     "entryPoint": "sum_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 7346
+    },
+    {
+     "taskId": "Mbpp/730",
+     "entryPoint": "consecutive_duplicates",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]",
+      "list[str]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 108,
+     "inputChars": 9592
+    },
+    {
+     "taskId": "Mbpp/731",
+     "entryPoint": "lateralsurface_cone",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance"
+     ],
+     "outputTypes": [
+      "float"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 3462
+    },
+    {
+     "taskId": "Mbpp/732",
+     "entryPoint": "replace_specialchar",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 112,
+     "inputChars": 3793
+    },
+    {
+     "taskId": "Mbpp/733",
+     "entryPoint": "find_first_occurrence",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 2358
+    },
+    {
+     "taskId": "Mbpp/734",
+     "entryPoint": "sum_Of_Subarray_Prod",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 663
+    },
+    {
+     "taskId": "Mbpp/735",
+     "entryPoint": "toggle_middle_bits",
+     "class": "incompatible",
+     "reasons": [
+      "bigint"
+     ],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 107,
+     "inputChars": 1096
+    },
+    {
+     "taskId": "Mbpp/736",
+     "entryPoint": "left_insertion",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 4312
+    },
+    {
+     "taskId": "Mbpp/737",
+     "entryPoint": "check_str",
+     "class": "needs-adapter",
+     "reasons": [
+      "no-output-type",
+      "special-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 4011
+    },
+    {
+     "taskId": "Mbpp/739",
+     "entryPoint": "find_Index",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 638
+    },
+    {
+     "taskId": "Mbpp/740",
+     "entryPoint": "tuple_to_dict",
+     "class": "incompatible",
+     "reasons": [
+      "output-dict-nonstr-keys"
+     ],
+     "outputTypes": [
+      "dict-nonstr"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 66,
+     "inputChars": 2945
+    },
+    {
+     "taskId": "Mbpp/741",
+     "entryPoint": "all_Characters_Same",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2282
+    },
+    {
+     "taskId": "Mbpp/742",
+     "entryPoint": "area_tetrahedron",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0.0001,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 2168
+    },
+    {
+     "taskId": "Mbpp/743",
+     "entryPoint": "rotate_right",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 115,
+     "inputChars": 5678
+    },
+    {
+     "taskId": "Mbpp/744",
+     "entryPoint": "check_none",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 128,
+     "inputChars": 9295
+    },
+    {
+     "taskId": "Mbpp/745",
+     "entryPoint": "divisible_by_digits",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 1392
+    },
+    {
+     "taskId": "Mbpp/748",
+     "entryPoint": "capital_words_spaces",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 8928
+    },
+    {
+     "taskId": "Mbpp/749",
+     "entryPoint": "sort_numeric_strings",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 104,
+     "inputChars": 15994
+    },
+    {
+     "taskId": "Mbpp/750",
+     "entryPoint": "add_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 20506
+    },
+    {
+     "taskId": "Mbpp/751",
+     "entryPoint": "check_min_heap",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4400
+    },
+    {
+     "taskId": "Mbpp/752",
+     "entryPoint": "jacobsthal_num",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 102,
+     "inputChars": 668
+    },
+    {
+     "taskId": "Mbpp/753",
+     "entryPoint": "min_k",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[int,str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 8654
+    },
+    {
+     "taskId": "Mbpp/754",
+     "entryPoint": "extract_index_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[]",
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 115,
+     "inputChars": 8689
+    },
+    {
+     "taskId": "Mbpp/755",
+     "entryPoint": "second_smallest",
+     "class": "needs-adapter",
+     "reasons": [
+      "float-tolerance",
+      "returns-none"
+     ],
+     "outputTypes": [
+      "float",
+      "int",
+      "none"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 103,
+     "inputChars": 10744
+    },
+    {
+     "taskId": "Mbpp/757",
+     "entryPoint": "count_reverse_pairs",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 8910
+    },
+    {
+     "taskId": "Mbpp/758",
+     "entryPoint": "unique_sublists",
+     "class": "incompatible",
+     "reasons": [
+      "output-dict-nonstr-keys"
+     ],
+     "outputTypes": [
+      "dict-nonstr"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 112,
+     "inputChars": 14673
+    },
+    {
+     "taskId": "Mbpp/759",
+     "entryPoint": "is_decimal",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 5,
+     "plusCases": 110,
+     "inputChars": 2574
+    },
+    {
+     "taskId": "Mbpp/760",
+     "entryPoint": "unique_Element",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4079
+    },
+    {
+     "taskId": "Mbpp/762",
+     "entryPoint": "check_monthnumber_number",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 13,
+     "inputChars": 87
+    },
+    {
+     "taskId": "Mbpp/763",
+     "entryPoint": "find_min_diff",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 5672
+    },
+    {
+     "taskId": "Mbpp/764",
+     "entryPoint": "number_ctr",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 105,
+     "inputChars": 2006
+    },
+    {
+     "taskId": "Mbpp/765",
+     "entryPoint": "is_polite",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 108,
+     "inputChars": 1041
+    },
+    {
+     "taskId": "Mbpp/766",
+     "entryPoint": "pair_wise",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 111,
+     "inputChars": 5939
+    },
+    {
+     "taskId": "Mbpp/767",
+     "entryPoint": "get_pairs_count",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 103,
+     "inputChars": 4424
+    },
+    {
+     "taskId": "Mbpp/769",
+     "entryPoint": "Diff",
+     "class": "needs-adapter",
+     "reasons": [
+      "order-from-set",
+      "set-equality-oracle"
+     ],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 11161
+    },
+    {
+     "taskId": "Mbpp/770",
+     "entryPoint": "odd_num_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 618
+    },
+    {
+     "taskId": "Mbpp/771",
+     "entryPoint": "check_expression",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 10784
+    },
+    {
+     "taskId": "Mbpp/772",
+     "entryPoint": "remove_length",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 106,
+     "inputChars": 4716
+    },
+    {
+     "taskId": "Mbpp/773",
+     "entryPoint": "occurance_substring",
+     "class": "direct-with-caution",
+     "reasons": [
+      "returns-none"
+     ],
+     "outputTypes": [
+      "none",
+      "tuple[int,str]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 101,
+     "inputChars": 5399
+    },
+    {
+     "taskId": "Mbpp/775",
+     "entryPoint": "odd_position",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 3998
+    },
+    {
+     "taskId": "Mbpp/777",
+     "entryPoint": "find_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 4582
+    },
+    {
+     "taskId": "Mbpp/778",
+     "entryPoint": "pack_consecutive_duplicates",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[list[int]]",
+      "list[list[str]]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 107,
+     "inputChars": 7612
+    },
+    {
+     "taskId": "Mbpp/780",
+     "entryPoint": "find_combinations",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[tuple[int]]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 119,
+     "inputChars": 8510
+    },
+    {
+     "taskId": "Mbpp/781",
+     "entryPoint": "count_divisors",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 113,
+     "inputChars": 803
+    },
+    {
+     "taskId": "Mbpp/782",
+     "entryPoint": "odd_length_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 4056
+    },
+    {
+     "taskId": "Mbpp/784",
+     "entryPoint": "mul_even_odd",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 3276
+    },
+    {
+     "taskId": "Mbpp/785",
+     "entryPoint": "tuple_str_int",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 117,
+     "inputChars": 3503
+    },
+    {
+     "taskId": "Mbpp/786",
+     "entryPoint": "right_insertion",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 9107
+    },
+    {
+     "taskId": "Mbpp/787",
+     "entryPoint": "text_match_three",
+     "class": "needs-adapter",
+     "reasons": [
+      "no-output-type",
+      "special-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 101,
+     "inputChars": 10153
+    },
+    {
+     "taskId": "Mbpp/788",
+     "entryPoint": "new_tuple",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[str]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 14430
+    },
+    {
+     "taskId": "Mbpp/790",
+     "entryPoint": "even_position",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 111,
+     "inputChars": 3909
+    },
+    {
+     "taskId": "Mbpp/791",
+     "entryPoint": "remove_nested",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "tuple[int]"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 108,
+     "inputChars": 8342
+    },
+    {
+     "taskId": "Mbpp/792",
+     "entryPoint": "count_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 115,
+     "inputChars": 19727
+    },
+    {
+     "taskId": "Mbpp/793",
+     "entryPoint": "last",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 0,
+     "inputChars": 69
+    },
+    {
+     "taskId": "Mbpp/794",
+     "entryPoint": "text_starta_endb",
+     "class": "needs-adapter",
+     "reasons": [
+      "no-output-type",
+      "special-oracle"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 4626
+    },
+    {
+     "taskId": "Mbpp/796",
+     "entryPoint": "return_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 103,
+     "inputChars": 6725
+    },
+    {
+     "taskId": "Mbpp/797",
+     "entryPoint": "sum_in_range",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 1335
+    },
+    {
+     "taskId": "Mbpp/798",
+     "entryPoint": "_sum",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 101,
+     "inputChars": 2762
+    },
+    {
+     "taskId": "Mbpp/799",
+     "entryPoint": "left_rotate",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 7,
+     "plusCases": 101,
+     "inputChars": 918
+    },
+    {
+     "taskId": "Mbpp/800",
+     "entryPoint": "remove_all_spaces",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "str"
+     ],
+     "atol": 0,
+     "baseCases": 4,
+     "plusCases": 120,
+     "inputChars": 9720
+    },
+    {
+     "taskId": "Mbpp/801",
+     "entryPoint": "test_three_equal",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 110,
+     "inputChars": 2227
+    },
+    {
+     "taskId": "Mbpp/803",
+     "entryPoint": "is_perfect_square",
+     "class": "incompatible",
+     "reasons": [
+      "bigint",
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 6,
+     "plusCases": 106,
+     "inputChars": 1023
+    },
+    {
+     "taskId": "Mbpp/804",
+     "entryPoint": "is_product_even",
+     "class": "direct-with-caution",
+     "reasons": [
+      "no-output-type"
+     ],
+     "outputTypes": [],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 109,
+     "inputChars": 2382
+    },
+    {
+     "taskId": "Mbpp/805",
+     "entryPoint": "max_sum_list",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "list[int]"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 125,
+     "inputChars": 10393
+    },
+    {
+     "taskId": "Mbpp/806",
+     "entryPoint": "max_run_uppercase",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 102,
+     "inputChars": 2212
+    },
+    {
+     "taskId": "Mbpp/807",
+     "entryPoint": "first_odd",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "int"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 105,
+     "inputChars": 3454
+    },
+    {
+     "taskId": "Mbpp/808",
+     "entryPoint": "check_K",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 121,
+     "inputChars": 6160
+    },
+    {
+     "taskId": "Mbpp/809",
+     "entryPoint": "check_smaller",
+     "class": "direct",
+     "reasons": [],
+     "outputTypes": [
+      "bool"
+     ],
+     "atol": 0,
+     "baseCases": 3,
+     "plusCases": 122,
+     "inputChars": 4194
+    }
+   ]
+  }
+ },
+ "provenance": {
+  "script": "tools/data/evalplus_compat.py",
+  "gitCommit": "629187af546f7fd24bfc9ff5393fc6fde6c58376",
+  "scriptDirty": false,
+  "python": "3.12.14",
+  "generatedAt": "2026-10-25T01:32:49+00:00"
+ }
+}
