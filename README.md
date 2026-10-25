@@ -4,6 +4,16 @@ A long-running AI companion with verifiable, evidence-gated learning and a biomi
 See [docs/STATUS.md](docs/STATUS.md) for the architecture, feature status and open items, and
 [experiments/README.md](experiments/README.md) for the experiments behind the papers. Design ideas for the virtual-character side were drawn from the open-source Project AIRI (see Acknowledgements).
 
+## Current scope (2026-10-26)
+
+The project is research-first. The main line is the set of measurement studies behind the papers and the author's
+dissertation: how wrong a companion's own judgments are (learning promotion, skill self-assessment, memory retrieval)
+when checked against external evidence. The companion product and its extensions (server, Web, Android, voice and stage,
+chat platforms, Minecraft, computer use, editor integrations) are maintained, with bug fixes, security and dependency updates, but
+not extended. [docs/PROJECT-SCOPE.md](docs/PROJECT-SCOPE.md) and [ADR-001](docs/decisions/ADR-001.md) give the scope and
+its rules; [configs/project-scope.json](configs/project-scope.json) assigns every module to a line, and
+`ProjectScopeTests` checks that research code never references product code.
+
 ## Build and test
 
 Requires the .NET 10 SDK (pinned in `global.json`).

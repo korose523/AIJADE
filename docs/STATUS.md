@@ -2,6 +2,8 @@
 
 本文件描述 AIJADE（.NET 实现）的架构、功能状态、研究装置与实验产物，以及尚未完成的事项。每一项功能都给出证据：测试名（`tests/Aijade.Tests` 下的单元 / 集成测试，`tests/Aijade.E2E` 下的浏览器端到端测试）或实测说明。最后一节是进度总览表，每轮工作结束时更新。
 
+> **当前适用范围（2026-10-26）**：项目以学位论文研究线为主，非研究线（伴侣产品及其扩展）只维护既有功能，不再扩张，见 [PROJECT-SCOPE](PROJECT-SCOPE.md) 与 [ADR-001](decisions/ADR-001.md)。第 4 节的功能状态是工程验证，不换算为研究进度。各模块的归属见 `configs/project-scope.json`。
+
 ## 1. 约束
 
 1. 只使用宽松许可（MIT / Apache-2.0 / BSD）的第三方组件，逐个登记在 `THIRD-PARTY-NOTICES.md`；第三方 MMD 模型不随仓库分发。
@@ -50,7 +52,10 @@ tests/
   Aijade.E2E           浏览器端到端测试
 integrations/          浏览器扩展、VS Code 扩展、Claude Code 插件
 experiments/           论文实验产物（见 experiments/README.md）
+configs/               项目范围：各模块归属研究线、共同基础或非研究线（project-scope.json）
 ```
+
+研究线：Research、Experiments、Rqc、P1、Mutation、Substrate、`tools/data` 与 `experiments/`。共同基础：Core、Memory、Learning、Telemetry、Providers、Growth。其余为非研究线。第 4–6 章的研究对象另列在 `configs/project-scope.json` 的 `researchObjects` 中：Server 的 `V9`、Memory 的研究内核与契约、Integrations 的外部渲染器链路。
 
 ## 4. 功能状态
 
@@ -136,6 +141,7 @@ experiments/           论文实验产物（见 experiments/README.md）
 | 审阅后的追加分析（不调用模型） | ✓ 方案提交于 `aee0429`，代码提交于 `761165d`，结果由该提交在干净工作区生成：`experiments/memory/answerable-reanalysis.json`（全部问题上的数值与已归档文件逐项一致，42/42）、`experiments/rq-c/verifier-feedback.json`（输入哈希与方案一致）。P3：排除对抗问题后各项对比方向不变；门控与打分方式的交互在可回答问题上，加和对标准化的区间含零，关闭惩罚对标准化的区间不含零但符号翻转检验 p = 0.070。P2：反馈对两种错误率的影响均未检出；逐轮趋势检验对可用技能“检出”，但第 0 轮之后每轮只有 1–2 个任务，同任务内的比较（探索性）显示这是任务构成而非验证器漂移 |
 | P2-A 第 0 阶段：公开代码基准的静态兼容性筛查（不生成，不执行数据集代码） | ✓ 10-25，代码 `629187a`，结果 `experiments/p2-a/evalplus-compatibility.json`。按现有 RQ-C 判定（精确结构相等，无 BigInt、Set、元组，对象键为字符串）与 EvalPlus 评测器的特例（浮点输出强制 1e-6 容差、按集合比较、专用判定），把 HumanEval+ 164 题分为可直接移植 117、需注意 24、需改判定 8、不兼容 15；MBPP+ 378 题分为 308、10、34、26。不兼容主要是超过 2^53 的整数（15 与 18 题）。这是筛查，不是移植：期望输出须运行规范解才能得到，任务来源与是否加容差、按集合比较的判定，12 月与导师商定 |
 | P2 第二主机的完整性审计（不调用模型） | ✓ 10-25。作者确认，第二模型族与提示模板 A、B 三组运行所用的显卡主机，就是另一项目因 CPU 错误记录而排除的那台。三组运行中运行器、沙箱、执行判定与分析都在主主机上，第二主机只提供模型输出。方案先于实现提交（`8b45434`），代码 `c5dfe26`，结果 `experiments/rq-c/host-audit.json`。检查结果：四组运行共 6,242 次现场生成与 3,243 条验证器回复中，无损坏字符、无空代码、无不可解析代码；验证器回复格式不符只见于 llama3.1:8b（3/770，模型行为，按规则记为 FAIL）；两份 GPU 运行日志无错误行；确定性预检在固定种子下均通过；同一 7B 模型与模板在两台主机上，各项比例的区间相互重叠。按方案读作"未见严重损坏的迹象"；不改变文本格式的变化，只有在另一台主机上重跑才能排除 |
+| 范围治理：研究线为主，非研究线只维护 | ✓ 10-26。参照 MOSAIC 的 ADR-017 新增 `docs/PROJECT-SCOPE.md`、`docs/decisions/ADR-001.md` 与 `configs/project-scope.json`：模块分为研究线、共同基础、非研究线与测试，第 4–6 章的研究对象路径单独列出。`ProjectScopeTests` 检查三件事：每个模块已声明归属；研究线与共同基础不引用非研究线；共同基础不引用研究线。现有引用无越线，无需改代码。阳性对照中，故意改错的归属与漏掉的声明都被检出 |
 | 新的运行 | ⏸ 12 月 1 日之后与导师商定顺序与资源；每项先写定方案、执行前注册 |
 
 最终状态：

@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "updated": "2026-10-26",
+  "scope": "docs/PROJECT-SCOPE.md",
+  "decision": "docs/decisions/ADR-001.md",
+  "lines": {
+    "research": {
+      "name": "Research line: the apparatus and artefacts of the dissertation's Chapters 4-7",
+      "mayReference": ["research", "shared"]
+    },
+    "shared": {
+      "name": "Shared foundation: used by the research line and the product",
+      "mayReference": ["shared"]
+    },
+    "product": {
+      "name": "Non-research line: the companion product and its extensions (maintained, not extended)",
+      "mayReference": ["shared", "product"]
+    },
+    "tests": {
+      "name": "Tests of all lines",
+      "mayReference": ["research", "shared", "product"]
+    }
+  },
+  "modules": [
+    { "path": "src/Aijade.Research", "line": "research", "chapters": [5, 6] },
+    { "path": "tools/Aijade.Experiments", "line": "research", "chapters": [4, 5, 6] },
+    { "path": "tools/Aijade.Rqc", "line": "research", "chapters": [5] },
+    { "path": "tools/Aijade.Substrate", "line": "research", "chapters": [5] },
+    { "path": "tools/Aijade.P1", "line": "research", "chapters": [4] },
+    { "path": "tools/Aijade.Mutation", "line": "research", "chapters": [4] },
+    { "path": "tools/data", "line": "research" },
+    { "path": "experiments", "line": "research" },
+
+    { "path": "src/Aijade.Core", "line": "shared" },
+    {
+      "path": "src/Aijade.Memory",
+      "line": "shared",
+      "researchObjects": ["src/Aijade.Memory/BioticMemory.cs", "src/Aijade.Memory/BioticMemory.Subsystems.cs", "src/Aijade.Memory/V9", "src/Aijade.Memory/Contracts"]
+    },
+    { "path": "src/Aijade.Learning", "line": "shared" },
+    { "path": "src/Aijade.Telemetry", "line": "shared" },
+    { "path": "src/Aijade.Providers", "line": "shared" },
+    { "path": "src/Aijade.Growth", "line": "shared" },
+
+    { "path": "src/Aijade.Server", "line": "product", "researchObjects": ["src/Aijade.Server/V9"] },
+    { "path": "src/Aijade.Integrations", "line": "product", "researchObjects": ["src/Aijade.Integrations/Renderer"] },
+    { "path": "src/Aijade.Client", "line": "product" },
+    { "path": "src/Aijade.UI", "line": "product" },
+    { "path": "src/Aijade.Web", "line": "product" },
+    { "path": "src/Aijade.Maui", "line": "product" },
+    { "path": "src/Aijade.Bots", "line": "product" },
+    { "path": "src/Aijade.ComputerUse", "line": "product" },
+    { "path": "integrations/browser-extension", "line": "product" },
+    { "path": "integrations/vscode", "line": "product" },
+    { "path": "integrations/claude-code", "line": "product" },
+    { "path": "tools/minecraft", "line": "product" },
+    { "path": "tools/mmd-bundle", "line": "product" },
+    { "path": "brand", "line": "product" },
+
+    { "path": "tests/Aijade.Tests", "line": "tests" },
+    { "path": "tests/Aijade.E2E", "line": "tests" }
+  ]
+}
