@@ -1,0 +1,298 @@
+{
+ "experiment": "Integrity audit of the RQ-C runs generated on the second host (no model calls)",
+ "plan": "experiments/plans/2026-10-25-host-integrity-audit.md",
+ "planCommit": "8b45434f13b4f46194b2d8e5f300c33c0cb492b5",
+ "codeCommit": "c5dfe269f261e9b3565917a893dda008f7534aea",
+ "codeTreeDirty": false,
+ "deviations": [],
+ "runs": [
+  {
+   "label": "main (7B, template A)",
+   "host": 1,
+   "directory": "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5",
+   "inputSha256": {
+    "trials.jsonl": "d7532c6f81dc3435f752e5a60f360e97a6d12fd29ade5eb2fcbd55a9bd8b6dae",
+    "candidates.jsonl": "bbd6e0b8f95976fff16bc7c35302d10d97854c94b564c504e2f498e2e02371a0"
+   },
+   "liveGenerations": 1621,
+   "verifierReplies": 871,
+   "A1_damagedTexts": {
+    "generations": 0,
+    "verifierReplies": 0,
+    "hits": []
+   },
+   "A2_emptyCode": {
+    "count": 0,
+    "of": 1621,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.002364205319749932
+    ]
+   },
+   "A3_unparsableCode": {
+    "count": 0,
+    "of": 1621,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.002364205319749932
+    ]
+   },
+   "A4_badVerdictFormat": {
+    "count": 0,
+    "of": 871,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.004391034263365271
+    ],
+    "steps": []
+   }
+  },
+  {
+   "label": "second family (llama3.1:8b)",
+   "host": 2,
+   "directory": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5",
+   "inputSha256": {
+    "trials.jsonl": "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121",
+    "candidates.jsonl": "9f53d82b6e38ff5286fc62c062cc54579d7a6e8fa9a1b1232f84bea486ce4d61"
+   },
+   "liveGenerations": 1519,
+   "verifierReplies": 770,
+   "A1_damagedTexts": {
+    "generations": 0,
+    "verifierReplies": 0,
+    "hits": []
+   },
+   "A2_emptyCode": {
+    "count": 0,
+    "of": 1519,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.0025225599148508836
+    ]
+   },
+   "A3_unparsableCode": {
+    "count": 0,
+    "of": 1519,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.0025225599148508836
+    ]
+   },
+   "A4_badVerdictFormat": {
+    "count": 3,
+    "of": 770,
+    "share": 0.003896103896103896,
+    "wilson95": [
+     0.0013258926936253902,
+     0.011391775387498288
+    ],
+    "steps": [
+     6646,
+     6658,
+     6943
+    ]
+   }
+  },
+  {
+   "label": "prompt template A (7B)",
+   "host": 2,
+   "directory": "experiments/rq-c/template-gpu/A/rq-c-s42-ollama-t30-r5",
+   "inputSha256": {
+    "trials.jsonl": "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436",
+    "candidates.jsonl": "928a99838f7b57696c2e7fe4731bc3b2890b16c2ed7ef9461d1ad3dae61d2ae3"
+   },
+   "liveGenerations": 1602,
+   "verifierReplies": 852,
+   "A1_damagedTexts": {
+    "generations": 0,
+    "verifierReplies": 0,
+    "hits": []
+   },
+   "A2_emptyCode": {
+    "count": 0,
+    "of": 1602,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.00239217813165394
+    ]
+   },
+   "A3_unparsableCode": {
+    "count": 0,
+    "of": 1602,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.00239217813165394
+    ]
+   },
+   "A4_badVerdictFormat": {
+    "count": 0,
+    "of": 852,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.004488516863844689
+    ],
+    "steps": []
+   }
+  },
+  {
+   "label": "prompt template B (7B)",
+   "host": 2,
+   "directory": "experiments/rq-c/template-gpu/B/rq-c-s42-ollama-t30-r5",
+   "inputSha256": {
+    "trials.jsonl": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0",
+    "candidates.jsonl": "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2"
+   },
+   "liveGenerations": 1500,
+   "verifierReplies": 750,
+   "A1_damagedTexts": {
+    "generations": 0,
+    "verifierReplies": 0,
+    "hits": []
+   },
+   "A2_emptyCode": {
+    "count": 0,
+    "of": 1500,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.002554430720181488
+    ]
+   },
+   "A3_unparsableCode": {
+    "count": 0,
+    "of": 1500,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.002554430720181488
+    ]
+   },
+   "A4_badVerdictFormat": {
+    "count": 0,
+    "of": 750,
+    "share": 0.0,
+    "wilson95": [
+     0.0,
+     0.005095844458732323
+    ],
+    "steps": []
+   }
+  }
+ ],
+ "A5_logLines": [],
+ "A6_determinism": [
+  {
+   "file": "experiments/rq-c/family-gpu/determinism-llama3.1-8b.json",
+   "model": "llama3.1:8b",
+   "verdict": "non-deterministic",
+   "reason": "Genuinely non-deterministic: 2 distinct outputs across 5 runs, on a substrate whose positive control confirms sampling parameters are honoured.",
+   "sha256": "2aaa1b07c6d19547a4851321a90919078bd351fd3ba1d7a5e4f5b49678ec4a2e"
+  },
+  {
+   "file": "experiments/rq-c/family-gpu/determinism-llama3.1-8b-repeat.json",
+   "model": "llama3.1:8b",
+   "verdict": "non-deterministic",
+   "reason": "Genuinely non-deterministic: 2 distinct outputs across 5 runs, on a substrate whose positive control confirms sampling parameters are honoured.",
+   "sha256": "2aaa1b07c6d19547a4851321a90919078bd351fd3ba1d7a5e4f5b49678ec4a2e"
+  },
+  {
+   "file": "experiments/rq-c/family-gpu/determinism-llama3.1-8b-fixedseed.json",
+   "model": "llama3.1:8b",
+   "verdict": "pass",
+   "reason": "Deterministic and verified: 1 distinct output across 5 fixed-seed runs, on a substrate whose positive control diverged — so the match reflects real greedy decoding, not ignored sampling parameters.",
+   "sha256": "b7f3c0fe9388386d11b26e41dbe2a3ad094f42f6b3107773ed95c668404a7018"
+  },
+  {
+   "file": "experiments/rq-c/template-gpu/determinism-7b-fixedseed.json",
+   "model": "qwen2.5-coder:7b-instruct",
+   "verdict": "pass",
+   "reason": "Deterministic and verified: 1 distinct output across 5 fixed-seed runs, on a substrate whose positive control diverged — so the match reflects real greedy decoding, not ignored sampling parameters.",
+   "sha256": "7c655a75439b35e5f8da013540df78b04f26cf224b5aab6cfd30028ee00225dd"
+  }
+ ],
+ "A7_sameModelTwoHosts": {
+  "host1": "main (7B, template A)",
+  "host2": "prompt template A (7B)",
+  "intervalsOverlap": {
+   "A2_emptyCode": true,
+   "A3_unparsableCode": true,
+   "A4_badVerdictFormat": true
+  },
+  "verifierErrorRates": {
+   "main (7B, template A)": {
+    "hallucinationRate": {
+     "numerator": 59,
+     "denominator": 139,
+     "estimate": 0.4244604316546763,
+     "wilson95": [
+      0.34541197176462135,
+      0.5075718875898195
+     ],
+     "taskBootstrapBca95": [
+      0.06,
+      0.7692307692307693
+     ]
+    },
+    "missRate": {
+     "numerator": 78,
+     "denominator": 732,
+     "estimate": 0.10655737704918032,
+     "wilson95": [
+      0.08622328113807373,
+      0.13099940576633926
+     ],
+     "taskBootstrapBca95": [
+      0.013774104683195593,
+      0.3672053016596141
+     ]
+    }
+   },
+   "prompt template A (7B)": {
+    "hallucinationRate": {
+     "numerator": 70,
+     "denominator": 130,
+     "estimate": 0.5384615384615384,
+     "wilson95": [
+      0.4528937288666052,
+      0.6218215356568999
+     ],
+     "taskBootstrapBca95": [
+      0.07317073170731707,
+      0.9603960396039604
+     ]
+    },
+    "missRate": {
+     "numerator": 68,
+     "denominator": 722,
+     "estimate": 0.09418282548476455,
+     "wilson95": [
+      0.07497356502007435,
+      0.1176875968924741
+     ],
+     "taskBootstrapBca95": [
+      0,
+      0.3675299531798257
+     ]
+    }
+   }
+  }
+ },
+ "reading": {
+  "anomaly": false,
+  "reasons": [],
+  "A5": "each listed line is to be matched against the recorded, explained interruptions (see the logs); an unexplained error counts as an anomaly",
+  "limits": "detects gross corruption only; a change that leaves well-formed text needs a re-run on another host"
+ },
+ "runtime": {
+  "python": "3.12.14",
+  "node": "v24.21.0"
+ }
+}
