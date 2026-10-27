@@ -8,8 +8,17 @@ The papers are numbered P1, P2 and P3. Run records written before 19 October 202
 `memory/uncertainty.json` and the title of `p1/mutation/mutation-report.md`) still use the earlier labels: P4 for the
 retrieval-scoring paper, now P3, and J1 for the Chinese version of P1. Records are kept as they were produced.
 
-`plans/` holds analysis plans committed to this repository before the analyses they describe were implemented or run;
-the commit history is their timestamp. They are not registered on an external platform.
+`plans/` holds analysis plans committed to this repository before the analyses they describe were implemented or run.
+The commit order shows that a plan came before its code; it does not show when the plan became public, because a plan
+and its code may be pushed together. From the main experiments of December 2026, each plan is pushed on its own and sent
+to the supervisor as a PDF before its code is written. The plans are not registered on an external platform.
+
+Records and scripts written before 22 October 2026 (the RQ-C run scripts, `rq-c/family/ABANDONED.md`,
+`rq-c/temperature-sweep-plan.md`, and the `preregistrationDeviation` field of every RQ-C `summary.json`) call the RQ-C
+protocol "pre-registered". That protocol (trials, rounds, tasks, seed, pruning rule and verdict rule) was fixed in the
+code, in the `Preregistration` class of `src/Aijade.Research/RqC/Harness.cs`, before the runs; it was not registered on
+an external platform. The records keep their original wording, and the class and the field keep their names so that
+archived summaries stay comparable.
 
 | Directory | Paper | Contents | Produced by |
 |---|---|---|---|
@@ -24,7 +33,7 @@ the commit history is their timestamp. They are not registered on an external pl
 | `rq-c/` | P2 | RQ-C runs (`summary.json`, `trials.jsonl`, `candidates.jsonl`), temperature sweep, model-based analysis (`p2-models.json`), sandbox isolation (`<run>/sandbox-isolation.json`), differential testing (`<run>/differential.json`), determinism pre-check and its repeat on the loaded model (`determinism-7b.json`, `determinism-7b-repeat.json`), model weight digests (`model-digests.json`), verifier error rates by environment feedback and by round (`verifier-feedback.json`, plan `plans/2026-10-22-followup-analyses.md`), integrity audit of the runs generated on the second host (`host-audit.json`, plan `plans/2026-10-25-host-integrity-audit.md`) | `tools/Aijade.Rqc` (`run-redo.sh`, `run-sweep.sh`), `aijade-experiments p2-models`, `aijade-experiments sandbox-isolation`, `aijade-experiments differential --run <dir>`, `aijade-experiments verifier-feedback`, `python3 -I experiments/rq-c/host_audit.py --out experiments/rq-c/host-audit.json` |
 | `rq-c/family/` | P2 | First attempt at the second-family control (llava-phi3), abandoned at step 5,505 because its verifier ignores the verdict format (`ABANDONED.md`); kept as data | `run-family.sh` |
 | `rq-c/family-gpu/` | P2 | Second-family control: llama3.1:8b on the Windows GPU host over Tailscale (Ollama 0.40.0, context 4096), same design as the main run; determinism pre-checks (`determinism-llama3.1-8b*.json`) | `AIJADE_OLLAMA_URL=http://<host>:11434 run-family-gpu.sh llama3.1:8b`, then `finish-family.sh` |
-| `rq-c/template-gpu/` | P2 | Prompt-template control (registered before the runs): the main model on the Windows GPU host with verifier prompt A (pre-registered) and B (alternative wording); determinism pre-check `determinism-7b-fixedseed.json` | `AIJADE_OLLAMA_URL=http://<host>:11434 run-template.sh A` (and `B`), then `aijade-experiments p2-models` |
+| `rq-c/template-gpu/` | P2 | Prompt-template control (written down before the runs): the main model on the Windows GPU host with verifier prompt A (the protocol's) and B (alternative wording); determinism pre-check `determinism-7b-fixedseed.json` | `AIJADE_OLLAMA_URL=http://<host>:11434 run-template.sh A` (and `B`), then `aijade-experiments p2-models` |
 | `rq-c/format-precheck/` | P2 | Verdict-format pre-checks of the candidate replacement models (rule fixed before testing) | `aijade-experiments format-precheck --model M --ollama-base-url U` |
 | `p2-a/` | P2 (follow-up P2-A) | Stage 0: static screen of the EvalPlus HumanEval+ and MBPP+ tasks for whether their inputs, outputs and comparison rule fit the RQ-C JavaScript oracle (`evalplus-compatibility.json`); no generation, and nothing from the datasets is executed | `tools/data/fetch-corpora.sh evalplus`, then `python3 -I tools/data/evalplus_compat.py --out experiments/p2-a/evalplus-compatibility.json` |
 

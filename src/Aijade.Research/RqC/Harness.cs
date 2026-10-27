@@ -11,7 +11,11 @@ namespace Aijade.Research.RqC;
 // while active and regenerated once it has failed its way out, and the accumulated evidence is fed back only through the
 // channels the condition owns. The analysis unit is the skill, never the execution (re-used skills are correlated).
 
-/// <summary>The registered protocol (PREREGISTRATION.md) — not tuning knobs; any deviation is reported loudly.</summary>
+/// <summary>
+/// The protocol of the RQ-C runs, fixed in this code before the runs and not registered on an external platform. The class
+/// and the summary field <c>preregistrationDeviation</c> keep their original names so that archived summaries stay
+/// comparable. Not tuning knobs; any deviation is reported loudly.
+/// </summary>
 public static class Preregistration
 {
     public const int Trials = 30;

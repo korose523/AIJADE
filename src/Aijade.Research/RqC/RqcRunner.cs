@@ -17,7 +17,7 @@ public enum RqcBackendKind
     Ollama,
 }
 
-/// <summary>Run configuration; defaults are the preregistered protocol. The Ollama timeout is infrastructure, not part of the fingerprint.</summary>
+/// <summary>Run configuration; defaults are the protocol fixed before the runs (<see cref="Preregistration"/>). The Ollama timeout is infrastructure, not part of the fingerprint.</summary>
 public sealed record RqcCliConfig
 {
     public int Trials { get; init; } = Preregistration.Trials;

@@ -238,8 +238,8 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
     private int fallbackRead;
 
     /// <summary>
-    /// Verifier replies that do not begin with PASS or FAIL, as the prompt asks. Under the pre-registered rule they are FAIL
-    /// verdicts; with <c>verdictFallback</c> their last explicit "verdict: PASS|FAIL" is read instead.
+    /// Verifier replies that do not begin with PASS or FAIL, as the prompt asks. Under the verdict rule fixed before the runs
+    /// they are FAIL verdicts; with <c>verdictFallback</c> their last explicit "verdict: PASS|FAIL" is read instead.
     /// </summary>
     public int NonConformingVerdicts => Volatile.Read(ref nonConforming);
 
@@ -357,9 +357,9 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
     }
 
     /// <summary>
-    /// The pre-registered rule: a reply passes when it begins with PASS. A reply that begins with neither PASS nor FAIL is
-    /// non-conforming; with <paramref name="fallback"/> its last explicit "verdict: PASS|FAIL" decides, and without one it
-    /// stays a FAIL.
+    /// The verdict rule fixed before the runs: a reply passes when it begins with PASS. A reply that begins with neither PASS
+    /// nor FAIL is non-conforming; with <paramref name="fallback"/> its last explicit "verdict: PASS|FAIL" decides, and
+    /// without one it stays a FAIL.
     /// </summary>
     public static bool ReadVerdict(string reply, bool fallback, out bool conforming, out bool readByFallback)
     {
