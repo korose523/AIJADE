@@ -1,0 +1,95 @@
+namespace Aijade.Client.Companion;
+
+/// <summary>One turn of a user's conversation: something the user said, or a line the companion began herself.</summary>
+/// <param name="Created">When the turn was recorded, in seconds on any clock shared with <c>now</c>.</param>
+/// <param name="Input">What the user said (empty for her own first lines).</param>
+/// <param name="Proactive">A line she began herself, with no user input.</param>
+public sealed record InitiativeTurn(double Created, string? Input, bool Proactive);
+
+/// <summary>The weights of the opportunity score.</summary>
+public sealed record InitiativeWeights(double Relevance, double Novelty, double Social, double Context, double Interrupt, double Frequency);
+
+/// <summary>Gates, timing and weights of <see cref="Initiative"/>; <see cref="Default"/> holds the shared contract's values.</summary>
+public sealed record InitiativeParams(double QuietMinS, double QuietFullS, double CooldownS, int PerHour, double HushS, double RecentS,
+    int NightStart, int NightEnd, double Threshold, InitiativeWeights Weights)
+{
+    /// <summary>The values of <c>configs/companion/contract.json</c> (initiative.params).</summary>
+    public static InitiativeParams Default { get; } = new(QuietMinS: 180, QuietFullS: 600, CooldownS: 480, PerHour: 3, HushS: 7200,
+        RecentS: 7200, NightStart: 0, NightEnd: 7, Threshold: 0.75, new InitiativeWeights(Relevance: 0.35, Novelty: 0.15, Social: 0.35,
+        Context: 0.15, Interrupt: 0.6, Frequency: 0.4));
+}
+
+/// <summary>Whether she speaks first, the score and its parts, the reason, and the user's last message worth following up.</summary>
+public sealed record InitiativeDecision(bool Speak, double? Score, IReadOnlyDictionary<string, double> Parts, string Reason, string? FollowUp);
+
+/// <summary>
+/// When the companion speaks first: an opportunity score, not a random timer, behind fixed gates (night, a request for quiet,
+/// leaving words, unanswered lines, quiet, cooldown, an hourly budget). This is the rule of the shared companion contract
+/// (<c>configs/companion/contract.json</c>, <c>docs/COMPANION-CONTRACT.md</c>), held to the vectors generated from MOSAIC's
+/// implementation. It is a reference implementation for the companion product; no product surface calls it yet.
+/// </summary>
+public static class Initiative
+{
+    /// <summary>Words that mean the user is leaving or busy (matched in the lower-cased message).</summary>
+    public static IReadOnlyList<string> Leaving { get; } =
+    [
+        "晚安", "再见", "拜拜", "回头见", "待会聊", "待会儿聊", "先走", "去睡", "睡了", "睡觉", "去忙", "忙了", "开会", "上课", "上班了",
+        "下线", "出门", "去洗澡", "去吃饭", "去做饭", "good night", "bye", "gotta go", "brb", "talk later",
+    ];
+
+    /// <summary>Words that ask her to be quiet (matched in the lower-cased message).</summary>
+    public static IReadOnlyList<string> Hush { get; } =
+        ["安静点", "安静一点", "别吵", "别说话", "别打扰", "不要打扰", "让我静静", "闭嘴", "be quiet", "shut up", "leave me alone"];
+
+    /// <param name="turns">The user's turns, newest first.</param>
+    /// <param name="now">The current time on the clock of <see cref="InitiativeTurn.Created"/>.</param>
+    /// <param name="hour">The user's local hour, 0 to 23.</param>
+    /// <param name="p">Gates and weights; the contract's values when null.</param>
+    public static InitiativeDecision Decide(IReadOnlyList<InitiativeTurn> turns, double now, int hour, InitiativeParams? p = null)
+    {
+        p ??= InitiativeParams.Default;
+        var said = turns.Where(t => !t.Proactive).ToList();
+        if (said.Count == 0)
+            return new(false, null, new Dictionary<string, double>(), "they have not said anything yet", null);
+        var last = said[0];
+        var quiet = now - turns[0].Created;
+        var text = (last.Input ?? "").ToLowerInvariant();
+        var mine = turns.Where(t => t.Proactive).ToList();
+        var ignored = turns.TakeWhile(t => t.Proactive).Count();
+        var thisHour = mine.Count(t => now - t.Created < 3600);
+        var doubled = ignored > 0 ? 2 : 1;
+
+        string? gate = null;
+        if (p.NightStart <= hour && hour < p.NightEnd)
+            gate = "night hours";
+        else if (Hush.Any(text.Contains) && now - last.Created < p.HushS)
+            gate = "they asked for quiet";
+        else if (Leaving.Any(text.Contains))
+            gate = "their last words were leaving or busy";
+        else if (ignored >= 2)
+            gate = "two of her lines went unanswered: waiting for them";
+        else if (quiet < p.QuietMinS * doubled)
+            gate = "not quiet long enough";
+        else if (mine.Count > 0 && now - mine[0].Created < p.CooldownS * doubled)
+            gate = "she spoke first recently";
+        else if (thisHour >= p.PerHour)
+            gate = "hourly budget used";
+
+        // Length in code points, as the contract counts characters.
+        var worth = (last.Input ?? "").Trim().EnumerateRunes().Count() >= 4 && now - last.Created < p.RecentS;
+        var parts = new Dictionary<string, double>(StringComparer.Ordinal)
+        {
+            ["relevance"] = worth ? 1 : 0.3,
+            ["novelty"] = ignored > 0 ? 0 : 1,
+            ["social"] = Math.Min(1, Math.Max(0, (quiet - p.QuietMinS) / (p.QuietFullS - p.QuietMinS))),
+            ["context"] = 1,
+            ["interrupt"] = 0,
+            ["frequency"] = (double)thisHour / p.PerHour,
+        };
+        var w = p.Weights;
+        var score = w.Relevance * parts["relevance"] + w.Novelty * parts["novelty"] + w.Social * parts["social"] + w.Context * parts["context"]
+                    - w.Interrupt * parts["interrupt"] - w.Frequency * parts["frequency"];
+        var speak = gate is null && score >= p.Threshold;
+        return new(speak, score, parts, gate ?? (speak ? "opportunity" : "score below threshold"), worth ? last.Input : null);
+    }
+}

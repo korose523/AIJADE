@@ -12,7 +12,9 @@ when checked against external evidence. The companion product and its extensions
 chat platforms, Minecraft, computer use, editor integrations) are maintained, with bug fixes, security and dependency updates, but
 not extended. [docs/PROJECT-SCOPE.md](docs/PROJECT-SCOPE.md) and [ADR-001](docs/decisions/ADR-001.md) give the scope and
 its rules; [configs/project-scope.json](configs/project-scope.json) assigns every module to a line, and
-`ProjectScopeTests` checks that research code never references product code.
+`ProjectScopeTests` checks that research code never references product code. One exception, [ADR-002](docs/decisions/ADR-002.md):
+the companion shares a contract with the companion of the author's MOSAIC project (the persona 艾娅德, expression names
+and the rule for speaking first; [docs/COMPANION-CONTRACT.md](docs/COMPANION-CONTRACT.md)).
 
 ## Build and test
 

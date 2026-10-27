@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-10-26",
+  "updated": "2026-10-27",
   "scope": "docs/PROJECT-SCOPE.md",
   "decision": "docs/decisions/ADR-001.md",
   "lines": {
@@ -42,9 +42,9 @@
     { "path": "src/Aijade.Providers", "line": "shared" },
     { "path": "src/Aijade.Growth", "line": "shared" },
 
-    { "path": "src/Aijade.Server", "line": "product", "researchObjects": ["src/Aijade.Server/V9"] },
+    { "path": "src/Aijade.Server", "line": "product", "researchObjects": ["src/Aijade.Server/V9", "src/Aijade.Server/Memory/MemoryLibrary.cs"] },
     { "path": "src/Aijade.Integrations", "line": "product", "researchObjects": ["src/Aijade.Integrations/Renderer"] },
-    { "path": "src/Aijade.Client", "line": "product" },
+    { "path": "src/Aijade.Client", "line": "product", "researchObjects": ["src/Aijade.Client/Chat/MemoryContext.cs"] },
     { "path": "src/Aijade.UI", "line": "product" },
     { "path": "src/Aijade.Web", "line": "product" },
     { "path": "src/Aijade.Maui", "line": "product" },

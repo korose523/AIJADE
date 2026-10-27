@@ -1,0 +1,581 @@
+{
+ "source": {
+  "file": "ai-python/mosaic/integration/companion.py (MOSAIC working copy)",
+  "function": "initiative",
+  "sha256": "843fcfd971039b55b6f95f9c8927217a29597dcb12e0bc9e0ec99a0c642fe84d",
+  "readOn": "2026-10-28"
+ },
+ "params": {
+  "quiet_min_s": 180.0,
+  "quiet_full_s": 600.0,
+  "cooldown_s": 480.0,
+  "per_hour": 3,
+  "hush_s": 7200.0,
+  "recent_s": 7200.0,
+  "night": [
+   0,
+   7
+  ],
+  "threshold": 0.75,
+  "weights": {
+   "relevance": 0.35,
+   "novelty": 0.15,
+   "social": 0.35,
+   "context": 0.15,
+   "interrupt": 0.6,
+   "frequency": 0.4
+  }
+ },
+ "leaving": [
+  "晚安",
+  "再见",
+  "拜拜",
+  "回头见",
+  "待会聊",
+  "待会儿聊",
+  "先走",
+  "去睡",
+  "睡了",
+  "睡觉",
+  "去忙",
+  "忙了",
+  "开会",
+  "上课",
+  "上班了",
+  "下线",
+  "出门",
+  "去洗澡",
+  "去吃饭",
+  "去做饭",
+  "good night",
+  "bye",
+  "gotta go",
+  "brb",
+  "talk later"
+ ],
+ "hush": [
+  "安静点",
+  "安静一点",
+  "别吵",
+  "别说话",
+  "别打扰",
+  "不要打扰",
+  "让我静静",
+  "闭嘴",
+  "be quiet",
+  "shut up",
+  "leave me alone"
+ ],
+ "vectors": [
+  {
+   "name": "no user turns yet",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [],
+   "expected": {
+    "speak": false,
+    "score": null,
+    "reason": "they have not said anything yet",
+    "followUp": null,
+    "parts": {}
+   }
+  },
+  {
+   "name": "night hours",
+   "now": 1000000.0,
+   "hour": 2,
+   "turns": [
+    {
+     "created": 999100.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 1.0,
+    "reason": "night hours",
+    "followUp": "今天面试，有点紧张",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "asked for quiet within two hours",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999100.0,
+     "input": "安静点，我要看书",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 1.0,
+    "reason": "they asked for quiet",
+    "followUp": "安静点，我要看书",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "quiet request older than two hours",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 992700.0,
+     "input": "安静点",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": true,
+    "score": 0.755,
+    "reason": "opportunity",
+    "followUp": null,
+    "parts": {
+     "relevance": 0.3,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "last words were leaving",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999100.0,
+     "input": "我去洗澡了，待会聊",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 1.0,
+    "reason": "their last words were leaving or busy",
+    "followUp": "我去洗澡了，待会聊",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "leaving words are case-insensitive",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999100.0,
+     "input": "Good night!",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 1.0,
+    "reason": "their last words were leaving or busy",
+    "followUp": "Good night!",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "two of her lines unanswered",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999600.0,
+     "input": "",
+     "kind": "proactive"
+    },
+    {
+     "created": 999100.0,
+     "input": "",
+     "kind": "proactive"
+    },
+    {
+     "created": 998500.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.417,
+    "reason": "two of her lines went unanswered: waiting for them",
+    "followUp": "今天面试，有点紧张",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 0.0,
+     "social": 0.524,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.667
+    }
+   }
+  },
+  {
+   "name": "not quiet long enough",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999880.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.65,
+    "reason": "not quiet long enough",
+    "followUp": "今天面试，有点紧张",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 0.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "one line unanswered doubles the quiet minimum",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999700.0,
+     "input": "",
+     "kind": "proactive"
+    },
+    {
+     "created": 999100.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.467,
+    "reason": "not quiet long enough",
+    "followUp": "今天面试，有点紧张",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 0.0,
+     "social": 0.286,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.333
+    }
+   }
+  },
+  {
+   "name": "she spoke first recently",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999750.0,
+     "input": "还行吧，挺顺利的",
+     "kind": "chat"
+    },
+    {
+     "created": 999700.0,
+     "input": "",
+     "kind": "proactive"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.575,
+    "reason": "she spoke first recently",
+    "followUp": "还行吧，挺顺利的",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 0.167,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.333
+    }
+   }
+  },
+  {
+   "name": "hourly budget used",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999500.0,
+     "input": "嗯嗯，晚点再说这个",
+     "kind": "chat"
+    },
+    {
+     "created": 999400.0,
+     "input": "",
+     "kind": "proactive"
+    },
+    {
+     "created": 998800.0,
+     "input": "好的",
+     "kind": "chat"
+    },
+    {
+     "created": 998700.0,
+     "input": "",
+     "kind": "proactive"
+    },
+    {
+     "created": 998000.0,
+     "input": "哈哈",
+     "kind": "chat"
+    },
+    {
+     "created": 997900.0,
+     "input": "",
+     "kind": "proactive"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.517,
+    "reason": "hourly budget used",
+    "followUp": "嗯嗯，晚点再说这个",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 0.762,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 1.0
+    }
+   }
+  },
+  {
+   "name": "worth following up, about five and a half minutes",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999670.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": true,
+    "score": 0.775,
+    "reason": "opportunity",
+    "followUp": "今天面试，有点紧张",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 0.357,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "short reply is not worth following up",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999670.0,
+     "input": "嗯",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.53,
+    "reason": "score below threshold",
+    "followUp": null,
+    "parts": {
+     "relevance": 0.3,
+     "novelty": 1.0,
+     "social": 0.357,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "short reply, ten minutes of quiet",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999400.0,
+     "input": "嗯",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": true,
+    "score": 0.755,
+    "reason": "opportunity",
+    "followUp": null,
+    "parts": {
+     "relevance": 0.3,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "follow-up older than two hours",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 989200.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": true,
+    "score": 0.755,
+    "reason": "opportunity",
+    "followUp": null,
+    "parts": {
+     "relevance": 0.3,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  },
+  {
+   "name": "one answered line this hour lowers the score",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999640.0,
+     "input": "还挺好的，谢谢你问",
+     "kind": "chat"
+    },
+    {
+     "created": 998800.0,
+     "input": "",
+     "kind": "proactive"
+    }
+   ],
+   "expected": {
+    "speak": false,
+    "score": 0.667,
+    "reason": "score below threshold",
+    "followUp": "还挺好的，谢谢你问",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 0.429,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.333
+    }
+   }
+  },
+  {
+   "name": "one answered line this hour, longer quiet",
+   "now": 1000000.0,
+   "hour": 14,
+   "turns": [
+    {
+     "created": 999440.0,
+     "input": "还挺好的，谢谢你问",
+     "kind": "chat"
+    },
+    {
+     "created": 998600.0,
+     "input": "",
+     "kind": "proactive"
+    }
+   ],
+   "expected": {
+    "speak": true,
+    "score": 0.833,
+    "reason": "opportunity",
+    "followUp": "还挺好的，谢谢你问",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 0.905,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.333
+    }
+   }
+  },
+  {
+   "name": "night window ends at seven",
+   "now": 1000000.0,
+   "hour": 7,
+   "turns": [
+    {
+     "created": 999100.0,
+     "input": "今天面试，有点紧张",
+     "kind": "chat"
+    }
+   ],
+   "expected": {
+    "speak": true,
+    "score": 1.0,
+    "reason": "opportunity",
+    "followUp": "今天面试，有点紧张",
+    "parts": {
+     "relevance": 1.0,
+     "novelty": 1.0,
+     "social": 1.0,
+     "context": 1.0,
+     "interrupt": 0.0,
+     "frequency": 0.0
+    }
+   }
+  }
+ ]
+}
