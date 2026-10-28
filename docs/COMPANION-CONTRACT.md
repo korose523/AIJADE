@@ -97,8 +97,13 @@ python3 -B -I configs/companion/generate_initiative_vectors.py "$MOSAIC/ai-pytho
 
 ## 交接：MOSAIC 一侧（由 MOSAIC 的会话或作者采用）
 
+**状态（2026-10-28）**：MOSAIC 已在 SVN r389 采用 1.2.0。
+- 人设文字与契约逐字相同，按原方法复查（16 条消息 × 2）：32 句中没有出错、照抄或奉承；问名字 2 次都答“我叫艾娅德”；8 句难过的回复中有 5 句给对方留了选择。
+- 两份伴侣文档记下契约版本；共享常量旁加了注释，改动时会告知 AIJADE 一侧。
+- 它用两份生成脚本在自己的代码上回归，内容全部相同。本仓库独立核对过上述各点，并把向量文件记录的源文件哈希更新为 r389 之后的版本。
+
 1. **人设文字**：把 `PERSONA` 开头的 ", the companion from the owner's AIJADE character bible:" 改为 ":"，即与契约文字逐字相同。2026-10-28 核对过，两者只差这一处。改后建议按原方法在 Windows 的 llama3.1:8b 上复查一次（16 条消息 × 2）。
-2. **记下契约版本**：在 MOSAIC 的伴侣文档中记下所依据的契约版本（1.0.0）。以后改 `PERSONA`、`EMOTIONS`、`INITIATIVE`、`LEAVING` 或 `HUSH` 时，同时提出契约的修改。
+2. **记下契约版本**：在 MOSAIC 的伴侣文档中记下所依据的契约版本（当前为 1.2.0）。以后改 `PERSONA`、`EMOTIONS`、`INITIATIVE`、`LEAVING` 或 `HUSH` 时，同时提出契约的修改。
 3. **可选**：用 `initiative-vectors.json` 回归 MOSAIC 自己的 `initiative()`。向量就是由它生成的，代码不变时必然一致。
 4. **不涉及**：本契约不改变第 4 章外部比较所用的渲染器契约（[MOSAIC-RENDERER](MOSAIC-RENDERER.md)），也不要求 MOSAIC 连接 AIJADE 的服务端。
 

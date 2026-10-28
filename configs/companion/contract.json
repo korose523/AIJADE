@@ -31,11 +31,11 @@
         "why": "on llama3.1:8b a quoted line was copied word for word in 6 of 8 sad replies"
       }
     ],
-    "evidence": "MOSAIC's check on the Windows llama3.1:8b, 16 messages x 2 (comment on PERSONA in ai-python/mosaic/integration/companion.py, read 2026-10-28)",
+    "evidence": "MOSAIC's check on the Windows llama3.1:8b, 16 messages x 2 (comment on PERSONA in ai-python/mosaic/integration/companion.py, read 2026-10-28); re-checked by MOSAIC after adopting this exact text (r389, the same 16 messages x 2): no failed, repeated or flattering reply, the name answered in 2 of 2, and in 5 of 8 sad replies a question that leaves the user a choice",
     "sources": {
       "bible": "AIJADE v9 角色背景设计文档（角色圣经）, the author's 历史文档 folder, §1, §5, §6",
       "aijade": "src/Aijade.Client/Chat/Orchestrator.cs, ChatOrchestrator.DefaultPersona (holds this prompt)",
-      "mosaic": "ai-python/mosaic/integration/companion.py, PERSONA (the same text with 'the companion from the owner's AIJADE character bible' after the name)"
+      "mosaic": "ai-python/mosaic/integration/companion.py, PERSONA: identical to this prompt since MOSAIC r389 (2026-10-28)"
     }
   },
   "expressions": {
@@ -195,5 +195,8 @@
       "aijade": "src/Aijade.Client/Companion/TextChannel.cs; notes passed to ChatOrchestrator.SendAsync(notesBeforeMessage) by CompanionBridge",
       "mosaic": "tools/companion_qq.py (CHANNEL_NOTE, MOVEMENT_NOTE, MOVEMENT_WORDS, PUT_OFF, LATER, answer())"
     }
+  },
+  "adoption": {
+    "mosaic": "Adopted 1.2.0 in SVN r389 (2026-10-28): persona text identical, contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md and docs/COMPANION-QQ-2026-10-28.md, notes beside the shared constants to tell the AIJADE side of changes; both vector files regenerated on its code with identical content"
   }
 }
