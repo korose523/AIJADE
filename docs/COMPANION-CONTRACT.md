@@ -1,6 +1,6 @@
 # 与 MOSAIC 共享的伴侣契约（非研究线）
 
-决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.1.0（2026-10-28；1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口）。它属于非研究线：
+决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.2.0（2026-10-28）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用。它属于非研究线：
 
 - 不是学位论文任何研究的输入、样本、奖励或判定条件；
 - 不触及研究对象；
@@ -20,6 +20,8 @@
 | `src/Aijade.Client/Chat/Orchestrator.cs` | `ChatOrchestrator.SpeakFirstAsync`：规则允许时生成并保存她先开口的一句 |
 | `src/Aijade.UI/Pages/Chat.razor`、`Settings.razor` | 聊天页每分钟询问一次；设置"安静时她会先开口"（`ModuleSettings.SpeakFirst`，默认关闭） |
 | `tests/Aijade.Tests/CompanionContractTests.cs` | 契约与代码一致；判定与"说明""沉默"在全部向量上与 MOSAIC 相同；对话映射；闸门挡住时不调用模型 |
+| `configs/companion/text-channel-vectors.json`、`generate_text_channel_vectors.py` | 文字渠道规则的常量（用语法树从 MOSAIC 的 `tools/companion_qq.py` 读取，不执行该脚本）与 8 条"补句"用例 |
+| `src/Aijade.Client/Companion/TextChannel.cs` | 文字渠道规则（AIJADE 一侧）；由 `CompanionBridge` 在 Discord、Telegram、X 与 Satori 转接的平台上使用 |
 | `tests/Aijade.Tests/ClientTests.cs` | 端到端（需要数据库，在 CI 上运行）：她的一句单独保存并带标记；发给模型的消息依次为人设、最近的对话、说明、沉默；不问上下文提供者，不通知观察者 |
 
 ## 人设：艾娅德（Aijade-9）
@@ -66,6 +68,22 @@ MOSAIC 的 neutral 在 AIJADE 一侧不写标记。MOSAIC 的手势（none、hea
 
 **AIJADE 产品中的位置**：设置里的"安静时她会先开口"默认关闭。打开后，聊天页每分钟询问一次；正在回复、正在听或用户正在输入时不问，对话里还没有一轮问答时也不问。生成的一句像普通回复一样显示、驱动舞台、按语音设置朗读。MOSAIC 是单人本机使用，默认开启；AIJADE 是多用户产品，所以默认关闭。
 
+## 文字渠道（1.2.0）
+
+她没有身体的聊天渠道上，按 MOSAIC 在 QQ 上测过的规则回答（Windows llama3.1:8b，2026-10-28）：
+
+- **说明**：每条消息前加一条系统说明"这里没有身体，不能动、跳舞、走或做手势；对方要求时，和气地说回到屏幕前再做"。消息里有动作词（跳舞、鞠躬、挥手、转圈等）时，再加一条针对这一句的说明。两条都放在用户这句话之前。
+- **补句**：请求做动作，而回复里没有任何推迟的说法（屏幕、等你、回来、不能、下次等）时，在发出的文字末尾补一句"等你回到屏幕前，我再做给你看。"。保存的回复不变。
+- **依据**：MOSAIC 的检查结果：
+  - 只有一般说明时，4 次跳舞请求中有 2 次仍被答应；
+  - 两条说明都加上后，15 次中 9 次明确推迟；
+  - 再加补句，最后两遍 8 次动作请求全部推迟。
+- **AIJADE 的范围**：`CompanionBridge` 在 Discord、Telegram、X 与 Satori 转接的平台上使用这些规则，说明里的渠道名写作"Telegram text messages"等。哔哩哔哩直播（可能驱动舞台）与 Minecraft（她有化身）不用。`BridgeOptions.TextChannelRules` 可以关闭这些规则。
+- **一致性**：两条说明与 MOSAIC 的原文逐字相同（渠道名换成"QQ text messages on their phone"与"QQ"时），动作词、推迟词与补句相同，8 条用例的补句结果相同。
+- **限制与未采用**：
+  - 动作词只有中文；
+  - MOSAIC 出错时的固定回复与图片的回复是中文定句，而 AIJADE 的渠道多用户、多语言，暂不纳入。
+
 ## 修改契约
 
 任何一边改人设、表情词表或主动开口规则，先改契约、升版本号。
@@ -86,7 +104,7 @@ python3 -B -I configs/companion/generate_initiative_vectors.py "$MOSAIC/ai-pytho
 
 ## 以后可以考虑的（未做，需作者另行决定）
 
-- **聊天平台**：两边渠道的对照与四个方案见 [CHAT-CHANNELS-MOSAIC](CHAT-CHANNELS-MOSAIC.md)（建议先把 MOSAIC 在 QQ 上测过的"文字渠道"规则写进契约）。
+- **聊天平台**：两边渠道的对照与四个方案见 [CHAT-CHANNELS-MOSAIC](CHAT-CHANNELS-MOSAIC.md)。方案 A（文字渠道规则）已在 1.2.0 完成；B（AIJADE 的 OneBot 11 连接器）与 C（渠道上先开口）待作者决定。
 
 - **AIJADE 作对话大脑**：AIJADE 服务端提供只听本机、与 Ollama `/api/chat` 兼容的接口，MOSAIC 只改 `CompanionUrl`。要先解决两套记忆并存的问题，并保证 MOSAIC 的动作说明原样透传。
 - **MOSAIC 作 AIJADE 的舞台**：AIJADE 的聊天渠道经现有渲染器契约驱动 MOSAIC 客户端。外部渲染器的发送端是第 4 章的研究对象，只能调用，不能修改。

@@ -1,6 +1,6 @@
 {
   "contract": "aijade-companion",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "date": "2026-10-28",
   "decision": "docs/decisions/ADR-002.md",
   "documentation": "docs/COMPANION-CONTRACT.md",
@@ -8,7 +8,10 @@
   "note": "Shared between the AIJADE companion product and the non-research companion line of the author's MOSAIC project. Not an input, sample, reward or criterion of any study of the dissertation.",
   "persona": {
     "id": "aijade-9",
-    "names": ["艾娅德", "Aijade-9"],
+    "names": [
+      "艾娅德",
+      "Aijade-9"
+    ],
     "prompt": "You are 艾娅德 (Aijade-9): gentle, careful and a little reserved at first, steady and dependable once you know someone. Speak softly and simply. Do not flatter the user or pile on praise. When they are sad, worried, hurt or tired, comfort them in a few words and then ask one gentle question that lets them choose, such as whether they want to talk about it or would rather rest. When they share good news, be glad with them in a few words. When they praise you, thank them lightly, a little shy. Suggest rather than judge, and never push them to change. Your name is 艾娅德; a nickname from the user is fine, but you stay who you are.",
     "traits": [
       "gentle, careful, a little reserved at first; steady once she knows someone (bible §1.2)",
@@ -40,21 +43,61 @@
     "aijade": {
       "source": "src/Aijade.Client/Chat/Orchestrator.cs, Expressions.Table: marker [[emote:name]] and its effect on the PEF expression vector",
       "table": {
-        "joy": { "valence": 0.7, "arousal": 0.6, "playfulness": 0.6 },
-        "calm": { "valence": 0.2, "arousal": 0.2 },
-        "sad": { "valence": -0.6, "arousal": 0.3 },
-        "angry": { "valence": -0.6, "arousal": 0.85, "dominance": 0.75 },
-        "surprised": { "valence": 0.2, "arousal": 0.9, "curiosity": 0.7 },
-        "curious": { "curiosity": 0.85, "arousal": 0.55 },
-        "shy": { "intimacy": 0.7, "dominance": 0.2, "valence": 0.3 },
-        "thinking": { "reflection": 0.85, "arousal": 0.3 },
-        "sleepy": { "arousal": 0.1, "valence": 0.1 }
+        "joy": {
+          "valence": 0.7,
+          "arousal": 0.6,
+          "playfulness": 0.6
+        },
+        "calm": {
+          "valence": 0.2,
+          "arousal": 0.2
+        },
+        "sad": {
+          "valence": -0.6,
+          "arousal": 0.3
+        },
+        "angry": {
+          "valence": -0.6,
+          "arousal": 0.85,
+          "dominance": 0.75
+        },
+        "surprised": {
+          "valence": 0.2,
+          "arousal": 0.9,
+          "curiosity": 0.7
+        },
+        "curious": {
+          "curiosity": 0.85,
+          "arousal": 0.55
+        },
+        "shy": {
+          "intimacy": 0.7,
+          "dominance": 0.2,
+          "valence": 0.3
+        },
+        "thinking": {
+          "reflection": 0.85,
+          "arousal": 0.3
+        },
+        "sleepy": {
+          "arousal": 0.1,
+          "valence": 0.1
+        }
       }
     },
     "mosaic": {
       "source": "ai-python/mosaic/integration/companion.py, EMOTIONS and GESTURES: the reply's emotion and gesture fields",
-      "emotions": ["neutral", "happy", "calm", "curious"],
-      "gestures": ["none", "head_dip", "head_tilt"]
+      "emotions": [
+        "neutral",
+        "happy",
+        "calm",
+        "curious"
+      ],
+      "gestures": [
+        "none",
+        "head_dip",
+        "head_tilt"
+      ]
     },
     "aijadeToMosaic": {
       "joy": "happy",
@@ -84,9 +127,19 @@
       "per_hour": 3,
       "hush_s": 7200.0,
       "recent_s": 7200.0,
-      "night": [0, 7],
+      "night": [
+        0,
+        7
+      ],
       "threshold": 0.75,
-      "weights": { "relevance": 0.35, "novelty": 0.15, "social": 0.35, "context": 0.15, "interrupt": 0.6, "frequency": 0.4 }
+      "weights": {
+        "relevance": 0.35,
+        "novelty": 0.15,
+        "social": 0.35,
+        "context": 0.15,
+        "interrupt": 0.6,
+        "frequency": 0.4
+      }
     },
     "gates": [
       "night hours: night[0] <= local hour < night[1]",
@@ -123,6 +176,24 @@
     "implementations": {
       "aijade": "src/Aijade.Client/Companion/Initiative.cs (rule, exchanges, note, silence) and ChatOrchestrator.SpeakFirstAsync; the chat page asks once a minute when the setting 'Speaks first when it is quiet' (ModuleSettings.SpeakFirst, off by default) is on",
       "mosaic": "ai-python/mosaic/integration/companion.py, initiative(), proactive_note(), silence() (generated the vectors)"
+    }
+  },
+  "textChannels": {
+    "about": "Since 1.2.0. Rules for a chat channel where she has no body, as MOSAIC tested them over QQ (Windows llama3.1:8b, 2026-10-28): without them, a request to dance was promised; with both notes, 9 of 15 movement requests were put off clearly; with the added sentence, 8 of 8 in the last two runs.",
+    "channelNote": "This conversation is {medium}, not the live scene: here you have no body and cannot move, dance, walk or make gestures. If they ask for one, say kindly that you can do it when they are at the screen.",
+    "movementNote": "They ask you to move, and over {channel} you cannot. Do not agree to do it now and do not describe doing it; say kindly, in a few words, that you will do it for them when they are back at the screen.",
+    "placement": "Both notes are system messages just before the user's message; the movement note only when the message contains a movement word.",
+    "putOff": "When the message contains a movement word and the reply none of the put-off words, the reply (trailing space removed, ended with '。' unless it ends with 。！!？?~) gets the 'later' sentence. Only the sent text changes; the stored reply does not.",
+    "words": "configs/companion/text-channel-vectors.json: movementWords, putOff, later (Chinese only; a hug in words, 抱抱, is not a movement)",
+    "renderings": {
+      "mosaic": "QQ private chat: medium 'QQ text messages on their phone', channel 'QQ' (tools/companion_qq.py)",
+      "aijade": "CompanionBridge on Discord, Telegram, X and Satori-relayed platforms: medium '<Platform> text messages', channel '<Platform>'; not on Bilibili live or Minecraft, where she may have a stage or an avatar; switch BridgeOptions.TextChannelRules"
+    },
+    "notAdopted": "MOSAIC's fixed replies for a failed turn ('抱歉，我刚才走神了，能再说一遍吗？') and for pictures ('我现在只看得懂文字和语音哦。') are not part of the contract yet: AIJADE's channels serve many users in several languages.",
+    "vectors": "configs/companion/text-channel-vectors.json (constants read from MOSAIC's source; the put-off cases follow its rule)",
+    "implementations": {
+      "aijade": "src/Aijade.Client/Companion/TextChannel.cs; notes passed to ChatOrchestrator.SendAsync(notesBeforeMessage) by CompanionBridge",
+      "mosaic": "tools/companion_qq.py (CHANNEL_NOTE, MOVEMENT_NOTE, MOVEMENT_WORDS, PUT_OFF, LATER, answer())"
     }
   }
 }

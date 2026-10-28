@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 using Aijade.Bots;
 using Aijade.Client.Api;
 using Aijade.Client.Chat;
+using Aijade.Client.Companion;
 using Aijade.Integrations;
 using Aijade.Server.Product;
 
@@ -92,6 +93,49 @@ public class IntegrationTests
         Assert.Equal(2, (await api.ChatsAsync(ct)).Count);
         Assert.Equal(3, (await api.MessagesAsync(chats.Single(c => c.Title.StartsWith("telegram", StringComparison.Ordinal)).Id, ct: ct)).Count(m => m.Role == "user"));
         File.Delete(state);
+    }
+
+    [Fact]
+    public async Task On_a_text_channel_she_is_told_she_has_no_body_and_a_promised_movement_is_put_off()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var llm = new ChannelLlm();
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await host.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/routes", new JsonObject
+        {
+            ["models"] = new JsonObject { ["aijade-chat"] = new JsonObject { ["upstream"] = "https://llm.example/v1", ["model"] = "m", ["keys"] = new JsonArray("k") } },
+        }, ServerTestHost.AdminToken);
+        var tokens = new MemoryTokenStore();
+        await tokens.SetAsync(ServerTestHost.Token);
+        var api = new AijadeApi(host.Client, tokens);
+        using var bridge = new CompanionBridge(api, new BridgeOptions { Memory = false, Time = new ManualTime(1_000_000) });
+
+        static List<(string Role, string Content)> Sent(JsonNode chat) =>
+            [.. chat["messages"]!.AsArray().Select(m => (m!["role"]!.GetValue<string>(), m["content"]!.GetValue<string>()))];
+
+        // Telegram: the channel note and, for a request to dance, the movement note go just before the message; the reply
+        // "Hello there!" does not put the dance off, so the sentence that does is added to what is sent.
+        var dance = new ChannelMessage("telegram", "200", "carol", "Carol", "你能跳个舞给我看吗", IsDirect: true, AddressesBot: false);
+        var reply = await bridge.AnswerAsync(dance, ct);
+        Assert.Equal("Hello there!" + TextChannel.Later, reply!.Text);
+        var sent = Sent(llm.Chats[^1]);
+        Assert.Equal(("system", TextChannel.ChannelNote("Telegram text messages")), sent[^3]);
+        Assert.Equal(("system", TextChannel.MovementNote("Telegram")), sent[^2]);
+        Assert.Equal(("user", "你能跳个舞给我看吗"), sent[^1]);
+        // The stored reply is the model's own; only the sent text carries the added sentence.
+        var chat = (await api.ChatsAsync(ct)).Single();
+        Assert.Equal("Hello there!", (await api.MessagesAsync(chat.Id, ct: ct))[^1].Content);
+
+        // Minecraft: she has an avatar there, so no note.
+        await bridge.AnswerAsync(new ChannelMessage("minecraft", "mc", "dave", "dave", "跳个舞", IsDirect: true, AddressesBot: true), ct);
+        Assert.DoesNotContain(Sent(llm.Chats[^1]).Skip(1), m => m.Role == "system");
+
+        // The rules can be switched off.
+        using var plain = new CompanionBridge(api, new BridgeOptions { Memory = false, TextChannelRules = false, Time = new ManualTime(1_000_000) });
+        var unchanged = await plain.AnswerAsync(dance with { ConversationId = "201" }, ct);
+        Assert.Equal("Hello there!", unchanged!.Text);
+        Assert.DoesNotContain(Sent(llm.Chats[^1]).Skip(1), m => m.Role == "system");
     }
 
     [Fact]

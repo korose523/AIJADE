@@ -162,6 +162,36 @@ public class CompanionContractTests
             Assert.Fail($"no line expected at night, got {e}");
     }
 
+    [Fact]
+    public void The_text_channel_rules_are_mosaics_word_for_word()
+    {
+        var v = Load("text-channel-vectors.json");
+        var mosaic = v.GetProperty("mosaic");
+        Assert.Equal(mosaic.GetProperty("channelNote").GetString(), TextChannel.ChannelNote(mosaic.GetProperty("medium").GetString()!));
+        Assert.Equal(mosaic.GetProperty("movementNote").GetString(), TextChannel.MovementNote(mosaic.GetProperty("channel").GetString()!));
+        Assert.Equal(v.GetProperty("movementWords").EnumerateArray().Select(x => x.GetString()), TextChannel.MovementWords);
+        Assert.Equal(v.GetProperty("putOff").EnumerateArray().Select(x => x.GetString()), TextChannel.PutOffWords);
+        Assert.Equal(TextChannel.Later, v.GetProperty("later").GetString());
+        foreach (var c in v.GetProperty("cases").EnumerateArray())
+            Assert.Equal(c.GetProperty("sent").GetString(), TextChannel.PutOff(c.GetProperty("text").GetString()!, c.GetProperty("reply").GetString()!));
+
+        var contract = Load("contract.json").GetProperty("textChannels");
+        Assert.Equal(TextChannel.ChannelNoteTemplate, contract.GetProperty("channelNote").GetString());
+        Assert.Equal(TextChannel.MovementNoteTemplate, contract.GetProperty("movementNote").GetString());
+    }
+
+    [Fact]
+    public void Text_channel_rules_apply_only_where_she_has_no_body()
+    {
+        Assert.Equal(("Telegram", "Discord", "X", "QQ", "Kook2"), (TextChannel.BodilessChannel("telegram"), TextChannel.BodilessChannel("discord"),
+            TextChannel.BodilessChannel("x"), TextChannel.BodilessChannel("satori-qq"), TextChannel.BodilessChannel("satori-kook2")));
+        Assert.Null(TextChannel.BodilessChannel("minecraft"));
+        Assert.Null(TextChannel.BodilessChannel("bilibili"));
+        Assert.Single(TextChannel.Notes("Telegram", "今天好累"));
+        Assert.Equal(2, TextChannel.Notes("Telegram", "跳个舞吧").Count);
+        Assert.StartsWith("This conversation is Telegram text messages, not the live scene", TextChannel.Notes("Telegram", "hi")[0], StringComparison.Ordinal);
+    }
+
     private sealed class NoCalls : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>

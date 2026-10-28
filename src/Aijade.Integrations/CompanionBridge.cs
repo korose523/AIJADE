@@ -4,6 +4,7 @@ using System.Text.Json.Nodes;
 
 using Aijade.Client.Api;
 using Aijade.Client.Chat;
+using Aijade.Client.Companion;
 using Aijade.Memory.Contracts;
 
 namespace Aijade.Integrations;
@@ -44,6 +45,13 @@ public sealed class BridgeOptions
     /// switch the owner's lights; the bot account must also be allowed tools on the server.
     /// </summary>
     public bool Tools { get; init; }
+
+    /// <summary>
+    /// On channels where she has no body (Discord, Telegram, X, platforms relayed by Satori), apply the companion contract's
+    /// text-channel rules (<see cref="TextChannel"/>): she is told she cannot move there, and a reply that would promise a
+    /// movement is put off until the user is at the screen.
+    /// </summary>
+    public bool TextChannelRules { get; init; } = true;
 
     /// <summary>Let the companion draw on channels that can show images (needs the server's image route).</summary>
     public bool Drawing { get; init; }
@@ -114,7 +122,9 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                 _ = RecordAsync(session, message.Text);
             TurnCompleted? done = null;
             string? draw = null;
-            await foreach (var e in orchestrator.SendAsync(chatId, who, history, text, $"persona:{who?.Id ?? "default"}", ct).ConfigureAwait(false))
+            var bodiless = options.TextChannelRules ? TextChannel.BodilessChannel(message.Platform) : null;
+            var notes = bodiless is null ? null : TextChannel.Notes(bodiless, message.Text);
+            await foreach (var e in orchestrator.SendAsync(chatId, who, history, text, $"persona:{who?.Id ?? "default"}", notes, ct).ConfigureAwait(false))
             {
                 switch (e)
                 {
@@ -153,7 +163,8 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                     // The text reply stands without the picture (image route unconfigured, out of flux …).
                 }
             }
-            return new ChannelReply(done.Reply.Content, done.Expressions, image);
+            var replyText = bodiless is null ? done.Reply.Content : TextChannel.PutOff(message.Text, done.Reply.Content);
+            return new ChannelReply(replyText, done.Expressions, image);
         }
         finally
         {

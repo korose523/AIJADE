@@ -358,8 +358,16 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
     public event Action<ITurnObserver, Exception>? ObserverFailed;
 
     /// <summary>Run one turn. <paramref name="history"/> is the chat so far (oldest first) and is not modified.</summary>
+    public IAsyncEnumerable<OrchestratorEvent> SendAsync(string chatId, Character? character, IReadOnlyList<StoredMessage> history, string userText,
+        string personaSnapshotRef, CancellationToken ct = default) =>
+        SendAsync(chatId, character, history, userText, personaSnapshotRef, null, ct);
+
+    /// <summary>
+    /// Run one turn, with <paramref name="notesBeforeMessage"/> as system notes just before the user's message (for example the
+    /// text-channel rules of <see cref="TextChannel"/>).
+    /// </summary>
     public async IAsyncEnumerable<OrchestratorEvent> SendAsync(string chatId, Character? character, IReadOnlyList<StoredMessage> history, string userText,
-        string personaSnapshotRef, [EnumeratorCancellation] CancellationToken ct = default)
+        string personaSnapshotRef, IReadOnlyList<string>? notesBeforeMessage, [EnumeratorCancellation] CancellationToken ct = default)
     {
         StoredMessage user;
         AijadeApiException? failure = null;
@@ -389,6 +397,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, supplements, options.Drawing())) };
         messages.AddRange(history.Where(m => m.Role is "user" or "assistant").TakeLast(options.HistoryWindow)
             .Select(m => (m.Role, Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content)));
+        messages.AddRange((notesBeforeMessage ?? []).Select(n => ("system", n)));
         messages.Add(("user", user.Content));
 
         var parser = new MarkerParser("emote", "draw");
