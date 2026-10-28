@@ -86,5 +86,7 @@ python3 -B -I configs/companion/generate_initiative_vectors.py "$MOSAIC/ai-pytho
 
 ## 以后可以考虑的（未做，需作者另行决定）
 
+- **聊天平台**：两边渠道的对照与四个方案见 [CHAT-CHANNELS-MOSAIC](CHAT-CHANNELS-MOSAIC.md)（建议先把 MOSAIC 在 QQ 上测过的"文字渠道"规则写进契约）。
+
 - **AIJADE 作对话大脑**：AIJADE 服务端提供只听本机、与 Ollama `/api/chat` 兼容的接口，MOSAIC 只改 `CompanionUrl`。要先解决两套记忆并存的问题，并保证 MOSAIC 的动作说明原样透传。
 - **MOSAIC 作 AIJADE 的舞台**：AIJADE 的聊天渠道经现有渲染器契约驱动 MOSAIC 客户端。外部渲染器的发送端是第 4 章的研究对象，只能调用，不能修改。
