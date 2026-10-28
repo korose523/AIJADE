@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+using Aijade.Client.Api;
 using Aijade.Client.Chat;
 using Aijade.Client.Companion;
 using Aijade.Memory.Development;
@@ -101,5 +102,69 @@ public class CompanionContractTests
             foreach (var part in e.GetProperty("parts").EnumerateObject())
                 Assert.True(Math.Abs(part.Value.GetDouble() - got.Parts[part.Name]) <= 5e-4, $"{name}: {part.Name}");
         }
+    }
+
+    [Fact]
+    public void The_note_and_silence_of_a_first_line_are_mosaics_word_for_word()
+    {
+        var notes = Load("initiative-vectors.json").GetProperty("notes").EnumerateArray().ToList();
+        Assert.NotEmpty(notes);
+        foreach (var n in notes)
+        {
+            var quiet = n.GetProperty("quietS").GetDouble();
+            var followUp = n.GetProperty("followUp").ValueKind == JsonValueKind.Null ? null : n.GetProperty("followUp").GetString();
+            Assert.Equal(n.GetProperty("note").GetString(), Initiative.Note(quiet, followUp, n.GetProperty("lastReply").GetString()!));
+            Assert.Equal(n.GetProperty("silence").GetString(), Initiative.Silence(quiet));
+        }
+    }
+
+    [Fact]
+    public void A_chat_becomes_exchanges_and_turns_as_mosaic_counts_them()
+    {
+        var t0 = new DateTimeOffset(2026, 10, 28, 14, 0, 0, TimeSpan.Zero);
+        StoredMessage M(string role, string text, int s, bool proactive = false) =>
+            new($"m{s}", s, role, text, t0.AddSeconds(s), proactive ? new JsonObject { [Initiative.ProactiveMeta] = true } : null);
+        var history = new[]
+        {
+            M("assistant", "你好", 0),               // no user message before it: not an exchange
+            M("user", "今天面试，有点紧张", 10),
+            M("assistant", "祝你面试顺利！", 15),
+            M("assistant", "[picture]", 40),         // a picture after the reply dates that exchange
+            M("assistant", "面试结束了吗？", 400, proactive: true),
+            M("user", "还没回复", 500),              // not answered: left out
+        };
+        var exchanges = Initiative.Exchanges(history);
+        Assert.Equal(2, exchanges.Count);
+        Assert.Equal(("今天面试，有点紧张", "祝你面试顺利！", t0.AddSeconds(40)), (exchanges[0].User?.Content, exchanges[0].Reply.Content, exchanges[0].Last));
+        Assert.Null(exchanges[1].User);
+        var turns = Initiative.Turns(exchanges);
+        Assert.Equal([true, false], turns.Select(t => t.Proactive));
+        Assert.Equal(t0.AddSeconds(400).ToUnixTimeMilliseconds() / 1000.0, turns[0].Created);
+        Assert.Equal("今天面试，有点紧张", turns[1].Input);
+    }
+
+    [Fact]
+    public async Task Speaking_first_asks_no_model_when_a_gate_holds_her_back()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var api = new AijadeApi(new HttpClient(new NoCalls()) { BaseAddress = new Uri("http://localhost/") }, new MemoryTokenStore());
+        var now = DateTimeOffset.UtcNow;
+        var history = new List<StoredMessage>
+        {
+            new("u", 1, "user", "我去洗澡了，待会聊", now.AddSeconds(-900)),
+            new("a", 2, "assistant", "好的，待会见。", now.AddSeconds(-895)),
+        };
+        var orchestrator = new ChatOrchestrator(api, [], new OrchestratorOptions());
+        await foreach (var e in orchestrator.SpeakFirstAsync("chat", null, history, "snap", 14, ct))
+            Assert.Fail($"no line expected, got {e}");
+        history[0] = history[0] with { Content = "今天面试，有点紧张" };
+        await foreach (var e in orchestrator.SpeakFirstAsync("chat", null, history, "snap", 2, ct))
+            Assert.Fail($"no line expected at night, got {e}");
+    }
+
+    private sealed class NoCalls : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            throw new InvalidOperationException("no call expected");
     }
 }

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 
 using Aijade.Client.Api;
+using Aijade.Client.Companion;
 using Aijade.Core.Js;
 using Aijade.Memory.Contracts;
 using Aijade.Memory.Development;
@@ -463,6 +464,119 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
             yield break;
         }
         yield return new TurnCompleted(reply, intent, cues);
+    }
+
+    /// <summary>
+    /// Speak first when the chat has gone quiet, under the rule of the companion contract shared with MOSAIC
+    /// (<see cref="Initiative"/>, <c>configs/companion/contract.json</c>). Yields nothing when the rule says not to; otherwise
+    /// streams one short line of hers and stores it with the meta flag <see cref="Initiative.ProactiveMeta"/> and no user
+    /// message. As in MOSAIC, the line gets the persona, the last exchanges, the contract's note and the silence as the user's
+    /// turn: no context provider (memory recall included) is asked and no observer is told, so a first line is neither
+    /// recalled nor learned from.
+    /// </summary>
+    /// <param name="chatId">The chat her line is stored in.</param>
+    /// <param name="character">The character she plays (null: the default persona).</param>
+    /// <param name="history">The chat so far, oldest first.</param>
+    /// <param name="personaSnapshotRef">The persona snapshot the line's performance intent refers to.</param>
+    /// <param name="localHour">The user's local hour, 0 to 23 (the night gate).</param>
+    /// <param name="ct">Cancels the line.</param>
+    public async IAsyncEnumerable<OrchestratorEvent> SpeakFirstAsync(string chatId, Character? character, IReadOnlyList<StoredMessage> history,
+        string personaSnapshotRef, int localHour, [EnumeratorCancellation] CancellationToken ct = default)
+    {
+        var exchanges = Initiative.Exchanges(history);
+        var decision = Initiative.Decide(Initiative.Turns(exchanges), clock.GetUtcNow().ToUnixTimeMilliseconds() / 1000.0, localHour);
+        if (!decision.Speak)
+            yield break;
+        var quiet = decision.QuietS!.Value;
+        var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, [])) };
+        foreach (var x in exchanges.TakeLast(Initiative.HistoryWindow))
+        {
+            if (x.User is not null)
+                messages.Add(("user", x.User.Content));
+            messages.Add(("assistant", x.Reply.Content));
+        }
+        messages.Add(("system", Initiative.Note(quiet, decision.FollowUp, exchanges[^1].Reply.Content)));
+        messages.Add(("user", Initiative.Silence(quiet)));
+
+        var parser = new MarkerParser("emote");
+        var text = new StringBuilder();
+        var cues = new List<string>();
+        AijadeApiException? failure = null;
+        var stream = api.StreamChatAsync(options.Model, messages, options.Temperature, ct).GetAsyncEnumerator(ct);
+        try
+        {
+            while (true)
+            {
+                CompletionDelta delta;
+                try
+                {
+                    if (!await stream.MoveNextAsync().ConfigureAwait(false))
+                        break;
+                    delta = stream.Current;
+                }
+                catch (AijadeApiException e)
+                {
+                    failure = e;
+                    break;
+                }
+                var (visible, markers) = parser.Feed(delta.Text);
+                foreach (var m in markers)
+                {
+                    cues.Add(m.Value);
+                    yield return new ExpressionCue(m.Value);
+                }
+                if (visible.Length > 0)
+                {
+                    text.Append(visible);
+                    yield return new TextDelta(visible);
+                }
+            }
+        }
+        finally
+        {
+            await stream.DisposeAsync().ConfigureAwait(false);
+        }
+        var tail = parser.Flush();
+        if (tail.Length > 0)
+        {
+            text.Append(tail);
+            yield return new TextDelta(tail);
+        }
+        var lineText = text.ToString().Trim();
+        StoredMessage? line = null;
+        if (failure is null && lineText.Length > 0)
+        {
+            var meta = new JsonObject
+            {
+                [Initiative.ProactiveMeta] = true,
+                ["expressions"] = new JsonArray([.. cues.Select(c => (JsonNode)c)]),
+                ["initiative"] = new JsonObject { ["score"] = decision.Score, ["quietS"] = Math.Round(quiet) },
+            };
+            try
+            {
+                line = await api.AppendMessageAsync(chatId, "assistant", lineText, meta, ct).ConfigureAwait(false);
+            }
+            catch (AijadeApiException e)
+            {
+                failure = e;
+            }
+        }
+        if (failure is not null)
+        {
+            yield return new TurnFailed(failure.Code, failure.Message);
+            yield break;
+        }
+        if (line is null)
+            yield break; // the model said nothing: no line is stored
+        var intent = Pef.BuildPerformanceIntent(Expressions.Persona(lineText, cues), new PerformanceIds($"pi_{line.Id}", options.AgentId, options.UserScope, personaSnapshotRef),
+            clock.GetUtcNow().ToUnixTimeMilliseconds(), Math.Max(800, lineText.Length * 60));
+        var check = ContractValidationV8.Validate(intent);
+        if (!check.Ok)
+        {
+            yield return new TurnFailed("INVALID_INTENT", check.Reason ?? "invalid performance intent");
+            yield break;
+        }
+        yield return new TurnCompleted(line, intent, cues);
     }
 }
 

@@ -1,6 +1,6 @@
 # 与 MOSAIC 共享的伴侣契约（非研究线）
 
-决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.0.0（2026-10-28）。它属于非研究线：
+决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.1.0（2026-10-28；1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口）。它属于非研究线：
 
 - 不是学位论文任何研究的输入、样本、奖励或判定条件；
 - 不触及研究对象；
@@ -13,11 +13,14 @@
 | 文件 | 内容 |
 |---|---|
 | `configs/companion/contract.json` | 人设、表情名称的对应、主动开口规则（闸门、权重、阈值） |
-| `configs/companion/initiative-vectors.json` | 主动开口的 18 条判定向量：由 MOSAIC 的 `initiative()` 生成，记录其文件的 SHA-256 与读取日期，并含"道别"与"安静"两张词表 |
-| `configs/companion/generate_initiative_vectors.py` | 重新生成向量的脚本：按文件路径只读加载 MOSAIC 的伴侣模块，不执行其包初始化，不写字节码 |
+| `configs/companion/initiative-vectors.json` | 由 MOSAIC 的实现生成：主动开口的 18 条判定向量（`initiative()`），以及 4 条"说明"与"沉默"消息（`proactive_note()`、`silence()`，含四舍六入五成双与截断）；记录其文件的 SHA-256 与读取日期，并含"道别"与"安静"两张词表 |
+| `configs/companion/generate_initiative_vectors.py` | 重新生成向量的脚本：只读加载 MOSAIC 的伴侣模块（用包占位，不执行其包初始化，不写字节码） |
 | `src/Aijade.Client/Chat/Orchestrator.cs` | `ChatOrchestrator.DefaultPersona` 即契约中的人设提示词 |
-| `src/Aijade.Client/Companion/Initiative.cs` | 主动开口规则的参考实现（AIJADE 一侧），尚未接入任何产品界面 |
-| `tests/Aijade.Tests/CompanionContractTests.cs` | 契约与代码一致；参考实现在全部向量上与 MOSAIC 的判定相同 |
+| `src/Aijade.Client/Companion/Initiative.cs` | 主动开口规则、对话到"轮次"的映射、"说明"与"沉默"消息（AIJADE 一侧的实现） |
+| `src/Aijade.Client/Chat/Orchestrator.cs` | `ChatOrchestrator.SpeakFirstAsync`：规则允许时生成并保存她先开口的一句 |
+| `src/Aijade.UI/Pages/Chat.razor`、`Settings.razor` | 聊天页每分钟询问一次；设置"安静时她会先开口"（`ModuleSettings.SpeakFirst`，默认关闭） |
+| `tests/Aijade.Tests/CompanionContractTests.cs` | 契约与代码一致；判定与"说明""沉默"在全部向量上与 MOSAIC 相同；对话映射；闸门挡住时不调用模型 |
+| `tests/Aijade.Tests/ClientTests.cs` | 端到端（需要数据库，在 CI 上运行）：她的一句单独保存并带标记；发给模型的消息依次为人设、最近的对话、说明、沉默；不问上下文提供者，不通知观察者 |
 
 ## 人设：艾娅德（Aijade-9）
 
@@ -56,6 +59,13 @@ MOSAIC 的 neutral 在 AIJADE 一侧不写标记。MOSAIC 的手势（none、hea
 - **效果**：有话题可接时约 5.5 分钟开口，没有时约 10 分钟。
 - **一致性**：18 条向量覆盖每道闸门和阈值两侧；AIJADE 的参考实现与 MOSAIC 的实现判定全部相同。阳性对照中，把阈值改为 0.76 后，两项契约测试都失败。
 
+**她先开口时说什么（1.1.0）**：
+- 发给模型的消息与 MOSAIC 相同：人设 → 最近 4 轮对话（她先开口的一句只作为助手消息出现）→ 一条说明 → 一条表示沉默的用户消息"（N 分钟没有说话）"。
+- 说明逐字取自 MOSAIC 的 `proactive_note()`：说一句新的短话（不超过 30 字）；有可接的话题就接着问一个好答的问题；不编造经历，不像刚见面那样打招呼，最多问一个问题；引用她上一句，要求说不一样的。
+- 她的一句单独保存为助手消息，带标记 `proactive`。生成时不调用上下文提供者（包括记忆召回），也不通知观察者，所以这一句既不会被召回，也不会被学习；这与 MOSAIC"召回旧对话不会用到这种轮次"一致，也使它不经过第 6 章 P3-E 冻结的记忆路径。
+
+**AIJADE 产品中的位置**：设置里的"安静时她会先开口"默认关闭。打开后，聊天页每分钟询问一次；正在回复、正在听或用户正在输入时不问，对话里还没有一轮问答时也不问。生成的一句像普通回复一样显示、驱动舞台、按语音设置朗读。MOSAIC 是单人本机使用，默认开启；AIJADE 是多用户产品，所以默认关闭。
+
 ## 修改契约
 
 任何一边改人设、表情词表或主动开口规则，先改契约、升版本号。
@@ -78,4 +88,3 @@ python3 -B -I configs/companion/generate_initiative_vectors.py "$MOSAIC/ai-pytho
 
 - **AIJADE 作对话大脑**：AIJADE 服务端提供只听本机、与 Ollama `/api/chat` 兼容的接口，MOSAIC 只改 `CompanionUrl`。要先解决两套记忆并存的问题，并保证 MOSAIC 的动作说明原样透传。
 - **MOSAIC 作 AIJADE 的舞台**：AIJADE 的聊天渠道经现有渲染器契约驱动 MOSAIC 客户端。外部渲染器的发送端是第 4 章的研究对象，只能调用，不能修改。
-- **AIJADE 产品接入主动开口**：用本契约的参考实现，在 Web 聊天中让伴侣先开口。

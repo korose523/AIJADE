@@ -1,6 +1,6 @@
 {
   "contract": "aijade-companion",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "date": "2026-10-28",
   "decision": "docs/decisions/ADR-002.md",
   "documentation": "docs/COMPANION-CONTRACT.md",
@@ -107,9 +107,22 @@
     },
     "matching": "Hush and leaving words (the lists 'hush' and 'leaving' in the vectors file) are matched as substrings of the lower-cased message; quiet is measured from the newest turn of either kind.",
     "vectors": "configs/companion/initiative-vectors.json",
+    "line": {
+      "about": "Since 1.1.0. What she says when she speaks first.",
+      "messages": [
+        "system: the persona (with the product's own system rules)",
+        "the last 4 exchanges, oldest first; a line she began herself appears as an assistant message alone",
+        "system: note(quiet, followUp, lastReply), the instruction for one new short line (at most 30 Chinese characters)",
+        "user: silence(quiet), the quiet itself as the turn her line answers"
+      ],
+      "note": "Word for word MOSAIC's proactive_note(); minutes are quiet/60 rounded half to even, at least 1; followUp is cut to 80 and lastReply to 60 code points. The 'notes' vectors hold the expected text.",
+      "silence": "（N 分钟没有说话）, with N as for the note",
+      "stored": "as an assistant message with no user message and the meta flag 'proactive': true",
+      "notRecalledOrLearned": "No context provider (memory recall included) is asked for the line and no turn observer is told, so a first line is neither recalled nor learned from (MOSAIC: recall does not use such turns)"
+    },
     "implementations": {
-      "aijade": "src/Aijade.Client/Companion/Initiative.cs (reference implementation; not wired into a product surface)",
-      "mosaic": "ai-python/mosaic/integration/companion.py, initiative() (generated the vectors)"
+      "aijade": "src/Aijade.Client/Companion/Initiative.cs (rule, exchanges, note, silence) and ChatOrchestrator.SpeakFirstAsync; the chat page asks once a minute when the setting 'Speaks first when it is quiet' (ModuleSettings.SpeakFirst, off by default) is on",
+      "mosaic": "ai-python/mosaic/integration/companion.py, initiative(), proactive_note(), silence() (generated the vectors)"
     }
   }
 }

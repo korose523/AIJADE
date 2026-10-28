@@ -1,3 +1,8 @@
+using System.Globalization;
+using System.Text;
+
+using Aijade.Client.Api;
+
 namespace Aijade.Client.Companion;
 
 /// <summary>One turn of a user's conversation: something the user said, or a line the companion began herself.</summary>
@@ -19,14 +24,22 @@ public sealed record InitiativeParams(double QuietMinS, double QuietFullS, doubl
         Context: 0.15, Interrupt: 0.6, Frequency: 0.4));
 }
 
-/// <summary>Whether she speaks first, the score and its parts, the reason, and the user's last message worth following up.</summary>
-public sealed record InitiativeDecision(bool Speak, double? Score, IReadOnlyDictionary<string, double> Parts, string Reason, string? FollowUp);
+/// <summary>
+/// Whether she speaks first, the score and its parts, the reason, the user's last message worth following up, and how long it
+/// has been quiet (seconds since the newest turn).
+/// </summary>
+public sealed record InitiativeDecision(bool Speak, double? Score, IReadOnlyDictionary<string, double> Parts, string Reason, string? FollowUp,
+    double? QuietS = null);
+
+/// <summary>One exchange of a chat: a user message and the reply to it, or a line she began herself (<see cref="User"/> null).</summary>
+public sealed record InitiativeExchange(StoredMessage? User, StoredMessage Reply, DateTimeOffset Last);
 
 /// <summary>
 /// When the companion speaks first: an opportunity score, not a random timer, behind fixed gates (night, a request for quiet,
 /// leaving words, unanswered lines, quiet, cooldown, an hourly budget). This is the rule of the shared companion contract
 /// (<c>configs/companion/contract.json</c>, <c>docs/COMPANION-CONTRACT.md</c>), held to the vectors generated from MOSAIC's
-/// implementation. It is a reference implementation for the companion product; no product surface calls it yet.
+/// implementation. The chat page asks it once a minute when the setting to speak first is on
+/// (<see cref="Chat.ChatOrchestrator.SpeakFirstAsync"/>).
 /// </summary>
 public static class Initiative
 {
@@ -40,6 +53,81 @@ public static class Initiative
     /// <summary>Words that ask her to be quiet (matched in the lower-cased message).</summary>
     public static IReadOnlyList<string> Hush { get; } =
         ["安静点", "安静一点", "别吵", "别说话", "别打扰", "不要打扰", "让我静静", "闭嘴", "be quiet", "shut up", "leave me alone"];
+
+    /// <summary>How many of the latest exchanges go with her first line, as in MOSAIC.</summary>
+    public const int HistoryWindow = 4;
+
+    /// <summary>The meta flag of a message she began herself.</summary>
+    public const string ProactiveMeta = "proactive";
+
+    /// <summary>Whether a stored message is a line she began herself.</summary>
+    public static bool IsProactive(StoredMessage m) =>
+        m.Role == "assistant" && m.Meta?[ProactiveMeta] is { } flag && flag.GetValueKind() == System.Text.Json.JsonValueKind.True;
+
+    /// <summary>
+    /// A chat (oldest first) as exchanges, oldest first: a user message with the reply that followed it, or a line she began
+    /// herself. A further assistant message right after a reply (a picture) belongs to that exchange and dates it. A user
+    /// message without a reply is left out, as MOSAIC leaves out turns that were not answered.
+    /// </summary>
+    public static IReadOnlyList<InitiativeExchange> Exchanges(IReadOnlyList<StoredMessage> history)
+    {
+        var exchanges = new List<InitiativeExchange>();
+        StoredMessage? user = null;
+        foreach (var m in history)
+        {
+            if (m.Role == "user")
+            {
+                user = m;
+            }
+            else if (m.Role == "assistant" && (IsProactive(m) || user is not null))
+            {
+                exchanges.Add(new InitiativeExchange(IsProactive(m) ? null : user, m, m.CreatedAt));
+                user = null;
+            }
+            else if (m.Role == "assistant" && exchanges.Count > 0 && exchanges[^1].User is not null)
+            {
+                exchanges[^1] = exchanges[^1] with { Last = m.CreatedAt };
+            }
+        }
+        return exchanges;
+    }
+
+    /// <summary>The exchanges as initiative turns, newest first, dated by their last message in seconds.</summary>
+    public static IReadOnlyList<InitiativeTurn> Turns(IReadOnlyList<InitiativeExchange> exchanges) =>
+        [.. exchanges.Reverse().Select(x => new InitiativeTurn(x.Last.ToUnixTimeMilliseconds() / 1000.0, x.User?.Content ?? "", x.User is null))];
+
+    /// <summary>
+    /// The instruction for her first line: one new short sentence, a follow-up on what they said or one easy question, nothing
+    /// invented. Quoting her last reply keeps the model from repeating it. Word for word the contract's note (MOSAIC's
+    /// proactive_note), held to its vectors.
+    /// </summary>
+    public static string Note(double quietS, string? followUp, string lastReply)
+    {
+        var topic = followUp is { Length: > 0 }
+            ? $"Follow up on what they told you last (\"{Prefix(followUp, 80)}\") with one easy question about it; if it was worrying or " +
+              "sad, ask gently how they, or the person they spoke of, are doing now."
+            : "Ask one light, easy question about their day or a small preference, or say one warm short line.";
+        return $"You speak first now: the user has not said anything for about {Minutes(quietS)} minutes. Say one new short sentence (at most " +
+               $"30 Chinese characters). {topic} Your last reply was \"{Prefix(lastReply, 60)}\": say something different, not that again. " +
+               "Do not invent anything you did, saw or heard: you have no senses and no life outside this conversation. Do not greet " +
+               "them as if they had just arrived, and ask at most one question. Use the language of the conversation.";
+    }
+
+    /// <summary>The quiet itself, as the user's turn that her line answers (the contract's silence line).</summary>
+    public static string Silence(double quietS) => $"（{Minutes(quietS)} 分钟没有说话）";
+
+    /// <summary>Whole minutes, at least one, rounded half to even as the contract's reference does.</summary>
+    private static string Minutes(double quietS) =>
+        Math.Max(1, Math.Round(quietS / 60, MidpointRounding.ToEven)).ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>The first <paramref name="count"/> characters, counted in code points.</summary>
+    private static string Prefix(string text, int count)
+    {
+        var b = new StringBuilder();
+        foreach (var r in text.EnumerateRunes().Take(count))
+            b.Append(r.ToString());
+        return b.ToString();
+    }
 
     /// <param name="turns">The user's turns, newest first.</param>
     /// <param name="now">The current time on the clock of <see cref="InitiativeTurn.Created"/>.</param>
@@ -90,6 +178,6 @@ public static class Initiative
         var score = w.Relevance * parts["relevance"] + w.Novelty * parts["novelty"] + w.Social * parts["social"] + w.Context * parts["context"]
                     - w.Interrupt * parts["interrupt"] - w.Frequency * parts["frequency"];
         var speak = gate is null && score >= p.Threshold;
-        return new(speak, score, parts, gate ?? (speak ? "opportunity" : "score below threshold"), worth ? last.Input : null);
+        return new(speak, score, parts, gate ?? (speak ? "opportunity" : "score below threshold"), worth ? last.Input : null, quiet);
     }
 }

@@ -145,6 +145,52 @@ public class ClientTests
         Assert.Equal(loaded.Stage.ModelUrl, applied.ModelUrl); // a scene dresses the stage; it does not change the model
     }
 
+    [Fact]
+    public async Task Speaking_first_stores_her_line_alone_and_gives_the_model_the_contracts_note_and_silence()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var llm = new FakeLlm();
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await host.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/routes", new JsonObject
+        {
+            ["models"] = new JsonObject { ["aijade-chat"] = new JsonObject { ["upstream"] = "https://llm.example/v1", ["model"] = "m", ["keys"] = new JsonArray("k"), ["fluxPer1k"] = 0 } },
+        }, ServerTestHost.AdminToken);
+        var tokens = new MemoryTokenStore();
+        await tokens.SetAsync(ServerTestHost.Token);
+        var api = new AijadeApi(host.Client, tokens);
+        var chat = await api.CreateChatAsync(null, "quiet", ct);
+        var now = DateTimeOffset.UtcNow;
+        var history = new List<StoredMessage>
+        {
+            new("u", 1, "user", "今天面试，有点紧张", now.AddSeconds(-425)),
+            new("a", 2, "assistant", "祝你面试顺利！", now.AddSeconds(-420)),
+        };
+        var seen = new RecordingObserver();
+        var orchestrator = new ChatOrchestrator(api, [new StaticContext("The user likes tea.")], new OrchestratorOptions(), observers: [seen]);
+
+        var events = new List<OrchestratorEvent>();
+        await foreach (var e in orchestrator.SpeakFirstAsync(chat.Id, null, history, "snap-1", 14, ct))
+            events.Add(e);
+
+        Assert.IsType<TurnCompleted>(events[^1]);
+        Assert.Equal(["joy"], events.OfType<ExpressionCue>().Select(c => c.Name));
+        var stored = Assert.Single(await api.MessagesAsync(chat.Id, ct: ct));
+        Assert.Equal(("assistant", "Nice to meet you!"), (stored.Role, stored.Content));
+        Assert.True(Aijade.Client.Companion.Initiative.IsProactive(stored));
+        var sent = JsonNode.Parse(llm.LastBody!)!["messages"]!.AsArray().Select(m => (m!["role"]!.GetValue<string>(), m["content"]!.GetValue<string>())).ToList();
+        Assert.Equal(5, sent.Count); // persona, the exchange, the note, the silence
+        Assert.StartsWith("You are 艾娅德 (Aijade-9)", sent[0].Item2, StringComparison.Ordinal);
+        Assert.Equal(("user", "今天面试，有点紧张"), sent[1]);
+        Assert.Equal(("assistant", "祝你面试顺利！"), sent[2]);
+        Assert.StartsWith("You speak first now: the user has not said anything for about 7 minutes.", sent[3].Item2, StringComparison.Ordinal);
+        Assert.Contains("(\"今天面试，有点紧张\")", sent[3].Item2, StringComparison.Ordinal);
+        Assert.Equal(("user", "（7 分钟没有说话）"), sent[4]);
+        // No context provider was asked and no observer told: a first line is neither recalled nor learned from.
+        Assert.DoesNotContain("The user likes tea.", llm.LastBody!, StringComparison.Ordinal);
+        Assert.Empty(seen.Calls);
+    }
+
     private sealed class FakeLlm : HttpMessageHandler
     {
         public string? LastBody { get; private set; }

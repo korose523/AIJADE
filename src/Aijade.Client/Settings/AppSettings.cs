@@ -109,6 +109,12 @@ public sealed record ModuleSettings
 
     public bool Vision { get; init; }
 
+    /// <summary>
+    /// When the chat has gone quiet, the companion may speak first, under the rule of the companion contract shared with MOSAIC
+    /// (night hours, a request for quiet, goodbyes, unanswered lines, cooldown and an hourly budget hold her back). Off by default.
+    /// </summary>
+    public bool SpeakFirst { get; init; }
+
     /// <summary>Let the companion see what the browser extension reports you are reading or watching.</summary>
     public bool BrowserContext { get; init; }
 

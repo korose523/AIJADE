@@ -118,6 +118,7 @@
     private bool listening;
     private double level;
     private CancellationTokenSource? cts;
+    private readonly PeriodicTimer speakFirstTimer = new(TimeSpan.FromMinutes(1));
 
     protected override async Task OnInitializedAsync()
     {
@@ -125,7 +126,70 @@
         Voice.Level += OnLevel;
         Voice.Failed += OnVoiceFailed;
         Vision.Changed += OnVisionChanged;
+        _ = SpeakFirstLoopAsync();
         await LoadChatsAsync();
+    }
+
+    /// <summary>Once a minute while this page is open, ask whether she should speak first (the setting is off by default).</summary>
+    private async Task SpeakFirstLoopAsync()
+    {
+        try
+        {
+            while (await speakFirstTimer.WaitForNextTickAsync())
+                await InvokeAsync(SpeakFirstAsync);
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Her first line, when the companion contract's rule says the moment has come (<see cref="ChatOrchestrator.SpeakFirstAsync"/>):
+    /// shown, performed and spoken like a reply. Nothing happens while a turn is running, while the user is speaking or typing,
+    /// or in a chat with no exchange yet.
+    /// </summary>
+    private async Task SpeakFirstAsync()
+    {
+        if (!State.Settings.Current.Modules.SpeakFirst || busy || drawing || listening || draft.Length > 0 || ChatId is null || messages.Count == 0)
+            return;
+        var chatId = ChatId;
+        busy = true;
+        error = null;
+        streaming = "";
+        cts = new CancellationTokenSource();
+        try
+        {
+            await foreach (var e in Orchestrator().SpeakFirstAsync(chatId, character, messages.ToList(), $"persona:{character?.Id ?? "default"}", DateTime.Now.Hour, cts.Token))
+            {
+                switch (e)
+                {
+                    case TextDelta d:
+                        streaming += d.Text;
+                        StateHasChanged();
+                        break;
+                    case TurnFailed:
+                        messages = [.. await State.Api.MessagesAsync(chatId)]; // a first line that failed stays unsaid
+                        break;
+                    case TurnCompleted done:
+                        messages = [.. await State.Api.MessagesAsync(chatId)];
+                        await PerformAsync(done);
+                        break;
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (AijadeApiException)
+        {
+            // Speaking first is optional: a server that cannot be reached now is tried again next minute.
+        }
+        finally
+        {
+            busy = false;
+            streaming = "";
+            StateHasChanged();
+        }
     }
 
     private string? loadedChatId;
@@ -342,6 +406,7 @@
         Voice.Level -= OnLevel;
         Voice.Failed -= OnVoiceFailed;
         Vision.Changed -= OnVisionChanged;
+        speakFirstTimer.Dispose();
         cts?.Cancel();
         cts?.Dispose();
         await Voice.StopAsync();
