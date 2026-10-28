@@ -1,4 +1,8 @@
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
+
+using Aijade.Memory.Contracts;
 
 namespace Aijade.Client.Companion;
 
@@ -32,7 +36,7 @@ public sealed record StageSpot(string Name, string Label, string Activity, strin
 /// step 1): as MOSAIC's live-scene workbench does it, fixed words in the user's message, not the model, decide what her body
 /// does after the reply (a spot in her home, else a walk, else a dance, else a gesture; a negation, or the speaker going
 /// themselves, means none), and the model is told before it replies. Held to the vectors from a compiled copy of MOSAIC's
-/// LiveSceneCommands. Not wired to any surface yet.
+/// LiveSceneCommands. The chat page uses it when the setting "Stage: MOSAIC's home" is on (<see cref="MosaicStage"/>).
 /// </summary>
 public static class Stage
 {
@@ -201,6 +205,66 @@ public static class Stage
         if (Dance(text))
             return new StageAction(StageActionKind.Dance, null, Doings["dance"]);
         return Gesture(text) is { } gesture ? new StageAction(StageActionKind.Gesture, gesture, Doings[gesture]) : null;
+    }
+
+    /// <summary>The workbench's name for each gesture id in its gesture command (手势 鞠躬); "bye" has only the name 挥手.</summary>
+    public static IReadOnlyDictionary<string, string> GestureCommandNames { get; } = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["bow"] = "鞠躬", ["bye"] = "挥手", ["byebye"] = "拜拜", ["guide"] = "指引", ["call"] = "招呼", ["respond"] = "举手", ["groom"] = "理头发",
+    };
+
+    /// <summary>The longest text one 说 command of the workbench takes.</summary>
+    public const int MaxSpeech = 300;
+
+    /// <summary>
+    /// The workbench command line for one reply (<c>POST /api/v1/live-scene/command</c>): her expression from the reply's PEF
+    /// vector (表情 valence arousal dominance curiosity), the reply spoken in pieces of at most <see cref="MaxSpeech"/>
+    /// characters (说), then the action (去 沙发, 起来, 走路 @approach, 跳舞, 手势 鞠躬). The workbench splits commands at
+    /// ';', '；' and line breaks, so these become commas in the spoken text.
+    /// </summary>
+    public static string CommandLine(ExpressionVector expression, string reply, StageAction? action)
+    {
+        static string F(double v, double min) => Math.Round(Math.Clamp(double.IsFinite(v) ? v : 0, min, 1), 2).ToString("0.##", CultureInfo.InvariantCulture);
+        var commands = new List<string>
+        {
+            $"表情 {F(expression.Valence, -1)} {F(expression.Arousal, 0)} {F(expression.Dominance, 0)} {F(expression.Curiosity, 0)}",
+        };
+        commands.AddRange(SpeechPieces(reply).Select(p => "说 " + p));
+        if (action is not null)
+        {
+            commands.Add(action.Kind switch
+            {
+                StageActionKind.Place => "去 " + action.Argument,
+                StageActionKind.Stand => "起来",
+                StageActionKind.Walk => "走路 " + action.Argument,
+                StageActionKind.Dance => "跳舞",
+                _ => "手势 " + GestureCommandNames[action.Argument!],
+            });
+        }
+        return string.Join("; ", commands);
+    }
+
+    /// <summary>The reply as the pieces she says: separators turned into commas, cut after a sentence end where it can be.</summary>
+    public static IReadOnlyList<string> SpeechPieces(string reply)
+    {
+        var text = string.Join("，", reply.Split([';', '；', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        var pieces = new List<string>();
+        var piece = new StringBuilder();
+        foreach (var rune in text.EnumerateRunes())
+        {
+            while (piece.Length + rune.Utf16SequenceLength > MaxSpeech)
+            {
+                var s = piece.ToString();
+                var cut = s.LastIndexOfAny(['。', '！', '？', '!', '?', '~']) + 1;
+                cut = cut > 0 ? cut : s.Length;
+                pieces.Add(s[..cut].Trim());
+                piece.Clear().Append(s[cut..]);
+            }
+            piece.Append(rune.ToString());
+        }
+        if (piece.ToString().Trim() is { Length: > 0 } last)
+            pieces.Add(last);
+        return [.. pieces.Where(p => p.Length > 0)];
     }
 
     public static string ActionNote(StageAction action) => ActionNoteTemplate.Replace("{doing}", action.Doing, StringComparison.Ordinal);

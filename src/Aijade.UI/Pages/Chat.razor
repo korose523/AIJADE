@@ -1,6 +1,7 @@
 @page "/"
 @page "/chat/{ChatId}"
 @implements IAsyncDisposable
+@using Aijade.Client.Companion
 @inject AppState State
 @inject NavigationManager Nav
 @inject VoiceInput Voice
@@ -152,6 +153,10 @@
     {
         if (!State.Settings.Current.Modules.SpeakFirst || busy || drawing || listening || draft.Length > 0 || ChatId is null || messages.Count == 0)
             return;
+        // On MOSAIC's stage she does not speak first while lying down, as there.
+        var home = State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
+        if (home is { Lying: true } || busy || drawing || listening || draft.Length > 0 || ChatId is null)
+            return;
         var chatId = ChatId;
         busy = true;
         error = null;
@@ -172,7 +177,7 @@
                         break;
                     case TurnCompleted done:
                         messages = [.. await State.Api.MessagesAsync(chatId)];
-                        await PerformAsync(done);
+                        await PerformAsync(done, home, null);
                         break;
                 }
             }
@@ -275,7 +280,11 @@
                 _ = new ConversationRecorder(State.Api, State.MemorySessionId, State.DeviceId).RecordAsync(text);
             canDraw = (await State.CapabilitiesAsync()).Images;
             var drawRequests = new List<string>();
-            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", cts.Token))
+            // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
+            var home = settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
+            var action = home is null ? null : Stage.Decide(text, home.Seated);
+            var notes = home is null ? null : Stage.Notes(action, home.Where);
+            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes, cts.Token))
             {
                 switch (e)
                 {
@@ -292,7 +301,7 @@
                         break;
                     case TurnCompleted done:
                         messages = [.. await State.Api.MessagesAsync(ChatId)];
-                        await PerformAsync(done);
+                        await PerformAsync(done, home, action);
                         break;
                 }
             }
@@ -329,9 +338,25 @@
         }
     }
 
-    /// <summary>Show the reply on the stage, report the render receipt, and speak it with lip sync.</summary>
-    private async Task PerformAsync(TurnCompleted done)
+    /// <summary>
+    /// Show the reply on the stage, report the render receipt, and speak it with lip sync. On MOSAIC's stage
+    /// (<paramref name="home"/>) the reply is said there, followed by the decided action, and not spoken here.
+    /// </summary>
+    private async Task PerformAsync(TurnCompleted done, StageState? home, StageAction? action)
     {
+        var saidOnStage = false;
+        if (home is not null)
+        {
+            try
+            {
+                await new MosaicStage(State.Api).SendAsync(Stage.CommandLine(done.Intent.Expression, done.Reply.Content, action));
+                saidOnStage = true;
+            }
+            catch (AijadeApiException e)
+            {
+                error = State.Text.Format("chat.error", e.Message); // the reply stands and is spoken here instead
+            }
+        }
         if (stage is not null)
         {
             var applied = await stage.ApplyAsync(done.Intent);
@@ -348,7 +373,7 @@
             }
         }
         var voice = State.Settings.Current.Voice;
-        if (voice.SpeakReplies && State.Settings.Current.Modules.Speech && done.Reply.Content.Length > 0)
+        if (!saidOnStage && voice.SpeakReplies && State.Settings.Current.Modules.Speech && done.Reply.Content.Length > 0)
         {
             try
             {

@@ -1,10 +1,10 @@
 # 与 MOSAIC 共享的伴侣契约（非研究线）
 
-决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.3.0（2026-10-28）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 只有判定实现，尚未接入界面。它属于非研究线：
+决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.3.0（2026-10-28）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 的聊天据此经服务端转发驱动 MOSAIC 的工作台（设置默认关闭）。它属于非研究线：
 
 - 不是学位论文任何研究的输入、样本、奖励或判定条件；
 - 不触及研究对象；
-- 不新增网络接口或进程。
+- 不新增进程；唯一新增的网络接口是舞台的转发（`/api/v1/stage`，只限管理员，只转发到本机的工作台），见 ADR-002 补充四。
 
 本仓库不修改 MOSAIC。MOSAIC 一侧需要做的事见文末"交接"。
 
@@ -23,7 +23,10 @@
 | `configs/companion/text-channel-vectors.json`、`generate_text_channel_vectors.py` | 文字渠道规则的常量（用语法树从 MOSAIC 的 `tools/companion_qq.py` 读取，不执行该脚本）与 8 条"补句"用例 |
 | `src/Aijade.Client/Companion/TextChannel.cs` | 文字渠道规则（AIJADE 一侧）；由 `CompanionBridge` 在 Discord、Telegram、X 与 Satori 转接的平台上使用 |
 | `configs/companion/stage-vectors.json`、`generate_stage_vectors.py` | 舞台规则的词表、家里 10 个地点与 45 句判定（在两个仓库之外编译并运行 MOSAIC `LiveSceneCommands.cs` 的副本得到，词表用反射从编译的副本读取） |
-| `src/Aijade.Client/Companion/Stage.cs` | 舞台规则（AIJADE 一侧）：判定与三条说明；尚未接入界面 |
+| `src/Aijade.Client/Companion/Stage.cs`、`MosaicStage.cs` | 舞台规则（AIJADE 一侧）：判定、三条说明与每轮的指令行；经服务端读她的状态、发指令 |
+| `src/Aijade.Server/Product/Stage.cs` | 舞台的转发：`GET /api/v1/stage`、`POST /api/v1/stage/command`；只限管理员；工作台地址 `Stage:WorkbenchUrl` 必须是本机回环地址，否则服务端不启动；只放行聊天用到的指令 |
+| `src/Aijade.UI/Pages/Chat.razor`、`Settings.razor` | 设置"舞台：MOSAIC 的家"（`ModuleSettings.MosaicStage`，默认关闭）；打开且场景在运行时，回复在 MOSAIC 那边说出并做动作，本页不出声 |
+| `tests/Aijade.Tests/StageTests.cs` | 指令行、语音分段、转发的地址与指令限制；端到端（需要数据库，在 CI 上运行）：用假的工作台检查只限管理员、转发的内容、拒绝与出错 |
 | `tests/Aijade.Tests/ClientTests.cs` | 端到端（需要数据库，在 CI 上运行）：她的一句单独保存并带标记；发给模型的消息依次为人设、最近的对话、说明、沉默；不问上下文提供者，不通知观察者 |
 
 ## 人设：艾娅德（Aijade-9）
@@ -108,7 +111,12 @@ MOSAIC 的 neutral 在 AIJADE 一侧不写标记。MOSAIC 的手势（none、hea
   - 词表（否定、说话人自己要去、去往、邀请、起来、走动、跳舞、手势、问候的正则）与 10 个地点都与 MOSAIC 相同；
   - 45 句中，地点、走动、跳舞、手势四个函数的结果，以及站着与坐着时的判定，都与 MOSAIC 的代码相同；
   - 阳性对照：从邀请词中删去"该"，或把"我去睡觉了"的判定改成去床上，相应的契约测试都会失败。
-- **还没有做**（方案 A 第 2 步，等作者决定宿主）：把指令发给工作台，以及打开舞台的设置。
+- **AIJADE 产品中的位置**（方案 A 第 2 步，作者选服务端转发）：
+  - 打开设置"舞台：MOSAIC 的家"后，每轮先经服务端读工作台的状态；场景没在运行、服务端没有配置或账号不是管理员时，聊天照常进行。
+  - 场景在运行时：按她坐着、躺着或站着判定动作，在用户的话之前加说明（含她在哪）；回复后发一行指令：表情（取回复的 PEF 情绪向量）、分段说出回复、再做判定的动作。本页的语音此时不出声。指令被拒时显示错误，并改在本页说出。
+  - 她先开口的一句也在那边说出；她躺着时不先开口。
+  - 服务端：`Stage:WorkbenchUrl`（例如 `http://127.0.0.1:5002`）必须是本机回环地址，因为工作台没有认证；只限管理员，因为它驱动的是服务端所在机器上的设备；只放行表情、说、去、起来、走路、跳舞、手势。
+- **还没有做**：与运行中的工作台联机检查。这要在 MOSAIC 里启动工作台与家，并在 MOSAIC 一侧关掉 `ProactiveSpeech` 与 `ModelActions`，何时做由作者决定。
 - **MOSAIC r392 起已具备**：
   - 状态接口返回她在哪（`where`，与 `where_you_are` 同一句）和姿势（`posture`：sit、lie、stand）；
   - 跳舞指令不带名字时，从它本机的舞蹈库随机选一支。
@@ -137,6 +145,7 @@ python3 -B -I configs/companion/generate_stage_vectors.py "$MOSAIC" configs/comp
 - `GET /api/v1/live-scene` 新增 `where` 与 `posture`，场景没在运行时都为 null；
 - 由 AIJADE 驱动时关掉 `ProactiveSpeech` 与 `ModelActions` 的配置写进了文档，默认不变，何时设置由作者决定。
 - 本仓库独立核对：读了这两处代码；用 `generate_stage_vectors.py` 在 r392 上重新生成，地点、词表与 45 句判定全部相同。`LiveSceneCommands.cs` 改的是跳舞指令的解析，聊天词表没有变，所以只更新了向量文件记录的源文件哈希。
+- MOSAIC 在 r395、r398 改了家的布局 `configs/scenes/home-v1.json`（钢琴琴键、可移动的凳椅、电视与台灯的开关），地点与别名不变。本仓库在 r398 上重新生成，地点、词表与 45 句判定全部相同，只更新了布局文件的哈希。
 
 MOSAIC 在 SVN r389 采用了 1.2.0：
 - 人设文字与契约逐字相同，按原方法复查（16 条消息 × 2）：32 句中没有出错、照抄或奉承；问名字 2 次都答“我叫艾娅德”；8 句难过的回复中有 5 句给对方留了选择。

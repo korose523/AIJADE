@@ -115,6 +115,13 @@ public sealed record ModuleSettings
     /// </summary>
     public bool SpeakFirst { get; init; }
 
+    /// <summary>
+    /// MOSAIC's home as her stage (docs/STAGE-MOSAIC.md): while the owner's workbench runs a scene, each reply is said there
+    /// and her body goes where the user's words send her (the companion contract's stage rules); her voice here stays silent.
+    /// Needs a server with Stage:WorkbenchUrl and an admin account; without them the chat goes on as usual. Off by default.
+    /// </summary>
+    public bool MosaicStage { get; init; }
+
     /// <summary>Let the companion see what the browser extension reports you are reading or watching.</summary>
     public bool BrowserContext { get; init; }
 

@@ -104,6 +104,17 @@
 
 **进度（2026-10-28）**：作者选择方案 A 并先做第 1 步。舞台规则已写入契约 1.3.0（[COMPANION-CONTRACT](COMPANION-CONTRACT.md)"舞台"一节），AIJADE 的判定实现是 `src/Aijade.Client/Companion/Stage.cs`，在 MOSAIC 代码生成的 45 句向量上全部一致；尚未接入界面。MOSAIC 已在 r392 采用 1.3.0：状态接口返回她在哪（`where`）和姿势（`posture`），跳舞指令可以不带名字；由 AIJADE 驱动时关掉它自己先开口与自选动作的配置写进了它的文档，何时设置由你决定。
 
+**第 2 步（2026-10-28，作者选服务端转发）**：已完成，尚未联机检查。
+- 服务端加 `/api/v1/stage`（`src/Aijade.Server/Product/Stage.cs`）：只限管理员，只转发到本机回环地址上的工作台，只放行聊天用到的七种指令；
+- 聊天页加设置"舞台：MOSAIC 的家"（默认关闭），每一轮的做法如第四节第 1 小节；
+- 用测试替身代替工作台验证，MOSAIC 没有运行。
+
+联机检查要做的：
+1. MOSAIC 一侧：启动工作台与家；`LiveScene:ProactiveSpeech=false`，`LiveScene:ModelActions=false`。
+2. AIJADE 服务端：与工作台在同一台机器上，配置 `Stage:WorkbenchUrl=http://127.0.0.1:5002`。
+3. 账号设为管理员。
+4. 在设置里打开"舞台：MOSAIC 的家"。
+
 ## 六、建议
 
 分两步做 A：

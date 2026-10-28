@@ -92,6 +92,9 @@ public static class AijadeServer
         builder.Services.AddSingleton<Aijade.Server.Tools.ToolHub>();
         builder.Services.AddHttpClient(GatewayEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromMinutes(5));
         builder.Services.AddHttpClient(BillingEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(30));
+        // The owner's MOSAIC stage: refuse at start a workbench address that is not on this machine (it has no authentication).
+        StageEndpoints.Workbench(config[StageEndpoints.ConfigKey]);
+        builder.Services.AddHttpClient(StageEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(10));
         builder.Services.Configure<StripeOptions>(o =>
         {
             var s = config.GetSection("Stripe");
@@ -164,6 +167,7 @@ public static class AijadeServer
             GatewayEndpoints.Map(app);
             ImageEndpoints.Map(app);
             LiveContextEndpoints.Map(app);
+            StageEndpoints.Map(app);
             app.MapAijadeMcp();
             Aijade.Server.Tools.ToolEndpoints.Map(app);
             BillingEndpoints.Map(app);
