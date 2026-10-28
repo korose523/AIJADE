@@ -213,7 +213,7 @@
       "stand": "站起来 (MOSAIC's wording)",
       "others": "AIJADE's wording, since MOSAIC tells its model only the kind: 转一圈, 转过身, 走过来, 往后退一点, 走开, 走一走, 跳一支舞, 鞠躬, 挥手, 挥手告别, 打招呼, 带路, 举手, 理理头发"
     },
-    "notYet": "Sending the commands to the workbench and the setting that turns the stage on (plan A step 2); where she is (MOSAIC's status does not return it yet: handoff); dances by name (MOSAIC's dance library is local and the workbench's dance command needs a name).",
+    "notYet": "Sending the commands to the workbench and the setting that turns the stage on (plan A step 2). Since MOSAIC r392 its status (GET /api/v1/live-scene) returns where she is (the same sentence as where_you_are) and her posture (sit, lie, stand), and its dance command without a name picks one from its local dance library.",
     "vectors": "configs/companion/stage-vectors.json, from a copy of MOSAIC's LiveSceneCommands.cs compiled and run outside both repositories (generate_stage_vectors.py); per sentence the place, walk, dance and gesture MOSAIC's functions give, and the decision standing and seated",
     "implementations": {
       "aijade": "src/Aijade.Client/Companion/Stage.cs (not wired to any surface yet)",
@@ -221,6 +221,6 @@
     }
   },
   "adoption": {
-    "mosaic": "Adopted 1.2.0 in SVN r389 (2026-10-28): persona text identical, contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md and docs/COMPANION-QQ-2026-10-28.md, notes beside the shared constants to tell the AIJADE side of changes; both vector files regenerated on its code with identical content"
+    "mosaic": "Adopted 1.2.0 in SVN r389 (2026-10-28): persona text identical, contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md and docs/COMPANION-QQ-2026-10-28.md, notes beside the shared constants to tell the AIJADE side of changes; both vector files regenerated on its code with identical content; adopted 1.3.0 in SVN r392 (2026-10-28): contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md, status returns where and posture, dance without a name picks one at random; ProactiveSpeech and ModelActions are to be off while AIJADE drives (configuration, the author's call); stage vectors regenerated on its code with identical content (only the source hash of LiveSceneCommands.cs changed)"
   }
 }
