@@ -192,6 +192,78 @@ public class CompanionContractTests
         Assert.StartsWith("This conversation is Telegram text messages, not the live scene", TextChannel.Notes("Telegram", "hi")[0], StringComparison.Ordinal);
     }
 
+    private static string[] Strings(JsonElement array) => [.. array.EnumerateArray().Select(x => x.GetString()!)];
+
+    private static string Keyed(IEnumerable<(string[] Keywords, string Value)> table) => string.Join(" | ", table.Select(t => string.Join(",", t.Keywords) + "=" + t.Value));
+
+    [Fact]
+    public void The_stage_words_and_spots_are_mosaics()
+    {
+        var v = Load("stage-vectors.json");
+        var w = v.GetProperty("words");
+        Assert.Equal(Strings(w.GetProperty("negations")), Stage.Negations);
+        Assert.Equal(Strings(w.GetProperty("selfGoing")), Stage.SelfGoing);
+        Assert.Equal(Strings(w.GetProperty("goWords")), Stage.GoWords);
+        Assert.Equal(Strings(w.GetProperty("invitations")), Stage.Invitations);
+        Assert.Equal(Strings(w.GetProperty("standUpWords")), Stage.StandUpWords);
+        Assert.Equal(Strings(w.GetProperty("danceKeywords")), Stage.DanceKeywords);
+        Assert.Equal(Stage.StandUp, w.GetProperty("standUp").GetString());
+        string Table(string name, string value) => Keyed(w.GetProperty(name).EnumerateArray().Select(m => (Strings(m.GetProperty("keywords")), m.GetProperty(value).GetString()!)));
+        Assert.Equal(Table("movements", "script"), Keyed(Stage.Movements));
+        Assert.Equal(Table("gestures", "gesture"), Keyed(Stage.Gestures));
+        Assert.Equal(Table("situationalGestures", "gesture"), Keyed(Stage.SituationalGestures));
+        Assert.Equal(w.GetProperty("greeting").GetProperty("pattern").GetString(), Stage.Greeting.ToString());
+        Assert.Equal(w.GetProperty("greeting").GetProperty("options").GetString(), Stage.Greeting.Options.ToString());
+
+        var spots = v.GetProperty("spots").EnumerateArray().Select(s => new StageSpot(s.GetProperty("name").GetString()!, s.GetProperty("label").GetString()!,
+            s.GetProperty("activity").GetString()!, s.GetProperty("room").GetString()!, Strings(s.GetProperty("aliases")))).ToList();
+        Assert.Equal(spots.Select(s => (s.Name, s.Label, s.Activity, s.Room, string.Join(",", s.Aliases))),
+            Stage.Spots.Select(s => (s.Name, s.Label, s.Activity, s.Room, string.Join(",", s.Aliases))));
+        Assert.Equal(Strings(v.GetProperty("places")), Stage.PlaceWords);
+        foreach (var d in v.GetProperty("doing").EnumerateObject())
+            Assert.Equal(d.Value.GetString(), Stage.PlaceDoing(d.Name));
+        Assert.All(Stage.Movements.Select(m => m.Script).Concat(Stage.Gestures.Concat(Stage.SituationalGestures).Select(g => g.Gesture)).Append("dance"),
+            k => Assert.True(Stage.Doings.ContainsKey(k), k));
+    }
+
+    [Fact]
+    public void The_stage_decides_as_mosaic_did_on_every_sentence()
+    {
+        static string? Str(JsonElement e, string name) => e.GetProperty(name).ValueKind == JsonValueKind.Null ? null : e.GetProperty(name).GetString();
+        static string? Decision(JsonElement e) => e.ValueKind == JsonValueKind.Null ? null : $"{e.GetProperty("kind").GetString()}:{Str(e, "argument")}";
+        static string? Of(StageAction? a) => a is null ? null : $"{a.Kind.ToString().ToLowerInvariant()}:{a.Argument}";
+        var cases = Load("stage-vectors.json").GetProperty("cases").EnumerateArray().ToList();
+        Assert.NotEmpty(cases);
+        foreach (var c in cases)
+        {
+            var text = c.GetProperty("text").GetString()!;
+            Assert.True(Str(c, "place") == Stage.Place(text), $"{text}: place {Stage.Place(text)}");
+            Assert.True(Str(c, "movement") == Stage.Movement(text), $"{text}: movement {Stage.Movement(text)}");
+            Assert.True(c.GetProperty("dance").GetBoolean() == Stage.Dance(text), $"{text}: dance");
+            Assert.True(Str(c, "gesture") == Stage.Gesture(text), $"{text}: gesture {Stage.Gesture(text)}");
+            Assert.True(Str(c, "gestureAsked") == Stage.Gesture(text, situational: false), $"{text}: asked gesture");
+            Assert.True(Decision(c.GetProperty("decision")) == Of(Stage.Decide(text, seated: false)), $"{text}: decision {Of(Stage.Decide(text, false))}");
+            Assert.True(Decision(c.GetProperty("decisionSeated")) == Of(Stage.Decide(text, seated: true)), $"{text}: seated decision");
+        }
+    }
+
+    [Fact]
+    public void The_stage_notes_are_the_contract_notes()
+    {
+        var notes = Load("contract.json").GetProperty("stage").GetProperty("notes");
+        Assert.Equal(Stage.ActionNoteTemplate, notes.GetProperty("action").GetString());
+        Assert.Equal(Stage.NoActionNote, notes.GetProperty("noAction").GetString());
+        Assert.Equal(Stage.WhereNoteTemplate, notes.GetProperty("where").GetString());
+
+        Assert.Equal([Stage.NoActionNote], Stage.Notes(Stage.Decide("今天好累", seated: false), null));
+        var sofa = Stage.Notes(Stage.Decide("去沙发坐会儿吧", seated: false), "在客厅");
+        Assert.Equal(2, sofa.Count);
+        Assert.Contains("do this, because they asked: 去沙发坐下.", sofa[0], StringComparison.Ordinal);
+        Assert.Contains("from the app: 在客厅.", sofa[1], StringComparison.Ordinal);
+        Assert.Null(Stage.Decide("起来吧", seated: false));
+        Assert.Equal("站起来", Stage.Decide("起来吧", seated: true)!.Doing);
+    }
+
     private sealed class NoCalls : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>

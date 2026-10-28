@@ -1,6 +1,6 @@
 # 与 MOSAIC 共享的伴侣契约（非研究线）
 
-决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.2.0（2026-10-28）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用。它属于非研究线：
+决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.3.0（2026-10-28）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 只有判定实现，尚未接入界面。它属于非研究线：
 
 - 不是学位论文任何研究的输入、样本、奖励或判定条件；
 - 不触及研究对象；
@@ -22,6 +22,8 @@
 | `tests/Aijade.Tests/CompanionContractTests.cs` | 契约与代码一致；判定与"说明""沉默"在全部向量上与 MOSAIC 相同；对话映射；闸门挡住时不调用模型 |
 | `configs/companion/text-channel-vectors.json`、`generate_text_channel_vectors.py` | 文字渠道规则的常量（用语法树从 MOSAIC 的 `tools/companion_qq.py` 读取，不执行该脚本）与 8 条"补句"用例 |
 | `src/Aijade.Client/Companion/TextChannel.cs` | 文字渠道规则（AIJADE 一侧）；由 `CompanionBridge` 在 Discord、Telegram、X 与 Satori 转接的平台上使用 |
+| `configs/companion/stage-vectors.json`、`generate_stage_vectors.py` | 舞台规则的词表、家里 10 个地点与 45 句判定（在两个仓库之外编译并运行 MOSAIC `LiveSceneCommands.cs` 的副本得到，词表用反射从编译的副本读取） |
+| `src/Aijade.Client/Companion/Stage.cs` | 舞台规则（AIJADE 一侧）：判定与三条说明；尚未接入界面 |
 | `tests/Aijade.Tests/ClientTests.cs` | 端到端（需要数据库，在 CI 上运行）：她的一句单独保存并带标记；发给模型的消息依次为人设、最近的对话、说明、沉默；不问上下文提供者，不通知观察者 |
 
 ## 人设：艾娅德（Aijade-9）
@@ -84,6 +86,33 @@ MOSAIC 的 neutral 在 AIJADE 一侧不写标记。MOSAIC 的手势（none、hea
   - 动作词只有中文；
   - MOSAIC 出错时的固定回复与图片的回复是中文定句，而 AIJADE 的渠道多用户、多语言，暂不纳入。
 
+## 舞台（1.3.0）
+
+她在 MOSAIC 的家里时，回复之后身体做什么，按 MOSAIC 工作台的做法判定（方案见 [STAGE-MOSAIC](STAGE-MOSAIC.md)，这是方案 A 的第 1 步）：
+
+- **由用户的话决定，不由模型决定**：MOSAIC 的理由是小模型会编造做不到的动作。
+- **判定顺序**：
+  1. 家里的地点：去往词后面的地点（去沙发），或两个字以上的地点加邀请的说法（我们看电视吧）；长的地点词先匹配；
+  2. 走动：过来、走开、退后、散步、转一圈、转身；
+  3. 跳舞；
+  4. 手势：用户要的（鞠躬、挥手……），以及道别、道谢、问候时的回应。
+- **不动的情况**：
+  - 有否定词（不要、别……）时都不动；
+  - 说话人自己要去（我去睡觉了）时不去；
+  - "起来"只在她坐着、躺着时才算。
+- **回复前的说明**：
+  - 舞台上每一轮都在用户的话之前加一条：要动时说回复之后应用会让她做什么（例如"去沙发坐下"），请她用几个字答应、不要说做不到；不动时说这一轮不会动，不要答应；
+  - 知道她在哪时再加一条位置说明。
+  - 这两条说明对应 MOSAIC 系统提示里的 `app_action` 与 `where_you_are`。MOSAIC 把它们作为请求中的字段传给模型，AIJADE 写成说明。
+- **一致性**：
+  - 词表（否定、说话人自己要去、去往、邀请、起来、走动、跳舞、手势、问候的正则）与 10 个地点都与 MOSAIC 相同；
+  - 45 句中，地点、走动、跳舞、手势四个函数的结果，以及站着与坐着时的判定，都与 MOSAIC 的代码相同；
+  - 阳性对照：从邀请词中删去"该"，或把"我去睡觉了"的判定改成去床上，相应的契约测试都会失败。
+- **还没有做**（方案 A 第 2 步，等作者决定宿主）：
+  - 把指令发给工作台，以及打开舞台的设置；
+  - 她在哪：MOSAIC 的状态接口还不返回（交接第 5 项）；
+  - 按名字跳舞：舞蹈库只在 MOSAIC 本机，工作台的跳舞指令需要舞名。
+
 ## 修改契约
 
 任何一边改人设、表情词表或主动开口规则，先改契约、升版本号。
@@ -93,6 +122,12 @@ MOSAIC 的 neutral 在 AIJADE 一侧不写标记。MOSAIC 的手势（none、hea
 
 ```bash
 python3 -B -I configs/companion/generate_initiative_vectors.py "$MOSAIC/ai-python/mosaic/integration/companion.py" configs/companion/initiative-vectors.json
+```
+
+舞台规则变了（MOSAIC 的 `LiveSceneCommands.cs` 或家的布局改了），用下面的命令重新生成舞台向量（需要 .NET SDK）：
+
+```bash
+python3 -B -I configs/companion/generate_stage_vectors.py "$MOSAIC" configs/companion/stage-vectors.json
 ```
 
 ## 交接：MOSAIC 一侧（由 MOSAIC 的会话或作者采用）
@@ -105,11 +140,14 @@ python3 -B -I configs/companion/generate_initiative_vectors.py "$MOSAIC/ai-pytho
 1. **人设文字**：把 `PERSONA` 开头的 ", the companion from the owner's AIJADE character bible:" 改为 ":"，即与契约文字逐字相同。2026-10-28 核对过，两者只差这一处。改后建议按原方法在 Windows 的 llama3.1:8b 上复查一次（16 条消息 × 2）。
 2. **记下契约版本**：在 MOSAIC 的伴侣文档中记下所依据的契约版本（当前为 1.2.0）。以后改 `PERSONA`、`EMOTIONS`、`INITIATIVE`、`LEAVING` 或 `HUSH` 时，同时提出契约的修改。
 3. **可选**：用 `initiative-vectors.json` 回归 MOSAIC 自己的 `initiative()`。向量就是由它生成的，代码不变时必然一致。
-4. **不涉及**：本契约不改变第 4 章外部比较所用的渲染器契约（[MOSAIC-RENDERER](MOSAIC-RENDERER.md)），也不要求 MOSAIC 连接 AIJADE 的服务端。
+4. **舞台（1.3.0，待 MOSAIC 一侧采用）**：在 MOSAIC 的伴侣文档中记下 1.3.0；以后改 `LiveSceneCommands` 的聊天词表或家的地点时，同时提出契约的修改，并重新生成舞台向量。
+5. **状态接口返回她在哪（1.3.0，交接）**：`GET /api/v1/live-scene` 加一个字段，内容与交给它语言模型的 `where_you_are` 同一句，并给出她是坐着、躺着还是站着。AIJADE 驱动舞台时据此加位置说明；她躺着时，AIJADE 也据此不先开口。
+6. **由 AIJADE 驱动时的配置**：关掉 `LiveScene:ProactiveSpeech` 与 `LiveScene:ModelActions`，免得两边都说话、都让她动。这两项是现有配置，不需要改代码；小脑的空闲动作可以保留。
+7. **不涉及**：本契约不改变第 4 章外部比较所用的渲染器契约（[MOSAIC-RENDERER](MOSAIC-RENDERER.md)），也不要求 MOSAIC 连接 AIJADE 的服务端。
 
 ## 以后可以考虑的（未做，需作者另行决定）
 
 - **聊天平台**：两边渠道的对照与四个方案见 [CHAT-CHANNELS-MOSAIC](CHAT-CHANNELS-MOSAIC.md)。方案 A（文字渠道规则）已在 1.2.0 完成；B（AIJADE 的 OneBot 11 连接器）与 C（渠道上先开口）待作者决定。
 
 - **AIJADE 作对话大脑**：AIJADE 服务端提供只听本机、与 Ollama `/api/chat` 兼容的接口，MOSAIC 只改 `CompanionUrl`。要先解决两套记忆并存的问题，并保证 MOSAIC 的动作说明原样透传。
-- **MOSAIC 作 AIJADE 的舞台**：对照与五个方案见 [STAGE-MOSAIC](STAGE-MOSAIC.md)。现有渲染器契约只能做表情与头部姿态（发送端是第 4 章的研究对象，只能调用，不能修改）；走路、坐下要经 MOSAIC 工作台的文字指令（方案 A），待作者决定。
+- **MOSAIC 作 AIJADE 的舞台**：对照与五个方案见 [STAGE-MOSAIC](STAGE-MOSAIC.md)。现有渲染器契约只能做表情与头部姿态（发送端是第 4 章的研究对象，只能调用，不能修改）；走路、坐下要经 MOSAIC 工作台的文字指令（方案 A）。方案 A 的第 1 步（舞台规则与判定实现）已在 1.3.0 完成；第 2 步（发送指令、宿主与设置）待作者决定。

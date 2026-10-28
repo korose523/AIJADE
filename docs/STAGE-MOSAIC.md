@@ -102,6 +102,8 @@
 - 不下载、不登录任何账号，除非你另行同意。
 - 不进入研究，也不算研究进度。
 
+**进度（2026-10-28）**：作者选择方案 A 并先做第 1 步。舞台规则已写入契约 1.3.0（[COMPANION-CONTRACT](COMPANION-CONTRACT.md)"舞台"一节），AIJADE 的判定实现是 `src/Aijade.Client/Companion/Stage.cs`，在 MOSAIC 代码生成的 45 句向量上全部一致；尚未接入界面。"状态接口返回她在哪"已写入交接。
+
 ## 六、建议
 
 分两步做 A：

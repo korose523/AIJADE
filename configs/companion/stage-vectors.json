@@ -1,0 +1,1079 @@
+{
+ "source": {
+  "commands": {
+   "file": "src/AijadeWorkbench.Application/LiveScene/LiveSceneCommands.cs (MOSAIC working copy)",
+   "sha256": "a4980acb9f4328bc60b6e9e18338ae4ad85b79841f12672a8e7debcece127773"
+  },
+  "home": {
+   "file": "configs/scenes/home-v1.json (MOSAIC working copy)",
+   "sha256": "02c82dbe2175da5ed56fcdf674a24f07c80d160649239afa0d6c5251d9895aa9",
+   "schema": "mosaic-home-v1"
+  },
+  "readOn": "2026-10-28"
+ },
+ "spots": [
+  {
+   "name": "sofa",
+   "label": "沙发",
+   "activity": "sit",
+   "room": "living",
+   "aliases": [
+    "沙发",
+    "客厅"
+   ]
+  },
+  {
+   "name": "tv",
+   "label": "沙发上看电视",
+   "activity": "sit",
+   "room": "living",
+   "aliases": [
+    "电视",
+    "看电视"
+   ]
+  },
+  {
+   "name": "piano",
+   "label": "钢琴前",
+   "activity": "sit",
+   "room": "living",
+   "aliases": [
+    "钢琴",
+    "弹琴",
+    "弹钢琴"
+   ]
+  },
+  {
+   "name": "bed",
+   "label": "床上",
+   "activity": "lie",
+   "room": "bedroom",
+   "aliases": [
+    "床",
+    "卧室",
+    "睡觉",
+    "躺"
+   ]
+  },
+  {
+   "name": "desk",
+   "label": "书桌前",
+   "activity": "sit",
+   "room": "bedroom",
+   "aliases": [
+    "书桌",
+    "学习"
+   ]
+  },
+  {
+   "name": "dining",
+   "label": "餐桌边",
+   "activity": "sit",
+   "room": "kitchen",
+   "aliases": [
+    "餐桌",
+    "吃饭",
+    "餐厅"
+   ]
+  },
+  {
+   "name": "kitchen",
+   "label": "灶台前",
+   "activity": "stand",
+   "room": "kitchen",
+   "aliases": [
+    "厨房",
+    "做饭",
+    "灶台"
+   ]
+  },
+  {
+   "name": "pool",
+   "label": "泳池边",
+   "activity": "stand",
+   "room": "yard",
+   "aliases": [
+    "泳池",
+    "游泳"
+   ]
+  },
+  {
+   "name": "court",
+   "label": "篮球场",
+   "activity": "stand",
+   "room": "yard",
+   "aliases": [
+    "篮球",
+    "打球",
+    "球场"
+   ]
+  },
+  {
+   "name": "deck",
+   "label": "运动木台",
+   "activity": "stand",
+   "room": "yard",
+   "aliases": [
+    "运动",
+    "跳舞的地方",
+    "木台",
+    "院子"
+   ]
+  }
+ ],
+ "places": [
+  "沙发",
+  "客厅",
+  "沙发上看电视",
+  "电视",
+  "看电视",
+  "钢琴前",
+  "钢琴",
+  "弹琴",
+  "弹钢琴",
+  "床上",
+  "床",
+  "卧室",
+  "睡觉",
+  "躺",
+  "书桌前",
+  "书桌",
+  "学习",
+  "餐桌边",
+  "餐桌",
+  "吃饭",
+  "餐厅",
+  "灶台前",
+  "厨房",
+  "做饭",
+  "灶台",
+  "泳池边",
+  "泳池",
+  "游泳",
+  "篮球场",
+  "篮球",
+  "打球",
+  "球场",
+  "运动木台",
+  "运动",
+  "跳舞的地方",
+  "木台",
+  "院子"
+ ],
+ "doing": {
+  "沙发": "去沙发坐下",
+  "客厅": "去沙发坐下",
+  "沙发上看电视": "去沙发上看电视坐下",
+  "电视": "去沙发上看电视坐下",
+  "看电视": "去沙发上看电视坐下",
+  "钢琴前": "去钢琴前坐下",
+  "钢琴": "去钢琴前坐下",
+  "弹琴": "去钢琴前坐下",
+  "弹钢琴": "去钢琴前坐下",
+  "床上": "去床上躺下休息",
+  "床": "去床上躺下休息",
+  "卧室": "去床上躺下休息",
+  "睡觉": "去床上躺下休息",
+  "躺": "去床上躺下休息",
+  "书桌前": "去书桌前坐下",
+  "书桌": "去书桌前坐下",
+  "学习": "去书桌前坐下",
+  "餐桌边": "去餐桌边坐下",
+  "餐桌": "去餐桌边坐下",
+  "吃饭": "去餐桌边坐下",
+  "餐厅": "去餐桌边坐下",
+  "灶台前": "去灶台前",
+  "厨房": "去灶台前",
+  "做饭": "去灶台前",
+  "灶台": "去灶台前",
+  "泳池边": "去泳池边",
+  "泳池": "去泳池边",
+  "游泳": "去泳池边",
+  "篮球场": "去篮球场",
+  "篮球": "去篮球场",
+  "打球": "去篮球场",
+  "球场": "去篮球场",
+  "运动木台": "去运动木台",
+  "运动": "去运动木台",
+  "跳舞的地方": "去运动木台",
+  "木台": "去运动木台",
+  "院子": "去运动木台"
+ },
+ "words": {
+  "negations": [
+   "不要",
+   "别",
+   "不用",
+   "不许",
+   "don't",
+   "do not",
+   "dont"
+  ],
+  "selfGoing": [
+   "我去",
+   "我要去",
+   "我先去",
+   "我得去",
+   "我该去",
+   "我也去",
+   "我想去"
+  ],
+  "goWords": [
+   "去",
+   "到",
+   "回",
+   "坐到",
+   "躺到"
+  ],
+  "invitations": [
+   "一起",
+   "陪我",
+   "我们",
+   "咱们",
+   "你去",
+   "快去",
+   "该"
+  ],
+  "standUpWords": [
+   "起来",
+   "站起来",
+   "起床",
+   "stand",
+   "stand up",
+   "get up"
+  ],
+  "movements": [
+   {
+    "keywords": [
+     "转一圈",
+     "转个圈",
+     "spin"
+    ],
+    "script": "原地左转 6.3 停 1"
+   },
+   {
+    "keywords": [
+     "转过身",
+     "转身",
+     "turn around"
+    ],
+    "script": "原地左转 3.15 停 1"
+   },
+   {
+    "keywords": [
+     "走过来",
+     "过来",
+     "到我这",
+     "靠近",
+     "come here",
+     "come closer"
+    ],
+    "script": "@approach"
+   },
+   {
+    "keywords": [
+     "退后",
+     "后退",
+     "往后",
+     "step back"
+    ],
+    "script": "@back"
+   },
+   {
+    "keywords": [
+     "走开",
+     "离远",
+     "back off",
+     "go away"
+    ],
+    "script": "@away"
+   },
+   {
+    "keywords": [
+     "走一走",
+     "走两步",
+     "散步",
+     "walk around"
+    ],
+    "script": "@stroll"
+   }
+  ],
+  "danceKeywords": [
+   "跳舞",
+   "跳个舞",
+   "跳支舞",
+   "跳一支舞",
+   "跳段舞",
+   "跳一段舞",
+   "来段舞",
+   "来支舞",
+   "跳一下",
+   "跳一个",
+   "跳一曲",
+   "来一段",
+   "dance"
+  ],
+  "gestures": [
+   {
+    "keywords": [
+     "鞠躬",
+     "鞠个躬",
+     "bow"
+    ],
+    "gesture": "bow"
+   },
+   {
+    "keywords": [
+     "挥挥手",
+     "挥手",
+     "招招手",
+     "wave"
+    ],
+    "gesture": "bye"
+   },
+   {
+    "keywords": [
+     "打招呼",
+     "打个招呼",
+     "say hi"
+    ],
+    "gesture": "call"
+   },
+   {
+    "keywords": [
+     "带路",
+     "指路",
+     "show me the way"
+    ],
+    "gesture": "guide"
+   },
+   {
+    "keywords": [
+     "举手",
+     "举个手",
+     "raise your hand"
+    ],
+    "gesture": "respond"
+   },
+   {
+    "keywords": [
+     "理头发",
+     "理理头发",
+     "拢头发",
+     "整理头发",
+     "fix your hair"
+    ],
+    "gesture": "groom"
+   }
+  ],
+  "situationalGestures": [
+   {
+    "keywords": [
+     "再见",
+     "拜拜",
+     "回头见",
+     "goodbye",
+     "bye"
+    ],
+    "gesture": "byebye"
+   },
+   {
+    "keywords": [
+     "谢谢",
+     "多谢",
+     "感谢",
+     "thank"
+    ],
+    "gesture": "bow"
+   }
+  ],
+  "greeting": {
+   "pattern": "(^|[\\s，。！？、,.!?~～])(你好|您好|早上好|早安|中午好|下午好|晚上好|嗨)(?=$|[\\s，。！？、,.!?~～呀啊哦吗])|\\b(hello|hi|hey|good (morning|afternoon|evening))\\b",
+   "options": "CultureInvariant"
+  },
+  "gestureNames": {
+   "鞠躬": "bow",
+   "挥手": "bye",
+   "拜拜": "byebye",
+   "指引": "guide",
+   "招呼": "call",
+   "举手": "respond",
+   "理头发": "groom",
+   "bow": "bow",
+   "wave": "bye",
+   "byebye": "byebye",
+   "guide": "guide",
+   "call": "call",
+   "respond": "respond",
+   "groom": "groom"
+  },
+  "standUp": "@up",
+  "goalWalks": {
+   "过来": "@approach",
+   "靠近": "@approach",
+   "come": "@approach",
+   "@approach": "@approach",
+   "走开": "@away",
+   "离远": "@away",
+   "away": "@away",
+   "@away": "@away",
+   "退后": "@back",
+   "后退": "@back",
+   "step-back": "@back",
+   "@back": "@back",
+   "散步": "@stroll",
+   "stroll": "@stroll",
+   "@stroll": "@stroll"
+  }
+ },
+ "cases": [
+  {
+   "text": "去沙发坐会儿吧",
+   "place": "沙发",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "沙发"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "沙发"
+   }
+  },
+  {
+   "text": "该睡觉了",
+   "place": "睡觉",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "睡觉"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "睡觉"
+   }
+  },
+  {
+   "text": "到床上躺着",
+   "place": "床上",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "床上"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "床上"
+   }
+  },
+  {
+   "text": "回卧室吧",
+   "place": "卧室",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "卧室"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "卧室"
+   }
+  },
+  {
+   "text": "我们去打篮球吧",
+   "place": "篮球",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "篮球"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "篮球"
+   }
+  },
+  {
+   "text": "陪我弹钢琴",
+   "place": "弹钢琴",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "弹钢琴"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "弹钢琴"
+   }
+  },
+  {
+   "text": "一起看电视吧",
+   "place": "看电视",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "看电视"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "看电视"
+   }
+  },
+  {
+   "text": "快去吃饭",
+   "place": "吃饭",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "吃饭"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "吃饭"
+   }
+  },
+  {
+   "text": "去书桌前学习一会儿",
+   "place": "书桌前",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "书桌前"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "书桌前"
+   }
+  },
+  {
+   "text": "沙发好舒服",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "院子里有什么",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "我去睡觉了",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "我要去游泳",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "你别去厨房",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "起来吧",
+   "place": "@up",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": {
+    "kind": "stand",
+    "argument": null
+   }
+  },
+  {
+   "text": "起床啦",
+   "place": "@up",
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": {
+    "kind": "stand",
+    "argument": null
+   }
+  },
+  {
+   "text": "过来一下好吗",
+   "place": null,
+   "movement": "@approach",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@approach"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@approach"
+   }
+  },
+  {
+   "text": "你别过来",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "转一圈给我看",
+   "place": null,
+   "movement": "原地左转 6.3 停 1",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "原地左转 6.3 停 1"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "原地左转 6.3 停 1"
+   }
+  },
+  {
+   "text": "转过身",
+   "place": null,
+   "movement": "原地左转 3.15 停 1",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "原地左转 3.15 停 1"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "原地左转 3.15 停 1"
+   }
+  },
+  {
+   "text": "退后一点",
+   "place": null,
+   "movement": "@back",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@back"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@back"
+   }
+  },
+  {
+   "text": "走开",
+   "place": null,
+   "movement": "@away",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@away"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@away"
+   }
+  },
+  {
+   "text": "陪我散步",
+   "place": null,
+   "movement": "@stroll",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@stroll"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@stroll"
+   }
+  },
+  {
+   "text": "离远点",
+   "place": null,
+   "movement": "@away",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@away"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@away"
+   }
+  },
+  {
+   "text": "come here please",
+   "place": null,
+   "movement": "@approach",
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@approach"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@approach"
+   }
+  },
+  {
+   "text": "跳个舞吧",
+   "place": null,
+   "movement": null,
+   "dance": true,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "dance",
+    "argument": null
+   },
+   "decisionSeated": {
+    "kind": "dance",
+    "argument": null
+   }
+  },
+  {
+   "text": "来段舞",
+   "place": null,
+   "movement": null,
+   "dance": true,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "dance",
+    "argument": null
+   },
+   "decisionSeated": {
+    "kind": "dance",
+    "argument": null
+   }
+  },
+  {
+   "text": "不要跳舞",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "Can you dance?",
+   "place": null,
+   "movement": null,
+   "dance": true,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "dance",
+    "argument": null
+   },
+   "decisionSeated": {
+    "kind": "dance",
+    "argument": null
+   }
+  },
+  {
+   "text": "跳一下鹿鸣",
+   "place": null,
+   "movement": null,
+   "dance": true,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "dance",
+    "argument": null
+   },
+   "decisionSeated": {
+    "kind": "dance",
+    "argument": null
+   }
+  },
+  {
+   "text": "给我鞠个躬",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "bow",
+   "gestureAsked": "bow",
+   "decision": {
+    "kind": "gesture",
+    "argument": "bow"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "bow"
+   }
+  },
+  {
+   "text": "挥挥手",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "bye",
+   "gestureAsked": "bye",
+   "decision": {
+    "kind": "gesture",
+    "argument": "bye"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "bye"
+   }
+  },
+  {
+   "text": "帮我带路",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "guide",
+   "gestureAsked": "guide",
+   "decision": {
+    "kind": "gesture",
+    "argument": "guide"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "guide"
+   }
+  },
+  {
+   "text": "理理头发",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "groom",
+   "gestureAsked": "groom",
+   "decision": {
+    "kind": "gesture",
+    "argument": "groom"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "groom"
+   }
+  },
+  {
+   "text": "谢谢你",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "bow",
+   "gestureAsked": null,
+   "decision": {
+    "kind": "gesture",
+    "argument": "bow"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "bow"
+   }
+  },
+  {
+   "text": "谢谢，再见",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "byebye",
+   "gestureAsked": null,
+   "decision": {
+    "kind": "gesture",
+    "argument": "byebye"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "byebye"
+   }
+  },
+  {
+   "text": "你好呀",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "bye",
+   "gestureAsked": null,
+   "decision": {
+    "kind": "gesture",
+    "argument": "bye"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "bye"
+   }
+  },
+  {
+   "text": "你好像很开心",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "晚上好！",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "bye",
+   "gestureAsked": null,
+   "decision": {
+    "kind": "gesture",
+    "argument": "bye"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "bye"
+   }
+  },
+  {
+   "text": "Hello there",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": "bye",
+   "gestureAsked": null,
+   "decision": {
+    "kind": "gesture",
+    "argument": "bye"
+   },
+   "decisionSeated": {
+    "kind": "gesture",
+    "argument": "bye"
+   }
+  },
+  {
+   "text": "过来跳个舞",
+   "place": null,
+   "movement": "@approach",
+   "dance": true,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "walk",
+    "argument": "@approach"
+   },
+   "decisionSeated": {
+    "kind": "walk",
+    "argument": "@approach"
+   }
+  },
+  {
+   "text": "去沙发跳个舞",
+   "place": "沙发",
+   "movement": null,
+   "dance": true,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": {
+    "kind": "place",
+    "argument": "沙发"
+   },
+   "decisionSeated": {
+    "kind": "place",
+    "argument": "沙发"
+   }
+  },
+  {
+   "text": "今天好累",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "你在哪呀",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  },
+  {
+   "text": "抱抱我",
+   "place": null,
+   "movement": null,
+   "dance": false,
+   "gesture": null,
+   "gestureAsked": null,
+   "decision": null,
+   "decisionSeated": null
+  }
+ ]
+}

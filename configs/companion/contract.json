@@ -1,6 +1,6 @@
 {
   "contract": "aijade-companion",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "date": "2026-10-28",
   "decision": "docs/decisions/ADR-002.md",
   "documentation": "docs/COMPANION-CONTRACT.md",
@@ -194,6 +194,30 @@
     "implementations": {
       "aijade": "src/Aijade.Client/Companion/TextChannel.cs; notes passed to ChatOrchestrator.SendAsync(notesBeforeMessage) by CompanionBridge",
       "mosaic": "tools/companion_qq.py (CHANNEL_NOTE, MOVEMENT_NOTE, MOVEMENT_WORDS, PUT_OFF, LATER, answer())"
+    }
+  },
+  "stage": {
+    "about": "Since 1.3.0. What her body does after a reply on MOSAIC's home stage, as its live-scene workbench decides it (docs/STAGE-MOSAIC.md, plan A step 1): fixed words in the user's message decide, not the model, because a small model makes up movements it cannot do; the model is told before it replies, so that it neither refuses what the app then does nor promises what the app will not do.",
+    "order": "A spot in her home (the word after a go-word, or a word of two or more characters with an invitation; longer words first; none under a negation or when the speaker is going themselves; standing up only when she sits or lies), else a walk, else a dance, else a gesture. Situational gestures (a farewell, thanks, a greeting) count, as when MOSAIC's model does not choose actions (ModelActions off), which is how it runs while AIJADE drives it. A dance assumes MOSAIC has a dance library.",
+    "spots": "MOSAIC configs/scenes/home-v1.json (mosaic-home-v1): ten spots, each with a label, an activity (sit, lie, stand), a room and aliases; the spot words are each label, then its aliases, each word once",
+    "words": "configs/companion/stage-vectors.json: negations, selfGoing, goWords, invitations, standUpWords, movements, danceKeywords, gestures, situationalGestures, greeting; gestureNames and goalWalks are the workbench's command words, for plan A step 2",
+    "notes": {
+      "action": "Right after this reply the app will make your body do this, because they asked: {doing}. Agree in a few warm words and never say you cannot.",
+      "noAction": "The app will not move your body after this reply, so do not promise to move.",
+      "where": "Where your body is in your home and what it is doing, from the app: {where}. Say it if they ask where you are or what you are doing, and never invent another place or activity."
+    },
+    "notesSource": "AIJADE's wording of two instructions in MOSAIC's companion system prompt (ai-python/mosaic/integration/companion.py: app_action, where_you_are), which MOSAIC passes as fields of each request rather than as notes",
+    "placement": "System messages just before the user's message, on every turn on the stage: the action note or the no-action note, then the where note when the app knows where she is.",
+    "doing": {
+      "place": "MOSAIC's wording (HomePlaceDoing): 去 + the spot's label + 坐下 or 躺下休息 by its activity, e.g. 去沙发坐下, 去床上躺下休息, 去篮球场",
+      "stand": "站起来 (MOSAIC's wording)",
+      "others": "AIJADE's wording, since MOSAIC tells its model only the kind: 转一圈, 转过身, 走过来, 往后退一点, 走开, 走一走, 跳一支舞, 鞠躬, 挥手, 挥手告别, 打招呼, 带路, 举手, 理理头发"
+    },
+    "notYet": "Sending the commands to the workbench and the setting that turns the stage on (plan A step 2); where she is (MOSAIC's status does not return it yet: handoff); dances by name (MOSAIC's dance library is local and the workbench's dance command needs a name).",
+    "vectors": "configs/companion/stage-vectors.json, from a copy of MOSAIC's LiveSceneCommands.cs compiled and run outside both repositories (generate_stage_vectors.py); per sentence the place, walk, dance and gesture MOSAIC's functions give, and the decision standing and seated",
+    "implementations": {
+      "aijade": "src/Aijade.Client/Companion/Stage.cs (not wired to any surface yet)",
+      "mosaic": "src/AijadeWorkbench.Application/LiveScene/LiveSceneCommands.cs (ChatPlace, ChatMovement, ChatDance, ChatGesture) and src/AijadeWorkbench.Web/Modules/LiveSceneService.cs (the order in the chat step; HomePlaceWords, HomePlaceDoing)"
     }
   },
   "adoption": {
