@@ -32,7 +32,7 @@ public sealed record StageAction(StageActionKind Kind, string? Argument, string 
 public sealed record StageSpot(string Name, string Label, string Activity, string Room, IReadOnlyList<string> Aliases);
 
 /// <summary>
-/// The stage rules of the companion contract (<c>configs/companion/contract.json</c>, 1.3.0; docs/STAGE-MOSAIC.md, plan A
+/// The stage rules of the companion contract (<c>configs/companion/contract.json</c>, 1.3.0, and 1.4.0 for what she has learned; docs/STAGE-MOSAIC.md, plan A
 /// step 1): as MOSAIC's live-scene workbench does it, fixed words in the user's message, not the model, decide what her body
 /// does after the reply (a spot in her home, else a walk, else a dance, else a gesture; a negation, or the speaker going
 /// themselves, means none), and the model is told before it replies. Held to the vectors from a compiled copy of MOSAIC's
@@ -52,6 +52,21 @@ public static class Stage
     public const string WhereNoteTemplate =
         "Where your body is in your home and what it is doing, from the app: {where}. " +
         "Say it if they ask where you are or what you are doing, and never invent another place or activity.";
+
+    /// <summary>
+    /// The rule on what she has learned (contract 1.4.0 B), word for word the same in MOSAIC's system prompt
+    /// (<c>LEARNED_SHARED</c> in its companion module).
+    /// </summary>
+    public const string LearnedShared =
+        "learned_recently, when present, lists motions the app's video learner really captured for your body. Only these count " +
+        "as your learning: if the user asks what you did or learned, you may mention one or two of them naturally in your own " +
+        "words; never invent any other learning.";
+
+    /// <summary>
+    /// AIJADE's sentence on the fields it gives. The video's title and its uploader are third-party content shown only to the
+    /// owner on the owner's machine, and AIJADE's chat may use a remote model, so they are not given.
+    /// </summary>
+    public const string LearnedFields = "Here each item gives the skill, the day it was learned from a video on Bilibili, and how many seconds were learned.";
 
     /// <summary>MOSAIC's token for standing up.</summary>
     public const string StandUp = "@up";
@@ -271,10 +286,26 @@ public static class Stage
 
     public static string WhereNote(string where) => WhereNoteTemplate.Replace("{where}", where, StringComparison.Ordinal);
 
-    /// <summary>The notes before the user's message on the stage: the action note or the no-action note, then where she is when known.</summary>
-    public static IReadOnlyList<string> Notes(StageAction? action, string? where)
+    /// <summary>
+    /// The note on what she has really learned (contract 1.4.0 B), or null when the workbench lists nothing: the rule, the
+    /// fields, then <c>learned_recently:</c> with each item's day, skill and seconds, newest first as MOSAIC gives them.
+    /// </summary>
+    public static string? LearnedNote(IReadOnlyList<LearnedMotion>? learned) =>
+        learned is not { Count: > 0 } ? null
+        : $"{LearnedShared} {LearnedFields} learned_recently: " +
+          string.Join("; ", learned.Select(m => $"{m.Day} {m.SkillWords} ({m.KeptSeconds.ToString("0.0", CultureInfo.InvariantCulture)} s)")) + ".";
+
+    /// <summary>
+    /// The notes before the user's message on the stage: the action note or the no-action note, then where she is when known,
+    /// then what she has learned when the workbench lists anything.
+    /// </summary>
+    public static IReadOnlyList<string> Notes(StageAction? action, string? where, IReadOnlyList<LearnedMotion>? learned = null)
     {
-        var note = action is null ? NoActionNote : ActionNote(action);
-        return where is { Length: > 0 } ? [note, WhereNote(where)] : [note];
+        List<string> notes = [action is null ? NoActionNote : ActionNote(action)];
+        if (where is { Length: > 0 })
+            notes.Add(WhereNote(where));
+        if (LearnedNote(learned) is { } note)
+            notes.Add(note);
+        return notes;
     }
 }

@@ -283,7 +283,7 @@
             // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
             var home = settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
             var action = home is null ? null : Stage.Decide(text, home.Seated);
-            var notes = home is null ? null : Stage.Notes(action, home.Where);
+            var notes = home is null ? null : Stage.Notes(action, home.Where, home.Learned);
             await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes, cts.Token))
             {
                 switch (e)

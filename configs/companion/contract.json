@@ -1,7 +1,7 @@
 {
   "contract": "aijade-companion",
-  "version": "1.3.0",
-  "date": "2026-10-28",
+  "version": "1.4.0",
+  "date": "2026-10-29",
   "decision": "docs/decisions/ADR-002.md",
   "documentation": "docs/COMPANION-CONTRACT.md",
   "line": "product",
@@ -207,7 +207,7 @@
       "where": "Where your body is in your home and what it is doing, from the app: {where}. Say it if they ask where you are or what you are doing, and never invent another place or activity."
     },
     "notesSource": "AIJADE's wording of two instructions in MOSAIC's companion system prompt (ai-python/mosaic/integration/companion.py: app_action, where_you_are), which MOSAIC passes as fields of each request rather than as notes",
-    "placement": "System messages just before the user's message, on every turn on the stage: the action note or the no-action note, then the where note when the app knows where she is.",
+    "placement": "System messages just before the user's message, on every turn on the stage: the action note or the no-action note, then the where note when the app knows where she is, then (since 1.4.0) the learned note when the workbench lists learned motions (stage.learned.placement).",
     "doing": {
       "place": "MOSAIC's wording (HomePlaceDoing): 去 + the spot's label + 坐下 or 躺下休息 by its activity, e.g. 去沙发坐下, 去床上躺下休息, 去篮球场",
       "stand": "站起来 (MOSAIC's wording)",
@@ -216,12 +216,34 @@
     "notYet": "A live check with MOSAIC's running workbench (MOSAIC's side, the author's call). Since MOSAIC r392 its status (GET /api/v1/live-scene) returns where she is (the same sentence as where_you_are) and her posture (sit, lie, stand), and its dance command without a name picks one from its local dance library.",
     "vectors": "configs/companion/stage-vectors.json, from a copy of MOSAIC's LiveSceneCommands.cs compiled and run outside both repositories (generate_stage_vectors.py); per sentence the place, walk, dance and gesture MOSAIC's functions give, and the decision standing and seated",
     "implementations": {
-      "aijade": "src/Aijade.Client/Companion/Stage.cs (decision, notes, command line), MosaicStage.cs (state and commands through the server); src/Aijade.Server/Product/Stage.cs (relay); src/Aijade.UI/Pages/Chat.razor with the setting ModuleSettings.MosaicStage (off by default)",
-      "mosaic": "src/AijadeWorkbench.Application/LiveScene/LiveSceneCommands.cs (ChatPlace, ChatMovement, ChatDance, ChatGesture) and src/AijadeWorkbench.Web/Modules/LiveSceneService.cs (the order in the chat step; HomePlaceWords, HomePlaceDoing)"
+      "aijade": "src/Aijade.Client/Companion/Stage.cs (decision, notes, command line), MosaicStage.cs (state and commands through the server); src/Aijade.Server/Product/Stage.cs (relay); src/Aijade.UI/Pages/Chat.razor with the setting ModuleSettings.MosaicStage (off by default); learned motions: LearnedMotion and StageState in MosaicStage.cs, Stage.LearnedNote, StageEndpoints.Learned (since 1.4.0)",
+      "mosaic": "src/AijadeWorkbench.Application/LiveScene/LiveSceneCommands.cs (ChatPlace, ChatMovement, ChatDance, ChatGesture) and src/AijadeWorkbench.Web/Modules/LiveSceneService.cs (the order in the chat step; HomePlaceWords, HomePlaceDoing); learned motions: LiveSceneState.Learned, LearnedMotion and LearnedNow in LiveSceneService.cs, LEARNED_SHARED and LEARNED_NOTE in ai-python/mosaic/integration/companion.py (since 1.4.0)"
+    },
+    "learned": {
+      "about": "Since 1.4.0. Motions her MOSAIC video learner (tools/bili_motion_learner.py) really captured, so that she may mention them when asked; proposed by MOSAIC on 2026-10-29, parts A (status) and B (prompt rule) accepted by the author, part C (speaking first about them) not part of 1.4.0.",
+      "status": "GET /api/v1/live-scene returns \"learned\": an array, newest first, of at most 5 motions learned in the last 72 hours (by the learner's local time) with kept_seconds > 0, which is what verified means; MOSAIC filters, AIJADE does not filter again. It is [] when the scene does not run, no learner work directory (LiveScene:LearnerWork) is set, or LiveScene:LearnedRecently is off. AIJADE's GET /api/v1/stage relays the item fields below (admins only, loopback only). Read-only.",
+      "item": {
+        "day": "string, local date YYYY-MM-DD",
+        "skill": "string, the motion library's skill: walk, turn, stand, sit_down, sit, stand_up, lie_down, lie, get_up, exercise, cheer",
+        "skill_words": "string, its Chinese name, at most 12 characters: 走路, 转身, 站姿, 坐下, 坐姿, 起身, 躺下, 躺着, 起床, 拉伸做操, 啦啦操",
+        "kept_seconds": "number > 0, one decimal",
+        "novel_seconds": "number, or null before the nightly rebuild",
+        "video_title": "string, at most 80 characters, may be empty; third-party content",
+        "uploader": "string, at most 40 characters, may be empty; third-party content",
+        "source": "\"bilibili\""
+      },
+      "shared": "learned_recently, when present, lists motions the app's video learner really captured for your body. Only these count as your learning: if the user asks what you did or learned, you may mention one or two of them naturally in your own words; never invent any other learning.",
+      "fields": {
+        "aijade": "Here each item gives the skill, the day it was learned from a video on Bilibili, and how many seconds were learned.",
+        "mosaic": "Here each item gives the skill, the day, the video and its uploader on Bilibili, and how many seconds were learned."
+      },
+      "placement": "AIJADE: one more system message after the stage notes, only when the list is not empty: shared, then fields.aijade, then 'learned_recently: ' and each item as '<day> <skill_words> (<kept_seconds> s)' joined by '; '. MOSAIC (LEARNED_SHARED, LEARNED_NOTE in its companion module): shared and fields.mosaic just after the system prompt, the items as learned_recently in the context JSON (when, skill, video, uploader, seconds).",
+      "systemPrompt": "MOSAIC's system prompt says \"Do not claim speech or learning occurred beyond learned_recently.\" persona.prompt is unchanged.",
+      "privacy": "video_title and uploader are third-party content shown only to the owner on the owner's machine. AIJADE neither stores them nor gives them to a model, because its chat may use a remote provider; MOSAIC, whose model runs locally, gives them to its model."
     },
     "commands": "AIJADE sends one command line per reply through its server (POST /api/v1/stage/command, admins only, relayed to the workbench at a loopback address): 表情 v a d c from the reply's PEF vector, the reply in 说 pieces of at most 300 characters (';', '；' and line breaks become commas), then 去 <word>, 起来, 走路 <script or goal token>, 跳舞 or 手势 <name>; the gesture names are the workbench's (gestureNames), 'bye' as 挥手"
   },
   "adoption": {
-    "mosaic": "Adopted 1.2.0 in SVN r389 (2026-10-28): persona text identical, contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md and docs/COMPANION-QQ-2026-10-28.md, notes beside the shared constants to tell the AIJADE side of changes; both vector files regenerated on its code with identical content; adopted 1.3.0 in SVN r392 (2026-10-28): contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md, status returns where and posture, dance without a name picks one at random; ProactiveSpeech and ModelActions are to be off while AIJADE drives (configuration, the author's call); stage vectors regenerated on its code with identical content (only the source hash of LiveSceneCommands.cs changed)"
+    "mosaic": "Adopted 1.2.0 in SVN r389 (2026-10-28): persona text identical, contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md and docs/COMPANION-QQ-2026-10-28.md, notes beside the shared constants to tell the AIJADE side of changes; both vector files regenerated on its code with identical content; adopted 1.3.0 in SVN r392 (2026-10-28): contract version recorded in docs/COMPANION-PERSONA-2026-10-28.md, status returns where and posture, dance without a name picks one at random; ProactiveSpeech and ModelActions are to be off while AIJADE drives (configuration, the author's call); stage vectors regenerated on its code with identical content (only the source hash of LiveSceneCommands.cs changed); implemented 1.4.0 A and B in SVN r418 (2026-10-29) behind LiveScene:LearnedRecently, off until AIJADE's side is done: status field learned, LEARNED_SHARED identical to stage.learned.shared, the system prompt sentence as in stage.learned.systemPrompt, the filters documented in docs/COMPANION-PERSONA-2026-10-28.md; LiveSceneCommands.cs and home-v1.json unchanged"
   }
 }

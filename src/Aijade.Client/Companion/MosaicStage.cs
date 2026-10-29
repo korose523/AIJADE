@@ -4,8 +4,18 @@ using Aijade.Client.Api;
 
 namespace Aijade.Client.Companion;
 
-/// <summary>Her place on MOSAIC's stage, as the workbench reports it: whether the scene runs, where she is, and her posture.</summary>
-public sealed record StageState(bool Running, string? Where, string? Posture)
+/// <summary>
+/// A motion her MOSAIC video learner really captured (contract 1.4.0 A): the local day (YYYY-MM-DD), the motion library's
+/// skill and its Chinese name, the seconds kept, and the seconds of poses the library did not have (null before the nightly
+/// rebuild). The video's title and uploader are third-party content: they are read but never stored or given to a model.
+/// </summary>
+public sealed record LearnedMotion(string Day, string Skill, string SkillWords, double KeptSeconds, double? NovelSeconds, string VideoTitle, string Uploader, string Source);
+
+/// <summary>
+/// Her place on MOSAIC's stage, as the workbench reports it: whether the scene runs, where she is, her posture, and the
+/// motions she has learned lately (newest first, at most five, as MOSAIC filters them).
+/// </summary>
+public sealed record StageState(bool Running, string? Where, string? Posture, IReadOnlyList<LearnedMotion>? Learned = null)
 {
     /// <summary>Sitting or lying, so that "get up" means something.</summary>
     public bool Seated => Posture is "sit" or "lie";
@@ -27,13 +37,26 @@ public sealed class MosaicStage(AijadeApi api)
         {
             if (await api.SendAsync(HttpMethod.Get, "/api/v1/stage", ct: ct).ConfigureAwait(false) is not JsonObject r || r["running"]?.GetValue<bool>() != true)
                 return null;
-            return new StageState(true, r["where"]?.GetValue<string>(), r["posture"]?.GetValue<string>());
+            return new StageState(true, r["where"]?.GetValue<string>(), r["posture"]?.GetValue<string>(), Learned(r["learned"] as JsonArray));
         }
         catch (AijadeApiException)
         {
             return null;
         }
     }
+
+    /// <summary>The learned motions of a state reply; an item without a day, a skill name or seconds kept is left out.</summary>
+    private static List<LearnedMotion> Learned(JsonArray? items) =>
+        [.. (items ?? []).OfType<JsonObject>()
+            .Where(m => Text(m, "day") is { Length: > 0 } && Text(m, "skill_words") is { Length: > 0 } && Number(m, "kept_seconds") > 0)
+            .Select(m => new LearnedMotion(Text(m, "day")!, Text(m, "skill") ?? "", Text(m, "skill_words")!, Number(m, "kept_seconds")!.Value,
+                Number(m, "novel_seconds"), Text(m, "video_title") ?? "", Text(m, "uploader") ?? "", Text(m, "source") ?? ""))];
+
+    private static string? Text(JsonObject o, string key) =>
+        o[key] is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
+
+    private static double? Number(JsonObject o, string key) =>
+        o[key] is JsonValue v && v.TryGetValue<double>(out var d) ? d : null;
 
     /// <summary>Send one command line (<see cref="Stage.CommandLine"/>); a refusal comes back as <see cref="AijadeApiException"/>.</summary>
     public Task SendAsync(string commandLine, CancellationToken ct = default) =>

@@ -109,6 +109,8 @@
 - 聊天页加设置"舞台：MOSAIC 的家"（默认关闭），每一轮的做法如第四节第 1 小节；
 - 用测试替身代替工作台验证，MOSAIC 没有运行。
 
+**学到的动作（2026-10-29，契约 1.4.0，ADR-002 补充五）**：MOSAIC 的 B 站学动作器核实过的动作经状态接口的 `learned` 列出，AIJADE 转发并在舞台说明之后告诉模型（只写日期、技能与秒数，不写视频标题与 UP 主）；MOSAIC r418 已实现，开关默认关。
+
 联机检查要做的：
 1. MOSAIC 一侧：启动工作台与家；`LiveScene:ProactiveSpeech=false`，`LiveScene:ModelActions=false`。
 2. AIJADE 服务端：与工作台在同一台机器上，配置 `Stage:WorkbenchUrl=http://127.0.0.1:5002`。

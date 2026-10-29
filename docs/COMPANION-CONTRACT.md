@@ -1,6 +1,6 @@
 # 与 MOSAIC 共享的伴侣契约（非研究线）
 
-决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.3.0（2026-10-28）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 的聊天据此经服务端转发驱动 MOSAIC 的工作台（设置默认关闭）。它属于非研究线：
+决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.4.0（2026-10-29）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 的聊天据此经服务端转发驱动 MOSAIC 的工作台（设置默认关闭）；1.4.0 加入"学到的动作"（她可以提到 MOSAIC 的视频学动作器真学到的动作，不许编造别的）。它属于非研究线：
 
 - 不是学位论文任何研究的输入、样本、奖励或判定条件；
 - 不触及研究对象；
@@ -23,10 +23,10 @@
 | `configs/companion/text-channel-vectors.json`、`generate_text_channel_vectors.py` | 文字渠道规则的常量（用语法树从 MOSAIC 的 `tools/companion_qq.py` 读取，不执行该脚本）与 8 条"补句"用例 |
 | `src/Aijade.Client/Companion/TextChannel.cs` | 文字渠道规则（AIJADE 一侧）；由 `CompanionBridge` 在 Discord、Telegram、X 与 Satori 转接的平台上使用 |
 | `configs/companion/stage-vectors.json`、`generate_stage_vectors.py` | 舞台规则的词表、家里 10 个地点与 45 句判定（在两个仓库之外编译并运行 MOSAIC `LiveSceneCommands.cs` 的副本得到，词表用反射从编译的副本读取） |
-| `src/Aijade.Client/Companion/Stage.cs`、`MosaicStage.cs` | 舞台规则（AIJADE 一侧）：判定、三条说明与每轮的指令行；经服务端读她的状态、发指令 |
+| `src/Aijade.Client/Companion/Stage.cs`、`MosaicStage.cs` | 舞台规则（AIJADE 一侧）：判定、三条说明与每轮的指令行；经服务端读她的状态（含学到的动作）、发指令；学到的动作的说明（1.4.0） |
 | `src/Aijade.Server/Product/Stage.cs` | 舞台的转发：`GET /api/v1/stage`、`POST /api/v1/stage/command`；只限管理员；工作台地址 `Stage:WorkbenchUrl` 必须是本机回环地址，否则服务端不启动；只放行聊天用到的指令 |
 | `src/Aijade.UI/Pages/Chat.razor`、`Settings.razor` | 设置"舞台：MOSAIC 的家"（`ModuleSettings.MosaicStage`，默认关闭）；打开且场景在运行时，回复在 MOSAIC 那边说出并做动作，本页不出声 |
-| `tests/Aijade.Tests/StageTests.cs` | 指令行、语音分段、转发的地址与指令限制；端到端（需要数据库，在 CI 上运行）：用假的工作台检查只限管理员、转发的内容、拒绝与出错 |
+| `tests/Aijade.Tests/StageTests.cs` | 指令行、语音分段、转发的地址与指令限制、学到的动作只转发契约字段且至多 5 条；端到端（需要数据库，在 CI 上运行）：用假的工作台检查只限管理员、转发的内容、拒绝与出错 |
 | `tests/Aijade.Tests/ClientTests.cs` | 端到端（需要数据库，在 CI 上运行）：她的一句单独保存并带标记；发给模型的消息依次为人设、最近的对话、说明、沉默；不问上下文提供者，不通知观察者 |
 
 ## 人设：艾娅德（Aijade-9）
@@ -120,6 +120,23 @@ MOSAIC 的 neutral 在 AIJADE 一侧不写标记。MOSAIC 的手势（none、hea
 - **MOSAIC r392 起已具备**：
   - 状态接口返回她在哪（`where`，与 `where_you_are` 同一句）和姿势（`posture`：sit、lie、stand）；
   - 跳舞指令不带名字时，从它本机的舞蹈库随机选一支。
+
+## 学到的动作（1.4.0）
+
+MOSAIC 在 2026-10-29 提议，作者接受其中两部分（A、B），第三部分（C：她先开口时提到学到的）不在 1.4.0 内。
+
+- **来源（A）**：MOSAIC 的 B 站学动作器（`tools/bili_motion_learner.py`）核实过的动作。
+  - 工作台状态 `GET /api/v1/live-scene` 返回 `learned`：最近 72 小时、`kept_seconds` > 0、至多 5 条，新的在前；筛选由 MOSAIC 负责。
+  - 每条的字段：`day`（本地日期）、`skill` 与 `skill_words`（如 walk、走路）、`kept_seconds`、`novel_seconds`（夜间整理前为 null）、`video_title`、`uploader`、`source`（bilibili）。
+  - 场景没在运行、没配学动作器或 MOSAIC 的开关 `LiveScene:LearnedRecently` 关着时为空数组。
+  - AIJADE 的 `/api/v1/stage` 只转发这些字段、至多 5 条，仍只限管理员、只连本机。
+- **规则（B）**：两边加同一段话（契约 `stage.learned.shared`，与 MOSAIC 的 `LEARNED_SHARED` 逐字相同）：只有列出的动作算她学到的，被问到时可以自然地提一两条，不许编造别的学习。
+  - 各边再用一句说明自己给了哪些字段。
+  - MOSAIC 系统提示中的一句改为 "Do not claim speech or learning occurred beyond learned_recently."；人设原文不变。
+- **第三方内容**：视频标题与 UP 主名只在本机显示给负责人。AIJADE 不保存它们，也不交给模型，因为它的聊天可能走远程模型；说明里每条只写日期、技能的中文名与秒数。MOSAIC 的模型在本机，它把标题与 UP 主一并交给模型。
+- **AIJADE 产品中的位置**：舞台开着且工作台列出条目时，在舞台的说明之后再加一条（规则、字段说明、`learned_recently:` 与各条）；不经记忆召回，不新增学习观察者，也不进入 AIJADE 自己的学习管线（第 4 章的研究对象）。
+- **一致性**：契约测试核对规则与字段说明的原文，并检查说明里没有标题与 UP 主；转发只留契约字段、至多 5 条（单元测试），端到端测试用假的工作台核对转发与客户端读取（需要数据库，在 CI 上运行）。
+- **MOSAIC 一侧（r418）**：A、B 已实现，开关 `LiveScene:LearnedRecently` 默认关；本仓库读过 r418 的代码，`LEARNED_SHARED` 与契约逐字相同；`LiveSceneCommands.cs` 与 `home-v1.json` 未变，在 r418 上重新生成的舞台向量与存档相同（只有读取日期不同）。r422 只改了动作库路径的选择（开关 `LiveScene:MotionLibraryFromLearner`，默认关），本仓库读过：`learned` 与它的 8 个字段不变。AIJADE 一侧完成后由 MOSAIC 打开开关并记录采用。
 
 ## 修改契约
 

@@ -264,6 +264,24 @@ public class CompanionContractTests
         Assert.Equal("站起来", Stage.Decide("起来吧", seated: true)!.Doing);
     }
 
+    [Fact]
+    public void The_learned_note_is_the_contracts_and_leaves_out_third_party_content()
+    {
+        var learned = Load("contract.json").GetProperty("stage").GetProperty("learned");
+        Assert.Equal(Stage.LearnedShared, learned.GetProperty("shared").GetString());
+        Assert.Equal(Stage.LearnedFields, learned.GetProperty("fields").GetProperty("aijade").GetString());
+
+        Assert.Null(Stage.LearnedNote([]));
+        Assert.Equal([Stage.NoActionNote], Stage.Notes(null, null, []));
+        LearnedMotion walk = new("2026-10-29", "walk", "走路", 42.5, null, "走路 全身 固定机位 练习", "某UP主", "bilibili");
+        LearnedMotion turn = new("2026-10-28", "turn", "转身", 12, 3.4, "转身教学", "另一位作者", "bilibili");
+        var notes = Stage.Notes(null, "在客厅", [walk, turn]);
+        Assert.Equal(3, notes.Count);
+        Assert.Equal($"{Stage.LearnedShared} {Stage.LearnedFields} learned_recently: 2026-10-29 走路 (42.5 s); 2026-10-28 转身 (12.0 s).", notes[2]);
+        foreach (var thirdParty in new[] { "固定机位", "某UP主", "转身教学", "另一位作者" })
+            Assert.DoesNotContain(thirdParty, notes[2], StringComparison.Ordinal);
+    }
+
     private sealed class NoCalls : HttpMessageHandler
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>

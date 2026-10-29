@@ -93,11 +93,40 @@ public class StageTests
         Assert.Equal("说你好", StageEndpoints.Refused("说你好"));
     }
 
+    [Fact]
+    public void The_relay_passes_only_the_contracts_fields_of_at_most_five_learned_motions()
+    {
+        var items = new JsonArray();
+        for (var i = 0; i < 7; i++)
+        {
+            items.Add(new JsonObject
+            {
+                ["day"] = $"2026-10-2{i}", ["skill"] = "walk", ["skill_words"] = "走路", ["kept_seconds"] = 1.5 + i, ["novel_seconds"] = null,
+                ["video_title"] = "标题", ["uploader"] = "UP", ["source"] = "bilibili", ["at"] = "2026-10-29T08:00:00+09:00", ["file"] = "/home/learned.json",
+            });
+        }
+        var relayed = StageEndpoints.Learned(items);
+        Assert.Equal(StageEndpoints.MaxLearned, relayed.Count);
+        Assert.Equal(StageEndpoints.LearnedFields, ((JsonObject)relayed[0]!).Select(p => p.Key));
+        Assert.Null(relayed[0]!["novel_seconds"]);
+        Assert.Equal("2026-10-20", relayed[0]!["day"]!.GetValue<string>()); // the workbench's order: newest first
+        Assert.Empty(StageEndpoints.Learned(null));
+        Assert.Empty(StageEndpoints.Learned(JsonValue.Create("not a list")));
+    }
+
     private sealed class FakeWorkbench : HttpMessageHandler
     {
         public List<(string Path, string? Body)> Requests { get; } = [];
 
-        public JsonObject State { get; set; } = new() { ["running"] = true, ["where"] = "在客厅，沙发，坐着", ["posture"] = "sit" };
+        public JsonObject State { get; set; } = new()
+        {
+            ["running"] = true, ["where"] = "在客厅，沙发，坐着", ["posture"] = "sit",
+            ["learned"] = new JsonArray(new JsonObject
+            {
+                ["day"] = "2026-10-29", ["skill"] = "walk", ["skill_words"] = "走路", ["kept_seconds"] = 42.5, ["novel_seconds"] = null,
+                ["video_title"] = "走路 全身 固定机位 练习", ["uploader"] = "某UP主", ["source"] = "bilibili",
+            }),
+        };
 
         public bool Down { get; set; }
 
@@ -131,6 +160,7 @@ public class StageTests
         var (status, state) = await host.SendAsync(HttpMethod.Get, "/api/v1/stage", token: ServerTestHost.AdminToken);
         Assert.Equal(200, status);
         Assert.Equal(("在客厅，沙发，坐着", "sit", true), (state!["where"]!.GetValue<string>(), state["posture"]!.GetValue<string>(), state["running"]!.GetValue<bool>()));
+        Assert.Equal("走路", state["learned"]![0]!["skill_words"]!.GetValue<string>());
 
         var line = Stage.CommandLine(Calm, "好呀。", Stage.Decide("去床上躺着吧", seated: true));
         Assert.Equal(200, (await host.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = line }, ServerTestHost.AdminToken)).Status);
@@ -147,7 +177,10 @@ public class StageTests
         var tokens = new MemoryTokenStore();
         await tokens.SetAsync(ServerTestHost.AdminToken);
         var stage = new MosaicStage(new AijadeApi(host.Client, tokens));
-        Assert.Equal(new StageState(true, "在客厅，沙发，坐着", "sit"), await stage.StateAsync(ct));
+        var home = await stage.StateAsync(ct);
+        Assert.Equal(("在客厅，沙发，坐着", "sit", true), (home!.Where, home.Posture, home.Running));
+        Assert.Equal([new LearnedMotion("2026-10-29", "walk", "走路", 42.5, null, "走路 全身 固定机位 练习", "某UP主", "bilibili")], home.Learned!);
+        Assert.DoesNotContain("某UP主", Stage.LearnedNote(home.Learned)!, StringComparison.Ordinal); // third-party content stays out of the prompt
         workbench.State = new JsonObject { ["running"] = false, ["where"] = null, ["posture"] = null };
         Assert.Null(await stage.StateAsync(ct)); // no scene: the chat goes on as usual
         workbench.Down = true;
