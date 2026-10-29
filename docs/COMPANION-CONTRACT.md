@@ -136,7 +136,7 @@ MOSAIC 在 2026-10-29 提议，作者接受其中两部分（A、B），第三�
 - **第三方内容**：视频标题与 UP 主名只在本机显示给负责人。AIJADE 不保存它们，也不交给模型，因为它的聊天可能走远程模型；说明里每条只写日期、技能的中文名与秒数。MOSAIC 的模型在本机，它把标题与 UP 主一并交给模型。
 - **AIJADE 产品中的位置**：舞台开着且工作台列出条目时，在舞台的说明之后再加一条（规则、字段说明、`learned_recently:` 与各条）；不经记忆召回，不新增学习观察者，也不进入 AIJADE 自己的学习管线（第 4 章的研究对象）。
 - **一致性**：契约测试核对规则与字段说明的原文，并检查说明里没有标题与 UP 主；转发只留契约字段、至多 5 条（单元测试），端到端测试用假的工作台核对转发与客户端读取（需要数据库，在 CI 上运行）。
-- **MOSAIC 一侧（r418）**：A、B 已实现，开关 `LiveScene:LearnedRecently` 默认关；本仓库读过 r418 的代码，`LEARNED_SHARED` 与契约逐字相同；`LiveSceneCommands.cs` 与 `home-v1.json` 未变，在 r418 上重新生成的舞台向量与存档相同（只有读取日期不同）。r422 只改了动作库路径的选择（开关 `LiveScene:MotionLibraryFromLearner`，默认关），本仓库读过：`learned` 与它的 8 个字段不变。AIJADE 一侧完成后由 MOSAIC 打开开关并记录采用。
+- **MOSAIC 一侧（r418 实现，r425 采用）**：A、B 已实现，开关 `LiveScene:LearnedRecently` 默认关；本仓库读过 r418 的代码，`LEARNED_SHARED` 与契约逐字相同；`LiveSceneCommands.cs` 与 `home-v1.json` 未变，在 r418 上重新生成的舞台向量与存档相同（只有读取日期不同）。r422 只改了动作库路径的选择（开关 `LiveScene:MotionLibraryFromLearner`，默认关），本仓库读过：`learned` 与它的 8 个字段不变。AIJADE 一侧在 `7e0c4d7` 完成后，MOSAIC 在 r425（2026-10-29，作者在 MOSAIC 会话中同意）把开关改为默认打开并记录采用 1.4.0；没配学动作器的工作目录时 `learned` 仍为空数组。本仓库读过 r425：只改了这个默认值、一项测试与文档，`learned` 的字段与规则原文不变。
 
 ## 修改契约
 
@@ -157,7 +157,9 @@ python3 -B -I configs/companion/generate_stage_vectors.py "$MOSAIC" configs/comp
 
 ## 交接：MOSAIC 一侧（由 MOSAIC 的会话或作者采用）
 
-**状态（2026-10-28）**：MOSAIC 已在 SVN r392 采用 1.3.0（第 4–6 项及可选的"跳舞不带名字"）。
+**状态（2026-10-29）**：MOSAIC 已在 SVN r425 采用 1.4.0（学到的动作的 A、B，见上文"学到的动作"一节）。
+
+MOSAIC 在 SVN r392 采用了 1.3.0（第 4–6 项及可选的"跳舞不带名字"）。
 - 伴侣文档记下 1.3.0，并约定改聊天词表或家的地点时同时提出契约修改；
 - `GET /api/v1/live-scene` 新增 `where` 与 `posture`，场景没在运行时都为 null；
 - 由 AIJADE 驱动时关掉 `ProactiveSpeech` 与 `ModelActions` 的配置写进了文档，默认不变，何时设置由作者决定。
