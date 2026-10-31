@@ -137,6 +137,7 @@ MOSAIC 在 2026-10-29 提议，作者接受其中两部分（A、B），第三�
 - **AIJADE 产品中的位置**：舞台开着且工作台列出条目时，在舞台的说明之后再加一条（规则、字段说明、`learned_recently:` 与各条）；不经记忆召回，不新增学习观察者，也不进入 AIJADE 自己的学习管线（第 4 章的研究对象）。
 - **一致性**：契约测试核对规则与字段说明的原文，并检查说明里没有标题与 UP 主；转发只留契约字段、至多 5 条（单元测试），端到端测试用假的工作台核对转发与客户端读取（需要数据库，在 CI 上运行）。
 - **MOSAIC 一侧（r418 实现，r425 采用）**：A、B 已实现，开关 `LiveScene:LearnedRecently` 默认关；本仓库读过 r418 的代码，`LEARNED_SHARED` 与契约逐字相同；`LiveSceneCommands.cs` 与 `home-v1.json` 未变，在 r418 上重新生成的舞台向量与存档相同（只有读取日期不同）。r422 只改了动作库路径的选择（开关 `LiveScene:MotionLibraryFromLearner`，默认关），本仓库读过：`learned` 与它的 8 个字段不变。AIJADE 一侧在 `7e0c4d7` 完成后，MOSAIC 在 r425（2026-10-29，作者在 MOSAIC 会话中同意）把开关改为默认打开并记录采用 1.4.0；没配学动作器的工作目录时 `learned` 仍为空数组。本仓库读过 r425：只改了这个默认值、一项测试与文档，`learned` 的字段与规则原文不变。
+- **2026-10-31 再次核对（MOSAIC r529，只读）**：`companion.py`（最后改于 r418）、`LiveSceneCommands.cs`（r478）与 `home-v1.json`（r470）的哈希与最初记录的不同，但人设原文、`LEARNED_SHARED` 与系统提示中的那一句逐字相同；在它们上重新生成的主动开口与舞台向量内容与存档相同，只更新了源文件哈希与读取日期；`companion_qq.py` 未变。工作台的状态（`running`、`where`、`posture`、`learned`）与 `POST /api/v1/live-scene/command` 也未变（`LiveSceneService.cs` r529），转发不需要改。
 
 ## 修改契约
 

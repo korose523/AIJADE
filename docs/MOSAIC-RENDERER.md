@@ -17,7 +17,12 @@ MOSAIC（作者的另一项目）的原生 Godot 客户端实现了 AIJADE 渲�
   - `pose_params` 与 `pose_semantics`：取值 −1…1，对应 head_yaw ±60°、head_pitch ±30°、head_roll ±30°、lean ±20°。
   - `locomotion_mode`：只渲染 `idle`。
 - **字段白名单**：白名单外的字段一律拒收。渲染器无法表现的语义会如实列为 unmapped，而不是被猜测处理。
-- **`RenderStatePacket`**：渲染器每显示一帧新包，就记一行（会话结束时写入 `aijade-render-state.jsonl`），内容包括所消费包的 trace_id、实际应用的 morph 与骨骼、`missing_keys`、`unmapped` 和 `applied_params_hash`。渲染器不会回写情感或控制链路。
+- **渲染回执文件 `aijade-render-state.jsonl`**（MOSAIC 2026-10-26 起为格式 v2，`host-dotnet/Mosaic.Scene.Core/RenderStateLog.cs`；2026-10-31 只读核对）：边渲染边逐行写入并落盘，崩溃时保留到崩溃为止的各行。
+  - 第一行是文件头：格式、渲染器进程的标识、所用资产的摘要、报告的阶段与参数哈希的规则。
+  - `RenderStatePacket` 行（阶段 `behavior_overlay_pre_solve`）：所消费包的 trace_id，行为叠加层在 morph 求值、关节限制、逆运动学与物理之前实际应用的 morph 与骨骼，`missing_keys`、`unmapped` 和 `applied_params_hash`。
+  - `post_solve_observation` 行（阶段 `post_solve_pre_skinning`）：同一帧经关节限制、逆运动学与物理之后的骨骼，以及送入 morph 求值的权重。
+  - 最后一行是结束记录：此前的行数与这些行的 SHA-256。没有结束记录的文件属于仍在运行或未结束的会话（不完整，不是失败）。
+  - 两种阶段都不是已显示的帧（不观测 GPU 输出）。渲染器不会回写情感或控制链路。
 
 ## AIJADE-next 侧
 
@@ -26,7 +31,7 @@ MOSAIC（作者的另一项目）的原生 Godot 客户端实现了 AIJADE 渲�
   - 姿态由 PEF 的 posture 与 gaze 通道查一张固定的小表得到（如 thinking 时视线短暂移开、leaning_in 时前倾）。映射是确定的：同一 intent 总是生成同样的包。
 - `AijadePacketStamper`：负责加盖 run_id、按类型递增的 seq、单调的 t_sim 和 v1.0。
 - `MosaicRendererLink`：通过 UDP 发送，并检查 8 KiB 上限。
-- `RenderStateReceipts`：把 `aijade-render-state.jsonl` 读成每个 intent 的渲染回执（实际应用的参数与渲染器自己的哈希）。哈希可由行内参数重算核对。
+- `RenderStateReceipts`：把 `aijade-render-state.jsonl` 读成每个 intent 的渲染回执（实际应用的参数与渲染器自己的哈希）。哈希可由行内参数重算核对。它只读 `RenderStatePacket` 行（求解前的阶段），文件头、求解后的观测行与结束记录都跳过；文件是否以结束记录收尾（会话是否完成）目前不检查，留给第 4 章的外部渲染器比较。
 - **Bots 宿主**：配置 `Renderer:MosaicPort=PORT` 后，Discord、Telegram、Minecraft 等渠道里的每轮回复都会驱动 MOSAIC 中的角色。渲染器不可达时不影响回复。
 
 ## 验证

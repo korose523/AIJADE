@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 
@@ -13,7 +15,9 @@ public class ProjectScopeTests
 {
     private sealed record Module(string Path, string Line, IReadOnlyList<string> ResearchObjects);
 
-    private sealed record Scope(IReadOnlyDictionary<string, string[]> Lines, IReadOnlyList<Module> Modules);
+    private sealed record Frozen(string Path, string Sha256, string Until);
+
+    private sealed record Scope(IReadOnlyDictionary<string, string[]> Lines, IReadOnlyList<Module> Modules, IReadOnlyList<Frozen> Frozen);
 
     /// <summary>Directories whose immediate subdirectories are modules.</summary>
     private static readonly string[] ModuleParents = ["src", "tools", "tests", "integrations"];
@@ -35,8 +39,15 @@ public class ProjectScopeTests
             m.GetProperty("line").GetString()!,
             m.TryGetProperty("researchObjects", out var r) ? r.EnumerateArray().Select(e => e.GetString()!).ToArray() : []))
             .ToList();
-        return new Scope(lines, modules);
+        var frozen = doc.RootElement.TryGetProperty("frozen", out var f)
+            ? f.EnumerateArray().Select(e => new Frozen(e.GetProperty("path").GetString()!, e.GetProperty("sha256").GetString()!, e.GetProperty("until").GetString()!)).ToList()
+            : [];
+        return new Scope(lines, modules, frozen);
     }
+
+    /// <summary>SHA-256 of a file's text with line endings normalized to LF, so a checkout's line-ending setting does not count.</summary>
+    private static string TextHash(string relative) => Convert.ToHexStringLower(
+        SHA256.HashData(Encoding.UTF8.GetBytes(File.ReadAllText(Path.Combine(Root, relative)).Replace("\r\n", "\n", StringComparison.Ordinal))));
 
     private static string Relative(string fullPath) => Path.GetRelativePath(Root, fullPath).Replace('\\', '/');
 
@@ -116,5 +127,26 @@ public class ProjectScopeTests
             }
         }
         Assert.True(violations.Count == 0, "references across lines that the scope forbids: " + string.Join("; ", violations));
+    }
+
+    /// <summary>
+    /// A research object that a planned study measures as it stands is frozen until that study is archived (docs/PROJECT-SCOPE.md):
+    /// its text keeps the recorded hash, so work on the non-research line cannot change it unnoticed. A change that must be made is
+    /// recorded in docs/STATUS.md and listed as a deviation of that study before the hash in configs/project-scope.json is updated.
+    /// </summary>
+    [Fact]
+    public void Frozen_research_objects_keep_their_recorded_text()
+    {
+        var scope = Load();
+        var researchObjects = scope.Modules.SelectMany(m => m.ResearchObjects).ToHashSet(StringComparer.Ordinal);
+        var changed = new List<string>();
+        foreach (var frozen in scope.Frozen)
+        {
+            Assert.True(researchObjects.Contains(frozen.Path), $"{frozen.Path}: frozen but not declared as a research object");
+            var hash = TextHash(frozen.Path);
+            if (!string.Equals(hash, frozen.Sha256, StringComparison.Ordinal))
+                changed.Add($"{frozen.Path} (frozen until {frozen.Until}; its text now hashes to {hash})");
+        }
+        Assert.True(changed.Count == 0, "frozen research objects changed: " + string.Join("; ", changed));
     }
 }

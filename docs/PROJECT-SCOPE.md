@@ -29,7 +29,7 @@
 1. 方案先于执行提交；结果文件记录方案与代码的提交号；偏离逐条列出。
 2. 改动研究对象路径（`configs/project-scope.json` 中的 `researchObjects`）时，须重跑对应章的回归并在 `docs/STATUS.md` 记录：
    - 第 4 章：契约漂移矩阵、闸门矩阵、端到端用例；
-   - 第 6 章：与已归档结果逐项一致的检验；产品传递路径（P3-E 的测量对象）在 P3-E 运行并归档之前不改，必须改时记入 `docs/STATUS.md`，并在 P3-E 的结果中列为偏离。
+   - 第 6 章：与已归档结果逐项一致的检验；产品传递路径（P3-E 的测量对象）在 P3-E 运行并归档之前不改，必须改时记入 `docs/STATUS.md`，并在 P3-E 的结果中列为偏离。这两个文件（`MemoryContext.cs`、`MemoryLibrary.cs`）的内容哈希记在 `configs/project-scope.json` 的 `frozen` 中，由 `ProjectScopeTests` 检查：非研究线的改动不会在不知不觉中改到它们；必须改时，先按上面记录，再更新哈希。
 
    作为测量对象按设计保留的行为（如研究内核的冲突惩罚）不修改。
 3. 研究装置只依赖研究线与共同基础，不引用非研究线模块。由 `ProjectScopeTests` 检查。
