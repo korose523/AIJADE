@@ -11,7 +11,7 @@ using Telegram.Bot.Types.Enums;
 namespace Aijade.Bots;
 
 /// <summary>Telegram (long polling): private chats are always answered; groups when the bot is @mentioned or replied to.</summary>
-public sealed class TelegramConnector(string token, AijadeApi api, ILogger<TelegramConnector> log) : IChannelConnector
+public sealed class TelegramConnector(string token, AijadeApi api, ILogger<TelegramConnector> log) : IChannelConnector, IProactiveConnector
 {
     public const int MaxText = 4096;
 
@@ -57,5 +57,14 @@ public sealed class TelegramConnector(string token, AijadeApi api, ILogger<Teleg
             log.LogWarning(error, "Telegram polling error");
             return Task.CompletedTask;
         }, new ReceiverOptions { AllowedUpdates = [UpdateType.Message], DropPendingUpdates = true }, ct).ConfigureAwait(false);
+    }
+
+    /// <summary>A message she starts in a chat (a reminder she promised in it).</summary>
+    public async Task SendAsync(string conversationId, string text, CancellationToken ct)
+    {
+        var bot = new TelegramBotClient(token);
+        var chat = long.Parse(conversationId, System.Globalization.CultureInfo.InvariantCulture);
+        foreach (var part in ChannelText.Split(text, MaxText))
+            await bot.SendMessage(chat, part, cancellationToken: ct).ConfigureAwait(false);
     }
 }

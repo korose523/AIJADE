@@ -8,6 +8,41 @@ let state = null;
  */
 function announce(speaking, spokeMs = 0, quietMs = 0) { window.dispatchEvent(new CustomEvent('aijade-user-speech', { detail: { speaking, spokeMs, quietMs } })); }
 
+/**
+ * 16-bit PCM WAV of mono samples in -1..1. The server's local recognizer (MOSAIC's Qwen3-ASR service, ADR-003) takes WAV only;
+ * OpenAI-compatible recognizers take it too.
+ */
+export function encodeWav(samples, rate) {
+  const bytes = new Uint8Array(44 + samples.length * 2);
+  const view = new DataView(bytes.buffer);
+  const text = (at, s) => { for (let i = 0; i < s.length; i++) view.setUint8(at + i, s.charCodeAt(i)); };
+  text(0, 'RIFF'); view.setUint32(4, 36 + samples.length * 2, true); text(8, 'WAVE');
+  text(12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true);
+  view.setUint32(24, rate, true); view.setUint32(28, rate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true);
+  text(36, 'data'); view.setUint32(40, samples.length * 2, true);
+  for (let i = 0; i < samples.length; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    view.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+  }
+  return bytes;
+}
+
+/** A recorded utterance as 16 kHz mono WAV, or null when this browser cannot decode its own recording. */
+async function toWav(blob) {
+  try {
+    const rate = 16000;
+    const decoded = await new OfflineAudioContext(1, rate, rate).decodeAudioData(await blob.arrayBuffer());
+    const offline = new OfflineAudioContext(1, Math.max(1, Math.ceil(decoded.duration * rate)), rate);
+    const source = offline.createBufferSource();
+    source.buffer = decoded;
+    source.connect(offline.destination);
+    source.start();
+    return encodeWav((await offline.startRendering()).getChannelData(0), rate);
+  } catch {
+    return null;
+  }
+}
+
 export async function devices() {
   try {
     const all = await navigator.mediaDevices.enumerateDevices();
@@ -66,7 +101,9 @@ export async function start(dotnet, options) {
         const seconds = (performance.now() - started) / 1000;
         if (seconds < 0.3 || !chunks.length) return; // a click or a breath, not speech
         const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
-        dotnet.invokeMethodAsync('OnUtterance', new Uint8Array(await blob.arrayBuffer()), blob.type, seconds);
+        const wav = await toWav(blob);
+        if (wav) dotnet.invokeMethodAsync('OnUtterance', wav, 'audio/wav', seconds);
+        else dotnet.invokeMethodAsync('OnUtterance', new Uint8Array(await blob.arrayBuffer()), blob.type, seconds);
       };
       recorder.start();
       state.recorder = recorder;

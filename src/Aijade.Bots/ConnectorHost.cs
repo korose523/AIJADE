@@ -6,15 +6,63 @@ using Microsoft.Extensions.Logging;
 
 namespace Aijade.Bots;
 
-/// <summary>Runs every configured connector, restarting one that fails (with backoff) without touching the others.</summary>
+/// <summary>
+/// Runs every configured connector, restarting one that fails (with backoff) without touching the others, and says the
+/// reminders she promised when they fall due, through the connectors that can start a message.
+/// </summary>
 public sealed class ConnectorHost(IEnumerable<IChannelConnector> connectors, CompanionBridge bridge, ILogger<ConnectorHost> log) : BackgroundService
 {
+    /// <summary>How often due reminders are looked for (REMIND_EVERY_S of MOSAIC's QQ bridge).</summary>
+    public static readonly TimeSpan RemindEvery = TimeSpan.FromSeconds(15);
+
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var all = connectors.ToList();
         if (all.Count == 0)
             log.LogWarning("No connector is configured (set Discord:Token, Telegram:Token, …)");
-        return Task.WhenAll(all.Select(c => RunAsync(c, stoppingToken)));
+        var proactive = all.OfType<IProactiveConnector>().ToDictionary(c => c.Platform, StringComparer.Ordinal);
+        return Task.WhenAll(all.Select(c => RunAsync(c, stoppingToken)).Append(RemindLoopAsync(bridge, proactive, log, stoppingToken)));
+    }
+
+    /// <summary>
+    /// Says each due reminder in its conversation. As in MOSAIC's bridge, a line that was made but could not be sent is
+    /// logged, not made again; a line that could not be made is tried again at the next check.
+    /// </summary>
+    public static async Task RemindLoopAsync(CompanionBridge bridge, IReadOnlyDictionary<string, IProactiveConnector> proactive, ILogger log, CancellationToken ct)
+    {
+        if (proactive.Count == 0)
+            return;
+        using var timer = new PeriodicTimer(RemindEvery);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(ct).ConfigureAwait(false))
+            {
+                try
+                {
+                    await RemindOnceAsync(bridge, proactive, ct).ConfigureAwait(false);
+                }
+                catch (Exception e) when (e is not OperationCanceledException)
+                {
+                    log.LogWarning(e, "A due reminder could not be said; it is tried again at the next check");
+                }
+            }
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+        }
+    }
+
+    /// <summary>Says the reminders due now (several when the host was stopped meanwhile); how many were said.</summary>
+    public static async Task<int> RemindOnceAsync(CompanionBridge bridge, IReadOnlyDictionary<string, IProactiveConnector> proactive, CancellationToken ct)
+    {
+        var said = 0;
+        while (await bridge.DueReminderAsync(key => proactive.ContainsKey(key[..key.IndexOf(':', StringComparison.Ordinal)]), ct).ConfigureAwait(false) is { } due)
+        {
+            var split = due.Reminder.Conversation.IndexOf(':', StringComparison.Ordinal);
+            await proactive[due.Reminder.Conversation[..split]].SendAsync(due.Reminder.Conversation[(split + 1)..], due.Line, ct).ConfigureAwait(false);
+            said++;
+        }
+        return said;
     }
 
     private async Task RunAsync(IChannelConnector connector, CancellationToken ct)
@@ -62,5 +110,14 @@ public static class Connectors
             yield return new BilibiliLiveConnector(room, config["Bilibili:Cookie"], new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
         if (config["X:AccessToken"] is { Length: > 0 } x)
             yield return new XConnector(x, new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
+        if (config["OneBot:NapCat"] is { Length: > 0 } napcat)
+            yield return new OneBotConnector(int.TryParse(config["OneBot:Port"], out var port) ? port : 8795, new Uri(napcat),
+                KeyFile(config["OneBot:TokenFile"], "OneBot:TokenFile"), KeyFile(config["OneBot:SecretFile"], "OneBot:SecretFile"),
+                config["OneBot:Owner"] is { Length: > 0 } owner ? owner : throw new InvalidOperationException("OneBot:Owner (the owner's QQ number) is required"),
+                new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
     }
+
+    /// <summary>A key read from a file, as MOSAIC's bridge reads them: never from the command line or the environment.</summary>
+    private static string KeyFile(string? path, string setting) =>
+        path is { Length: > 0 } && File.Exists(path) ? File.ReadAllText(path).Trim() : throw new InvalidOperationException($"{setting} must name a file that holds the key");
 }

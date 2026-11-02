@@ -154,7 +154,8 @@ public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposabl
             expression = intent.Expression, face = intent.Face, gaze = intent.Gaze, gesture = intent.Gesture, posture = intent.Posture, duration = intent.Duration,
         });
 
-    public async Task MouthAsync(double open) => await (await ModuleAsync()).InvokeVoidAsync("mouth", open);
+    /// <summary>The speech level, with the vowel shape (a, i, u, e, o) and lip closure of the aligned text when there is one.</summary>
+    public async Task MouthAsync(double open, double[]? vowels = null, double lips = 0) => await (await ModuleAsync()).InvokeVoidAsync("mouth", open, vowels, lips);
 
     /// <summary>A beat from the music (strength 0–1): the stage nods with it.</summary>
     public async Task BeatAsync(double strength) => await (await ModuleAsync()).InvokeVoidAsync("beat", strength);
@@ -175,21 +176,24 @@ public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposabl
     }
 }
 
-/// <summary>Plays synthesized speech and reports the output level for lip sync.</summary>
+/// <summary>
+/// Plays synthesized speech and reports the output level for lip sync; with a plan from the aligned text (ADR-003) also the
+/// vowel shape and lip closure at each moment of the audio.
+/// </summary>
 public sealed class AudioOutput(IJSRuntime js)
 {
     private IJSObjectReference? module;
 
-    public async Task PlayAsync(byte[] audio, DotNetObjectReference<LipSyncSink>? sink)
+    public async Task PlayAsync(byte[] audio, DotNetObjectReference<LipSyncSink>? sink, Aijade.Client.Companion.LipSyncPlan? plan = null)
     {
         module ??= await js.InvokeAsync<IJSObjectReference>("import", "./_content/Aijade.UI/audio.js");
-        await module.InvokeVoidAsync("play", audio, sink);
+        await module.InvokeVoidAsync("play", audio, sink, plan);
     }
 }
 
-public sealed class LipSyncSink(Func<double, Task> onLevel)
+public sealed class LipSyncSink(Func<double, double[]?, double, Task> onMouth)
 {
-    [JSInvokable] public Task OnMouth(double level) => onLevel(level);
+    [JSInvokable] public Task OnMouth(double level, double[]? vowels, double lips) => onMouth(level, vowels, lips);
 }
 
 /// <summary>Screen / camera frames and attached images for the vision module (see vision.js).</summary>

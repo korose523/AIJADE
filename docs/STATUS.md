@@ -69,12 +69,14 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 上下文管理（历史窗口、视觉 / 浏览器 / IDE 上下文） | ✓ | `Orchestrator_streams_stores_and_reports…` 及上下文测试 |
 | 分层记忆：近期、摘要、长期（持久化、浏览、搜索、遗忘、导入导出、记录开关、语义检索） | ✓ | E2E `A_what_the_user_says_reaches_long_term_memory…`；`ProductServerTests`；`Memory_search_goes_by_meaning…`；`ContinuousLearningTests` |
 | 情绪与表情驱动 | ✓ | `Expression_markers…`、`Dialogue_acts_and_expressions…`；E2E `D_an_mmd_model_loads_and_its_morphs_follow_the_reply` |
+| 约好的提醒（聊天页与 QQ、Telegram 私聊；移植 MOSAIC，ADR-003 补充三） | ✓ | `RemindersTests`（MOSAIC 模块生成的 35 条向量、提醒簿、到点那句话、渠道上的完整流程） |
 
 ### 4.2 模型接入
 | 项目 | 状态 | 证据 |
 |---|---|---|
 | 聊天（OpenAI 兼容）、嵌入 | ✓ | 网关路由与密钥轮换（`ProductServerTests`）；`MeaiAdapterTests` |
 | 语音合成：OpenAI 兼容、ElevenLabs、阿里云 Qwen-TTS / CosyVoice | ✓ | 网关语音路由测试 |
+| 本机语音合成、识别与逐字对齐（MOSAIC 在 Windows 上的回环服务，ADR-003 补充一、四） | ◐ | `LocalVoiceTests`（测试替身）；接真实服务的联机检查待作者在 Windows 上做 |
 | 语音识别：流式（Web Speech）与整段（服务端转写） | ✓ | E2E `C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent` |
 | 绘图：OpenAI 兼容、Replicate、ComfyUI、Gemini | ✓ | `Images_are_drawn_by_each_backend…`；E2E `B_with_drawing_switched_on…` |
 
@@ -82,7 +84,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 项目 | 状态 | 证据 |
 |---|---|---|
 | 麦克风选择、VAD 免提、按键说话、无法启动时提示 | ✓ | E2E 服务端识别测试；`C_voice_input_that_cannot_start_says_so_clearly` |
-| 口型同步 | ✓ | 音频电平驱动头像与 MMD 口型形态键 |
+| 口型同步 | ✓ | 音频电平驱动头像与 MMD 口型形态键；有逐字对齐时按韵母分到あいうえお、b/p/m 闭唇（ADR-003 补充四）：`LipSyncTests`（与 MOSAIC 模块生成的向量逐帧相等），E2E `C_spoken_audio_carries_the_aligned_vowel_shape…`、`D_with_the_aligned_text_the_mmd_mouth…` |
 | MMD 模型（PMX/PMD）、VMD 动作、物理、待机 / 说话 / 表情 | ✓ | E2E `D_an_mmd_model_loads…`、`D_an_idle_vmd_motion_loops_and_moves_the_model` |
 | 视线、节拍同步、背景与场景 | ✓ | E2E 视线测试、`D_beat_sync_hears_the_music_and_finds_its_tempo`；`Beat_detector…` |
 | 陪伴行为（情绪姿态、倾听点头、对话眼神） | ✓ | E2E 陪伴行为测试 |
@@ -108,6 +110,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | MCP（服务端与客户端）、工具中枢（HomeAssistant、小米、Factorio、外部 MCP） | ✓ | `McpServerTests`、`ToolTests` |
 | 计算机控制 | ◐ | macOS 实现与策略有测试（`ComputerUseTests`，不触碰真实桌面）；Windows 实现（含 UI Automation 元素编号、set_value 与截图标注）已编译并有脚本与解析的单元测试，未在 Windows 上运行 |
 | Discord、Telegram、Satori、X、B 站直播 | ✓ | `IntegrationTests`；真实平台需令牌，未联网测试 |
+| QQ（OneBot 11，经作者自装的 NapCat；只回负责人私聊，ADR-003 补充二） | ◐ | `OneBotConnectorTests`（签名、解析、经假 NapCat 的完整往返）；未接真实 NapCat |
 | Minecraft | ◐ | 纯 .NET 协议客户端，在本机官方服务端上实测：寻路、跟随、挖掘与拾取、放置、攻击、按配方书合成、自动穿戴更好的盔甲、挖掘前换上合适工具、游泳过水渠与爬梯上下墙（`MinecraftTests`，单元与 5 个服务端用例）；主机满载时“跟随”用例偶有超时 |
 | 浏览器扩展、VS Code、Claude Code 插件、国际象棋 | ✓ | E2E `I_the_browser_extension_reads…`；`ChessTests`；node 测试 |
 | 9 种语言 | ✓ | `Every_locale_has_every_key…` |
@@ -128,7 +131,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 
 1. **需要作者操作**：macOS / iOS 构建（Xcode）；论文中第一作者的 CRediT 角色、资助、利益冲突与致谢，以及投稿信中的期刊、日期与预印本等占位（单位与导师的作者贡献角色已于 10-27 按导师意见写入）。
 2. **未能在本机完整验证**：Windows 桌面与计算机控制、各聊天平台与 B 站的真实联网、阿里云与 Google 的真实接口。
-3. **检索打分（研究内核，已定性）**：冲突惩罚按冲突对累乘、总是压低较旧的一方（标准化模式下扫描前 150 个候选，关闭后交付召回大幅上升），加和模式的扫描窗口随 K 变化，检索下限为绝对值。这些都是 P3 测量与复现的对象，按设计保留并已在代码中注明；它们只存在于研究用记忆内核（`BioticMemory`），服务端记忆库不使用该内核。冲突判定对真实矛盾的精确度未评估，是否修改惩罚需先做这项评估。
+3. **检索打分（研究内核，已定性）**：冲突惩罚按冲突对累乘、总是压低较旧的一方（标准化模式下扫描前 150 个候选，关闭后交付召回大幅上升），加和模式的扫描窗口随 K 变化。这些都是 P3 测量与复现的对象，按设计保留并已在代码中注明；它们只存在于研究用记忆内核（`BioticMemory`），服务端记忆库不使用该内核。绝对的检索下限（0.02）由评测施加，`Retrieve()` 本身不用它。冲突判定对真实矛盾的精确度未评估，是否修改惩罚需先做这项评估。
 
 ## 7. 进度总览（2026-10-28）
 
@@ -145,6 +148,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 导师 10-27 意见 | ✓ 第二主机审计 A5 所用的两份运行日志（`experiments/rq-c/run-family-gpu.log`、`run-template.log`）纳入版本库，他人可复核 A5；P3 表 1–9 改用 1,540 个可回答问题重算的方案提交于 `experiments/plans/2026-10-27-p3-answerable-tables.md`（不调用模型，12 月 2 日后计算）；`experiments/README.md` 删去“提交历史就是方案的时间戳”，改为只陈述提交顺序（不说明方案何时公开），并说明 10 月 22 日以前的运行脚本与记录、各 RQ-C `summary.json` 的 `preregistrationDeviation` 字段所称的 "pre-registered"，指运行前在代码中固定的协议（`Harness.cs` 的 `Preregistration`），未在外部平台注册；记录保持原样，类名与字段名不改以便与归档摘要对照，活代码中的注释已改 |
 | 范围与开发顺序（导师 10-27 意见） | ✓ 10-28。`docs/PROJECT-SCOPE.md` 的开发顺序改为导师同意的顺序（设备资格与再生成在先）；第 6 章产品传递路径（P3-E 的测量对象）`src/Aijade.Client/Chat/MemoryContext.cs` 与 `src/Aijade.Server/Memory/MemoryLibrary.cs` 列入 `researchObjects`，在 P3-E 运行并归档之前不改。`ProjectScopeTests` 通过。10-31：这两个文件的内容哈希记入 `configs/project-scope.json` 的 `frozen`，`ProjectScopeTests` 检查（阳性对照：在副本中给 `MemoryContext.cs` 加一行即失败，只改换行符不失败） |
 | 与 MOSAIC 非研究线共享伴侣契约（ADR-002） | ✓ 10-28，作者指示的例外。`configs/companion/contract.json` 1.0.0：艾娅德的人设（两边同一段文字；默认人设随之更新）、AIJADE 9 个舞台表情对 MOSAIC 4 个情绪的名称对应、主动开口规则（闸门、权重、阈值）。主动开口的参考实现 `src/Aijade.Client/Companion/Initiative.cs` 在 MOSAIC 实现生成的 18 条向量上判定全部相同（阳性对照：阈值改为 0.76 时两项测试失败）。同日契约升为 1.1.0，主动开口接入聊天：`ChatOrchestrator.SpeakFirstAsync` 与聊天页每分钟一次的询问，设置"安静时她会先开口"默认关闭；说明与沉默消息与 MOSAIC 逐字一致（4 条向量），生成时不经记忆召回与学习观察者。契约 1.2.0：MOSAIC 在 QQ 上测过的文字渠道规则（没有身体时的两条说明与推迟动作的补句）由 `CompanionBridge` 在 Discord、Telegram、X 与 Satori 转接的平台上采用，与 MOSAIC 的常量逐字一致；聊天平台对照与方案见 `docs/CHAT-CHANNELS-MOSAIC.md`。用 MOSAIC 的家作舞台的对照与方案见 `docs/STAGE-MOSAIC.md`（建议经 MOSAIC 工作台的文字指令，不动渲染器契约）；作者选方案 A，第 1 步已完成：契约 1.3.0 的"舞台"一节与判定实现 `src/Aijade.Client/Companion/Stage.cs`，在 MOSAIC 代码生成的 45 句向量上全部一致，尚未接入界面；MOSAIC 已在 r392 采用 1.3.0（状态接口返回她在哪与姿势，跳舞可不带名字），本仓库在 r392 上重新生成向量，内容相同。第 2 步（作者选服务端转发）：服务端 `/api/v1/stage` 只限管理员、只转发到本机回环地址上的工作台、只放行七种指令；聊天页设置"舞台：MOSAIC 的家"默认关闭；用测试替身验证，尚未与运行中的工作台联机（ADR-002 补充四）。契约 1.4.0（10-29，MOSAIC 提议，作者接受 A、B）：她可以提到 MOSAIC 的 B 站学动作器真学到的动作，转发只留契约字段、至多 5 条，说明里不写第三方的视频标题与 UP 主（ADR-002 补充五）；MOSAIC r418 实现，r425 采用（开关默认打开）。MOSAIC 已在 r389 采用契约 1.2.0（人设逐字相同，向量回归一致）。10-31 只读核对 MOSAIC r529：与契约有关的三份源文件改过（`companion.py` r418、`LiveSceneCommands.cs` r478、`home-v1.json` r470），但人设、学到动作的规则原文与工作台接口不变，重新生成的向量内容相同，只更新了源文件哈希与读取日期。MOSAIC 只读，其一侧的采用写在 `docs/COMPANION-CONTRACT.md` 的交接一节。不触及研究对象，不进入研究 |
+| 迁移 MOSAIC 的非研究线功能，第一批（ADR-003） | ✓ 11-03，作者 11-02 的要求与选定。本机语音合成与识别、QQ（OneBot 11）、约好的提醒、逐字对齐的口型：做法、与 MOSAIC 的差异与验证见 `docs/decisions/ADR-003.md` 补充一至四，整合蓝图 `docs/INTEGRATION-MOSAIC.md` 一同提交。提醒与口型各用 MOSAIC 自己的模块生成的向量核对（35 条、10 组，全部一致）；本机服务与 NapCat 用测试替身验证，接真实服务的联机检查由作者在 Windows 上做。只改非研究线，不新增数据库迁移，不下载模型。同时按 MOSAIC r580、r601、r612 更新三份契约向量记录的源文件哈希（重新生成的内容相同） |
 | 新的运行 | ⏸ 12 月起按导师同意的顺序：设备资格与第二主机三次运行再生成 → P2-A → P2-A 主运行与 P2-B → P3 表·产品路径·P3-C → P1-A·B·外部渲染器 → 第 7 章；每项方案单独推送并发给导师后再写代码 |
 
 最终状态：
@@ -155,7 +159,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | Windows 计算机控制元素编号 | ✓ 已实现（UI Automation），单元测试通过；需在 Windows 上实测 |
 | Minecraft | ✓ 寻路、跟随、挖掘拾取、放置、攻击、合成、换装备与工具、游泳攀爬均在本机官方服务端实测（42/42） |
 | 安全补丁 | ✓ ASP.NET Core / .NET 升级到 10.0.14（SDK 10.0.403，10-29），修复 CVE-2026-111497（Brotli 解码越界写，经请求解压与 HttpClient 可达），并重发 10.0.13 未修完的 CVE-2026-70197（SocketAsyncEventArgs）与 CVE-2026-102870（Blazor WebAssembly Server/DevServer 包）；此前 10.0.13（SDK 10.0.402）修复 CVE-2026-96230 等。两次都经作者同意，作为“满两周”约束的安全例外；SDK 安装包按发布元数据的 SHA-512 核对 |
-| 全量回归 | ✓ 最近一次本地全量（10-31，在内置盘副本中构建，外置 exFAT 盘上的构建会卡住）：解决方案构建 0 警告；单元与集成 369 通过、0 失败、42 跳过（需数据库或外部环境，本地未设 `AIJADE_TEST_DATABASE_URL`）。MOSAIC 真实解析器一致性测试用 MOSAIC 10-31 的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `767e98e` 通过。浏览器端到端最近一次为 10-18 的 19/19 |
+| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 437 项中 430 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 21/21 通过，含作者本机 PMX 模型上的 MMD 舞台用例。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `767e98e` 通过 |
 | P1 | ✓ 端到端用例、漂移矩阵与闸门矩阵、两组变异实验（在当前代码上重跑与存档逐项一致）、时延与校验开销、身份层阳性对照与机制级试点；时延测于 .NET 10.0.12 |
 | P2 | ✓ 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检、差分测试；自评目标量定义于 10-15 更正（见 `experiments/README.md`）；第二模型族对照（llama3.1:8b，Windows 显卡主机；llava-phi3 的第一次尝试因不遵守判定格式按事先规则放弃，记录保留）；提示模板对照（模板 B 下验证器放行全部技能） |
 | P3 | ✓ 打分诊断与权重消融、交付轨道、门控与显著性来源、指标定义缺陷、泄漏审计、对话聚类区间、LongMemEval_s 复现；冲突惩罚定性为第二个新近偏置（关闭后标准化交付召回 0.199→0.548），门控不主张有效 |

@@ -38,6 +38,9 @@ export function postureLean(e) {
   return round(clamp(-v) * (1 - d) * 0.15 - clamp(v) * d * 0.08);
 }
 
+/** The vowel morphs あいうえお, in the order of a vowel shape (a, i, u, e, o), and the closed-lips morph. */
+const VOWELS = ['あ', 'い', 'う', 'え', 'お'], LIPS = 'ん';
+
 /** PEF expression vector → weights of the conventional MMD morphs (eyes / brows); the mouth is driven by speech. */
 export function morphWeights(e) {
   const v = e.valence ?? 0, a = e.arousal ?? 0.4, d = e.dominance ?? 0.5, c = e.curiosity ?? 0.5;
@@ -188,7 +191,7 @@ async function createMmdStageCore(canvas, options, badge) {
   }
   runtime.playAnimation();
 
-  let blinkAt = performance.now() + 3000, blink = 0, mouth = 0, bob = 0, lookAt = null;
+  let blinkAt = performance.now() + 3000, blink = 0, mouth = 0, vowelShape = null, lips = 0, shaped = false, lipsShown = false, bob = 0, lookAt = null;
   // Beats nod the whole model slightly; the eye bones follow the pointer. Both are additive to any idle motion.
   const baseY = mesh.position.y;
   const eyeBones = ['左目', '右目'].map(n => model.runtimeBones.find(b => b.name === n)?.linkedBone).filter(Boolean);
@@ -262,7 +265,22 @@ async function createMmdStageCore(canvas, options, badge) {
     if (t > blinkAt) { blink = 1; blinkAt = t + 2500 + Math.random() * 3000; }
     blink = Math.max(0, blink - 0.12);
     set('まばたき', blink);
-    set('あ', mouth);
+    // Speech: the level, split across あいうえお by the vowel shape of the aligned text when there is one, and opened less
+    // as the lips close, shown by ん at 0.8 of the closure, as MOSAIC's renderer client mixes them (ADR-003). A vowel
+    // morph the model lacks goes to あ. Without a shape or a closure only あ moves, as before the aligned text.
+    const open = mouth * (1 - lips);
+    if (vowelShape) {
+      let rest = 0;
+      for (let k = 1; k < 5; k++) if (!set(VOWELS[k], open * vowelShape[k])) rest += vowelShape[k];
+      set(VOWELS[0], open * (vowelShape[0] + rest));
+      shaped = true;
+    } else {
+      set(VOWELS[0], open);
+      if (shaped) for (const v of VOWELS.slice(1)) set(v, 0);
+      shaped = false;
+    }
+    if (lips > 0 || lipsShown) set(LIPS, lips * 0.8);
+    lipsShown = lips > 0;
   });
   engine.runRenderLoop(() => scene.render());
   scene.executeWhenReady(() => badge.done());
@@ -285,7 +303,12 @@ async function createMmdStageCore(canvas, options, badge) {
       if (p.face) applied.face = p.face;
       return applied;
     },
-    mouth(level) { mouth = clamp(level); },
+    /** The speech level, with the vowel shape [a, i, u, e, o] (null: あ alone) and lip closure of the aligned text. */
+    mouth(level, vowels = null, closure = 0) {
+      mouth = clamp(level);
+      vowelShape = Array.isArray(vowels) && vowels.length === 5 ? vowels.map(w => clamp(w)) : null;
+      lips = clamp(closure || 0);
+    },
     beat(strength) { bob = Math.max(bob, 0.4 + 0.6 * clamp(strength)); },
     look(x, y) { lookAt = { x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)), until: performance.now() + 3000 }; },
     /** The user started (true) or stopped (false) speaking: a finished utterance of at least 1.2 s earns a nod. */

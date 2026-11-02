@@ -28,7 +28,7 @@ public sealed class GatewayRoutes(NpgsqlDataSource db, IDataProtectionProvider d
     public const string ConfigKey = "gateway.routes";
 
     /// <summary>Sections holding one route each (beside the per-alias "models"); their keys are encrypted and masked alike.</summary>
-    public static IReadOnlyList<string> SingleRouteSections { get; } = ["speech", "images", "embeddings", "transcription"];
+    public static IReadOnlyList<string> SingleRouteSections { get; } = ["speech", "images", "embeddings", "transcription", "alignment"];
     private const string Purpose = "Aijade.GatewayKey.v1";
 
     private IDataProtector Protector => dp.CreateProtector(Purpose);
@@ -355,22 +355,28 @@ public static class GatewayEndpoints
         var section = (await routes.SectionAsync("speech", ct).ConfigureAwait(false))?.Section;
         var kind = section?["kind"]?.GetValue<string>() ?? "openai";
         var elevenLabs = kind == "elevenlabs";
-        var operation = kind switch { "elevenlabs" => "elevenlabs.tts", AliyunSpeech.QwenTts => "dashscope.qwen_tts", AliyunSpeech.CosyVoice => "dashscope.cosyvoice", _ => "openai.audio.speech" };
+        var operation = kind switch { "elevenlabs" => "elevenlabs.tts", AliyunSpeech.QwenTts => "dashscope.qwen_tts", AliyunSpeech.CosyVoice => "dashscope.cosyvoice", LocalVoice.Kind => "local.tts", _ => "openai.audio.speech" };
+        // "emotion" is AIJADE's own field (the reply's stage expression): only the local voice uses it; other providers are not given it.
+        var expression = body["emotion"] is JsonValue ev && ev.TryGetValue<string>(out var named) ? named : null;
+        body.Remove("emotion");
         await events.TrackAsync(userId, "tts", "speech_requested", "started", operation, route.Model, ct: ct).ConfigureAwait(false);
         // ElevenLabs: POST /v1/text-to-speech/{voice id} with the key in xi-api-key. Voice names are provider-specific: clients
         // send an OpenAI-style name by default, so for any other provider the route's configured voice takes precedence.
         var requested = body["voice"]?.GetValue<string>() is { Length: > 0 } v ? v : null;
         var configured = section?["voice"]?.GetValue<string>() is { Length: > 0 } cv ? cv : null;
         var voice = (kind == "openai" ? requested ?? configured : configured ?? requested) ?? "";
-        if (kind is AliyunSpeech.QwenTts or AliyunSpeech.CosyVoice)
+        if (kind is AliyunSpeech.QwenTts or AliyunSpeech.CosyVoice or LocalVoice.Kind)
         {
             SynthesizedSpeech speech;
             try
             {
-                speech = kind == AliyunSpeech.QwenTts
-                    ? await AliyunSpeech.QwenTtsAsync(factory.CreateClient(HttpClientName), keys, route, input, voice, ct).ConfigureAwait(false)
-                    : await AliyunSpeech.CosyVoiceAsync(keys, route, section!, input, voice,
-                        TimeSpan.FromSeconds(int.TryParse(config["Aijade:SpeechTimeoutSeconds"], out var secs) && secs > 0 ? secs : 60), AliyunSpeech.ConnectAsync, ct).ConfigureAwait(false);
+                speech = kind switch
+                {
+                    LocalVoice.Kind => await LocalVoice.SpeakAsync(factory.CreateClient(HttpClientName), route, input, LocalVoice.Emotion(expression), ct).ConfigureAwait(false),
+                    AliyunSpeech.QwenTts => await AliyunSpeech.QwenTtsAsync(factory.CreateClient(HttpClientName), keys, route, input, voice, ct).ConfigureAwait(false),
+                    _ => await AliyunSpeech.CosyVoiceAsync(keys, route, section!, input, voice,
+                        TimeSpan.FromSeconds(int.TryParse(config["Aijade:SpeechTimeoutSeconds"], out var secs) && secs > 0 ? secs : 60), AliyunSpeech.ConnectAsync, ct).ConfigureAwait(false),
+                };
             }
             catch (ApiException e)
             {

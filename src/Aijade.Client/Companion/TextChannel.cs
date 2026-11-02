@@ -60,6 +60,7 @@ public static class TextChannel
         "discord" => "Discord",
         "telegram" => "Telegram",
         "x" => "X",
+        "qq" => "QQ",
         _ when platform.StartsWith("satori-", StringComparison.Ordinal) => platform["satori-".Length..] switch
         {
             "qq" => "QQ",

@@ -351,6 +351,7 @@ public static class ImageEndpoints
                 ["chatModels"] = new JsonArray([.. (doc?["models"] as JsonObject ?? []).Select(kv => (JsonNode)kv.Key)]),
                 ["speech"] = doc?["speech"] is JsonObject,
                 ["images"] = doc?["images"] is JsonObject,
+                ["alignment"] = doc?["alignment"] is JsonObject,
             });
         }).RequireAuthorization();
 

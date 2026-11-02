@@ -39,7 +39,11 @@ class AvatarRenderer {
     if (p.posture) applied.posture = p.posture;
     return applied;
   }
-  mouth(v) { this.mouthOpen = clamp(v); }
+  /** The speech level, with the vowel shape [a, i, u, e, o] and lip closure of the aligned text when there is one. */
+  mouth(v, vowels = null, lips = 0) {
+    this.mouthOpen = clamp(v) * (1 - clamp(lips || 0));
+    this.vowels = Array.isArray(vowels) && vowels.length === 5 ? vowels : null;
+  }
   /** A beat from the music: a small nod whose size follows the beat's strength. */
   beat(strength) { this.bob = Math.max(this.bob, 0.4 + 0.6 * clamp(strength)); }
   /** Follow the pointer with the eyes (x, y in -1…1 across the stage); the look fades after a few seconds. */
@@ -153,10 +157,12 @@ class AvatarRenderer {
     ctx.beginPath(); ctx.arc(bx, by, s * 0.06, 0, Math.PI * 2); ctx.fill();
     ctx.lineWidth = s * 0.03; ctx.strokeStyle = '#1b1b22';
     ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx - s * 0.08, by + s * 0.45); ctx.moveTo(bx, by); ctx.lineTo(bx + s * 0.06, by + s * 0.4); ctx.stroke();
-    // mouth: curve by valence, opening by speech level
-    const mw = s * (0.16 + e.playfulness * 0.06);
+    // mouth: curve by valence, opening by speech level; a vowel shape widens it for i/e, rounds it for u/o and opens it
+    // most for a
+    const [va, vi, vu, ve, vo] = this.vowels || [1, 0, 0, 0, 0];
+    const mw = s * (0.16 + e.playfulness * 0.06) * (1 + 0.3 * (vi + ve) - 0.35 * (vu + vo));
     const curve = e.valence * s * 0.14;
-    const mo = this.mouthOpen * s * 0.2;
+    const mo = this.mouthOpen * s * 0.2 * (va + 0.4 * vi + 0.5 * vu + 0.7 * ve + 0.8 * vo);
     ctx.fillStyle = '#c24f63'; ctx.strokeStyle = '#7d2e3d'; ctx.lineWidth = s * 0.025;
     ctx.beginPath();
     ctx.moveTo(-mw, s * 0.55);
@@ -217,7 +223,7 @@ export async function fitImage(bytes, mime, maxSide) {
 }
 
 export function apply(params) { return current ? current.apply(params) : {}; }
-export function mouth(level) { current?.mouth(level); }
+export function mouth(level, vowels, lips) { current?.mouth(level, vowels, lips); }
 export function beat(strength) { current?.beat?.(strength); }
 export function look(x, y) { current?.look?.(x, y); }
 export function userSpeech(on, spokeMs, quietMs) { current?.userSpeech?.(on, spokeMs, quietMs); }

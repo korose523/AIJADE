@@ -15,6 +15,8 @@ namespace Aijade.Server.Product;
 //   embeddings     OpenAI-compatible /embeddings: text → vectors, for semantic memory search (and any client that wants them)
 //   transcription  OpenAI-compatible /audio/transcriptions: a recorded utterance → text, for devices without built-in speech
 //                  recognition (the Android app's web view has none)
+//   alignment      AIJADE's own /audio/alignment (no OpenAI counterpart): a spoken reply's text and WAV → each Chinese
+//                  character timed with its pinyin, for the stage's mouth; only the local aligner (ADR-003)
 // Each is one route in the gateway document ("embeddings" / "transcription": upstream, model, keys, fluxPer1k), priced per
 // thousand tokens (embeddings) or per minute of audio as reported by the client's duration hint (transcription, fluxPer1k
 // applied per 1000 seconds).
@@ -124,6 +126,23 @@ public static class ModelServices
             var audio = new byte[file.Length];
             await using (var s = file.OpenReadStream())
                 await s.ReadExactlyAsync(audio, ct).ConfigureAwait(false);
+            if (configured.Section["kind"] is JsonValue k && k.TryGetValue<string>(out var kind) && kind == LocalVoice.Kind)
+            {
+                await events.TrackAsync(userId, "asr", "transcription_requested", "started", "local.asr", route.Model, ct: ct).ConfigureAwait(false);
+                string heard;
+                try
+                {
+                    heard = await LocalVoice.TranscribeAsync(factory.CreateClient(GatewayEndpoints.HttpClientName), route, audio, form["language"].ToString(), ct).ConfigureAwait(false);
+                }
+                catch (ApiException e)
+                {
+                    await events.TrackAsync(userId, "asr", "transcription_failed", "failed", "local.asr", route.Model, reason: e.Code, ct: ct).ConfigureAwait(false);
+                    throw;
+                }
+                if (cost > 0)
+                    await flux.ApplyAsync(userId, -cost, "usage", "transcription", meta: new JsonObject { ["seconds"] = seconds }, ct: CancellationToken.None).ConfigureAwait(false);
+                return Results.Json(new JsonObject { ["text"] = heard });
+            }
             HttpContent Build()
             {
                 var content = new MultipartFormDataContent();
@@ -146,6 +165,43 @@ public static class ModelServices
             if (cost > 0)
                 await flux.ApplyAsync(userId, -cost, "usage", "transcription", meta: new JsonObject { ["seconds"] = seconds }, ct: CancellationToken.None).ConfigureAwait(false);
             return Results.Json(new JsonObject { ["text"] = json?["text"]?.GetValue<string>() ?? "" });
+        }).DisableAntiforgery();
+
+        g.MapPost("/audio/alignment", async (HttpContext c, GatewayRoutes routes, IHttpClientFactory factory, FluxLedger flux, ProductEvents events, CancellationToken ct) =>
+        {
+            var userId = c.User.UserId();
+            if (!c.Request.HasFormContentType)
+                throw ApiException.BadRequest("multipart/form-data with a file and its text is required", "INVALID_ALIGNMENT_REQUEST");
+            var form = await c.Request.ReadFormAsync(ct).ConfigureAwait(false);
+            var file = form.Files["file"] ?? throw ApiException.BadRequest("file is required", "INVALID_ALIGNMENT_REQUEST");
+            if (file.Length is 0 or > LocalVoice.MaxAlignWavBytes)
+                throw ApiException.BadRequest("the audio must be a WAV of at most 24 MiB", "INVALID_ALIGNMENT_REQUEST");
+            if (await routes.SectionAsync("alignment", ct).ConfigureAwait(false) is not { } configured)
+                throw new ApiException(503, "GATEWAY_UNCONFIGURED", "lip-sync alignment is not configured");
+            if (configured.Section["kind"] is not JsonValue k || !k.TryGetValue<string>(out var kind) || kind != LocalVoice.Kind)
+                throw new ApiException(503, "GATEWAY_UNCONFIGURED", "lip-sync alignment needs the local aligner (\"kind\": \"local\")");
+            var route = configured.Route;
+            if (route.FluxPerThousand > 0 && await flux.BalanceAsync(userId, ct).ConfigureAwait(false) <= 0)
+                throw new ApiException(402, "INSUFFICIENT_FLUX", "Insufficient flux");
+            var audio = new byte[file.Length];
+            await using (var s = file.OpenReadStream())
+                await s.ReadExactlyAsync(audio, ct).ConfigureAwait(false);
+            await events.TrackAsync(userId, "lipsync", "alignment_requested", "started", "local.align", route.Model, ct: ct).ConfigureAwait(false);
+            JsonObject aligned;
+            try
+            {
+                aligned = await LocalVoice.AlignAsync(factory.CreateClient(GatewayEndpoints.HttpClientName), route, form["text"].ToString(), audio, ct).ConfigureAwait(false);
+            }
+            catch (ApiException e)
+            {
+                await events.TrackAsync(userId, "lipsync", "alignment_failed", "failed", "local.align", route.Model, reason: e.Code, ct: ct).ConfigureAwait(false);
+                throw;
+            }
+            var seconds = aligned["durationS"]!.GetValue<double>();
+            var cost = route.FluxPerThousand <= 0 ? 0 : Math.Max(1, (long)Math.Ceiling(seconds / 1000 * route.FluxPerThousand));
+            if (cost > 0)
+                await flux.ApplyAsync(userId, -cost, "usage", "alignment", meta: new JsonObject { ["seconds"] = seconds }, ct: CancellationToken.None).ConfigureAwait(false);
+            return Results.Json(aligned);
         }).DisableAntiforgery();
     }
 }

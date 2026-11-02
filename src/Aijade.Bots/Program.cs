@@ -12,9 +12,14 @@ using Microsoft.Extensions.Logging;
 //   Aijade:Token         a bot account's token (a static token from the server's Auth:StaticTokens, or a session token)
 //   Bridge:CharacterId   optional character the companion plays here; Bridge:Drawing / Bridge:Memory / Bridge:Tools true/false
 //   Bridge:StateFile     where conversation → chat mappings are kept (default ./aijade-bots-state.json)
+//   Bridge:Reminders     false to keep no reminders; otherwise she keeps those asked for in private conversations on the
+//                        platforms that can start a message (QQ, Telegram) and says them when due (ADR-003)
 //   Renderer:MosaicPort  optional: drive the MOSAIC native MMD client (--behavior-live PORT) with each reply's PEF intent
 //   Discord:Token, Telegram:Token   a connector runs for each one that is set
 //   Satori:Url (+ Satori:Token)     a Satori server, e.g. http://localhost:5140/satori/ (QQ, OneBot, KOOK … through Koishi)
+//   OneBot:NapCat (+ Port, TokenFile, SecretFile, Owner)   QQ through NapCat's OneBot 11 HTTP server, e.g. http://127.0.0.1:3000;
+//                                   NapCat's HTTP client posts events to 127.0.0.1:Port (default 8795); only the owner's private
+//                                   messages are answered (ADR-003, as MOSAIC's tools/companion_qq.py)
 //   X:AccessToken                   an OAuth 2.0 user-context token of the bot's X account
 //   Minecraft:Host (+ Port, Name)   an offline-mode Java server (26.3, protocol 777; enforce-secure-profile=false)
 //   Bilibili:RoomId (+ Bilibili:Cookie)   a live room; with the owner's cookie viewers are identified and replies are sent
@@ -38,6 +43,9 @@ builder.Services.AddSingleton(sp => new CompanionBridge(sp.GetRequiredService<Ai
     Tools = bool.TryParse(config["Bridge:Tools"], out var tools) && tools,
     Memory = !bool.TryParse(config["Bridge:Memory"], out var memory) || memory,
     StateFile = config["Bridge:StateFile"] is { Length: > 0 } f ? f : "aijade-bots-state.json",
+    ReminderPlatforms = bool.TryParse(config["Bridge:Reminders"], out var remind) && !remind
+        ? []
+        : sp.GetServices<IChannelConnector>().OfType<IProactiveConnector>().Select(c => c.Platform).ToArray(),
     OnPerformance = sp.GetService<Aijade.Integrations.Renderer.MosaicRendererLink>() is { } renderer
         ? (intent, message) => renderer.SendAsync(intent, message.Key)
         : null,

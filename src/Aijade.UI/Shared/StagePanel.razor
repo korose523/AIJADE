@@ -66,7 +66,7 @@
 
     public Task<JsonObject> ApplyAsync(Aijade.Memory.Contracts.PerformanceIntent intent) => Stage.ApplyAsync(intent);
 
-    public Task MouthAsync(double open) => Stage.MouthAsync(open);
+    public Task MouthAsync(double open, double[]? vowels = null, double lips = 0) => Stage.MouthAsync(open, vowels, lips);
 
     public ValueTask DisposeAsync()
     {

@@ -305,6 +305,44 @@ public sealed class WebAppTests(E2EHost host)
     }
 
     [Fact]
+    public async Task D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips()
+    {
+        host.RequireEnabled();
+        if (E2EHost.MmdDir is null || E2EHost.MmdModel is null)
+            Assert.Skip("AIJADE_E2E_MMD_DIR / AIJADE_E2E_MMD_MODEL not set; MMD stage test skipped");
+        var (page, _) = await host.SignUpAsync();
+        await page.GetByRole(AriaRole.Link, new() { Name = "Settings" }).ClickAsync();
+        await page.GetByLabel("Model file (PMX/PMD URL)").FillAsync("/models/" + Uri.EscapeDataString(E2EHost.MmdModel!));
+        await page.GetByLabel("Model file (PMX/PMD URL)").PressAsync("Tab");
+        await page.GetByRole(AriaRole.Link, new() { Name = "Chat" }).ClickAsync();
+        await page.WaitForFunctionAsync("() => document.querySelector('.stage canvas')?.__aijadeMmd", null, new() { Timeout = 120_000 });
+        await Expect(page.Locator(".stage-loading")).ToHaveCountAsync(0, new() { Timeout = 120_000 });
+        if (!await page.EvaluateAsync<bool>("() => ['あ', 'い', 'う', 'え', 'お', 'ん'].every(n => document.querySelector('.stage canvas').__aijadeMmd.morphs.includes(n))"))
+            Assert.Skip("the model lacks one of the morphs あいうえおん");
+
+        // The speech level is split across あいうえお by the vowel shape and opened less as the lips close, which ん shows at
+        // 0.8 of the closure (MOSAIC's renderer client mixes them so; ADR-003); without a shape あ alone opens.
+        var mouth = await page.EvaluateAsync<double[]>("""
+            async () => {
+              const { model } = document.querySelector('.stage canvas').__aijadeMmd;
+              const stage = await import('./_content/Aijade.UI/stage.js');
+              const frames = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+              const w = (n) => model.morph.getMorphWeight(n);
+              stage.mouth(0.8, [0, 1, 0, 0, 0], 0); await frames();
+              const spread = [w('あ'), w('い'), w('ん')];
+              stage.mouth(0.8, [0, 0, 0.5, 0, 0.5], 0.5); await frames();
+              const rounded = [w('う'), w('お'), w('ん'), w('い')];
+              stage.mouth(0.6); await frames();
+              const plain = [w('あ'), w('う'), w('お'), w('ん')];
+              stage.mouth(0);
+              return [...spread, ...rounded, ...plain];
+            }
+            """);
+        Assert.Equal([0, 0.8, 0, 0.2, 0.2, 0.4, 0, 0.6, 0, 0, 0], mouth.Select(x => Math.Round(x, 3)));
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
     public async Task D_an_idle_vmd_motion_loops_and_moves_the_model()
     {
         host.RequireEnabled();
@@ -692,6 +730,44 @@ public sealed class WebAppTests(E2EHost host)
           return out.stream;
         };
         """;
+
+    [Fact]
+    public async Task C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        // Half a second of tone with a plan from the aligned text (ADR-003): frames 0-11 an i, then an o, the lips closed
+        // from frame 6 to 15. Frame k takes effect at (k + 1) / 60 s and a shape holds until the next; playback ends with the
+        // mouth closed and no shape.
+        var seen = await page.EvaluateAsync<JsonElement>("""
+            async () => {
+              const audio = await import('./_content/Aijade.UI/audio.js');
+              const { encodeWav } = await import('./_content/Aijade.UI/voice.js');
+              const rate = 16000, samples = new Float32Array(rate / 2);
+              for (let k = 0; k < samples.length; k++) samples[k] = 0.5 * Math.sin(2 * Math.PI * 220 * k / rate);
+              const i = [0, 1, 0, 0, 0], o = [0, 0, 0, 0, 1];
+              const plan = { frameHz: 60, vowels: [...Array(30)].map((_, k) => k < 12 ? i : o), lips: [{ frame: 6, value: 1 }, { frame: 15, value: 0 }] };
+              const calls = [];
+              const sink = { invokeMethodAsync: (method, level, vowels, lips) => { calls.push({ method, level, vowels: vowels && vowels.join(','), lips }); return Promise.resolve(); } };
+              await audio.play(encodeWav(samples, rate), sink, plan);
+              return calls;
+            }
+            """);
+        var calls = seen.EnumerateArray().Select(c => (Method: c.GetProperty("method").GetString(), Level: c.GetProperty("level").GetDouble(),
+            Shape: c.GetProperty("vowels").ValueKind == JsonValueKind.Null ? "none" : c.GetProperty("vowels").GetString(), Lips: c.GetProperty("lips").GetDouble())).ToList();
+        Assert.All(calls, c => Assert.Equal("OnMouth", c.Method));
+        Assert.True(calls.Count >= 8, $"only {calls.Count} updates in half a second");
+        Assert.Equal((0.0, "none", 0.0), (calls[^1].Level, calls[^1].Shape, calls[^1].Lips));
+        var playing = calls.Take(calls.Count - 1).ToList();
+        Assert.Contains(playing, c => c.Level > 0.1);
+        var firstO = playing.FindIndex(c => c.Shape == "0,0,0,0,1");
+        Assert.True(firstO > 0, string.Join(" ", playing.Select(c => c.Shape)));
+        Assert.All(playing.Take(firstO), c => Assert.True(c.Shape is "0,1,0,0,0" or "none", c.Shape));
+        Assert.All(playing.Skip(firstO), c => Assert.Equal("0,0,0,0,1", c.Shape));
+        Assert.Contains(playing, c => c.Lips == 1);
+        Assert.Equal(0, playing[^1].Lips);
+        await page.Context.CloseAsync();
+    }
 
     [Fact]
     public async Task C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent()

@@ -59,6 +59,16 @@ public sealed class BridgeOptions
     /// <summary>Where the conversation → chat mapping is kept between restarts (null = memory only).</summary>
     public string? StateFile { get; init; }
 
+    /// <summary>
+    /// The platforms whose connector can start a message (<see cref="IProactiveConnector"/>). In private conversations there
+    /// she keeps reminders, as MOSAIC's QQ bridge does (ADR-003): set and cancelled by fixed words, said when due. Elsewhere
+    /// she could not keep the promise, so none is set. They are kept beside the state file (StateFile + ".reminders.json").
+    /// </summary>
+    public IReadOnlyCollection<string> ReminderPlatforms { get; init; } = [];
+
+    /// <summary>The time zone clock words such as "明天早上八点" are read in (null = this machine's).</summary>
+    public TimeZoneInfo? TimeZone { get; init; }
+
     public OrchestratorOptions Orchestrator { get; init; } = new();
 
     /// <summary>Called with each completed turn's PerformanceIntent (e.g. to drive an external renderer); errors are logged by the caller's sink, never thrown into the chat.</summary>
@@ -90,6 +100,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     private readonly ConcurrentDictionary<string, DateTimeOffset> lastReply = new(StringComparer.Ordinal);
     private readonly SemaphoreSlim stateGate = new(1, 1);
     private Dictionary<string, string>? chats;
+    private ReminderBook? reminders;
     private Character? character;
     private bool characterLoaded;
 
@@ -111,7 +122,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         {
             lastReply[message.Key] = now;
             var who = await CharacterAsync(ct).ConfigureAwait(false);
-            var chatId = await ChatForAsync(message, who, ct).ConfigureAwait(false);
+            var chatId = await ChatForAsync(message.Key, message.IsDirect ? $"{message.Platform} · {message.AuthorName}" : $"{message.Platform} · {message.ConversationId}", who, ct).ConfigureAwait(false);
             var history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false);
             // Group rooms have many speakers: the model sees who said it.
             var text = message.IsDirect ? message.Text : $"{message.AuthorName}: {message.Text}";
@@ -123,8 +134,9 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
             TurnCompleted? done = null;
             string? draw = null;
             var bodiless = options.TextChannelRules ? TextChannel.BodilessChannel(message.Platform) : null;
-            var notes = bodiless is null ? null : TextChannel.Notes(bodiless, message.Text);
-            await foreach (var e in orchestrator.SendAsync(chatId, who, history, text, $"persona:{who?.Id ?? "default"}", notes, ct).ConfigureAwait(false))
+            var (reminderNotes, promised) = message.IsDirect && options.ReminderPlatforms.Contains(message.Platform) ? await ReadRemindersAsync(message, ct).ConfigureAwait(false) : ([], null);
+            var notes = (bodiless is null ? [] : TextChannel.Notes(bodiless, message.Text)).Concat(reminderNotes).ToList();
+            await foreach (var e in orchestrator.SendAsync(chatId, who, history, text, $"persona:{who?.Id ?? "default"}", notes.Count > 0 ? notes : null, ct).ConfigureAwait(false))
             {
                 switch (e)
                 {
@@ -140,6 +152,8 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
             }
             if (done is null)
                 return null;
+            if (promised is not null)
+                await UpdateRemindersAsync(book => book.Promise(promised.Id, done.Reply.Content), ct).ConfigureAwait(false);
             if (options.OnPerformance is { } perform)
             {
                 try
@@ -172,6 +186,130 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         }
     }
 
+    private double Now() => options.Time.GetUtcNow().ToUnixTimeMilliseconds() / 1000.0;
+
+    private async Task<(IReadOnlyList<string> Notes, Reminder? Set)> ReadRemindersAsync(ChannelMessage message, CancellationToken ct)
+    {
+        await stateGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            reminders ??= LoadReminders();
+            var read = reminders.Read(message.Key, message.Text, Now(), options.TimeZone);
+            if (read.Set is not null || read.Notes.Count > 0)
+                SaveReminders();
+            return read;
+        }
+        finally
+        {
+            stateGate.Release();
+        }
+    }
+
+    private async Task UpdateRemindersAsync(Action<ReminderBook> change, CancellationToken ct)
+    {
+        await stateGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            reminders ??= LoadReminders();
+            change(reminders);
+            SaveReminders();
+        }
+        finally
+        {
+            stateGate.Release();
+        }
+    }
+
+    /// <summary>
+    /// The next reminder due in a conversation the caller can reach (its key, "platform:conversation", passes
+    /// <paramref name="reachable"/>), with her line for it, which is stored in that conversation's chat. As in MOSAIC's bridge,
+    /// the reminder counts as said once her line is made, and the caller sends it; a line that could not be made releases the
+    /// reminder, due again at the next check. Null when none is due or her line could not be made.
+    /// </summary>
+    public async Task<(Reminder Reminder, string Line)?> DueReminderAsync(Func<string, bool> reachable, CancellationToken ct = default)
+    {
+        Reminder? due;
+        await stateGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            reminders ??= LoadReminders();
+            var before = reminders.All.ToArray();
+            due = reminders.ClaimDue(Now(), reachable);
+            if (!reminders.All.SequenceEqual(before))
+                SaveReminders();
+        }
+        finally
+        {
+            stateGate.Release();
+        }
+        if (due is null)
+            return null;
+        string? line = null;
+        var gate = locks.GetOrAdd(due.Conversation, _ => new SemaphoreSlim(1, 1));
+        await gate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            var who = await CharacterAsync(ct).ConfigureAwait(false);
+            // A conversation started over since keeps its reminder: her line opens its new chat.
+            var split = due.Conversation.IndexOf(':', StringComparison.Ordinal);
+            var chatId = await ChatForAsync(due.Conversation, $"{due.Conversation[..split]} · {due.Conversation[(split + 1)..]}", who, ct).ConfigureAwait(false);
+            var history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false);
+            await foreach (var e in new ChatOrchestrator(api, [], options.Orchestrator, options.Time, observers)
+                .RemindAsync(chatId, who, history, $"persona:{who?.Id ?? "default"}", due, options.TimeZone, ct).ConfigureAwait(false))
+            {
+                if (e is TurnCompleted c)
+                    line = c.Reply.Content;
+            }
+        }
+        catch (AijadeApiException e) when (e.Status == 404)
+        {
+            await ForgetAsync(due.Conversation, ct).ConfigureAwait(false); // its chat was deleted: the next check opens a new one
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        {
+            // the server cannot be reached now: released below
+        }
+        finally
+        {
+            gate.Release();
+        }
+        await UpdateRemindersAsync(book =>
+        {
+            if (line is null)
+                book.Release(due.Id);
+            else
+                book.Done(due.Id);
+        }, ct).ConfigureAwait(false);
+        return line is null ? null : (due, line);
+    }
+
+    private string? RemindersFile => options.StateFile is { } file ? file + ".reminders.json" : null;
+
+    private static readonly JsonSerializerOptions ReminderJson = new(JsonSerializerDefaults.Web);
+
+    private ReminderBook LoadReminders()
+    {
+        if (RemindersFile is not { } file || !File.Exists(file))
+            return new ReminderBook();
+        try
+        {
+            return new ReminderBook(JsonSerializer.Deserialize<List<Reminder>>(File.ReadAllText(file), ReminderJson) ?? []);
+        }
+        catch (JsonException)
+        {
+            return new ReminderBook();
+        }
+    }
+
+    private void SaveReminders()
+    {
+        if (RemindersFile is not { } file || reminders is null)
+            return;
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(file))!);
+        File.WriteAllText(file + ".tmp", JsonSerializer.Serialize(reminders.Kept(Now()), ReminderJson));
+        File.Move(file + ".tmp", file, overwrite: true);
+    }
+
     /// <summary>The speaker's own words go through the perception pipeline into their memory session (best effort).</summary>
     private async Task RecordAsync(string session, string text)
     {
@@ -195,17 +333,16 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         return character;
     }
 
-    private async Task<string> ChatForAsync(ChannelMessage m, Character? who, CancellationToken ct)
+    private async Task<string> ChatForAsync(string key, string title, Character? who, CancellationToken ct)
     {
         await stateGate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
             chats ??= Load();
-            if (chats.TryGetValue(m.Key, out var id))
+            if (chats.TryGetValue(key, out var id))
                 return id;
-            var title = m.IsDirect ? $"{m.Platform} · {m.AuthorName}" : $"{m.Platform} · {m.ConversationId}";
             var chat = await api.CreateChatAsync(who?.Id, title.Length > 60 ? title[..60] : title, ct).ConfigureAwait(false);
-            chats[m.Key] = chat.Id;
+            chats[key] = chat.Id;
             Save();
             return chat.Id;
         }
@@ -223,13 +360,15 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     }
 
     /// <summary>Forget a conversation's chat (e.g. the user asked to start over); the next message opens a new one.</summary>
-    public async Task ResetAsync(ChannelMessage m, CancellationToken ct = default)
+    public Task ResetAsync(ChannelMessage m, CancellationToken ct = default) => ForgetAsync(m.Key, ct);
+
+    private async Task ForgetAsync(string key, CancellationToken ct)
     {
         await stateGate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
             chats ??= Load();
-            if (chats.Remove(m.Key))
+            if (chats.Remove(key))
                 Save();
         }
         finally
@@ -261,6 +400,17 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         File.WriteAllText(tmp, JsonSerializer.Serialize(chats));
         File.Move(tmp, file, overwrite: true);
     }
+}
+
+/// <summary>
+/// A connector that can also start a message in a conversation, so that she can say a reminder she promised (ADR-003). The
+/// conversation is the one of <see cref="ChannelMessage.ConversationId"/> on this connector's platform.
+/// </summary>
+public interface IProactiveConnector
+{
+    string Platform { get; }
+
+    Task SendAsync(string conversationId, string text, CancellationToken ct);
 }
 
 /// <summary>A platform connection: it reports incoming messages and posts what the handler answers.</summary>

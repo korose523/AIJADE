@@ -497,6 +497,32 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         if (!decision.Speak)
             yield break;
         var quiet = decision.QuietS!.Value;
+        var meta = new JsonObject { ["initiative"] = new JsonObject { ["score"] = decision.Score, ["quietS"] = Math.Round(quiet) } };
+        await foreach (var e in ProactiveLineAsync(chatId, character, exchanges, Initiative.Note(quiet, decision.FollowUp, exchanges[^1].Reply.Content),
+            Initiative.Silence(quiet), meta, personaSnapshotRef, ct).ConfigureAwait(false))
+            yield return e;
+    }
+
+    /// <summary>
+    /// Her line when a reminder she promised is due (ADR-003, ported from MOSAIC's companion_reminders): like her first line,
+    /// after the persona and the last exchanges, with the due note and cue. It does not consult the context providers, so it
+    /// does not pass through the memory recall measured in Chapter 6 (P3-E). The stored line carries the reminder's id.
+    /// </summary>
+    public async IAsyncEnumerable<OrchestratorEvent> RemindAsync(string chatId, Character? character, IReadOnlyList<StoredMessage> history,
+        string personaSnapshotRef, Reminder reminder, TimeZoneInfo? zone = null, [EnumeratorCancellation] CancellationToken ct = default)
+    {
+        var now = clock.GetUtcNow().ToUnixTimeMilliseconds() / 1000.0;
+        var note = Reminders.DueNote(reminder.Said, Reminders.SpokenTime(reminder.Created, now, zone), Reminders.SpokenTime(reminder.Due, now, zone),
+            Math.Max(0, now - reminder.Due), reminder.Promised);
+        var meta = new JsonObject { ["reminder"] = new JsonObject { ["id"] = reminder.Id, ["due"] = reminder.Due } };
+        await foreach (var e in ProactiveLineAsync(chatId, character, Initiative.Exchanges(history), note, Reminders.DueCue, meta, personaSnapshotRef, ct).ConfigureAwait(false))
+            yield return e;
+    }
+
+    /// <summary>A line she says on her own (first line or reminder): streamed, stored with the proactive mark, performed.</summary>
+    private async IAsyncEnumerable<OrchestratorEvent> ProactiveLineAsync(string chatId, Character? character, IReadOnlyList<InitiativeExchange> exchanges,
+        string note, string cue, JsonObject extraMeta, string personaSnapshotRef, [EnumeratorCancellation] CancellationToken ct)
+    {
         var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, [])) };
         foreach (var x in exchanges.TakeLast(Initiative.HistoryWindow))
         {
@@ -504,8 +530,8 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
                 messages.Add(("user", x.User.Content));
             messages.Add(("assistant", x.Reply.Content));
         }
-        messages.Add(("system", Initiative.Note(quiet, decision.FollowUp, exchanges[^1].Reply.Content)));
-        messages.Add(("user", Initiative.Silence(quiet)));
+        messages.Add(("system", note));
+        messages.Add(("user", cue));
 
         var parser = new MarkerParser("emote");
         var text = new StringBuilder();
@@ -559,8 +585,9 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
             {
                 [Initiative.ProactiveMeta] = true,
                 ["expressions"] = new JsonArray([.. cues.Select(c => (JsonNode)c)]),
-                ["initiative"] = new JsonObject { ["score"] = decision.Score, ["quietS"] = Math.Round(quiet) },
             };
+            foreach (var (key, value) in extraMeta)
+                meta[key] = value?.DeepClone();
             try
             {
                 line = await api.AppendMessageAsync(chatId, "assistant", lineText, meta, ct).ConfigureAwait(false);

@@ -137,7 +137,10 @@
         try
         {
             while (await speakFirstTimer.WaitForNextTickAsync())
+            {
+                await InvokeAsync(RemindAsync);
                 await InvokeAsync(SpeakFirstAsync);
+            }
         }
         catch (ObjectDisposedException)
         {
@@ -191,6 +194,77 @@
         }
         finally
         {
+            busy = false;
+            streaming = "";
+            StateHasChanged();
+        }
+    }
+
+    private static double Now() => DateTimeOffset.Now.ToUnixTimeMilliseconds() / 1000.0;
+
+    /// <summary>
+    /// A reminder she promised that is due now (ADR-003, as MOSAIC's live scene): her line goes into the chat where it was asked
+    /// for, shown and spoken if that chat is open. It is claimed first and released when the line fails, so it is said once.
+    /// Unlike speaking first, it does not depend on the speak-first setting: the user asked for it.
+    /// </summary>
+    private async Task RemindAsync()
+    {
+        if (busy || drawing || listening || draft.Length > 0)
+            return;
+        var reminders = State.Reminders;
+        var book = await reminders.LoadAsync();
+        var due = book.ClaimDue(Now());
+        await reminders.SaveAsync(book, Now());
+        if (due is null)
+            return;
+        var open = due.Conversation == ChatId;
+        bool said = false, gone = false;
+        busy = true;
+        error = null;
+        streaming = "";
+        cts = new CancellationTokenSource();
+        try
+        {
+            var history = open ? messages.ToList() : [.. await State.Api.MessagesAsync(due.Conversation)];
+            var home = open && State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
+            await foreach (var e in Orchestrator().RemindAsync(due.Conversation, character, history, $"persona:{character?.Id ?? "default"}", due, ct: cts.Token))
+            {
+                switch (e)
+                {
+                    case TextDelta d when open:
+                        streaming += d.Text;
+                        StateHasChanged();
+                        break;
+                    case TurnCompleted done:
+                        said = true;
+                        if (open)
+                        {
+                            messages = [.. await State.Api.MessagesAsync(due.Conversation)];
+                            await PerformAsync(done, home, null);
+                        }
+                        break;
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (AijadeApiException e) when (e.Status == 404)
+        {
+            gone = true; // its chat was deleted: there is nowhere to say it
+        }
+        catch (AijadeApiException)
+        {
+            // The server cannot be reached now: the reminder is released below and tried again next minute.
+        }
+        finally
+        {
+            var latest = await reminders.LoadAsync();
+            if (said || gone)
+                latest.Done(due.Id);
+            else
+                latest.Release(due.Id);
+            await reminders.SaveAsync(latest, Now());
             busy = false;
             streaming = "";
             StateHasChanged();
@@ -283,8 +357,14 @@
             // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
             var home = settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
             var action = home is null ? null : Stage.Decide(text, home.Seated);
-            var notes = home is null ? null : Stage.Notes(action, home.Where, home.Learned);
-            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes, cts.Token))
+            // A reminder asked for, cancelled or asked about is decided by fixed words before the reply, and she is told so (ADR-003).
+            var reminders = State.Reminders;
+            var book = await reminders.LoadAsync();
+            var (reminderNotes, promised) = book.Read(ChatId, text, Now());
+            if (promised is not null || reminderNotes.Count > 0)
+                await reminders.SaveAsync(book, Now());
+            var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned)).Concat(reminderNotes).ToList();
+            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
             {
                 switch (e)
                 {
@@ -301,6 +381,13 @@
                         break;
                     case TurnCompleted done:
                         messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        if (promised is not null)
+                        {
+                            // Her answer is kept, so that the due line does not repeat the promise (read afresh: the minute loop may have saved meanwhile).
+                            var latest = await reminders.LoadAsync();
+                            latest.Promise(promised.Id, done.Reply.Content);
+                            await reminders.SaveAsync(latest, Now());
+                        }
                         await PerformAsync(done, home, action);
                         break;
                 }
@@ -377,15 +464,35 @@
         {
             try
             {
-                var audio = await State.Api.SpeechAsync(done.Reply.Content, voice.TtsVoice);
-                var sink = voice.LipSync && stage is not null ? DotNetObjectReference.Create(new LipSyncSink(v => stage.MouthAsync(v))) : null;
-                await Audio.PlayAsync(audio, sink);
+                var audio = await State.Api.SpeechAsync(done.Reply.Content, voice.TtsVoice, done.Expressions.FirstOrDefault());
+                var sink = voice.LipSync && stage is not null ? DotNetObjectReference.Create(new LipSyncSink((v, vowels, lips) => stage.MouthAsync(v, vowels, lips))) : null;
+                await Audio.PlayAsync(audio, sink, sink is null ? null : await LipSyncPlanAsync(done.Reply.Content, audio));
                 sink?.Dispose();
             }
             catch (AijadeApiException)
             {
                 // Speech is optional (unconfigured or out of flux): the text reply stands.
             }
+        }
+    }
+
+    /// <summary>
+    /// The mouth from the text (ADR-003): when the server can time the reply's characters in its WAV (the local aligner),
+    /// the plan of vowel shapes and lip closures; otherwise, or when timing fails or takes too long, none, and the mouth
+    /// follows the level of the audio alone.
+    /// </summary>
+    private async Task<Aijade.Client.Companion.LipSyncPlan?> LipSyncPlanAsync(string text, byte[] audio)
+    {
+        if (!Aijade.Client.Companion.LipSync.IsWav(audio) || !(await State.CapabilitiesAsync()).Alignment)
+            return null;
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        try
+        {
+            return Aijade.Client.Companion.LipSync.Plan(await State.Api.AlignAsync(text, audio, timeout.Token));
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or OperationCanceledException)
+        {
+            return null;
         }
     }
 

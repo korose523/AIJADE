@@ -48,7 +48,12 @@ public sealed record ToolInfo(string Name, string Description, JsonObject Parame
 
 public sealed record ToolResult(string Content, bool IsError);
 
-public sealed record ServerCapabilities(IReadOnlyList<string> ChatModels, bool Speech, bool Images);
+/// <summary>What the server offers beyond chat, so that clients only offer features that will work.</summary>
+/// <param name="ChatModels">The chat model aliases.</param>
+/// <param name="Speech">Whether replies can be spoken.</param>
+/// <param name="Images">Whether pictures can be drawn.</param>
+/// <param name="Alignment">Whether spoken replies can be timed character by character for the stage's mouth (ADR-003).</param>
+public sealed record ServerCapabilities(IReadOnlyList<string> ChatModels, bool Speech, bool Images, bool Alignment = false);
 
 public sealed record ImageInfo(string Id, string Url, string Mime, string Prompt, long FluxCharged = 0);
 
@@ -222,7 +227,8 @@ public sealed class AijadeApi(HttpClient http, ITokenStore tokens)
         using var form = new MultipartFormDataContent();
         var file = new ByteArrayContent(audio);
         file.Headers.ContentType = MediaTypeHeaderValue.TryParse(mime, out var type) ? type : new MediaTypeHeaderValue("application/octet-stream");
-        form.Add(file, "file", mime.Contains("ogg", StringComparison.Ordinal) ? "speech.ogg" : mime.Contains("mp4", StringComparison.Ordinal) ? "speech.m4a" : "speech.webm");
+        form.Add(file, "file", mime.Contains("wav", StringComparison.Ordinal) ? "speech.wav" : mime.Contains("ogg", StringComparison.Ordinal) ? "speech.ogg"
+            : mime.Contains("mp4", StringComparison.Ordinal) ? "speech.m4a" : "speech.webm");
         if (language is { Length: > 0 })
             form.Add(new StringContent(language), "language");
         form.Add(new StringContent(seconds.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture)), "duration");
@@ -345,13 +351,34 @@ public sealed class AijadeApi(HttpClient http, ITokenStore tokens)
             yield return delta;
     }
 
-    public async Task<byte[]> SpeechAsync(string input, string voice, CancellationToken ct = default)
+    /// <summary>
+    /// Synthesize a reply. <paramref name="emotion"/> is the reply's stage expression (for example "joy"); the server's local
+    /// voice turns it into its tone, other providers ignore it.
+    /// </summary>
+    public async Task<byte[]> SpeechAsync(string input, string voice, string? emotion = null, CancellationToken ct = default)
     {
-        using var req = await RequestAsync(HttpMethod.Post, "/api/v1/openai/v1/audio/speech", new { input, voice }).ConfigureAwait(false);
+        var body = new JsonObject { ["input"] = input, ["voice"] = voice };
+        if (emotion is { Length: > 0 })
+            body["emotion"] = emotion;
+        using var req = await RequestAsync(HttpMethod.Post, "/api/v1/openai/v1/audio/speech", body).ConfigureAwait(false);
         using var res = await http.SendAsync(req, ct).ConfigureAwait(false);
         if (!res.IsSuccessStatusCode)
             await ReadAsync(res, ct).ConfigureAwait(false);
         return await res.Content.ReadAsByteArrayAsync(ct).ConfigureAwait(false);
+    }
+
+    /// <summary>Time the characters of a spoken reply in its WAV audio (the local aligner, ADR-003), for the stage's mouth.</summary>
+    public async Task<Companion.SpeechAlignment> AlignAsync(string text, byte[] wav, CancellationToken ct = default)
+    {
+        using var form = new MultipartFormDataContent();
+        var file = new ByteArrayContent(wav);
+        file.Headers.ContentType = new MediaTypeHeaderValue("audio/wav");
+        form.Add(file, "file", "speech.wav");
+        form.Add(new StringContent(text), "text");
+        using var req = await RequestAsync(HttpMethod.Post, "/api/v1/openai/v1/audio/alignment").ConfigureAwait(false);
+        req.Content = form;
+        using var res = await http.SendAsync(req, ct).ConfigureAwait(false);
+        return To<Companion.SpeechAlignment>(await ReadAsync(res, ct).ConfigureAwait(false));
     }
 
     public static bool IsUnauthorized(Exception e) => e is AijadeApiException { Status: (int)HttpStatusCode.Unauthorized };
