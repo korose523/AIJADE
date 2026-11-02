@@ -26,8 +26,8 @@ jobs:
     env:
       AIJADE_TEST_DATABASE_URL: postgres://aijade:aijade@127.0.0.1:55432/aijade
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
       - run: dotnet test --configuration Release

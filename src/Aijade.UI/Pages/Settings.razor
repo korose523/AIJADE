@@ -153,6 +153,11 @@
         </ul>
     }
     <Toggle Label="@State.Text["settings.stage.beatSync"]" Value="s.Stage.BeatSync" Changed="v => Save(s with { Stage = s.Stage with { BeatSync = v } })" />
+    <Toggle Label="@State.Text["settings.stage.follow"]" Value="s.Stage.CameraFollow" Changed="v => Save(s with { Stage = s.Stage with { CameraFollow = v } })" />
+    @if (s.Stage.CameraFollow)
+    {
+        <p class="hint">@State.Text["settings.stage.follow.hint"]</p>
+    }
 </section>
 
 <section>

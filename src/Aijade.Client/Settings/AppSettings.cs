@@ -85,6 +85,12 @@ public sealed record StageSettings
 
     public bool BeatSync { get; init; }
 
+    /// <summary>
+    /// The camera follows her like a viewer standing in the room (MMD models; ADR-003, after MOSAIC's ViewerFollow). Off by
+    /// default: the stage keeps its framed view.
+    /// </summary>
+    public bool CameraFollow { get; init; }
+
     /// <summary>Hair and cloth physics for MMD models (Bullet in WebAssembly).</summary>
     public bool Physics { get; init; } = true;
 }

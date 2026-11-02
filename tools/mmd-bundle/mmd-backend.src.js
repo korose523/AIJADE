@@ -10,6 +10,7 @@ import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { Vector3, Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
+import { ViewerFollow } from './viewer-follow.js';
 import '@babylonjs/core/Materials/Textures/Loaders/tgaTextureLoader';
 // Registers the shared MMD standard material builder; without it the loader builds no materials or textures.
 import 'babylon-mmd/esm/Loader/mmdModelLoader';
@@ -164,8 +165,11 @@ async function createMmdStageCore(canvas, options, badge) {
   // Bone world positions exist only once the runtime starts updating the model (after its textures are ready), so keep
   // the default framing until then and re-frame on the first frame that has them.
   const framingDeadline = performance.now() + 30000;
+  let framedAt = 0;
   const framing = scene.onAfterRenderObservable.add(() => {
-    if (frameHead(camera, model, options.scale || 1) || performance.now() > framingDeadline) scene.onAfterRenderObservable.remove(framing);
+    const ok = frameHead(camera, model, options.scale || 1);
+    if (ok) framedAt = performance.now();
+    if (ok || performance.now() > framingDeadline) scene.onAfterRenderObservable.remove(framing);
   });
   const set = (name, w) => { if (available.has(name)) { model.morph.setMorphWeight(name, w); return true; } return false; };
 
@@ -257,6 +261,53 @@ async function createMmdStageCore(canvas, options, badge) {
     behaviour.nodPeak = Math.max(behaviour.nodPeak, behaviour.nodAngle);
     pitchBone(headLinked, behaviour.nodAngle);
   });
+  // Camera follow (setting, off by default; ADR-003): a viewer standing in the room, MOSAIC's ViewerFollow (viewer-follow.js)
+  // on her root (the センター bone), eased toward the view it wants with a 0.35 s time constant as MOSAIC's client does.
+  // Dragging or zooming the view takes the camera over and the follow pauses; a double-click on the stage gives it back.
+  const centre = model.runtimeBones.find(b => b.name === 'センター');
+  let follow = null, followError = options.cameraFollow && !centre ? 'the model has no センター bone' : null, manual = false;
+  let viewerAt = null, lookNow = null, followTick = performance.now(), pressed = null;
+  // Bone positions are in the model's space; the scene's is the mesh's world matrix away (the same while the model stands at the origin).
+  const rootNow = () => Vector3.TransformCoordinates(centre.getWorldTranslationToRef(new Vector3()), mesh.getWorldMatrix());
+  const onDown = (e) => { pressed = { x: e.clientX, y: e.clientY }; };
+  const onMove = (e) => { if (pressed && follow && Math.hypot(e.clientX - pressed.x, e.clientY - pressed.y) > 3) manual = true; };
+  const onUp = () => { pressed = null; };
+  const onWheel = () => { if (follow) manual = true; };
+  const onDouble = () => {
+    if (!follow || !manual) return;
+    manual = false;
+    camera.setTarget(lookNow);
+    camera.setPosition(viewerAt);
+  };
+  if (options.cameraFollow && centre) {
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    canvas.addEventListener('wheel', onWheel, { passive: true });
+    canvas.addEventListener('dblclick', onDouble);
+  }
+  canvas.__aijadeMmd.follow = () => ({ on: follow !== null, manual, error: followError, forward: follow && { ...follow.forward } });
+  scene.onBeforeRenderObservable.add(() => {
+    const tick = performance.now(), dt = Math.min(1, (tick - followTick) / 1000);
+    followTick = tick;
+    // the framed view is taken a few frames after framing, once the camera has moved there
+    if (options.cameraFollow && centre && framedAt && tick - framedAt > 200 && !follow && !followError) {
+      try {
+        follow = new ViewerFollow(camera.position, camera.target, rootNow(), { metre: 12.5 }); // MMD: 8 cm to the unit
+        viewerAt = camera.position.clone();
+        lookNow = camera.target.clone();
+      } catch (e) {
+        followError = String(e?.message ?? e);
+      }
+    }
+    if (follow && !manual) {
+      const want = follow.desired(viewerAt, rootNow()), k = 1 - Math.exp(-dt / 0.35);
+      viewerAt = Vector3.Lerp(viewerAt, new Vector3(want.camera.x, want.camera.y, want.camera.z), k);
+      lookNow = Vector3.Lerp(lookNow, new Vector3(want.look.x, want.look.y, want.look.z), k);
+      camera.setTarget(lookNow);
+      camera.setPosition(viewerAt);
+    }
+  });
   scene.onBeforeRenderObservable.add(() => {
     bob *= 0.88;
     const span = headBone ? Math.max(1, headBone.getWorldTranslationToRef(new Vector3()).y * 0.05) : 1;
@@ -292,7 +343,8 @@ async function createMmdStageCore(canvas, options, badge) {
     kind: 'mmd',
     assetVersionHash: version,
     physics: physics !== null,
-    notes: [physicsError && `physics off: ${physicsError}`, motionError && `idle motion not loaded: ${motionError}`].filter(Boolean),
+    notes: [physicsError && `physics off: ${physicsError}`, motionError && `idle motion not loaded: ${motionError}`,
+      followError && `camera follow off: ${followError}`].filter(Boolean),
     apply(p) {
       const applied = {};
       for (const [name, w] of Object.entries(morphWeights(p.expression || {}))) {
@@ -322,6 +374,11 @@ async function createMmdStageCore(canvas, options, badge) {
     dispose() {
       badge.done();
       window.removeEventListener('resize', onResize);
+      canvas.removeEventListener('pointerdown', onDown);
+      canvas.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      canvas.removeEventListener('wheel', onWheel);
+      canvas.removeEventListener('dblclick', onDouble);
       engine.stopRenderLoop();
       scene.dispose();
       engine.dispose();

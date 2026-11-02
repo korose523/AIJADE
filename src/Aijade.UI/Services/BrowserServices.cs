@@ -125,7 +125,7 @@ public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposabl
 
     /// <returns>The renderer actually used ("mmd" or "avatar") and its asset version hash, if any.</returns>
     public async Task<JsonObject> MountAsync(string canvasId, StageSettings settings) =>
-        await (await ModuleAsync()).InvokeAsync<JsonObject>("mount", canvasId, new { modelUrl = host.Resolve(settings.ModelUrl), motionUrl = host.Resolve(settings.IdleMotionUrl), background = settings.Background, transparent = settings.BackgroundImage is { Length: > 0 }, scale = settings.Scale, beatSync = settings.BeatSync, physics = settings.Physics });
+        await (await ModuleAsync()).InvokeAsync<JsonObject>("mount", canvasId, new { modelUrl = host.Resolve(settings.ModelUrl), motionUrl = host.Resolve(settings.IdleMotionUrl), background = settings.Background, transparent = settings.BackgroundImage is { Length: > 0 }, scale = settings.Scale, beatSync = settings.BeatSync, physics = settings.Physics, cameraFollow = settings.CameraFollow });
 
     /// <summary>The stage container's CSS: the background colour, and the picture (if any) behind the transparent canvas.</summary>
     public string BackgroundStyle(StageSettings settings)

@@ -343,6 +343,55 @@ public sealed class WebAppTests(E2EHost host)
     }
 
     [Fact]
+    public async Task D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer()
+    {
+        host.RequireEnabled();
+        if (E2EHost.MmdDir is null || E2EHost.MmdModel is null)
+            Assert.Skip("AIJADE_E2E_MMD_DIR / AIJADE_E2E_MMD_MODEL not set; MMD stage test skipped");
+        var (page, _) = await host.SignUpAsync();
+        await page.GetByRole(AriaRole.Link, new() { Name = "Settings" }).ClickAsync();
+        await page.GetByLabel("Model file (PMX/PMD URL)").FillAsync("/models/" + Uri.EscapeDataString(E2EHost.MmdModel!));
+        await page.GetByLabel("Model file (PMX/PMD URL)").PressAsync("Tab");
+        await page.GetByLabel("Camera follows her like a viewer in the room").CheckAsync();
+        await Expect(page.GetByText("double-click the stage to resume it")).ToBeVisibleAsync();
+        await page.GetByRole(AriaRole.Link, new() { Name = "Chat" }).ClickAsync();
+        await page.WaitForFunctionAsync("() => document.querySelector('.stage canvas')?.__aijadeMmd?.follow?.().on", null, new() { Timeout = 120_000 });
+
+        // She steps 80 cm (10 MMD units) to the side: the viewer follows sideways and keeps her in frame (ADR-003, MOSAIC's
+        // ViewerFollow). Moving the model stands in for a motion that carries her root.
+        const string Step = """
+            async () => {
+              const mmd = document.querySelector('.stage canvas').__aijadeMmd, camera = mmd.scene.activeCamera;
+              const before = camera.target.x;
+              mmd.mesh.position.x += 10;
+              await new Promise(r => setTimeout(r, 3000));
+              return [camera.target.x - before, mmd.follow().manual ? 1 : 0];
+            }
+            """;
+        var followed = await page.EvaluateAsync<double[]>(Step);
+        Assert.True(followed[0] > 8 && followed[1] == 0, $"the view moved {followed[0]:0.00} units after her 10-unit step");
+
+        // Dragging the view hands the camera to the viewer: her next step is not followed. A double-click gives it back.
+        var box = (await page.Locator(".stage canvas").BoundingBoxAsync())!;
+        await page.Mouse.MoveAsync(box.X + box.Width / 2, box.Y + box.Height / 2);
+        await page.Mouse.DownAsync();
+        await page.Mouse.MoveAsync(box.X + box.Width / 2 + 60, box.Y + box.Height / 2, new() { Steps = 6 });
+        await page.Mouse.UpAsync();
+        var held = await page.EvaluateAsync<double[]>(Step);
+        Assert.True(Math.Abs(held[0]) < 1 && held[1] == 1, $"after a drag the view moved {held[0]:0.00} units (manual {held[1]})");
+        await page.Locator(".stage canvas").DblClickAsync();
+        var resumed = await page.EvaluateAsync<double[]>("""
+            async () => {
+              const mmd = document.querySelector('.stage canvas').__aijadeMmd, camera = mmd.scene.activeCamera;
+              await new Promise(r => setTimeout(r, 3000));
+              return [camera.target.x, mmd.mesh.position.x, mmd.follow().manual ? 1 : 0];
+            }
+            """);
+        Assert.True(resumed[2] == 0 && Math.Abs(resumed[0] - resumed[1]) < 3, $"after a double-click the view looks at x {resumed[0]:0.00}, she is at {resumed[1]:0.00}");
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
     public async Task D_an_idle_vmd_motion_loops_and_moves_the_model()
     {
         host.RequireEnabled();
