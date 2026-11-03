@@ -39,7 +39,7 @@
 | **C. 渠道上也能先开口** | 把契约 1.1.0 的先开口规则用到私聊渠道；与 MOSAIC 的提醒一样，先认领再发送，只发一次 | 渠道连接器需要能主动发消息（Telegram、Discord 可以）；约 1 人日 | 先开口只在 Web 聊天 |
 | **D. 暂不做** | 保持现状：负责人的 QQ 交给 MOSAIC，AIJADE 保留现有渠道 | 无 | — |
 
-**进度**：作者选 A，已在契约 1.2.0 完成（[COMPANION-CONTRACT](COMPANION-CONTRACT.md)"文字渠道"一节）。2026-11-03 按 [ADR-003](decisions/ADR-003.md) 又做了 B（`OneBotConnector`，补充二）与 C 的提醒部分：她在 QQ 与 Telegram 的私聊里答应的提醒，到点经连接器发出（补充三）。渠道上不带提醒的先开口仍未做。
+**进度**：作者选 A，已在契约 1.2.0 完成（[COMPANION-CONTRACT](COMPANION-CONTRACT.md)"文字渠道"一节）。2026-11-03 按 [ADR-003](decisions/ADR-003.md) 又做了 B（`OneBotConnector`，补充二，含语音消息与没有文字时的固定回复）与 C 的提醒部分：她在 QQ 与 Telegram 的私聊里答应的提醒，到点经连接器发出（补充三）。渠道上不带提醒的先开口仍未做。
 
 **建议**：先做 A。它把 MOSAIC 已测过的规则共享过来，只改 AIJADE 的非研究线，风险最小。B 只在你希望 AIJADE 的多用户伴侣也上 QQ 时再做；C 可在 A 之后进行。
 

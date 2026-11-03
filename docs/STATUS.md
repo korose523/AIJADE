@@ -112,7 +112,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | MCP（服务端与客户端）、工具中枢（HomeAssistant、小米、Factorio、外部 MCP） | ✓ | `McpServerTests`、`ToolTests` |
 | 计算机控制 | ◐ | macOS 实现与策略有测试（`ComputerUseTests`，不触碰真实桌面）；Windows 实现（含 UI Automation 元素编号、set_value 与截图标注）已编译并有脚本与解析的单元测试，未在 Windows 上运行 |
 | Discord、Telegram、Satori、X、B 站直播 | ✓ | `IntegrationTests`；真实平台需令牌，未联网测试 |
-| QQ（OneBot 11，经作者自装的 NapCat；只回负责人私聊，ADR-003 补充二） | ◐ | `OneBotConnectorTests`（签名、解析、经假 NapCat 的完整往返）；未接真实 NapCat |
+| QQ（OneBot 11，经作者自装的 NapCat；只回负责人私聊，语音消息可转写，ADR-003 补充二） | ◐ | `OneBotConnectorTests`（签名、解析、经假 NapCat 的完整往返、语音转写、没有文字时的固定回复）；未接真实 NapCat |
 | Minecraft | ◐ | 纯 .NET 协议客户端，在本机官方服务端上实测：寻路、跟随、挖掘与拾取、放置、攻击、按配方书合成、自动穿戴更好的盔甲、挖掘前换上合适工具、游泳过水渠与爬梯上下墙（`MinecraftTests`，单元与 5 个服务端用例）；主机满载时“跟随”用例偶有超时 |
 | 浏览器扩展、VS Code、Claude Code 插件、国际象棋 | ✓ | E2E `I_the_browser_extension_reads…`；`ChessTests`；node 测试 |
 | 9 种语言 | ✓ | `Every_locale_has_every_key…` |
@@ -162,7 +162,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | Windows 计算机控制元素编号 | ✓ 已实现（UI Automation），单元测试通过；需在 Windows 上实测 |
 | Minecraft | ✓ 寻路、跟随、挖掘拾取、放置、攻击、合成、换装备与工具、游泳攀爬均在本机官方服务端实测（42/42） |
 | 安全补丁 | ✓ ASP.NET Core / .NET 升级到 10.0.14（SDK 10.0.403，10-29），修复 CVE-2026-111497（Brotli 解码越界写，经请求解压与 HttpClient 可达），并重发 10.0.13 未修完的 CVE-2026-70197（SocketAsyncEventArgs）与 CVE-2026-102870（Blazor WebAssembly Server/DevServer 包）；此前 10.0.13（SDK 10.0.402）修复 CVE-2026-96230 等。两次都经作者同意，作为“满两周”约束的安全例外；SDK 安装包按发布元数据的 SHA-512 核对 |
-| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 443 项中 436 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过，含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）最近一次在 `f9dd421` 通过 |
+| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 445 项中 438 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过（在提交 `fa3e82d` 上；之后的 QQ 改动不涉及网页），含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）最近一次在 `f9dd421` 通过 |
 | P1 | ✓ 端到端用例、漂移矩阵与闸门矩阵、两组变异实验（在当前代码上重跑与存档逐项一致）、时延与校验开销、身份层阳性对照与机制级试点；时延测于 .NET 10.0.12 |
 | P2 | ✓ 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检、差分测试；自评目标量定义于 10-15 更正（见 `experiments/README.md`）；第二模型族对照（llama3.1:8b，Windows 显卡主机；llava-phi3 的第一次尝试因不遵守判定格式按事先规则放弃，记录保留）；提示模板对照（模板 B 下验证器放行全部技能） |
 | P3 | ✓ 打分诊断与权重消融、交付轨道、门控与显著性来源、指标定义缺陷、泄漏审计、对话聚类区间、LongMemEval_s 复现；冲突惩罚定性为第二个新近偏置（关闭后标准化交付召回 0.199→0.548），门控不主张有效 |

@@ -1,3 +1,4 @@
+using Aijade.Client.Api;
 using Aijade.Integrations;
 
 using Microsoft.Extensions.Configuration;
@@ -110,12 +111,19 @@ public static class Connectors
             yield return new BilibiliLiveConnector(room, config["Bilibili:Cookie"], new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
         if (config["X:AccessToken"] is { Length: > 0 } x)
             yield return new XConnector(x, new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
-        if (config["OneBot:NapCat"] is { Length: > 0 } napcat)
-            yield return new OneBotConnector(int.TryParse(config["OneBot:Port"], out var port) ? port : 8795, new Uri(napcat),
+    }
+
+    /// <summary>
+    /// QQ through NapCat (OneBot:NapCat set), or null. With OneBot:Voice=true her owner's voice messages are transcribed by the
+    /// server's speech recognition (the gateway's transcription route; MOSAIC's bridge does it with --asr).
+    /// </summary>
+    public static OneBotConnector? OneBot(IConfiguration config, AijadeApi api) =>
+        config["OneBot:NapCat"] is not { Length: > 0 } napcat ? null
+            : new OneBotConnector(int.TryParse(config["OneBot:Port"], out var port) ? port : 8795, new Uri(napcat),
                 KeyFile(config["OneBot:TokenFile"], "OneBot:TokenFile"), KeyFile(config["OneBot:SecretFile"], "OneBot:SecretFile"),
                 config["OneBot:Owner"] is { Length: > 0 } owner ? owner : throw new InvalidOperationException("OneBot:Owner (the owner's QQ number) is required"),
-                new HttpClient { Timeout = TimeSpan.FromSeconds(30) });
-    }
+                new HttpClient { Timeout = TimeSpan.FromSeconds(30) },
+                bool.TryParse(config["OneBot:Voice"], out var voice) && voice ? (wav, ct) => api.TranscribeAsync(wav, "audio/wav", "zh-CN", 0, ct) : null);
 
     /// <summary>A key read from a file, as MOSAIC's bridge reads them: never from the command line or the environment.</summary>
     private static string KeyFile(string? path, string setting) =>

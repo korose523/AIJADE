@@ -32,18 +32,133 @@ public class OneBotConnectorTests
     private static JsonArray Segments(params (string Type, string Text)[] parts) =>
         new([.. parts.Select(p => (JsonNode)new JsonObject { ["type"] = p.Type, ["data"] = p.Type == "text" ? new JsonObject { ["text"] = p.Text } : new JsonObject { ["file"] = p.Text } })]);
 
-    /// <summary>NapCat's HTTP server: records each action and answers ok.</summary>
+    /// <summary>NapCat's HTTP server: records each action and answers ok; get_record gives a voice message as base64 WAV.</summary>
     private sealed class FakeNapCat : HttpMessageHandler
     {
+        public static readonly byte[] Voice = [.. "RIFF"u8, 36, 0, 0, 0, .. "WAVEfmt "u8, 16, 0, 0, 0, 1, 0, 1, 0, 0x80, 0x3E, 0, 0, 0, 0x7D, 0, 0, 2, 0, 16, 0, .. "data"u8, 0, 0, 0, 0];
+
         public List<(string Action, string? Auth, JsonObject Body)> Calls { get; } = [];
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var body = (JsonObject)JsonNode.Parse(await request.Content!.ReadAsStringAsync(cancellationToken))!;
+            var action = request.RequestUri!.AbsolutePath.TrimStart('/');
             lock (Calls)
-                Calls.Add((request.RequestUri!.AbsolutePath.TrimStart('/'), request.Headers.Authorization?.Parameter, body));
-            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"status\":\"ok\",\"retcode\":0,\"data\":{\"message_id\":7}}", Encoding.UTF8, "application/json") };
+                Calls.Add((action, request.Headers.Authorization?.Parameter, body));
+            var data = action == "get_record" ? new JsonObject { ["file"] = "voice.wav", ["base64"] = Convert.ToBase64String(Voice) } : new JsonObject { ["message_id"] = 7 };
+            var answer = new JsonObject { ["status"] = "ok", ["retcode"] = 0, ["data"] = data };
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(answer.ToJsonString(), Encoding.UTF8, "application/json") };
         }
+    }
+
+    /// <summary>A started connector on a free loopback port, a way to post signed events to it, and what its handler received.</summary>
+    private static (Task Run, Func<JsonObject, Task<HttpStatusCode>> Post, List<ChannelMessage> Received, HttpClient Client) Start(OneBotConnector connector, int port, CancellationToken ct)
+    {
+        var received = new List<ChannelMessage>();
+        var run = connector.RunAsync((m, _) =>
+        {
+            lock (received)
+                received.Add(m);
+            return Task.FromResult<ChannelReply?>(new ChannelReply("在呢，" + m.Text, []));
+        }, ct);
+        var client = new HttpClient { BaseAddress = new Uri($"http://127.0.0.1:{port}/") };
+        async Task<HttpStatusCode> PostAsync(JsonObject evt)
+        {
+            var body = Encoding.UTF8.GetBytes(evt.ToJsonString());
+            for (var attempt = 0; ; attempt++)
+            {
+                try
+                {
+                    using var content = new ByteArrayContent(body);
+                    content.Headers.ContentType = new("application/json");
+                    using var req = new HttpRequestMessage(HttpMethod.Post, "") { Content = content };
+                    req.Headers.Add("X-Signature", Sign(body));
+                    using var res = await client.SendAsync(req, ct);
+                    return res.StatusCode;
+                }
+                catch (HttpRequestException) when (attempt < 50)
+                {
+                    await Task.Delay(100, ct); // the listener is still starting
+                }
+            }
+        }
+        return (run, PostAsync, received, client);
+    }
+
+    [Fact]
+    public void A_message_is_read_as_MOSAICs_bridge_reads_it()
+    {
+        var m = OneBotConnector.ReadOwnerMessage(Private(Owner, Segments(("text", "听听"), ("record", "a.amr"), ("image", "p.jpg"), ("text", "这个"), ("face", "1"))), Owner)!;
+        Assert.Equal(("听听这个", 2, "主人"), (m.Text, m.Other, m.Name));
+        Assert.Equal(["a.amr"], m.Voices);
+        Assert.Equal(("你好", 0), (OneBotConnector.ReadOwnerMessage(Private(Owner, "  你好 "), Owner)!.Text, OneBotConnector.ReadOwnerMessage(Private(Owner, "你好"), Owner)!.Voices.Count));
+        Assert.Null(OneBotConnector.ReadOwnerMessage(Private("987654321", "你好"), Owner));
+    }
+
+    [Fact]
+    public async Task Voice_messages_are_heard_and_a_message_without_words_gets_MOSAICs_fixed_line()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var napcat = new FakeNapCat();
+        var transcribed = new List<byte[]>();
+        var port = FreePort();
+        var connector = new OneBotConnector(port, new Uri("http://127.0.0.1:3000"), Token, Secret, Owner, new HttpClient(napcat), (wav, _) =>
+        {
+            lock (transcribed)
+                transcribed.Add(wav);
+            return Task.FromResult("我回来了");
+        });
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var (run, post, received, client) = Start(connector, port, cts.Token);
+        using (client)
+        {
+            async Task WaitSentAsync(int count)
+            {
+                for (var i = 0; i < 100 && napcat.Calls.Count(c => c.Action == "send_private_msg") < count; i++)
+                    await Task.Delay(50, ct);
+            }
+            string Last() => napcat.Calls.Last(c => c.Action == "send_private_msg").Body["message"]![0]!["data"]!["text"]!.GetValue<string>();
+
+            // A voice message alone: fetched as WAV, transcribed, answered.
+            Assert.Equal(HttpStatusCode.NoContent, await post(Private(Owner, Segments(("record", "v1.amr")))));
+            await WaitSentAsync(1);
+            var fetch = napcat.Calls.Single(c => c.Action == "get_record");
+            Assert.Equal(("v1.amr", "wav", Token), (fetch.Body["file"]!.GetValue<string>(), fetch.Body["out_format"]!.GetValue<string>(), fetch.Auth));
+            Assert.Equal(FakeNapCat.Voice, Assert.Single(transcribed));
+            Assert.Equal(["我回来了"], received.Select(m => m.Text));
+            Assert.Equal("在呢，我回来了", Last());
+
+            // Words and a voice message: the words first, then what was heard.
+            Assert.Equal(HttpStatusCode.NoContent, await post(Private(Owner, Segments(("text", "你听"), ("record", "v2.amr")))));
+            await WaitSentAsync(2);
+            Assert.Equal("你听 我回来了", received[^1].Text);
+
+            // A picture alone: MOSAIC's fixed line, without the model.
+            Assert.Equal(HttpStatusCode.NoContent, await post(Private(Owner, Segments(("image", "p.jpg")))));
+            await WaitSentAsync(3);
+            Assert.Equal(OneBotConnector.OnlyTextReply, Last());
+            Assert.Equal(2, received.Count);
+            var health = JsonNode.Parse(await client.GetStringAsync("health", ct))!;
+            Assert.Equal((3, 3, 2), (health["messages"]!.GetValue<int>(), health["answered"]!.GetValue<int>(), health["voicesHeard"]!.GetValue<int>()));
+        }
+        await cts.CancelAsync();
+        await run;
+
+        // Without a transcriber a voice message has no words either.
+        var quiet = new FakeNapCat();
+        var port2 = FreePort();
+        using var cts2 = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var (run2, post2, received2, client2) = Start(new OneBotConnector(port2, new Uri("http://127.0.0.1:3000"), Token, Secret, Owner, new HttpClient(quiet)), port2, cts2.Token);
+        using (client2)
+        {
+            Assert.Equal(HttpStatusCode.NoContent, await post2(Private(Owner, Segments(("record", "v3.amr")))));
+            for (var i = 0; i < 100 && quiet.Calls.Count == 0; i++)
+                await Task.Delay(50, ct);
+            Assert.Equal(OneBotConnector.OnlyTextReply, Assert.Single(quiet.Calls).Body["message"]![0]!["data"]!["text"]!.GetValue<string>());
+            Assert.Empty(received2);
+        }
+        await cts2.CancelAsync();
+        await run2;
     }
 
     private static int FreePort()

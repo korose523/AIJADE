@@ -17,9 +17,10 @@ using Microsoft.Extensions.Logging;
 //   Renderer:MosaicPort  optional: drive the MOSAIC native MMD client (--behavior-live PORT) with each reply's PEF intent
 //   Discord:Token, Telegram:Token   a connector runs for each one that is set
 //   Satori:Url (+ Satori:Token)     a Satori server, e.g. http://localhost:5140/satori/ (QQ, OneBot, KOOK … through Koishi)
-//   OneBot:NapCat (+ Port, TokenFile, SecretFile, Owner)   QQ through NapCat's OneBot 11 HTTP server, e.g. http://127.0.0.1:3000;
-//                                   NapCat's HTTP client posts events to 127.0.0.1:Port (default 8795); only the owner's private
-//                                   messages are answered (ADR-003, as MOSAIC's tools/companion_qq.py)
+//   OneBot:NapCat (+ Port, TokenFile, SecretFile, Owner, Voice)   QQ through NapCat's OneBot 11 HTTP server, e.g.
+//                                   http://127.0.0.1:3000; NapCat's HTTP client posts events to 127.0.0.1:Port (default 8795); only
+//                                   the owner's private messages are answered (ADR-003, as MOSAIC's tools/companion_qq.py);
+//                                   Voice=true transcribes voice messages through the server's speech recognition
 //   X:AccessToken                   an OAuth 2.0 user-context token of the bot's X account
 //   Minecraft:Host (+ Port, Name)   an offline-mode Java server (26.3, protocol 777; enforce-secure-profile=false)
 //   Bilibili:RoomId (+ Bilibili:Cookie)   a live room; with the owner's cookie viewers are identified and replies are sent
@@ -56,5 +57,7 @@ if (config["Telegram:Token"] is { Length: > 0 } telegram)
     builder.Services.AddSingleton<IChannelConnector>(sp => new TelegramConnector(telegram, sp.GetRequiredService<AijadeApi>(), sp.GetRequiredService<ILogger<TelegramConnector>>()));
 foreach (var connector in Connectors.Extra(config))
     builder.Services.AddSingleton(connector);
+if (config["OneBot:NapCat"] is { Length: > 0 })
+    builder.Services.AddSingleton<IChannelConnector>(sp => Connectors.OneBot(config, sp.GetRequiredService<AijadeApi>())!);
 builder.Services.AddHostedService<ConnectorHost>();
 await builder.Build().RunAsync();

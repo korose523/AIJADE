@@ -4,7 +4,7 @@ A long-running AI companion with verifiable, evidence-gated learning and a biomi
 See [docs/STATUS.md](docs/STATUS.md) for the architecture, feature status and open items, and
 [experiments/README.md](experiments/README.md) for the experiments behind the papers. Design ideas for the virtual-character side were drawn from the open-source Project AIRI (see Acknowledgements).
 
-## Current scope (2026-10-26)
+## Current scope (2026-11-03)
 
 The project is research-first. The main line is the set of measurement studies behind the papers and the author's
 dissertation: how wrong a companion's own judgments are (learning promotion, skill self-assessment, memory retrieval)
@@ -14,7 +14,10 @@ not extended. [docs/PROJECT-SCOPE.md](docs/PROJECT-SCOPE.md) and [ADR-001](docs/
 its rules; [configs/project-scope.json](configs/project-scope.json) assigns every module to a line, and
 `ProjectScopeTests` checks that research code never references product code. One exception, [ADR-002](docs/decisions/ADR-002.md):
 the companion shares a contract with the companion of the author's MOSAIC project (the persona 艾娅德, expression names
-and the rule for speaking first; [docs/COMPANION-CONTRACT.md](docs/COMPANION-CONTRACT.md)).
+and the rule for speaking first; [docs/COMPANION-CONTRACT.md](docs/COMPANION-CONTRACT.md)). A second, [ADR-003](docs/decisions/ADR-003.md):
+features that MOSAIC's non-research line does better are brought over in batches, each checked against MOSAIC's own code
+(local voice, QQ, reminders and lip sync from the text; a following camera and selfies), without touching the research
+objects ([docs/INTEGRATION-MOSAIC.md](docs/INTEGRATION-MOSAIC.md)).
 
 ## Build and test
 
@@ -68,9 +71,11 @@ lists each file with the driver that regenerates it. Three studies use this code
 
 ## The companion elsewhere
 
-**Chat platforms** — `src/Aijade.Bots` runs the companion on Discord, Telegram, Satori (QQ, OneBot, KOOK … via Koishi),
-X, Bilibili live rooms and Minecraft (offline-mode Java Edition 26.3 servers). It signs in to your server with a bot account
-and answers through the same conversation pipeline as the apps; memory is kept per person. In Minecraft the companion also
+**Chat platforms** — `src/Aijade.Bots` runs the companion on Discord, Telegram, QQ (through NapCat's OneBot 11, answering
+only the owner's private messages), Satori (QQ, OneBot, KOOK … via Koishi), X, Bilibili live rooms and Minecraft
+(offline-mode Java Edition 26.3 servers). It signs in to your server with a bot account and answers through the same
+conversation pipeline as the apps; memory is kept per person. In private chats on QQ and Telegram she keeps the reminders
+she promises ("十分钟后提醒我喝水") and sends them when they are due. In Minecraft the companion also
 acts on requests that name it, in English or Chinese: *come here* / 过来, *follow me* / 跟着我, *stop* / 停下,
 *go to x y z* / 去 x y z, *dig x y z* / 挖 x y z (and picks up what drops), *place x y z* / 放 x y z (with any block in its
 hotbar), *pick up* / 捡起来, *attack the pig* / 打猪 (pig, cow, sheep, chicken, zombie, skeleton, creeper, spider, slime),
@@ -81,7 +86,7 @@ survival player, and respawns after dying.
 Aijade__Server=https://your-server/ Aijade__Token=<bot account token> Telegram__Token=<bot token> dotnet run --project src/Aijade.Bots
 ```
 
-See `src/Aijade.Bots/Program.cs` for every setting (Discord, Satori, X, Bilibili, Minecraft, drawing, tools, memory).
+See `src/Aijade.Bots/Program.cs` for every setting (Discord, OneBot, Satori, X, Bilibili, Minecraft, drawing, tools, memory, reminders).
 
 **MCP** — the server is an MCP server at `/mcp` (talk with the companion, search and add memory, as the calling
 account). `integrations/claude-code` connects Claude Code to it.
@@ -93,9 +98,11 @@ numbered interface elements (and `mode=ax` the numbered list), so the model can 
 this needs the Accessibility permission. Users switch tool use on with the "MCP tools" module.
 
 **Model routes** — besides chat models, the gateway (Settings → Admin → Gateway) takes one route each for speech
-(`kind`: `openai`, `elevenlabs`, `aliyun-qwen-tts`, `aliyun-cosyvoice`), images (`openai`, `replicate`, `comfyui`,
-`gemini` — Google AI Studio's native API, e.g. `gemini-2.5-flash-image`), embeddings and transcription. For providers
-other than OpenAI the route's `voice` takes precedence over the client's.
+(`kind`: `openai`, `elevenlabs`, `aliyun-qwen-tts`, `aliyun-cosyvoice`, or `local` for MOSAIC's voice services on the same
+machine), images (`openai`, `replicate`, `comfyui`, `gemini` — Google AI Studio's native API, e.g.
+`gemini-2.5-flash-image`), embeddings, transcription (also `local`) and alignment (`local` only: each Chinese character of
+a spoken reply timed, so that the stage's mouth follows the text). For providers other than OpenAI the route's `voice`
+takes precedence over the client's.
 
 **Browser and editor** — `integrations/browser-extension` (YouTube / Bilibili: title, position, subtitles) and
 `integrations/vscode` (file, language, line; code only if allowed) tell the companion what you are watching or working on,

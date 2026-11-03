@@ -12,10 +12,13 @@ namespace Aijade.Integrations;
 /// QQ through OneBot 11 and NapCatQQ, the way the author's MOSAIC project reaches its owner (tools/companion_qq.py, r601;
 /// ADR-003, migration batch 1). NapCat POSTs every event to this connector's address on 127.0.0.1, signed with the HMAC-SHA1
 /// of the body under a shared secret ("X-Signature: sha1=…"), and takes actions on its own HTTP server with a bearer token
-/// (send_private_msg). Only private text messages from the owner's QQ number are answered; group messages and other people
-/// are counted and ignored. A post without the right signature is refused (403). The secret and the token need at least
-/// 16 characters each. NapCat itself, under its own licence, is installed and run by the author; nothing here downloads it.
-/// GET /health gives counts only, never what was said.
+/// (send_private_msg). Only private messages from the owner's QQ number are answered; group messages and other people are
+/// counted and ignored. A voice message is fetched from NapCat as WAV (get_record) and transcribed when the host gives a
+/// transcriber (OneBot:Voice, through the server's speech recognition), and its words join the message's text. A message
+/// with no words after that (a picture, a sticker, or a voice message that is not transcribed) is answered with MOSAIC's
+/// fixed line <see cref="OnlyTextReply"/>, without the model. A post without the right signature is refused (403). The secret
+/// and the token need at least 16 characters each. NapCat itself, under its own licence, is installed and run by the
+/// author; nothing here downloads it. GET /health gives counts only, never what was said.
 /// </summary>
 public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
 {
@@ -24,15 +27,33 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     /// <summary>Longest text sent as one QQ message; a longer reply is split.</summary>
     public const int MaxText = 3000;
 
+    /// <summary>
+    /// MOSAIC's answer to a message without words (ONLY_TEXT_REPLY of tools/companion_qq.py, r601). The shared contract leaves
+    /// it out for AIJADE's channels, which serve many users in several languages; this connector answers only its owner.
+    /// </summary>
+    public const string OnlyTextReply = "我现在只看得懂文字和语音哦。";
+
+    /// <summary>Largest answer taken from NapCat for a voice message (MOSAIC reads at most 8 MiB).</summary>
+    public const int MaxRecordBytes = 8 << 20;
+
     private readonly int port;
     private readonly Uri napcat;
     private readonly string token;
     private readonly string secret;
     private readonly string owner;
     private readonly HttpClient http;
-    private int messages, answered, ignored;
+    private readonly Func<byte[], CancellationToken, Task<string>>? transcribe;
+    private int messages, answered, ignored, heard;
 
-    public OneBotConnector(int port, Uri napcat, string token, string secret, string owner, HttpClient http)
+    /// <param name="port">The port on 127.0.0.1 where NapCat posts its events.</param>
+    /// <param name="napcat">NapCat's OneBot 11 HTTP server, a plain http:// address.</param>
+    /// <param name="token">NapCat's access token (at least 16 characters).</param>
+    /// <param name="secret">The secret NapCat signs its events with (at least 16 characters).</param>
+    /// <param name="owner">The owner's QQ number: the one person answered.</param>
+    /// <param name="http">For NapCat's actions.</param>
+    /// <param name="transcribe">Turns a voice message's WAV into words; without it voice messages are not heard.</param>
+    public OneBotConnector(int port, Uri napcat, string token, string secret, string owner, HttpClient http,
+        Func<byte[], CancellationToken, Task<string>>? transcribe = null)
     {
         if (token.Length < 16 || secret.Length < 16)
             throw new ArgumentException("the NapCat token and the event secret need at least 16 characters each");
@@ -46,6 +67,7 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
         this.secret = secret;
         this.owner = owner;
         this.http = http;
+        this.transcribe = transcribe;
     }
 
     public string Platform => "qq";
@@ -61,30 +83,51 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
         return CryptographicOperations.FixedTimeEquals(Encoding.ASCII.GetBytes(header.Trim().ToLowerInvariant()), Encoding.ASCII.GetBytes(expected));
     }
 
+    /// <summary>A private message from the owner: its text, the files of its voice messages, how many other segments it has.</summary>
+    public sealed record OwnerMessage(string Text, IReadOnlyList<string> Voices, int Other, string Name);
+
     /// <summary>
-    /// A private message from the owner as a channel message: its text segments joined (a "string" message format is taken
-    /// as plain text). Null for anything else, and for a message without text (a picture or a voice message alone).
+    /// A private message from the owner, as MOSAIC's owner_message reads it: the text segments joined (a "string" message
+    /// format is plain text), the voice segments' files, and a count of everything else (pictures, stickers, …). Null for
+    /// anything that is not a private message from the owner.
     /// </summary>
-    public static ChannelMessage? ToChannelMessage(JsonObject evt, string owner)
+    public static OwnerMessage? ReadOwnerMessage(JsonObject evt, string owner)
     {
         if (Text(evt["post_type"]) != "message" || Text(evt["message_type"]) != "private" || evt["user_id"]?.ToString() != owner)
             return null;
-        var text = evt["message"] switch
-        {
-            JsonValue v when v.TryGetValue<string>(out var s) => s,
-            JsonArray segments => string.Concat(segments.OfType<JsonObject>().Where(s => Text(s["type"]) == "text").Select(s => s["data"]?["text"]?.ToString() ?? "")),
-            _ => "",
-        };
-        text = text.Trim();
-        if (text.Length == 0)
-            return null;
         var name = Text(evt["sender"]?["nickname"]) is { Length: > 0 } nick ? nick : owner;
-        return new ChannelMessage("qq", owner, owner, name, text, IsDirect: true, AddressesBot: true);
+        if (evt["message"] is JsonValue v && v.TryGetValue<string>(out var plain))
+            return new OwnerMessage(plain.Trim(), [], 0, name);
+        var text = new StringBuilder();
+        var voices = new List<string>();
+        var other = 0;
+        foreach (var segment in (evt["message"] as JsonArray ?? []).OfType<JsonObject>())
+        {
+            var data = segment["data"] as JsonObject;
+            var file = data?["file"]?.ToString();
+            switch (Text(segment["type"]))
+            {
+                case "text":
+                    text.Append(data?["text"]?.ToString() ?? "");
+                    break;
+                case "record" when file is { Length: > 0 }:
+                    voices.Add(file);
+                    break;
+                default:
+                    other++;
+                    break;
+            }
+        }
+        return new OwnerMessage(text.ToString().Trim(), voices, other, name);
     }
+
+    /// <summary>A private text message from the owner as a channel message; null for anything else and for a message without words.</summary>
+    public static ChannelMessage? ToChannelMessage(JsonObject evt, string owner) =>
+        ReadOwnerMessage(evt, owner) is { Text.Length: > 0 } m ? new ChannelMessage("qq", owner, owner, m.Name, m.Text, IsDirect: true, AddressesBot: true) : null;
 
     private static string? Text(JsonNode? node) => node is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
-    public JsonObject Health() => new() { ["ok"] = true, ["messages"] = messages, ["answered"] = answered, ["ignored"] = ignored };
+    public JsonObject Health() => new() { ["ok"] = true, ["messages"] = messages, ["answered"] = answered, ["ignored"] = ignored, ["voicesHeard"] = heard };
 
     public async Task RunAsync(Func<ChannelMessage, CancellationToken, Task<ChannelReply?>> handle, CancellationToken ct)
     {
@@ -93,19 +136,35 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
         listener.Start();
         using var stop = ct.Register(listener.Stop);
         // Events are acknowledged at once (204) and answered in order by one worker, as in MOSAIC's bridge.
-        var inbox = Channel.CreateBounded<ChannelMessage>(new BoundedChannelOptions(32) { FullMode = BoundedChannelFullMode.DropWrite });
+        var inbox = Channel.CreateBounded<OwnerMessage>(new BoundedChannelOptions(32) { FullMode = BoundedChannelFullMode.DropWrite });
         var worker = Task.Run(async () =>
         {
             await foreach (var message in inbox.Reader.ReadAllAsync(ct).ConfigureAwait(false))
             {
                 try
                 {
-                    if (await handle(message, ct).ConfigureAwait(false) is { } reply)
+                    var text = message.Text;
+                    if (transcribe is not null)
+                    {
+                        foreach (var file in message.Voices)
+                        {
+                            if (await RecordAsync(file, ct).ConfigureAwait(false) is not { } wav)
+                                continue;
+                            text = (text + " " + await transcribe(wav, ct).ConfigureAwait(false)).Trim();
+                            Interlocked.Increment(ref heard);
+                        }
+                    }
+                    if (text.Length == 0)
+                    {
+                        await SendAsync(owner, OnlyTextReply, ct).ConfigureAwait(false);
+                        continue;
+                    }
+                    if (await handle(new ChannelMessage("qq", owner, owner, message.Name, text, IsDirect: true, AddressesBot: true), ct).ConfigureAwait(false) is { } reply)
                         await SendAsync(owner, reply.Text, ct).ConfigureAwait(false);
                 }
-                catch (Exception e) when (e is HttpRequestException or JsonException or InvalidOperationException)
+                catch (Exception e) when (e is not OperationCanceledException)
                 {
-                    // One failed answer does not stop the next.
+                    // One failed answer (NapCat, recognition or the server unreachable) does not stop the next, as in MOSAIC's bridge.
                 }
             }
         }, ct);
@@ -132,7 +191,7 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
         }
     }
 
-    private async Task ServeAsync(HttpListenerContext context, ChannelWriter<ChannelMessage> inbox)
+    private async Task ServeAsync(HttpListenerContext context, ChannelWriter<OwnerMessage> inbox)
     {
         var (req, res) = (context.Request, context.Response);
         try
@@ -179,7 +238,7 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
             }
             if (evt is null)
                 return;
-            if (ToChannelMessage(evt, owner) is { } message)
+            if (ReadOwnerMessage(evt, owner) is { } message)
             {
                 Interlocked.Increment(ref messages);
                 inbox.TryWrite(message);
@@ -202,6 +261,25 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
             throw new InvalidOperationException("only the owner's private conversation is reached");
         foreach (var part in ChannelText.Split(text, MaxText))
             await PostAsync(part, ct).ConfigureAwait(false);
+    }
+
+    /// <summary>A voice message as WAV (NapCat get_record, out_format wav), or null when NapCat gives no audio.</summary>
+    private async Task<byte[]?> RecordAsync(string file, CancellationToken ct)
+    {
+        var body = new JsonObject { ["file"] = file, ["out_format"] = "wav" };
+        using var req = new HttpRequestMessage(HttpMethod.Post, new Uri(napcat, "get_record"))
+        {
+            Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"),
+        };
+        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        using var res = await http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+        if (res.Content.Headers.ContentLength > MaxRecordBytes)
+            throw new HttpRequestException("NapCat get_record answered more than 8 MiB");
+        var answer = JsonNode.Parse(await res.Content.ReadAsStringAsync(ct).ConfigureAwait(false)) as JsonObject;
+        var retcode = answer?["retcode"] is JsonValue r && r.TryGetValue<int>(out var code) ? code : 0;
+        if (!res.IsSuccessStatusCode || Text(answer?["status"]) != "ok" || retcode != 0)
+            throw new HttpRequestException($"NapCat get_record failed ({(int)res.StatusCode})");
+        return Text(answer?["data"]?["base64"]) is { Length: > 0 } b64 ? Convert.FromBase64String(b64) : null;
     }
 
     private async Task PostAsync(string text, CancellationToken ct)
