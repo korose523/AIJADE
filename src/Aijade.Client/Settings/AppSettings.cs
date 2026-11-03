@@ -91,6 +91,12 @@ public sealed record StageSettings
     /// </summary>
     public bool CameraFollow { get; init; }
 
+    /// <summary>
+    /// Now and then she takes a selfie on the stage and sends it into the open chat (ADR-003, MOSAIC's share rules: at most
+    /// twice a day, 10:00–21:30, three hours apart, once the user has left her alone half an hour). Off by default.
+    /// </summary>
+    public bool Selfies { get; init; }
+
     /// <summary>Hair and cloth physics for MMD models (Bullet in WebAssembly).</summary>
     public bool Physics { get; init; } = true;
 }

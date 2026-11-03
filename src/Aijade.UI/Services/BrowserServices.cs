@@ -157,6 +157,15 @@ public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposabl
     /// <summary>The speech level, with the vowel shape (a, i, u, e, o) and lip closure of the aligned text when there is one.</summary>
     public async Task MouthAsync(double open, double[]? vowels = null, double lips = 0) => await (await ModuleAsync()).InvokeVoidAsync("mouth", open, vowels, lips);
 
+    /// <summary>A selfie from the stage (ADR-003): the JPEG and the renderer that took it, or null when it cannot take one.</summary>
+    public async Task<(byte[] Picture, string Renderer)?> SelfieAsync()
+    {
+        var shot = await (await ModuleAsync()).InvokeAsync<JsonObject?>("selfie");
+        if (shot?["dataUrl"]?.GetValue<string>() is not { } url || url.IndexOf(',', StringComparison.Ordinal) is var comma && comma < 0)
+            return null;
+        return (Convert.FromBase64String(url[(comma + 1)..]), shot["renderer"]?.GetValue<string>() ?? "avatar");
+    }
+
     /// <summary>A beat from the music (strength 0–1): the stage nods with it.</summary>
     public async Task BeatAsync(double strength) => await (await ModuleAsync()).InvokeVoidAsync("beat", strength);
 

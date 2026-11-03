@@ -5,12 +5,15 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { TargetCamera } from '@babylonjs/core/Cameras/targetCamera';
+import { CreateScreenshotUsingRenderTargetAsync } from '@babylonjs/core/Misc/screenshotTools';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { Vector3, Quaternion } from '@babylonjs/core/Maths/math.vector';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { LoadAssetContainerAsync } from '@babylonjs/core/Loading/sceneLoader';
 import { ViewerFollow } from './viewer-follow.js';
+import { frame as selfieFrame, FOV_DEGREES as SELFIE_FOV, WIDTH as SELFIE_WIDTH, HEIGHT as SELFIE_HEIGHT } from './selfie-shot.js';
 import '@babylonjs/core/Materials/Textures/Loaders/tgaTextureLoader';
 // Registers the shared MMD standard material builder; without it the loader builds no materials or textures.
 import 'babylon-mmd/esm/Loader/mmdModelLoader';
@@ -38,6 +41,25 @@ export function postureLean(e) {
   const v = e.valence ?? 0, d = e.dominance ?? 0.5;
   return round(clamp(-v) * (1 - d) * 0.15 - clamp(v) * d * 0.08);
 }
+
+/**
+ * The pixels of a picture drawn off screen as an image: Babylon's own encoder opens a second WebGL context for this, which
+ * did not answer in a headless Chromium, so a 2D canvas does it. WebGL reads rows bottom up (invertY).
+ */
+function encodePicture(width, height, data, done, mimeType, _fileName, invertY, _toArrayBuffer, quality) {
+  const bytes = new Uint8ClampedArray(data.buffer, data.byteOffset, data.byteLength);
+  const pixels = new ImageData(width, height);
+  const row = width * 4;
+  for (let y = 0; y < height; y++) pixels.data.set(bytes.subarray((invertY ? height - 1 - y : y) * row, (invertY ? height - y : y + 1) * row), y * row);
+  const out = document.createElement('canvas');
+  out.width = width;
+  out.height = height;
+  out.getContext('2d').putImageData(pixels, 0, 0);
+  done(out.toDataURL(mimeType, quality));
+}
+
+/** MMD's scale: 8 cm to the unit. MOSAIC's camera rules (viewer-follow.js, selfie-shot.js) are in metres. */
+const MMD_UNITS_PER_METRE = 12.5;
 
 /** The vowel morphs あいうえお, in the order of a vowel shape (a, i, u, e, o), and the closed-lips morph. */
 const VOWELS = ['あ', 'い', 'う', 'え', 'お'], LIPS = 'ん';
@@ -293,7 +315,7 @@ async function createMmdStageCore(canvas, options, badge) {
     // the framed view is taken a few frames after framing, once the camera has moved there
     if (options.cameraFollow && centre && framedAt && tick - framedAt > 200 && !follow && !followError) {
       try {
-        follow = new ViewerFollow(camera.position, camera.target, rootNow(), { metre: 12.5 }); // MMD: 8 cm to the unit
+        follow = new ViewerFollow(camera.position, camera.target, rootNow(), { metre: MMD_UNITS_PER_METRE });
         viewerAt = camera.position.clone();
         lookNow = camera.target.clone();
       } catch (e) {
@@ -354,6 +376,35 @@ async function createMmdStageCore(canvas, options, badge) {
       if (upperBone || neckBone) applied['posture.lean'] = behaviour.leanTarget;
       if (p.face) applied.face = p.face;
       return applied;
+    },
+    /**
+     * A selfie (ADR-003): her phone's front camera where MOSAIC's SelfieShot puts it (selfie-shot.js), one portrait JPEG
+     * drawn from the scene; null for a model without a head bone. MOSAIC's world is right-handed metres and this scene
+     * left-handed MMD units, so z is mirrored and sizes scaled on the way in and out.
+     */
+    async selfie() {
+      const at = (name) => {
+        const bone = model.runtimeBones.find(b => b.name === name);
+        if (!bone) return null;
+        const p = Vector3.TransformCoordinates(bone.getWorldTranslationToRef(new Vector3()), mesh.getWorldMatrix());
+        return { x: p.x / MMD_UNITS_PER_METRE, y: p.y / MMD_UNITS_PER_METRE, z: -p.z / MMD_UNITS_PER_METRE };
+      };
+      const head = at('頭');
+      if (!head) return null;
+      const facing = Vector3.TransformNormal(new Vector3(0, 0, -1), mesh.getWorldMatrix()); // an MMD model faces -z
+      const shot = selfieFrame(head, at('左目'), at('右目'), { x: facing.x, y: facing.y, z: -facing.z }, at('首'));
+      const back = (p) => new Vector3(p.x * MMD_UNITS_PER_METRE, p.y * MMD_UNITS_PER_METRE, -p.z * MMD_UNITS_PER_METRE);
+      const phone = new TargetCamera('selfie', back(shot.camera), scene, false);
+      phone.upVector = new Vector3(shot.up.x, shot.up.y, -shot.up.z);
+      phone.setTarget(back(shot.look));
+      phone.fov = SELFIE_FOV * Math.PI / 180;
+      phone.minZ = 0.05 * MMD_UNITS_PER_METRE;
+      try {
+        return await CreateScreenshotUsingRenderTargetAsync(engine, phone, { width: SELFIE_WIDTH, height: SELFIE_HEIGHT }, 'image/jpeg', 4,
+          false, undefined, false, false, true, 0.9, undefined, encodePicture);
+      } finally {
+        phone.dispose();
+      }
     },
     /** The speech level, with the vowel shape [a, i, u, e, o] (null: あ alone) and lip closure of the aligned text. */
     mouth(level, vowels = null, closure = 0) {

@@ -68,6 +68,8 @@
 
     public Task MouthAsync(double open, double[]? vowels = null, double lips = 0) => Stage.MouthAsync(open, vowels, lips);
 
+    public Task<(byte[] Picture, string Renderer)?> SelfieAsync() => Stage.SelfieAsync();
+
     public ValueTask DisposeAsync()
     {
         BeatSync.Beat -= OnBeat;

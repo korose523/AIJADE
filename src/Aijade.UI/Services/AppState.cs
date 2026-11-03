@@ -16,6 +16,9 @@ public sealed class AppState(SettingsService settings, Strings strings, AijadeAp
     /// <summary>The reminders she promised in this device's chats (ADR-003), kept per account.</summary>
     public Aijade.Client.Companion.ReminderStore Reminders => new(store, () => Account?.Id ?? "anonymous");
 
+    /// <summary>When this device's stage sent her selfies (ADR-003), kept per account.</summary>
+    public Aijade.Client.Companion.SelfieStore Selfies => new(store, () => Account?.Id ?? "anonymous");
+
     public AccountInfo? Account { get; private set; }
 
     public bool Ready { get; private set; }

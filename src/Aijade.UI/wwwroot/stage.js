@@ -46,6 +46,17 @@ class AvatarRenderer {
   }
   /** A beat from the music: a small nod whose size follows the beat's strength. */
   beat(strength) { this.bob = Math.max(this.bob, 0.4 + 0.6 * clamp(strength)); }
+  /** A selfie (ADR-003): her drawn face, cropped from the stage to a portrait picture as a phone would frame it. */
+  async selfie() {
+    const c = this.canvas, w = Math.min(c.width, Math.round(c.height * 9 / 16));
+    const out = document.createElement('canvas');
+    out.width = 720; out.height = 1280;
+    const g = out.getContext('2d');
+    g.fillStyle = this.background;
+    g.fillRect(0, 0, out.width, out.height);
+    g.drawImage(c, (c.width - w) / 2, 0, w, c.height, 0, 0, out.width, out.height);
+    return out.toDataURL('image/jpeg', 0.9);
+  }
   /** Follow the pointer with the eyes (x, y in -1…1 across the stage); the look fades after a few seconds. */
   look(x, y) { this.lookAt = { x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)), until: performance.now() + 3000 }; }
   /** Listening backchannel: after the user finishes an utterance of at least 1.2 s, a small nod 250 ms later. */
@@ -225,6 +236,17 @@ export async function fitImage(bytes, mime, maxSide) {
 export function apply(params) { return current ? current.apply(params) : {}; }
 export function mouth(level, vowels, lips) { current?.mouth(level, vowels, lips); }
 export function beat(strength) { current?.beat?.(strength); }
+/**
+ * A selfie from the stage (ADR-003): {dataUrl, renderer}, or null when the renderer cannot take one, or not within 20 s
+ * (a picture drawn off screen may never come back in some browsers; the chat page asks again later).
+ */
+export async function selfie() {
+  if (!current?.selfie) return null;
+  const renderer = current.kind;
+  const late = new Promise(resolve => setTimeout(() => resolve(null), 20000));
+  const dataUrl = await Promise.race([current.selfie().catch(() => null), late]);
+  return dataUrl ? { dataUrl, renderer } : null;
+}
 export function look(x, y) { current?.look?.(x, y); }
 export function userSpeech(on, spokeMs, quietMs) { current?.userSpeech?.(on, spokeMs, quietMs); }
 // The microphone module announces the user's speech (voice activity) on the window; the stage listens without a round trip through .NET.

@@ -367,6 +367,22 @@ public sealed class AijadeApi(HttpClient http, ITokenStore tokens)
         return await res.Content.ReadAsByteArrayAsync(ct).ConfigureAwait(false);
     }
 
+    /// <summary>Keep a selfie her stage took (ADR-003): a JPEG or PNG with its caption, stored for this account like a drawn picture.</summary>
+    public async Task<ImageInfo> UploadSelfieAsync(byte[] picture, string caption, string renderer, CancellationToken ct = default)
+    {
+        using var form = new MultipartFormDataContent();
+        var file = new ByteArrayContent(picture);
+        var png = picture.Length > 4 && picture[0] == 0x89 && picture[1] == 0x50;
+        file.Headers.ContentType = new MediaTypeHeaderValue(png ? "image/png" : "image/jpeg");
+        form.Add(file, "file", png ? "selfie.png" : "selfie.jpg");
+        form.Add(new StringContent(caption), "caption");
+        form.Add(new StringContent(renderer), "renderer");
+        using var req = await RequestAsync(HttpMethod.Post, "/api/v1/images/selfie").ConfigureAwait(false);
+        req.Content = form;
+        using var res = await http.SendAsync(req, ct).ConfigureAwait(false);
+        return To<ImageInfo>(await ReadAsync(res, ct).ConfigureAwait(false));
+    }
+
     /// <summary>Time the characters of a spoken reply in its WAV audio (the local aligner, ADR-003), for the stage's mouth.</summary>
     public async Task<Companion.SpeechAlignment> AlignAsync(string text, byte[] wav, CancellationToken ct = default)
     {

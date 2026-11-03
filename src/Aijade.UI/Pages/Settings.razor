@@ -158,6 +158,11 @@
     {
         <p class="hint">@State.Text["settings.stage.follow.hint"]</p>
     }
+    <Toggle Label="@State.Text["settings.stage.selfies"]" Value="s.Stage.Selfies" Changed="v => Save(s with { Stage = s.Stage with { Selfies = v } })" />
+    @if (s.Stage.Selfies)
+    {
+        <p class="hint">@State.Text["settings.stage.selfies.hint"]</p>
+    }
 </section>
 
 <section>

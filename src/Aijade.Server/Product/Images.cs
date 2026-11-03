@@ -326,6 +326,12 @@ public static class ImageEndpoints
 {
     public const int MaxPromptLength = 2000;
 
+    /// <summary>Largest selfie a stage may store (a 720 x 1280 JPEG is a few hundred kilobytes).</summary>
+    public const int MaxSelfieBytes = 2 * 1024 * 1024;
+
+    /// <summary>Longest selfie caption: one line of hers.</summary>
+    public const int MaxCaptionLength = 200;
+
     /// <summary>Reject an "images" section the backends could not use (called by the admin route editor).</summary>
     public static void Validate(JsonObject doc)
     {
@@ -393,6 +399,36 @@ public static class ImageEndpoints
             await events.TrackAsync(userId, "artistry", "image_succeeded", "succeeded", kind, route.Model, ct: CancellationToken.None).ConfigureAwait(false);
             return Results.Json(new JsonObject { ["id"] = id, ["url"] = $"/api/v1/images/{id}", ["mime"] = image.Mime, ["prompt"] = prompt, ["fluxCharged"] = cost }, statusCode: 201);
         });
+        // A selfie her stage took (ADR-003, migration batch 2): her picture, rendered on the user's device rather than drawn
+        // by a backend, kept like a drawn one (provider "stage", model the renderer), owner-only, free of flux.
+        g.MapPost("/selfie", async (HttpContext c, ProductEvents events, NpgsqlDataSource db, CancellationToken ct) =>
+        {
+            var userId = c.User.UserId();
+            if (!c.Request.HasFormContentType)
+                throw ApiException.BadRequest("multipart/form-data with the picture and its caption is required", "INVALID_IMAGE_REQUEST");
+            var form = await c.Request.ReadFormAsync(ct).ConfigureAwait(false);
+            var file = form.Files["file"] ?? throw ApiException.BadRequest("file is required", "INVALID_IMAGE_REQUEST");
+            if (file.Length is 0 or > MaxSelfieBytes)
+                throw ApiException.BadRequest("the picture must be 1 byte to 2 MB", "INVALID_IMAGE_REQUEST");
+            var caption = form["caption"].ToString().Trim();
+            if (caption.Length is 0 or > MaxCaptionLength)
+                throw ApiException.BadRequest($"caption is required (at most {MaxCaptionLength} characters)", "INVALID_IMAGE_REQUEST");
+            var renderer = form["renderer"].ToString() is "mmd" or "avatar" ? form["renderer"].ToString() : throw ApiException.BadRequest("renderer must be mmd or avatar", "INVALID_IMAGE_REQUEST");
+            var bytes = new byte[file.Length];
+            await using (var s = file.OpenReadStream())
+                await s.ReadExactlyAsync(bytes, ct).ConfigureAwait(false);
+            var mime = bytes.AsSpan().StartsWith((ReadOnlySpan<byte>)[0xFF, 0xD8, 0xFF]) ? "image/jpeg"
+                : bytes.AsSpan().StartsWith((ReadOnlySpan<byte>)[0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]) ? "image/png"
+                : throw ApiException.BadRequest("a JPEG or PNG picture is required", "INVALID_IMAGE_REQUEST");
+            var id = Ids.New();
+            await using (var conn = await db.OpenConnectionAsync(ct).ConfigureAwait(false))
+            {
+                await Sql.ExecAsync(conn, null, "INSERT INTO generated_images (id, owner_id, prompt, mime, bytes, provider, model) VALUES ($1,$2,$3,$4,$5,$6,$7)", ct,
+                    Sql.Text(id), Sql.Text(userId), Sql.Text(caption), Sql.Text(mime), Sql.P(bytes), Sql.Text("stage"), Sql.Text(renderer)).ConfigureAwait(false);
+            }
+            await events.TrackAsync(userId, "artistry", "selfie_stored", "succeeded", "stage", renderer, ct: CancellationToken.None).ConfigureAwait(false);
+            return Results.Json(new JsonObject { ["id"] = id, ["url"] = $"/api/v1/images/{id}", ["mime"] = mime, ["prompt"] = caption, ["fluxCharged"] = 0 }, statusCode: 201);
+        }).DisableAntiforgery();
         g.MapGet("", async (HttpContext c, NpgsqlDataSource db, CancellationToken ct) =>
         {
             await using var conn = await db.OpenConnectionAsync(ct).ConfigureAwait(false);

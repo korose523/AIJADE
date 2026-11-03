@@ -139,6 +139,7 @@
             while (await speakFirstTimer.WaitForNextTickAsync())
             {
                 await InvokeAsync(RemindAsync);
+                await InvokeAsync(SelfieAsync);
                 await InvokeAsync(SpeakFirstAsync);
             }
         }
@@ -267,6 +268,53 @@
             await reminders.SaveAsync(latest, Now());
             busy = false;
             streaming = "";
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Now and then a selfie from her stage (ADR-003, MOSAIC's share rules; the setting is off by default): at most twice a
+    /// day between 10:00 and 21:30, three hours apart, once the user has left her alone half an hour, by chance each minute.
+    /// The picture goes into this chat as her line with a true caption; she has no doings on this stage to tell of.
+    /// </summary>
+    private async Task SelfieAsync()
+    {
+        if (!State.Settings.Current.Stage.Selfies || stage is null || ChatId is null || busy || drawing || listening || draft.Length > 0)
+            return;
+        var store = State.Selfies;
+        var now = Now();
+        var said = messages.LastOrDefault(m => m.Role == "user")?.CreatedAt;
+        double? ownerAgo = said is { } at ? now - at.ToUnixTimeMilliseconds() / 1000.0 : null;
+#pragma warning disable CA5394 // a chance each minute, as MOSAIC draws it; nothing secret depends on it
+        var draw = Random.Shared.NextDouble();
+#pragma warning restore CA5394
+        if (!Selfies.Due(SelfieRules.Default, Selfies.Today(await store.LoadAsync(), now), now, ownerAgo, draw).Due)
+            return;
+        (byte[] Picture, string Renderer)? taken;
+        try
+        {
+            taken = await stage.SelfieAsync();
+        }
+        catch (JSException)
+        {
+            return; // the stage could not take it: a later minute's chance may
+        }
+        if (taken is not { } shot)
+            return;
+        busy = true;
+        try
+        {
+            await Selfies.ShareAsync(State.Api, ChatId, shot.Picture, State.Text["chat.selfie"], shot.Renderer);
+            await store.RecordAsync(now);
+            messages = [.. await State.Api.MessagesAsync(ChatId)];
+        }
+        catch (AijadeApiException)
+        {
+            // Not kept (the server cannot be reached now): a later minute's chance may take another.
+        }
+        finally
+        {
+            busy = false;
             StateHasChanged();
         }
     }

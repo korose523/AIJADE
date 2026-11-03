@@ -396,7 +396,8 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         }
         var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, supplements, options.Drawing())) };
         messages.AddRange(history.Where(m => m.Role is "user" or "assistant").TakeLast(options.HistoryWindow)
-            .Select(m => (m.Role, Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content)));
+            .Select(m => (m.Role, Selfies.IsSelfie(m) ? $"[I sent them a selfie from the stage: {m.Content}]"
+                : Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content)));
         messages.AddRange((notesBeforeMessage ?? []).Select(n => ("system", n)));
         messages.Add(("user", user.Content));
 

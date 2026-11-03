@@ -133,8 +133,31 @@ public sealed class WebAppTests(E2EHost host)
         var box = await canvas.BoundingBoxAsync();
         Assert.True(box is { Width: > 100, Height: > 100 });
         await Expect(page.Locator(".stage-note")).ToHaveCountAsync(0);
+        // Her selfie (ADR-003): the drawn face cropped to a portrait JPEG.
+        var shot = await page.EvaluateAsync<JsonElement>(SelfieProbe);
+        Assert.Equal(("avatar", "image/jpeg", 720, 1280), (shot.GetProperty("renderer").GetString(), shot.GetProperty("mime").GetString(), shot.GetProperty("width").GetInt32(), shot.GetProperty("height").GetInt32()));
+        Assert.True(shot.GetProperty("differ").GetDouble() > 0.1, $"only {shot.GetProperty("differ").GetDouble():P0} of the picture differs from its corner");
         await page.Context.CloseAsync();
     }
+
+    /// <summary>The stage's selfie: renderer, type, size, and the share of pixels unlike the corner (the background).</summary>
+    private const string SelfieProbe = """
+        async () => {
+          const stage = await import('./_content/Aijade.UI/stage.js');
+          const shot = await Promise.race([stage.selfie(), new Promise((_, no) => setTimeout(() => no(new Error('no selfie within 30 s')), 30000))]);
+          const img = new Image();
+          img.src = shot.dataUrl;
+          await img.decode();
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          const g = c.getContext('2d');
+          g.drawImage(img, 0, 0);
+          const d = g.getImageData(0, 0, c.width, c.height).data;
+          let differ = 0, seen = 0;
+          for (let i = 0; i < d.length; i += 4 * 97, seen++) if (Math.abs(d[i] - d[0]) + Math.abs(d[i + 1] - d[1]) + Math.abs(d[i + 2] - d[2]) > 40) differ++;
+          return { renderer: shot.renderer, mime: shot.dataUrl.slice(5, shot.dataUrl.indexOf(';')), width: img.naturalWidth, height: img.naturalHeight, differ: differ / seen };
+        }
+        """;
 
     [Fact]
     public async Task D_an_mmd_model_loads_and_its_morphs_follow_the_reply()
@@ -388,6 +411,30 @@ public sealed class WebAppTests(E2EHost host)
             }
             """);
         Assert.True(resumed[2] == 0 && Math.Abs(resumed[0] - resumed[1]) < 3, $"after a double-click the view looks at x {resumed[0]:0.00}, she is at {resumed[1]:0.00}");
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
+    public async Task D_the_mmd_stage_takes_her_selfie_from_arms_length()
+    {
+        host.RequireEnabled();
+        if (E2EHost.MmdDir is null || E2EHost.MmdModel is null)
+            Assert.Skip("AIJADE_E2E_MMD_DIR / AIJADE_E2E_MMD_MODEL not set; MMD stage test skipped");
+        var (page, _) = await host.SignUpAsync();
+        await page.GetByRole(AriaRole.Link, new() { Name = "Settings" }).ClickAsync();
+        await page.GetByLabel("Model file (PMX/PMD URL)").FillAsync("/models/" + Uri.EscapeDataString(E2EHost.MmdModel!));
+        await page.GetByLabel("Model file (PMX/PMD URL)").PressAsync("Tab");
+        await page.GetByLabel("Now and then she sends a selfie from the stage").CheckAsync();
+        await Expect(page.GetByText("At most twice a day between 10:00 and 21:30")).ToBeVisibleAsync();
+        await page.GetByRole(AriaRole.Link, new() { Name = "Chat" }).ClickAsync();
+        await page.WaitForFunctionAsync("() => document.querySelector('.stage canvas')?.__aijadeMmd", null, new() { Timeout = 120_000 });
+        await Expect(page.Locator(".stage-loading")).ToHaveCountAsync(0, new() { Timeout = 120_000 });
+
+        // Her phone's front camera at arm's length before her face (MOSAIC's SelfieShot, ADR-003): a portrait JPEG in which
+        // she, not the background, fills most of the picture.
+        var shot = await page.EvaluateAsync<JsonElement>(SelfieProbe);
+        Assert.Equal(("mmd", "image/jpeg", 720, 1280), (shot.GetProperty("renderer").GetString(), shot.GetProperty("mime").GetString(), shot.GetProperty("width").GetInt32(), shot.GetProperty("height").GetInt32()));
+        Assert.True(shot.GetProperty("differ").GetDouble() > 0.3, $"only {shot.GetProperty("differ").GetDouble():P0} of the picture differs from its corner");
         await page.Context.CloseAsync();
     }
 
