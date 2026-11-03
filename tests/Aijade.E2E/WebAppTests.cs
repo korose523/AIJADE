@@ -77,6 +77,43 @@ public sealed class WebAppTests(E2EHost host)
     }
 
     [Fact]
+    public async Task A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        await page.GetByPlaceholder("Say something…").FillAsync("十分钟后提醒我喝水");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
+        const string books = "Object.keys(localStorage).filter(k => k.startsWith('aijade.reminders.'))";
+        Task<string> StatusAsync() => page.EvaluateAsync<string>($"() => {books}.flatMap(k => JSON.parse(localStorage.getItem(k)))[0].status");
+
+        // The page looks for due reminders once a minute. At the next look the server cannot be reached (every request fails,
+        // as when the network is down; her line's request is counted), and the reminder is due.
+        var tried = 0;
+        await page.RouteAsync("**/api/v1/**", route =>
+        {
+            if (route.Request.Url.Contains("/openai/v1/chat/completions", StringComparison.Ordinal))
+                Interlocked.Increment(ref tried);
+            return route.AbortAsync();
+        });
+        await page.EvaluateAsync($"() => {{ for (const k of {books}) localStorage.setItem(k, JSON.stringify(JSON.parse(localStorage.getItem(k)).map(r => ({{ ...r, due: Date.now() / 1000 - 1 }})))); }}");
+        for (var i = 0; i < 150 && Volatile.Read(ref tried) == 0; i++)
+            await Task.Delay(500, TestContext.Current.CancellationToken);
+        Assert.True(Volatile.Read(ref tried) > 0, "the page did not try to say the due reminder within 75 s");
+        // Released, not said: due again at the next look.
+        for (var i = 0; i < 20 && await StatusAsync() != "pending"; i++)
+            await Task.Delay(250, TestContext.Current.CancellationToken);
+        Assert.Equal("pending", await StatusAsync());
+        await page.UnrouteAsync("**/api/v1/**");
+
+        // The looks go on: the minute after, her line comes into the chat and the reminder is done.
+        await Expect(page.Locator(".bubble.assistant")).ToHaveCountAsync(2, new() { Timeout = 90_000 });
+        Assert.Equal("（约好的提醒时间到了）", host.Llm.ChatRequests[^1]["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>()); // Reminders.DueCue
+        Assert.Equal("done", await StatusAsync());
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
     public async Task A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten()
     {
         host.RequireEnabled();

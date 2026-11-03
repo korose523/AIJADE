@@ -30,7 +30,10 @@ public sealed record StageState(bool Running, string? Where, string? Posture, IR
 /// </summary>
 public sealed class MosaicStage(AijadeApi api)
 {
-    /// <summary>Her state, or null when the server has no stage, the account may not use it, or the workbench is not running.</summary>
+    /// <summary>
+    /// Her state, or null when the server has no stage, the account may not use it, the workbench is not running, or the
+    /// server cannot be reached.
+    /// </summary>
     public async Task<StageState?> StateAsync(CancellationToken ct = default)
     {
         try
@@ -39,7 +42,7 @@ public sealed class MosaicStage(AijadeApi api)
                 return null;
             return new StageState(true, r["where"]?.GetValue<string>(), r["posture"]?.GetValue<string>(), Learned(r["learned"] as JsonArray));
         }
-        catch (AijadeApiException)
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
         {
             return null;
         }

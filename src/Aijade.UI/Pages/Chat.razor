@@ -189,7 +189,7 @@
         catch (OperationCanceledException)
         {
         }
-        catch (AijadeApiException)
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
         {
             // Speaking first is optional: a server that cannot be reached now is tried again next minute.
         }
@@ -254,7 +254,7 @@
         {
             gone = true; // its chat was deleted: there is nowhere to say it
         }
-        catch (AijadeApiException)
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
         {
             // The server cannot be reached now: the reminder is released below and tried again next minute.
         }
@@ -308,9 +308,9 @@
             await store.RecordAsync(now);
             messages = [.. await State.Api.MessagesAsync(ChatId)];
         }
-        catch (AijadeApiException)
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or OperationCanceledException)
         {
-            // Not kept (the server cannot be reached now): a later minute's chance may take another.
+            // Not kept (the server cannot be reached now, or answered too slowly): a later minute's chance may take another.
         }
         finally
         {

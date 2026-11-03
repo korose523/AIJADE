@@ -69,7 +69,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 上下文管理（历史窗口、视觉 / 浏览器 / IDE 上下文） | ✓ | `Orchestrator_streams_stores_and_reports…` 及上下文测试 |
 | 分层记忆：近期、摘要、长期（持久化、浏览、搜索、遗忘、导入导出、记录开关、语义检索） | ✓ | E2E `A_what_the_user_says_reaches_long_term_memory…`；`ProductServerTests`；`Memory_search_goes_by_meaning…`；`ContinuousLearningTests` |
 | 情绪与表情驱动 | ✓ | `Expression_markers…`、`Dialogue_acts_and_expressions…`；E2E `D_an_mmd_model_loads_and_its_morphs_follow_the_reply` |
-| 约好的提醒（聊天页与 QQ、Telegram 私聊；移植 MOSAIC，ADR-003 补充三） | ✓ | `RemindersTests`（MOSAIC 模块生成的 35 条向量、提醒簿、到点那句话、渠道上的完整流程；生成或发送超时只误一次检查，循环照常）；浏览器端到端 `A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise`（聊天页按浏览器的时区设定，与她答应的话一起存下） |
+| 约好的提醒（聊天页与 QQ、Telegram 私聊；移植 MOSAIC，ADR-003 补充三） | ✓ | `RemindersTests`（MOSAIC 模块生成的 35 条向量、提醒簿、到点那句话、渠道上的完整流程；生成或发送超时只误一次检查，循环照常）；浏览器端到端 `A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise`（聊天页按浏览器的时区设定，与她答应的话一起存下）、`A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached`（到点那句在聊天页说出；连不上服务端的那一分钟之后照常，每分钟的检查不停） |
 | 自拍（时不时把舞台上的自拍发进聊天；移植 MOSAIC，ADR-003 补充六；设置默认关闭） | ✓ | `SelfiesTests`（MOSAIC 生成的规则与取景向量、存图与入聊天）；E2E `D_the_mmd_stage_takes_her_selfie_from_arms_length`、`D_the_built_in_avatar_stage_mounts_without_a_model` |
 
 ### 4.2 模型接入
@@ -162,7 +162,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | Windows 计算机控制元素编号 | ✓ 已实现（UI Automation），单元测试通过；需在 Windows 上实测 |
 | Minecraft | ✓ 寻路、跟随、挖掘拾取、放置、攻击、合成、换装备与工具、游泳攀爬均在本机官方服务端实测（42/42） |
 | 安全补丁 | ✓ ASP.NET Core / .NET 升级到 10.0.14（SDK 10.0.403，10-29），修复 CVE-2026-111497（Brotli 解码越界写，经请求解压与 HttpClient 可达），并重发 10.0.13 未修完的 CVE-2026-70197（SocketAsyncEventArgs）与 CVE-2026-102870（Blazor WebAssembly Server/DevServer 包）；此前 10.0.13（SDK 10.0.402）修复 CVE-2026-96230 等。两次都经作者同意，作为“满两周”约束的安全例外；SDK 安装包按发布元数据的 SHA-512 核对 |
-| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 445 项中 438 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过（在提交 `fa3e82d` 上；之后的 QQ 改动不涉及网页；之后新加的聊天页提醒用例单独通过），含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `f9dd421` 之后的各次提交上都通过，最近一次为 `b6296a1` |
+| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 445 项中 438 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过（在提交 `fa3e82d` 上；之后的 QQ 改动不涉及网页；之后新加的两个聊天页提醒用例单独通过），含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `f9dd421` 之后的各次提交上都通过，最近一次为 `b6296a1` |
 | P1 | ✓ 端到端用例、漂移矩阵与闸门矩阵、两组变异实验（在当前代码上重跑与存档逐项一致）、时延与校验开销、身份层阳性对照与机制级试点；时延测于 .NET 10.0.12 |
 | P2 | ✓ 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检、差分测试；自评目标量定义于 10-15 更正（见 `experiments/README.md`）；第二模型族对照（llama3.1:8b，Windows 显卡主机；llava-phi3 的第一次尝试因不遵守判定格式按事先规则放弃，记录保留）；提示模板对照（模板 B 下验证器放行全部技能） |
 | P3 | ✓ 打分诊断与权重消融、交付轨道、门控与显著性来源、指标定义缺陷、泄漏审计、对话聚类区间、LongMemEval_s 复现；冲突惩罚定性为第二个新近偏置（关闭后标准化交付召回 0.199→0.548），门控不主张有效 |
