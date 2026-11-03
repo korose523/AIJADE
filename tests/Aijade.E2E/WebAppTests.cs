@@ -114,6 +114,34 @@ public sealed class WebAppTests(E2EHost host)
     }
 
     [Fact]
+    public async Task A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        await page.GetByPlaceholder("Say something…").FillAsync("Hello");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
+
+        // Every request fails, as when the network is down: the chat says so, not the page's generic error bar, and the
+        // message stays shown as sent.
+        await page.RouteAsync("**/api/v1/**", route => route.AbortAsync());
+        await page.GetByPlaceholder("Say something…").FillAsync("Are you there?");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator("p.error[role=alert]")).ToHaveTextAsync("Cannot reach the server; this turn did not finish. When you are back online, reload the chat to see what the server kept.");
+        await Expect(page.Locator("#blazor-error-ui")).ToBeHiddenAsync();
+        await Expect(page.Locator(".bubble.user").Last).ToHaveTextAsync("Are you there?");
+
+        // Back online, the chat goes on and shows what the server kept (the unsent message was not stored).
+        await page.UnrouteAsync("**/api/v1/**");
+        await page.GetByPlaceholder("Say something…").FillAsync("Hello again");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant")).ToHaveCountAsync(2);
+        await Expect(page.Locator(".bubble.user")).ToHaveTextAsync(["Hello", "Hello again"]);
+        await Expect(page.Locator("p.error[role=alert]")).ToHaveCountAsync(0);
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
     public async Task A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten()
     {
         host.RequireEnabled();

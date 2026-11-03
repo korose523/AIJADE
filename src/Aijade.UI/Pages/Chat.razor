@@ -387,6 +387,12 @@
                 busy = false;
                 return;
             }
+            catch (HttpRequestException)
+            {
+                error = State.Text["chat.unreachable"]; // nothing was stored; what was typed stays in the box
+                busy = false;
+                return;
+            }
         }
         draft = "";
         attached = false; // the attachment's description goes with this message
@@ -445,6 +451,12 @@
         }
         catch (OperationCanceledException)
         {
+        }
+        catch (HttpRequestException)
+        {
+            // The server cannot be reached. The message stays shown as sent: it may already be stored, so it is not put back
+            // in the box to be sent twice; the next load of the chat shows what the server kept.
+            error = State.Text["chat.unreachable"];
         }
         finally
         {
