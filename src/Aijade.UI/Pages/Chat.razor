@@ -513,9 +513,9 @@
                 {
                     await new RenderReporter(State.Api, State.MemorySessionId, State.DeviceId).ReportAsync(done.Intent, applied, stage.AssetVersionHash);
                 }
-                catch (AijadeApiException)
+                catch (Exception e) when (e is AijadeApiException or HttpRequestException)
                 {
-                    // A receipt that the server refuses is a visible gap there; the conversation goes on.
+                    // A receipt that the server refuses or cannot be sent is a visible gap there; the turn is finished and the conversation goes on.
                 }
             }
         }
@@ -529,9 +529,9 @@
                 await Audio.PlayAsync(audio, sink, sink is null ? null : await LipSyncPlanAsync(done.Reply.Content, audio));
                 sink?.Dispose();
             }
-            catch (AijadeApiException)
+            catch (Exception e) when (e is AijadeApiException or HttpRequestException or JSException)
             {
-                // Speech is optional (unconfigured or out of flux): the text reply stands.
+                // Speech is optional (unconfigured, out of flux, a server that cannot be reached now, or audio the browser cannot play): the text reply stands.
             }
         }
     }

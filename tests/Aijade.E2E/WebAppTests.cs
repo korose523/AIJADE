@@ -70,9 +70,12 @@ public sealed class WebAppTests(E2EHost host)
         Assert.True(note.Contains(At(before.AddMinutes(10)), StringComparison.Ordinal) || note.Contains(At(after.AddMinutes(10)), StringComparison.Ordinal),
             $"{note} (sent between {before:HH:mm:ss} and {after:HH:mm:ss})");
 
-        // The reminder is kept on the device for the account, with what was asked and what she answered.
-        var kept = await page.EvaluateAsync<string[]>("() => Object.keys(localStorage).filter(k => k.startsWith('aijade.reminders.')).flatMap(k => JSON.parse(localStorage.getItem(k))).flatMap(r => [r.said, r.promised, r.status])");
-        Assert.Equal(["十分钟后提醒我喝水", FakeUpstream.Reply, "pending"], kept);
+        // The reminder is kept on the device for the account, with what was asked and what she answered (kept as the turn
+        // ends, just after her answer is shown).
+        Task<string[]> KeptAsync() => page.EvaluateAsync<string[]>("() => Object.keys(localStorage).filter(k => k.startsWith('aijade.reminders.')).flatMap(k => JSON.parse(localStorage.getItem(k))).flatMap(r => [r.said, r.promised, r.status])");
+        for (var i = 0; i < 40 && (await KeptAsync())[1].Length == 0; i++)
+            await Task.Delay(250, TestContext.Current.CancellationToken);
+        Assert.Equal(["十分钟后提醒我喝水", FakeUpstream.Reply, "pending"], await KeptAsync());
         await page.Context.CloseAsync();
     }
 
@@ -88,11 +91,12 @@ public sealed class WebAppTests(E2EHost host)
         Task<string> StatusAsync() => page.EvaluateAsync<string>($"() => {books}.flatMap(k => JSON.parse(localStorage.getItem(k)))[0].status");
 
         // The page looks for due reminders once a minute. At the next look the server cannot be reached (every request fails,
-        // as when the network is down; her line's request is counted), and the reminder is due.
+        // as when the network is down; her line's request, a streamed turn, is counted, not the learning loop's calls in the
+        // background), and the reminder is due.
         var tried = 0;
         await page.RouteAsync("**/api/v1/**", route =>
         {
-            if (route.Request.Url.Contains("/openai/v1/chat/completions", StringComparison.Ordinal))
+            if (route.Request.Url.Contains("/openai/v1/chat/completions", StringComparison.Ordinal) && route.Request.PostData?.Contains("\"stream\":true", StringComparison.Ordinal) == true)
                 Interlocked.Increment(ref tried);
             return route.AbortAsync();
         });
@@ -109,6 +113,9 @@ public sealed class WebAppTests(E2EHost host)
         // The looks go on: the minute after, her line comes into the chat and the reminder is done.
         await Expect(page.Locator(".bubble.assistant")).ToHaveCountAsync(2, new() { Timeout = 90_000 });
         Assert.Equal("（约好的提醒时间到了）", host.Llm.ChatRequests[^1]["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>()); // Reminders.DueCue
+        // Her turn ends just after the line is shown: it is performed, then the reminder is marked done.
+        for (var i = 0; i < 40 && await StatusAsync() != "done"; i++)
+            await Task.Delay(250, TestContext.Current.CancellationToken);
         Assert.Equal("done", await StatusAsync());
         await page.Context.CloseAsync();
     }
@@ -973,6 +980,113 @@ public sealed class WebAppTests(E2EHost host)
         var (mime, bytes) = host.Llm.Transcriptions.Skip(before).First();
         Assert.StartsWith("audio/", mime, StringComparison.Ordinal);
         Assert.True(bytes > 1000, $"recorded {bytes} bytes");
+        await page.Context.CloseAsync();
+    }
+
+    /// <summary>
+    /// Headless Chromium lets any page play audio. This holds the page's audio as the stricter autoplay rules do: a context
+    /// stays suspended until resume() is called during a click or key press, and a sound started on it before that never
+    /// plays. <c>__heard</c> counts the sounds that did play.
+    /// </summary>
+    private const string HeldAudio = """
+        (() => {
+          const Real = window.AudioContext;
+          let gesture = false;
+          for (const type of ['click', 'keydown'])
+            window.addEventListener(type, () => { gesture = true; setTimeout(() => gesture = false); }, true);
+          window.__heard = 0;
+          window.AudioContext = class extends Real {
+            #allowed = false;
+            get state() { return this.#allowed ? super.state : 'suspended'; }
+            resume() { if (!gesture) return new Promise(() => {}); this.#allowed = true; return super.resume(); }
+            createBufferSource() {
+              const node = super.createBufferSource(), start = node.start.bind(node);
+              node.start = (...args) => { if (this.#allowed) { window.__heard++; start(...args); } };
+              return node;
+            }
+          };
+        })();
+        """;
+
+    /// <summary>A mono 16-bit PCM WAV of silence, the "speech".</summary>
+    private static byte[] SilentWav(double seconds, int rate = 16000)
+    {
+        var data = 2 * (int)(seconds * rate);
+        var wav = new byte[44 + data];
+        "RIFF"u8.CopyTo(wav);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(wav.AsSpan(4), 36 + data);
+        "WAVEfmt "u8.CopyTo(wav.AsSpan(8));
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(wav.AsSpan(16), 16);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(wav.AsSpan(20), 1); // PCM
+        System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(wav.AsSpan(22), 1); // mono
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(wav.AsSpan(24), rate);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(wav.AsSpan(28), 2 * rate);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(wav.AsSpan(32), 2);
+        System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(wav.AsSpan(34), 16);
+        "data"u8.CopyTo(wav.AsSpan(36));
+        System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(wav.AsSpan(40), data);
+        return wav;
+    }
+
+    [Fact]
+    public async Task C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        await page.Context.AddInitScriptAsync(HeldAudio);
+        await page.RouteAsync("**/api/v1/openai/v1/audio/speech", route => route.FulfillAsync(new() { ContentType = "audio/wav", BodyBytes = SilentWav(0.3) }));
+        await page.ReloadAsync(); // the held audio applies from the next page load
+        await page.GetByPlaceholder("Say something…").FillAsync("Hello");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
+
+        // The reply is not heard (no click or key press was under way when its audio came), and the turn does not wait on
+        // it: the box takes the next message.
+        await page.GetByPlaceholder("Say something…").FillAsync("Can you hear me?", new() { Timeout = 10_000 });
+        Assert.Equal(0, await page.EvaluateAsync<int>("() => window.__heard"));
+
+        // The next click lets the audio run, so this reply is heard, and the turn ends with it.
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant")).ToHaveCountAsync(2);
+        await Expect(page.GetByRole(AriaRole.Button, new() { Name = "Send" })).ToBeVisibleAsync(new() { Timeout = 10_000 });
+        Assert.Equal(1, await page.EvaluateAsync<int>("() => window.__heard"));
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
+    public async Task C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        // A body that is not audio (a voice service that answers with something else): the browser cannot decode it.
+        await page.RouteAsync("**/api/v1/openai/v1/audio/speech", route => route.FulfillAsync(new() { ContentType = "audio/wav", Body = "not audio" }));
+        await page.GetByPlaceholder("Say something…").FillAsync("Hello");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
+        await page.GetByPlaceholder("Say something…").FillAsync("Hello again");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant")).ToHaveCountAsync(2);
+        await Expect(page.Locator("#blazor-error-ui")).ToBeHiddenAsync();
+        await Expect(page.Locator("p.error[role=alert]")).ToHaveCountAsync(0);
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
+    public async Task C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        // The reply is stored and shown; only what comes after it, the render receipt and the speech, cannot be sent.
+        var blocked = 0;
+        await page.RouteAsync("**/api/v1/v9/events", route => { Interlocked.Increment(ref blocked); return route.AbortAsync(); });
+        await page.RouteAsync("**/api/v1/openai/v1/audio/speech", route => { Interlocked.Increment(ref blocked); return route.AbortAsync(); });
+        await page.GetByPlaceholder("Say something…").FillAsync("Hello");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
+        await Expect(page.GetByPlaceholder("Say something…")).ToBeEnabledAsync(); // the turn has ended
+        Assert.Equal(2, Volatile.Read(ref blocked));
+        await Expect(page.Locator("p.error[role=alert]")).ToHaveCountAsync(0);
+        await Expect(page.Locator(".bubble.assistant")).ToHaveTextAsync(FakeUpstream.Reply);
         await page.Context.CloseAsync();
     }
 }

@@ -49,7 +49,7 @@
 | 品牌素材 | `brand` | — |
 
 **非研究线规则**（对齐 MOSAIC ADR-017 的扩展线规则）：
-1. **只做维护**：修复缺陷、安全补丁与依赖更新。学位论文期间不新增功能、平台或集成，不重写前端，不更换渲染器。作者另有明确指示的，作为例外记入新的 ADR。现有例外：[ADR-002](decisions/ADR-002.md)，与 MOSAIC 非研究线共享伴侣契约（人设、表情名称、主动开口规则；[COMPANION-CONTRACT](COMPANION-CONTRACT.md)）。
+1. **只做维护**：修复缺陷、安全补丁与依赖更新。学位论文期间不新增功能、平台或集成，不重写前端，不更换渲染器。作者另有明确指示的，作为例外记入新的 ADR。现有例外：[ADR-002](decisions/ADR-002.md)，与 MOSAIC 非研究线共享伴侣契约（人设、表情名称、主动开口规则；[COMPANION-CONTRACT](COMPANION-CONTRACT.md)）；[ADR-003](decisions/ADR-003.md)，把 MOSAIC 已有且做得更好的非研究线功能迁到本仓库（本机语音、QQ、约好的提醒、逐字对齐的口型、相机跟随、自拍）。
 2. **不进入研究**：非研究线不作为研究的输入、样本、奖励或判定条件，研究结论不依赖它们的运行状态。
 3. **不算研究进度**：工程验证（单元与端到端测试、平台实测）不换算为研究进度或论文完成率。
 4. **不改研究对象**：非研究线的改动不触及研究对象路径；必须触及时，按研究线规则重跑回归。
@@ -61,6 +61,7 @@
 - MOSAIC 的连接组研究不进入学位论文。
 - MOSAIC 的原生 Godot 客户端实现了本仓库的外部渲染器契约（[MOSAIC-RENDERER](MOSAIC-RENDERER.md)），在第 4 章作为外部比较对象。本仓库不修改 MOSAIC。
 - 两个项目的伴侣（非研究线）共用一份契约：艾娅德的人设、表情名称的对应与主动开口规则（[ADR-002](decisions/ADR-002.md)、[COMPANION-CONTRACT](COMPANION-CONTRACT.md)）。只在非研究线，不触及研究对象，不做运行时耦合。
+- MOSAIC 做得更好的非研究线功能在本仓库重新实现（[ADR-003](decisions/ADR-003.md)、[INTEGRATION-MOSAIC](INTEGRATION-MOSAIC.md)）：本机语音合成、识别与逐字对齐经网关的本机语音路由调用 MOSAIC 在 Windows 上运行的服务（可选），其余都在本仓库里，MOSAIC 仓库不改。
 - 本文件的组织方式参照 MOSAIC 的 `docs/PROJECT-SCOPE.md` 与 ADR-017：研究优先、扩展隔离、静态检查模块归属。两个项目的研究问题互不依赖。
 
 ## 文档与架构治理

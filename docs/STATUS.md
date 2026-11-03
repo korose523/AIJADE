@@ -2,7 +2,7 @@
 
 本文件描述 AIJADE（.NET 实现）的架构、功能状态、研究装置与实验产物，以及尚未完成的事项。每一项功能都给出证据：测试名（`tests/Aijade.Tests` 下的单元 / 集成测试，`tests/Aijade.E2E` 下的浏览器端到端测试）或实测说明。最后一节是进度总览表，每轮工作结束时更新。
 
-> **当前适用范围（2026-10-26）**：项目以学位论文研究线为主，非研究线（伴侣产品及其扩展）只维护既有功能，不再扩张，见 [PROJECT-SCOPE](PROJECT-SCOPE.md) 与 [ADR-001](decisions/ADR-001.md)。第 4 节的功能状态是工程验证，不换算为研究进度。各模块的归属见 `configs/project-scope.json`。
+> **当前适用范围（2026-10-26）**：项目以学位论文研究线为主，非研究线（伴侣产品及其扩展）只维护既有功能，不再扩张，见 [PROJECT-SCOPE](PROJECT-SCOPE.md) 与 [ADR-001](decisions/ADR-001.md)；作者指示的例外是与 MOSAIC 共享伴侣契约（[ADR-002](decisions/ADR-002.md)）和把 MOSAIC 做得更好的非研究线功能迁过来（[ADR-003](decisions/ADR-003.md)），都不触及研究对象。第 4 节的功能状态是工程验证，不换算为研究进度。各模块的归属见 `configs/project-scope.json`。
 
 ## 1. 约束
 
@@ -64,7 +64,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 ### 4.1 伴侣核心
 | 项目 | 状态 | 证据 |
 |---|---|---|
-| 多会话聊天、流式输出 | ✓ | E2E `A_sign_up_chat_streams…`、`A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat`（断网时在聊天里提示，不弹页面的通用错误条；联网后照常）；`Sse_parser…` |
+| 多会话聊天、流式输出 | ✓ | E2E `A_sign_up_chat_streams…`、`A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat`（断网时在聊天里提示，不弹页面的通用错误条；联网后照常）、`C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server`（回复已经完成，只是之后的渲染回执和朗读发不出去，不提示“这一轮没有完成”）；`Sse_parser…` |
 | 角色卡与人设（默认艾娅德） | ✓ | E2E `A_a_character_card_drives_the_persona_and_greeting`、`Without_a_character_the_default_companion_is_aijade_9` |
 | 上下文管理（历史窗口、视觉 / 浏览器 / IDE 上下文） | ✓ | `Orchestrator_streams_stores_and_reports…` 及上下文测试 |
 | 分层记忆：近期、摘要、长期（持久化、浏览、搜索、遗忘、导入导出、记录开关、语义检索） | ✓ | E2E `A_what_the_user_says_reaches_long_term_memory…`；`ProductServerTests`；`Memory_search_goes_by_meaning…`；`ContinuousLearningTests` |
@@ -85,6 +85,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 项目 | 状态 | 证据 |
 |---|---|---|
 | 麦克风选择、VAD 免提、按键说话、无法启动时提示 | ✓ | E2E 服务端识别测试；`C_voice_input_that_cannot_start_says_so_clearly` |
+| 朗读回复（浏览器的自动播放规则、放不出的音频） | ✓ | E2E `C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free…`（浏览器还不让发声时这句只显示，这一轮不等它；之后的点击或按键让后面的话照常朗读；无头浏览器从不拦声音，测试里按较严的规则模拟）、`C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going`（解不出的音频不让页面停住，文字回复照常） |
 | 口型同步 | ✓ | 音频电平驱动头像与 MMD 口型形态键；有逐字对齐时按韵母分到あいうえお、b/p/m 闭唇（ADR-003 补充四）：`LipSyncTests`（与 MOSAIC 模块生成的向量逐帧相等），E2E `C_spoken_audio_carries_the_aligned_vowel_shape…`、`D_with_the_aligned_text_the_mmd_mouth…` |
 | 镜头跟随（像屋里的观众，移植 MOSAIC 的 ViewerFollow，ADR-003 补充五；设置默认关闭） | ✓ | `ViewerFollowTests`（MOSAIC 类生成的 6 组向量）；E2E `D_with_camera_follow_the_view_keeps_her_in_frame…` |
 | MMD 模型（PMX/PMD）、VMD 动作、物理、待机 / 说话 / 表情 | ✓ | E2E `D_an_mmd_model_loads…`、`D_an_idle_vmd_motion_loops_and_moves_the_model` |
@@ -135,7 +136,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 2. **未能在本机完整验证**：Windows 桌面与计算机控制、各聊天平台与 B 站的真实联网、阿里云与 Google 的真实接口。
 3. **检索打分（研究内核，已定性）**：冲突惩罚按冲突对累乘、总是压低较旧的一方（标准化模式下扫描前 150 个候选，关闭后交付召回大幅上升），加和模式的扫描窗口随 K 变化。这些都是 P3 测量与复现的对象，按设计保留并已在代码中注明；它们只存在于研究用记忆内核（`BioticMemory`），服务端记忆库不使用该内核。绝对的检索下限（0.02）由评测施加，`Retrieve()` 本身不用它。冲突判定对真实矛盾的精确度未评估，是否修改惩罚需先做这项评估。
 
-## 7. 进度总览（2026-10-28）
+## 7. 进度总览（2026-11-04）
 
 开发过程中的逐日记录见版本历史；下表只列最终状态。
 
@@ -162,7 +163,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | Windows 计算机控制元素编号 | ✓ 已实现（UI Automation），单元测试通过；需在 Windows 上实测 |
 | Minecraft | ✓ 寻路、跟随、挖掘拾取、放置、攻击、合成、换装备与工具、游泳攀爬均在本机官方服务端实测（42/42） |
 | 安全补丁 | ✓ ASP.NET Core / .NET 升级到 10.0.14（SDK 10.0.403，10-29），修复 CVE-2026-111497（Brotli 解码越界写，经请求解压与 HttpClient 可达），并重发 10.0.13 未修完的 CVE-2026-70197（SocketAsyncEventArgs）与 CVE-2026-102870（Blazor WebAssembly Server/DevServer 包）；此前 10.0.13（SDK 10.0.402）修复 CVE-2026-96230 等。两次都经作者同意，作为“满两周”约束的安全例外；SDK 安装包按发布元数据的 SHA-512 核对 |
-| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 445 项中 438 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过（在提交 `fa3e82d` 上；之后的 QQ 改动不涉及网页；之后新加的三个聊天页用例单独通过），含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `f9dd421` 之后的各次提交上都通过，最近一次为 `b6296a1` |
+| 全量回归 | ✓ 最近一次本地全量（11-04，这次提交的工作树，在内置盘副本中完全重新编译；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 447 项中 440 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 29/29 通过，含作者本机 PMX 模型上的 MMD 舞台用例。同日早先两次全量里一条提醒用例失败，查明是副本的增量构建留下了旧二进制（做过“去掉修复就失败”的检查后，`rsync -a` 恢复的文件时间较旧，不触发重新编译），不是产品问题：同一份源码完全重新编译后通过；此后本地回归按内容同步、用 `--no-incremental` 构建。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `f9dd421` 之后的各次提交上都通过，最近一次为 `9586074` |
 | P1 | ✓ 端到端用例、漂移矩阵与闸门矩阵、两组变异实验（在当前代码上重跑与存档逐项一致）、时延与校验开销、身份层阳性对照与机制级试点；时延测于 .NET 10.0.12 |
 | P2 | ✓ 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检、差分测试；自评目标量定义于 10-15 更正（见 `experiments/README.md`）；第二模型族对照（llama3.1:8b，Windows 显卡主机；llava-phi3 的第一次尝试因不遵守判定格式按事先规则放弃，记录保留）；提示模板对照（模板 B 下验证器放行全部技能） |
 | P3 | ✓ 打分诊断与权重消融、交付轨道、门控与显著性来源、指标定义缺陷、泄漏审计、对话聚类区间、LongMemEval_s 复现；冲突惩罚定性为第二个新近偏置（关闭后标准化交付召回 0.199→0.548），门控不主张有效 |
