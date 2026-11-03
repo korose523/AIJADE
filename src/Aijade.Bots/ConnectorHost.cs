@@ -22,18 +22,19 @@ public sealed class ConnectorHost(IEnumerable<IChannelConnector> connectors, Com
         if (all.Count == 0)
             log.LogWarning("No connector is configured (set Discord:Token, Telegram:Token, …)");
         var proactive = all.OfType<IProactiveConnector>().ToDictionary(c => c.Platform, StringComparer.Ordinal);
-        return Task.WhenAll(all.Select(c => RunAsync(c, stoppingToken)).Append(RemindLoopAsync(bridge, proactive, log, stoppingToken)));
+        return Task.WhenAll(all.Select(c => RunAsync(c, stoppingToken)).Append(RemindLoopAsync(bridge, proactive, log, RemindEvery, stoppingToken)));
     }
 
     /// <summary>
-    /// Says each due reminder in its conversation. As in MOSAIC's bridge, a line that was made but could not be sent is
-    /// logged, not made again; a line that could not be made is tried again at the next check.
+    /// Says each due reminder in its conversation, looking every <paramref name="every"/>. As in MOSAIC's bridge, a line that
+    /// was made but could not be sent is logged, not made again; a line that could not be made is tried again at the next
+    /// check. Only stopping ends the loop: a failed check, a timeout included, is logged and the next one comes.
     /// </summary>
-    public static async Task RemindLoopAsync(CompanionBridge bridge, IReadOnlyDictionary<string, IProactiveConnector> proactive, ILogger log, CancellationToken ct)
+    public static async Task RemindLoopAsync(CompanionBridge bridge, IReadOnlyDictionary<string, IProactiveConnector> proactive, ILogger log, TimeSpan every, CancellationToken ct)
     {
         if (proactive.Count == 0)
             return;
-        using var timer = new PeriodicTimer(RemindEvery);
+        using var timer = new PeriodicTimer(every);
         try
         {
             while (await timer.WaitForNextTickAsync(ct).ConfigureAwait(false))
@@ -42,9 +43,9 @@ public sealed class ConnectorHost(IEnumerable<IChannelConnector> connectors, Com
                 {
                     await RemindOnceAsync(bridge, proactive, ct).ConfigureAwait(false);
                 }
-                catch (Exception e) when (e is not OperationCanceledException)
+                catch (Exception e) when (!ct.IsCancellationRequested) // an HttpClient timeout is a TaskCanceledException too
                 {
-                    log.LogWarning(e, "A due reminder could not be said; it is tried again at the next check");
+                    log.LogWarning(e, "A due reminder could not be said; the checks go on");
                 }
             }
         }

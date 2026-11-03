@@ -265,9 +265,9 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         {
             await ForgetAsync(due.Conversation, ct).ConfigureAwait(false); // its chat was deleted: the next check opens a new one
         }
-        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException || (e is OperationCanceledException && !ct.IsCancellationRequested))
         {
-            // the server cannot be reached now: released below
+            // the server cannot be reached now, or did not answer in time (an HttpClient timeout): released below
         }
         finally
         {

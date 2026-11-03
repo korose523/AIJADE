@@ -8,7 +8,9 @@ using Aijade.Client.Companion;
 using Aijade.Integrations;
 using Aijade.Server.Product;
 
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Aijade.Tests;
 
@@ -218,9 +220,55 @@ public class RemindersTests
         File.Delete(state + ".reminders.json");
     }
 
-    private sealed class RecordingConnector(string platform, bool fail = false) : IProactiveConnector
+    [Fact]
+    public async Task A_timeout_costs_one_check_and_the_checks_go_on()
     {
+        var ct = TestContext.Current.CancellationToken;
+        var llm = new FakeLlm();
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await host.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/routes", new JsonObject
+        {
+            ["models"] = new JsonObject { ["aijade-chat"] = new JsonObject { ["upstream"] = "https://llm.example/v1", ["model"] = "m", ["keys"] = new JsonArray("k"), ["fluxPer1k"] = 0 } },
+        }, ServerTestHost.AdminToken);
+        var tokens = new MemoryTokenStore();
+        await tokens.SetAsync(ServerTestHost.Token);
+        var wire = new TimingOutWire(host.App.GetTestServer().CreateHandler());
+        var api = new AijadeApi(new HttpClient(wire) { BaseAddress = host.Client.BaseAddress }, tokens);
+        var time = new ManualTime(1_000_000);
+        using var bridge = new CompanionBridge(api, new BridgeOptions { Time = time, Memory = false, ReminderPlatforms = ["qq"], TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Seoul") });
+        var owner = new ChannelMessage("qq", "123456789", "123456789", "主人", "十分钟后提醒我喝水", IsDirect: true, AddressesBot: true);
+        Assert.NotNull(await bridge.AnswerAsync(owner, ct));
+        Assert.NotNull(await bridge.AnswerAsync(owner with { Text = "二十分钟后提醒我开会" }, ct));
+        time.Advance(TimeSpan.FromSeconds(1200));
+
+        // Making her line timed out (an HttpClient timeout is a TaskCanceledException): the reminder is due again at the next check.
+        wire.TimeOutNext = true;
+        var qq = new RecordingConnector("qq", timeOutFirst: true);
+        var reach = new Dictionary<string, IProactiveConnector> { ["qq"] = qq };
+        Assert.Equal(0, await ConnectorHost.RemindOnceAsync(bridge, reach, ct));
+        Assert.False(wire.TimeOutNext);
+
+        // Sending a line timed out (NapCat did not answer within the client's 30 s): that one counts as said, as in MOSAIC's
+        // bridge, and the loop goes on to say the other.
+        using var stop = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var loop = ConnectorHost.RemindLoopAsync(bridge, reach, NullLogger.Instance, TimeSpan.FromMilliseconds(20), stop.Token);
+        await qq.Delivered.Task.WaitAsync(TimeSpan.FromSeconds(30), ct);
+        await stop.CancelAsync();
+        await loop; // stopping ends it quietly
+        Assert.Equal(2, qq.Attempts);
+        Assert.Equal([("123456789", "该喝水啦，这是你要的提醒。")], qq.Sent);
+    }
+
+    private sealed class RecordingConnector(string platform, bool fail = false, bool timeOutFirst = false) : IProactiveConnector
+    {
+        private int attempts;
+
         public List<(string Conversation, string Text)> Sent { get; } = [];
+
+        public int Attempts => Volatile.Read(ref attempts);
+
+        public TaskCompletionSource Delivered { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         public string Platform => platform;
 
@@ -228,8 +276,25 @@ public class RemindersTests
         {
             if (fail)
                 throw new HttpRequestException("unreachable");
+            if (Interlocked.Increment(ref attempts) == 1 && timeOutFirst)
+                throw new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 30 seconds elapsing.", new TimeoutException());
             Sent.Add((conversationId, text));
+            Delivered.TrySetResult();
             return Task.CompletedTask;
+        }
+    }
+
+    /// <summary>The wire to the server; when told, the next request times out the way HttpClient reports a timeout.</summary>
+    private sealed class TimingOutWire(HttpMessageHandler inner) : DelegatingHandler(inner)
+    {
+        public bool TimeOutNext { get; set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            if (!TimeOutNext)
+                return base.SendAsync(request, cancellationToken);
+            TimeOutNext = false;
+            throw new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 300 seconds elapsing.", new TimeoutException());
         }
     }
 

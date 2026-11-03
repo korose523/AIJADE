@@ -52,6 +52,31 @@ public sealed class WebAppTests(E2EHost host)
     }
 
     [Fact]
+    public async Task A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise()
+    {
+        host.RequireEnabled();
+        var (page, _) = await host.SignUpAsync();
+        var before = DateTime.Now;
+        await page.GetByPlaceholder("Say something…").FillAsync("十分钟后提醒我喝水");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
+        var after = DateTime.Now;
+
+        // Fixed words decide it before the reply (ADR-003) and she is told when: ten minutes after it was asked, in the local
+        // time the .NET runtime in the page reads from the browser (the same zone as this machine's).
+        var note = Assert.Single(host.Llm.ChatRequests[^1]["messages"]!.AsArray().Select(m => m!["content"]!.GetValue<string>()),
+            c => c.StartsWith("The app has scheduled a reminder", StringComparison.Ordinal));
+        string At(DateTime t) => $"at {(t.Date == before.Date ? "今天" : "明天")} {t:HH:mm}";
+        Assert.True(note.Contains(At(before.AddMinutes(10)), StringComparison.Ordinal) || note.Contains(At(after.AddMinutes(10)), StringComparison.Ordinal),
+            $"{note} (sent between {before:HH:mm:ss} and {after:HH:mm:ss})");
+
+        // The reminder is kept on the device for the account, with what was asked and what she answered.
+        var kept = await page.EvaluateAsync<string[]>("() => Object.keys(localStorage).filter(k => k.startsWith('aijade.reminders.')).flatMap(k => JSON.parse(localStorage.getItem(k))).flatMap(r => [r.said, r.promised, r.status])");
+        Assert.Equal(["十分钟后提醒我喝水", FakeUpstream.Reply, "pending"], kept);
+        await page.Context.CloseAsync();
+    }
+
+    [Fact]
     public async Task A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten()
     {
         host.RequireEnabled();

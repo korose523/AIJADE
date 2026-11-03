@@ -69,7 +69,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 上下文管理（历史窗口、视觉 / 浏览器 / IDE 上下文） | ✓ | `Orchestrator_streams_stores_and_reports…` 及上下文测试 |
 | 分层记忆：近期、摘要、长期（持久化、浏览、搜索、遗忘、导入导出、记录开关、语义检索） | ✓ | E2E `A_what_the_user_says_reaches_long_term_memory…`；`ProductServerTests`；`Memory_search_goes_by_meaning…`；`ContinuousLearningTests` |
 | 情绪与表情驱动 | ✓ | `Expression_markers…`、`Dialogue_acts_and_expressions…`；E2E `D_an_mmd_model_loads_and_its_morphs_follow_the_reply` |
-| 约好的提醒（聊天页与 QQ、Telegram 私聊；移植 MOSAIC，ADR-003 补充三） | ✓ | `RemindersTests`（MOSAIC 模块生成的 35 条向量、提醒簿、到点那句话、渠道上的完整流程） |
+| 约好的提醒（聊天页与 QQ、Telegram 私聊；移植 MOSAIC，ADR-003 补充三） | ✓ | `RemindersTests`（MOSAIC 模块生成的 35 条向量、提醒簿、到点那句话、渠道上的完整流程；生成或发送超时只误一次检查，循环照常）；浏览器端到端 `A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise`（聊天页按浏览器的时区设定，与她答应的话一起存下） |
 | 自拍（时不时把舞台上的自拍发进聊天；移植 MOSAIC，ADR-003 补充六；设置默认关闭） | ✓ | `SelfiesTests`（MOSAIC 生成的规则与取景向量、存图与入聊天）；E2E `D_the_mmd_stage_takes_her_selfie_from_arms_length`、`D_the_built_in_avatar_stage_mounts_without_a_model` |
 
 ### 4.2 模型接入
@@ -112,7 +112,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | MCP（服务端与客户端）、工具中枢（HomeAssistant、小米、Factorio、外部 MCP） | ✓ | `McpServerTests`、`ToolTests` |
 | 计算机控制 | ◐ | macOS 实现与策略有测试（`ComputerUseTests`，不触碰真实桌面）；Windows 实现（含 UI Automation 元素编号、set_value 与截图标注）已编译并有脚本与解析的单元测试，未在 Windows 上运行 |
 | Discord、Telegram、Satori、X、B 站直播 | ✓ | `IntegrationTests`；真实平台需令牌，未联网测试 |
-| QQ（OneBot 11，经作者自装的 NapCat；只回负责人私聊，语音消息可转写，ADR-003 补充二） | ◐ | `OneBotConnectorTests`（签名、解析、经假 NapCat 的完整往返、语音转写、没有文字时的固定回复）；未接真实 NapCat |
+| QQ（OneBot 11，经作者自装的 NapCat；只回负责人私聊，语音消息可转写，ADR-003 补充二） | ◐ | `OneBotConnectorTests`（签名、解析、经假 NapCat 的完整往返、语音转写、没有文字时的固定回复、某一步超时只误这一条）；未接真实 NapCat |
 | Minecraft | ◐ | 纯 .NET 协议客户端，在本机官方服务端上实测：寻路、跟随、挖掘与拾取、放置、攻击、按配方书合成、自动穿戴更好的盔甲、挖掘前换上合适工具、游泳过水渠与爬梯上下墙（`MinecraftTests`，单元与 5 个服务端用例）；主机满载时“跟随”用例偶有超时 |
 | 浏览器扩展、VS Code、Claude Code 插件、国际象棋 | ✓ | E2E `I_the_browser_extension_reads…`；`ChessTests`；node 测试 |
 | 9 种语言 | ✓ | `Every_locale_has_every_key…` |
@@ -162,11 +162,11 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | Windows 计算机控制元素编号 | ✓ 已实现（UI Automation），单元测试通过；需在 Windows 上实测 |
 | Minecraft | ✓ 寻路、跟随、挖掘拾取、放置、攻击、合成、换装备与工具、游泳攀爬均在本机官方服务端实测（42/42） |
 | 安全补丁 | ✓ ASP.NET Core / .NET 升级到 10.0.14（SDK 10.0.403，10-29），修复 CVE-2026-111497（Brotli 解码越界写，经请求解压与 HttpClient 可达），并重发 10.0.13 未修完的 CVE-2026-70197（SocketAsyncEventArgs）与 CVE-2026-102870（Blazor WebAssembly Server/DevServer 包）；此前 10.0.13（SDK 10.0.402）修复 CVE-2026-96230 等。两次都经作者同意，作为“满两周”约束的安全例外；SDK 安装包按发布元数据的 SHA-512 核对 |
-| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 445 项中 438 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过（在提交 `fa3e82d` 上；之后的 QQ 改动不涉及网页），含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）最近一次在 `f9dd421` 通过 |
+| 全量回归 | ✓ 最近一次本地全量（11-03，在内置盘副本中构建；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 445 项中 438 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 23/23 通过（在提交 `fa3e82d` 上；之后的 QQ 改动不涉及网页；之后新加的聊天页提醒用例单独通过），含作者本机 PMX 模型上的 MMD 舞台用例。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `f9dd421` 之后的各次提交上都通过，最近一次为 `b6296a1` |
 | P1 | ✓ 端到端用例、漂移矩阵与闸门矩阵、两组变异实验（在当前代码上重跑与存档逐项一致）、时延与校验开销、身份层阳性对照与机制级试点；时延测于 .NET 10.0.12 |
 | P2 | ✓ 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检、差分测试；自评目标量定义于 10-15 更正（见 `experiments/README.md`）；第二模型族对照（llama3.1:8b，Windows 显卡主机；llava-phi3 的第一次尝试因不遵守判定格式按事先规则放弃，记录保留）；提示模板对照（模板 B 下验证器放行全部技能） |
 | P3 | ✓ 打分诊断与权重消融、交付轨道、门控与显著性来源、指标定义缺陷、泄漏审计、对话聚类区间、LongMemEval_s 复现；冲突惩罚定性为第二个新近偏置（关闭后标准化交付召回 0.199→0.548），门控不主张有效 |
-| 研究装置 | ✓ RQ-C 运行器可恢复（丢弃半行、只重放共有步骤、逐步落盘），可选单次回复 token 上限、`--num-ctx`、`--verify-template`；`format-precheck` 格式预检；记忆实验的 `pool-check`、`delivery-check`、`gating-check`、`component-scales` |
+| 研究装置 | ✓ RQ-C 运行器可恢复（丢弃半行、只重放共有步骤、逐步落盘），可选单次回复 token 上限、`--num-ctx`、`--verify-template`；`format-precheck` 格式预检；记忆实验的 `pool-check`、`delivery-check`、`gating-check`、`component-scales`。11-03 在 `b6296a1` 上把归档的 RQ-C 模拟运行（30 个 trial、种子 42、`--save-candidates`）重跑到临时目录（不入库，不调用模型）：`candidates.jsonl` 与 `experiments/rq-c/rq-c-s42-mock-t30-r5` 的逐字节相同；`trials.jsonl` 的 7,200 条记录除计时 `durationMs` 与后来加入的 `codeHash` 外相同；`summary.json` 只差提交号、退化说明与 10-15 更正后的诊断命名 |
 | 公开仓库 | ✓ https://github.com/korose523/AIJADE（10-18 以本实现完整覆盖，旧历史不保留；推送前检查无密钥、无第三方数据集与模型）；语料用 `tools/data/fetch-corpora.sh` 下载并校验 |
 | 论文仓库 | ✓ 私有仓库 https://github.com/korose523/AIJADE-papers：三篇英文投稿件、中文阅读译稿、稿件源与构建工具；论文中的代码地址与提交号由构建工具从本仓库读取 |
 | 论文编号 | ✓ 10-19 统一为 P1/P2/P3（原 P4 改为 P3，中文稿不再单独编号）；本仓库的注释与文档同步改写，实验目录、命令名与已归档的运行记录不变 |

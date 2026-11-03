@@ -161,6 +161,33 @@ public class OneBotConnectorTests
         await run2;
     }
 
+    [Fact]
+    public async Task A_step_that_times_out_costs_only_its_own_message()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var napcat = new FakeNapCat();
+        var port = FreePort();
+        var calls = 0;
+        // The first recognition times out the way HttpClient reports a timeout: a TaskCanceledException nobody asked for.
+        var connector = new OneBotConnector(port, new Uri("http://127.0.0.1:3000"), Token, Secret, Owner, new HttpClient(napcat), (_, _) =>
+            Interlocked.Increment(ref calls) == 1
+                ? throw new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 300 seconds elapsing.", new TimeoutException())
+                : Task.FromResult("我回来了"));
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var (run, post, received, client) = Start(connector, port, cts.Token);
+        using (client)
+        {
+            Assert.Equal(HttpStatusCode.NoContent, await post(Private(Owner, Segments(("record", "v1.amr")))));
+            Assert.Equal(HttpStatusCode.NoContent, await post(Private(Owner, Segments(("record", "v2.amr")))));
+            for (var i = 0; i < 100 && !napcat.Calls.Any(c => c.Action == "send_private_msg"); i++)
+                await Task.Delay(50, ct);
+            Assert.Equal(["我回来了"], received.Select(m => m.Text));
+            Assert.Equal("在呢，我回来了", napcat.Calls.Single(c => c.Action == "send_private_msg").Body["message"]![0]!["data"]!["text"]!.GetValue<string>());
+        }
+        await cts.CancelAsync();
+        await run;
+    }
+
     private static int FreePort()
     {
         using var probe = new TcpListener(IPAddress.Loopback, 0);

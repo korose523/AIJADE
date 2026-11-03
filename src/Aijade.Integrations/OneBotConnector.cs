@@ -162,9 +162,10 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
                     if (await handle(new ChannelMessage("qq", owner, owner, message.Name, text, IsDirect: true, AddressesBot: true), ct).ConfigureAwait(false) is { } reply)
                         await SendAsync(owner, reply.Text, ct).ConfigureAwait(false);
                 }
-                catch (Exception e) when (e is not OperationCanceledException)
+                catch (Exception) when (!ct.IsCancellationRequested)
                 {
-                    // One failed answer (NapCat, recognition or the server unreachable) does not stop the next, as in MOSAIC's bridge.
+                    // One failed answer (NapCat, recognition or the server unreachable, or too slow: an HttpClient timeout is a
+                    // TaskCanceledException) does not stop the next, as in MOSAIC's bridge.
                 }
             }
         }, ct);
