@@ -1,0 +1,2483 @@
+{
+ "experiment": "test-failing candidates against their task instructions: re-tally of recorded RQ-C runs, no model calls",
+ "status": "exploratory, after the results were known; no plan preceded it; the run's own labels stay the reported estimates",
+ "bench": {
+  "file": "src/Aijade.Research/SkillBench/bench-data.json",
+  "sha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6"
+ },
+ "reproduces": "with the recorded labels: p2-models.json confusion counts, percentile and BCa task-bootstrap intervals, clustered McNemar and informative strata, for every run below",
+ "rules": {
+  "entry": "a program in which the sandbox finds no callable is called through its single top-level const/let-bound function",
+  "test": "the test cases listed under testAudit.notDeterminedByInstruction are dropped",
+  "relabeling": "a program that passes under a rule counts as usable at every step of the skills that hold it; the recorded path is kept, so factor counts are not what a corrected run would give; no model is re-fitted"
+ },
+ "testAudit": {
+  "casesRead": 228,
+  "tasks": 44,
+  "reader": "the first author's judgment: one reader, after the results were known",
+  "notDeterminedByInstruction": [
+   {
+    "task": "str-to-camel",
+    "args": "[\"Hello-World\"]",
+    "expected": "\"HelloWorld\"",
+    "instruction": "converts a kebab-case or snake-case identifier to camelCase (the first word stays lowercase; each following word is capitalized)",
+    "reading": "The input is neither kebab-case nor snake-case as the other cases are, and the instruction does not say what happens to an upper-case first word; the expected output, taken from the reference solution, is not camelCase. A program that lower-cases the first word is consistent with the instruction."
+   }
+  ],
+  "conventionDependent": [
+   {
+    "task": "math-round-to",
+    "args": "[-1.5,0]",
+    "expected": "-1",
+    "reading": "'round-half-up' read as toward positive infinity"
+   },
+   {
+    "task": "parse-csv-line",
+    "args": "[\"\"]",
+    "expected": "[\"\"]",
+    "reading": "an empty line read as one empty field"
+   }
+  ],
+  "judgedSkillsFailingOnlyThisCase": {
+   "str-to-camel [\"Hello-World\"]": {
+    "main": 12,
+    "fam": 0,
+    "tplA": 14,
+    "tplB": 0,
+    "m15": 0
+   },
+   "math-round-to [-1.5,0]": {
+    "main": 0,
+    "fam": 0,
+    "tplA": 0,
+    "tplB": 0,
+    "m15": 12
+   },
+   "parse-csv-line [\"\"]": {
+    "main": 0,
+    "fam": 0,
+    "tplA": 0,
+    "tplB": 0,
+    "m15": 0
+   }
+  }
+ },
+ "runs": [
+  {
+   "label": "main (7B)",
+   "slug": "main",
+   "directory": "redo/rq-c-s42-ollama-t30-r5",
+   "hashes": {
+    "trials.jsonl": "d7532c6f81dc3435f752e5a60f360e97a6d12fd29ade5eb2fcbd55a9bd8b6dae",
+    "candidates.jsonl": "bbd6e0b8f95976fff16bc7c35302d10d97854c94b564c504e2f498e2e02371a0"
+   },
+   "replay": {
+    "distinctPrograms": 65,
+    "notReplayed": 0,
+    "disagreementsOnJudgedSkills": 0,
+    "disagreementsOnAllSkills": 0
+   },
+   "entryClass": [
+    {
+     "task": "arr-remove-falsy",
+     "code": "const removeFalsy = arr => arr.filter(Boolean);",
+     "skills": 24,
+     "judgedSkills": 12,
+     "verifierPassed": 12,
+     "failingAsRun": [],
+     "errorAsRun": "no callable"
+    }
+   ],
+   "testClass": [
+    {
+     "task": "str-to-camel",
+     "code": "function solve(s) {\n  return s.replace(/[-_](.)/g, (_, c) => c.toUpperCase()).replace(/^\\w/, c => c.toLowerCase());\n}",
+     "skills": 8,
+     "judgedSkills": 8,
+     "verifierPassed": 8,
+     "failingAsRun": [
+      {
+       "args": "[\"Hello-World\"]",
+       "expected": "\"HelloWorld\"",
+       "actual": "\"helloWorld\""
+      }
+     ],
+     "errorAsRun": null
+    },
+    {
+     "task": "str-to-camel",
+     "code": "function solve(s) {\n  return s.split(/[-_]/).map((word, index) => index === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join('');\n}",
+     "skills": 4,
+     "judgedSkills": 4,
+     "verifierPassed": 0,
+     "failingAsRun": [
+      {
+       "args": "[\"Hello-World\"]",
+       "expected": "\"HelloWorld\"",
+       "actual": "\"helloWorld\""
+      }
+     ],
+     "errorAsRun": null
+    }
+   ],
+   "soleFailingCaseOfJudgedSkills": {
+    "arr-flatten [[[1,[2]],3]]": 40,
+    "obj-get-nested [null,[\"a\"]]": 15,
+    "parse-query-string [\"\"]": 36,
+    "parse-version [\"a.b.c\"]": 6,
+    "str-to-camel [\"Hello-World\"]": 12
+   },
+   "labels": {
+    "asRun": {
+     "diagnostics": {
+      "n": 871,
+      "tasks": 44,
+      "confusion": {
+       "tp": 654,
+       "fp": 59,
+       "fn": 78,
+       "tn": 80
+      },
+      "usableShare": 0.8404133180252583,
+      "hallucinationRate": {
+       "numerator": 59,
+       "denominator": 139,
+       "estimate": 0.4244604316546763,
+       "wilson95": [
+        0.34541197176462135,
+        0.5075718875898195
+       ],
+       "taskBootstrap95": [
+        0.13274336283185842,
+        0.8974358974358975
+       ],
+       "taskBootstrapBca95": [
+        0.06,
+        0.7692307692307693
+       ]
+      },
+      "missRate": {
+       "numerator": 78,
+       "denominator": 732,
+       "estimate": 0.10655737704918032,
+       "wilson95": [
+        0.08622328113807373,
+        0.13099940576633926
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.2649350649350649
+       ],
+       "taskBootstrapBca95": [
+        0.013774104683195593,
+        0.3672053016596141
+       ]
+      },
+      "agreement": {
+       "numerator": 734,
+       "denominator": 871,
+       "estimate": 0.8427095292766934,
+       "wilson95": [
+        0.8170324449483589,
+        0.8653769150341565
+       ],
+       "taskBootstrap95": [
+        0.726895119418484,
+        0.9547325102880658
+       ],
+       "taskBootstrapBca95": [
+        0.6853727807575799,
+        0.9335159892139676
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 59,
+       "denominator": 713,
+       "estimate": 0.08274894810659186,
+       "wilson95": [
+        0.06469341335501351,
+        0.10527646955485696
+       ],
+       "taskBootstrap95": [
+        0.01749271137026239,
+        0.16598079561042525
+       ],
+       "taskBootstrapBca95": [
+        0.02857142857142857,
+        0.19199369489582346
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 78,
+       "denominator": 158,
+       "estimate": 0.4936708860759494,
+       "wilson95": [
+        0.41679477879084703,
+        0.5708474482715289
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.7647058823529411
+       ],
+       "taskBootstrapBca95": [
+        0.09523809523809523,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.31790305460549595,
+       "taskBootstrap95": [
+        -0.8666666666666667,
+        0.07837361170694507
+       ],
+       "shareOfResamplesAboveZero": 0.059235541324794874,
+       "taskBootstrapBca95": [
+        -0.7152542260690374,
+        0.19079514940012263
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 57,
+      "unusable": 13,
+      "unusableTasks": 7,
+      "falsePasses": 7,
+      "falsePassTasks": 5
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 20,
+      "c": 1,
+      "tasksWithDiscordantPairs": 3,
+      "largestTaskShareOfDiscordant": 0.5714285714285714,
+      "clusteredChiSquare": 1.7272727272727273,
+      "clusteredP": 0.1887595705411256,
+      "perTask": {
+       "arr-flatten": {
+        "b": 0,
+        "c": 1
+       },
+       "arr-intersection": {
+        "b": 8,
+        "c": 0
+       },
+       "arr-remove-falsy": {
+        "b": 12,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "arr-remove-falsy",
+      "str-to-camel"
+     ]
+    },
+    "entry": {
+     "diagnostics": {
+      "n": 871,
+      "tasks": 44,
+      "confusion": {
+       "tp": 666,
+       "fp": 47,
+       "fn": 78,
+       "tn": 80
+      },
+      "usableShare": 0.8541905855338691,
+      "hallucinationRate": {
+       "numerator": 47,
+       "denominator": 127,
+       "estimate": 0.3700787401574803,
+       "wilson95": [
+        0.2910748016449637,
+        0.45671156288018755
+       ],
+       "taskBootstrap95": [
+        0.07317073170731707,
+        0.8518518518518519
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.7272727272727273
+       ]
+      },
+      "missRate": {
+       "numerator": 78,
+       "denominator": 744,
+       "estimate": 0.10483870967741936,
+       "wilson95": [
+        0.0848188367898643,
+        0.12891825539108479
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.26277372262773724
+       ],
+       "taskBootstrapBca95": [
+        0.013550135501355014,
+        0.3645127287826158
+       ]
+      },
+      "agreement": {
+       "numerator": 746,
+       "denominator": 871,
+       "estimate": 0.8564867967853043,
+       "wilson95": [
+        0.8316366108121738,
+        0.8782062912801916
+       ],
+       "taskBootstrap95": [
+        0.7385229540918163,
+        0.9666666666666667
+       ],
+       "taskBootstrapBca95": [
+        0.690682741363493,
+        0.9462283942048199
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 47,
+       "denominator": 713,
+       "estimate": 0.06591865357643759,
+       "wilson95": [
+        0.04993159764240204,
+        0.08655807886383296
+       ],
+       "taskBootstrap95": [
+        0.00847457627118644,
+        0.1436241610738255
+       ],
+       "taskBootstrapBca95": [
+        0.01890455043703892,
+        0.17418442324040262
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 78,
+       "denominator": 158,
+       "estimate": 0.4936708860759494,
+       "wilson95": [
+        0.41679477879084703,
+        0.5708474482715289
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.7647058823529411
+       ],
+       "taskBootstrapBca95": [
+        0.09523809523809523,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.26524003048006095,
+       "taskBootstrap95": [
+        -0.8235294117647058,
+        0.11351568139889306
+       ],
+       "shareOfResamplesAboveZero": 0.09684526790185279,
+       "taskBootstrapBca95": [
+        -0.66997423184707,
+        0.21075977238838423
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 57,
+      "unusable": 12,
+      "unusableTasks": 6,
+      "falsePasses": 6,
+      "falsePassTasks": 4
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 8,
+      "c": 1,
+      "tasksWithDiscordantPairs": 2,
+      "largestTaskShareOfDiscordant": 0.8888888888888888,
+      "clusteredChiSquare": 0.7538461538461538,
+      "clusteredP": 0.38526124109031673,
+      "perTask": {
+       "arr-flatten": {
+        "b": 0,
+        "c": 1
+       },
+       "arr-intersection": {
+        "b": 8,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "str-to-camel"
+     ]
+    },
+    "entryAndTest": {
+     "diagnostics": {
+      "n": 871,
+      "tasks": 44,
+      "confusion": {
+       "tp": 674,
+       "fp": 39,
+       "fn": 82,
+       "tn": 76
+      },
+      "usableShare": 0.8679678530424799,
+      "hallucinationRate": {
+       "numerator": 39,
+       "denominator": 115,
+       "estimate": 0.3391304347826087,
+       "wilson95": [
+        0.25905686959718854,
+        0.4296039700865034
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.76
+       ]
+      },
+      "missRate": {
+       "numerator": 82,
+       "denominator": 756,
+       "estimate": 0.10846560846560846,
+       "wilson95": [
+        0.08824596604659057,
+        0.1326441378985023
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.2645739910313901
+       ],
+       "taskBootstrapBca95": [
+        0.016172506738544475,
+        0.3628941148833515
+       ]
+      },
+      "agreement": {
+       "numerator": 750,
+       "denominator": 871,
+       "estimate": 0.8610792192881745,
+       "wilson95": [
+        0.8365203048150496,
+        0.8824671113139324
+       ],
+       "taskBootstrap95": [
+        0.7449078564500485,
+        0.9688311688311688
+       ],
+       "taskBootstrapBca95": [
+        0.6958596415337898,
+        0.9479166666666666
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 39,
+       "denominator": 713,
+       "estimate": 0.0546984572230014,
+       "wilson95": [
+        0.040268616741664834,
+        0.07390092216214653
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.13043478260869565
+       ],
+       "taskBootstrapBca95": [
+        0.008595988538681949,
+        0.1652414610950654
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 82,
+       "denominator": 158,
+       "estimate": 0.5189873417721519,
+       "wilson95": [
+        0.4415585434486676,
+        0.5955147753642054
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.23066482631700022,
+       "taskBootstrap95": [
+        -0.9644970414201184,
+        0.15541415620248888
+       ],
+       "shareOfResamplesAboveZero": 0.15377661711530735,
+       "taskBootstrapBca95": [
+        -0.6963211129180144,
+        0.22795972993868016
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 57,
+      "unusable": 10,
+      "unusableTasks": 5,
+      "falsePasses": 5,
+      "falsePassTasks": 3
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 8,
+      "c": 1,
+      "tasksWithDiscordantPairs": 2,
+      "largestTaskShareOfDiscordant": 0.8888888888888888,
+      "clusteredChiSquare": 0.7538461538461538,
+      "clusteredP": 0.38526124109031673,
+      "perTask": {
+       "arr-flatten": {
+        "b": 0,
+        "c": 1
+       },
+       "arr-intersection": {
+        "b": 8,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection"
+     ]
+    }
+   }
+  },
+  {
+   "label": "second family (llama3.1:8b)",
+   "slug": "fam",
+   "directory": "family-gpu/rq-c-s42-ollama-t30-r5",
+   "hashes": {
+    "trials.jsonl": "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121",
+    "candidates.jsonl": "9f53d82b6e38ff5286fc62c062cc54579d7a6e8fa9a1b1232f84bea486ce4d61"
+   },
+   "replay": {
+    "distinctPrograms": 69,
+    "notReplayed": 0,
+    "disagreementsOnJudgedSkills": 0,
+    "disagreementsOnAllSkills": 0
+   },
+   "entryClass": [],
+   "testClass": [],
+   "soleFailingCaseOfJudgedSkills": {
+    "obj-get-nested [null,[\"a\"]]": 15,
+    "parse-csv-line [\"\\\"a\\\"\\\"b\\\"\"]": 1,
+    "parse-version [\"a.b.c\"]": 4
+   },
+   "labels": {
+    "asRun": {
+     "diagnostics": {
+      "n": 770,
+      "tasks": 44,
+      "confusion": {
+       "tp": 672,
+       "fp": 76,
+       "fn": 1,
+       "tn": 21
+      },
+      "usableShare": 0.874025974025974,
+      "hallucinationRate": {
+       "numerator": 76,
+       "denominator": 97,
+       "estimate": 0.7835051546391752,
+       "wilson95": [
+        0.6915983782533729,
+        0.8538122161906773
+       ],
+       "taskBootstrap95": [
+        0.5588235294117647,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.5135135135135135,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 1,
+       "denominator": 673,
+       "estimate": 0.0014858841010401188,
+       "wilson95": [
+        0.0002623432013077881,
+        0.008368125196523643
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.004694835680751174
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.007780262727865766
+       ]
+      },
+      "agreement": {
+       "numerator": 693,
+       "denominator": 770,
+       "estimate": 0.9,
+       "wilson95": [
+        0.876784279525715,
+        0.9192444069429078
+       ],
+       "taskBootstrap95": [
+        0.8046398046398047,
+        0.9787835926449788
+       ],
+       "taskBootstrapBca95": [
+        0.7756939131103091,
+        0.9651064353515785
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 76,
+       "denominator": 748,
+       "estimate": 0.10160427807486631,
+       "wilson95": [
+        0.08194804796121437,
+        0.12533163446696707
+       ],
+       "taskBootstrap95": [
+        0.020080321285140562,
+        0.2035623409669211
+       ],
+       "taskBootstrapBca95": [
+        0.033291483036548296,
+        0.2347720067582395
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 1,
+       "denominator": 22,
+       "estimate": 0.045454545454545456,
+       "wilson95": [
+        0.00806942762126385,
+        0.21798045838657332
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.7820192705381351,
+       "taskBootstrap95": [
+        -1.0,
+        -0.5580516331479105
+       ],
+       "shareOfResamplesAboveZero": 0.0,
+       "taskBootstrapBca95": [
+        -0.9985486211901307,
+        -0.5120727399917036
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 56,
+      "unusable": 14,
+      "unusableTasks": 5,
+      "falsePasses": 12,
+      "falsePassTasks": 5
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 16,
+      "c": 8,
+      "tasksWithDiscordantPairs": 4,
+      "largestTaskShareOfDiscordant": 0.6666666666666666,
+      "clusteredChiSquare": 2.4615384615384617,
+      "clusteredP": 0.11666446478102337,
+      "perTask": {
+       "arr-intersection": {
+        "b": 1,
+        "c": 0
+       },
+       "parse-csv-line": {
+        "b": 4,
+        "c": 0
+       },
+       "parse-version": {
+        "b": 3,
+        "c": 0
+       },
+       "str-rot13": {
+        "b": 8,
+        "c": 8
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-intersection",
+      "parse-csv-line",
+      "parse-version",
+      "str-rot13"
+     ]
+    },
+    "entry": {
+     "diagnostics": {
+      "n": 770,
+      "tasks": 44,
+      "confusion": {
+       "tp": 672,
+       "fp": 76,
+       "fn": 1,
+       "tn": 21
+      },
+      "usableShare": 0.874025974025974,
+      "hallucinationRate": {
+       "numerator": 76,
+       "denominator": 97,
+       "estimate": 0.7835051546391752,
+       "wilson95": [
+        0.6915983782533729,
+        0.8538122161906773
+       ],
+       "taskBootstrap95": [
+        0.5588235294117647,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.5135135135135135,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 1,
+       "denominator": 673,
+       "estimate": 0.0014858841010401188,
+       "wilson95": [
+        0.0002623432013077881,
+        0.008368125196523643
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.004694835680751174
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.007780262727865766
+       ]
+      },
+      "agreement": {
+       "numerator": 693,
+       "denominator": 770,
+       "estimate": 0.9,
+       "wilson95": [
+        0.876784279525715,
+        0.9192444069429078
+       ],
+       "taskBootstrap95": [
+        0.8046398046398047,
+        0.9787835926449788
+       ],
+       "taskBootstrapBca95": [
+        0.7756939131103091,
+        0.9651064353515785
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 76,
+       "denominator": 748,
+       "estimate": 0.10160427807486631,
+       "wilson95": [
+        0.08194804796121437,
+        0.12533163446696707
+       ],
+       "taskBootstrap95": [
+        0.020080321285140562,
+        0.2035623409669211
+       ],
+       "taskBootstrapBca95": [
+        0.033291483036548296,
+        0.2347720067582395
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 1,
+       "denominator": 22,
+       "estimate": 0.045454545454545456,
+       "wilson95": [
+        0.00806942762126385,
+        0.21798045838657332
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.7820192705381351,
+       "taskBootstrap95": [
+        -1.0,
+        -0.5580516331479105
+       ],
+       "shareOfResamplesAboveZero": 0.0,
+       "taskBootstrapBca95": [
+        -0.9985486211901307,
+        -0.5120727399917036
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 56,
+      "unusable": 14,
+      "unusableTasks": 5,
+      "falsePasses": 12,
+      "falsePassTasks": 5
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 16,
+      "c": 8,
+      "tasksWithDiscordantPairs": 4,
+      "largestTaskShareOfDiscordant": 0.6666666666666666,
+      "clusteredChiSquare": 2.4615384615384617,
+      "clusteredP": 0.11666446478102337,
+      "perTask": {
+       "arr-intersection": {
+        "b": 1,
+        "c": 0
+       },
+       "parse-csv-line": {
+        "b": 4,
+        "c": 0
+       },
+       "parse-version": {
+        "b": 3,
+        "c": 0
+       },
+       "str-rot13": {
+        "b": 8,
+        "c": 8
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-intersection",
+      "parse-csv-line",
+      "parse-version",
+      "str-rot13"
+     ]
+    },
+    "entryAndTest": {
+     "diagnostics": {
+      "n": 770,
+      "tasks": 44,
+      "confusion": {
+       "tp": 672,
+       "fp": 76,
+       "fn": 1,
+       "tn": 21
+      },
+      "usableShare": 0.874025974025974,
+      "hallucinationRate": {
+       "numerator": 76,
+       "denominator": 97,
+       "estimate": 0.7835051546391752,
+       "wilson95": [
+        0.6915983782533729,
+        0.8538122161906773
+       ],
+       "taskBootstrap95": [
+        0.5588235294117647,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.5135135135135135,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 1,
+       "denominator": 673,
+       "estimate": 0.0014858841010401188,
+       "wilson95": [
+        0.0002623432013077881,
+        0.008368125196523643
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.004694835680751174
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.007780262727865766
+       ]
+      },
+      "agreement": {
+       "numerator": 693,
+       "denominator": 770,
+       "estimate": 0.9,
+       "wilson95": [
+        0.876784279525715,
+        0.9192444069429078
+       ],
+       "taskBootstrap95": [
+        0.8046398046398047,
+        0.9787835926449788
+       ],
+       "taskBootstrapBca95": [
+        0.7756939131103091,
+        0.9651064353515785
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 76,
+       "denominator": 748,
+       "estimate": 0.10160427807486631,
+       "wilson95": [
+        0.08194804796121437,
+        0.12533163446696707
+       ],
+       "taskBootstrap95": [
+        0.020080321285140562,
+        0.2035623409669211
+       ],
+       "taskBootstrapBca95": [
+        0.033291483036548296,
+        0.2347720067582395
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 1,
+       "denominator": 22,
+       "estimate": 0.045454545454545456,
+       "wilson95": [
+        0.00806942762126385,
+        0.21798045838657332
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.7820192705381351,
+       "taskBootstrap95": [
+        -1.0,
+        -0.5580516331479105
+       ],
+       "shareOfResamplesAboveZero": 0.0,
+       "taskBootstrapBca95": [
+        -0.9985486211901307,
+        -0.5120727399917036
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 56,
+      "unusable": 14,
+      "unusableTasks": 5,
+      "falsePasses": 12,
+      "falsePassTasks": 5
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 16,
+      "c": 8,
+      "tasksWithDiscordantPairs": 4,
+      "largestTaskShareOfDiscordant": 0.6666666666666666,
+      "clusteredChiSquare": 2.4615384615384617,
+      "clusteredP": 0.11666446478102337,
+      "perTask": {
+       "arr-intersection": {
+        "b": 1,
+        "c": 0
+       },
+       "parse-csv-line": {
+        "b": 4,
+        "c": 0
+       },
+       "parse-version": {
+        "b": 3,
+        "c": 0
+       },
+       "str-rot13": {
+        "b": 8,
+        "c": 8
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-intersection",
+      "parse-csv-line",
+      "parse-version",
+      "str-rot13"
+     ]
+    }
+   }
+  },
+  {
+   "label": "prompt template A (7B, GPU host)",
+   "slug": "tplA",
+   "directory": "template-gpu/A/rq-c-s42-ollama-t30-r5",
+   "hashes": {
+    "trials.jsonl": "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436",
+    "candidates.jsonl": "928a99838f7b57696c2e7fe4731bc3b2890b16c2ed7ef9461d1ad3dae61d2ae3"
+   },
+   "replay": {
+    "distinctPrograms": 57,
+    "notReplayed": 0,
+    "disagreementsOnJudgedSkills": 0,
+    "disagreementsOnAllSkills": 0
+   },
+   "entryClass": [
+    {
+     "task": "arr-remove-falsy",
+     "code": "const removeFalsy = arr => arr.filter(Boolean);",
+     "skills": 24,
+     "judgedSkills": 12,
+     "verifierPassed": 12,
+     "failingAsRun": [],
+     "errorAsRun": "no callable"
+    }
+   ],
+   "testClass": [
+    {
+     "task": "str-to-camel",
+     "code": "function solve(s) {\n  return s.replace(/[-_](.)/g, (_, c) => c.toUpperCase()).replace(/^[A-Z]/, c => c.toLowerCase());\n}",
+     "skills": 4,
+     "judgedSkills": 4,
+     "verifierPassed": 0,
+     "failingAsRun": [
+      {
+       "args": "[\"Hello-World\"]",
+       "expected": "\"HelloWorld\"",
+       "actual": "\"helloWorld\""
+      }
+     ],
+     "errorAsRun": null
+    },
+    {
+     "task": "str-to-camel",
+     "code": "function solve(s) {\n  return s.replace(/[-_](.)/g, (_, c) => c.toUpperCase()).replace(/^\\w/, c => c.toLowerCase());\n}",
+     "skills": 7,
+     "judgedSkills": 7,
+     "verifierPassed": 7,
+     "failingAsRun": [
+      {
+       "args": "[\"Hello-World\"]",
+       "expected": "\"HelloWorld\"",
+       "actual": "\"helloWorld\""
+      }
+     ],
+     "errorAsRun": null
+    },
+    {
+     "task": "str-to-camel",
+     "code": "function solve(s) {\n  return s.split(/[-_]/).map((word, index) => index === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join('');\n}",
+     "skills": 3,
+     "judgedSkills": 3,
+     "verifierPassed": 3,
+     "failingAsRun": [
+      {
+       "args": "[\"Hello-World\"]",
+       "expected": "\"HelloWorld\"",
+       "actual": "\"helloWorld\""
+      }
+     ],
+     "errorAsRun": null
+    }
+   ],
+   "soleFailingCaseOfJudgedSkills": {
+    "arr-flatten [[[1,[2]],3]]": 40,
+    "obj-get-nested [null,[\"a\"]]": 15,
+    "parse-query-string [\"\"]": 27,
+    "parse-version [\"a.b.c\"]": 6,
+    "str-to-camel [\"Hello-World\"]": 14
+   },
+   "labels": {
+    "asRun": {
+     "diagnostics": {
+      "n": 852,
+      "tasks": 44,
+      "confusion": {
+       "tp": 654,
+       "fp": 70,
+       "fn": 68,
+       "tn": 60
+      },
+      "usableShare": 0.8474178403755869,
+      "hallucinationRate": {
+       "numerator": 70,
+       "denominator": 130,
+       "estimate": 0.5384615384615384,
+       "wilson95": [
+        0.4528937288666052,
+        0.6218215356568999
+       ],
+       "taskBootstrap95": [
+        0.14893617021276595,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.07317073170731707,
+        0.9603960396039604
+       ]
+      },
+      "missRate": {
+       "numerator": 68,
+       "denominator": 722,
+       "estimate": 0.09418282548476455,
+       "wilson95": [
+        0.07497356502007435,
+        0.1176875968924741
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.2532299741602067
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.3675299531798257
+       ]
+      },
+      "agreement": {
+       "numerator": 714,
+       "denominator": 852,
+       "estimate": 0.8380281690140845,
+       "wilson95": [
+        0.8117811917082947,
+        0.861240656045726
+       ],
+       "taskBootstrap95": [
+        0.7138643067846607,
+        0.961439588688946
+       ],
+       "taskBootstrapBca95": [
+        0.6722641575333979,
+        0.9403973509933775
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 70,
+       "denominator": 724,
+       "estimate": 0.09668508287292818,
+       "wilson95": [
+        0.07723861410118592,
+        0.12038884594177089
+       ],
+       "taskBootstrap95": [
+        0.01749271137026239,
+        0.19558359621451105
+       ],
+       "taskBootstrapBca95": [
+        0.034214923997136,
+        0.2356725949314756
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 68,
+       "denominator": 128,
+       "estimate": 0.53125,
+       "wilson95": [
+        0.44515370795994524,
+        0.6155252322729605
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.6666666666666666
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.6666666666666666
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.4442787129767739,
+       "taskBootstrap95": [
+        -1.0,
+        0.04422587983406931
+       ],
+       "shareOfResamplesAboveZero": 0.037522513508104864,
+       "taskBootstrapBca95": [
+        -0.9396215380071085,
+        0.15195553888290173
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 55,
+      "unusable": 13,
+      "unusableTasks": 7,
+      "falsePasses": 9,
+      "falsePassTasks": 5
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 21,
+      "c": 10,
+      "tasksWithDiscordantPairs": 4,
+      "largestTaskShareOfDiscordant": 0.3870967741935484,
+      "clusteredChiSquare": 0.39158576051779936,
+      "clusteredP": 0.5314670343820699,
+      "perTask": {
+       "arr-flatten": {
+        "b": 0,
+        "c": 10
+       },
+       "arr-intersection": {
+        "b": 8,
+        "c": 0
+       },
+       "arr-remove-falsy": {
+        "b": 12,
+        "c": 0
+       },
+       "date-add-days": {
+        "b": 1,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "arr-remove-falsy",
+      "date-add-days",
+      "str-to-camel"
+     ]
+    },
+    "entry": {
+     "diagnostics": {
+      "n": 852,
+      "tasks": 44,
+      "confusion": {
+       "tp": 666,
+       "fp": 58,
+       "fn": 68,
+       "tn": 60
+      },
+      "usableShare": 0.8615023474178404,
+      "hallucinationRate": {
+       "numerator": 58,
+       "denominator": 118,
+       "estimate": 0.4915254237288136,
+       "wilson95": [
+        0.4030238582381013,
+        0.5805613678470258
+       ],
+       "taskBootstrap95": [
+        0.08196721311475409,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.9632085516986653
+       ]
+      },
+      "missRate": {
+       "numerator": 68,
+       "denominator": 734,
+       "estimate": 0.09264305177111716,
+       "wilson95": [
+        0.07373664532507884,
+        0.11579114163908191
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.2506393861892583
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.3643388371171546
+       ]
+      },
+      "agreement": {
+       "numerator": 726,
+       "denominator": 852,
+       "estimate": 0.852112676056338,
+       "wilson95": [
+        0.826696823051032,
+        0.8743676016927394
+       ],
+       "taskBootstrap95": [
+        0.7267267267267268,
+        0.9750889679715302
+       ],
+       "taskBootstrapBca95": [
+        0.6787894832530208,
+        0.9537475983792891
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 58,
+       "denominator": 724,
+       "estimate": 0.08011049723756906,
+       "wilson95": [
+        0.06248089577377873,
+        0.1021723502983407
+       ],
+       "taskBootstrap95": [
+        0.00847457627118644,
+        0.17523056653491437
+       ],
+       "taskBootstrapBca95": [
+        0.02109704641350211,
+        0.2213981313850625
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 68,
+       "denominator": 128,
+       "estimate": 0.53125,
+       "wilson95": [
+        0.44515370795994524,
+        0.6155252322729605
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.6666666666666666
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.6666666666666666
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.39888237195769644,
+       "taskBootstrap95": [
+        -1.0,
+        0.08
+       ],
+       "shareOfResamplesAboveZero": 0.06199298948422634,
+       "taskBootstrapBca95": [
+        -0.9407195253653032,
+        0.16913285673362427
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 55,
+      "unusable": 12,
+      "unusableTasks": 6,
+      "falsePasses": 8,
+      "falsePassTasks": 4
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 9,
+      "c": 10,
+      "tasksWithDiscordantPairs": 3,
+      "largestTaskShareOfDiscordant": 0.5263157894736842,
+      "clusteredChiSquare": 0.006060606060606061,
+      "clusteredP": 0.937947456842939,
+      "perTask": {
+       "arr-flatten": {
+        "b": 0,
+        "c": 10
+       },
+       "arr-intersection": {
+        "b": 8,
+        "c": 0
+       },
+       "date-add-days": {
+        "b": 1,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "date-add-days",
+      "str-to-camel"
+     ]
+    },
+    "entryAndTest": {
+     "diagnostics": {
+      "n": 852,
+      "tasks": 44,
+      "confusion": {
+       "tp": 676,
+       "fp": 48,
+       "fn": 72,
+       "tn": 56
+      },
+      "usableShare": 0.8779342723004695,
+      "hallucinationRate": {
+       "numerator": 48,
+       "denominator": 104,
+       "estimate": 0.46153846153846156,
+       "wilson95": [
+        0.3688100475176425,
+        0.5570069797417769
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 72,
+       "denominator": 748,
+       "estimate": 0.0962566844919786,
+       "wilson95": [
+        0.07713634529592828,
+        0.11950279595679247
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.25196850393700787
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.36184567156268915
+       ]
+      },
+      "agreement": {
+       "numerator": 732,
+       "denominator": 852,
+       "estimate": 0.8591549295774648,
+       "wilson95": [
+        0.834181691292471,
+        0.8809040219461758
+       ],
+       "taskBootstrap95": [
+        0.7348353552859619,
+        0.9790209790209791
+       ],
+       "taskBootstrapBca95": [
+        0.6839822913857033,
+        0.9565217391304348
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 48,
+       "denominator": 724,
+       "estimate": 0.06629834254143646,
+       "wilson95": [
+        0.050367721891160164,
+        0.08680701253859475
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.16101694915254236
+       ],
+       "taskBootstrapBca95": [
+        0.008645533141210375,
+        0.20873314607974885
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 72,
+       "denominator": 128,
+       "estimate": 0.5625,
+       "wilson95": [
+        0.47598101173634194,
+        0.6453768687294696
+       ],
+       "taskBootstrap95": [
+        0.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        1.0
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": -0.36528177704648296,
+       "taskBootstrap95": [
+        -1.0,
+        0.13647938882699345
+       ],
+       "shareOfResamplesAboveZero": 0.11149055845721173,
+       "taskBootstrapBca95": [
+        -0.9841688654353562,
+        0.19366465538757727
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 55,
+      "unusable": 9,
+      "unusableTasks": 5,
+      "falsePasses": 6,
+      "falsePassTasks": 3
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 9,
+      "c": 10,
+      "tasksWithDiscordantPairs": 3,
+      "largestTaskShareOfDiscordant": 0.5263157894736842,
+      "clusteredChiSquare": 0.006060606060606061,
+      "clusteredP": 0.937947456842939,
+      "perTask": {
+       "arr-flatten": {
+        "b": 0,
+        "c": 10
+       },
+       "arr-intersection": {
+        "b": 8,
+        "c": 0
+       },
+       "date-add-days": {
+        "b": 1,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "date-add-days"
+     ]
+    }
+   }
+  },
+  {
+   "label": "prompt template B (7B, GPU host)",
+   "slug": "tplB",
+   "directory": "template-gpu/B/rq-c-s42-ollama-t30-r5",
+   "hashes": {
+    "trials.jsonl": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0",
+    "candidates.jsonl": "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2"
+   },
+   "replay": {
+    "distinctPrograms": 49,
+    "notReplayed": 0,
+    "disagreementsOnJudgedSkills": 0,
+    "disagreementsOnAllSkills": 0
+   },
+   "entryClass": [
+    {
+     "task": "arr-remove-falsy",
+     "code": "const removeFalsy = arr => arr.filter(Boolean);",
+     "skills": 24,
+     "judgedSkills": 12,
+     "verifierPassed": 12,
+     "failingAsRun": [],
+     "errorAsRun": "no callable"
+    }
+   ],
+   "testClass": [],
+   "soleFailingCaseOfJudgedSkills": {
+    "obj-get-nested [null,[\"a\"]]": 15,
+    "parse-query-string [\"\"]": 27,
+    "parse-version [\"a.b.c\"]": 6
+   },
+   "labels": {
+    "asRun": {
+     "diagnostics": {
+      "n": 750,
+      "tasks": 44,
+      "confusion": {
+       "tp": 674,
+       "fp": 76,
+       "fn": 0,
+       "tn": 0
+      },
+      "usableShare": 0.8986666666666666,
+      "hallucinationRate": {
+       "numerator": 76,
+       "denominator": 76,
+       "estimate": 1.0,
+       "wilson95": [
+        0.9518864149348628,
+        1.0000000000000002
+       ],
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 0,
+       "denominator": 674,
+       "estimate": 0.0,
+       "wilson95": [
+        4.336808689942018e-19,
+        0.00566719366410175
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.0
+       ]
+      },
+      "agreement": {
+       "numerator": 674,
+       "denominator": 750,
+       "estimate": 0.8986666666666666,
+       "wilson95": [
+        0.8749976632856967,
+        0.9182725833992073
+       ],
+       "taskBootstrap95": [
+        0.7990196078431373,
+        0.9792746113989638
+       ],
+       "taskBootstrapBca95": [
+        0.7670185395005291,
+        0.964713126076261
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 76,
+       "denominator": 750,
+       "estimate": 0.10133333333333333,
+       "wilson95": [
+        0.08172741660079268,
+        0.12500233671430325
+       ],
+       "taskBootstrap95": [
+        0.02072538860103627,
+        0.20098039215686275
+       ],
+       "taskBootstrapBca95": [
+        0.03528687392373845,
+        0.23298146049946458
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 0,
+       "denominator": 0,
+       "estimate": null
+      },
+      "missMinusHallucination": {
+       "estimate": -1.0,
+       "taskBootstrap95": [
+        -1.0,
+        -1.0
+       ],
+       "shareOfResamplesAboveZero": 0.0,
+       "taskBootstrapBca95": [
+        -1.0,
+        -1.0
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 49,
+      "unusable": 8,
+      "unusableTasks": 5,
+      "falsePasses": 8,
+      "falsePassTasks": 5
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 28,
+      "c": 0,
+      "tasksWithDiscordantPairs": 2,
+      "largestTaskShareOfDiscordant": 0.5714285714285714,
+      "clusteredChiSquare": 1.96,
+      "clusteredP": 0.1615133184675422,
+      "perTask": {
+       "arr-intersection": {
+        "b": 16,
+        "c": 0
+       },
+       "arr-remove-falsy": {
+        "b": 12,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-intersection",
+      "arr-remove-falsy"
+     ]
+    },
+    "entry": {
+     "diagnostics": {
+      "n": 750,
+      "tasks": 44,
+      "confusion": {
+       "tp": 686,
+       "fp": 64,
+       "fn": 0,
+       "tn": 0
+      },
+      "usableShare": 0.9146666666666666,
+      "hallucinationRate": {
+       "numerator": 64,
+       "denominator": 64,
+       "estimate": 1.0,
+       "wilson95": [
+        0.9433759402071946,
+        1.0
+       ],
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 0,
+       "denominator": 686,
+       "estimate": 0.0,
+       "wilson95": [
+        0.0,
+        0.00556861112299806
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.0
+       ]
+      },
+      "agreement": {
+       "numerator": 686,
+       "denominator": 750,
+       "estimate": 0.9146666666666666,
+       "wilson95": [
+        0.8924985734864126,
+        0.9326086061758121
+       ],
+       "taskBootstrap95": [
+        0.8184143222506394,
+        0.9917355371900827
+       ],
+       "taskBootstrapBca95": [
+        0.7809847091770075,
+        0.9787180602203264
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 64,
+       "denominator": 750,
+       "estimate": 0.08533333333333333,
+       "wilson95": [
+        0.06739139382418796,
+        0.10750142651358738
+       ],
+       "taskBootstrap95": [
+        0.008264462809917356,
+        0.1815856777493606
+       ],
+       "taskBootstrapBca95": [
+        0.021281939779674113,
+        0.21901529082299567
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 0,
+       "denominator": 0,
+       "estimate": null
+      },
+      "missMinusHallucination": {
+       "estimate": -1.0,
+       "taskBootstrap95": [
+        -1.0,
+        -1.0
+       ],
+       "shareOfResamplesAboveZero": 0.0,
+       "taskBootstrapBca95": [
+        -1.0,
+        -1.0
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 49,
+      "unusable": 7,
+      "unusableTasks": 4,
+      "falsePasses": 7,
+      "falsePassTasks": 4
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 16,
+      "c": 0,
+      "tasksWithDiscordantPairs": 1,
+      "largestTaskShareOfDiscordant": 1.0,
+      "clusteredChiSquare": 1.0,
+      "clusteredP": 0.3173105078629141,
+      "perTask": {
+       "arr-intersection": {
+        "b": 16,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-intersection"
+     ]
+    },
+    "entryAndTest": {
+     "diagnostics": {
+      "n": 750,
+      "tasks": 44,
+      "confusion": {
+       "tp": 686,
+       "fp": 64,
+       "fn": 0,
+       "tn": 0
+      },
+      "usableShare": 0.9146666666666666,
+      "hallucinationRate": {
+       "numerator": 64,
+       "denominator": 64,
+       "estimate": 1.0,
+       "wilson95": [
+        0.9433759402071946,
+        1.0
+       ],
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      },
+      "missRate": {
+       "numerator": 0,
+       "denominator": 686,
+       "estimate": 0.0,
+       "wilson95": [
+        0.0,
+        0.00556861112299806
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.0
+       ]
+      },
+      "agreement": {
+       "numerator": 686,
+       "denominator": 750,
+       "estimate": 0.9146666666666666,
+       "wilson95": [
+        0.8924985734864126,
+        0.9326086061758121
+       ],
+       "taskBootstrap95": [
+        0.8184143222506394,
+        0.9917355371900827
+       ],
+       "taskBootstrapBca95": [
+        0.7809847091770075,
+        0.9787180602203264
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 64,
+       "denominator": 750,
+       "estimate": 0.08533333333333333,
+       "wilson95": [
+        0.06739139382418796,
+        0.10750142651358738
+       ],
+       "taskBootstrap95": [
+        0.008264462809917356,
+        0.1815856777493606
+       ],
+       "taskBootstrapBca95": [
+        0.021281939779674113,
+        0.21901529082299567
+       ]
+      },
+      "falseOmissionRate": {
+       "numerator": 0,
+       "denominator": 0,
+       "estimate": null
+      },
+      "missMinusHallucination": {
+       "estimate": -1.0,
+       "taskBootstrap95": [
+        -1.0,
+        -1.0
+       ],
+       "shareOfResamplesAboveZero": 0.0,
+       "taskBootstrapBca95": [
+        -1.0,
+        -1.0
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 49,
+      "unusable": 7,
+      "unusableTasks": 4,
+      "falsePasses": 7,
+      "falsePassTasks": 4
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 16,
+      "c": 0,
+      "tasksWithDiscordantPairs": 1,
+      "largestTaskShareOfDiscordant": 1.0,
+      "clusteredChiSquare": 1.0,
+      "clusteredP": 0.3173105078629141,
+      "perTask": {
+       "arr-intersection": {
+        "b": 16,
+        "c": 0
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-intersection"
+     ]
+    }
+   }
+  },
+  {
+   "label": "second model (1.5B)",
+   "slug": "m15",
+   "directory": "rq-c-s42-ollama-t30-r5",
+   "hashes": {
+    "trials.jsonl": "812a792bdae4362341e19ccd5a8e22e3eb7ffe90a0d160df4275ed60130327ef",
+    "candidates.jsonl": "d5920b56cf74373eb08b875bebde8e59966a06949fab67ca9da9d998d4b1becc"
+   },
+   "replay": {
+    "distinctPrograms": 128,
+    "notReplayed": 0,
+    "disagreementsOnJudgedSkills": 0,
+    "disagreementsOnAllSkills": 0
+   },
+   "entryClass": [],
+   "testClass": [],
+   "soleFailingCaseOfJudgedSkills": {
+    "arr-flatten [[[1,[2]],3]]": 46,
+    "arr-second-largest [[3,1,4,1,4,2]]": 1,
+    "math-round-to [-1.5,0]": 12,
+    "obj-get-nested [null,[\"a\"]]": 50,
+    "parse-query-string [\"\"]": 90,
+    "str-capitalize-words [\"  foo  bar \"]": 20,
+    "str-capitalize-words [\"HELLO WORLD\"]": 10,
+    "str-slugify [\"a---b\"]": 17
+   },
+   "labels": {
+    "asRun": {
+     "diagnostics": {
+      "n": 3600,
+      "tasks": 44,
+      "confusion": {
+       "tp": 0,
+       "fp": 0,
+       "fn": 2991,
+       "tn": 609
+      },
+      "usableShare": 0.8308333333333333,
+      "hallucinationRate": {
+       "numerator": 0,
+       "denominator": 609,
+       "estimate": 0.0,
+       "wilson95": [
+        0.0,
+        0.006268275041454179
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.0
+       ]
+      },
+      "missRate": {
+       "numerator": 2991,
+       "denominator": 2991,
+       "estimate": 1.0,
+       "wilson95": [
+        0.998717308120141,
+        1.0
+       ],
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      },
+      "agreement": {
+       "numerator": 609,
+       "denominator": 3600,
+       "estimate": 0.16916666666666666,
+       "wilson95": [
+        0.15727428540511745,
+        0.18176434123317103
+       ],
+       "taskBootstrap95": [
+        0.08735955056179776,
+        0.2664804469273743
+       ],
+       "taskBootstrapBca95": [
+        0.09473684210526316,
+        0.28066649999652854
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 0,
+       "denominator": 0,
+       "estimate": null
+      },
+      "falseOmissionRate": {
+       "numerator": 2991,
+       "denominator": 3600,
+       "estimate": 0.8308333333333333,
+       "wilson95": [
+        0.8182356587668289,
+        0.8427257145948825
+       ],
+       "taskBootstrap95": [
+        0.7335195530726257,
+        0.9126404494382022
+       ],
+       "taskBootstrapBca95": [
+        0.7193335000034714,
+        0.9052631578947369
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": 1.0,
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "shareOfResamplesAboveZero": 1.0,
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 128,
+      "unusable": 34,
+      "unusableTasks": 16,
+      "falsePasses": 0,
+      "falsePassTasks": 0
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 24,
+      "c": 3,
+      "tasksWithDiscordantPairs": 5,
+      "largestTaskShareOfDiscordant": 0.3333333333333333,
+      "clusteredChiSquare": 2.238578680203046,
+      "clusteredP": 0.13460465781116093,
+      "perTask": {
+       "arr-second-largest": {
+        "b": 9,
+        "c": 0
+       },
+       "math-fib": {
+        "b": 1,
+        "c": 0
+       },
+       "math-round-to": {
+        "b": 9,
+        "c": 0
+       },
+       "parse-json-safe": {
+        "b": 5,
+        "c": 0
+       },
+       "str-slugify": {
+        "b": 0,
+        "c": 3
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "arr-second-largest",
+      "logic-fizzbuzz",
+      "math-fib",
+      "math-round-to",
+      "parse-json-safe",
+      "str-capitalize-words",
+      "str-count-vowels",
+      "str-is-palindrome",
+      "str-slugify"
+     ]
+    },
+    "entry": {
+     "diagnostics": {
+      "n": 3600,
+      "tasks": 44,
+      "confusion": {
+       "tp": 0,
+       "fp": 0,
+       "fn": 2991,
+       "tn": 609
+      },
+      "usableShare": 0.8308333333333333,
+      "hallucinationRate": {
+       "numerator": 0,
+       "denominator": 609,
+       "estimate": 0.0,
+       "wilson95": [
+        0.0,
+        0.006268275041454179
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.0
+       ]
+      },
+      "missRate": {
+       "numerator": 2991,
+       "denominator": 2991,
+       "estimate": 1.0,
+       "wilson95": [
+        0.998717308120141,
+        1.0
+       ],
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      },
+      "agreement": {
+       "numerator": 609,
+       "denominator": 3600,
+       "estimate": 0.16916666666666666,
+       "wilson95": [
+        0.15727428540511745,
+        0.18176434123317103
+       ],
+       "taskBootstrap95": [
+        0.08735955056179776,
+        0.2664804469273743
+       ],
+       "taskBootstrapBca95": [
+        0.09473684210526316,
+        0.28066649999652854
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 0,
+       "denominator": 0,
+       "estimate": null
+      },
+      "falseOmissionRate": {
+       "numerator": 2991,
+       "denominator": 3600,
+       "estimate": 0.8308333333333333,
+       "wilson95": [
+        0.8182356587668289,
+        0.8427257145948825
+       ],
+       "taskBootstrap95": [
+        0.7335195530726257,
+        0.9126404494382022
+       ],
+       "taskBootstrapBca95": [
+        0.7193335000034714,
+        0.9052631578947369
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": 1.0,
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "shareOfResamplesAboveZero": 1.0,
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 128,
+      "unusable": 34,
+      "unusableTasks": 16,
+      "falsePasses": 0,
+      "falsePassTasks": 0
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 24,
+      "c": 3,
+      "tasksWithDiscordantPairs": 5,
+      "largestTaskShareOfDiscordant": 0.3333333333333333,
+      "clusteredChiSquare": 2.238578680203046,
+      "clusteredP": 0.13460465781116093,
+      "perTask": {
+       "arr-second-largest": {
+        "b": 9,
+        "c": 0
+       },
+       "math-fib": {
+        "b": 1,
+        "c": 0
+       },
+       "math-round-to": {
+        "b": 9,
+        "c": 0
+       },
+       "parse-json-safe": {
+        "b": 5,
+        "c": 0
+       },
+       "str-slugify": {
+        "b": 0,
+        "c": 3
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "arr-second-largest",
+      "logic-fizzbuzz",
+      "math-fib",
+      "math-round-to",
+      "parse-json-safe",
+      "str-capitalize-words",
+      "str-count-vowels",
+      "str-is-palindrome",
+      "str-slugify"
+     ]
+    },
+    "entryAndTest": {
+     "diagnostics": {
+      "n": 3600,
+      "tasks": 44,
+      "confusion": {
+       "tp": 0,
+       "fp": 0,
+       "fn": 2991,
+       "tn": 609
+      },
+      "usableShare": 0.8308333333333333,
+      "hallucinationRate": {
+       "numerator": 0,
+       "denominator": 609,
+       "estimate": 0.0,
+       "wilson95": [
+        0.0,
+        0.006268275041454179
+       ],
+       "taskBootstrap95": [
+        0.0,
+        0.0
+       ],
+       "taskBootstrapBca95": [
+        0.0,
+        0.0
+       ]
+      },
+      "missRate": {
+       "numerator": 2991,
+       "denominator": 2991,
+       "estimate": 1.0,
+       "wilson95": [
+        0.998717308120141,
+        1.0
+       ],
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      },
+      "agreement": {
+       "numerator": 609,
+       "denominator": 3600,
+       "estimate": 0.16916666666666666,
+       "wilson95": [
+        0.15727428540511745,
+        0.18176434123317103
+       ],
+       "taskBootstrap95": [
+        0.08735955056179776,
+        0.2664804469273743
+       ],
+       "taskBootstrapBca95": [
+        0.09473684210526316,
+        0.28066649999652854
+       ]
+      },
+      "falseDiscoveryRate": {
+       "numerator": 0,
+       "denominator": 0,
+       "estimate": null
+      },
+      "falseOmissionRate": {
+       "numerator": 2991,
+       "denominator": 3600,
+       "estimate": 0.8308333333333333,
+       "wilson95": [
+        0.8182356587668289,
+        0.8427257145948825
+       ],
+       "taskBootstrap95": [
+        0.7335195530726257,
+        0.9126404494382022
+       ],
+       "taskBootstrapBca95": [
+        0.7193335000034714,
+        0.9052631578947369
+       ]
+      },
+      "missMinusHallucination": {
+       "estimate": 1.0,
+       "taskBootstrap95": [
+        1.0,
+        1.0
+       ],
+       "shareOfResamplesAboveZero": 1.0,
+       "taskBootstrapBca95": [
+        1.0,
+        1.0
+       ]
+      }
+     },
+     "distinct": {
+      "candidates": 128,
+      "unusable": 34,
+      "unusableTasks": 16,
+      "falsePasses": 0,
+      "falsePassTasks": 0
+     },
+     "clusteredMcNemar": {
+      "pairs": 720,
+      "b": 24,
+      "c": 3,
+      "tasksWithDiscordantPairs": 5,
+      "largestTaskShareOfDiscordant": 0.3333333333333333,
+      "clusteredChiSquare": 2.238578680203046,
+      "clusteredP": 0.13460465781116093,
+      "perTask": {
+       "arr-second-largest": {
+        "b": 9,
+        "c": 0
+       },
+       "math-fib": {
+        "b": 1,
+        "c": 0
+       },
+       "math-round-to": {
+        "b": 9,
+        "c": 0
+       },
+       "parse-json-safe": {
+        "b": 5,
+        "c": 0
+       },
+       "str-slugify": {
+        "b": 0,
+        "c": 3
+       }
+      }
+     },
+     "informativeTasks": [
+      "arr-flatten",
+      "arr-intersection",
+      "arr-second-largest",
+      "logic-fizzbuzz",
+      "math-fib",
+      "math-round-to",
+      "parse-json-safe",
+      "str-capitalize-words",
+      "str-count-vowels",
+      "str-is-palindrome",
+      "str-slugify"
+     ]
+    }
+   }
+  }
+ ],
+ "example": {
+  "task": "parse-query-string",
+  "instruction": "Write a function `parseQuery(qs)` that parses a URL query string (\"a=1&b=2\") into an object, URL-decoding values. An empty string yields an empty object. On duplicate keys keep the last value.",
+  "code": "function solve(qs) {\n  return qs.split('&').reduce((acc, pair) => {\n    const [key, value] = pair.split('=');\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}",
+  "falsePasses": 18,
+  "cases": 6,
+  "failing": [
+   {
+    "args": "[\"\"]",
+    "expected": "{}",
+    "actual": "{\"\":\"undefined\"}"
+   }
+  ]
+ },
+ "feedbackDetail": {
+  "task": "arr-remove-falsy",
+  "programs": [
+   {
+    "code": "const removeFalsy = arr => arr.filter(Boolean);",
+    "cells": {
+     "sv0-ef0": 6,
+     "sv0-ef1": 6,
+     "sv1-ef0": 6,
+     "sv1-ef1": 6
+    },
+    "skills": 24,
+    "usable": false
+   },
+   {
+    "code": "const solve = arr => arr.filter(item => item);",
+    "cells": {
+     "sv0-ef1": 6,
+     "sv1-ef1": 6
+    },
+    "skills": 12,
+    "usable": true
+   }
+  ],
+  "sandboxMessage": "no callable function found (tried `solve`, single global function, and whole-code expression)"
+ }
+}
