@@ -1,0 +1,3307 @@
+{
+ "experiment": "P1-B follow-up: one reader's categories for the surviving mutants",
+ "plan": "experiments/plans/2026-11-05-p1-b-survivor-reading.md",
+ "reader": "Claude; one reader; the first author has not yet read it",
+ "readAt": "9922825",
+ "matrices": {
+  "drift": {
+   "survivors": 164,
+   "diagnostic": 33,
+   "decision": 114,
+   "equivalent": 17,
+   "score": 0.4874,
+   "executedScore": 0.7123,
+   "scoreWithoutEquivalents": 0.4975,
+   "scoreWithoutEquivalentsCi95": [
+    0.4633,
+    0.5318
+   ],
+   "executedScoreWithoutEquivalents": 0.7342,
+   "executedScoreWithoutEquivalentsCi95": [
+    0.6958,
+    0.7693
+   ],
+   "executedScoreOverDecisionsOnly": 0.7808,
+   "executedScoreOverDecisionsOnlyCi95": [
+    0.7432,
+    0.8142
+   ]
+  },
+  "gate": {
+   "survivors": 193,
+   "decision": 163,
+   "diagnostic": 19,
+   "equivalent": 11,
+   "score": 0.1188,
+   "executedScore": 0.2662,
+   "scoreWithoutEquivalents": 0.1211,
+   "scoreWithoutEquivalentsCi95": [
+    0.097,
+    0.1502
+   ],
+   "executedScoreWithoutEquivalents": 0.2778,
+   "executedScoreWithoutEquivalentsCi95": [
+    0.2261,
+    0.3361
+   ],
+   "executedScoreOverDecisionsOnly": 0.3004,
+   "executedScoreOverDecisionsOnlyCi95": [
+    0.2452,
+    0.3621
+   ]
+  }
+ },
+ "byFile": {
+  "Boundary.cs": {
+   "diagnostic": 11,
+   "decision": 40
+  },
+  "PgcGate.cs": {
+   "decision": 100,
+   "diagnostic": 3,
+   "equivalent": 4
+  },
+  "PromotionService.cs": {
+   "decision": 39,
+   "diagnostic": 10,
+   "equivalent": 7
+  },
+  "ShadowParams.cs": {
+   "decision": 23,
+   "diagnostic": 1
+  },
+  "V9Endpoints.cs": {
+   "decision": 16,
+   "equivalent": 1
+  },
+  "V9EventService.cs": {
+   "diagnostic": 12,
+   "decision": 44,
+   "equivalent": 15
+  },
+  "Vse.cs": {
+   "diagnostic": 5,
+   "decision": 1
+  },
+  "WireSchema.cs": {
+   "diagnostic": 10,
+   "decision": 14,
+   "equivalent": 1
+  }
+ },
+ "rows": [
+  {
+   "key": "drift-server:4970",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 29,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:4989",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 56,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5012",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 73,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5019",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 75,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5023",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 87,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "inverts the literal rule"
+  },
+  {
+   "key": "drift-server:5024",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 88,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes the numeric literal rule"
+  },
+  {
+   "key": "drift-server:5025",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 88,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the numeric literal rule"
+  },
+  {
+   "key": "drift-server:5044",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 108,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "array items are not validated"
+  },
+  {
+   "key": "drift-server:5045",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 108,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5051",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 110,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5084",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 181,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5085",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 181,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5088",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 184,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5092",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 188,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "treats a non-strict object as strict"
+  },
+  {
+   "key": "drift-server:5096",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 189,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5097",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 189,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-server:5099",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 200,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "a whole-number rule accepts fractions"
+  },
+  {
+   "key": "drift-server:5129",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 259,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "refuses a valid replay mode"
+  },
+  {
+   "key": "drift-server:5132",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 260,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "refuses a valid risk level"
+  },
+  {
+   "key": "drift-server:5133",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 260,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "refuses a valid risk level"
+  },
+  {
+   "key": "drift-server:5136",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 263,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "refuses a valid optional field"
+  },
+  {
+   "key": "drift-server:5141",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 270,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of the v10 requirement"
+  },
+  {
+   "key": "drift-server:5142",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 270,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of the v10 requirement"
+  },
+  {
+   "key": "drift-server:5148",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 276,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of a rule whose fixtures do not reach it"
+  },
+  {
+   "key": "drift-server:5155",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 278,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of a rule whose fixtures do not reach it"
+  },
+  {
+   "key": "drift-server:5156",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 278,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of a rule whose fixtures do not reach it"
+  },
+  {
+   "key": "drift-server:5157",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 278,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of a rule whose fixtures do not reach it"
+  },
+  {
+   "key": "drift-server:5163",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 282,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a field of a rule whose fixtures do not reach it"
+  },
+  {
+   "key": "drift-server:5231",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 317,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5232",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 317,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5233",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 317,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5234",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 317,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5235",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 318,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5236",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 318,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5237",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 318,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5238",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 319,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5239",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 319,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5240",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 319,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5241",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 319,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5242",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 320,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5243",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 320,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5244",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 320,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5245",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 320,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5246",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 323,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5247",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 323,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5248",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 323,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5249",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 323,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5250",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 324,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5251",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 324,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5252",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 324,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "misnames a perception field"
+  },
+  {
+   "key": "drift-server:5253",
+   "matrix": "drift",
+   "file": "Boundary.cs",
+   "line": 327,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes which topics need the v10 fields"
+  },
+  {
+   "key": "drift-server:5710",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 22,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "an observation topic is not dispatched"
+  },
+  {
+   "key": "drift-server:5711",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 23,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "an observation topic is not dispatched"
+  },
+  {
+   "key": "drift-server:5712",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 28,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the published reason chain"
+  },
+  {
+   "key": "drift-server:5713",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 28,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the published reason chain"
+  },
+  {
+   "key": "drift-server:5714",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 28,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the published reason chain"
+  },
+  {
+   "key": "drift-server:5715",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 28,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the published reason chain"
+  },
+  {
+   "key": "drift-server:5716",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 28,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the published reason chain"
+  },
+  {
+   "key": "drift-server:5717",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 28,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the published reason chain"
+  },
+  {
+   "key": "drift-server:5720",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 36,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:5735",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 51,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5736",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 51,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5737",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 52,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5738",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 52,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5739",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 53,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5740",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 53,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5741",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 54,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:5742",
+   "matrix": "drift",
+   "file": "V9Endpoints.cs",
+   "line": 54,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "removes or breaks an endpoint"
+  },
+  {
+   "key": "drift-server:6095",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 31,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6096",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 36,
+   "mutator": "Conditional (true) mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6097",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 36,
+   "mutator": "Conditional (false) mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6098",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 36,
+   "mutator": "Equality mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6101",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 38,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6118",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 56,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "drops or misreads tick or input hash from the envelope"
+  },
+  {
+   "key": "drift-server:6119",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 56,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "drops or misreads tick or input hash from the envelope"
+  },
+  {
+   "key": "drift-server:6121",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 56,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "drops or misreads tick or input hash from the envelope"
+  },
+  {
+   "key": "drift-server:6122",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 56,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "drops or misreads tick or input hash from the envelope"
+  },
+  {
+   "key": "drift-server:6124",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 57,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "drops the core state node"
+  },
+  {
+   "key": "drift-server:6125",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 57,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "drops the core state node"
+  },
+  {
+   "key": "drift-server:6127",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 75,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "ignores an injected clock"
+  },
+  {
+   "key": "drift-server:6128",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6129",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6130",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6131",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "LogicalNotExpression to un-LogicalNotExpression mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6132",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6133",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6134",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "LogicalNotExpression to un-LogicalNotExpression mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6135",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6136",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 79,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored pairing status"
+  },
+  {
+   "key": "drift-server:6167",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 133,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6169",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 134,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6171",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 137,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6173",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 138,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6177",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 142,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6178",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 143,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the stored causality"
+  },
+  {
+   "key": "drift-server:6179",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 143,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the stored causality"
+  },
+  {
+   "key": "drift-server:6180",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 143,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the stored causality"
+  },
+  {
+   "key": "drift-server:6181",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 143,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "changes the stored causality"
+  },
+  {
+   "key": "drift-server:6182",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 143,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored causality"
+  },
+  {
+   "key": "drift-server:6187",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 152,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6188",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 153,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6190",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 156,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6192",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 157,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6194",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 158,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6197",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 164,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which receipts are checked for pairing"
+  },
+  {
+   "key": "drift-server:6198",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 165,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes the pairing result"
+  },
+  {
+   "key": "drift-server:6200",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 167,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6201",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 168,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the pairing check"
+  },
+  {
+   "key": "drift-server:6202",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 168,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the pairing check"
+  },
+  {
+   "key": "drift-server:6203",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 168,
+   "mutator": "Negate expression",
+   "category": "decision",
+   "reason": "changes the pairing check"
+  },
+  {
+   "key": "drift-server:6205",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 171,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "drops the audit row of a pairing gap"
+  },
+  {
+   "key": "drift-server:6207",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 172,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the actor label of an audit row, which no code reads"
+  },
+  {
+   "key": "drift-server:6208",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 172,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the action that the admin count reads"
+  },
+  {
+   "key": "drift-server:6209",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 173,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6210",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 174,
+   "mutator": "Statement mutation",
+   "category": "diagnostic",
+   "reason": "a log call"
+  },
+  {
+   "key": "drift-server:6211",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 174,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a log message"
+  },
+  {
+   "key": "drift-server:6212",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 175,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes the pairing result"
+  },
+  {
+   "key": "drift-server:6222",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 185,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "changes the stored session"
+  },
+  {
+   "key": "drift-server:6223",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 185,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored session"
+  },
+  {
+   "key": "drift-server:6225",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 186,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored snapshot"
+  },
+  {
+   "key": "drift-server:6229",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 190,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "drops the asset version from the projection"
+  },
+  {
+   "key": "drift-server:6230",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 191,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the stored receipt event"
+  },
+  {
+   "key": "drift-server:6231",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 191,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the stored receipt event"
+  },
+  {
+   "key": "drift-server:6232",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 191,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the stored receipt event"
+  },
+  {
+   "key": "drift-server:6233",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 192,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the stored request event"
+  },
+  {
+   "key": "drift-server:6234",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 192,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the stored request event"
+  },
+  {
+   "key": "drift-server:6235",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 192,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the stored request event"
+  },
+  {
+   "key": "drift-server:6237",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 197,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a field label used only in an exception message"
+  },
+  {
+   "key": "drift-server:6238",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 197,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a field label used only in an exception message"
+  },
+  {
+   "key": "drift-server:6242",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 199,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "applies the self-reference rule with the checks off"
+  },
+  {
+   "key": "drift-server:6247",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 200,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6250",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 204,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6306",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 231,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-server:6314",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 240,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "weakens the self-reference rule"
+  },
+  {
+   "key": "drift-server:6316",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 240,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "weakens the self-reference rule"
+  },
+  {
+   "key": "drift-server:6321",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 242,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "removes the self-reference refusal, so another reason or none applies"
+  },
+  {
+   "key": "drift-server:6322",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 243,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of an exception or public error message"
+  },
+  {
+   "key": "drift-server:6323",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 245,
+   "mutator": "Linq method mutation (FirstOrDefault() to First())",
+   "category": "decision",
+   "reason": "throws instead of the not-found refusal"
+  },
+  {
+   "key": "drift-server:6325",
+   "matrix": "drift",
+   "file": "V9EventService.cs",
+   "line": 246,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "drift-core:386",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 21,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:387",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 35,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "the optional modifier has no effect"
+  },
+  {
+   "key": "drift-core:397",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 52,
+   "mutator": "String mutation",
+   "category": "equivalent",
+   "reason": "the initial value is read only when TryString returned false, and no caller reads it then"
+  },
+  {
+   "key": "drift-core:408",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 67,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "Num rejects fractions"
+  },
+  {
+   "key": "drift-core:409",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 69,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "Whole accepts fractions"
+  },
+  {
+   "key": "drift-core:418",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 95,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:419",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 98,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "copying drops the optional flag"
+  },
+  {
+   "key": "drift-core:421",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 107,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "a non-number can pass"
+  },
+  {
+   "key": "drift-core:435",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 112,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes the whole-number or safe-integer check"
+  },
+  {
+   "key": "drift-core:438",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 112,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the whole-number or safe-integer check"
+  },
+  {
+   "key": "drift-core:447",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 115,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:454",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 117,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:455",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 120,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "copying drops the optional flag"
+  },
+  {
+   "key": "drift-core:457",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 127,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "a non-string or unlisted value can pass"
+  },
+  {
+   "key": "drift-core:464",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 131,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "copying drops the optional flag"
+  },
+  {
+   "key": "drift-core:470",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 139,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "a wrong literal passes"
+  },
+  {
+   "key": "drift-core:471",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 139,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:496",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 169,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:501",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 171,
+   "mutator": "Statement mutation",
+   "category": "decision",
+   "reason": "array items are not validated"
+  },
+  {
+   "key": "drift-core:502",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 171,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:512",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 211,
+   "mutator": "Linq method mutation (Concat() to Except())",
+   "category": "decision",
+   "reason": "composition drops fields"
+  },
+  {
+   "key": "drift-core:527",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 226,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:530",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 229,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:536",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 236,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "only the text or path of a validation message"
+  },
+  {
+   "key": "drift-core:548",
+   "matrix": "drift",
+   "file": "WireSchema.cs",
+   "line": 262,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "copying drops the optional flag"
+  },
+  {
+   "key": "gate-server:5273",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 28,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "ignores an injected clock"
+  },
+  {
+   "key": "gate-server:5328",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 61,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5329",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 62,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5330",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 63,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5331",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 64,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5332",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 65,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5333",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 66,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5337",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 73,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a stage or result label that only logs and callers' messages read"
+  },
+  {
+   "key": "gate-server:5340",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 75,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a stage or result label that only logs and callers' messages read"
+  },
+  {
+   "key": "gate-server:5341",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 75,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-server:5344",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 79,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a stage or result label that only logs and callers' messages read"
+  },
+  {
+   "key": "gate-server:5345",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 84,
+   "mutator": "Conditional (true) mutation",
+   "category": "equivalent",
+   "reason": "the input holds exactly one candidate, so the plan always has one entry"
+  },
+  {
+   "key": "gate-server:5348",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 84,
+   "mutator": "Equality mutation",
+   "category": "equivalent",
+   "reason": "the input holds exactly one candidate, so the plan always has one entry"
+  },
+  {
+   "key": "gate-server:5350",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 86,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the commit verdict for a job without a state, or the verdict's source"
+  },
+  {
+   "key": "gate-server:5351",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 86,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the commit verdict for a job without a state, or the verdict's source"
+  },
+  {
+   "key": "gate-server:5352",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 86,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the commit verdict for a job without a state, or the verdict's source"
+  },
+  {
+   "key": "gate-server:5354",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 87,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the stored commit reason"
+  },
+  {
+   "key": "gate-server:5355",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 87,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the stored commit reason"
+  },
+  {
+   "key": "gate-server:5356",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 87,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the stored commit reason"
+  },
+  {
+   "key": "gate-server:5363",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 89,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a stage or result label that only logs and callers' messages read"
+  },
+  {
+   "key": "gate-server:5364",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 89,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-server:5370",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 96,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5371",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 96,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5372",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 96,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5373",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 96,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5374",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 97,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5375",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 99,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5376",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 100,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5377",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 101,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5378",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 102,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5379",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 103,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5380",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 104,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5381",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 105,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5382",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 105,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5383",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 105,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5384",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 105,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5385",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 106,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5386",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 107,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5387",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 108,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5388",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 110,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "gate-server:5389",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 111,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "gate-server:5392",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 114,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a descriptive name of a stored row"
+  },
+  {
+   "key": "gate-server:5393",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 114,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "gate-server:5395",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 116,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a descriptive name of a stored row"
+  },
+  {
+   "key": "gate-server:5396",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 116,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5397",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 116,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5398",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 116,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5399",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 117,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5400",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 117,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5401",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 117,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5402",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 117,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5403",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 117,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a field written to a stored row, and the matrix reads no such row"
+  },
+  {
+   "key": "gate-server:5404",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 117,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "gate-server:5406",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 118,
+   "mutator": "Boolean mutation",
+   "category": "equivalent",
+   "reason": "ConfigureAwait's flag only picks the synchronization context, and the server and worker have none"
+  },
+  {
+   "key": "gate-server:5408",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 119,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a stage or result label that only logs and callers' messages read"
+  },
+  {
+   "key": "gate-server:5409",
+   "matrix": "gate",
+   "file": "PromotionService.cs",
+   "line": 119,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "a stage or result label that only logs and callers' messages read"
+  },
+  {
+   "key": "gate-memory:1599",
+   "matrix": "gate",
+   "file": "Vse.cs",
+   "line": 119,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-memory:1602",
+   "matrix": "gate",
+   "file": "Vse.cs",
+   "line": 121,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-memory:1604",
+   "matrix": "gate",
+   "file": "Vse.cs",
+   "line": 122,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "a failed dependency scan passes, the gap the hand-written mutants also found"
+  },
+  {
+   "key": "gate-memory:1608",
+   "matrix": "gate",
+   "file": "Vse.cs",
+   "line": 125,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-memory:1611",
+   "matrix": "gate",
+   "file": "Vse.cs",
+   "line": 127,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-memory:1614",
+   "matrix": "gate",
+   "file": "Vse.cs",
+   "line": 129,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-memory:3423",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 122,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the default policy's version or evidence rule"
+  },
+  {
+   "key": "gate-memory:3424",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 122,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes the default policy's version or evidence rule"
+  },
+  {
+   "key": "gate-memory:3425",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 125,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the neutral policy's key"
+  },
+  {
+   "key": "gate-memory:3433",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 160,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes a commitment weight's coefficient"
+  },
+  {
+   "key": "gate-memory:3434",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 161,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes a commitment weight's coefficient"
+  },
+  {
+   "key": "gate-memory:3435",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 162,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes a commitment weight's coefficient"
+  },
+  {
+   "key": "gate-memory:3436",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 162,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes a commitment weight's coefficient"
+  },
+  {
+   "key": "gate-memory:3437",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 163,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes a commitment weight's coefficient"
+  },
+  {
+   "key": "gate-memory:3438",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 168,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes the high-contradiction rule"
+  },
+  {
+   "key": "gate-memory:3439",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 170,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the clamp"
+  },
+  {
+   "key": "gate-memory:3442",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 180,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "drops the candidate's claims from contradiction detection"
+  },
+  {
+   "key": "gate-memory:3444",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 184,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "drops the beliefs from contradiction detection"
+  },
+  {
+   "key": "gate-memory:3474",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 203,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "changes contradiction detection on evidence records"
+  },
+  {
+   "key": "gate-memory:3475",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 203,
+   "mutator": "Null coalescing mutation (remove right)",
+   "category": "decision",
+   "reason": "changes contradiction detection on evidence records"
+  },
+  {
+   "key": "gate-memory:3503",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 240,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes persona-shift risk"
+  },
+  {
+   "key": "gate-memory:3514",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 253,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes a reason code's wire name in stored plans"
+  },
+  {
+   "key": "gate-memory:3521",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 264,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "an expected-test label that is only serialized"
+  },
+  {
+   "key": "gate-memory:3522",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 265,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "an expected-test label that is only serialized"
+  },
+  {
+   "key": "gate-memory:3523",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 265,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "an expected-test label that is only serialized"
+  },
+  {
+   "key": "gate-memory:3526",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 276,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3528",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 276,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3529",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 276,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3530",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 276,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3531",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 276,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3533",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 277,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3536",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 277,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the commitment weight"
+  },
+  {
+   "key": "gate-memory:3538",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 278,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the commitment weight's clamp"
+  },
+  {
+   "key": "gate-memory:3541",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 283,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "ignores a caller's policy"
+  },
+  {
+   "key": "gate-memory:3543",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 284,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction level"
+  },
+  {
+   "key": "gate-memory:3545",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 284,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction level"
+  },
+  {
+   "key": "gate-memory:3546",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 284,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction level"
+  },
+  {
+   "key": "gate-memory:3547",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 284,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction level"
+  },
+  {
+   "key": "gate-memory:3548",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 284,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction level"
+  },
+  {
+   "key": "gate-memory:3549",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 284,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction level"
+  },
+  {
+   "key": "gate-memory:3551",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 291,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "ignores a caller's policy"
+  },
+  {
+   "key": "gate-memory:3552",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 292,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes the contradiction branch"
+  },
+  {
+   "key": "gate-memory:3553",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 292,
+   "mutator": "Negate expression",
+   "category": "decision",
+   "reason": "changes the contradiction branch"
+  },
+  {
+   "key": "gate-memory:3554",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 292,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction branch"
+  },
+  {
+   "key": "gate-memory:3559",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 294,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the fatigue branch"
+  },
+  {
+   "key": "gate-memory:3560",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 294,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the fatigue branch"
+  },
+  {
+   "key": "gate-memory:3561",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 294,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the fatigue branch"
+  },
+  {
+   "key": "gate-memory:3563",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 296,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the commit branch"
+  },
+  {
+   "key": "gate-memory:3564",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 296,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the commit branch"
+  },
+  {
+   "key": "gate-memory:3565",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 296,
+   "mutator": "Negate expression",
+   "category": "decision",
+   "reason": "changes the commit branch"
+  },
+  {
+   "key": "gate-memory:3566",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 297,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes the deferred flag"
+  },
+  {
+   "key": "gate-memory:3567",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 298,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the throttle branch"
+  },
+  {
+   "key": "gate-memory:3568",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 298,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the throttle branch"
+  },
+  {
+   "key": "gate-memory:3569",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 298,
+   "mutator": "Negate expression",
+   "category": "decision",
+   "reason": "changes the throttle branch"
+  },
+  {
+   "key": "gate-memory:3571",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 300,
+   "mutator": "Boolean mutation",
+   "category": "decision",
+   "reason": "changes the deferred flag"
+  },
+  {
+   "key": "gate-memory:3573",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 310,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "ignores a caller's parameters"
+  },
+  {
+   "key": "gate-memory:3574",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 315,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3575",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 315,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3576",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 315,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3577",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 315,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3578",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 315,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3579",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 315,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3580",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 316,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3581",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 316,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3582",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 316,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3583",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 316,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3584",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 316,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3585",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 316,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3587",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 319,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3589",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3590",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3591",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3592",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3593",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3594",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3595",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 320,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3597",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 323,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which vertices are tried"
+  },
+  {
+   "key": "gate-memory:3599",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 325,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3600",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 325,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3602",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 328,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3603",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 328,
+   "mutator": "UnaryMinusExpression to UnaryPlusExpression mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3604",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 328,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3605",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 328,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3606",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 328,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the vertex"
+  },
+  {
+   "key": "gate-memory:3607",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 329,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which vertices are tried"
+  },
+  {
+   "key": "gate-memory:3608",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 329,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes which vertices are tried"
+  },
+  {
+   "key": "gate-memory:3609",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 329,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which vertices are tried"
+  },
+  {
+   "key": "gate-memory:3610",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 329,
+   "mutator": "Equality mutation",
+   "category": "equivalent",
+   "reason": "a vertex of exactly 0 only adds a candidate 0 that the list already holds"
+  },
+  {
+   "key": "gate-memory:3611",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 329,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which vertices are tried"
+  },
+  {
+   "key": "gate-memory:3612",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 329,
+   "mutator": "Equality mutation",
+   "category": "equivalent",
+   "reason": "a vertex of exactly 1 only adds a candidate 1 that the list already holds"
+  },
+  {
+   "key": "gate-memory:3615",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 336,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3621",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 336,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3622",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 336,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3623",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 336,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the upper bound of the weight"
+  },
+  {
+   "key": "gate-memory:3625",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 343,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "ignores a caller's threshold"
+  },
+  {
+   "key": "gate-memory:3627",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 344,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the commit verdict at the threshold"
+  },
+  {
+   "key": "gate-memory:3637",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 352,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the commit verdict at the threshold"
+  },
+  {
+   "key": "gate-memory:3645",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 361,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "drops evidence records from the decision"
+  },
+  {
+   "key": "gate-memory:3647",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 367,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored state id"
+  },
+  {
+   "key": "gate-memory:3650",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 375,
+   "mutator": "Logical mutation",
+   "category": "decision",
+   "reason": "changes evidence sufficiency"
+  },
+  {
+   "key": "gate-memory:3652",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 375,
+   "mutator": "Equality mutation",
+   "category": "equivalent",
+   "reason": "with no evidence ids the strength is 0 or NaN on every path, so the second operand decides anyway"
+  },
+  {
+   "key": "gate-memory:3700",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 431,
+   "mutator": "Linq method mutation (First() to FirstOrDefault())",
+   "category": "equivalent",
+   "reason": "each entry's id comes from the same candidates, so First always finds one"
+  },
+  {
+   "key": "gate-memory:3702",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 432,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "drops evidence records from the report"
+  },
+  {
+   "key": "gate-memory:3707",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 438,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the report's severity"
+  },
+  {
+   "key": "gate-memory:3708",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 440,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the stored decision id"
+  },
+  {
+   "key": "gate-memory:3709",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3710",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3711",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3712",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3714",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3715",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Conditional (true) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3716",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Conditional (false) mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:3718",
+   "matrix": "gate",
+   "file": "PgcGate.cs",
+   "line": 441,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes the contradiction report"
+  },
+  {
+   "key": "gate-memory:4782",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 34,
+   "mutator": "Object initializer mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4783",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 36,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4784",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 37,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4785",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 38,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4786",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 39,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4787",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 40,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4788",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 41,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4789",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 42,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the proposal's stored and queued form"
+  },
+  {
+   "key": "gate-memory:4790",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 44,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which optional fields the form holds"
+  },
+  {
+   "key": "gate-memory:4792",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 46,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which optional fields the form holds"
+  },
+  {
+   "key": "gate-memory:4794",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 48,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which optional fields the form holds"
+  },
+  {
+   "key": "gate-memory:4796",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 50,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which optional fields the form holds"
+  },
+  {
+   "key": "gate-memory:4798",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 52,
+   "mutator": "Equality mutation",
+   "category": "decision",
+   "reason": "changes which optional fields the form holds"
+  },
+  {
+   "key": "gate-memory:4816",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 75,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the input hash's value for every proposal"
+  },
+  {
+   "key": "gate-memory:4817",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 75,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the input hash's value for every proposal"
+  },
+  {
+   "key": "gate-memory:4818",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 75,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the input hash's value for every proposal"
+  },
+  {
+   "key": "gate-memory:4827",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 89,
+   "mutator": "String mutation",
+   "category": "diagnostic",
+   "reason": "the text of a refusal reason"
+  },
+  {
+   "key": "gate-memory:4879",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 133,
+   "mutator": "Linq method mutation (Max() to Min())",
+   "category": "decision",
+   "reason": "changes the confidence clamp"
+  },
+  {
+   "key": "gate-memory:4880",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 133,
+   "mutator": "Linq method mutation (Min() to Max())",
+   "category": "decision",
+   "reason": "changes the confidence clamp"
+  },
+  {
+   "key": "gate-memory:4881",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 134,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "changes the candidate's id, evidence or salience"
+  },
+  {
+   "key": "gate-memory:4882",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 134,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the candidate's id, evidence or salience"
+  },
+  {
+   "key": "gate-memory:4883",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 134,
+   "mutator": "Null coalescing mutation (remove left)",
+   "category": "decision",
+   "reason": "changes the candidate's id, evidence or salience"
+  },
+  {
+   "key": "gate-memory:4885",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 134,
+   "mutator": "String mutation",
+   "category": "decision",
+   "reason": "changes the candidate's id, evidence or salience"
+  },
+  {
+   "key": "gate-memory:4886",
+   "matrix": "gate",
+   "file": "ShadowParams.cs",
+   "line": 134,
+   "mutator": "Arithmetic mutation",
+   "category": "decision",
+   "reason": "changes the candidate's id, evidence or salience"
+  }
+ ]
+}
