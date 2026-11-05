@@ -1,0 +1,367 @@
+{
+  "experiment": "Ranking conventions in open-source memory code (P3, Table 11)",
+  "date": "2026-11-05",
+  "method": "Source files read at the listed commits through the GitHub API. Nothing was installed or run, so this record says how each system combines its signals and nothing about what that does to recall.",
+  "planned": "No plan was committed before this reading. It was made after P3's results were known, and it is exploratory.",
+  "reader": "One reader; no second reader has checked the coding.",
+  "frame": {
+    "topic": "The twelve most-starred repositories on 5 November 2026 under the GitHub topics agent-memory, ai-memory and long-term-memory that are memory systems for LLM agents with the ranking code in the repository; repositories passed over on the way down the list are under 'passedOver'.",
+    "related": "The remaining systems of the desk check in the P3-C draft (23 and 29 October 2026).",
+    "framework": "Three widely used agent or retrieval frameworks that ship a scorer with a time term. This part of the sample was chosen on purpose because of that scorer, so the sample as a whole is not a prevalence estimate."
+  },
+  "timeTermCoding": {
+    "linear": "a time term added to relevance with no normalization over the candidates",
+    "normalized": "a time term added after normalizing over the candidates",
+    "bounded": "a capped multiplicative boost on a relevance model's score",
+    "eviction": "a time term in a score that decides eviction, not ranking",
+    "filter": "a time window, not a score term",
+    "none": "no time term in the ranking"
+  },
+  "counts": {
+    "filter": 1,
+    "none": 14,
+    "bounded": 1,
+    "eviction": 1,
+    "normalized": 1,
+    "linear": 3
+  },
+  "systems": [
+    {
+      "system": "claude-mem",
+      "repository": "thedotmack/claude-mem",
+      "commit": "d8bf121ae98063e5e3158befff33a9d635c0246b",
+      "group": "topic",
+      "starsOn20261105": 113034,
+      "component": "default search",
+      "files": [
+        "src/services/worker/search/strategies/ChromaSearchStrategy.ts",
+        "src/services/worker/search/types.ts"
+      ],
+      "rankingAsRead": "Vector similarity from Chroma (or date order on request); date-less semantic searches keep a 90-day window.",
+      "timeTerm": "filter"
+    },
+    {
+      "system": "Mem0",
+      "repository": "mem0ai/mem0",
+      "commit": "ed1f10fc87080f0b67f99be370817504888462ab",
+      "group": "topic",
+      "starsOn20261105": 68432,
+      "component": "default search",
+      "files": [
+        "mem0/utils/scoring.py",
+        "mem0/memory/main.py"
+      ],
+      "rankingAsRead": "(semantic + sigmoid-normalized BM25 + 0.5 x entity boost) / maximum possible; candidates below a semantic threshold (default 0.1) are dropped first.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "Hindsight",
+      "repository": "vectorize-io/hindsight",
+      "commit": "1a37e009cbe9b8cd76b2c5d5b6c5745374e19507",
+      "group": "topic",
+      "starsOn20261105": 58895,
+      "component": "default recall",
+      "files": [
+        "hindsight-api-slim/hindsight_api/engine/search/fusion.py",
+        "hindsight-api-slim/hindsight_api/engine/search/reranking.py",
+        "hindsight-docs/docs/developer/retrieval.md"
+      ],
+      "rankingAsRead": "Reciprocal rank fusion of semantic, keyword, graph and temporal lists; a cross-encoder scores the result, then score x recency boost x temporal boost x proof-count boost, each boost capped (recency within +/-10%).",
+      "timeTerm": "bounded"
+    },
+    {
+      "system": "OpenViking",
+      "repository": "volcengine/OpenViking",
+      "commit": "3e0c9dcc47cffec3de07e82e238d11a6c21e8915",
+      "group": "topic",
+      "starsOn20261105": 41570,
+      "component": "default retrieval",
+      "files": [
+        "openviking/retrieve/hierarchical_retriever.py",
+        "openviking/retrieve/memory_lifecycle.py",
+        "openviking/retrieve/rerank_scoring.py"
+      ],
+      "rankingAsRead": "Vector search with an optional model reranker. A hotness score (sigmoid of access count x exponential decay) exists for memory-health statistics; no file under openviking/retrieve/ other than memory_lifecycle.py mentions it.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "Cognee",
+      "repository": "topoteretes/cognee",
+      "commit": "525b1d1179c550cd5b5661bcbf8f00f57a676928",
+      "group": "topic",
+      "starsOn20261105": 33084,
+      "component": "default triplet search",
+      "files": [
+        "cognee/modules/graph/cognee_graph/CogneeGraph.py",
+        "cognee/modules/retrieval/utils/brute_force_triplet_search.py"
+      ],
+      "rankingAsRead": "Triplets ranked by the sum over their elements of (2 - importance) x vector distance, with a fixed penalty (6.5) for a missing distance and an optional feedback blend.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "TencentDB Agent Memory",
+      "repository": "TencentCloud/TencentDB-Agent-Memory",
+      "commit": "2002196f2d7c22ea267cfcaf67c5a6fa861df681",
+      "group": "topic",
+      "starsOn20261105": 30467,
+      "component": "default memory search",
+      "files": [
+        "MemoryCore/src/core/tools/memory-search.ts",
+        "MemoryCore/src/core/store/search-utils.ts"
+      ],
+      "rankingAsRead": "Reciprocal rank fusion (k = 60) of keyword and vector lists.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "Memori",
+      "repository": "MemoriLabs/Memori",
+      "commit": "574b1ea3e876f100ef82c37817d603eb7e258e59",
+      "group": "topic",
+      "starsOn20261105": 17414,
+      "component": "default recall",
+      "files": [
+        "memori/search/_core.py",
+        "memori/search/_lexical.py"
+      ],
+      "rankingAsRead": "w_cos x cosine + w_lex x BM25 divided by the pool's maximum; w_lex 0.15, or 0.30 for queries of up to two tokens.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "memU",
+      "repository": "NevaMind-AI/memU",
+      "commit": "40865b1e1b7d2f101578138bba4f66a319d195ca",
+      "group": "topic",
+      "starsOn20261105": 14602,
+      "component": "default retrieval",
+      "files": [
+        "src/memu/vector.py",
+        "src/memu/hosts/retrieval.py"
+      ],
+      "rankingAsRead": "Cosine top-k per layer.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "Semantica",
+      "repository": "semantica-agi/semantica",
+      "commit": "746c27a2c95971f191e9a96a5fd050a1898ed5c2",
+      "group": "topic",
+      "starsOn20261105": 14438,
+      "component": "context retriever",
+      "files": [
+        "semantica/context/context_retriever.py"
+      ],
+      "rankingAsRead": "Min-max normalization of scores, then a weight per source (vector 0.5, graph 0.5, memory 0.3) and a 1.2 boost for items from several sources.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "EverOS",
+      "repository": "EverMind-AI/EverOS",
+      "commit": "d1cc1f21758686367ffc24c84aea1cd0456766e2",
+      "group": "topic",
+      "starsOn20261105": 13810,
+      "component": "hybrid search",
+      "files": [
+        "src/everos/memory/search/manager.py",
+        "src/everos/memory/search/hierarchy.py"
+      ],
+      "rankingAsRead": "Reciprocal rank fusion orders the expansion; logistic-regression-calibrated scores of the dense and keyword candidates decide the top N.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "MemOS",
+      "repository": "MemTensor/MemOS",
+      "commit": "d326a6419467c2205041b58533b0ebfdf4f38173",
+      "group": "topic",
+      "starsOn20261105": 12259,
+      "component": "default search",
+      "files": [
+        "src/memos/memories/textual/tree_text_memory/retrieve/searcher.py",
+        "src/memos/reranker/cosine_local.py",
+        "src/memos/reranker/factory.py"
+      ],
+      "rankingAsRead": "Vector similarity through a configurable reranker (cross-encoder service, cosine or none); the cosine reranker's level weights default to 1.0.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "Honcho",
+      "repository": "plastic-labs/honcho",
+      "commit": "cf466bbc798490c5a04a25f5ca382f427e192d32",
+      "group": "topic",
+      "starsOn20261105": 7946,
+      "component": "message search",
+      "files": [
+        "src/utils/search.py"
+      ],
+      "rankingAsRead": "Reciprocal rank fusion (k = 60) of semantic and full-text lists.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "MemoryOS",
+      "repository": "BAI-LAB/MemoryOS",
+      "commit": "587ed7755c7aed179965792830ff1b5ad9a6fa92",
+      "group": "related",
+      "starsOn20261105": 1620,
+      "component": "retrieval and eviction",
+      "files": [
+        "memoryos-pypi/mid_term.py",
+        "memoryos-pypi/retriever.py",
+        "memoryos-pypi/utils.py"
+      ],
+      "rankingAsRead": "Retrieval ranks by similarity with thresholds; a heat score N_visit + L_interaction + exp(-hours/24), unit coefficients, decides which segments stay.",
+      "timeTerm": "eviction"
+    },
+    {
+      "system": "Generative Agents",
+      "repository": "joonspk-research/generative_agents",
+      "commit": "fe05a71d3e4ed7d10bf68aa4eda6dd995ec070f4",
+      "group": "related",
+      "starsOn20261105": 22342,
+      "component": "default retrieval",
+      "files": [
+        "reverie/backend_server/persona/cognitive_modules/retrieve.py"
+      ],
+      "rankingAsRead": "0.5 x recency + 3 x relevance + 2 x importance, each min-max normalized over the candidates.",
+      "timeTerm": "normalized"
+    },
+    {
+      "system": "Graphiti",
+      "repository": "getzep/graphiti",
+      "commit": "fb60e59d4a208c99e7d0186ee6335d2a257f17f2",
+      "group": "related",
+      "starsOn20261105": 32536,
+      "component": "default search",
+      "files": [
+        "graphiti_core/search/search_config.py",
+        "graphiti_core/search/search_config_recipes.py"
+      ],
+      "rankingAsRead": "Reciprocal rank fusion of vector and keyword lists by default.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "A-MEM",
+      "repository": "agiresearch/A-mem",
+      "commit": "ceffb860f0712bbae97b184d440df62bc910ca8d",
+      "group": "related",
+      "starsOn20261105": 1212,
+      "component": "default retrieval",
+      "files": [
+        "agentic_memory/memory_system.py",
+        "agentic_memory/retrievers.py"
+      ],
+      "rankingAsRead": "Vector similarity from Chroma; links only add neighbors.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "Letta (letta-code)",
+      "repository": "letta-ai/letta-code",
+      "commit": "a8900b882446d7aa99fedf2845d400743affd1b6",
+      "group": "related",
+      "starsOn20261105": 3784,
+      "component": "local message search; read on 29 October 2026",
+      "files": [],
+      "rankingAsRead": "BM25 in the local backend, plus a constant per quoted phrase of the query; vector and hybrid search are delegated to a hosted server whose code is not in the repository.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "LangMem",
+      "repository": "langchain-ai/langmem",
+      "commit": "8620b986af5b0c7593e6b7fbece2998690d22d15",
+      "group": "related",
+      "starsOn20261105": 1746,
+      "component": "default search tool",
+      "files": [
+        "src/langmem/knowledge/tools.py"
+      ],
+      "rankingAsRead": "Vector similarity of the LangGraph store.",
+      "timeTerm": "none"
+    },
+    {
+      "system": "CrewAI",
+      "repository": "crewAIInc/crewAI",
+      "commit": "24c686d82f1ff64e3a3967f2f4fb042b62ab1cc4",
+      "group": "framework",
+      "starsOn20261105": 60514,
+      "component": "default memory recall",
+      "files": [
+        "lib/crewai/src/crewai/memory/types.py",
+        "lib/crewai/src/crewai/memory/recall_flow.py",
+        "lib/crewai/src/crewai/memory/unified_memory.py"
+      ],
+      "rankingAsRead": "0.5 x similarity + 0.3 x 0.5^(age in days / 30) + 0.2 x importance; no normalization over the candidates.",
+      "timeTerm": "linear"
+    },
+    {
+      "system": "LangChain",
+      "repository": "langchain-ai/langchain",
+      "commit": "b4aa7e7d00c452251720ce30b8bc2c41ca44e1f5",
+      "group": "framework",
+      "starsOn20261105": 149050,
+      "component": "optional TimeWeightedVectorStoreRetriever",
+      "files": [
+        "libs/langchain/langchain_classic/retrievers/time_weighted_retriever.py"
+      ],
+      "rankingAsRead": "(1 - 0.01)^hours + any other score keys (for example importance) + vector relevance; unit coefficients, no normalization over the candidates.",
+      "timeTerm": "linear"
+    },
+    {
+      "system": "LlamaIndex",
+      "repository": "run-llama/llama_index",
+      "commit": "444fdf0684707de62ebb447d658dba137dd9cb99",
+      "group": "framework",
+      "starsOn20261105": 52813,
+      "component": "optional TimeWeightedPostprocessor",
+      "files": [
+        "llama-index-core/llama_index/core/postprocessor/node_recency.py"
+      ],
+      "rankingAsRead": "Node score + (1 - 0.99)^hours; unit coefficients, no normalization over the candidates.",
+      "timeTerm": "linear"
+    }
+  ],
+  "passedOver": [
+    {
+      "repository": "666ghj/MiroFish",
+      "starsOn20261105": 84129,
+      "reason": "a swarm-simulation engine, not a memory system"
+    },
+    {
+      "repository": "bojieli/ai-agent-book",
+      "starsOn20261105": 57191,
+      "reason": "a book"
+    },
+    {
+      "repository": "pingcap/tidb",
+      "starsOn20261105": 40711,
+      "reason": "a database"
+    },
+    {
+      "repository": "supermemoryai/supermemory",
+      "starsOn20261105": 31532,
+      "reason": "no ranking code in the repository: it holds applications, clients and SDKs that call a hosted search API"
+    },
+    {
+      "repository": "dolthub/dolt",
+      "starsOn20261105": 24822,
+      "reason": "a database"
+    },
+    {
+      "repository": "screenpipe/screenpipe",
+      "starsOn20261105": 22242,
+      "reason": "a screen recorder"
+    },
+    {
+      "repository": "xerj-org/xerj",
+      "starsOn20261105": 19111,
+      "reason": "a search engine"
+    },
+    {
+      "repository": "TencentCloud/Octop",
+      "starsOn20261105": 11660,
+      "reason": "an assistant application, not a memory system"
+    },
+    {
+      "repository": "deeplethe/utopia",
+      "starsOn20261105": 8677,
+      "reason": "described as an enterprise world model, not a memory system"
+    }
+  ]
+}

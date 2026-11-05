@@ -1,0 +1,255 @@
+{
+ "experiment": "Verifier replies of the RQ-C main run against the code and the instruction (re-tally, no model calls)",
+ "status": "Exploratory, after every result was known; no plan preceded it; one reader coded the reasons.",
+ "coding": {
+  "false-of-code": "the reason attributes to the program a behavior it does not have",
+  "true-of-code": "the reason states a behavior the program has, which is why it fails",
+  "partly": "one clause of the reason holds and another does not",
+  "calling-rule": "the reason is the function's name: the instruction names one, the generation prompt asks for solve",
+  "undetermined": "the reason concerns the input the instruction does not determine (str-to-camel, 'Hello-World')"
+ },
+ "main": {
+  "judged": 871,
+  "accepted": 713,
+  "acceptedBare": 695,
+  "falsePasses": 59,
+  "falsePassesBare": 59,
+  "rejected": 158,
+  "rejectedPrograms": 10,
+  "falseFailsByCode": {
+   "calling-rule": 10,
+   "false-of-code": 60,
+   "undetermined": 8
+  },
+  "trueFailsByCode": {
+   "false-of-code": 18,
+   "partly": 38,
+   "true-of-code": 20,
+   "undetermined": 4
+  },
+  "programs": [
+   {
+    "task": "arr-flatten",
+    "program": "one-level",
+    "codeSha256": "bea4e1d200bb",
+    "usable": true,
+    "skills": 59,
+    "failingCases": [],
+    "reasons": [
+     {
+      "text": "FAIL: The function `solve` does not flatten the array one level deep as required. It recursively flattens nested arrays, which is not the behavior of the task.",
+      "skills": 37
+     },
+     {
+      "text": "FAIL: The function `solve` does not flatten the array one level deep as required. It recursively flattens arrays, which is not the intended behavior for this task.",
+      "skills": 22
+     }
+    ],
+    "code": "false-of-code"
+   },
+   {
+    "task": "arr-flatten",
+    "program": "flat-no-arg",
+    "codeSha256": "9345e59385b7",
+    "usable": false,
+    "skills": 20,
+    "failingCases": [
+     {
+      "args": "[[[1,[2]],3]]",
+      "expected": "[1,[2],3]",
+      "actual": "[1,2,3]"
+     }
+    ],
+    "reasons": [
+     {
+      "text": "FAIL: The function attempts to flatten the array recursively, but the task requires a one-level deep flattening.",
+      "skills": 20
+     }
+    ],
+    "code": "true-of-code"
+   },
+   {
+    "task": "logic-roman-to-int",
+    "program": "named-solve",
+    "codeSha256": "397c605a696e",
+    "usable": true,
+    "skills": 10,
+    "failingCases": [],
+    "reasons": [
+     {
+      "text": "FAIL: The function name is `solve` instead of `romanToInt`.",
+      "skills": 10
+     }
+    ],
+    "code": "calling-rule"
+   },
+   {
+    "task": "arr-intersection",
+    "program": "set-filter",
+    "codeSha256": "d5441aeb34b5",
+    "usable": false,
+    "skills": 16,
+    "failingCases": [
+     {
+      "args": "[[1,2,2],[2,2,3]]",
+      "expected": "[2]",
+      "actual": "[2,2]"
+     },
+     {
+      "args": "[[9,9,9],[9]]",
+      "expected": "[9]",
+      "actual": "[9,9,9]"
+     }
+    ],
+    "reasons": [
+     {
+      "text": "FAIL: The code does not remove duplicates from the result, and it does not preserve the order of elements as they appear in `a`.",
+      "skills": 16
+     }
+    ],
+    "code": "partly"
+   },
+   {
+    "task": "str-to-camel",
+    "program": "keeps-first",
+    "codeSha256": "944adf07cef1",
+    "usable": true,
+    "skills": 8,
+    "failingCases": [],
+    "reasons": [
+     {
+      "text": "FAIL: The function does not handle the case where the input string starts with a capital letter. It also does not handle the case where the input string contains non-alphanumeric characters other than hyphens and underscores.",
+      "skills": 7
+     },
+     {
+      "text": "FAIL: The function does not handle the case where the input string already starts with a capital letter.",
+      "skills": 1
+     }
+    ],
+    "code": "undetermined"
+   },
+   {
+    "task": "arr-flatten",
+    "program": "flat-1",
+    "codeSha256": "617d0eb9fff0",
+    "usable": false,
+    "skills": 20,
+    "failingCases": [
+     {
+      "args": "[[[1,[2]],3]]",
+      "expected": "[1,[2],3]",
+      "actual": "[1,2,3]"
+     }
+    ],
+    "reasons": [
+     {
+      "text": "FAIL: The function attempts to flatten the array recursively by using `Array.isArray(val) ? val.flat(1) : val`, but it does not handle the case where `val` is an array itself. The correct implementation should use `Array.isArray(val) ? val.flat(1) : val` directly without the nest",
+      "skills": 18
+     },
+     {
+      "text": "FAIL: The function attempts to flatten the array recursively, but it uses `Array.isArray(val).flat(1)`, which is incorrect. The correct approach should be to use `Array.isArray(val) ? val.flat(1) : val` directly in the `reduce` function to flatten the array one level deep.",
+      "skills": 2
+     }
+    ],
+    "code": "partly"
+   },
+   {
+    "task": "arr-flatten",
+    "program": "one-level-branch",
+    "codeSha256": "1c8707f7936c",
+    "usable": true,
+    "skills": 1,
+    "failingCases": [],
+    "reasons": [
+     {
+      "text": "FAIL: The function `solve` does not flatten the array one level deep as required. It attempts to flatten arrays of any depth, not just one level.",
+      "skills": 1
+     }
+    ],
+    "code": "false-of-code"
+   },
+   {
+    "task": "parse-query-string",
+    "program": "value-or-empty",
+    "codeSha256": "51effba9e588",
+    "usable": false,
+    "skills": 18,
+    "failingCases": [
+     {
+      "args": "[\"\"]",
+      "expected": "{}",
+      "actual": "{\"\":\"\"}"
+     }
+    ],
+    "reasons": [
+     {
+      "text": "FAIL: The code does not URL-decode the values correctly. It should decode both keys and values using `decodeURIComponent`.",
+      "skills": 9
+     },
+     {
+      "text": "FAIL: The code does not URL-decode the values correctly.",
+      "skills": 9
+     }
+    ],
+    "code": "false-of-code"
+   },
+   {
+    "task": "arr-intersection",
+    "program": "set-delete",
+    "codeSha256": "970a5c35ec0c",
+    "usable": false,
+    "skills": 2,
+    "failingCases": [
+     {
+      "args": "[[1,2,3],[2,3,4]]",
+      "expected": "[2,3]",
+      "actual": "[]"
+     },
+     {
+      "args": "[[1,2,2],[2,2,3]]",
+      "expected": "[2]",
+      "actual": "[]"
+     },
+     {
+      "args": "[[9,9,9],[9]]",
+      "expected": "[9]",
+      "actual": "[]"
+     }
+    ],
+    "reasons": [
+     {
+      "text": "FAIL: The code does not correctly implement the task. It removes duplicates from array `b` instead of preserving the order they appear in `a`.",
+      "skills": 2
+     }
+    ],
+    "code": "partly"
+   },
+   {
+    "task": "str-to-camel",
+    "program": "lowercases-first",
+    "codeSha256": "c46cc73c8192",
+    "usable": false,
+    "skills": 4,
+    "failingCases": [
+     {
+      "args": "[\"Hello-World\"]",
+      "expected": "\"HelloWorld\"",
+      "actual": "\"helloWorld\""
+     }
+    ],
+    "reasons": [
+     {
+      "text": "FAIL: The function does not handle the case where the input string already starts with a capital letter.",
+      "skills": 4
+     }
+    ],
+    "code": "undetermined"
+   }
+  ]
+ },
+ "templateA": {
+  "judged": 852,
+  "accepted": 724,
+  "acceptedBare": 706
+ }
+}
