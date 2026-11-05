@@ -2,18 +2,16 @@
   "stryker-config": {
     "project": "Aijade.Server.csproj",
     "configuration": "Release",
-    "test-case-filter": "FullyQualifiedName=Aijade.Tests.PromotionGateMatrixTests.Tampered_candidates_are_refused_without_writes_and_the_control_and_probes_are_promoted",
     "mutate": [
       "**/V9/PromotionService.cs"
     ],
     "mutation-level": "Standard",
     "coverage-analysis": "perTest",
-    "test-runner": "vstest",
-    "concurrency": 3,
+    "test-runner": "MicrosoftTestPlatform",
+    "concurrency": 2,
     "reporters": [
       "json",
-      "cleartext",
-      "progress"
+      "cleartext"
     ],
     "disable-bail": false
   }

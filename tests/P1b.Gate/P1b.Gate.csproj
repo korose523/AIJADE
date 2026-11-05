@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- P1-B only: one matrix test, so that the mutation tool's MicrosoftTestPlatform runner selects it and no other. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Aijade.Tests</AssemblyName>
+    <RootNamespace>Aijade.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <NoWarn>$(NoWarn);CA1707;CA1515</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <ProjectReference Include="../../src/Aijade.Client/Aijade.Client.csproj" />
+    <ProjectReference Include="../../src/Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../../src/Aijade.Memory/Aijade.Memory.csproj" />
+    <ProjectReference Include="../../src/Aijade.Server/Aijade.Server.csproj" />
+    <ProjectReference Include="../../tools/Aijade.P1/Aijade.P1.csproj" />
+    <Compile Include="../Aijade.Tests/ServerTestHost.cs" />
+    <Compile Include="../Aijade.Tests/PromotionGateMatrixTests.cs" />
+    <None Include="../Aijade.Tests/Golden/**" LinkBase="Golden" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
