@@ -82,6 +82,19 @@ switch (command)
     case "pool-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "pool-check.json",
             corpus => PoolCheckReport(corpus, null, null));
+    case "locomo-export":
+    {
+        // the kernel's own reading of the corpus (turns, times, evidence), for the P3-C harness in experiments/p3-c
+        var corpus = LocomoCorpus.Load(Arg("--locomo") ?? DefaultLocomo());
+        var export = new JsonArray([.. corpus.Select(c => (JsonNode)new JsonObject
+        {
+            ["endTs"] = c.EndTs,
+            ["turns"] = new JsonArray([.. c.Episodes.Select(e => (JsonNode)new JsonObject { ["id"] = e.Id, ["content"] = e.Content, ["createdAt"] = e.CreatedAt, ["speaker"] = e.Context.Interlocutor })]),
+            ["questions"] = new JsonArray([.. c.Qa.Select(q => (JsonNode)new JsonObject { ["question"] = q.Question, ["category"] = q.Category, ["evidence"] = new JsonArray([.. q.Evidence.Where(c.EvidenceIds.Contains).Select(e => (JsonNode)e)]) })]),
+        })]);
+        File.WriteAllText(Arg("--out") ?? throw new ArgumentException("--out"), export.ToJsonString());
+        return 0;
+    }
     case "embedding-check":
         return await EmbeddingCheck(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), Arg("--model") ?? "nomic-embed-text", Arg("--ollama") ?? "http://127.0.0.1:11434", root);
     case "answerable-tables":
