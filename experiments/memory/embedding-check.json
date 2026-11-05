@@ -1,0 +1,590 @@
+{
+  "experiment": "the diagnosis, fixed-pool ablation and delivery check of P3 with an embedding cosine as the similarity term; everything else unchanged",
+  "plan": "experiments/plans/2026-11-05-p3-d-embedding-similarity.md",
+  "planCommit": "977fa6ca96e31e1bf5912c2c956469e291d58f3c",
+  "codeCommit": "bf55f92f3496aebd12f1b500cc424e294cce3efa",
+  "model": "nomic-embed-text",
+  "manifestSha256": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+  "ollama": "0.40.6",
+  "deviations": [
+    "Run on 5 November 2026 on the Mac, before the supervisor's review of the plan: the first author's decision."
+  ],
+  "answerable": {
+    "questions": 1540,
+    "pool": {
+      "experiment": "coverage of the diagnostic track's 150-candidate pool (chosen by the store's standardised score) and the diagnostic on the whole store, judged on rank alone (micro)",
+      "published": {
+        "what": "top 150 under the store score, retrieval floor applied (the published diagnostic track)",
+        "questions": 1540,
+        "poolCoverage": 0.45584415584415583,
+        "recencyBias": {
+          "meanNewerInTopK": 7.90986283474853,
+          "baselineIfUnbiased": 3.7827266128461923,
+          "meanSlotAgePercentile": 0.9837993163648526
+        },
+        "recallByWeights": {
+          "current": {
+            "1": 0.007142857142857143,
+            "2": 0.011688311688311689,
+            "4": 0.014935064935064935,
+            "8": 0.024025974025974027
+          },
+          "sim-only": {
+            "1": 0.09545454545454546,
+            "2": 0.13636363636363635,
+            "4": 0.17402597402597403,
+            "8": 0.22337662337662337
+          },
+          "sim+ctx": {
+            "1": 0.10779220779220779,
+            "2": 0.1435064935064935,
+            "4": 0.18311688311688312,
+            "8": 0.23376623376623376
+          },
+          "sim+str": {
+            "1": 0.02857142857142857,
+            "2": 0.0512987012987013,
+            "4": 0.07402597402597402,
+            "8": 0.10454545454545454
+          },
+          "no-recency": {
+            "1": 0.03831168831168831,
+            "2": 0.05779220779220779,
+            "4": 0.08116883116883117,
+            "8": 0.12272727272727273
+          },
+          "sim-heavy": {
+            "1": 0.03636363636363636,
+            "2": 0.05974025974025974,
+            "4": 0.08506493506493507,
+            "8": 0.1331168831168831
+          },
+          "str-only": {
+            "1": 0.007142857142857143,
+            "2": 0.00909090909090909,
+            "4": 0.01103896103896104,
+            "8": 0.016233766233766232
+          },
+          "rec-only": {
+            "1": 0.007142857142857143,
+            "2": 0.00909090909090909,
+            "4": 0.01103896103896104,
+            "8": 0.016233766233766232
+          }
+        }
+      },
+      "pool150RankOnly": {
+        "what": "top 150 under the store score, rank alone",
+        "questions": 1540,
+        "poolCoverage": 0.45584415584415583,
+        "recencyBias": {
+          "meanNewerInTopK": 7.90986283474853,
+          "baselineIfUnbiased": 3.7827266128461923,
+          "meanSlotAgePercentile": 0.9837993163648526
+        },
+        "recallByWeights": {
+          "current": {
+            "1": 0.007142857142857143,
+            "2": 0.011688311688311689,
+            "4": 0.014935064935064935,
+            "8": 0.024025974025974027
+          },
+          "sim-only": {
+            "1": 0.09545454545454546,
+            "2": 0.13636363636363635,
+            "4": 0.17402597402597403,
+            "8": 0.22337662337662337
+          },
+          "sim+ctx": {
+            "1": 0.10779220779220779,
+            "2": 0.1435064935064935,
+            "4": 0.18311688311688312,
+            "8": 0.23376623376623376
+          },
+          "sim+str": {
+            "1": 0.02857142857142857,
+            "2": 0.0512987012987013,
+            "4": 0.07402597402597402,
+            "8": 0.10454545454545454
+          },
+          "no-recency": {
+            "1": 0.03831168831168831,
+            "2": 0.05779220779220779,
+            "4": 0.08116883116883117,
+            "8": 0.12272727272727273
+          },
+          "sim-heavy": {
+            "1": 0.03636363636363636,
+            "2": 0.05974025974025974,
+            "4": 0.08506493506493507,
+            "8": 0.1331168831168831
+          },
+          "str-only": {
+            "1": 0.007142857142857143,
+            "2": 0.00909090909090909,
+            "4": 0.01103896103896104,
+            "8": 0.016233766233766232
+          },
+          "rec-only": {
+            "1": 0.007142857142857143,
+            "2": 0.00909090909090909,
+            "4": 0.01103896103896104,
+            "8": 0.016233766233766232
+          }
+        }
+      },
+      "wholeStore": {
+        "what": "every candidate, rank alone",
+        "questions": 1540,
+        "poolCoverage": 0.9941558441558441,
+        "recencyBias": {
+          "meanNewerInTopK": 7.892227302416721,
+          "baselineIfUnbiased": 3.7827266128461923,
+          "meanSlotAgePercentile": 0.9822662059696516
+        },
+        "recallByWeights": {
+          "current": {
+            "1": 0.008441558441558441,
+            "2": 0.01103896103896104,
+            "4": 0.01883116883116883,
+            "8": 0.02792207792207792
+          },
+          "sim-only": {
+            "1": 0.17272727272727273,
+            "2": 0.261038961038961,
+            "4": 0.3396103896103896,
+            "8": 0.42077922077922075
+          },
+          "sim+ctx": {
+            "1": 0.19675324675324676,
+            "2": 0.2785714285714286,
+            "4": 0.35844155844155845,
+            "8": 0.44935064935064933
+          },
+          "sim+str": {
+            "1": 0.04155844155844156,
+            "2": 0.07012987012987013,
+            "4": 0.12012987012987013,
+            "8": 0.17792207792207793
+          },
+          "no-recency": {
+            "1": 0.05714285714285714,
+            "2": 0.08766233766233766,
+            "4": 0.13896103896103895,
+            "8": 0.2077922077922078
+          },
+          "sim-heavy": {
+            "1": 0.06168831168831169,
+            "2": 0.1,
+            "4": 0.16233766233766234,
+            "8": 0.2512987012987013
+          },
+          "str-only": {
+            "1": 0.007142857142857143,
+            "2": 0.00909090909090909,
+            "4": 0.01103896103896104,
+            "8": 0.016233766233766232
+          },
+          "rec-only": {
+            "1": 0.007142857142857143,
+            "2": 0.00909090909090909,
+            "4": 0.01103896103896104,
+            "8": 0.016233766233766232
+          }
+        }
+      },
+      "contrasts": [
+        {
+          "key": "weights (150-candidate pool, floor): sim-only vs current",
+          "caliber": "micro",
+          "a": 0.22337662337662337,
+          "b": 0.024025974025974027,
+          "difference": 0.19935064935064933,
+          "bootstrap95": [
+            0.13023255813953488,
+            0.27531837477258947
+          ],
+          "signFlipP": 0.001953125,
+          "unitsPositive": 10,
+          "unitsNegative": 0,
+          "units": 10
+        },
+        {
+          "key": "weights (whole store, rank alone): sim-only vs current",
+          "caliber": "micro",
+          "a": 0.42077922077922075,
+          "b": 0.02792207792207792,
+          "difference": 0.39285714285714285,
+          "bootstrap95": [
+            0.29641283826305853,
+            0.5
+          ],
+          "signFlipP": 0.001953125,
+          "unitsPositive": 10,
+          "unitsNegative": 0,
+          "units": 10
+        }
+      ],
+      "runtimeSeconds": 17
+    },
+    "components": {
+      "experiment": "component scales: mean saturated score components of the gold evidence, the additive top 8 and the pool (no gating)",
+      "questions": 1531,
+      "gold": {
+        "similarity": 0.6117807472179445,
+        "strength": 0.20099528997364605,
+        "recency": 0.061079029101079436,
+        "context": 0.019987933951432706
+      },
+      "additiveTop8": {
+        "similarity": 0.5508059334213777,
+        "strength": 0.499740245378101,
+        "recency": 0.9981038132799906,
+        "context": 0.001962518306416875
+      },
+      "pool": {
+        "similarity": 0.4829514600561809,
+        "strength": 0.20245638247081743,
+        "recency": 0.06496340072533349,
+        "context": 0.0013886625982240171
+      },
+      "poolSd": {
+        "similarity": 0.06465915932142677,
+        "strength": 0.08496507426332804,
+        "recency": 0.17918953247390243,
+        "context": 0.008308523518439572
+      }
+    },
+    "delivery": {
+      "experiment": "delivery track without gating: recall@8 (macro) per score mode with the conflict penalty at its default and switched off (1.0); share of top-8 slots penalised; share of questions with a penalised gold item in the scanned head (8 additive, 150 standardised)",
+      "rows": [
+        {
+          "mode": "additive",
+          "conflictPenalty": 0.5,
+          "recall8Macro": 0.02561028317473312,
+          "penalizedShareOfTop8": 0,
+          "goldPenalizedShare": 0
+        },
+        {
+          "mode": "additive",
+          "conflictPenalty": 1,
+          "recall8Macro": 0.026136176360118134,
+          "penalizedShareOfTop8": 0.23319805194805196,
+          "goldPenalizedShare": 0.007792207792207792
+        },
+        {
+          "mode": "standardized",
+          "conflictPenalty": 0.5,
+          "recall8Macro": 0.08491887184367669,
+          "penalizedShareOfTop8": 0.013636363636363636,
+          "goldPenalizedShare": 0.07922077922077922
+        },
+        {
+          "mode": "standardized",
+          "conflictPenalty": 1,
+          "recall8Macro": 0.21676313707157685,
+          "penalizedShareOfTop8": 0.442775974025974,
+          "goldPenalizedShare": 0.6909090909090909
+        }
+      ]
+    },
+    "reading": {
+      "recallRatioSimOnlyOverDefault": 9.297297297297296,
+      "markedA": true,
+      "newerRatioOverUnbiased": 2.0910479779021105,
+      "markedB": true
+    }
+  },
+  "all": {
+    "questions": 1986,
+    "pool": {
+      "experiment": "coverage of the diagnostic track's 150-candidate pool (chosen by the store's standardised score) and the diagnostic on the whole store, judged on rank alone (micro)",
+      "published": {
+        "what": "top 150 under the store score, retrieval floor applied (the published diagnostic track)",
+        "questions": 1986,
+        "poolCoverage": 0.4335347432024169,
+        "recencyBias": {
+          "meanNewerInTopK": 7.907435508345979,
+          "baselineIfUnbiased": 3.7886679560440837,
+          "meanSlotAgePercentile": 0.9838111315184651
+        },
+        "recallByWeights": {
+          "current": {
+            "1": 0.007049345417925478,
+            "2": 0.012084592145015106,
+            "4": 0.01460221550855992,
+            "8": 0.025176233635448138
+          },
+          "sim-only": {
+            "1": 0.1027190332326284,
+            "2": 0.1445115810674723,
+            "4": 0.18076535750251763,
+            "8": 0.2280966767371601
+          },
+          "sim+ctx": {
+            "1": 0.10976837865055387,
+            "2": 0.15206445115810674,
+            "4": 0.1908358509566969,
+            "8": 0.23716012084592145
+          },
+          "sim+str": {
+            "1": 0.03423967774420947,
+            "2": 0.05488418932527694,
+            "4": 0.07754279959718026,
+            "8": 0.1107754279959718
+          },
+          "no-recency": {
+            "1": 0.042799597180261835,
+            "2": 0.061933534743202415,
+            "4": 0.08459214501510574,
+            "8": 0.1268882175226586
+          },
+          "sim-heavy": {
+            "1": 0.03927492447129909,
+            "2": 0.06092648539778449,
+            "4": 0.08761329305135952,
+            "8": 0.13846928499496475
+          },
+          "str-only": {
+            "1": 0.006545820745216516,
+            "2": 0.008559919436052367,
+            "4": 0.010070493454179255,
+            "8": 0.01460221550855992
+          },
+          "rec-only": {
+            "1": 0.006545820745216516,
+            "2": 0.008559919436052367,
+            "4": 0.010070493454179255,
+            "8": 0.01460221550855992
+          }
+        }
+      },
+      "pool150RankOnly": {
+        "what": "top 150 under the store score, rank alone",
+        "questions": 1986,
+        "poolCoverage": 0.4335347432024169,
+        "recencyBias": {
+          "meanNewerInTopK": 7.907435508345979,
+          "baselineIfUnbiased": 3.7886679560440837,
+          "meanSlotAgePercentile": 0.9838111315184651
+        },
+        "recallByWeights": {
+          "current": {
+            "1": 0.007049345417925478,
+            "2": 0.012084592145015106,
+            "4": 0.01460221550855992,
+            "8": 0.025176233635448138
+          },
+          "sim-only": {
+            "1": 0.1027190332326284,
+            "2": 0.1445115810674723,
+            "4": 0.18076535750251763,
+            "8": 0.2280966767371601
+          },
+          "sim+ctx": {
+            "1": 0.10976837865055387,
+            "2": 0.15206445115810674,
+            "4": 0.1908358509566969,
+            "8": 0.23716012084592145
+          },
+          "sim+str": {
+            "1": 0.03423967774420947,
+            "2": 0.05488418932527694,
+            "4": 0.07754279959718026,
+            "8": 0.1107754279959718
+          },
+          "no-recency": {
+            "1": 0.042799597180261835,
+            "2": 0.061933534743202415,
+            "4": 0.08459214501510574,
+            "8": 0.1268882175226586
+          },
+          "sim-heavy": {
+            "1": 0.03927492447129909,
+            "2": 0.06092648539778449,
+            "4": 0.08761329305135952,
+            "8": 0.13846928499496475
+          },
+          "str-only": {
+            "1": 0.006545820745216516,
+            "2": 0.008559919436052367,
+            "4": 0.010070493454179255,
+            "8": 0.01460221550855992
+          },
+          "rec-only": {
+            "1": 0.006545820745216516,
+            "2": 0.008559919436052367,
+            "4": 0.010070493454179255,
+            "8": 0.01460221550855992
+          }
+        }
+      },
+      "wholeStore": {
+        "what": "every candidate, rank alone",
+        "questions": 1986,
+        "poolCoverage": 0.9954682779456193,
+        "recencyBias": {
+          "meanNewerInTopK": 7.887708649468892,
+          "baselineIfUnbiased": 3.7886679560440837,
+          "meanSlotAgePercentile": 0.9822639443532454
+        },
+        "recallByWeights": {
+          "current": {
+            "1": 0.00906344410876133,
+            "2": 0.012588116817724069,
+            "4": 0.02014098690835851,
+            "8": 0.030211480362537766
+          },
+          "sim-only": {
+            "1": 0.1973816717019134,
+            "2": 0.28851963746223563,
+            "4": 0.37009063444108764,
+            "8": 0.45468277945619334
+          },
+          "sim+ctx": {
+            "1": 0.2134944612286002,
+            "2": 0.3016112789526687,
+            "4": 0.38821752265861026,
+            "8": 0.4783484390735146
+          },
+          "sim+str": {
+            "1": 0.05236656596173213,
+            "2": 0.07955689828801611,
+            "4": 0.13141993957703926,
+            "8": 0.1933534743202417
+          },
+          "no-recency": {
+            "1": 0.06445115810674723,
+            "2": 0.09667673716012085,
+            "4": 0.14904330312185296,
+            "8": 0.22205438066465258
+          },
+          "sim-heavy": {
+            "1": 0.06847935548841894,
+            "2": 0.10926485397784491,
+            "4": 0.17270896273917422,
+            "8": 0.2769385699899295
+          },
+          "str-only": {
+            "1": 0.006545820745216516,
+            "2": 0.008559919436052367,
+            "4": 0.010070493454179255,
+            "8": 0.01460221550855992
+          },
+          "rec-only": {
+            "1": 0.006545820745216516,
+            "2": 0.008559919436052367,
+            "4": 0.010070493454179255,
+            "8": 0.01460221550855992
+          }
+        }
+      },
+      "contrasts": [
+        {
+          "key": "weights (150-candidate pool, floor): sim-only vs current",
+          "caliber": "micro",
+          "a": 0.2280966767371601,
+          "b": 0.025176233635448138,
+          "difference": 0.20292044310171198,
+          "bootstrap95": [
+            0.13804173354735153,
+            0.2736486486486487
+          ],
+          "signFlipP": 0.001953125,
+          "unitsPositive": 10,
+          "unitsNegative": 0,
+          "units": 10
+        },
+        {
+          "key": "weights (whole store, rank alone): sim-only vs current",
+          "caliber": "micro",
+          "a": 0.45468277945619334,
+          "b": 0.030211480362537766,
+          "difference": 0.42447129909365555,
+          "bootstrap95": [
+            0.3373180873180873,
+            0.5220661985957874
+          ],
+          "signFlipP": 0.001953125,
+          "unitsPositive": 10,
+          "unitsNegative": 0,
+          "units": 10
+        }
+      ],
+      "runtimeSeconds": 17
+    },
+    "components": {
+      "experiment": "component scales: mean saturated score components of the gold evidence, the additive top 8 and the pool (no gating)",
+      "questions": 1977,
+      "gold": {
+        "similarity": 0.6178977186546928,
+        "strength": 0.20305767422092247,
+        "recency": 0.06303388171721051,
+        "context": 0.01956253740728993
+      },
+      "additiveTop8": {
+        "similarity": 0.549773106955229,
+        "strength": 0.49963860521679854,
+        "recency": 0.9974485971346114,
+        "context": 0.0020921471930247806
+      },
+      "pool": {
+        "similarity": 0.4818393292232271,
+        "strength": 0.20243427391416677,
+        "recency": 0.0648814754849371,
+        "context": 0.0013772949955879763
+      },
+      "poolSd": {
+        "similarity": 0.06436670906095608,
+        "strength": 0.0848801791397639,
+        "recency": 0.1790543309560918,
+        "context": 0.008260510997316816
+      }
+    },
+    "delivery": {
+      "experiment": "delivery track without gating: recall@8 (macro) per score mode with the conflict penalty at its default and switched off (1.0); share of top-8 slots penalised; share of questions with a penalised gold item in the scanned head (8 additive, 150 standardised)",
+      "rows": [
+        {
+          "mode": "additive",
+          "conflictPenalty": 0.5,
+          "recall8Macro": 0.028019864945806362,
+          "penalizedShareOfTop8": 0,
+          "goldPenalizedShare": 0
+        },
+        {
+          "mode": "additive",
+          "conflictPenalty": 1,
+          "recall8Macro": 0.029395934809244472,
+          "penalizedShareOfTop8": 0.23325780463242698,
+          "goldPenalizedShare": 0.010574018126888218
+        },
+        {
+          "mode": "standardized",
+          "conflictPenalty": 0.5,
+          "recall8Macro": 0.08244265309208852,
+          "penalizedShareOfTop8": 0.01466515609264854,
+          "goldPenalizedShare": 0.08157099697885196
+        },
+        {
+          "mode": "standardized",
+          "conflictPenalty": 1,
+          "recall8Macro": 0.21518456347124273,
+          "penalizedShareOfTop8": 0.4446752265861027,
+          "goldPenalizedShare": 0.6953675730110775
+        }
+      ]
+    },
+    "reading": {
+      "recallRatioSimOnlyOverDefault": 9.059999999999999,
+      "markedA": true,
+      "newerRatioOverUnbiased": 2.087128141100674,
+      "markedB": true
+    }
+  },
+  "provenance": {
+    "corpus": "LoCoMo (snap-research/locomo, data/locomo10.json)",
+    "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+    "runtime": ".NET 10.0.14",
+    "generatedAt": "2026-11-05T10:30:08.6516130+00:00"
+  }
+}

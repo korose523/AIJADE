@@ -1,0 +1,96 @@
+{
+ "experiment": "the scorer pre-check of P3 on one independent memory system",
+ "plan": "experiments/plans/2026-11-05-p3-c-external-memory-systems.md",
+ "system": "LangChain TimeWeightedVectorStoreRetriever",
+ "systemCommit": "b4aa7e7d00c452251720ce30b8bc2c41ca44e1f5",
+ "codeCommit": "776e7d7f06f0894a5cdaf8a5664b43f9fa0d2f1b",
+ "embeddingModel": "nomic-embed-text",
+ "embeddingManifestSha256": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+ "timeTerm": "linear",
+ "deviations": [
+  "Run on 5 November 2026 on the Mac, before the supervisor's review of the plan: the first author's decision.",
+  "k = 8 (its default is 4) so that recall@8 can be read; decay_rate and search_kwargs at their defaults (0.01, k = 100)."
+ ],
+ "storedUnit": {
+  "unit": "one dialogue turn per item",
+  "sourceTurnsPerItem": 1,
+  "itemChars": {
+   "median": 109.0,
+   "q1": 73.0,
+   "q3": 161.0,
+   "max": 454
+  }
+ },
+ "answerable": {
+  "questions": 1540,
+  "poolCoverage": 0.8233766233766234,
+  "recallOwn": {
+   "1": 0.008441558441558441,
+   "2": 0.012987012987012988,
+   "4": 0.02012987012987013,
+   "8": 0.03766233766233766
+  },
+  "recallRelevanceAlone": {
+   "1": 0.17272727272727273,
+   "2": 0.261038961038961,
+   "4": 0.3396103896103896,
+   "8": 0.42077922077922075
+  },
+  "contrastRelevanceAloneMinusOwn": {
+   "a": 0.42077922077922075,
+   "b": 0.03766233766233766,
+   "difference": 0.3831168831168831,
+   "bootstrap95": [
+    0.2856209150326797,
+    0.49870129870129876
+   ],
+   "signFlipP": 0.001953125,
+   "unitsPositive": 10,
+   "unitsNegative": 0,
+   "units": 10
+  },
+  "newerInTop8": 7.82495101241019,
+  "unbiasedExpectation": 3.7689505329894706,
+  "ratioRelevanceOverOwn": 11.172413793103448,
+  "newerOverExpectation": 2.0761617707419378,
+  "markedA": true,
+  "markedB": true,
+  "step3": []
+ },
+ "all": {
+  "questions": 1986,
+  "poolCoverage": 0.8403826787512588,
+  "recallOwn": {
+   "1": 0.010070493454179255,
+   "2": 0.01460221550855992,
+   "4": 0.022658610271903322,
+   "8": 0.042799597180261835
+  },
+  "recallRelevanceAlone": {
+   "1": 0.1973816717019134,
+   "2": 0.28851963746223563,
+   "4": 0.37009063444108764,
+   "8": 0.45468277945619334
+  },
+  "contrastRelevanceAloneMinusOwn": {
+   "a": 0.45468277945619334,
+   "b": 0.042799597180261835,
+   "difference": 0.4118831822759315,
+   "bootstrap95": [
+    0.3214113098115032,
+    0.5171503957783641
+   ],
+   "signFlipP": 0.001953125,
+   "unitsPositive": 10,
+   "unitsNegative": 0,
+   "units": 10
+  },
+  "newerInTop8": 7.817400101163379,
+  "unbiasedExpectation": 3.7748833942489664,
+  "ratioRelevanceOverOwn": 10.623529411764705,
+  "newerOverExpectation": 2.070898431743133,
+  "markedA": true,
+  "markedB": true,
+  "step3": []
+ }
+}
