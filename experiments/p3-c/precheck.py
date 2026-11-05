@@ -133,6 +133,7 @@ class Mem0System:
     time_term = "none"
 
     def __init__(self, conv, embedder):
+        os.environ["MEM0_TELEMETRY"] = "False"  # nothing leaves the machine, and its telemetry store would hold a lock across dialogues
         from mem0 import Memory
         self.embedder = embedder
         self.dir = tempfile.mkdtemp(prefix="p3c-mem0-")
@@ -208,9 +209,10 @@ def main():
     ap.add_argument("system", choices=sorted(SYSTEMS))
     ap.add_argument("--corpus", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--conversations", type=int, help="only the first N (a trial of the harness)")
     ap.add_argument("--cache", default=os.path.expanduser("~/.local/share/aijade-data/p3c-embeddings.json"))
     args = ap.parse_args()
-    corpus = json.load(open(args.corpus, encoding="utf-8"))
+    corpus = json.load(open(args.corpus, encoding="utf-8"))[:args.conversations]
     embedder = Embedder(args.cache)
     # every text once, up front, so that the cache is written once
     embedder.embed([t["content"] for c in corpus for t in c["turns"]], "search_document: ")
