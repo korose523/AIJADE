@@ -157,7 +157,7 @@ public static class RetrievalAblation
     /// s/(1+s), recency, context) of the gold evidence items, of the additive top 8 (default weights, no conflict penalty or
     /// noise) and of the whole candidate pool; averaged over the questions whose evidence is in the store. No gating.
     /// </summary>
-    public static ComponentScalesResult ComponentScales(IReadOnlyList<LocomoConversation> conversations)
+    public static ComponentScalesResult ComponentScales(IReadOnlyList<LocomoConversation> conversations, MemoryConfig? baseConfig = null)
     {
         var w = RetrievalWeights.Default;
         static double Pick(ScoreParts p, string c) => c switch
@@ -169,7 +169,7 @@ public static class RetrievalAblation
         };
         var perConversation = ParallelMap.Map(conversations, (conv, _) =>
         {
-            var memory = LocomoCorpus.BuildMemory(conv, MemoryConfig.Default with { Gating = GatingCoefficients.None, RetrievalScoreMode = RetrievalScoreMode.Standardized });
+            var memory = LocomoCorpus.BuildMemory(conv, (baseConfig ?? MemoryConfig.Default) with { Gating = GatingCoefficients.None, RetrievalScoreMode = RetrievalScoreMode.Standardized });
             var rows = new List<(Dictionary<string, double> Gold, Dictionary<string, double> Top, Dictionary<string, double> Pool, Dictionary<string, double> Sd)>();
             foreach (var q in conv.Qa)
             {
@@ -207,7 +207,7 @@ public static class RetrievalAblation
     /// additive mode the penalty scans the top K, in the standardised and RRF modes a constant head of 150 candidates, and the
     /// older side of a conflicting pair loses, so the penalty can act as a recency bias of its own.
     /// </summary>
-    public static IReadOnlyList<DeliveryCheckRow> DeliveryCheck(IReadOnlyList<LocomoConversation> conversations)
+    public static IReadOnlyList<DeliveryCheckRow> DeliveryCheck(IReadOnlyList<LocomoConversation> conversations, MemoryConfig? baseConfig = null)
     {
         var rows = new List<DeliveryCheckRow>();
         foreach (var mode in new[] { RetrievalScoreMode.Additive, RetrievalScoreMode.Standardized })
@@ -216,7 +216,7 @@ public static class RetrievalAblation
             {
                 var perConversation = ParallelMap.Map(conversations, (conv, _) =>
                 {
-                    var memory = LocomoCorpus.BuildMemory(conv, MemoryConfig.Default with { Gating = GatingCoefficients.None, RetrievalScoreMode = mode, ConflictPenalty = penalty });
+                    var memory = LocomoCorpus.BuildMemory(conv, (baseConfig ?? MemoryConfig.Default) with { Gating = GatingCoefficients.None, RetrievalScoreMode = mode, ConflictPenalty = penalty });
                     int hits = 0, slots = 0, penalizedSlots = 0, goldPenalized = 0;
                     foreach (var q in conv.Qa)
                     {

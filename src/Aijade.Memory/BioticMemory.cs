@@ -278,7 +278,7 @@ public sealed partial class BioticMemory
             : (items, new Dictionary<string, List<string>>());
 
         var rows = ranked.Select(it => new RawScoreRow(
-            idx.Cosine(qVec, it.Id),
+            Config.SimilarityOverride is { } similarity ? similarity(query, it.Content) : idx.Cosine(qVec, it.Id),
             Forgetting.RetrievalStrength(it.CreatedAt, it.AccessCount, it.BaseStrength, it.Durability, now, f, g, it.Salience),
             1 / (1 + (Math.Max(0, now - it.CreatedAt) / f.AgeScaleMs)),
             Scoring.Jaccard(queryTags, it.ContextTags),

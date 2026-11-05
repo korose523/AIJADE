@@ -57,15 +57,15 @@ switch (command)
         return await FormatPrecheckCommand(Arg("--model") ?? throw new ArgumentException("--model is required"), Arg("--ollama-base-url") ?? "http://127.0.0.1:11434",
             Arg("--out"), root);
     case "delivery-check" when Arg("--corpus") == "longmemeval":
-        return WithLongMemEval(Arg("--data"), DeliveryCheckReport,
+        return WithLongMemEval(Arg("--data"), c => DeliveryCheckReport(c),
             Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "delivery-check.json")));
     case "delivery-check":
-        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "delivery-check.json", DeliveryCheckReport);
+        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "delivery-check.json", c => DeliveryCheckReport(c));
     case "component-scales" when Arg("--corpus") == "longmemeval":
-        return WithLongMemEval(Arg("--data"), ComponentScalesReport,
+        return WithLongMemEval(Arg("--data"), c => ComponentScalesReport(c),
             Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "component-scales.json")));
     case "component-scales":
-        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "component-scales.json", ComponentScalesReport);
+        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "component-scales.json", c => ComponentScalesReport(c));
     case "metric-definitions":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "metric-definitions.json", MetricDefinitionsReport);
     case "k-dependence":
@@ -82,6 +82,8 @@ switch (command)
     case "pool-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "pool-check.json",
             corpus => PoolCheckReport(corpus, null, null));
+    case "embedding-check":
+        return await EmbeddingCheck(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), Arg("--model") ?? "nomic-embed-text", Arg("--ollama") ?? "http://127.0.0.1:11434", root);
     case "answerable-tables":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "answerable-tables.json", c => AnswerableTablesReport(c, root));
     case "answerable-check":
@@ -325,9 +327,9 @@ static JsonObject MetricDefinitionsReport(IReadOnlyList<LocomoConversation> corp
     };
 }
 
-static JsonObject ComponentScalesReport(IReadOnlyList<LocomoConversation> corpus)
+static JsonObject ComponentScalesReport(IReadOnlyList<LocomoConversation> corpus, MemoryConfig? config = null)
 {
-    var r = RetrievalAblation.ComponentScales(corpus);
+    var r = RetrievalAblation.ComponentScales(corpus, config);
     static JsonObject Obj(IReadOnlyDictionary<string, double> x) => new(x.Select(p => KeyValuePair.Create(p.Key, (JsonNode?)p.Value)));
     return new JsonObject
     {
@@ -406,11 +408,11 @@ static int LongMemEvalReplication(string data, string outDir)
 
 // The diagnostic track's pool is the store's top 150 under its own (standardised) score. One retrieval per question gives
 // the published variant (that pool, floor applied), the pool's coverage, and the diagnostic re-run on the whole store.
-static JsonObject PoolCheckReport(IReadOnlyList<LocomoConversation> corpus, string? corpusName, string? sha)
+static JsonObject PoolCheckReport(IReadOnlyList<LocomoConversation> corpus, string? corpusName, string? sha, MemoryConfig? config = null)
 {
     var clock = System.Diagnostics.Stopwatch.StartNew();
     // one run per conversation (in parallel), combined exactly; the per-conversation results also give the paired contrasts
-    var perConv = WeightAblation.RunVariantsPerConversation(corpus, null, [(WeightAblation.RerankPool, true), (WeightAblation.RerankPool, false), (int.MaxValue, false)]);
+    var perConv = WeightAblation.RunVariantsPerConversation(corpus, config, [(WeightAblation.RerankPool, true), (WeightAblation.RerankPool, false), (int.MaxValue, false)]);
     var results = Enumerable.Range(0, 3).Select(v => WeightAblation.Combine([.. perConv.Select(p => p[v])])).ToList();
     var questions = perConv.Select(p => (double)p[0].Questions).ToArray();
     double[] Hits(int v, string arm) => [.. perConv.Select(p => p[v].RecallByWeights[arm][MemoryUncertainty.K] * p[v].Questions)];
@@ -482,10 +484,10 @@ static async Task<int> FormatPrecheckCommand(string model, string baseUrl, strin
     return 0;
 }
 
-static JsonObject DeliveryCheckReport(IReadOnlyList<LocomoConversation> corpus) => new()
+static JsonObject DeliveryCheckReport(IReadOnlyList<LocomoConversation> corpus, MemoryConfig? config = null) => new()
 {
     ["experiment"] = "delivery track without gating: recall@8 (macro) per score mode with the conflict penalty at its default and switched off (1.0); share of top-8 slots penalised; share of questions with a penalised gold item in the scanned head (8 additive, 150 standardised)",
-    ["rows"] = new JsonArray([.. RetrievalAblation.DeliveryCheck(corpus).Select(r => (JsonNode)new JsonObject
+    ["rows"] = new JsonArray([.. RetrievalAblation.DeliveryCheck(corpus, config).Select(r => (JsonNode)new JsonObject
     {
         ["mode"] = WireName.Of(r.Mode), ["conflictPenalty"] = r.ConflictPenalty, ["recall8Macro"] = r.MacroRecall8,
         ["penalizedShareOfTop8"] = r.PenalizedShareOfTop8, ["goldPenalizedShare"] = r.GoldPenalizedShare,
@@ -590,6 +592,93 @@ static JsonObject AnswerableCheckReport(IReadOnlyList<LocomoConversation> corpus
     report["reproduction"] = new JsonObject { ["allMatch"] = checks.All(c => (bool)c!["match"]!), ["checks"] = checks };
     Console.WriteLine($"reproduction of the archived all-question values: {checks.Count(c => (bool)c!["match"]!)}/{checks.Count} match");
     return report;
+}
+
+// experiments/plans/2026-11-05-p3-d-embedding-similarity.md: only the similarity term is replaced, by the cosine between embeddings.
+static async Task<int> EmbeddingCheck(string locomo, string outDir, string model, string ollama, string root)
+{
+    const string Digest = "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f";
+    var corpus = LocomoCorpus.Load(locomo);
+    using var http = new HttpClient { BaseAddress = new Uri(ollama), Timeout = TimeSpan.FromMinutes(10) };
+    var tags = JsonNode.Parse(await http.GetStringAsync("/api/tags"))!["models"]!.AsArray();
+    var installed = tags.Select(m => (string?)m!["digest"]).ToList();
+    if (!installed.Contains(Digest))
+    {
+        Console.Error.WriteLine($"{model} with digest {Digest} is not installed");
+        return 2;
+    }
+    // One embedding per distinct stored text and one per question, with the task prefixes nomic-embed-text documents; computed once.
+    var cachePath = Path.Combine(Path.GetDirectoryName(locomo)!, $"embeddings-{Digest[..12]}.json");
+    var cache = File.Exists(cachePath) ? JsonNode.Parse(await File.ReadAllTextAsync(cachePath))!.AsObject() : [];
+    async Task<Dictionary<string, float[]>> Embed(IEnumerable<string> texts, string prefix)
+    {
+        var distinct = texts.Distinct(StringComparer.Ordinal).ToList();
+        var missing = distinct.Where(x => !cache.ContainsKey(prefix + x)).ToList();
+        for (var i = 0; i < missing.Count; i += 64)
+        {
+            var batch = missing.Skip(i).Take(64).ToList();
+            var body = new JsonObject { ["model"] = model, ["input"] = new JsonArray([.. batch.Select(b => (JsonNode)(prefix + b))]) };
+            using var response = await http.PostAsync("/api/embed", new StringContent(body.ToJsonString(), System.Text.Encoding.UTF8, "application/json"));
+            response.EnsureSuccessStatusCode();
+            var vectors = JsonNode.Parse(await response.Content.ReadAsStringAsync())!["embeddings"]!.AsArray();
+            for (var j = 0; j < batch.Count; j++)
+                cache[prefix + batch[j]] = vectors[j]!.DeepClone();
+            Console.WriteLine($"embedded {Math.Min(i + 64, missing.Count)}/{missing.Count} ({prefix.Trim()})");
+        }
+        return distinct.ToDictionary(x => x, x => cache[prefix + x]!.AsArray().Select(v => (float)v!).ToArray(), StringComparer.Ordinal);
+    }
+    var docs = await Embed(corpus.SelectMany(c => c.Episodes.Select(e => e.Content)), "search_document: ");
+    var queries = await Embed(corpus.SelectMany(c => c.Qa.Select(q => q.Question)), "search_query: ");
+    await File.WriteAllTextAsync(cachePath, cache.ToJsonString());
+    static double Cosine(float[] a, float[] b)
+    {
+        double dot = 0, na = 0, nb = 0;
+        for (var i = 0; i < a.Length; i++)
+        {
+            dot += a[i] * b[i];
+            na += a[i] * a[i];
+            nb += b[i] * b[i];
+        }
+        return dot / Math.Sqrt(na * nb);
+    }
+    // the kernel's distiller stores each fact as a verbatim copy of its turn, so every stored text has an embedding
+    var config = MemoryConfig.Default with { SimilarityOverride = (q, content) => Cosine(queries[q], docs[content]) };
+    var report = new JsonObject
+    {
+        ["experiment"] = "the diagnosis, fixed-pool ablation and delivery check of P3 with an embedding cosine as the similarity term; everything else unchanged",
+        ["plan"] = "experiments/plans/2026-11-05-p3-d-embedding-similarity.md", ["planCommit"] = "977fa6ca96e31e1bf5912c2c956469e291d58f3c",
+        ["codeCommit"] = RqcRunner.GitHash(), ["model"] = model, ["manifestSha256"] = Digest, ["ollama"] = (string?)JsonNode.Parse(await http.GetStringAsync("/api/version"))!["version"],
+        ["deviations"] = new JsonArray("Run on 5 November 2026 on the Mac, before the supervisor's review of the plan: the first author's decision."),
+    };
+    foreach (var (key, keep) in new (string, Func<LocomoQuestion, bool>)[] { ("answerable", AnswerableReanalysis.Answerable), ("all", _ => true) })
+    {
+        IReadOnlyList<LocomoConversation> q = [.. corpus.Select(c => c with { Qa = [.. c.Qa.Where(keep)] })];
+        var pool = PoolCheckReport(q, null, null, config);
+        var published = pool["published"]!;
+        var current = (double)published["recallByWeights"]!["current"]!["8"]!;
+        var simOnly = (double)published["recallByWeights"]!["sim-only"]!["8"]!;
+        var newer = (double)published["recencyBias"]!["meanNewerInTopK"]!;
+        var unbiased = (double)published["recencyBias"]!["baselineIfUnbiased"]!;
+        report[key] = new JsonObject
+        {
+            ["questions"] = q.Sum(c => c.Qa.Count),
+            ["pool"] = pool,
+            ["components"] = ComponentScalesReport(q, config),
+            ["delivery"] = DeliveryCheckReport(q, config),
+            ["reading"] = new JsonObject
+            {
+                ["recallRatioSimOnlyOverDefault"] = current > 0 ? simOnly / current : null,
+                ["markedA"] = current > 0 ? (simOnly / current > 2 || current / Math.Max(simOnly, double.Epsilon) > 2) : null,
+                ["newerRatioOverUnbiased"] = unbiased > 0 ? newer / unbiased : null,
+                ["markedB"] = unbiased > 0 ? newer / unbiased > 1.5 : null,
+            },
+        };
+    }
+    Directory.CreateDirectory(outDir);
+    report["provenance"] = new JsonObject { ["corpus"] = "LoCoMo (snap-research/locomo, data/locomo10.json)", ["corpusSha256"] = LocomoCorpus.FileSha256(locomo), ["runtime"] = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, ["generatedAt"] = DateTimeOffset.UtcNow.ToString("o", CultureInfo.InvariantCulture) };
+    await File.WriteAllTextAsync(Path.Combine(outDir, "embedding-check.json"), JsFormat.Stringify(report, 2) + "\n");
+    Console.WriteLine($"wrote {Path.Combine(outDir, "embedding-check.json")}");
+    return 0;
 }
 
 // experiments/plans/2026-10-27-p3-answerable-tables.md: every question-dependent table of P3 on the answerable questions and on

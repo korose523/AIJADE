@@ -172,6 +172,12 @@ public enum RetrievalScoreMode
 
 public sealed record MemoryConfig
 {
+    /// <summary>
+    /// Replaces the TF-IDF cosine of retrieval by the given (query, content) similarity; null, the default, keeps TF-IDF.
+    /// Only the study of experiments/plans/2026-11-05-p3-d-embedding-similarity.md sets it.
+    /// </summary>
+    public Func<string, string, double>? SimilarityOverride { get; init; }
+
     public GatingCoefficients Gating { get; init; } = GatingCoefficients.Default;
     public ForgettingConfig Forgetting { get; init; } = new();
     public RetrievalWeights Weights { get; init; } = RetrievalWeights.Default;
