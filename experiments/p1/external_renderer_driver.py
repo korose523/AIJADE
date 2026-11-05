@@ -93,7 +93,14 @@ def main():
 
     def kill_client():
         time.sleep(1)
-        subprocess.run(["pkill", "-9", "-f", f"--path {client}/clients/godot-scene"], check=False)
+        # The pattern must not start with a dash: pkill would read it as an option, and the session would simply end by itself.
+        if subprocess.run(["pkill", "-9", "-f", f"path {client}/clients/godot-scene"], check=False).returncode != 0:
+            raise SystemExit("the kill found no client")
+
+    def must_be_unfinished(name, exit_code, file):
+        last = file.read_text(encoding="utf-8").rstrip("\n").rsplit("\n", 1)[-1]
+        if exit_code == 0 or '"record":"end"' in last:
+            raise SystemExit(f"{name}: the kill did not take (exit {exit_code}); the session is not the case it should be")
 
     def plain_session(d, session, killed=False, **extra):
         d.mkdir()
@@ -103,6 +110,8 @@ def main():
         if killed:
             kill_client()
         exit_code = proc.wait(420)
+        if killed:
+            must_be_unfinished(session, exit_code, file)
         seal(d / "registry.jsonl", file, d / "manifest.json")
         return exit_code
 
@@ -126,6 +135,7 @@ def main():
         send(d, rid, port, d / "client/aijade-render-state.jsonl", 1, 5)
         kill_client()
         exits[rid + "-first"] = proc.wait(60)
+        must_be_unfinished(rid, exits[rid + "-first"], d / "client/aijade-render-state.jsonl")
         proc, port = start_client(d / "client2", rid)
         send(d, rid, port, d / "client2/aijade-render-state.jsonl", 6, 11)
         exits[rid + "-second"] = proc.wait(420)
@@ -162,6 +172,11 @@ def main():
         "testsAtRunCommit": {**unchanged, "RendererLinkTestsWithBuiltParser": conformance},
         "tally": [tally(x) for x in data["rounds"]],
         "rounds": data["rounds"],
+        "deviations": [
+            "Departures from the draft of 4 November 2026 are listed in the plan's section 'Fixed on 6 November 2026', committed before the code.",
+            "The plan was not pushed or sent to the supervisor before the code, by the first author's decision.",
+            "A first pass (run commit 86f5818, 6 November 2026, 07:11 to 07:27) is discarded: the driver's kill never took, because pkill read its pattern as an option, so the killed sessions and the first instances of the restarted sessions closed their files normally. S1 and S5a then differed in all three rounds, with 11 and 5 receipts written from files that were complete; the other 45 cases of group 3, and groups 1 and 2, had their expected or recorded outcomes. The driver now stops if a kill does not take; all sessions were run again. The first pass is kept outside the repository, not reported.",
+        ],
         "notes": [
             "Groups 1 and 2 use variants built from the client's healthy receipts and mostly re-test this system's server checks; qualification, the mapping from rows to receipt events and group 3 test the client and the new code.",
             "A row's applied values are the whole behavior overlay, so a receipt shows that a frame consumed the intent and which overlay values it had, not that each value came from the intent.",
