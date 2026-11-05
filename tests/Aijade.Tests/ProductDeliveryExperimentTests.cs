@@ -122,7 +122,8 @@ public class ProductDeliveryExperimentTests
             }
 
             using var tap = new Tap(host.App.GetTestServer().CreateHandler());
-            using var http = new HttpClient(tap) { BaseAddress = host.Client.BaseAddress };
+            // The first search on the embedding path embeds the whole store first, which outlasts the default 100 seconds on a CPU.
+            using var http = new HttpClient(tap) { BaseAddress = host.Client.BaseAddress, Timeout = TimeSpan.FromHours(1) };
             var tokens = new MemoryTokenStore();
             await tokens.SetAsync(ServerTestHost.Token);
             var api = new AijadeApi(http, tokens);
