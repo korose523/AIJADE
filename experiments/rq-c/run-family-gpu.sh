@@ -6,7 +6,8 @@
 # the earlier runs; Ollama 0.40 would otherwise load Llama 3.1's 131072-token context) from the first step. The runner is built into its own artifacts directory so that the
 # llava-phi3 run on this Mac (which uses the default one) is not disturbed. A stopped run is moved to
 # rq-c/family-gpu/interrupted/<run>-<time> and resumed from its record. Nothing is deleted.
-#   usage: run-family-gpu.sh <model>     e.g. run-family-gpu.sh deepseek-coder:6.7b-instruct
+#   usage: run-family-gpu.sh <model> [output-dir]     e.g. run-family-gpu.sh deepseek-coder:6.7b-instruct
+#   (P2-R: output-dir keeps the archived run and log untouched; AIJADE_TRIALS sets the trials of its determinism check, default 30)
 set -u
 model="${1:?usage: run-family-gpu.sh <model>}"
 export DOTNET_ROOT="$HOME/.dotnet" PATH="$HOME/.dotnet:$PATH" DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
@@ -15,9 +16,11 @@ export AIJADE_ARTIFACTS="$HOME/.cache/aijade-next-artifacts-gpu"
 dotnet build tools/Aijade.Rqc -c Release -v q || exit 1
 dll=$AIJADE_ARTIFACTS/bin/Aijade.Rqc/release/Aijade.Rqc.dll
 url="${AIJADE_OLLAMA_URL:?set AIJADE_OLLAMA_URL to the Ollama server, e.g. http://<host>:11434}"
-base=experiments/rq-c/family-gpu
-run=rq-c-s42-ollama-t30-r5
-log=experiments/rq-c/run-family-gpu.log
+base=${2:-experiments/rq-c/family-gpu}
+trials=${AIJADE_TRIALS:-30}
+run=rq-c-s42-ollama-t$trials-r5
+log=${2:-experiments/rq-c}/run-family-gpu.log
+mkdir -p "$base"
 latest="$(ls -td "$base"/interrupted/"$run"-* 2>/dev/null | head -1)"
 attempt=0
 while [ ! -f "$base/$run/summary.json" ] && [ "$attempt" -lt 30 ]; do
@@ -31,7 +34,7 @@ while [ ! -f "$base/$run/summary.json" ] && [ "$attempt" -lt 30 ]; do
   if [ -n "$latest" ] && [ -s "$latest/candidates.jsonl" ]; then resume="--resume-from $latest/candidates.jsonl"; fi
   echo "[$(date '+%F %T')] attempt $attempt model $model ${resume:+(resuming)}" >> "$log"
   # shellcheck disable=SC2086
-  dotnet "$dll" --backend ollama --model "$model" --trials 30 --rounds 5 --tasks 12 --seed 42 \
+  dotnet "$dll" --backend ollama --model "$model" --trials "$trials" --rounds 5 --tasks 12 --seed 42 \
     --timeout-ms 3600000 --ollama-base-url "$url" --out "$base" --save-candidates --max-reply-tokens 4096 --num-ctx 4096 $resume \
     >> "$log" 2>&1 || sleep 60
 done

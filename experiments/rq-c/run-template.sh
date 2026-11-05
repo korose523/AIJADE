@@ -4,7 +4,8 @@
 # or B (the alternative wording). Both run on the same host, context 4096 and replies capped at 4096 tokens, so A on this
 # host separates the template effect from the host effect. Output: experiments/rq-c/template-gpu/<A|B>/<run>. A stopped run is
 # moved to <A|B>/interrupted/<run>-<time> and resumed from its record. Nothing is deleted.
-#   usage: run-template.sh A|B
+#   usage: run-template.sh A|B [output-dir] (P2-R: output-dir keeps the archived runs and logs untouched; AIJADE_TRIALS sets the
+#   trials of its determinism check, default 30)
 set -u
 template="${1:?usage: run-template.sh A|B}"
 export DOTNET_ROOT="$HOME/.dotnet" PATH="$HOME/.dotnet:$PATH" DOTNET_CLI_TELEMETRY_OPTOUT=1 DOTNET_NOLOGO=1
@@ -14,9 +15,10 @@ dotnet build tools/Aijade.Rqc -c Release -v q || exit 1
 dll=$AIJADE_ARTIFACTS/bin/Aijade.Rqc/release/Aijade.Rqc.dll
 url="${AIJADE_OLLAMA_URL:?set AIJADE_OLLAMA_URL to the Ollama server, e.g. http://<host>:11434}"
 model=qwen2.5-coder:7b-instruct
-base=experiments/rq-c/template-gpu/$template
-run=rq-c-s42-ollama-t30-r5
-log=experiments/rq-c/run-template.log
+base=${2:-experiments/rq-c/template-gpu}/$template
+trials=${AIJADE_TRIALS:-30}
+run=rq-c-s42-ollama-t$trials-r5
+log=${2:-experiments/rq-c}/run-template.log
 mkdir -p "$base"
 latest="$(ls -td "$base"/interrupted/"$run"-* 2>/dev/null | head -1)"
 attempt=0
@@ -31,7 +33,7 @@ while [ ! -f "$base/$run/summary.json" ] && [ "$attempt" -lt 30 ]; do
   if [ -n "$latest" ] && [ -s "$latest/candidates.jsonl" ]; then resume="--resume-from $latest/candidates.jsonl"; fi
   echo "[$(date '+%F %T')] template $template attempt $attempt ${resume:+(resuming)}" >> "$log"
   # shellcheck disable=SC2086
-  dotnet "$dll" --backend ollama --model "$model" --trials 30 --rounds 5 --tasks 12 --seed 42 \
+  dotnet "$dll" --backend ollama --model "$model" --trials "$trials" --rounds 5 --tasks 12 --seed 42 \
     --timeout-ms 3600000 --ollama-base-url "$url" --out "$base" --save-candidates --max-reply-tokens 4096 --num-ctx 4096 \
     --verify-template "$template" $resume >> "$log" 2>&1 || sleep 60
 done
