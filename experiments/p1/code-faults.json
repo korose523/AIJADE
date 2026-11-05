@@ -1,0 +1,7 @@
+[
+ {"id":"C1","file":"src/Aijade.Memory/V9/ShadowParams.cs","match":"Clamp01(0.5 + (0.1 * Math.Min(spans.Count, 5)))","replace":"Clamp01(1.0 - (0.1 * Math.Min(spans.Count, 5)))","form":"evidence confidence falls as spans are added"},
+ {"id":"C2","file":"src/Aijade.Server/V9/ServerRuntime.cs","match":"sessionId, e.TraceId, e.CorrelationId, e.Timestamp, e.OriginDevice","replace":"sessionId, e.TraceId, e.CorrelationId, e.Timestamp / 1000, e.OriginDevice","form":"the observation's timestamp reaches the runtime in seconds"},
+ {"id":"C3","file":"src/Aijade.Server/V9/V9EventService.cs","match":"var applied = Str(p, \"applied_params_hash\");\n        var asset = Str(p, \"asset_version_hash\");","replace":"var applied = Str(p, \"asset_version_hash\");\n        var asset = Str(p, \"applied_params_hash\");","form":"the projection stores fingerprint and asset version in each other's columns"},
+ {"id":"C4","file":"src/Aijade.Server/V9/V9EventService.cs","match":"ORDER BY updated_at DESC, created_at DESC LIMIT 1","replace":"ORDER BY updated_at ASC, created_at ASC LIMIT 1","form":"the latest render identity returns the oldest"},
+ {"id":"C5","file":"src/Aijade.Server/V9/ServerRuntime.cs","match":"e.OriginDevice, e.PrivacyLevel, e.RiskScore","replace":"e.OriginDevice, e.PrivacyLevel, 1 - e.RiskScore","form":"the observation's risk score reaches the runtime inverted"}
+]

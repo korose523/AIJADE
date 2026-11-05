@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- P1-A's code faults only: the checks a mutated copy runs, so that each fault builds quickly. Not in the solution. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Aijade.Tests</AssemblyName>
+    <RootNamespace>Aijade.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <NoWarn>$(NoWarn);CA1707;CA1515;CA1861;CA1305;CA1307;CA1310;CA1849</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <ProjectReference Include="../../../../src/Aijade.Client/Aijade.Client.csproj" />
+    <ProjectReference Include="../../../../src/Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../../../../src/Aijade.Memory/Aijade.Memory.csproj" />
+    <ProjectReference Include="../../../../src/Aijade.Server/Aijade.Server.csproj" />
+    <ProjectReference Include="../../../../tools/Aijade.P1/Aijade.P1.csproj" />
+    <Compile Include="../../../../tests/Aijade.Tests/ServerTestHost.cs" />
+    <Compile Include="../../../../tests/Aijade.Tests/ContractDriftMatrixTests.cs" />
+    <Compile Include="../../../../tests/Aijade.Tests/PromotionGateMatrixTests.cs" />
+    <Compile Include="../../../../tests/Aijade.Tests/ConsumerExpectationTests.cs" />
+    <Compile Include="../../../../tests/Aijade.Tests/CodeFaultChecksTests.cs" />
+    <None Include="../../../../tests/Aijade.Tests/Golden/**" LinkBase="Golden" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
