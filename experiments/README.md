@@ -25,6 +25,9 @@ archived summaries stay comparable.
 | `p1/` | P1 | End-to-end main flow (`e2e-main.txt`) and prefer-absence branch (`e2e-negative-fork.txt`); ingestion latency (`ingest-*.json`) and loop latency (`loop-latency.json`) | `tools/Aijade.P1` against a running API + worker |
 | `p1/mutation/` | P1 | Mutation experiment on the contract-drift matrix | `tools/Aijade.Mutation` (`mutations.json`) |
 | `p1/gate-mutation/` | P1 | Mutation experiment on the promotion-gate matrix | `tools/Aijade.Mutation --catalogue tools/Aijade.Mutation/gate-mutants.json` |
+| `p1/alternative-designs.json` | P1 | P1-A: input and data faults against four configurations | `tests/Aijade.Tests`, plan `plans/2026-11-05-p1-a-alternative-designs.md` |
+| `p1/independent-fault-set.json` | P1 | P1-B: Stryker.NET 5.0.0 on the two matrices, one row per mutant, with the hand check | `p1/stryker_summary.py`, `p1/stryker_hand_check.py`, configuration on branch `p1-b-run`, plan `plans/2026-11-05-p1-b-independent-fault-set.md` |
+| `memory/product-path.json`, `memory/product-path/` | P3 | P3-E: evidence at each stage of the product's path, by text and by embedding | `ProductDeliveryExperimentTests`, `memory/product_path_summary.py`, plan `plans/2026-11-05-p3-e-product-delivery-path.md` |
 | `p1/admission-checks.json`, `p1/validation-overhead.json` | P1 | Admission checks; strict-validation overhead | `AdmissionChecksTests`, `ValidationOverheadTests` with `AIJADE_EXPERIMENT_DIR=experiments/p1` |
 | `p1/identity-a7.json` | P1 | Appendix A.7 positive control of the identity layer | `aijade-experiments identity-a7` |
 | `growth-pilot/` | P1 | Mechanism-level pilot of the growth and identity layer | `aijade-experiments growth-pilot` |
