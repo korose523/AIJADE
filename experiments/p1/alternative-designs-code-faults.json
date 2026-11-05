@@ -1,0 +1,1806 @@
+{
+ "experiment": "P1-A: faults defined on code against four configurations",
+ "plan": "experiments/plans/2026-11-05-p1-a-alternative-designs.md (addendum)",
+ "codeCommit": "7d119a9f1443938deda4b98e1d6881bb4be0e9c4",
+ "database": "PostgreSQL 18.0",
+ "ranOn": "2026-11-05 to 2026-11-06",
+ "deviations": [
+  "The consumer tests and the five changed-meaning faults came after the input faults had run, by the same researcher, against the plan's Code version rule; the faults were fixed before the tests were written, so the tests are not a blind test of any configuration.",
+  "No code reads the values of spans or time_spans, so the plan's example could not be given as written; C1 and C2 are the nearest forms.",
+  "Two earlier passes were not kept as results: one stopped on a stale catalogue match, and one left warnings as errors, so that 15 mutants did not build.",
+  "Rule kept as fixed: kernel-schema faults count as not applicable in configurations 3 and 4, although the runtime still builds its proposal through that schema, so FU-06 makes consumer tests fail; see the row's raw checks.",
+  "The worker is not started, so rows read by a downstream consumer other than the projection are not measured."
+ ],
+ "checks": {
+  "consumerTests": 11,
+  "consumerTestLines": 216,
+  "writingTimeRecorded": false,
+  "driftAssertionsDroppedForLiberal": 138,
+  "driftAssertions": 287,
+  "contradictedByLiberal": [
+   "FAIL [http] aijade.active_learning.completed / missing quest_ref: must be 400 (got 201)",
+   "FAIL [http] aijade.active_learning.completed / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.active_learning.requested / missing quest_ref: must be 400 (got 201)",
+   "FAIL [http] aijade.active_learning.requested / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.evidence.weave_candidate_ready / missing graph_hash: must be 400 (got 201)",
+   "FAIL [http] aijade.evidence.weave_candidate_ready / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: must be 400 (got 201)",
+   "FAIL [http] aijade.learning.constraint.opinion_evaluation / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.learning.proposed.evidence / missing evidence_hash: must be 400 (got 201)",
+   "FAIL [http] aijade.learning.proposed.evidence / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.learning.proposed.shadow_params / missing input_hash: must be 400 (got 201)",
+   "FAIL [http] aijade.learning.proposed.shadow_params / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.lpm.render_ready / missing render_ref: must be 400 (got 201)",
+   "FAIL [http] aijade.lpm.render_ready / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.memory_tx.committed / missing committed_count: must be 400 (got 201)",
+   "FAIL [http] aijade.memory_tx.committed / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.persona.render_requested / missing intent_ref: must be 400 (got 201)",
+   "FAIL [http] aijade.persona.render_requested / missing persona_snapshot_ref: must be 400 (got 201)",
+   "FAIL [http] aijade.persona.render_requested / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.pgc.write_plan_ready / missing pgc_state_id: must be 400 (got 201)",
+   "FAIL [http] aijade.pgc.write_plan_ready / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.video.observation.video_transcript / missing session_id: must be 400 (got 201)",
+   "FAIL [http] aijade.video.observation.video_transcript / missing video_id: must be 400 (got 201)",
+   "FAIL [http] aijade.video.observation.video_transcript / unknown field: must be 400 (got 201)",
+   "FAIL [http] aijade.video.observation.webpage_text / missing session_id: must be 400 (got 201)",
+   "FAIL [http] aijade.video.observation.webpage_text / missing source_url: must be 400 (got 201)",
+   "FAIL [http] aijade.video.observation.webpage_text / unknown field: must be 400 (got 201)",
+   "FAIL [http] envelope missing \"causal_context_refs\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"correlation_id\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"event_id\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"evidence_refs\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"idempotency_key\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"origin_device\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"privacy_level\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"producer\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"replay_mode\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"risk_level\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"risk_score\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"timestamp\": must be 400 (got 201)",
+   "FAIL [http] envelope missing \"trace_id\": must be 400 (got 201)",
+   "FAIL [http] envelope with unknown extra field: must be 400 (got 201)",
+   "FAIL [no-write] aijade.active_learning.completed / missing quest_ref: events unchanged (15 -> 16)",
+   "FAIL [no-write] aijade.active_learning.completed / unknown field: events unchanged (16 -> 17)",
+   "FAIL [no-write] aijade.active_learning.requested / missing quest_ref: events unchanged (13 -> 14)",
+   "FAIL [no-write] aijade.active_learning.requested / unknown field: events unchanged (14 -> 15)",
+   "FAIL [no-write] aijade.evidence.weave_candidate_ready / missing graph_hash: events unchanged (17 -> 18)",
+   "FAIL [no-write] aijade.evidence.weave_candidate_ready / unknown field: events unchanged (18 -> 19)",
+   "FAIL [no-write] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: events unchanged (38 -> 39)",
+   "FAIL [no-write] aijade.learning.constraint.opinion_evaluation / unknown field: events unchanged (39 -> 40)",
+   "FAIL [no-write] aijade.learning.proposed.evidence / missing evidence_hash: events unchanged (36 -> 37)",
+   "FAIL [no-write] aijade.learning.proposed.evidence / unknown field: events unchanged (37 -> 38)",
+   "FAIL [no-write] aijade.learning.proposed.shadow_params / missing input_hash: events unchanged (34 -> 35)",
+   "FAIL [no-write] aijade.learning.proposed.shadow_params / unknown field: events unchanged (35 -> 36)",
+   "FAIL [no-write] aijade.lpm.render_ready / missing render_ref: events unchanged (26 -> 27)",
+   "FAIL [no-write] aijade.lpm.render_ready / missing render_ref: render_traces unchanged (7 -> 8)",
+   "FAIL [no-write] aijade.lpm.render_ready / unknown field: events unchanged (27 -> 28)",
+   "FAIL [no-write] aijade.lpm.render_ready / unknown field: render_traces unchanged (8 -> 9)",
+   "FAIL [no-write] aijade.memory_tx.committed / missing committed_count: events unchanged (21 -> 22)",
+   "FAIL [no-write] aijade.memory_tx.committed / unknown field: events unchanged (22 -> 23)",
+   "FAIL [no-write] aijade.persona.render_requested / missing intent_ref: events unchanged (24 -> 25)",
+   "FAIL [no-write] aijade.persona.render_requested / missing intent_ref: render_traces unchanged (5 -> 6)",
+   "FAIL [no-write] aijade.persona.render_requested / missing persona_snapshot_ref: events unchanged (23 -> 24)",
+   "FAIL [no-write] aijade.persona.render_requested / missing persona_snapshot_ref: render_traces unchanged (4 -> 5)",
+   "FAIL [no-write] aijade.persona.render_requested / unknown field: events unchanged (25 -> 26)",
+   "FAIL [no-write] aijade.persona.render_requested / unknown field: render_traces unchanged (6 -> 7)",
+   "FAIL [no-write] aijade.pgc.write_plan_ready / missing pgc_state_id: events unchanged (19 -> 20)",
+   "FAIL [no-write] aijade.pgc.write_plan_ready / unknown field: events unchanged (20 -> 21)",
+   "FAIL [no-write] aijade.video.observation.video_transcript / missing session_id: events unchanged (31 -> 32)",
+   "FAIL [no-write] aijade.video.observation.video_transcript / missing video_id: events unchanged (32 -> 33)",
+   "FAIL [no-write] aijade.video.observation.video_transcript / unknown field: events unchanged (33 -> 34)",
+   "FAIL [no-write] aijade.video.observation.webpage_text / missing session_id: events unchanged (28 -> 29)",
+   "FAIL [no-write] aijade.video.observation.webpage_text / missing source_url: events unchanged (29 -> 30)",
+   "FAIL [no-write] aijade.video.observation.webpage_text / unknown field: events unchanged (30 -> 31)",
+   "FAIL [no-write] envelope missing \"causal_context_refs\": events unchanged (48 -> 49)",
+   "FAIL [no-write] envelope missing \"correlation_id\": events unchanged (42 -> 43)",
+   "FAIL [no-write] envelope missing \"event_id\": events unchanged (40 -> 41)",
+   "FAIL [no-write] envelope missing \"evidence_refs\": events unchanged (47 -> 48)",
+   "FAIL [no-write] envelope missing \"idempotency_key\": events unchanged (50 -> 51)",
+   "FAIL [no-write] envelope missing \"origin_device\": events unchanged (45 -> 46)",
+   "FAIL [no-write] envelope missing \"privacy_level\": events unchanged (46 -> 47)",
+   "FAIL [no-write] envelope missing \"producer\": events unchanged (44 -> 45)",
+   "FAIL [no-write] envelope missing \"replay_mode\": events unchanged (51 -> 52)",
+   "FAIL [no-write] envelope missing \"risk_level\": events unchanged (52 -> 53)",
+   "FAIL [no-write] envelope missing \"risk_score\": events unchanged (49 -> 50)",
+   "FAIL [no-write] envelope missing \"timestamp\": events unchanged (43 -> 44)",
+   "FAIL [no-write] envelope missing \"trace_id\": events unchanged (41 -> 42)",
+   "FAIL [no-write] envelope with unknown extra field: events unchanged (53 -> 54)",
+   "ok   [http] aijade.active_learning.completed / missing quest_ref: must be 400 (got 400)",
+   "ok   [http] aijade.active_learning.completed / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.active_learning.requested / missing quest_ref: must be 400 (got 400)",
+   "ok   [http] aijade.active_learning.requested / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.evidence.weave_candidate_ready / missing graph_hash: must be 400 (got 400)",
+   "ok   [http] aijade.evidence.weave_candidate_ready / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: must be 400 (got 400)",
+   "ok   [http] aijade.learning.constraint.opinion_evaluation / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.learning.proposed.evidence / missing evidence_hash: must be 400 (got 400)",
+   "ok   [http] aijade.learning.proposed.evidence / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.learning.proposed.shadow_params / missing input_hash: must be 400 (got 400)",
+   "ok   [http] aijade.learning.proposed.shadow_params / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.lpm.render_ready / missing render_ref: must be 400 (got 400)",
+   "ok   [http] aijade.lpm.render_ready / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.memory_tx.committed / missing committed_count: must be 400 (got 400)",
+   "ok   [http] aijade.memory_tx.committed / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.persona.render_requested / missing intent_ref: must be 400 (got 400)",
+   "ok   [http] aijade.persona.render_requested / missing persona_snapshot_ref: must be 400 (got 400)",
+   "ok   [http] aijade.persona.render_requested / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.pgc.write_plan_ready / missing pgc_state_id: must be 400 (got 400)",
+   "ok   [http] aijade.pgc.write_plan_ready / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.video.observation.video_transcript / missing session_id: must be 400 (got 400)",
+   "ok   [http] aijade.video.observation.video_transcript / missing video_id: must be 400 (got 400)",
+   "ok   [http] aijade.video.observation.video_transcript / unknown field: must be 400 (got 400)",
+   "ok   [http] aijade.video.observation.webpage_text / missing session_id: must be 400 (got 400)",
+   "ok   [http] aijade.video.observation.webpage_text / missing source_url: must be 400 (got 400)",
+   "ok   [http] aijade.video.observation.webpage_text / unknown field: must be 400 (got 400)",
+   "ok   [http] envelope missing \"causal_context_refs\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"correlation_id\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"event_id\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"evidence_refs\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"idempotency_key\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"origin_device\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"privacy_level\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"producer\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"replay_mode\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"risk_level\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"risk_score\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"timestamp\": must be 400 (got 400)",
+   "ok   [http] envelope missing \"trace_id\": must be 400 (got 400)",
+   "ok   [http] envelope with unknown extra field: must be 400 (got 400)",
+   "ok   [no-write] aijade.active_learning.completed / blank quest_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.active_learning.completed / blank quest_ref: events unchanged (16 -> 16)",
+   "ok   [no-write] aijade.active_learning.completed / missing quest_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.active_learning.completed / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.active_learning.requested / blank quest_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.active_learning.requested / blank quest_ref: events unchanged (14 -> 14)",
+   "ok   [no-write] aijade.active_learning.requested / empty stop_conditions: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.active_learning.requested / empty stop_conditions: events unchanged (14 -> 14)",
+   "ok   [no-write] aijade.active_learning.requested / missing quest_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.active_learning.requested / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.evidence.weave_candidate_ready / blank graph_hash: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.evidence.weave_candidate_ready / blank graph_hash: events unchanged (18 -> 18)",
+   "ok   [no-write] aijade.evidence.weave_candidate_ready / missing graph_hash: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.evidence.weave_candidate_ready / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / empty claims: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / empty claims: events unchanged (39 -> 39)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / empty claims: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / empty claims: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / missing uncertainty_notes: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.constraint.opinion_evaluation / unknown field: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.evidence / blank claim_text: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.evidence / blank claim_text: events unchanged (37 -> 37)",
+   "ok   [no-write] aijade.learning.proposed.evidence / blank claim_text: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.evidence / blank claim_text: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.evidence / missing evidence_hash: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.evidence / missing evidence_hash: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.evidence / missing evidence_hash: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.evidence / render_ref self-reference: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.evidence / render_ref self-reference: events unchanged (40 -> 40)",
+   "ok   [no-write] aijade.learning.proposed.evidence / render_ref self-reference: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.evidence / render_ref self-reference: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.evidence / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.evidence / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.evidence / unknown field: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / blank proposal_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / blank proposal_id: events unchanged (35 -> 35)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / blank proposal_id: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / blank proposal_id: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / confidence out of range: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / confidence out of range: events unchanged (35 -> 35)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / confidence out of range: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / confidence out of range: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / missing input_hash: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / missing input_hash: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / missing input_hash: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / render_ref self-reference: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / render_ref self-reference: events unchanged (40 -> 40)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / render_ref self-reference: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / render_ref self-reference: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.learning.proposed.shadow_params / unknown field: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.lpm.render_ready / blank applied_params_hash: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.lpm.render_ready / blank applied_params_hash: events unchanged (27 -> 27)",
+   "ok   [no-write] aijade.lpm.render_ready / blank applied_params_hash: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.lpm.render_ready / blank applied_params_hash: render_traces unchanged (8 -> 8)",
+   "ok   [no-write] aijade.lpm.render_ready / blank asset_version_hash: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.lpm.render_ready / blank asset_version_hash: events unchanged (27 -> 27)",
+   "ok   [no-write] aijade.lpm.render_ready / blank asset_version_hash: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.lpm.render_ready / blank asset_version_hash: render_traces unchanged (8 -> 8)",
+   "ok   [no-write] aijade.lpm.render_ready / blank render_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.lpm.render_ready / blank render_ref: events unchanged (27 -> 27)",
+   "ok   [no-write] aijade.lpm.render_ready / blank render_ref: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.lpm.render_ready / blank render_ref: render_traces unchanged (8 -> 8)",
+   "ok   [no-write] aijade.lpm.render_ready / missing render_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.lpm.render_ready / missing render_ref: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.lpm.render_ready / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.lpm.render_ready / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.memory_tx.committed / missing committed_count: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.memory_tx.committed / negative committed_count: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.memory_tx.committed / negative committed_count: events unchanged (22 -> 22)",
+   "ok   [no-write] aijade.memory_tx.committed / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.persona.render_requested / blank intent_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.persona.render_requested / blank intent_ref: events unchanged (25 -> 25)",
+   "ok   [no-write] aijade.persona.render_requested / blank intent_ref: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.persona.render_requested / blank intent_ref: render_traces unchanged (6 -> 6)",
+   "ok   [no-write] aijade.persona.render_requested / intent_ref self-reference: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.persona.render_requested / intent_ref self-reference: events unchanged (40 -> 40)",
+   "ok   [no-write] aijade.persona.render_requested / intent_ref self-reference: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.persona.render_requested / intent_ref self-reference: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.persona.render_requested / missing intent_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.persona.render_requested / missing intent_ref: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.persona.render_requested / missing persona_snapshot_ref: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.persona.render_requested / missing persona_snapshot_ref: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.persona.render_requested / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.persona.render_requested / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.pgc.write_plan_ready / missing pgc_state_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.pgc.write_plan_ready / negative write_plan_size: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.pgc.write_plan_ready / negative write_plan_size: events unchanged (20 -> 20)",
+   "ok   [no-write] aijade.pgc.write_plan_ready / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.video_transcript / blank session_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.video_transcript / blank session_id: events unchanged (32 -> 32)",
+   "ok   [no-write] aijade.video.observation.video_transcript / blank session_id: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.video_transcript / blank session_id: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.video_transcript / empty time_spans: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.video_transcript / empty time_spans: events unchanged (33 -> 33)",
+   "ok   [no-write] aijade.video.observation.video_transcript / empty time_spans: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.video_transcript / empty time_spans: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.video_transcript / missing session_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.video_transcript / missing session_id: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.video_transcript / missing session_id: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.video_transcript / missing video_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.video_transcript / missing video_id: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.video_transcript / missing video_id: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.video_transcript / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.video_transcript / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.video_transcript / unknown field: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank observation_text: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank observation_text: events unchanged (30 -> 30)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank observation_text: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank observation_text: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank session_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank session_id: events unchanged (29 -> 29)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank session_id: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.webpage_text / blank session_id: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.webpage_text / empty spans: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.webpage_text / empty spans: events unchanged (30 -> 30)",
+   "ok   [no-write] aijade.video.observation.webpage_text / empty spans: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.webpage_text / empty spans: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.webpage_text / missing session_id: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.webpage_text / missing session_id: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.webpage_text / missing session_id: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.webpage_text / missing source_url: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.webpage_text / missing source_url: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.webpage_text / missing source_url: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] aijade.video.observation.webpage_text / unknown field: events unchanged (13 -> 13)",
+   "ok   [no-write] aijade.video.observation.webpage_text / unknown field: render_traces unchanged (4 -> 4)",
+   "ok   [no-write] aijade.video.observation.webpage_text / unknown field: render_traces unchanged (9 -> 9)",
+   "ok   [no-write] envelope missing \"causal_context_refs\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"correlation_id\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"event_id\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"evidence_refs\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"idempotency_key\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"origin_device\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"privacy_level\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"producer\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"replay_mode\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"risk_level\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"risk_score\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"timestamp\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope missing \"trace_id\": events unchanged (13 -> 13)",
+   "ok   [no-write] envelope with unknown extra field: events unchanged (13 -> 13)",
+   "ok   [no-write] tick beyond int32: events unchanged (13 -> 13)",
+   "ok   [no-write] tick beyond int32: events unchanged (54 -> 54)"
+  ]
+ },
+ "table": {
+  "changed unit or meaning": {
+   "faults": 5,
+   "1 paper": {
+    "applicable": 5,
+    "detected": 1,
+    "points": {
+     "before deployment": 1
+    },
+    "missed": [
+     "C1",
+     "C2",
+     "C4",
+     "C5"
+    ]
+   },
+   "2 liberal": {
+    "applicable": 5,
+    "detected": 1,
+    "points": {
+     "before deployment": 1
+    },
+    "missed": [
+     "C1",
+     "C2",
+     "C4",
+     "C5"
+    ]
+   },
+   "3 contracts": {
+    "applicable": 5,
+    "detected": 5,
+    "points": {
+     "before deployment": 5
+    },
+    "missed": []
+   },
+   "4 lineage": {
+    "applicable": 5,
+    "detected": 0,
+    "points": {},
+    "missed": [
+     "C1",
+     "C2",
+     "C3",
+     "C4",
+     "C5"
+    ]
+   }
+  },
+  "drift-matrix mutants": {
+   "faults": 18,
+   "1 paper": {
+    "applicable": 18,
+    "detected": 9,
+    "points": {
+     "before deployment": 9
+    },
+    "missed": [
+     "FU-07a",
+     "FU-08",
+     "FU-10",
+     "FU-11",
+     "FU-12",
+     "FU-13",
+     "FU-15",
+     "FU-17",
+     "FU-18"
+    ]
+   },
+   "2 liberal": {
+    "applicable": 16,
+    "detected": 7,
+    "points": {
+     "before deployment": 7
+    },
+    "missed": [
+     "FU-05",
+     "FU-07a",
+     "FU-08",
+     "FU-10",
+     "FU-11",
+     "FU-12",
+     "FU-15",
+     "FU-17",
+     "FU-18"
+    ]
+   },
+   "3 contracts": {
+    "applicable": 9,
+    "detected": 5,
+    "points": {
+     "before deployment": 5
+    },
+    "missed": [
+     "FU-07a",
+     "FU-07b",
+     "FU-12",
+     "FU-15"
+    ]
+   },
+   "4 lineage": {
+    "applicable": 4,
+    "detected": 1,
+    "points": {
+     "after-the-fact audit": 1
+    },
+    "missed": [
+     "FU-10",
+     "FU-12",
+     "FU-15"
+    ]
+   }
+  },
+  "gate-matrix mutants": {
+   "faults": 15,
+   "1 paper": {
+    "applicable": 15,
+    "detected": 13,
+    "points": {
+     "before deployment": 13
+    },
+    "missed": [
+     "E3",
+     "G7"
+    ]
+   },
+   "2 liberal": {
+    "applicable": 15,
+    "detected": 13,
+    "points": {
+     "before deployment": 13
+    },
+    "missed": [
+     "E3",
+     "G7"
+    ]
+   },
+   "3 contracts": {
+    "applicable": 15,
+    "detected": 13,
+    "points": {
+     "before deployment": 13
+    },
+    "missed": [
+     "E3",
+     "G7"
+    ]
+   },
+   "4 lineage": {
+    "applicable": 15,
+    "detected": 13,
+    "points": {
+     "before deployment": 13
+    },
+    "missed": [
+     "E3",
+     "G7"
+    ]
+   }
+  }
+ },
+ "rows": [
+  {
+   "id": "C1",
+   "set": "2",
+   "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+   "form": "evidence confidence falls as spans are added",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Evidence_reader_grows_firmer_with_more_spans_up_to_its_cap (1ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "C2",
+   "set": "2",
+   "file": "src/Aijade.Server/V9/ServerRuntime.cs",
+   "form": "the observation's timestamp reaches the runtime in seconds",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_carries_time_risk_and_tick_into_the_proposal (1s 033ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "C3",
+   "set": "2",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "the projection stores fingerprint and asset version in each other's columns",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": false
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_stores_what_the_request_and_receipt_carry (945ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Admission_admits_an_honest_proposal_and_refuses_each_mismatch (1s 106ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "C4",
+   "set": "2",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "the latest render identity returns the oldest",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_uses_the_latest_render_identity (1s 167ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "C5",
+   "set": "2",
+   "file": "src/Aijade.Server/V9/ServerRuntime.cs",
+   "form": "the observation's risk score reaches the runtime inverted",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_carries_time_risk_and_tick_into_the_proposal (1s 076ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "FU-01",
+   "set": "3",
+   "file": "src/Aijade.Memory/Kernel/Events.cs",
+   "form": "Topic events stop rejecting unknown keys in the kernel: the kernel assertion of the unknown-envelope-field negative turns red.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": false
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-02",
+   "set": "3",
+   "file": "src/Aijade.Memory/Kernel/Events.cs",
+   "form": "Kernel tick upper bound removed: the kernel accepts 2^31; only the kernel assertion turns red (the boundary still refuses).",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": false
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-03",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/Boundary.cs",
+   "form": "Boundary tick upper bound removed: the out-of-range tick reaches the int32 column and leaks as a 500; the HTTP 400 assertion turns red.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": false
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-04",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9Endpoints.cs",
+   "form": "Per-topic payload validation skipped (payload passed through).",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-05",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/Boundary.cs",
+   "form": "Boundary envelope no longer strict: an unknown envelope key is accepted and written.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-06",
+   "set": "3",
+   "file": "src/Aijade.Memory/Kernel/Events.cs",
+   "form": "Kernel envelope loses risk_level: the field-set guard and every kernel acceptance of an envelope carrying it turn red.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": false
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_uses_the_latest_render_identity (11s 135ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_carries_time_risk_and_tick_into_the_proposal (11s 574ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-07a",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "Learning-branch self-reference guard removed.",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-07b",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "Projection self-reference guard removed.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": false
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-08",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "applied_params_hash mismatch refusal removed; the matrix has no hash-mismatch negative (fixtures use the seed hashes).",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Admission_admits_an_honest_proposal_and_refuses_each_mismatch (966ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-09",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "The render-trace projection is never written: learning proposals then reference a missing projection.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": false
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_marks_a_trace_paired_only_with_both_sides (2s 095ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_refuses_a_second_render_on_one_trace (996ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_uses_the_latest_render_identity (11s 074ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_stores_what_the_request_and_receipt_carry (1s 018ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_carries_time_risk_and_tick_into_the_proposal (11s 571ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Admission_admits_an_honest_proposal_and_refuses_each_mismatch (1s 394ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "after-the-fact audit",
+     "eventsWritten": 7,
+     "audit": [
+      "proposal without a stored render: evt-prop"
+     ]
+    }
+   }
+  },
+  {
+   "id": "FU-10",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "projection_status always 'paired'; the matrix has no projection_status assertion (only the e2e P1b does).",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_marks_a_trace_paired_only_with_both_sides (2s 040ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "FU-11",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "Append-only render_ref conflict refusal removed; only the e2e N8 covers a second receipt on one trace.",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": true
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_refuses_a_second_render_on_one_trace (1s 055ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-12",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/ServerRuntime.cs",
+   "form": "Dispatch replaces the observation's input hash with a constant; the matrix checks presence, not value↔content consistency.",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "FU-13",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9Endpoints.cs",
+   "form": "The v10 tick/causality requirement is skipped; the matrix has no missing-tick negative for v10 topics (only the e2e N2/N3).",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-14",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "Learning-reference validation applied to every topic: every non-learning positive is refused.",
+   "checks": {
+    "drift": false,
+    "gate": true,
+    "consumer": false,
+    "liberalDrift": false
+   },
+   "consumerFailed": [
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_marks_a_trace_paired_only_with_both_sides (1s 746ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_refuses_a_second_render_on_one_trace (840ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_uses_the_latest_render_identity (792ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Projection_stores_what_the_request_and_receipt_carry (841ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_carries_time_risk_and_tick_into_the_proposal (968ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Admission_admits_an_honest_proposal_and_refuses_each_mismatch (836ms)",
+    "failed Aijade.Tests.ConsumerExpectationTests.Dispatch_skips_learning_with_no_render_identity (796ms)"
+   ],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: drift matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: drift matrix, liberal",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: consumer tests",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-15",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/V9EventService.cs",
+   "form": "Every render_ready is audited as unpaired; the matrix counts only events and render_traces, not audit_log_entries.",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "FU-17",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/Boundary.cs",
+   "form": "Tick no longer required to be an integer; the matrix has no fractional-tick negative.",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "FU-18",
+   "set": "3",
+   "file": "src/Aijade.Memory/Kernel/Events.cs",
+   "form": "Only the standalone envelope schema loosened; the decisive check is the topic-event schema, so nothing turns red (the shadowing surface).",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": null,
+     "point": "not applicable"
+    },
+    "4 lineage": {
+     "detected": null,
+     "point": "not applicable"
+    }
+   }
+  },
+  {
+   "id": "P1",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/PromotionService.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "P2",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/PromotionService.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "P3",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/PromotionService.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "P4",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/PromotionService.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "P5",
+   "set": "3",
+   "file": "src/Aijade.Server/V9/PromotionService.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "A1",
+   "set": "3",
+   "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "A2",
+   "set": "3",
+   "file": "src/Aijade.Memory/V9/ShadowParams.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "E1",
+   "set": "3",
+   "file": "src/Aijade.Memory/Development/Vse.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "E2",
+   "set": "3",
+   "file": "src/Aijade.Memory/Development/Vse.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "E3",
+   "set": "3",
+   "file": "src/Aijade.Memory/Development/Vse.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  },
+  {
+   "id": "E4",
+   "set": "3",
+   "file": "src/Aijade.Memory/Development/Vse.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "E5",
+   "set": "3",
+   "file": "src/Aijade.Memory/Development/Vse.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "E6",
+   "set": "3",
+   "file": "src/Aijade.Memory/Development/Vse.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "G5",
+   "set": "3",
+   "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": false,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "2 liberal": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "3 contracts": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    },
+    "4 lineage": {
+     "detected": true,
+     "point": "before deployment: gate matrix",
+     "eventsWritten": 0
+    }
+   }
+  },
+  {
+   "id": "G7",
+   "set": "3",
+   "file": "src/Aijade.Memory/Pgc/PgcGate.cs",
+   "form": "",
+   "checks": {
+    "drift": true,
+    "gate": true,
+    "consumer": true,
+    "liberalDrift": true
+   },
+   "consumerFailed": [],
+   "cells": {
+    "1 paper": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "2 liberal": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "3 contracts": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    },
+    "4 lineage": {
+     "detected": false,
+     "point": "none",
+     "eventsWritten": 11
+    }
+   }
+  }
+ ]
+}
