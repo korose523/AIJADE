@@ -60,9 +60,12 @@ public static class V9Endpoints
     /// observation dispatch after the event is stored is logged and dead-lettered, never turned into an error response:
     /// the stored event is a fact, and a sink failure must not leak upstream.
     /// </summary>
-    private static async Task<IResult> PostEventAsync(HttpRequest request, V9EventService events, ServerRuntime runtime, ILoggerFactory logs, CancellationToken ct)
+    private static async Task<IResult> PostEventAsync(HttpRequest request, V9EventService events, ServerRuntime runtime, ILoggerFactory logs, IConfiguration config, CancellationToken ct)
     {
         var body = await ReadJsonAsync(request, "INVALID_V9_EVENT", ct).ConfigureAwait(false);
+        var alternative = V9Alternative.Of(config);
+        if (alternative != V9AlternativeDesign.Paper)
+            return await V9Alternative.PostEventAsync(alternative, body, events, runtime, ct).ConfigureAwait(false);
         var envIssues = V9Boundary.Envelope.Validate(body);
         if (envIssues.Count > 0)
             throw ApiException.BadRequest("Invalid v9 event envelope", "INVALID_V9_EVENT", envIssues);

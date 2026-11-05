@@ -20,6 +20,9 @@ public abstract class Rule
 {
     public abstract void Check(JsonNode? value, string path, List<BoundaryIssue> issues);
 
+    /// <summary>What liberal acceptance writes for this field when it is missing (configurations 2 and 4 of P1-A only).</summary>
+    internal virtual JsonNode? DefaultValue() => "unknown";
+
     public IReadOnlyList<BoundaryIssue> Validate(JsonNode? value)
     {
         var issues = new List<BoundaryIssue>();
@@ -58,6 +61,8 @@ public static class R
 
     private sealed class NumRule(bool integer, double? min, double? max) : Rule
     {
+        internal override JsonNode? DefaultValue() => min ?? 0;
+
         public override void Check(JsonNode? value, string path, List<BoundaryIssue> issues)
         {
             if (!IsNumber(value, out var d))
@@ -73,6 +78,8 @@ public static class R
 
     private sealed class PickRule(IReadOnlyList<object> options) : Rule
     {
+        internal override JsonNode? DefaultValue() => options[0] is string s ? s : (double)options[0];
+
         public override void Check(JsonNode? value, string path, List<BoundaryIssue> issues)
         {
             var ok = options.Any(o => o switch
@@ -88,6 +95,8 @@ public static class R
 
     private sealed class ArrRule(Rule item, int minLength) : Rule
     {
+        internal override JsonNode? DefaultValue() => minLength > 0 ? new JsonArray(item.DefaultValue()) : new JsonArray();
+
         public override void Check(JsonNode? value, string path, List<BoundaryIssue> issues)
         {
             if (value is not JsonArray a)
@@ -104,6 +113,8 @@ public static class R
 
     private sealed class RecordRule(Rule? item) : Rule
     {
+        internal override JsonNode? DefaultValue() => new JsonObject();
+
         public override void Check(JsonNode? value, string path, List<BoundaryIssue> issues)
         {
             if (value is not JsonObject o)
@@ -132,6 +143,28 @@ public static class R
         internal static bool TolerateUnknownKeys;
 
         public IReadOnlyList<string> FieldNames { get; } = fields.Select(f => f.Name).ToList();
+
+        /// <summary>
+        /// Experiment-only (configuration 2 and 4 of P1-A): fills every missing required field of <paramref name="o"/> with a default,
+        /// as liberal acceptance does. Never called in the paper's configuration.
+        /// </summary>
+        internal void FillMissing(JsonObject o)
+        {
+            foreach (var (name, rule, optional) in fields)
+            {
+                if (!o.ContainsKey(name) && !optional)
+                    o[name] = rule.DefaultValue();
+                else if (o[name] is JsonObject inner && rule is StrictRule strictInner)
+                    strictInner.FillMissing(inner);
+            }
+        }
+
+        internal override JsonNode? DefaultValue()
+        {
+            var o = new JsonObject();
+            FillMissing(o);
+            return o;
+        }
 
         public override void Check(JsonNode? value, string path, List<BoundaryIssue> issues)
         {

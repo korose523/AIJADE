@@ -125,7 +125,10 @@ public sealed class V9EventService(NpgsqlDataSource db, ILogger<V9EventService> 
             r => new RenderTraceReference(r.GetString(0), r.GetString(1), r.GetString(2)), ct)).FirstOrDefault();
     }
 
-    public async Task<AppendEventResult> AppendEventAsync(V9EventInput input, CancellationToken ct = default)
+    public Task<AppendEventResult> AppendEventAsync(V9EventInput input, CancellationToken ct = default) => AppendEventAsync(input, true, ct);
+
+    /// <summary><paramref name="identityChecks"/> false only for configuration 4 of experiments/plans/2026-11-05-p1-a-alternative-designs.md.</summary>
+    public async Task<AppendEventResult> AppendEventAsync(V9EventInput input, bool identityChecks, CancellationToken ct = default)
     {
         await using var conn = await db.OpenConnectionAsync(ct).ConfigureAwait(false);
         if (await ReadByKeyAsync(conn, null, input.IdempotencyKey, ct).ConfigureAwait(false) is { } existing)
@@ -135,7 +138,8 @@ public sealed class V9EventService(NpgsqlDataSource db, ILogger<V9EventService> 
         if (await ReadByKeyAsync(conn, tx, input.IdempotencyKey, ct).ConfigureAwait(false) is { } txExisting)
             return new AppendEventResult(txExisting, true);
 
-        await ValidateLearningReferenceAsync(conn, tx, input, ct).ConfigureAwait(false);
+        if (identityChecks)
+            await ValidateLearningReferenceAsync(conn, tx, input, ct).ConfigureAwait(false);
         var causality = input.InputHash is null ? null : new JsonObject { ["inputHash"] = input.InputHash };
         await Sql.ExecAsync(conn, tx,
             "INSERT INTO events (id, event_id, trace_id, correlation_id, \"timestamp\", producer, origin_device, privacy_level, evidence_refs, " +
@@ -150,7 +154,7 @@ public sealed class V9EventService(NpgsqlDataSource db, ILogger<V9EventService> 
             ?? throw new InvalidOperationException("v9-events: failed to read back inserted event row after upsert");
 
         var pairingMissing = await CheckRenderReadyPairingAsync(conn, tx, input, ct).ConfigureAwait(false);
-        await UpsertRenderTraceProjectionAsync(conn, tx, input, ct).ConfigureAwait(false);
+        await UpsertRenderTraceProjectionAsync(conn, tx, input, identityChecks, ct).ConfigureAwait(false);
         await tx.CommitAsync(ct).ConfigureAwait(false);
         return new AppendEventResult(row, false, pairingMissing);
     }
@@ -173,7 +177,7 @@ public sealed class V9EventService(NpgsqlDataSource db, ILogger<V9EventService> 
 
     private static string? Str(JsonObject p, string key) => p[key] is { } v ? (v is JsonValue jv && jv.TryGetValue<string>(out var s) ? s : v.ToJsonString()) : null;
 
-    private async Task UpsertRenderTraceProjectionAsync(NpgsqlConnection conn, NpgsqlTransaction tx, V9EventInput input, CancellationToken ct)
+    private async Task UpsertRenderTraceProjectionAsync(NpgsqlConnection conn, NpgsqlTransaction tx, V9EventInput input, bool identityChecks, CancellationToken ct)
     {
         if (input.Topic is not (PersonaRenderRequested or LpmRenderReady))
             return;
@@ -192,7 +196,7 @@ public sealed class V9EventService(NpgsqlDataSource db, ILogger<V9EventService> 
         var envelopeIds = new HashSet<string>(StringComparer.Ordinal) { input.TraceId, input.EventId, input.CorrelationId };
         foreach (var (field, value) in new[] { ("intent_ref", intentRef), ("render_ref", renderRef) })
         {
-            if (!string.IsNullOrEmpty(value) && envelopeIds.Contains(value))
+            if (identityChecks && !string.IsNullOrEmpty(value) && envelopeIds.Contains(value))
                 throw new RenderTraceContractException(RenderTraceFailure.SelfReference, $"{field}={value} equals an envelope identifier (trace={input.TraceId})");
         }
 
@@ -202,9 +206,9 @@ public sealed class V9EventService(NpgsqlDataSource db, ILogger<V9EventService> 
         if (existing is not null)
         {
             // A trace is an append-only identity chain: never silently replace a render or an intent under one trace.
-            if (input.Topic == LpmRenderReady && existing.RenderRef is { Length: > 0 } r0 && r0 != renderRef)
+            if (identityChecks && input.Topic == LpmRenderReady && existing.RenderRef is { Length: > 0 } r0 && r0 != renderRef)
                 throw new RenderTraceContractException(RenderTraceFailure.ProjectionRenderRefMismatch, $"trace={input.TraceId}");
-            if (input.Topic == PersonaRenderRequested && existing.IntentRef is { Length: > 0 } i0 && i0 != intentRef)
+            if (identityChecks && input.Topic == PersonaRenderRequested && existing.IntentRef is { Length: > 0 } i0 && i0 != intentRef)
                 throw new RenderTraceContractException(RenderTraceFailure.ProjectionIntentRefMismatch, $"trace={input.TraceId}");
             var mergedRender = renderRef ?? existing.RenderRef;
             var mergedIntent = intentRef ?? existing.IntentRef;
