@@ -1,0 +1,265 @@
+{
+  "experiment": "P2-A stage 1: MultiPL-E's JavaScript sets against the compatibility screen",
+  "plan": "experiments/plans/2026-11-05-p2-a-candidate-diversity.md",
+  "source": "nuprl/MultiPL-E on the Hugging Face datasets server, configurations humaneval-js and mbpp-js, split test; fetched 5 November 2026",
+  "gitCommit": "4779fa18c6ee83cf290bcef935ea3cf4e445e812",
+  "ranNothing": "No test, candidate or model was run; the tests were read as text.",
+  "sets": {
+    "humaneval-js": {
+      "tasks": 161,
+      "rowsSha256": "f72c5256b056ea79c0812d4e26191b1fea34b672d39f55a0a72fd1b95bbd7dcd",
+      "promptsWithGarbledWord": [
+        "HumanEval_22_filter_integers"
+      ],
+      "testsMentioningUndefined": 6,
+      "assertFormsByTask": {
+        "deepEqual": 161
+      },
+      "testsPerTaskMedian": 7,
+      "promptsNotEndingInSignature": 0,
+      "screenClasses": {
+        "direct": {
+          "screened": 117,
+          "withStatement": 117,
+          "missing": []
+        },
+        "needs-adapter": {
+          "screened": 8,
+          "withStatement": 7,
+          "missing": [
+            "HumanEval/32"
+          ]
+        },
+        "direct-with-caution": {
+          "screened": 24,
+          "withStatement": 22,
+          "missing": [
+            "HumanEval/38",
+            "HumanEval/50"
+          ]
+        },
+        "incompatible": {
+          "screened": 15,
+          "withStatement": 15,
+          "missing": []
+        }
+      },
+      "statementTerminology": [
+        "reworded"
+      ],
+      "doctestModes": [
+        "transform"
+      ],
+      "absentNumbers": [
+        32,
+        38,
+        50
+      ]
+    },
+    "mbpp-js": {
+      "tasks": 397,
+      "rowsSha256": "4f6e8d23e8adc360be8c87baae1b8d3ff0e1789d1c58f05e2c68c2f21ed58f80",
+      "promptsWithGarbledWord": [
+        "mbpp_105_count",
+        "mbpp_109_odd_Equivalent",
+        "mbpp_119_search",
+        "mbpp_11_remove_Occ",
+        "mbpp_126_sum",
+        "mbpp_131_reverse_vowels",
+        "mbpp_138_is_Sum_Of_Powers_Of_Two",
+        "mbpp_145_max_Abs_Diff",
+        "mbpp_14_find_Volume",
+        "mbpp_167_next_power_of_2",
+        "mbpp_224_count_Set_Bits",
+        "mbpp_226_odd_values_string",
+        "mbpp_228_all_Bits_Set_In_The_Given_Range",
+        "mbpp_238_number_of_substrings",
+        "mbpp_244_next_Perfect_Square",
+        "mbpp_250_count_X",
+        "mbpp_252_convert",
+        "mbpp_253_count_integer",
+        "mbpp_256_count_Primes_nums",
+        "mbpp_267_square_Sum",
+        "mbpp_270_sum_even_and_even_index",
+        "mbpp_271_even_Power_Sum",
+        "mbpp_274_even_binomial_Coeff_Sum",
+        "mbpp_281_all_unique",
+        "mbpp_283_validate",
+        "mbpp_287_square_Sum",
+        "mbpp_292_find",
+        "mbpp_296_get_Inv_Count",
+        "mbpp_304_find_Element",
+        "mbpp_309_maximum",
+        "mbpp_388_highest_Power_of_2",
+        "mbpp_395_first_non_repeating_character",
+        "mbpp_3_is_not_prime",
+        "mbpp_404_minimum",
+        "mbpp_406_find_Parity",
+        "mbpp_412_remove_odd",
+        "mbpp_414_overlapping",
+        "mbpp_415_max_Product",
+        "mbpp_418_Find_Max",
+        "mbpp_420_cube_Sum",
+        "mbpp_422_find_Average_Of_Cube",
+        "mbpp_435_last_Digit",
+        "mbpp_436_neg_nos",
+        "mbpp_443_largest_neg",
+        "mbpp_446_count_Occurrence",
+        "mbpp_453_sumofFactors",
+        "mbpp_457_Find_Min",
+        "mbpp_460_Extract",
+        "mbpp_461_upper_ctr",
+        "mbpp_471_find_remainder",
+        "mbpp_472_check_Consecutive",
+        "mbpp_476_big_sum",
+        "mbpp_477_is_lower",
+        "mbpp_479_first_Digit",
+        "mbpp_554_Split",
+        "mbpp_555_difference",
+        "mbpp_556_find_Odd_Pair",
+        "mbpp_558_digit_distance_nums",
+        "mbpp_562_Find_Max_Length",
+        "mbpp_564_count_Pairs",
+        "mbpp_565_split",
+        "mbpp_56_checks",
+        "mbpp_572_two_unique_nums",
+        "mbpp_573_unique_product",
+        "mbpp_576_is_Sub_Array",
+        "mbpp_577_last_Digit_Factorial",
+        "mbpp_57_find_Max_Num",
+        "mbpp_581_surface_Area",
+        "mbpp_586_split_Arr",
+        "mbpp_588_big_diff",
+        "mbpp_58_opposite_Signs",
+        "mbpp_591_swap_List",
+        "mbpp_592_sum_Of_product",
+        "mbpp_595_min_Swaps",
+        "mbpp_600_is_Even",
+        "mbpp_602_first_repeated_char",
+        "mbpp_608_bell_Number",
+        "mbpp_610_remove_kth_element",
+        "mbpp_612_merge",
+        "mbpp_61_count_Substrings",
+        "mbpp_624_is_upper",
+        "mbpp_625_swap_List",
+        "mbpp_626_triangle_area",
+        "mbpp_627_find_First_Missing",
+        "mbpp_629_Split",
+        "mbpp_62_smallest_num",
+        "mbpp_632_move_zero",
+        "mbpp_633_pair_xor_Sum",
+        "mbpp_644_reverse_Array_Upto_K",
+        "mbpp_66_pos_count",
+        "mbpp_68_is_Monotonic",
+        "mbpp_6_differ_At_One_Bit_Pos",
+        "mbpp_72_dif_Square",
+        "mbpp_734_sum_Of_Subarray_Prod",
+        "mbpp_735_toggle_middle_bits",
+        "mbpp_736_left_insertion",
+        "mbpp_738_geometric_sum",
+        "mbpp_739_find_Index",
+        "mbpp_740_tuple_to_dict",
+        "mbpp_741_all_Characters_Same",
+        "mbpp_743_rotate_right",
+        "mbpp_745_divisible_by_digits",
+        "mbpp_749_sort_numeric_strings",
+        "mbpp_753_min_k",
+        "mbpp_756_text_match_zero_one",
+        "mbpp_757_count_reverse_pairs",
+        "mbpp_760_unique_Element",
+        "mbpp_763_find_min_diff",
+        "mbpp_764_number_ctr",
+        "mbpp_767_get_pairs_count",
+        "mbpp_769_Diff",
+        "mbpp_770_odd_num_sum",
+        "mbpp_775_odd_position",
+        "mbpp_777_find_sum",
+        "mbpp_77_is_Diff",
+        "mbpp_780_find_combinations",
+        "mbpp_781_count_divisors",
+        "mbpp_782_odd_length_sum",
+        "mbpp_790_even_position",
+        "mbpp_792_count_list",
+        "mbpp_793_last",
+        "mbpp_797_sum_in_range",
+        "mbpp_798__sum",
+        "mbpp_79_word_len",
+        "mbpp_801_test_three_equal",
+        "mbpp_802_count_rotation",
+        "mbpp_807_first_odd",
+        "mbpp_83_get_Char",
+        "mbpp_90_len_log",
+        "mbpp_95_Find_Min_Length",
+        "mbpp_96_divisor",
+        "mbpp_9_find_Rotations"
+      ],
+      "testsMentioningUndefined": 10,
+      "assertFormsByTask": {
+        "deepEqual": 397
+      },
+      "testsPerTaskMedian": 3,
+      "promptsNotEndingInSignature": 0,
+      "screenClasses": {
+        "needs-adapter": {
+          "screened": 34,
+          "withStatement": 20,
+          "missing": [
+            "Mbpp/2",
+            "Mbpp/7",
+            "Mbpp/82",
+            "Mbpp/85",
+            "Mbpp/98",
+            "Mbpp/111",
+            "Mbpp/124",
+            "Mbpp/137",
+            "Mbpp/139",
+            "Mbpp/232",
+            "Mbpp/233",
+            "Mbpp/276",
+            "Mbpp/300",
+            "Mbpp/312"
+          ]
+        },
+        "direct": {
+          "screened": 308,
+          "withStatement": 305,
+          "missing": [
+            "Mbpp/235",
+            "Mbpp/311",
+            "Mbpp/620"
+          ]
+        },
+        "incompatible": {
+          "screened": 26,
+          "withStatement": 22,
+          "missing": [
+            "Mbpp/140",
+            "Mbpp/473",
+            "Mbpp/590",
+            "Mbpp/758"
+          ]
+        },
+        "direct-with-caution": {
+          "screened": 10,
+          "withStatement": 8,
+          "missing": [
+            "Mbpp/301",
+            "Mbpp/596"
+          ]
+        }
+      },
+      "statementTerminology": [
+        "reworded"
+      ],
+      "doctestModes": [
+        "transform"
+      ],
+      "sourceFiles": 400,
+      "notTranslated": [
+        "mbpp_115_empty_dit",
+        "mbpp_473_tuple_intersection",
+        "mbpp_582_my_dict"
+      ]
+    }
+  }
+}
