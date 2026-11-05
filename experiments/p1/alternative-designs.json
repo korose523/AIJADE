@@ -1,0 +1,4074 @@
+{
+  "experiment": "P1-A: input and data faults against four configurations, each cell on a freshly migrated database",
+  "plan": "experiments/plans/2026-11-05-p1-a-alternative-designs.md",
+  "codeCommit": "de70ae570448e6152b490dc81714b113630e3b06",
+  "deviations": [
+    "Run on the Mac before the supervisor's review of the plan: the first author's decision of 5 November 2026.",
+    "Not run in this file: the faults defined on code (the changed units or meanings of set 2 and the 33 mutants of set 3), their pre-deployment checks and the consumer expectation tests of configuration 3, which the plan commits with the switches. Without them this file cannot give configuration 3's or any configuration's pre-deployment detection.",
+    "Corrected after a first run of this matrix: the audit job treated references to evidence packets, chunks and traces as dangling, which listed an honest observation as a fault (a probe on 5 November 2026 found 12 such entries), so two semantically wrong observations were counted as detected. It now resolves those references, and two of the 24 valid inputs became honest observations, so that a false alarm of the audit would show.",
+    "The worker is not started: nothing here measures rows read by a downstream consumer other than the projection."
+  ],
+  "rows": [
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "s1",
+      "class": "missing source",
+      "form": "a proposal with no render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 23.4749,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "s2",
+      "class": "missing source",
+      "form": "a proposal citing a render absent from the projection",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 40.1586,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "s3",
+      "class": "missing source",
+      "form": "a proposal with an empty render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 11.6369,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "m1",
+      "class": "wrong memory reference",
+      "form": "an opinion whose evidence_refs names no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.754,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "m2",
+      "class": "wrong memory reference",
+      "form": "a weave candidate whose write ids name no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 34.6393,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "m3",
+      "class": "wrong memory reference",
+      "form": "an event whose causal_context_refs names no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.1453,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "t1",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a paired render a later receipt superseded",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 189.2802,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "t2",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render two receipts old",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201,
+        201,
+        201
+      ],
+      "ms": 332.1093,
+      "eventsWritten": 5,
+      "tracesWritten": 2
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "t3",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render whose asset version was replaced later",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 93.4636,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "f1",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting 3 failures",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 73.7125,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "f2",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed with no tests counted",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 17.1937,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "f3",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting more failures than passes",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 13.4767,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "x1",
+      "class": "success reported for a failed execution",
+      "form": "a receipt for an intent the renderer did not apply",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 100.8126,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "x2",
+      "class": "success reported for a failed execution",
+      "form": "a receipt naming an asset the renderer does not hold",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 130.5722,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "x3",
+      "class": "success reported for a failed execution",
+      "form": "a receipt with a second session's identifier",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 74.0648,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "o1",
+      "class": "missing or out-of-order receipt",
+      "form": "a request left without a receipt",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 54.4581,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "o2",
+      "class": "missing or out-of-order receipt",
+      "form": "a receipt before its request",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 82.5604,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "o3",
+      "class": "missing or out-of-order receipt",
+      "form": "a proposal citing a trace without a request",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        201,
+        400
+      ],
+      "ms": 78.5046,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "p1",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose fingerprint differs from its receipt's",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 77.6708,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "p2",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose asset version differs from its receipt's",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 40.2238,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "p3",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal differing in both",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 47.9638,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "d1",
+      "class": "duplicate",
+      "form": "a replay under the same idempotency key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        200
+      ],
+      "ms": 48.3277,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "d2",
+      "class": "duplicate",
+      "form": "the same event under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 72.4188,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "1",
+      "id": "d3",
+      "class": "duplicate",
+      "form": "the same proposal under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 76.3851,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "2",
+      "id": "w1",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and an empty-of-meaning claim",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 48.3143,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "2",
+      "id": "w2",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and a claim contradicting its evidence",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.0432,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "2",
+      "id": "w3",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and full confidence in a guess",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 33.9496,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "2",
+      "id": "w4",
+      "class": "semantically wrong record",
+      "form": "an observation whose text does not match its hash",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 216.8896,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "2",
+      "id": "w5",
+      "class": "semantically wrong record",
+      "form": "an observation whose span lies outside its text",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 100.0693,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n1",
+      "class": "N1",
+      "form": "unauthenticated request",
+      "kind": "fault",
+      "detected": true,
+      "point": "authentication",
+      "statuses": [
+        401
+      ],
+      "ms": 13.1283,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n2",
+      "class": "N2",
+      "form": "missing tick",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 10.8888,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n3",
+      "class": "N3",
+      "form": "empty input fingerprint",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 13.6674,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n4",
+      "class": "N4",
+      "form": "unknown envelope field",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 16.9374,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n5",
+      "class": "N5",
+      "form": "unknown topic",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 12.0233,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n6",
+      "class": "N6",
+      "form": "missing intent_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 10.293,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n7",
+      "class": "N7",
+      "form": "render_ref equal to the envelope's own identifier",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        201,
+        400
+      ],
+      "ms": 84.6802,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n8",
+      "class": "N8",
+      "form": "a second receipt on one trace with another value",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 34.5495,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "3",
+      "id": "n9",
+      "class": "N9",
+      "form": "malformed JSON",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 15.9507,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v0",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 43.5023,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v1",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.9248,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v2",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 33.8312,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v3",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 31.5042,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v4",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 32.1285,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v5",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 37.5961,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v6",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 45.8381,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v7",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 33.6703,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v8",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 81.1633,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v9",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 72.0997,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v10",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 90.3974,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v11",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 104.615,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v12",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 69.5653,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v13",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 93.6037,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v14",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 30.4868,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v15",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 34.557,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v16",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 34.063,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v17",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 33.7689,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v18",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 31.3442,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v19",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.9778,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v20",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.3714,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v21",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 61.6884,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v22",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 268.5479,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "1 paper",
+      "set": "valid",
+      "id": "v23",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 334.1218,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "s1",
+      "class": "missing source",
+      "form": "a proposal with no render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 46.9392,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "s2",
+      "class": "missing source",
+      "form": "a proposal citing a render absent from the projection",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 54.5546,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "s3",
+      "class": "missing source",
+      "form": "a proposal with an empty render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 16.6309,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "m1",
+      "class": "wrong memory reference",
+      "form": "an opinion whose evidence_refs names no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 63.1741,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "m2",
+      "class": "wrong memory reference",
+      "form": "a weave candidate whose write ids name no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 142.4737,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "m3",
+      "class": "wrong memory reference",
+      "form": "an event whose causal_context_refs names no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 75.1488,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "t1",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a paired render a later receipt superseded",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 135.063,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "t2",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render two receipts old",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201,
+        201,
+        201
+      ],
+      "ms": 430.226,
+      "eventsWritten": 5,
+      "tracesWritten": 2
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "t3",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render whose asset version was replaced later",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 195.8122,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "f1",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting 3 failures",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 56.2736,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "f2",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed with no tests counted",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 49.2496,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "f3",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting more failures than passes",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 40.7539,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "x1",
+      "class": "success reported for a failed execution",
+      "form": "a receipt for an intent the renderer did not apply",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 151.8782,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "x2",
+      "class": "success reported for a failed execution",
+      "form": "a receipt naming an asset the renderer does not hold",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 183.0108,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "x3",
+      "class": "success reported for a failed execution",
+      "form": "a receipt with a second session's identifier",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 150.4138,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "o1",
+      "class": "missing or out-of-order receipt",
+      "form": "a request left without a receipt",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 67.3929,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "o2",
+      "class": "missing or out-of-order receipt",
+      "form": "a receipt before its request",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 104.5313,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "o3",
+      "class": "missing or out-of-order receipt",
+      "form": "a proposal citing a trace without a request",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        201,
+        400
+      ],
+      "ms": 221.9122,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "p1",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose fingerprint differs from its receipt's",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 39.2915,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "p2",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose asset version differs from its receipt's",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 21.942,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "p3",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal differing in both",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 32.3625,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "d1",
+      "class": "duplicate",
+      "form": "a replay under the same idempotency key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        200
+      ],
+      "ms": 56.8981,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "d2",
+      "class": "duplicate",
+      "form": "the same event under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 111.0887,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "1",
+      "id": "d3",
+      "class": "duplicate",
+      "form": "the same proposal under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 116.8066,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "2",
+      "id": "w1",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and an empty-of-meaning claim",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 53.9397,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "2",
+      "id": "w2",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and a claim contradicting its evidence",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 97.2974,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "2",
+      "id": "w3",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and full confidence in a guess",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 102.5771,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "2",
+      "id": "w4",
+      "class": "semantically wrong record",
+      "form": "an observation whose text does not match its hash",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 203.9674,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "2",
+      "id": "w5",
+      "class": "semantically wrong record",
+      "form": "an observation whose span lies outside its text",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 195.8047,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n1",
+      "class": "N1",
+      "form": "unauthenticated request",
+      "kind": "fault",
+      "detected": true,
+      "point": "authentication",
+      "statuses": [
+        401
+      ],
+      "ms": 12.3505,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n2",
+      "class": "N2",
+      "form": "missing tick",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 45.1237,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n3",
+      "class": "N3",
+      "form": "empty input fingerprint",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 14.9358,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n4",
+      "class": "N4",
+      "form": "unknown envelope field",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 63.6324,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n5",
+      "class": "N5",
+      "form": "unknown topic",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 13.8723,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n6",
+      "class": "N6",
+      "form": "missing intent_ref",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 50.4515,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n7",
+      "class": "N7",
+      "form": "render_ref equal to the envelope's own identifier",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        201,
+        400
+      ],
+      "ms": 165.8045,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n8",
+      "class": "N8",
+      "form": "a second receipt on one trace with another value",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 80.8678,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "3",
+      "id": "n9",
+      "class": "N9",
+      "form": "malformed JSON",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 11.2564,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v0",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 58.8502,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v1",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 43.6025,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v2",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 41.9173,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v3",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 50.5905,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v4",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 54.2318,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v5",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 35.7018,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v6",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 38.816,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v7",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 32.273,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v8",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 71.8609,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v9",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 103.0706,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v10",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 67.9294,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v11",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 189.6313,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v12",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 88.256,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v13",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 82.0496,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v14",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 26.4421,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v15",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 34.805,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v16",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 42.072,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v17",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.0616,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v18",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 31.1538,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v19",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 42.9597,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v20",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.7615,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v21",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 30.1002,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v22",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 126.6873,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "2 liberal",
+      "set": "valid",
+      "id": "v23",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 99.8138,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "s1",
+      "class": "missing source",
+      "form": "a proposal with no render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 32.0341,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "s2",
+      "class": "missing source",
+      "form": "a proposal citing a render absent from the projection",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 40.5909,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "s3",
+      "class": "missing source",
+      "form": "a proposal with an empty render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 28.1381,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "m1",
+      "class": "wrong memory reference",
+      "form": "an opinion whose evidence_refs names no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.2124,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "m2",
+      "class": "wrong memory reference",
+      "form": "a weave candidate whose write ids name no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 32.7471,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "m3",
+      "class": "wrong memory reference",
+      "form": "an event whose causal_context_refs names no record",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.5955,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "t1",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a paired render a later receipt superseded",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 247.9618,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "t2",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render two receipts old",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201,
+        201,
+        201
+      ],
+      "ms": 194.108,
+      "eventsWritten": 5,
+      "tracesWritten": 2
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "t3",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render whose asset version was replaced later",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 111.1552,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "f1",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting 3 failures",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 18.8887,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "f2",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed with no tests counted",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 17.8116,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "f3",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting more failures than passes",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 17.1301,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "x1",
+      "class": "success reported for a failed execution",
+      "form": "a receipt for an intent the renderer did not apply",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 123.5228,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "x2",
+      "class": "success reported for a failed execution",
+      "form": "a receipt naming an asset the renderer does not hold",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 90.3339,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "x3",
+      "class": "success reported for a failed execution",
+      "form": "a receipt with a second session's identifier",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 74.9036,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "o1",
+      "class": "missing or out-of-order receipt",
+      "form": "a request left without a receipt",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 50.7414,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "o2",
+      "class": "missing or out-of-order receipt",
+      "form": "a receipt before its request",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 141.0936,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "o3",
+      "class": "missing or out-of-order receipt",
+      "form": "a proposal citing a trace without a request",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        201,
+        400
+      ],
+      "ms": 108.4313,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "p1",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose fingerprint differs from its receipt's",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 31.161,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "p2",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose asset version differs from its receipt's",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 74.0373,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "p3",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal differing in both",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 32.3089,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "d1",
+      "class": "duplicate",
+      "form": "a replay under the same idempotency key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        200
+      ],
+      "ms": 115.5232,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "d2",
+      "class": "duplicate",
+      "form": "the same event under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 75.7622,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "1",
+      "id": "d3",
+      "class": "duplicate",
+      "form": "the same proposal under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 80.4469,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "2",
+      "id": "w1",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and an empty-of-meaning claim",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 52.1663,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "2",
+      "id": "w2",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and a claim contradicting its evidence",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 48.4903,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "2",
+      "id": "w3",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and full confidence in a guess",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 31.9088,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "2",
+      "id": "w4",
+      "class": "semantically wrong record",
+      "form": "an observation whose text does not match its hash",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 96.6865,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "2",
+      "id": "w5",
+      "class": "semantically wrong record",
+      "form": "an observation whose span lies outside its text",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 118.5657,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n1",
+      "class": "N1",
+      "form": "unauthenticated request",
+      "kind": "fault",
+      "detected": true,
+      "point": "authentication",
+      "statuses": [
+        401
+      ],
+      "ms": 13.4419,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n2",
+      "class": "N2",
+      "form": "missing tick",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 38.6704,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n3",
+      "class": "N3",
+      "form": "empty input fingerprint",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.3155,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n4",
+      "class": "N4",
+      "form": "unknown envelope field",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 45.4633,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n5",
+      "class": "N5",
+      "form": "unknown topic",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 48.509,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n6",
+      "class": "N6",
+      "form": "missing intent_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "write (server error)",
+      "statuses": [
+        500
+      ],
+      "ms": 116.903,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n7",
+      "class": "N7",
+      "form": "render_ref equal to the envelope's own identifier",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        201,
+        400
+      ],
+      "ms": 109.9788,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n8",
+      "class": "N8",
+      "form": "a second receipt on one trace with another value",
+      "kind": "fault",
+      "detected": true,
+      "point": "write",
+      "statuses": [
+        400
+      ],
+      "ms": 75.7655,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "3",
+      "id": "n9",
+      "class": "N9",
+      "form": "malformed JSON",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 13.0136,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v0",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 38.6059,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v1",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 46.584,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v2",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 58.3925,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v3",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 67.7094,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v4",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 41.3504,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v5",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 32.1281,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v6",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 31.2949,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v7",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 34.1119,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v8",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 108.6801,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v9",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 71.7428,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v10",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 162.4264,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v11",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 101.2185,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v12",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 135.264,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v13",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 87.6301,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v14",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 43.5525,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v15",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 32.6936,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v16",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 42.0424,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v17",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 70.7413,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v18",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 41.7071,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v19",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 45.3185,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v20",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 50.456,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v21",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 42.8356,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v22",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 163.9628,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "3 contracts",
+      "set": "valid",
+      "id": "v23",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 136.9739,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "s1",
+      "class": "missing source",
+      "form": "a proposal with no render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 64.9614,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "s2",
+      "class": "missing source",
+      "form": "a proposal citing a render absent from the projection",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 40.9066,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "s3",
+      "class": "missing source",
+      "form": "a proposal with an empty render_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 35.3261,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "m1",
+      "class": "wrong memory reference",
+      "form": "an opinion whose evidence_refs names no record",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 38.2062,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "m2",
+      "class": "wrong memory reference",
+      "form": "a weave candidate whose write ids name no record",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 56.942,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "m3",
+      "class": "wrong memory reference",
+      "form": "an event whose causal_context_refs names no record",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 36.0326,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "t1",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a paired render a later receipt superseded",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 128.7338,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "t2",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render two receipts old",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201,
+        201,
+        201
+      ],
+      "ms": 286.0987,
+      "eventsWritten": 5,
+      "tracesWritten": 2
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "t3",
+      "class": "stale skill (nearest form)",
+      "form": "a proposal citing a render whose asset version was replaced later",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201,
+        201
+      ],
+      "ms": 185.7845,
+      "eventsWritten": 3,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "f1",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting 3 failures",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 25.1725,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "f2",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed with no tests counted",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 40.6277,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "f3",
+      "class": "self-assessment false pass",
+      "form": "a promotion job whose pack declares core tests passed while counting more failures than passes",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        "promoted"
+      ],
+      "ms": 72.7745,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "x1",
+      "class": "success reported for a failed execution",
+      "form": "a receipt for an intent the renderer did not apply",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 157.9991,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "x2",
+      "class": "success reported for a failed execution",
+      "form": "a receipt naming an asset the renderer does not hold",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 96.0076,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "x3",
+      "class": "success reported for a failed execution",
+      "form": "a receipt with a second session's identifier",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 82.1738,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "o1",
+      "class": "missing or out-of-order receipt",
+      "form": "a request left without a receipt",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 53.8526,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "o2",
+      "class": "missing or out-of-order receipt",
+      "form": "a receipt before its request",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 164.5632,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "o3",
+      "class": "missing or out-of-order receipt",
+      "form": "a proposal citing a trace without a request",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 84.661,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "p1",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose fingerprint differs from its receipt's",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 55.3472,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "p2",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal whose asset version differs from its receipt's",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.3776,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "p3",
+      "class": "parameter or asset mismatch",
+      "form": "a proposal differing in both",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 77.2942,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "d1",
+      "class": "duplicate",
+      "form": "a replay under the same idempotency key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        200
+      ],
+      "ms": 56.7044,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "d2",
+      "class": "duplicate",
+      "form": "the same event under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 69.3665,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "1",
+      "id": "d3",
+      "class": "duplicate",
+      "form": "the same proposal under a new key",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 90.8034,
+      "eventsWritten": 2,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "2",
+      "id": "w1",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and an empty-of-meaning claim",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 41.4113,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "2",
+      "id": "w2",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and a claim contradicting its evidence",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 120.83,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "2",
+      "id": "w3",
+      "class": "semantically wrong record",
+      "form": "a proposal with real identifiers and full confidence in a guess",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 45.4805,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "2",
+      "id": "w4",
+      "class": "semantically wrong record",
+      "form": "an observation whose text does not match its hash",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 108.3931,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "2",
+      "id": "w5",
+      "class": "semantically wrong record",
+      "form": "an observation whose span lies outside its text",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 91.7723,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n1",
+      "class": "N1",
+      "form": "unauthenticated request",
+      "kind": "fault",
+      "detected": true,
+      "point": "authentication",
+      "statuses": [
+        401
+      ],
+      "ms": 32.1174,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n2",
+      "class": "N2",
+      "form": "missing tick",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 42.0184,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n3",
+      "class": "N3",
+      "form": "empty input fingerprint",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 62.2682,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n4",
+      "class": "N4",
+      "form": "unknown envelope field",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 36.2032,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n5",
+      "class": "N5",
+      "form": "unknown topic",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 40.9659,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n6",
+      "class": "N6",
+      "form": "missing intent_ref",
+      "kind": "fault",
+      "detected": true,
+      "point": "after-the-fact audit",
+      "statuses": [
+        201
+      ],
+      "ms": 60.7506,
+      "eventsWritten": 1,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n7",
+      "class": "N7",
+      "form": "render_ref equal to the envelope's own identifier",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 77.8828,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n8",
+      "class": "N8",
+      "form": "a second receipt on one trace with another value",
+      "kind": "fault",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 62.616,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "3",
+      "id": "n9",
+      "class": "N9",
+      "form": "malformed JSON",
+      "kind": "fault",
+      "detected": true,
+      "point": "boundary",
+      "statuses": [
+        400
+      ],
+      "ms": 17.7972,
+      "eventsWritten": 0,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v0",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 46.5824,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v1",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 36.2387,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v2",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 36.8639,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v3",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 51.09,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v4",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 50.4314,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v5",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 38.5696,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v6",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.9471,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v7",
+      "class": "valid",
+      "form": "an honest proposal",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 35.5669,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v8",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 91.1674,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v9",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 86.0028,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v10",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 122.48,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v11",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 83.9721,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v12",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 68.5835,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v13",
+      "class": "valid",
+      "form": "a paired render",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201,
+        201
+      ],
+      "ms": 96.5197,
+      "eventsWritten": 2,
+      "tracesWritten": 1
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v14",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 60.8248,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v15",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 46.2006,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v16",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 33.3682,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v17",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 33.9226,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v18",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 39.9095,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v19",
+      "class": "valid",
+      "form": "an opinion",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 35.3508,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v20",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 38.0014,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v21",
+      "class": "valid",
+      "form": "a weave candidate without writes",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 34.4061,
+      "eventsWritten": 1,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v22",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 79.4063,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    },
+    {
+      "configuration": "4 lineage",
+      "set": "valid",
+      "id": "v23",
+      "class": "valid",
+      "form": "an honest observation",
+      "kind": "valid",
+      "detected": false,
+      "point": "none",
+      "statuses": [
+        201
+      ],
+      "ms": 112.4939,
+      "eventsWritten": 5,
+      "tracesWritten": 0
+    }
+  ],
+  "generatedAt": "2026-11-05T10:36:52.9013900+00:00"
+}
