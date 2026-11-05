@@ -116,3 +116,5 @@ The plan's example of character offsets and millisecond spans cannot be given as
 - All others, the 15 reachable gate mutants and C1–C5: applicable in all four.
 
 **Detection point and order.** The checks of the row above in order, then the workload, then the audit; the first that fails is the point. A fault that does not build is reported as such. Rows written are counted for detections at the workload or audit; a detection before deployment writes none.
+
+**Deviations of this part (5 November 2026).** A first pass stopped at FU-07b after 12 faults, because P1-A's switches had rewritten the one line that its catalogue entry matches. The driver now gives that mutant's match for the new line, checks every match before any run and records which test failed; the pass was restarted in full and only the second is reported. In that first pass FU-06, a kernel-schema fault marked not applicable in configurations 3 and 4, made a consumer test fail, because the runtime still builds its proposal through the kernel's schema: the rule above is kept as fixed, and each fault's raw check outcomes are in the results.

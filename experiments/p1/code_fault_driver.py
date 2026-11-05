@@ -29,7 +29,7 @@ def run_test(copy, env, selector, is_class=False):
         p = subprocess.run(["./Aijade.Tests", *extra], cwd=f"{copy}/{PROJECT}/bin/Release/net10.0", env=env, capture_output=True, text=True, errors="replace", timeout=900)
     except subprocess.TimeoutExpired:
         return False, "timeout"
-    failed = [line.strip()[:160] for line in p.stdout.splitlines() if "[FAIL]" in line]
+    failed = [line.strip()[:160] for line in p.stdout.splitlines() if line.strip().startswith("failed ")]
     return p.returncode == 0, failed
 
 
@@ -109,13 +109,19 @@ def main():
                 faults.append({**m, "set": part})
     unreachable = set(json.load(open(f"{copy}/experiments/p1/code-faults/unreachable-gate-mutants.json", encoding="utf-8")))
     faults = [m for m in faults if m["id"] not in unreachable]
+    # P1-A's switches rewrote this one line after the catalogue was written; the mutant is the same.
+    for m in faults:
+        if m["id"] == "FU-07b":
+            m["match"] = "if (identityChecks && !string.IsNullOrEmpty(value) && envelopeIds.Contains(value))"
+    for m in faults:
+        text = open(os.path.join(copy, m["file"]), encoding="utf-8", newline="").read()
+        assert text.count(m["match"]) == 1, m["id"]
     done = set()
     if os.path.exists(target):
         done = {json.loads(line)["id"] for line in open(target, encoding="utf-8")}
     for m in faults:
         source = os.path.join(copy, m["file"])
         original = open(source, encoding="utf-8", newline="").read()
-        assert original.count(m["match"]) == 1, m["id"]
         if m["id"] in done:
             continue
         open(source, "w", encoding="utf-8", newline="").write(original.replace(m["match"], m["replace"]))
