@@ -110,7 +110,9 @@ public static class V9Alternative
                AND NOT EXISTS (SELECT 1 FROM render_traces t WHERE t.render_ref = e.payload->>'render_ref')
             UNION ALL
             SELECT 'reference to no stored event: ' || e.event_id || ' -> ' || r FROM events e, unnest(e.evidence_refs || e.causal_context_refs) r
-             WHERE NOT EXISTS (SELECT 1 FROM events x WHERE x.event_id = r)
+             WHERE NOT EXISTS (SELECT 1 FROM events x WHERE x.event_id = r OR x.trace_id = r)
+               AND NOT EXISTS (SELECT 1 FROM evidence_packs p WHERE p.id = r)
+               AND NOT EXISTS (SELECT 1 FROM evidence_chunks c WHERE c.id = r)
             UNION ALL
             SELECT 'write id of no stored event: ' || e.event_id || ' -> ' || r FROM events e, jsonb_array_elements_text(e.payload->'candidate_memory_write_ids') r
              WHERE e.topic = 'aijade.evidence.weave_candidate_ready' AND NOT EXISTS (SELECT 1 FROM events x WHERE x.event_id = r)

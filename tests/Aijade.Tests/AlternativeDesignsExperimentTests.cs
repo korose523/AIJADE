@@ -137,8 +137,15 @@ public class AlternativeDesignsExperimentTests
             yield return new Case("valid", $"v{i}", "valid", "a paired render", "valid", [Req($"v{i}a", $"trace-v{i}", $"intent-{i}"), Rec($"v{i}b", $"trace-v{i}", render: $"render-v{i}")]);
         for (var i = 14; i < 20; i++)
             yield return new Case("valid", $"v{i}", "valid", "an opinion", "valid", [Opinion($"v{i}")]);
-        for (var i = 20; i < 24; i++)
+        for (var i = 20; i < 22; i++)
             yield return new Case("valid", $"v{i}", "valid", "a weave candidate without writes", "valid", [Weave($"v{i}")]);
+        for (var i = 22; i < 24; i++)
+        {
+            yield return new Case("valid", $"v{i}", "valid", "an honest observation", "valid", [Env($"v{i}", $"trace-v{i}", "aijade.video.observation.webpage_text", new JsonObject
+            {
+                ["session_id"] = "s", ["source_url"] = $"https://example.test/v{i}", ["content_hash"] = $"hash-{i}", ["spans"] = new JsonArray(new JsonObject { ["start_offset"] = 0, ["end_offset"] = 4 }), ["observation_text"] = "text",
+            })]);
+        }
     }
 
     private static JsonObject WithCausal(JsonObject e, string r)
@@ -247,6 +254,7 @@ public class AlternativeDesignsExperimentTests
             ["deviations"] = new JsonArray(
                 "Run on the Mac before the supervisor's review of the plan: the first author's decision of 5 November 2026.",
                 "Not run in this file: the faults defined on code (the changed units or meanings of set 2 and the 33 mutants of set 3), their pre-deployment checks and the consumer expectation tests of configuration 3, which the plan commits with the switches. Without them this file cannot give configuration 3's or any configuration's pre-deployment detection.",
+                "Corrected after a first run of this matrix: the audit job treated references to evidence packets, chunks and traces as dangling, which listed an honest observation as a fault (a probe on 5 November 2026 found 12 such entries), so two semantically wrong observations were counted as detected. It now resolves those references, and two of the 24 valid inputs became honest observations, so that a false alarm of the audit would show.",
                 "The worker is not started: nothing here measures rows read by a downstream consumer other than the projection."),
             ["rows"] = rows,
             ["generatedAt"] = DateTimeOffset.UtcNow.ToString("o"),
