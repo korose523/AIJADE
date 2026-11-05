@@ -26,6 +26,8 @@ archived summaries stay comparable.
 | `p1/mutation/` | P1 | Mutation experiment on the contract-drift matrix | `tools/Aijade.Mutation` (`mutations.json`) |
 | `p1/gate-mutation/` | P1 | Mutation experiment on the promotion-gate matrix | `tools/Aijade.Mutation --catalogue tools/Aijade.Mutation/gate-mutants.json` |
 | `p1/alternative-designs.json` | P1 | P1-A: input and data faults against four configurations | `tests/Aijade.Tests`, plan `plans/2026-11-05-p1-a-alternative-designs.md` |
+| `p1/alternative-designs-code-faults.json` | P1 | P1-A addendum: faults defined on code against four configurations, with consumer tests | `p1/code_fault_driver.py`, `p1/code_fault_summary.py`, `ConsumerExpectationTests`, `CodeFaultChecksTests` |
+| `p1/survivor-reading.json` | P1 | One reader's categories for the 357 surviving mutants of P1-B | `p1/survivor_reading.py`, plan `plans/2026-11-05-p1-b-survivor-reading.md` |
 | `p1/independent-fault-set.json` | P1 | P1-B: Stryker.NET 5.0.0 on the two matrices, one row per mutant, with the hand check | `p1/stryker_summary.py`, `p1/stryker_hand_check.py`, configuration on branch `p1-b-run`, plan `plans/2026-11-05-p1-b-independent-fault-set.md` |
 | `memory/product-path.json`, `memory/product-path/` | P3 | P3-E: evidence at each stage of the product's path, by text and by embedding | `ProductDeliveryExperimentTests`, `memory/product_path_summary.py`, plan `plans/2026-11-05-p3-e-product-delivery-path.md` |
 | `p1/admission-checks.json`, `p1/validation-overhead.json` | P1 | Admission checks; strict-validation overhead | `AdmissionChecksTests`, `ValidationOverheadTests` with `AIJADE_EXPERIMENT_DIR=experiments/p1` |
