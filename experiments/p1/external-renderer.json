@@ -1,0 +1,1354 @@
+{
+ "experiment": "P1-C: the evidence gate's checks on receipts from a separate renderer implementation by the same researcher",
+ "plan": "experiments/plans/2026-11-06-p1-c-external-renderer.md",
+ "planCommit": "d27fca4",
+ "runCommit": "6ca1618",
+ "started": "2026-11-06T07:29:28+09:00",
+ "ended": "2026-11-06T07:44:33+09:00",
+ "machine": "Mac, x86_64, 8 CPUs, 16 GB, other containers running",
+ "database": "PostgreSQL 18.0",
+ "client": {
+  "mosaicFileRevisions": {
+   "clients/godot-scene/Main.cs": "647",
+   "clients/godot-scene/BehaviorDriver.cs": "614",
+   "host-dotnet/Mosaic.Scene.Core/RenderStateLog.cs": "341",
+   "host-dotnet/Mosaic.Scene.Core/AijadePackets.cs": "4",
+   "host-dotnet/Mosaic.Scene.Core/BehaviorEvents.cs": "679",
+   "scripts/run-native-mmd-scene.py": "648",
+   "tools/make_companion_preset.py": "12"
+  },
+  "sourcesSha256OfCopy": "7b89dba498ab183487b6e674b3f8ec52649fbc9a76de24f866547cacb9296327",
+  "copied": [
+   "clients/godot-scene",
+   "host-dotnet/Mosaic.Scene.Core",
+   "host-dotnet/Mosaic.Scene.Bullet",
+   "configs/scenes"
+  ],
+  "mode": "headless, no frame drawn"
+ },
+ "behaviorPlan": {
+  "tool": "make_companion_preset.py --profile calm --seed 7 --duration-s 40 --preserve-signed",
+  "archived": "experiments/p1/external-renderer/preset/"
+ },
+ "clientExitCodes": {
+  "p1c-r1": 0,
+  "p1c-r1-killed": 247,
+  "p1c-r1-v1": 0,
+  "p1c-r1-restart-first": 247,
+  "p1c-r1-restart-second": 0,
+  "p1c-r2": 0,
+  "p1c-r2-killed": 247,
+  "p1c-r2-v1": 0,
+  "p1c-r2-restart-first": 247,
+  "p1c-r2-restart-second": 0,
+  "p1c-r3": 0,
+  "p1c-r3-killed": 247,
+  "p1c-r3-v1": 0,
+  "p1c-r3-restart-first": 247,
+  "p1c-r3-restart-second": 0
+ },
+ "healthySessionsReplaced": [],
+ "testsAtRunCommit": {
+  "ContractDriftMatrixTests": {
+   "total": 1,
+   "errors": 0,
+   "failed": 0,
+   "skipped": 0
+  },
+  "AdmissionChecksTests": {
+   "total": 1,
+   "errors": 0,
+   "failed": 0,
+   "skipped": 0
+  },
+  "RendererLinkTestsWithBuiltParser": {
+   "total": 5,
+   "errors": 0,
+   "failed": 0,
+   "skipped": 0
+  }
+ },
+ "tally": [
+  {
+   "round": "r1",
+   "group1": {
+    "assertions": 26,
+    "same": 26,
+    "different": []
+   },
+   "group2": {
+    "cases": 6,
+    "same": 6
+   },
+   "group3": {
+    "cases": 17,
+    "same": 17,
+    "different": []
+   }
+  },
+  {
+   "round": "r2",
+   "group1": {
+    "assertions": 26,
+    "same": 26,
+    "different": []
+   },
+   "group2": {
+    "cases": 6,
+    "same": 6
+   },
+   "group3": {
+    "cases": 17,
+    "same": 17,
+    "different": []
+   }
+  },
+  {
+   "round": "r3",
+   "group1": {
+    "assertions": 26,
+    "same": 26,
+    "different": []
+   },
+   "group2": {
+    "cases": 6,
+    "same": 6
+   },
+   "group3": {
+    "cases": 17,
+    "same": 17,
+    "different": []
+   }
+  }
+ ],
+ "rounds": [
+  {
+   "round": "r1",
+   "qualification": {
+    "schemaV2": true,
+    "endRecordVerifies": true,
+    "rendererHashesRecompute": 11,
+    "preSolveRows": 11,
+    "registeredIntents": 11,
+    "intentsWithRow": 11,
+    "rowsNamingTwoIntents": 0,
+    "pmxSha256": "17132195145a175f43f3b14d0169710f132f38ddbde2f4fcd58aed1a23760155",
+    "clipSha256": "ec540cf946b6c049896714b2fe5820eb9b47198b231fe8d0fa33e221a2f5bf97",
+    "behaviorPlanSha256": "1be99e420ff9f6e8bcd769835a4e19a5571d3d28a3710d39b7a0cd6fa117e43b"
+   },
+   "sessions": [
+    {
+     "session": "p1c-r1",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 11,
+     "fileReasons": [],
+     "receipts": 11,
+     "unknown": 0,
+     "unknownReasons": {},
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r1-killed",
+     "registered": 11,
+     "preSolveRows": 12,
+     "postSolveRows": 12,
+     "fileReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r1-v1",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 0,
+     "fileReasons": [
+      "not_schema_v2"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r1-restart",
+     "registered": 11,
+     "preSolveRows": 5,
+     "postSolveRows": 5,
+     "fileReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r1-restart",
+     "registered": 11,
+     "preSolveRows": 7,
+     "postSolveRows": 7,
+     "fileReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    }
+   ],
+   "group1": {
+    "assertions": 26,
+    "recorded": 26,
+    "same": 26,
+    "different": []
+   },
+   "group2": [
+    {
+     "case": "honest proposal",
+     "recorded": "admitted",
+     "got": "admitted",
+     "eventsWritten": 1,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "reference to a render that does not exist",
+     "recorded": "render_ref_not_found",
+     "got": "render_ref_not_found",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "reference to an unpaired trace (no request-side intent)",
+     "recorded": "intent_ref_missing",
+     "got": "intent_ref_missing",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "tampered parameter fingerprint",
+     "recorded": "applied_params_hash_mismatch",
+     "got": "applied_params_hash_mismatch",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "tampered asset version",
+     "recorded": "asset_version_hash_mismatch",
+     "got": "asset_version_hash_mismatch",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "self-reference (render_ref = own trace id)",
+     "recorded": "self_reference",
+     "got": "self_reference",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    }
+   ],
+   "group3": [
+    {
+     "case": "S1 no end record",
+     "expectedReasons": [
+      "end_record_missing"
+     ],
+     "reportedReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2a truncated",
+     "expectedReasons": [
+      "end_count_mismatch"
+     ],
+     "reportedReasons": [
+      "end_count_mismatch",
+      "end_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2b altered",
+     "expectedReasons": [
+      "end_digest_mismatch"
+     ],
+     "reportedReasons": [
+      "end_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2c altered after sealing",
+     "expectedReasons": [
+      "file_digest_mismatch"
+     ],
+     "reportedReasons": [
+      "file_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S3 old format",
+     "expectedReasons": [
+      "not_schema_v2"
+     ],
+     "reportedReasons": [
+      "not_schema_v2"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S4a other renderer context",
+     "expectedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S4b other session",
+     "expectedReasons": [
+      "session_mismatch"
+     ],
+     "reportedReasons": [
+      "session_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S5a restart, first instance",
+     "expectedReasons": [
+      "end_record_missing"
+     ],
+     "reportedReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S5b restart, second instance",
+     "expectedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S6 earlier session",
+     "expectedReasons": [
+      "session_mismatch",
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "file_digest_mismatch",
+      "renderer_context_mismatch",
+      "session_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S7 unregistered trace",
+     "expectedReasons": [
+      "trace_not_registered",
+      "no_row"
+     ],
+     "reportedReasons": [
+      "no_row",
+      "trace_not_registered"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S8 intent with no row",
+     "expectedReasons": [
+      "no_row"
+     ],
+     "reportedReasons": [
+      "no_row"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S9 hash does not recompute",
+     "expectedReasons": [
+      "renderer_hash_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_hash_mismatch"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S10 two intents in a row",
+     "expectedReasons": [
+      "two_intents_in_row"
+     ],
+     "reportedReasons": [
+      "two_intents_in_row"
+     ],
+     "receiptsExpected": 9,
+     "receiptsWritten": 9,
+     "unknownExpected": 2,
+     "unknown": 2,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S11 manifest not complete",
+     "expectedReasons": [
+      "manifest_not_complete"
+     ],
+     "reportedReasons": [
+      "manifest_not_complete"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "I1 imported twice",
+     "receiptsExpected": 11,
+     "receiptsWritten": 11,
+     "eventsAfterFirst": 22,
+     "eventsAfterSecond": 22,
+     "sameAsExpected": true
+    },
+    {
+     "case": "I2 stopped part-way",
+     "receiptsExpected": 11,
+     "receiptsWritten": 11,
+     "eventsWhenStopped": 9,
+     "eventsAfterRerun": 22,
+     "sameAsExpected": true
+    }
+   ]
+  },
+  {
+   "round": "r2",
+   "qualification": {
+    "schemaV2": true,
+    "endRecordVerifies": true,
+    "rendererHashesRecompute": 11,
+    "preSolveRows": 11,
+    "registeredIntents": 11,
+    "intentsWithRow": 11,
+    "rowsNamingTwoIntents": 0,
+    "pmxSha256": "17132195145a175f43f3b14d0169710f132f38ddbde2f4fcd58aed1a23760155",
+    "clipSha256": "ec540cf946b6c049896714b2fe5820eb9b47198b231fe8d0fa33e221a2f5bf97",
+    "behaviorPlanSha256": "1be99e420ff9f6e8bcd769835a4e19a5571d3d28a3710d39b7a0cd6fa117e43b"
+   },
+   "sessions": [
+    {
+     "session": "p1c-r2",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 11,
+     "fileReasons": [],
+     "receipts": 11,
+     "unknown": 0,
+     "unknownReasons": {},
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r2-killed",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 11,
+     "fileReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r2-v1",
+     "registered": 11,
+     "preSolveRows": 12,
+     "postSolveRows": 0,
+     "fileReasons": [
+      "not_schema_v2"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r2-restart",
+     "registered": 11,
+     "preSolveRows": 5,
+     "postSolveRows": 5,
+     "fileReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r2-restart",
+     "registered": 11,
+     "preSolveRows": 6,
+     "postSolveRows": 6,
+     "fileReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    }
+   ],
+   "group1": {
+    "assertions": 26,
+    "recorded": 26,
+    "same": 26,
+    "different": []
+   },
+   "group2": [
+    {
+     "case": "honest proposal",
+     "recorded": "admitted",
+     "got": "admitted",
+     "eventsWritten": 1,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "reference to a render that does not exist",
+     "recorded": "render_ref_not_found",
+     "got": "render_ref_not_found",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "reference to an unpaired trace (no request-side intent)",
+     "recorded": "intent_ref_missing",
+     "got": "intent_ref_missing",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "tampered parameter fingerprint",
+     "recorded": "applied_params_hash_mismatch",
+     "got": "applied_params_hash_mismatch",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "tampered asset version",
+     "recorded": "asset_version_hash_mismatch",
+     "got": "asset_version_hash_mismatch",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "self-reference (render_ref = own trace id)",
+     "recorded": "self_reference",
+     "got": "self_reference",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    }
+   ],
+   "group3": [
+    {
+     "case": "S1 no end record",
+     "expectedReasons": [
+      "end_record_missing"
+     ],
+     "reportedReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2a truncated",
+     "expectedReasons": [
+      "end_count_mismatch"
+     ],
+     "reportedReasons": [
+      "end_count_mismatch",
+      "end_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2b altered",
+     "expectedReasons": [
+      "end_digest_mismatch"
+     ],
+     "reportedReasons": [
+      "end_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2c altered after sealing",
+     "expectedReasons": [
+      "file_digest_mismatch"
+     ],
+     "reportedReasons": [
+      "file_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S3 old format",
+     "expectedReasons": [
+      "not_schema_v2"
+     ],
+     "reportedReasons": [
+      "not_schema_v2"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S4a other renderer context",
+     "expectedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S4b other session",
+     "expectedReasons": [
+      "session_mismatch"
+     ],
+     "reportedReasons": [
+      "session_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S5a restart, first instance",
+     "expectedReasons": [
+      "end_record_missing"
+     ],
+     "reportedReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S5b restart, second instance",
+     "expectedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S6 earlier session",
+     "expectedReasons": [
+      "session_mismatch",
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "file_digest_mismatch",
+      "renderer_context_mismatch",
+      "session_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S7 unregistered trace",
+     "expectedReasons": [
+      "trace_not_registered",
+      "no_row"
+     ],
+     "reportedReasons": [
+      "no_row",
+      "trace_not_registered"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S8 intent with no row",
+     "expectedReasons": [
+      "no_row"
+     ],
+     "reportedReasons": [
+      "no_row"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S9 hash does not recompute",
+     "expectedReasons": [
+      "renderer_hash_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_hash_mismatch"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S10 two intents in a row",
+     "expectedReasons": [
+      "two_intents_in_row"
+     ],
+     "reportedReasons": [
+      "two_intents_in_row"
+     ],
+     "receiptsExpected": 9,
+     "receiptsWritten": 9,
+     "unknownExpected": 2,
+     "unknown": 2,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S11 manifest not complete",
+     "expectedReasons": [
+      "manifest_not_complete"
+     ],
+     "reportedReasons": [
+      "manifest_not_complete"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "I1 imported twice",
+     "receiptsExpected": 11,
+     "receiptsWritten": 11,
+     "eventsAfterFirst": 22,
+     "eventsAfterSecond": 22,
+     "sameAsExpected": true
+    },
+    {
+     "case": "I2 stopped part-way",
+     "receiptsExpected": 11,
+     "receiptsWritten": 11,
+     "eventsWhenStopped": 9,
+     "eventsAfterRerun": 22,
+     "sameAsExpected": true
+    }
+   ]
+  },
+  {
+   "round": "r3",
+   "qualification": {
+    "schemaV2": true,
+    "endRecordVerifies": true,
+    "rendererHashesRecompute": 11,
+    "preSolveRows": 11,
+    "registeredIntents": 11,
+    "intentsWithRow": 11,
+    "rowsNamingTwoIntents": 0,
+    "pmxSha256": "17132195145a175f43f3b14d0169710f132f38ddbde2f4fcd58aed1a23760155",
+    "clipSha256": "ec540cf946b6c049896714b2fe5820eb9b47198b231fe8d0fa33e221a2f5bf97",
+    "behaviorPlanSha256": "1be99e420ff9f6e8bcd769835a4e19a5571d3d28a3710d39b7a0cd6fa117e43b"
+   },
+   "sessions": [
+    {
+     "session": "p1c-r3",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 11,
+     "fileReasons": [],
+     "receipts": 11,
+     "unknown": 0,
+     "unknownReasons": {},
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r3-killed",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 11,
+     "fileReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r3-v1",
+     "registered": 11,
+     "preSolveRows": 11,
+     "postSolveRows": 0,
+     "fileReasons": [
+      "not_schema_v2"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r3-restart",
+     "registered": 11,
+     "preSolveRows": 5,
+     "postSolveRows": 5,
+     "fileReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    },
+    {
+     "session": "p1c-r3-restart",
+     "registered": 11,
+     "preSolveRows": 6,
+     "postSolveRows": 6,
+     "fileReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receipts": 0,
+     "unknown": 11,
+     "unknownReasons": {
+      "file_refused": 11
+     },
+     "refusedRows": 0,
+     "missingKeys": 0,
+     "unmapped": 0,
+     "conflicts": 0
+    }
+   ],
+   "group1": {
+    "assertions": 26,
+    "recorded": 26,
+    "same": 26,
+    "different": []
+   },
+   "group2": [
+    {
+     "case": "honest proposal",
+     "recorded": "admitted",
+     "got": "admitted",
+     "eventsWritten": 1,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "reference to a render that does not exist",
+     "recorded": "render_ref_not_found",
+     "got": "render_ref_not_found",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "reference to an unpaired trace (no request-side intent)",
+     "recorded": "intent_ref_missing",
+     "got": "intent_ref_missing",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "tampered parameter fingerprint",
+     "recorded": "applied_params_hash_mismatch",
+     "got": "applied_params_hash_mismatch",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "tampered asset version",
+     "recorded": "asset_version_hash_mismatch",
+     "got": "asset_version_hash_mismatch",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    },
+    {
+     "case": "self-reference (render_ref = own trace id)",
+     "recorded": "self_reference",
+     "got": "self_reference",
+     "eventsWritten": 0,
+     "sameAsRecorded": true
+    }
+   ],
+   "group3": [
+    {
+     "case": "S1 no end record",
+     "expectedReasons": [
+      "end_record_missing"
+     ],
+     "reportedReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2a truncated",
+     "expectedReasons": [
+      "end_count_mismatch"
+     ],
+     "reportedReasons": [
+      "end_count_mismatch",
+      "end_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2b altered",
+     "expectedReasons": [
+      "end_digest_mismatch"
+     ],
+     "reportedReasons": [
+      "end_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S2c altered after sealing",
+     "expectedReasons": [
+      "file_digest_mismatch"
+     ],
+     "reportedReasons": [
+      "file_digest_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S3 old format",
+     "expectedReasons": [
+      "not_schema_v2"
+     ],
+     "reportedReasons": [
+      "not_schema_v2"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S4a other renderer context",
+     "expectedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S4b other session",
+     "expectedReasons": [
+      "session_mismatch"
+     ],
+     "reportedReasons": [
+      "session_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S5a restart, first instance",
+     "expectedReasons": [
+      "end_record_missing"
+     ],
+     "reportedReasons": [
+      "end_record_missing",
+      "end_state_unfinished"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S5b restart, second instance",
+     "expectedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_context_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S6 earlier session",
+     "expectedReasons": [
+      "session_mismatch",
+      "renderer_context_mismatch"
+     ],
+     "reportedReasons": [
+      "file_digest_mismatch",
+      "renderer_context_mismatch",
+      "session_mismatch"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S7 unregistered trace",
+     "expectedReasons": [
+      "trace_not_registered",
+      "no_row"
+     ],
+     "reportedReasons": [
+      "no_row",
+      "trace_not_registered"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S8 intent with no row",
+     "expectedReasons": [
+      "no_row"
+     ],
+     "reportedReasons": [
+      "no_row"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S9 hash does not recompute",
+     "expectedReasons": [
+      "renderer_hash_mismatch"
+     ],
+     "reportedReasons": [
+      "renderer_hash_mismatch"
+     ],
+     "receiptsExpected": 10,
+     "receiptsWritten": 10,
+     "unknownExpected": 1,
+     "unknown": 1,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S10 two intents in a row",
+     "expectedReasons": [
+      "two_intents_in_row"
+     ],
+     "reportedReasons": [
+      "two_intents_in_row"
+     ],
+     "receiptsExpected": 9,
+     "receiptsWritten": 9,
+     "unknownExpected": 2,
+     "unknown": 2,
+     "refusedRows": 1,
+     "sameAsExpected": true
+    },
+    {
+     "case": "S11 manifest not complete",
+     "expectedReasons": [
+      "manifest_not_complete"
+     ],
+     "reportedReasons": [
+      "manifest_not_complete"
+     ],
+     "receiptsExpected": 0,
+     "receiptsWritten": 0,
+     "unknownExpected": 11,
+     "unknown": 11,
+     "refusedRows": 0,
+     "sameAsExpected": true
+    },
+    {
+     "case": "I1 imported twice",
+     "receiptsExpected": 11,
+     "receiptsWritten": 11,
+     "eventsAfterFirst": 22,
+     "eventsAfterSecond": 22,
+     "sameAsExpected": true
+    },
+    {
+     "case": "I2 stopped part-way",
+     "receiptsExpected": 11,
+     "receiptsWritten": 11,
+     "eventsWhenStopped": 9,
+     "eventsAfterRerun": 22,
+     "sameAsExpected": true
+    }
+   ]
+  }
+ ],
+ "deviations": [
+  "Departures from the draft of 4 November 2026 are listed in the plan's section 'Fixed on 6 November 2026', committed before the code.",
+  "The plan was not pushed or sent to the supervisor before the code, by the first author's decision.",
+  "A first pass (run commit 86f5818, 6 November 2026, 07:11 to 07:27) is discarded: the driver's kill never took, because pkill read its pattern as an option, so the killed sessions and the first instances of the restarted sessions closed their files normally. S1 and S5a then differed in all three rounds, with 11 and 5 receipts written from files that were complete; the other 45 cases of group 3, and groups 1 and 2, had their expected or recorded outcomes. The driver now stops if a kill does not take; all sessions were run again. The first pass is kept outside the repository, not reported."
+ ],
+ "notes": [
+  "Groups 1 and 2 use variants built from the client's healthy receipts and mostly re-test this system's server checks; qualification, the mapping from rows to receipt events and group 3 test the client and the new code.",
+  "A row's applied values are the whole behavior overlay, so a receipt shows that a frame consumed the intent and which overlay values it had, not that each value came from the intent.",
+  "One separate implementation by the same researcher, stage behavior_overlay_pre_solve, constructed cases, headless. Not an independent replication."
+ ]
+}
