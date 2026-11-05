@@ -743,7 +743,7 @@ static JsonObject AnswerableTablesReport(IReadOnlyList<LocomoConversation> corpu
         }
     }
     foreach (var name in new[] { "weight-ablation.json", "combination-ablation.json", "component-scales.json", "k-dependence.json", "gating-interference.json", "salience-sources.json", "uncertainty.json", "pool-check.json", "delivery-check.json", "gating-penalty-off.json" })
-        Compare(JsonNode.Parse(File.ReadAllText(Path.Combine(root, "experiments", "memory", name))), all[name], name);
+        Compare(JsonNode.Parse(File.ReadAllText(Path.Combine(root, "experiments", "memory", name))), JsonNode.Parse(all[name]!.ToJsonString()), name); // parsed like the archive, so that an integer reads as a number
     Console.WriteLine($"reproduction of the archived all-question values: {compared - mismatches.Count}/{compared} match");
     var answerable = Tables(corpus, AnswerableReanalysis.Answerable);
     var dirty = RunGit(root, "status --porcelain --untracked-files=no");
@@ -754,6 +754,7 @@ static JsonObject AnswerableTablesReport(IReadOnlyList<LocomoConversation> corpu
         ["codeCommit"] = RqcRunner.GitHash(), ["codeTreeDirty"] = dirty is null ? null : dirty.Length > 0,
         ["deviations"] = new JsonArray(
             "Run on 5 November 2026, not after 2 December 2026 as the plan's status paragraph says: the first author's decision, to use the time the Mac is available; the supervisor had not been asked.",
+            "The first run of this code (commit 74e478f, 5 November 2026) reported 77 mismatches out of 751: all were integer fields with equal values, which the comparison did not read as numbers. The comparison was corrected and the file produced again; the kernel's optional similarity (default unchanged) entered the code between the two runs.",
             "The output also holds the score-combination ablation, K-dependence, the gating contrasts without the conflict penalty and the aggregation caliber, which the plan's table list does not name, because the text around Tables 1-7 quotes them."),
         ["questions"] = new JsonObject { ["all"] = corpus.Sum(c => c.Qa.Count), ["answerable"] = corpus.Sum(c => c.Qa.Count(AnswerableReanalysis.Answerable)) },
         ["reproduction"] = new JsonObject { ["compared"] = compared, ["allMatch"] = mismatches.Count == 0, ["mismatches"] = mismatches },
