@@ -13,6 +13,18 @@
 {
     <p class="empty">@State.Text["memory.empty"]</p>
 }
+@if (days.Count > 0)
+{
+    <details class="companion-days">
+        <summary>@State.Text["memory.day.title"]</summary>
+        <ul>
+            @foreach (var day in days)
+            {
+                <li>@string.Format(System.Globalization.CultureInfo.CurrentCulture, State.Text["memory.day.line"], day.Day.ToString("d", System.Globalization.CultureInfo.CurrentCulture), day.OwnerTurns, day.FirstLines, day.FirstLinesAnswered, day.Selfies, day.Reminders, State.Text[day.MoodTrend switch { > 0 => "memory.day.up", < 0 => "memory.day.down", _ => "memory.day.same" }])</li>
+            }
+        </ul>
+    </details>
+}
 <ul class="memory-list">
     @foreach (var item in items)
     {
@@ -32,8 +44,30 @@
     private string query = "";
     private List<MemoryItem> items = [];
     private string? status;
+    private IReadOnlyList<Aijade.Client.Companion.CompanionDay> days = [];
 
-    protected override Task OnInitializedAsync() => SearchAsync();
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchAsync();
+        await LoadDaysAsync();
+    }
+
+    /// <summary>Her last week, read from the stored lines of the chats touched in it; the page works the same without it.</summary>
+    private async Task LoadDaysAsync()
+    {
+        try
+        {
+            var since = DateTimeOffset.UtcNow.AddDays(-8);
+            var lines = new List<StoredMessage>();
+            foreach (var chat in (await State.Api.ChatsAsync()).Where(c => c.UpdatedAt >= since))
+                lines.AddRange((await State.Api.MessagesAsync(chat.Id)).Where(m => m.CreatedAt >= since));
+            days = Aijade.Client.Companion.CompanionLife.Days(lines);
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or OperationCanceledException)
+        {
+            days = [];
+        }
+    }
 
     private async Task SearchAsync() => items = [.. await State.Api.MemoryItemsAsync(query)];
 

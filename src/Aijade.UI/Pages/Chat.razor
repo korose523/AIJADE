@@ -138,15 +138,17 @@
         {
             while (await speakFirstTimer.WaitForNextTickAsync())
             {
-                await InvokeAsync(RemindAsync);
-                await InvokeAsync(SelfieAsync);
-                await InvokeAsync(SpeakFirstAsync);
+                await CompanionLife.MinuteStepAsync(() => InvokeAsync(RemindAsync), ReportMinuteStep);
+                await CompanionLife.MinuteStepAsync(() => InvokeAsync(SelfieAsync), ReportMinuteStep);
+                await CompanionLife.MinuteStepAsync(() => InvokeAsync(SpeakFirstAsync), ReportMinuteStep);
             }
         }
         catch (ObjectDisposedException)
         {
         }
     }
+
+    private static void ReportMinuteStep(Exception e) => Console.Error.WriteLine($"minute check failed: {e.GetType().Name}: {e.Message}");
 
     /// <summary>
     /// Her first line, when the companion contract's rule says the moment has come (<see cref="ChatOrchestrator.SpeakFirstAsync"/>):
