@@ -1,0 +1,20 @@
+{
+  "stryker-config": {
+    "project": "Aijade.Memory.csproj",
+    "configuration": "Release",
+    "test-case-filter": "FullyQualifiedName=Aijade.Tests.ContractDriftMatrixTests.Matrix_log_equals_the_recorded_baseline_line_by_line",
+    "mutate": [
+      "**/Kernel/Events.cs"
+    ],
+    "mutation-level": "Standard",
+    "coverage-analysis": "perTest",
+    "test-runner": "vstest",
+    "concurrency": 3,
+    "reporters": [
+      "json",
+      "cleartext",
+      "progress"
+    ],
+    "disable-bail": false
+  }
+}
