@@ -22,6 +22,7 @@ using Aijade.Research.RqC;
 //   aijade-experiments gating-check [--corpus locomo|longmemeval]     (P3 §5.5: gating contrasts with the conflict penalty off)
 //   aijade-experiments component-scales --corpus longmemeval          (P3 §5.8: component means and spreads on LongMemEval)
 //   aijade-experiments format-precheck --model M [--ollama-base-url U] [--out F]   (P2: verdict-format pre-check for a control model)
+//   aijade-experiments answerable-tables [--locomo <locomo10.json>] [--out experiments/memory]   (P3 Tables 1-7 and 9 on the answerable questions)
 //   aijade-experiments answerable-check [--locomo <locomo10.json>] [--out experiments/memory]   (P3-A/B of experiments/plans/2026-10-22-followup-analyses.md)
 //   aijade-experiments verifier-feedback [--out experiments/rq-c/verifier-feedback.json]       (P2-C of the same plan)
 // The LoCoMo corpus is third-party data (snap-research/locomo) and is not part of the repository: by default it is read from
@@ -48,10 +49,10 @@ switch (command)
     case "p2-models":
         return WriteJson(Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "rq-c", "p2-models.json")), P2Models(root));
     case "gating-check" when Arg("--corpus") == "longmemeval":
-        return WithLongMemEval(Arg("--data"), GatingCheckReport,
+        return WithLongMemEval(Arg("--data"), c => GatingCheckReport(c),
             Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "gating-penalty-off.json")));
     case "gating-check":
-        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "gating-penalty-off.json", GatingCheckReport);
+        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "gating-penalty-off.json", c => GatingCheckReport(c));
     case "format-precheck":
         return await FormatPrecheckCommand(Arg("--model") ?? throw new ArgumentException("--model is required"), Arg("--ollama-base-url") ?? "http://127.0.0.1:11434",
             Arg("--out"), root);
@@ -70,7 +71,7 @@ switch (command)
     case "k-dependence":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "k-dependence.json", KDependenceReport);
     case "memory-uncertainty":
-        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "uncertainty.json", UncertaintyReport);
+        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "uncertainty.json", c => UncertaintyReport(c));
     case "longmemeval":
         return LongMemEvalReplication(Arg("--data") ?? Environment.GetEnvironmentVariable("AIJADE_LONGMEMEVAL")
             ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "aijade-data", "longmemeval", "longmemeval_s_cleaned.json"),
@@ -81,6 +82,8 @@ switch (command)
     case "pool-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "pool-check.json",
             corpus => PoolCheckReport(corpus, null, null));
+    case "answerable-tables":
+        return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "answerable-tables.json", c => AnswerableTablesReport(c, root));
     case "answerable-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "answerable-reanalysis.json",
             corpus => AnswerableCheckReport(corpus, root));
@@ -292,11 +295,11 @@ static JsonObject P2Models(string root)
     return result;
 }
 
-static JsonObject UncertaintyReport(IReadOnlyList<LocomoConversation> corpus) => new()
+static JsonObject UncertaintyReport(IReadOnlyList<LocomoConversation> corpus, Func<LocomoQuestion, bool>? scored = null) => new()
 {
     ["experiment"] = "uncertainty of the headline contrasts of P3 §5, the conversation as the unit of dependence: conversation bootstrap (10,000 resamples, percentile 95%) and exact sign-flip randomisation over the paired per-conversation differences",
     ["k"] = MemoryUncertainty.K,
-    ["contrasts"] = new JsonArray([.. MemoryUncertainty.Run(corpus).Select(c => (JsonNode)new JsonObject
+    ["contrasts"] = new JsonArray([.. MemoryUncertainty.Run(corpus, scored: scored).Select(c => (JsonNode)new JsonObject
     {
         ["key"] = c.Key, ["caliber"] = c.Caliber, ["a"] = c.A, ["b"] = c.B, ["difference"] = c.Difference,
         ["bootstrap95"] = new JsonArray(c.BootstrapLo, c.BootstrapHi), ["signFlipP"] = c.SignFlipP,
@@ -443,11 +446,11 @@ static JsonObject PoolCheckReport(IReadOnlyList<LocomoConversation> corpus, stri
 }
 
 // The gating contrasts of P4 §5.5 again with the conflict penalty switched off (1.0); same units, bootstrap and test.
-static JsonObject GatingCheckReport(IReadOnlyList<LocomoConversation> corpus) => new()
+static JsonObject GatingCheckReport(IReadOnlyList<LocomoConversation> corpus, Func<LocomoQuestion, bool>? scored = null) => new()
 {
     ["experiment"] = "gating ON - OFF at K = 8 (macro) under each score mode and salience source, with the conflict penalty switched off (1.0); unit bootstrap and sign-flip test as in uncertainty.json",
     ["conflictPenalty"] = 1.0,
-    ["contrasts"] = new JsonArray([.. MemoryUncertainty.Run(corpus, conflictPenalty: 1.0, includeWeights: false).Select(c => (JsonNode)new JsonObject
+    ["contrasts"] = new JsonArray([.. MemoryUncertainty.Run(corpus, conflictPenalty: 1.0, includeWeights: false, scored: scored).Select(c => (JsonNode)new JsonObject
     {
         ["key"] = c.Key, ["caliber"] = c.Caliber, ["a"] = c.A, ["b"] = c.B, ["difference"] = c.Difference,
         ["bootstrap95"] = new JsonArray(c.BootstrapLo, c.BootstrapHi), ["signFlipP"] = c.SignFlipP,
@@ -589,6 +592,74 @@ static JsonObject AnswerableCheckReport(IReadOnlyList<LocomoConversation> corpus
     return report;
 }
 
+// experiments/plans/2026-10-27-p3-answerable-tables.md: every question-dependent table of P3 on the answerable questions and on
+// all questions, from the same stores. The all-question values must reproduce the archived files before anything else is read.
+static JsonObject AnswerableTablesReport(IReadOnlyList<LocomoConversation> corpus, string root)
+{
+    static JsonObject Tables(IReadOnlyList<LocomoConversation> corpus, Func<LocomoQuestion, bool>? scored)
+    {
+        IReadOnlyList<LocomoConversation> q = scored is null ? corpus : [.. corpus.Select(c => c with { Qa = [.. c.Qa.Where(scored)] })];
+        var o = new JsonObject();
+        MemoryAll(q, (name, body) => o[name] = body, corpus, scored);
+        o["uncertainty.json"] = UncertaintyReport(corpus, scored);
+        o["pool-check.json"] = PoolCheckReport(q, null, null);
+        o["delivery-check.json"] = DeliveryCheckReport(q);
+        o["gating-penalty-off.json"] = GatingCheckReport(corpus, scored);
+        o["aggregation-caliber"] = new JsonArray([.. MetricDefinitions.AggregationCaliber(q).Select(c => (JsonNode)new JsonObject
+        {
+            ["scoreMode"] = WireName.Of(c.Mode),
+            ["macro"] = new JsonObject(c.Macro.Select(p => KeyValuePair.Create(p.Key.ToString(CultureInfo.InvariantCulture), (JsonNode?)p.Value))),
+            ["micro"] = new JsonObject(c.Micro.Select(p => KeyValuePair.Create(p.Key.ToString(CultureInfo.InvariantCulture), (JsonNode?)p.Value))),
+        })]);
+        return o;
+    }
+    var all = Tables(corpus, null);
+    var mismatches = new JsonArray();
+    var compared = 0;
+    void Compare(JsonNode? a, JsonNode? b, string path)
+    {
+        switch (a)
+        {
+            case JsonObject oa:
+                foreach (var (k, v) in oa)
+                {
+                    if (k is not ("provenance" or "runtimeSeconds" or "experiment"))
+                        Compare(v, b?[k], $"{path}.{k}");
+                }
+                break;
+            case JsonArray aa:
+                for (var i = 0; i < aa.Count; i++)
+                    Compare(aa[i], b is JsonArray ba && i < ba.Count ? ba[i] : null, $"{path}[{i}]");
+                break;
+            case JsonValue va when va.TryGetValue<double>(out var x):
+                compared++;
+                if (b is not JsonValue vb || !vb.TryGetValue<double>(out var y) || Math.Abs(x - y) > 1e-9 * Math.Max(1, Math.Abs(x)))
+                    mismatches.Add(new JsonObject { ["path"] = path, ["archived"] = x, ["recomputed"] = b?.DeepClone() });
+                break;
+            default:
+                break;
+        }
+    }
+    foreach (var name in new[] { "weight-ablation.json", "combination-ablation.json", "component-scales.json", "k-dependence.json", "gating-interference.json", "salience-sources.json", "uncertainty.json", "pool-check.json", "delivery-check.json", "gating-penalty-off.json" })
+        Compare(JsonNode.Parse(File.ReadAllText(Path.Combine(root, "experiments", "memory", name))), all[name], name);
+    Console.WriteLine($"reproduction of the archived all-question values: {compared - mismatches.Count}/{compared} match");
+    var answerable = Tables(corpus, AnswerableReanalysis.Answerable);
+    var dirty = RunGit(root, "status --porcelain --untracked-files=no");
+    return new JsonObject
+    {
+        ["experiment"] = "P3 Tables 1-7 and the LoCoMo column of Table 9 on the 1,540 answerable questions and on all questions, from the same stores",
+        ["plan"] = "experiments/plans/2026-10-27-p3-answerable-tables.md", ["planCommit"] = "76ec347eb3842bab0757e68608ec92c1344985b5",
+        ["codeCommit"] = RqcRunner.GitHash(), ["codeTreeDirty"] = dirty is null ? null : dirty.Length > 0,
+        ["deviations"] = new JsonArray(
+            "Run on 5 November 2026, not after 2 December 2026 as the plan's status paragraph says: the first author's decision, to use the time the Mac is available; the supervisor had not been asked.",
+            "The output also holds the score-combination ablation, K-dependence, the gating contrasts without the conflict penalty and the aggregation caliber, which the plan's table list does not name, because the text around Tables 1-7 quotes them."),
+        ["questions"] = new JsonObject { ["all"] = corpus.Sum(c => c.Qa.Count), ["answerable"] = corpus.Sum(c => c.Qa.Count(AnswerableReanalysis.Answerable)) },
+        ["reproduction"] = new JsonObject { ["compared"] = compared, ["allMatch"] = mismatches.Count == 0, ["mismatches"] = mismatches },
+        ["answerable"] = answerable,
+        ["all"] = all,
+    };
+}
+
 // P2-C on the runs the plan names; each input file's SHA-256 is checked against the plan.
 static JsonObject VerifierFeedbackReport(string root)
 {
@@ -667,7 +738,7 @@ static int WithCorpus(string locomo, string outDir, Action<IReadOnlyList<LocomoC
     return 0;
 }
 
-static void MemoryAll(IReadOnlyList<LocomoConversation> corpus, Action<string, JsonObject> Write)
+static void MemoryAll(IReadOnlyList<LocomoConversation> corpus, Action<string, JsonObject> Write, IReadOnlyList<LocomoConversation>? stores = null, Func<LocomoQuestion, bool>? scored = null)
 {
     var weights = WeightAblation.Run(corpus);
     Write("weight-ablation.json", new JsonObject
@@ -723,7 +794,7 @@ static void MemoryAll(IReadOnlyList<LocomoConversation> corpus, Action<string, J
     var salience = new JsonObject();
     foreach (var mode in new[] { RetrievalScoreMode.Additive, RetrievalScoreMode.Standardized })
     {
-        var r = SalienceDiagnostics.Run(corpus, mode);
+        var r = SalienceDiagnostics.Run(stores ?? corpus, mode, scored: scored);
         salience[WireName.Of(mode)] = new JsonObject
         {
             ["auc"] = new JsonObject(r.Auc.Select(p => KeyValuePair.Create(p.Key, (JsonNode?)p.Value))),
@@ -739,6 +810,9 @@ static void MemoryAll(IReadOnlyList<LocomoConversation> corpus, Action<string, J
         ["experiment"] = "salience source (oracle / predicted / shuffled) × gating ON/OFF, plus ON without selective consolidation; macro recall@K",
         ["byScoreMode"] = salience,
     });
+
+    if (stores is not null)
+        return; // the tables of experiments/plans/2026-10-27-p3-answerable-tables.md stop here; Table 8 does not depend on the question set
 
     var leak = SalienceLeakageAudit.Run(corpus);
     Write("salience-leakage-audit.json", new JsonObject

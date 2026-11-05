@@ -24,16 +24,17 @@ public static class MemoryUncertainty
     /// <param name="iterations">Bootstrap resamples (and Monte Carlo sign flips above 20 units).</param>
     /// <param name="seed">Seed of the resampling.</param>
     /// <param name="conflictPenalty">Overrides the store's conflict penalty in the delivery-track contrasts (1 = off); null keeps the default.</param>
+    /// <param name="scored">The questions scored; the stores are built as for all questions. Null scores every question.</param>
     /// <param name="includeWeights">Also compute the diagnostic-track contrast (it does not depend on the conflict penalty override).</param>
     public static IReadOnlyList<PairedContrast> Run(IReadOnlyList<LocomoConversation> conversations, int iterations = 10000, uint seed = 0x5EED_2026,
-        double? conflictPenalty = null, bool includeWeights = true)
+        double? conflictPenalty = null, bool includeWeights = true, Func<LocomoQuestion, bool>? scored = null)
     {
         var contrasts = new List<PairedContrast>();
 
         // Diagnostic track (fixed pool, micro): similarity alone against the default weights.
         if (includeWeights)
         {
-            var weights = ParallelMap.Map(conversations, (conv, _) => WeightAblation.Run([conv]));
+            var weights = ParallelMap.Map(conversations, (conv, _) => WeightAblation.Run([scored is null ? conv : conv with { Qa = [.. conv.Qa.Where(scored)] }]));
             var questions = weights.Select(w => (double)w.Questions).ToArray();
             double[] Hits(string key) => [.. weights.Select(w => w.RecallByWeights[key][K] * w.Questions)];
             contrasts.Add(Micro("weights: sim-only vs current", Hits("sim-only"), Hits("current"), questions, iterations, seed));
@@ -42,7 +43,7 @@ public static class MemoryUncertainty
         // Delivery track (macro): gating ON - OFF under each score mode and salience source.
         foreach (var mode in new[] { RetrievalScoreMode.Additive, RetrievalScoreMode.Standardized })
         {
-            var perConv = ParallelMap.Map(conversations, (conv, _) => SalienceDiagnostics.Run([conv], mode, GatingConditions, conflictPenalty).Conditions);
+            var perConv = ParallelMap.Map(conversations, (conv, _) => SalienceDiagnostics.Run([conv], mode, GatingConditions, conflictPenalty, scored).Conditions);
             foreach (var source in new[] { "predicted", "oracle" })
             {
                 double[] R(string condition) => [.. perConv.Select(c => c[condition].Recall[K])];

@@ -98,13 +98,15 @@ public static class SalienceDiagnostics
     }
 
     public static SalienceDiagnosticsResult Run(IReadOnlyList<LocomoConversation> conversations, RetrievalScoreMode mode = RetrievalScoreMode.Standardized,
-        IReadOnlyCollection<string>? only = null, double? conflictPenalty = null)
+        IReadOnlyCollection<string>? only = null, double? conflictPenalty = null, Func<LocomoQuestion, bool>? scored = null)
     {
         // conditions are independent of each other, so a subset gives the same numbers for the conditions it keeps
         var conditions = only is null ? Conditions : [.. Conditions.Where(c => only.Contains(c.Key))];
         var perConversation = ParallelMap.Map(conversations, (conv, ci) =>
         {
+            // the store and the oracle labels come from every question; only the questions scored change (null: all of them)
             var gold = GoldEvidence(conv);
+            var scoredConv = scored is null ? conv : conv with { Qa = [.. conv.Qa.Where(scored)] };
             // the context the store itself uses at encode time
             var predicted = conv.Episodes.Select(ep => 1 / (1 + Math.Exp(-SaliencePredictor.PredictV2(ep.Content, SalienceContext.Empty).Score))).ToList();
             var oracle = conv.Episodes.Select(ep => gold.Contains(ep.Id) ? 1.0 : 0.0).ToList();
@@ -119,7 +121,7 @@ public static class SalienceDiagnostics
                 if (conflictPenalty is { } penalty)
                     config = config with { ConflictPenalty = penalty };
                 var memory = LocomoCorpus.BuildMemory(conv, config, ep => index.TryGetValue(ep.Id, out var i) ? values[i] : null, c.Selective);
-                return Measure(memory, conv, gold);
+                return Measure(memory, scoredConv, gold);
             });
             return (BySource: bySource, Labels: labels, Metrics: metrics);
         });
