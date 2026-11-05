@@ -78,7 +78,7 @@ def cell(key, c, fault_id):
 
 
 def build(copy, env):
-    p = subprocess.run(["dotnet", "build", PROJECT, "-c", "Release", "--nologo", "-v", "q"], cwd=copy, env=env, capture_output=True, text=True, errors="replace", timeout=900)
+    p = subprocess.run(["dotnet", "build", PROJECT, "-c", "Release", "--nologo", "-v", "q", "-p:TreatWarningsAsErrors=false"], cwd=copy, env=env, capture_output=True, text=True, errors="replace", timeout=900)
     return p.returncode == 0, p.stdout[-400:]
 
 
