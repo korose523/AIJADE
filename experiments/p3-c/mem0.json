@@ -1,0 +1,108 @@
+{
+ "experiment": "the scorer pre-check of P3 on one independent memory system",
+ "plan": "experiments/plans/2026-11-05-p3-c-external-memory-systems.md",
+ "system": "Mem0",
+ "systemCommit": "ed1f10fc87080f0b67f99be370817504888462ab",
+ "codeCommit": "1f14fe7feb86d82c3b4f55e1a171b7e244bbe063",
+ "embeddingModel": "nomic-embed-text",
+ "embeddingManifestSha256": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+ "timeTerm": "none",
+ "deviations": [
+  "Run on 5 November 2026 on the Mac, before the supervisor's review of the plan: the first author's decision.",
+  "Written with infer=False, which stores each turn as given: its default runs a language model over every write, which is not practical for 5,882 turns on the Mac, so the stored items are turns and not extracted facts."
+ ],
+ "storedUnit": {
+  "unit": "one dialogue turn per item",
+  "sourceTurnsPerItem": 1,
+  "itemChars": {
+   "median": 109.0,
+   "q1": 73.0,
+   "q3": 161.0,
+   "max": 454
+  }
+ },
+ "answerable": {
+  "questions": 1540,
+  "poolCoverage": 0.8103896103896104,
+  "recallOwn": {
+   "1": 0.18896103896103897,
+   "2": 0.3090909090909091,
+   "4": 0.4668831168831169,
+   "8": 0.6155844155844156
+  },
+  "recallRelevanceAlone": {
+   "1": 0.1038961038961039,
+   "2": 0.17142857142857143,
+   "4": 0.2590909090909091,
+   "8": 0.3577922077922078
+  },
+  "contrastRelevanceAloneMinusOwn": {
+   "a": 0.3577922077922078,
+   "b": 0.6155844155844156,
+   "difference": -0.2577922077922078,
+   "bootstrap95": [
+    -0.3064861012116893,
+    -0.19884910485933505
+   ],
+   "signFlipP": 0.001953125,
+   "unitsPositive": 0,
+   "unitsNegative": 10,
+   "units": 10
+  },
+  "newerInTop8": 3.4199869366427174,
+  "unbiasedExpectation": 3.7689505329894706,
+  "ratioRelevanceOverOwn": 0.5812236286919831,
+  "newerOverExpectation": 0.9074109375296149,
+  "markedA": false,
+  "markedB": false,
+  "step3": [
+   {
+    "switchedOff": "semantic threshold off",
+    "deliveredOnMacro": 0.6125493546719343,
+    "deliveredOffMacro": 0.6125493546719343
+   }
+  ]
+ },
+ "all": {
+  "questions": 1986,
+  "poolCoverage": 0.8222557905337362,
+  "recallOwn": {
+   "1": 0.2094662638469285,
+   "2": 0.3328298086606244,
+   "4": 0.48992950654582074,
+   "8": 0.6344410876132931
+  },
+  "recallRelevanceAlone": {
+   "1": 0.12487411883182276,
+   "2": 0.19788519637462235,
+   "4": 0.28449144008056393,
+   "8": 0.38469284994964753
+  },
+  "contrastRelevanceAloneMinusOwn": {
+   "a": 0.38469284994964753,
+   "b": 0.6344410876132931,
+   "difference": -0.24974823766364557,
+   "bootstrap95": [
+    -0.2912867274569403,
+    -0.200888450148075
+   ],
+   "signFlipP": 0.001953125,
+   "unitsPositive": 0,
+   "unitsNegative": 10,
+   "units": 10
+  },
+  "newerInTop8": 3.3859382903388973,
+  "unbiasedExpectation": 3.7748833942489664,
+  "ratioRelevanceOverOwn": 0.6063492063492063,
+  "newerOverExpectation": 0.8969650017527357,
+  "markedA": false,
+  "markedB": false,
+  "step3": [
+   {
+    "switchedOff": "semantic threshold off",
+    "deliveredOnMacro": 0.6318808216507957,
+    "deliveredOffMacro": 0.6318808216507957
+   }
+  ]
+ }
+}
