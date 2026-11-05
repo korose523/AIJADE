@@ -90,3 +90,29 @@ Sets 1 and 2 are made by the researcher who built the design. Their independence
 **Resources.** Local PostgreSQL; recreating the local database container needs a container image download (permission required). No language model, no paid service.
 
 **Deviations.** Any change after registration is listed with its date and reason in the results file and the paper.
+
+## Addendum: the code faults and the consumer tests (committed before their code)
+
+**Why this addendum.** The input and data faults ran first (`29a5271`). The plan's Code version rule, that consumer tests, the fault sets and the switches are committed together before any configuration runs on any fault, can therefore no longer be met for this part. By the first author's decision of 5 November 2026 this part is added anyway and listed as a deviation: the consumer tests below are written after the results of configuration 3 on the input faults were known, by the same researcher, who also chose the code faults first. They cannot count as a blind test of any configuration, and the paper states this.
+
+**Set 2, first kind, fixed now.** Five changes of unit or meaning with the schema still valid, given as exact source replacements in `experiments/p1/code-faults.json`:
+- C1: evidence confidence falls as spans are added, instead of rising (`ShadowParams.cs`);
+- C2: the observation's timestamp reaches the learning runtime in seconds instead of milliseconds (`ServerRuntime.cs`);
+- C3: the projection stores the fingerprint and the asset version in each other's columns (`V9EventService.cs`);
+- C4: the "latest" render identity returns the oldest (`V9EventService.cs`);
+- C5: the observation's risk score reaches the runtime inverted (`ServerRuntime.cs`).
+The plan's example of character offsets and millisecond spans cannot be given as written: no server code reads their values, only how many there are. C1 and C2 are the nearest forms.
+
+**Consumer tests, the rule fixed now.** One test class, `ConsumerExpectationTests`, written from the consumer's code and not from the matrices' fixtures. For each component that reads an event or job, one test per thing it reads: the projection (identifiers, fingerprint, asset version, pairing status, append-only refusal); the admission check (an honest proposal is admitted, each field mismatch refused); observation dispatch (latest identity, timestamp, risk, tick and hash carried over); the evidence reader (text, hash, and confidence against span count); and the promotion worker's job parser (the fields it reads, and refusal of a malformed job). The tests' lines and writing time are recorded.
+
+**Pre-deployment checks, per configuration.** (1) The drift matrix against its recorded baseline, and the gate matrix. (2) The drift matrix on a host with the liberal switch set, without the assertions that differ from the recorded baseline on the unmutated code, each listed in the results; and the gate matrix. (3) The consumer tests and the gate matrix. (4) The gate matrix.
+
+**Workload.** The chain's inputs posted to the configuration: two paired traces, an observation, an honest proposal, an opinion. Only refusals and server errors count at this step: reading the stored rows would be a check that the configuration does not have. In configuration 4, the audit job runs after it and a non-empty list counts. On unmutated code every check and the workload must pass in all four, or the study stops.
+
+**Where a code fault is not applicable, fixed now from the code.**
+- Kernel schema (FU-01, 02, 06, 18) and boundary rules (FU-03, 05, 17): not applicable in 3 and 4, which use no schema at run time.
+- Endpoint validation of the paper's path (FU-04, 13): not applicable in 2, 3 and 4, whose requests leave that path before it.
+- Identity rules (FU-07a, 07b, 08, 11, 14): not applicable in 4, which switches them off.
+- All others, the 15 reachable gate mutants and C1–C5: applicable in all four.
+
+**Detection point and order.** The checks of the row above in order, then the workload, then the audit; the first that fails is the point. A fault that does not build is reported as such. Rows written are counted for detections at the workload or audit; a detection before deployment writes none.
