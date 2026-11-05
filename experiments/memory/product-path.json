@@ -1,0 +1,1132 @@
+{
+  "experiment": "P3-E: evidence along the product's delivery path",
+  "plan": "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",
+  "conditions": {
+    "text": {
+      "experiment": "P3-E: evidence along the product's delivery path",
+      "plan": "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",
+      "codeCommit": "c40c46c231e2c8c92859a4916c755ce1f6bfd18a",
+      "condition": "text",
+      "embeddingModel": null,
+      "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+      "skippedEmptyTurns": 0,
+      "turnsNotStored": 0,
+      "failedTurns": 0,
+      "responseMismatches": 0,
+      "promptMismatches": 0,
+      "minutes": 15.8,
+      "generatedAt": "2026-11-05T11:43:11.4213800+00:00",
+      "answerable": {
+        "questions": 1540,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "recall": {
+          "stored": {
+            "mean": 0.9962,
+            "ci95": [
+              0.9922,
+              0.9991
+            ],
+            "questions": 1536
+          },
+          "pool": {
+            "mean": 0.5932,
+            "ci95": [
+              0.5625,
+              0.6273
+            ],
+            "questions": 1536
+          },
+          "above": {
+            "mean": 0.5932,
+            "ci95": [
+              0.5625,
+              0.6273
+            ],
+            "questions": 1536
+          },
+          "response": {
+            "mean": 0.4552,
+            "ci95": [
+              0.4364,
+              0.4737
+            ],
+            "questions": 1536
+          },
+          "kept": {
+            "mean": 0.4552,
+            "ci95": [
+              0.4364,
+              0.4737
+            ],
+            "questions": 1536
+          },
+          "prompt": {
+            "mean": 0.1182,
+            "ci95": [
+              0.0899,
+              0.1446
+            ],
+            "questions": 1536
+          }
+        },
+        "recallOfLocated": {
+          "stored": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1531
+          },
+          "pool": {
+            "mean": 0.5953,
+            "ci95": [
+              0.5643,
+              0.6288
+            ],
+            "questions": 1531
+          },
+          "above": {
+            "mean": 0.5953,
+            "ci95": [
+              0.5643,
+              0.6288
+            ],
+            "questions": 1531
+          },
+          "response": {
+            "mean": 0.4566,
+            "ci95": [
+              0.4379,
+              0.4749
+            ],
+            "questions": 1531
+          },
+          "kept": {
+            "mean": 0.4566,
+            "ci95": [
+              0.4379,
+              0.4749
+            ],
+            "questions": 1531
+          },
+          "prompt": {
+            "mean": 0.1186,
+            "ci95": [
+              0.0901,
+              0.1452
+            ],
+            "questions": 1531
+          }
+        },
+        "anyEvidence": {
+          "stored": {
+            "mean": 0.9968,
+            "ci95": [
+              0.9929,
+              1.0
+            ],
+            "questions": 1536
+          },
+          "pool": {
+            "mean": 0.6557,
+            "ci95": [
+              0.6249,
+              0.6887
+            ],
+            "questions": 1536
+          },
+          "above": {
+            "mean": 0.6557,
+            "ci95": [
+              0.6249,
+              0.6887
+            ],
+            "questions": 1536
+          },
+          "response": {
+            "mean": 0.501,
+            "ci95": [
+              0.4812,
+              0.5202
+            ],
+            "questions": 1536
+          },
+          "kept": {
+            "mean": 0.501,
+            "ci95": [
+              0.4812,
+              0.5202
+            ],
+            "questions": 1536
+          },
+          "prompt": {
+            "mean": 0.1317,
+            "ci95": [
+              0.0995,
+              0.1621
+            ],
+            "questions": 1536
+          }
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.4031,
+            "ci95": [
+              0.3697,
+              0.4344
+            ],
+            "questions": 1536
+          },
+          "pool->above": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536
+          },
+          "above->response": {
+            "mean": 0.138,
+            "ci95": [
+              0.1151,
+              0.162
+            ],
+            "questions": 1536
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536
+          },
+          "kept->prompt": {
+            "mean": 0.337,
+            "ci95": [
+              0.321,
+              0.3584
+            ],
+            "questions": 1536
+          },
+          "pool->prompt": {
+            "mean": 0.475,
+            "ci95": [
+              0.4489,
+              0.5002
+            ],
+            "questions": 1536
+          }
+        },
+        "arm": {
+          "recencyTop5": {
+            "mean": 0.1182,
+            "ci95": [
+              0.0899,
+              0.1446
+            ],
+            "questions": 1536
+          },
+          "serverTop5": {
+            "mean": 0.2889,
+            "ci95": [
+              0.2574,
+              0.3167
+            ],
+            "questions": 1536
+          },
+          "serverMinusRecency": {
+            "mean": 0.1707,
+            "ci95": [
+              0.1615,
+              0.1806
+            ],
+            "questions": 1536
+          },
+          "anyRecencyTop5": {
+            "mean": 0.1317,
+            "ci95": [
+              0.0995,
+              0.1621
+            ],
+            "questions": 1536
+          },
+          "anyServerTop5": {
+            "mean": 0.3226,
+            "ci95": [
+              0.2887,
+              0.352
+            ],
+            "questions": 1536
+          }
+        },
+        "newerInPrompt": {
+          "mean": 4.2149,
+          "ci95": [
+            4.0513,
+            4.4008
+          ],
+          "questions": 1531
+        },
+        "newerInServerTop5": {
+          "mean": 3.3088,
+          "ci95": [
+            3.1141,
+            3.5513
+          ],
+          "questions": 1531
+        },
+        "counts": {
+          "firstSearchEmpty": 1540,
+          "termSearches": 1540,
+          "fewerThanFive": 87,
+          "noneInPrompt": 12,
+          "repeatsInPrompt": 0,
+          "echoDropped": 0,
+          "responseMismatches": 0
+        },
+        "msPerQuestionMedian": 155.3,
+        "callsPerQuestionMean": 7.0
+      },
+      "all": {
+        "questions": 1986,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "recall": {
+          "stored": {
+            "mean": 0.997,
+            "ci95": [
+              0.9939,
+              0.9993
+            ],
+            "questions": 1982
+          },
+          "pool": {
+            "mean": 0.6208,
+            "ci95": [
+              0.5936,
+              0.6504
+            ],
+            "questions": 1982
+          },
+          "above": {
+            "mean": 0.6208,
+            "ci95": [
+              0.5936,
+              0.6504
+            ],
+            "questions": 1982
+          },
+          "response": {
+            "mean": 0.482,
+            "ci95": [
+              0.4651,
+              0.4987
+            ],
+            "questions": 1982
+          },
+          "kept": {
+            "mean": 0.482,
+            "ci95": [
+              0.4651,
+              0.4987
+            ],
+            "questions": 1982
+          },
+          "prompt": {
+            "mean": 0.1369,
+            "ci95": [
+              0.1065,
+              0.1623
+            ],
+            "questions": 1982
+          }
+        },
+        "recallOfLocated": {
+          "stored": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1977
+          },
+          "pool": {
+            "mean": 0.6225,
+            "ci95": [
+              0.5958,
+              0.6517
+            ],
+            "questions": 1977
+          },
+          "above": {
+            "mean": 0.6225,
+            "ci95": [
+              0.5958,
+              0.6517
+            ],
+            "questions": 1977
+          },
+          "response": {
+            "mean": 0.4831,
+            "ci95": [
+              0.4667,
+              0.4993
+            ],
+            "questions": 1977
+          },
+          "kept": {
+            "mean": 0.4831,
+            "ci95": [
+              0.4667,
+              0.4993
+            ],
+            "questions": 1977
+          },
+          "prompt": {
+            "mean": 0.1373,
+            "ci95": [
+              0.1068,
+              0.1629
+            ],
+            "questions": 1977
+          }
+        },
+        "anyEvidence": {
+          "stored": {
+            "mean": 0.9975,
+            "ci95": [
+              0.9944,
+              1.0
+            ],
+            "questions": 1982
+          },
+          "pool": {
+            "mean": 0.6702,
+            "ci95": [
+              0.6441,
+              0.6972
+            ],
+            "questions": 1982
+          },
+          "above": {
+            "mean": 0.6702,
+            "ci95": [
+              0.6441,
+              0.6972
+            ],
+            "questions": 1982
+          },
+          "response": {
+            "mean": 0.5187,
+            "ci95": [
+              0.5003,
+              0.5357
+            ],
+            "questions": 1982
+          },
+          "kept": {
+            "mean": 0.5187,
+            "ci95": [
+              0.5003,
+              0.5357
+            ],
+            "questions": 1982
+          },
+          "prompt": {
+            "mean": 0.1474,
+            "ci95": [
+              0.1142,
+              0.1759
+            ],
+            "questions": 1982
+          }
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.3763,
+            "ci95": [
+              0.3476,
+              0.4033
+            ],
+            "questions": 1982
+          },
+          "pool->above": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982
+          },
+          "above->response": {
+            "mean": 0.1388,
+            "ci95": [
+              0.1138,
+              0.1619
+            ],
+            "questions": 1982
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982
+          },
+          "kept->prompt": {
+            "mean": 0.345,
+            "ci95": [
+              0.3254,
+              0.3669
+            ],
+            "questions": 1982
+          },
+          "pool->prompt": {
+            "mean": 0.4839,
+            "ci95": [
+              0.4541,
+              0.5134
+            ],
+            "questions": 1982
+          }
+        },
+        "arm": {
+          "recencyTop5": {
+            "mean": 0.1369,
+            "ci95": [
+              0.1065,
+              0.1623
+            ],
+            "questions": 1982
+          },
+          "serverTop5": {
+            "mean": 0.3071,
+            "ci95": [
+              0.2731,
+              0.3324
+            ],
+            "questions": 1982
+          },
+          "serverMinusRecency": {
+            "mean": 0.1702,
+            "ci95": [
+              0.1602,
+              0.1799
+            ],
+            "questions": 1982
+          },
+          "anyRecencyTop5": {
+            "mean": 0.1474,
+            "ci95": [
+              0.1142,
+              0.1759
+            ],
+            "questions": 1982
+          },
+          "anyServerTop5": {
+            "mean": 0.3337,
+            "ci95": [
+              0.298,
+              0.36
+            ],
+            "questions": 1982
+          }
+        },
+        "newerInPrompt": {
+          "mean": 4.1701,
+          "ci95": [
+            4.0001,
+            4.3692
+          ],
+          "questions": 1977
+        },
+        "newerInServerTop5": {
+          "mean": 3.2716,
+          "ci95": [
+            3.0764,
+            3.5314
+          ],
+          "questions": 1977
+        },
+        "counts": {
+          "firstSearchEmpty": 1986,
+          "termSearches": 1986,
+          "fewerThanFive": 119,
+          "noneInPrompt": 13,
+          "repeatsInPrompt": 0,
+          "echoDropped": 0,
+          "responseMismatches": 0
+        },
+        "msPerQuestionMedian": 153.3,
+        "callsPerQuestionMean": 7.0
+      }
+    },
+    "embedding": {
+      "experiment": "P3-E: evidence along the product's delivery path",
+      "plan": "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",
+      "codeCommit": "bbafb62891958b2c63f093b936537cd8c2e725cb",
+      "condition": "embedding",
+      "embeddingModel": "nomic-embed-text",
+      "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+      "skippedEmptyTurns": 0,
+      "turnsNotStored": 0,
+      "failedTurns": 0,
+      "responseMismatches": 0,
+      "promptMismatches": 0,
+      "minutes": 72.5,
+      "generatedAt": "2026-11-05T13:14:58.4980370+00:00",
+      "answerable": {
+        "questions": 1540,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "recall": {
+          "stored": {
+            "mean": 0.9962,
+            "ci95": [
+              0.9922,
+              0.9991
+            ],
+            "questions": 1536
+          },
+          "pool": {
+            "mean": 0.9962,
+            "ci95": [
+              0.9922,
+              0.9991
+            ],
+            "questions": 1536
+          },
+          "above": {
+            "mean": 0.9952,
+            "ci95": [
+              0.9914,
+              0.9982
+            ],
+            "questions": 1536
+          },
+          "response": {
+            "mean": 0.2823,
+            "ci95": [
+              0.2134,
+              0.3553
+            ],
+            "questions": 1536
+          },
+          "kept": {
+            "mean": 0.2823,
+            "ci95": [
+              0.2134,
+              0.3553
+            ],
+            "questions": 1536
+          },
+          "prompt": {
+            "mean": 0.2476,
+            "ci95": [
+              0.1864,
+              0.312
+            ],
+            "questions": 1536
+          }
+        },
+        "recallOfLocated": {
+          "stored": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1531
+          },
+          "pool": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1531
+          },
+          "above": {
+            "mean": 0.999,
+            "ci95": [
+              0.9979,
+              1.0
+            ],
+            "questions": 1531
+          },
+          "response": {
+            "mean": 0.283,
+            "ci95": [
+              0.2142,
+              0.3558
+            ],
+            "questions": 1531
+          },
+          "kept": {
+            "mean": 0.283,
+            "ci95": [
+              0.2142,
+              0.3558
+            ],
+            "questions": 1531
+          },
+          "prompt": {
+            "mean": 0.2481,
+            "ci95": [
+              0.1872,
+              0.3123
+            ],
+            "questions": 1531
+          }
+        },
+        "anyEvidence": {
+          "stored": {
+            "mean": 0.9968,
+            "ci95": [
+              0.9929,
+              1.0
+            ],
+            "questions": 1536
+          },
+          "pool": {
+            "mean": 0.9968,
+            "ci95": [
+              0.9929,
+              1.0
+            ],
+            "questions": 1536
+          },
+          "above": {
+            "mean": 0.9963,
+            "ci95": [
+              0.9923,
+              0.9994
+            ],
+            "questions": 1536
+          },
+          "response": {
+            "mean": 0.312,
+            "ci95": [
+              0.236,
+              0.3916
+            ],
+            "questions": 1536
+          },
+          "kept": {
+            "mean": 0.312,
+            "ci95": [
+              0.236,
+              0.3916
+            ],
+            "questions": 1536
+          },
+          "prompt": {
+            "mean": 0.2745,
+            "ci95": [
+              0.2065,
+              0.3465
+            ],
+            "questions": 1536
+          }
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536
+          },
+          "pool->above": {
+            "mean": 0.001,
+            "ci95": [
+              0.0,
+              0.0022
+            ],
+            "questions": 1536
+          },
+          "above->response": {
+            "mean": 0.713,
+            "ci95": [
+              0.6412,
+              0.7808
+            ],
+            "questions": 1536
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536
+          },
+          "kept->prompt": {
+            "mean": 0.0347,
+            "ci95": [
+              0.0231,
+              0.0464
+            ],
+            "questions": 1536
+          },
+          "pool->prompt": {
+            "mean": 0.7487,
+            "ci95": [
+              0.6858,
+              0.8083
+            ],
+            "questions": 1536
+          }
+        },
+        "arm": {
+          "recencyTop5": {
+            "mean": 0.2476,
+            "ci95": [
+              0.1864,
+              0.312
+            ],
+            "questions": 1536
+          },
+          "serverTop5": {
+            "mean": 0.2599,
+            "ci95": [
+              0.1935,
+              0.3307
+            ],
+            "questions": 1536
+          },
+          "serverMinusRecency": {
+            "mean": 0.0124,
+            "ci95": [
+              0.0025,
+              0.022
+            ],
+            "questions": 1536
+          },
+          "anyRecencyTop5": {
+            "mean": 0.2745,
+            "ci95": [
+              0.2065,
+              0.3465
+            ],
+            "questions": 1536
+          },
+          "anyServerTop5": {
+            "mean": 0.2863,
+            "ci95": [
+              0.2131,
+              0.364
+            ],
+            "questions": 1536
+          }
+        },
+        "newerInPrompt": {
+          "mean": 2.6922,
+          "ci95": [
+            2.581,
+            2.8187
+          ],
+          "questions": 1531
+        },
+        "newerInServerTop5": {
+          "mean": 2.2767,
+          "ci95": [
+            2.1593,
+            2.4032
+          ],
+          "questions": 1531
+        },
+        "counts": {
+          "firstSearchEmpty": 0,
+          "termSearches": 0,
+          "fewerThanFive": 0,
+          "noneInPrompt": 0,
+          "repeatsInPrompt": 0,
+          "echoDropped": 0,
+          "responseMismatches": 0
+        },
+        "msPerQuestionMedian": 921.3,
+        "callsPerQuestionMean": 4.0
+      },
+      "all": {
+        "questions": 1986,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "recall": {
+          "stored": {
+            "mean": 0.997,
+            "ci95": [
+              0.9939,
+              0.9993
+            ],
+            "questions": 1982
+          },
+          "pool": {
+            "mean": 0.997,
+            "ci95": [
+              0.9939,
+              0.9993
+            ],
+            "questions": 1982
+          },
+          "above": {
+            "mean": 0.9963,
+            "ci95": [
+              0.9932,
+              0.9986
+            ],
+            "questions": 1982
+          },
+          "response": {
+            "mean": 0.3164,
+            "ci95": [
+              0.2574,
+              0.3806
+            ],
+            "questions": 1982
+          },
+          "kept": {
+            "mean": 0.3164,
+            "ci95": [
+              0.2574,
+              0.3806
+            ],
+            "questions": 1982
+          },
+          "prompt": {
+            "mean": 0.2822,
+            "ci95": [
+              0.2277,
+              0.3397
+            ],
+            "questions": 1982
+          }
+        },
+        "recallOfLocated": {
+          "stored": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1977
+          },
+          "pool": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1977
+          },
+          "above": {
+            "mean": 0.9992,
+            "ci95": [
+              0.9983,
+              1.0
+            ],
+            "questions": 1977
+          },
+          "response": {
+            "mean": 0.3171,
+            "ci95": [
+              0.2583,
+              0.3809
+            ],
+            "questions": 1977
+          },
+          "kept": {
+            "mean": 0.3171,
+            "ci95": [
+              0.2583,
+              0.3809
+            ],
+            "questions": 1977
+          },
+          "prompt": {
+            "mean": 0.2827,
+            "ci95": [
+              0.2286,
+              0.34
+            ],
+            "questions": 1977
+          }
+        },
+        "anyEvidence": {
+          "stored": {
+            "mean": 0.9975,
+            "ci95": [
+              0.9944,
+              1.0
+            ],
+            "questions": 1982
+          },
+          "pool": {
+            "mean": 0.9975,
+            "ci95": [
+              0.9944,
+              1.0
+            ],
+            "questions": 1982
+          },
+          "above": {
+            "mean": 0.9971,
+            "ci95": [
+              0.9939,
+              0.9995
+            ],
+            "questions": 1982
+          },
+          "response": {
+            "mean": 0.3417,
+            "ci95": [
+              0.2766,
+              0.4107
+            ],
+            "questions": 1982
+          },
+          "kept": {
+            "mean": 0.3417,
+            "ci95": [
+              0.2766,
+              0.4107
+            ],
+            "questions": 1982
+          },
+          "prompt": {
+            "mean": 0.3049,
+            "ci95": [
+              0.245,
+              0.3674
+            ],
+            "questions": 1982
+          }
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982
+          },
+          "pool->above": {
+            "mean": 0.0008,
+            "ci95": [
+              0.0,
+              0.0017
+            ],
+            "questions": 1982
+          },
+          "above->response": {
+            "mean": 0.6799,
+            "ci95": [
+              0.6165,
+              0.7378
+            ],
+            "questions": 1982
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982
+          },
+          "kept->prompt": {
+            "mean": 0.0343,
+            "ci95": [
+              0.0239,
+              0.0448
+            ],
+            "questions": 1982
+          },
+          "pool->prompt": {
+            "mean": 0.7149,
+            "ci95": [
+              0.6582,
+              0.7682
+            ],
+            "questions": 1982
+          }
+        },
+        "arm": {
+          "recencyTop5": {
+            "mean": 0.2822,
+            "ci95": [
+              0.2277,
+              0.3397
+            ],
+            "questions": 1982
+          },
+          "serverTop5": {
+            "mean": 0.2914,
+            "ci95": [
+              0.2352,
+              0.3536
+            ],
+            "questions": 1982
+          },
+          "serverMinusRecency": {
+            "mean": 0.0092,
+            "ci95": [
+              -0.0007,
+              0.0198
+            ],
+            "questions": 1982
+          },
+          "anyRecencyTop5": {
+            "mean": 0.3049,
+            "ci95": [
+              0.245,
+              0.3674
+            ],
+            "questions": 1982
+          },
+          "anyServerTop5": {
+            "mean": 0.3141,
+            "ci95": [
+              0.2516,
+              0.3809
+            ],
+            "questions": 1982
+          }
+        },
+        "newerInPrompt": {
+          "mean": 2.6654,
+          "ci95": [
+            2.5433,
+            2.8088
+          ],
+          "questions": 1977
+        },
+        "newerInServerTop5": {
+          "mean": 2.2471,
+          "ci95": [
+            2.1244,
+            2.3821
+          ],
+          "questions": 1977
+        },
+        "counts": {
+          "firstSearchEmpty": 0,
+          "termSearches": 0,
+          "fewerThanFive": 0,
+          "noneInPrompt": 0,
+          "repeatsInPrompt": 0,
+          "echoDropped": 0,
+          "responseMismatches": 0
+        },
+        "msPerQuestionMedian": 908.7,
+        "callsPerQuestionMean": 4.0
+      }
+    }
+  }
+}
