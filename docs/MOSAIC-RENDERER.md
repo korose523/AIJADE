@@ -31,7 +31,7 @@ MOSAIC（作者的另一项目）的原生 Godot 客户端实现了 AIJADE 渲�
   - 姿态由 PEF 的 posture 与 gaze 通道查一张固定的小表得到（如 thinking 时视线短暂移开、leaning_in 时前倾）。映射是确定的：同一 intent 总是生成同样的包。
 - `AijadePacketStamper`：负责加盖 run_id、按类型递增的 seq、单调的 t_sim 和 v1.0。
 - `MosaicRendererLink`：通过 UDP 发送，并检查 8 KiB 上限。
-- `RenderStateReceipts`：把 `aijade-render-state.jsonl` 读成每个 intent 的渲染回执（实际应用的参数与渲染器自己的哈希）。哈希可由行内参数重算核对。它只读 `RenderStatePacket` 行（求解前的阶段），文件头、求解后的观测行与结束记录都跳过；文件是否以结束记录收尾（会话是否完成）目前不检查，留给第 4 章的外部渲染器比较。
+- `RenderStateReceipts`：把 `aijade-render-state.jsonl` 读成每个 intent 的渲染回执（实际应用的参数与渲染器自己的哈希）。哈希可由行内参数重算核对。它只读 `RenderStatePacket` 行（求解前的阶段），文件头、求解后的观测行与结束记录都跳过；文件是否以结束记录收尾（会话是否完成）它不检查；这由 `RenderSeal` 负责。
 - **Bots 宿主**：配置 `Renderer:MosaicPort=PORT` 后，Discord、Telegram、Minecraft 等渠道里的每轮回复都会驱动 MOSAIC 中的角色。渲染器不可达时不影响回复。
 
 ## 验证
@@ -39,7 +39,7 @@ MOSAIC（作者的另一项目）的原生 Godot 客户端实现了 AIJADE 渲�
 - `RendererLinkTests`：
   - 包结构与取值范围、字段白名单、seq 与 t_sim 单调、回环 UDP 收发、RenderState 读取与哈希重算。
   - **MOSAIC 真实解析器一致性**（需设 `AIJADE_MOSAIC_CORE_DLL` 指向已构建的 `Mosaic.Scene.Core.dll`，从临时副本只读加载）：全部 DialogueAct 生成的包都被 `AijadePackets.Translate` 接受，没有任何字段被报告为 unmapped，`AijadeSequence` 也全部接受。
-- 尚未做的：与运行中的 MOSAIC 客户端联机渲染（需在 MOSAIC 仓库内构建、启动 Godot 客户端，按其研究隔离规则由作者决定何时运行）。
+- 与运行中的 MOSAIC 客户端联机：11-06 P1-C 已在 Mac 上做过（从复制件构建，无头运行，不写入 MOSAIC 仓库；`experiments/p1/external-renderer.json`）。登记表、封存检查与导入程序在 `Renderer/RenderEvidence.cs`，目前只有该研究调用。没有做过的：绘制画面的联机。
 
 ## 同时借鉴的陪伴行为（Web 舞台）
 
