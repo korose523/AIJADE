@@ -35,7 +35,7 @@
 |---|---|---|
 | 契约 1.0.0–1.4.0（人设、表情对应、主动开口、文字渠道、舞台、学到的动作） | 两边各自采用同一份规则 | 两边都已采用；MOSAIC 的采用记在其 SVN（r389、r392、r425） |
 | 渲染器契约：`AffectToAvatarPacket` 等经 UDP 到 Godot 客户端，客户端写渲染回执文件 | AIJADE → MOSAIC 客户端 | 第 4 章的研究对象；P1-C 用它的回执作外部比较。本整合不改它 |
-| 舞台转发：`GET /api/v1/stage`、`POST /api/v1/stage/command` → MOSAIC 工作台的实时场景接口 | AIJADE → MOSAIC 工作台 | 已实现，设置默认关；**未联机检查**（要作者在 Windows 上启动工作台与家） |
+| 舞台转发：`GET /api/v1/stage`、`POST /api/v1/stage/command` → MOSAIC 工作台的实时场景接口 | AIJADE → MOSAIC 工作台 | 已实现，设置默认关；11-06 在 Mac 上联机检查过（17 步，两条分支），聊天回合与 Windows 未查，见 [STAGE-MOSAIC](STAGE-MOSAIC.md) |
 
 2026-11-02 核对：MOSAIC 的 `LiveSceneCommands.cs`（r612）、`LiveSceneService.cs`（r625）重新生成的舞台向量与本仓库的完全相同，只有源文件哈希变了。工作台多了一个可选的 superagent 步骤（配置了地址才生效）：它接下的聊天请求不再走动作判定。
 
@@ -103,7 +103,7 @@
 
 | 阶段 | 内容 | 谁做 | 量级 | 前提 |
 |---|---|---|---|---|
-| 0 | 舞台转发联机检查：Windows 上启动工作台与家，AIJADE 开"舞台：MOSAIC 的家"，按 [STAGE-MOSAIC](STAGE-MOSAIC.md) 第五节末尾"联机检查要做的"四步检查；另加两条：工作台不设 `LiveScene:Superagent`，底座的"过日子"工单（`life.day`）停掉，免得检查中有别的东西指挥她。分步说明与脚本在作者外接盘上的"舞台联机检查"文件夹（不在本仓库）（AIJADE 在 Mac 上运行，经 SSH 隧道连 Windows 的工作台）；AIJADE 服务端能否在 Windows 上运行另行试 | 作者（Windows 上操作），本仓库备脚本与说明 | 半天 | 作者有空 |
+| 0 | 舞台转发联机检查：**11-06 已在 Mac 上做过**（见 [STAGE-MOSAIC](STAGE-MOSAIC.md) 第五节末尾）；下面的 Windows 做法仍可选。Windows 上启动工作台与家，AIJADE 开"舞台：MOSAIC 的家"，按 [STAGE-MOSAIC](STAGE-MOSAIC.md) 第五节末尾"联机检查要做的"四步检查；另加两条：工作台不设 `LiveScene:Superagent`，底座的"过日子"工单（`life.day`）停掉，免得检查中有别的东西指挥她。分步说明与脚本在作者外接盘上的"舞台联机检查"文件夹（不在本仓库）（AIJADE 在 Mac 上运行，经 SSH 隧道连 Windows 的工作台）；AIJADE 服务端能否在 Windows 上运行另行试 | 作者（Windows 上操作），本仓库备脚本与说明 | 半天 | 作者有空 |
 | 1 | 迁移第一批：本机语音合成与识别、QQ（OneBot 11）、约好的提醒、逐字对齐的口型；ADR-003（11-03 已合入，`f9dd421`，QQ 的语音消息 `b6296a1`；同日自查后补了超时与断网时的稳健性，`c8b86fc`、`b1f5ae7`、`9586074`；接真实服务的联机检查由作者在 Windows 上做） | 本仓库 | 约 6–9 人日 | 作者已确认第一批 |
 | 2 | 迁移第二批：自拍（只在应用里）、相机跟随（11-03 均已合入，`fea6d74`、`fa3e82d`） | 本仓库 | 约 3 人日 | 第一批已合入；作者已确认 |
 | 3 | P3-E 归档之后：回忆按新鲜度加权、回忆的用法规则 | 本仓库 | 待定 | P3-E 已运行并归档 |
