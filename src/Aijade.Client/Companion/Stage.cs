@@ -28,6 +28,22 @@ public enum StageActionKind
 /// <summary>The decided action, and in a few words what she will do, for the note before the reply.</summary>
 public sealed record StageAction(StageActionKind Kind, string? Argument, string Doing);
 
+/// <summary>How a command line sent to the workbench ended, as far as the workbench's last notice tells.</summary>
+public enum StageOutcome
+{
+    /// <summary>The notice is the one a finished action writes.</summary>
+    Done,
+
+    /// <summary>The line stopped, or the action did not finish.</summary>
+    Failed,
+
+    /// <summary>The notice does not say: nothing was claimed, or it is about something else.</summary>
+    Unknown,
+}
+
+/// <summary>The outcome and the workbench's words for it; the words are for the owner, not for a model.</summary>
+public sealed record StageReport(StageOutcome Outcome, string? Notice);
+
 /// <summary>A spot in her home (MOSAIC's mosaic-home-v1 layout): name, label, what she does there, room and other words for it.</summary>
 public sealed record StageSpot(string Name, string Label, string Activity, string Room, IReadOnlyList<string> Aliases);
 
@@ -67,6 +83,57 @@ public static class Stage
     /// owner on the owner's machine, and AIJADE's chat may use a remote model, so they are not given.
     /// </summary>
     public const string LearnedFields = "Here each item gives the skill, the day it was learned from a video on Bilibili, and how many seconds were learned.";
+
+    /// <summary>
+    /// The note on the next turn after an action did not happen (contract 1.4.1); <c>{doing}</c> says which. It never carries the
+    /// workbench's notice, which can name local paths, because AIJADE's chat may use a remote model.
+    /// </summary>
+    public const string UndoneNoteTemplate =
+        "After an earlier reply the app could not make your body do this, so it did not happen: {doing}. " +
+        "If it comes up, say so plainly and never claim that you did it.";
+
+    /// <summary>The workbench's notice when an exception stopped a command line.</summary>
+    public const string StoppedNotice = "指令序列中止：";
+
+    /// <summary>Workbench notices about her voice, her words or a reminder; they say nothing about her body.</summary>
+    public static IReadOnlyList<string> UnrelatedNotices { get; } = ["语音服务没开", "神经语音不可用", "口型同步失败", "按字口型不可用", "回复（", "她先开口", "提醒："];
+
+    /// <summary>
+    /// How a finished command line ended, from the notice the workbench is left with. MOSAIC gives no codes, so this reads the
+    /// wording of its <c>LiveSceneService.cs</c> (r683), a dependency recorded in the contract (<c>stage.outcome</c>). Each action
+    /// writes a known notice when it finishes, and anything else about the body means it did not: the errors of its planners are
+    /// free text, so they cannot be listed. Notices on other things, and the realtime controller's "accepted" (去 X, 起来), are Unknown.
+    /// With no action only a stopped line counts, and only if it is a new notice, since notices stay until overwritten.
+    /// </summary>
+    public static StageOutcome Outcome(StageAction? action, string? noticeBefore, string? notice)
+    {
+        if (string.IsNullOrWhiteSpace(notice))
+            return StageOutcome.Unknown;
+        var stopped = notice.StartsWith(StoppedNotice, StringComparison.Ordinal);
+        if (action is null)
+            return stopped && notice != noticeBefore ? StageOutcome.Failed : StageOutcome.Unknown;
+        if (stopped)
+            return StageOutcome.Failed;
+        if (UnrelatedNotices.Any(n => notice.StartsWith(n, StringComparison.Ordinal)))
+            return StageOutcome.Unknown;
+        return action.Kind switch
+        {
+            StageActionKind.Place when notice == "去" + action.Argument => StageOutcome.Unknown,
+            StageActionKind.Stand when notice == "起来" => StageOutcome.Unknown,
+            StageActionKind.Place => Judged((notice.StartsWith("她在", StringComparison.Ordinal) && (notice.EndsWith("坐下了", StringComparison.Ordinal) || notice.EndsWith("躺下了", StringComparison.Ordinal)))
+                || notice.StartsWith("她到了", StringComparison.Ordinal)),
+            StageActionKind.Stand => Judged(notice is "她站起来了" or "她起床了" or "她没有坐着或躺着。"), // already up: what was asked holds
+            StageActionKind.Walk => Judged(Played(notice, "走路")),
+            StageActionKind.Dance => Judged(Played(notice, "舞蹈「")),
+            _ => Judged(Played(notice, "手势「")),
+        };
+    }
+
+    private static StageOutcome Judged(bool done) => done ? StageOutcome.Done : StageOutcome.Failed;
+
+    /// <summary>A clip that played: it ended (…播完…, even if the way back was then refused) or the scene restarted to play it.</summary>
+    private static bool Played(string notice, string what) =>
+        notice.StartsWith(what, StringComparison.Ordinal) && (notice.Contains("播完", StringComparison.Ordinal) || notice.Contains("重启播放", StringComparison.Ordinal));
 
     /// <summary>MOSAIC's token for standing up.</summary>
     public const string StandUp = "@up";
@@ -297,15 +364,17 @@ public static class Stage
 
     /// <summary>
     /// The notes before the user's message on the stage: the action note or the no-action note, then where she is when known,
-    /// then what she has learned when the workbench lists anything.
+    /// then what she has learned when the workbench lists anything, then the action of an earlier reply that did not happen.
     /// </summary>
-    public static IReadOnlyList<string> Notes(StageAction? action, string? where, IReadOnlyList<LearnedMotion>? learned = null)
+    public static IReadOnlyList<string> Notes(StageAction? action, string? where, IReadOnlyList<LearnedMotion>? learned = null, StageAction? undone = null)
     {
         List<string> notes = [action is null ? NoActionNote : ActionNote(action)];
         if (where is { Length: > 0 })
             notes.Add(WhereNote(where));
         if (LearnedNote(learned) is { } note)
             notes.Add(note);
+        if (undone is not null)
+            notes.Add(UndoneNoteTemplate.Replace("{doing}", undone.Doing, StringComparison.Ordinal));
         return notes;
     }
 }

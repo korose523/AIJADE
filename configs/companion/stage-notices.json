@@ -1,0 +1,205 @@
+{
+ "about": "Notices left by a copy of MOSAIC's workbench (LiveSceneService.cs r683) after each line sent through AIJADE's relay on 2026-11-06, with the outcome expected before the run; judged by StageTests. Not research.",
+ "cases": [
+  {
+   "branch": "planned clips",
+   "id": "D1",
+   "line": "去 沙发",
+   "kind": "place",
+   "expected": "Done",
+   "before": null,
+   "notice": "她在沙发坐下了",
+   "seconds": 40.9
+  },
+  {
+   "branch": "planned clips",
+   "id": "D2",
+   "line": "起来",
+   "kind": "stand",
+   "expected": "Done",
+   "before": "她在沙发坐下了",
+   "notice": "她站起来了",
+   "seconds": 2.2
+  },
+  {
+   "branch": "planned clips",
+   "id": "D3",
+   "line": "去 床",
+   "kind": "place",
+   "expected": "Done",
+   "before": "她站起来了",
+   "notice": "她在床上躺下了",
+   "seconds": 41.7
+  },
+  {
+   "branch": "planned clips",
+   "id": "D4",
+   "line": "起来",
+   "kind": "stand",
+   "expected": "Done",
+   "before": "她在床上躺下了",
+   "notice": "她起床了",
+   "seconds": 5.3
+  },
+  {
+   "branch": "planned clips",
+   "id": "D5",
+   "line": "走路 @approach",
+   "kind": "walk",
+   "expected": "Done",
+   "before": "她起床了",
+   "notice": "走路播完：停在走到的位置（路程 5.93 m，转过 -78.8°），已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "seconds": 15.9
+  },
+  {
+   "branch": "planned clips",
+   "id": "D6",
+   "line": "手势 挥手",
+   "kind": "gesture",
+   "expected": "Done",
+   "before": "走路播完：停在走到的位置（路程 5.93 m，转过 -78.8°），已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "notice": "手势「bye」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "seconds": 4.8
+  },
+  {
+   "branch": "planned clips",
+   "id": "D7",
+   "line": "跳舞",
+   "kind": "dance",
+   "expected": "Done",
+   "before": "手势「bye」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "notice": "舞蹈「check-plie」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "seconds": 6.8
+  },
+  {
+   "branch": "planned clips",
+   "id": "F1",
+   "line": "跳舞",
+   "kind": "dance",
+   "expected": "Failed",
+   "before": "舞蹈「check-plie」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "notice": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "seconds": 0.1
+  },
+  {
+   "branch": "planned clips",
+   "id": "F2",
+   "line": "表情 0.5 0.4 0.5 0.6; 说 好呀，我跳给你看。; 跳舞",
+   "kind": "dance",
+   "expected": "Failed",
+   "before": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "notice": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "seconds": 11.3
+  },
+  {
+   "branch": "planned clips",
+   "id": "S1",
+   "line": "说 嗯。",
+   "kind": "",
+   "expected": "Unknown",
+   "before": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "notice": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "seconds": 7.1
+  },
+  {
+   "branch": "motion library",
+   "id": "D1",
+   "line": "去 沙发",
+   "kind": "place",
+   "expected": "Done",
+   "before": null,
+   "notice": "她在沙发坐下了",
+   "seconds": 73.9
+  },
+  {
+   "branch": "motion library",
+   "id": "D2",
+   "line": "起来",
+   "kind": "stand",
+   "expected": "Done",
+   "before": "她在沙发坐下了",
+   "notice": "她站起来了",
+   "seconds": 55.4
+  },
+  {
+   "branch": "motion library",
+   "id": "D3",
+   "line": "去 床",
+   "kind": "place",
+   "expected": "Done",
+   "before": "她站起来了",
+   "notice": "她在床上躺下了",
+   "seconds": 70.5
+  },
+  {
+   "branch": "motion library",
+   "id": "D4",
+   "line": "起来",
+   "kind": "stand",
+   "expected": "Done",
+   "before": "她在床上躺下了",
+   "notice": "她起床了",
+   "seconds": 55.3
+  },
+  {
+   "branch": "motion library",
+   "id": "D5",
+   "line": "走路 @approach",
+   "kind": "walk",
+   "expected": "Done",
+   "before": "她起床了",
+   "notice": "走路播完：停在走到的位置（路程 2.2 m，转过 -118.9°），已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "seconds": 11.2
+  },
+  {
+   "branch": "motion library",
+   "id": "D6",
+   "line": "手势 挥手",
+   "kind": "gesture",
+   "expected": "Done",
+   "before": "走路播完：停在走到的位置（路程 2.2 m，转过 -118.9°），已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "notice": "手势「bye」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "seconds": 4.9
+  },
+  {
+   "branch": "motion library",
+   "id": "D7",
+   "line": "跳舞",
+   "kind": "dance",
+   "expected": "Done",
+   "before": "手势「bye」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "notice": "舞蹈「check-plie」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "seconds": 7.0
+  },
+  {
+   "branch": "motion library",
+   "id": "F1",
+   "line": "跳舞",
+   "kind": "dance",
+   "expected": "Failed",
+   "before": "舞蹈「check-plie」播完，已在场景内切回 artifacts/live-scene-idle-2026-10-22/natural-idle.json",
+   "notice": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "seconds": 0.0
+  },
+  {
+   "branch": "motion library",
+   "id": "F2",
+   "line": "表情 0.5 0.4 0.5 0.6; 说 好呀，我跳给你看。; 跳舞",
+   "kind": "dance",
+   "expected": "Failed",
+   "before": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "notice": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "seconds": 8.3
+  },
+  {
+   "branch": "motion library",
+   "id": "S1",
+   "line": "说 嗯。",
+   "kind": "",
+   "expected": "Unknown",
+   "before": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "notice": "指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。",
+   "seconds": 5.8
+  }
+ ]
+}

@@ -35,7 +35,7 @@
 |---|---|---|
 | 契约 1.0.0–1.4.0（人设、表情对应、主动开口、文字渠道、舞台、学到的动作） | 两边各自采用同一份规则 | 两边都已采用；MOSAIC 的采用记在其 SVN（r389、r392、r425） |
 | 渲染器契约：`AffectToAvatarPacket` 等经 UDP 到 Godot 客户端，客户端写渲染回执文件 | AIJADE → MOSAIC 客户端 | 第 4 章的研究对象；P1-C 用它的回执作外部比较。本整合不改它 |
-| 舞台转发：`GET /api/v1/stage`、`POST /api/v1/stage/command` → MOSAIC 工作台的实时场景接口 | AIJADE → MOSAIC 工作台 | 已实现，设置默认关；11-06 在 Mac 上联机检查过（17 步，两条分支），聊天回合与 Windows 未查，见 [STAGE-MOSAIC](STAGE-MOSAIC.md) |
+| 舞台转发：`GET /api/v1/stage`、`POST /api/v1/stage/command` → MOSAIC 工作台的实时场景接口 | AIJADE → MOSAIC 工作台 | 已实现，设置默认关；11-06 在 Mac 上联机检查过（17 步，两条分支），同日补上"动作没做成时 AIJADE 不知道"（实机 10 行，两条分支），聊天回合与 Windows 未查，见 [STAGE-MOSAIC](STAGE-MOSAIC.md) |
 
 2026-11-02 核对：MOSAIC 的 `LiveSceneCommands.cs`（r612）、`LiveSceneService.cs`（r625）重新生成的舞台向量与本仓库的完全相同，只有源文件哈希变了。工作台多了一个可选的 superagent 步骤（配置了地址才生效）：它接下的聊天请求不再走动作判定。
 

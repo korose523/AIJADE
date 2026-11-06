@@ -119,6 +119,8 @@
     private bool listening;
     private double level;
     private CancellationTokenSource? cts;
+    private CancellationTokenSource? stageWatch;
+    private StageAction? undone;
     private readonly PeriodicTimer speakFirstTimer = new(TimeSpan.FromMinutes(1));
 
     protected override async Task OnInitializedAsync()
@@ -419,7 +421,9 @@
             var (reminderNotes, promised) = book.Read(ChatId, text, Now());
             if (promised is not null || reminderNotes.Count > 0)
                 await reminders.SaveAsync(book, Now());
-            var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned)).Concat(reminderNotes).ToList();
+            var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
+            if (home is not null)
+                undone = null; // told once
             await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
             {
                 switch (e)
@@ -488,6 +492,30 @@
     }
 
     /// <summary>
+    /// The workbench accepts a line before her body acts. Follow it in the background: if it did not happen, the owner sees the
+    /// workbench's words now and the model is told on the next turn which action did not happen, without those words.
+    /// </summary>
+    private async Task FollowStageAsync(StageAction? action, string? noticeBefore, CancellationToken ct)
+    {
+        try
+        {
+            var report = await new MosaicStage(State.Api).FollowAsync(action, noticeBefore, ct: ct);
+            if (report.Outcome != StageOutcome.Failed)
+                return;
+            await InvokeAsync(() =>
+            {
+                undone = action ?? undone;
+                error = State.Text.Format("chat.stageFailed", report.Notice ?? "");
+                StateHasChanged();
+            });
+        }
+        catch (Exception e) when (e is OperationCanceledException or ObjectDisposedException)
+        {
+            // a newer line replaced it or the page closed
+        }
+    }
+
+    /// <summary>
     /// Show the reply on the stage, report the render receipt, and speak it with lip sync. On MOSAIC's stage
     /// (<paramref name="home"/>) the reply is said there, followed by the decided action, and not spoken here.
     /// </summary>
@@ -500,6 +528,10 @@
             {
                 await new MosaicStage(State.Api).SendAsync(Stage.CommandLine(done.Intent.Expression, done.Reply.Content, action));
                 saidOnStage = true;
+                stageWatch?.Cancel(); // the workbench gave up the line before this one for this one
+                stageWatch?.Dispose();
+                stageWatch = new CancellationTokenSource();
+                _ = FollowStageAsync(action, home.Notice, stageWatch.Token);
             }
             catch (AijadeApiException e)
             {
@@ -603,6 +635,8 @@
         speakFirstTimer.Dispose();
         cts?.Cancel();
         cts?.Dispose();
+        stageWatch?.Cancel();
+        stageWatch?.Dispose();
         await Voice.StopAsync();
     }
 }

@@ -21,6 +21,9 @@ namespace Aijade.Server.Product;
 /// <item>Only the commands the chat sends pass (表情, 说, 去, 起来, 走路, 跳舞, 手势).</item>
 /// <item>Of the learned motions only the contract's fields are relayed; the video's title and uploader reach only the owner's
 /// client, which does not give them to a model.</item>
+/// <item>A command's 200 only means the workbench accepted the line; the body acts later. The workbench's <c>sequenceRunning</c>
+/// and its last <c>notice</c> are relayed so that the client can tell whether it did (contract 1.4.1). The notice can name local
+/// paths: it reaches only the owner's client, which does not give it to a model.</item>
 /// </list>
 /// </summary>
 public static class StageEndpoints
@@ -37,6 +40,13 @@ public static class StageEndpoints
 
     /// <summary>The most learned motions relayed; MOSAIC gives at most five, newest first.</summary>
     public const int MaxLearned = 5;
+
+    /// <summary>The longest workbench notice relayed.</summary>
+    public const int MaxNotice = 300;
+
+    /// <summary>The workbench's last notice as relayed, cut to <see cref="MaxNotice"/>; null when it has none or it is not a string.</summary>
+    public static string? Notice(JsonNode? notice) =>
+        notice is JsonValue v && v.TryGetValue<string>(out var s) && s.Length > 0 ? s[..Math.Min(s.Length, MaxNotice)] : null;
 
     /// <summary>The first words of the commands the chat sends.</summary>
     public static IReadOnlySet<string> Heads { get; } = new HashSet<string>(StringComparer.Ordinal) { "表情", "说", "去", "起来", "走路", "跳舞", "手势" };
@@ -107,6 +117,8 @@ public static class StageEndpoints
                 ["where"] = running ? state?["where"]?.GetValue<string>() : null,
                 ["posture"] = running ? state?["posture"]?.GetValue<string>() : null,
                 ["learned"] = running ? Learned(state?["learned"]) : new JsonArray(),
+                ["notice"] = running ? Notice(state?["notice"]) : null,
+                ["sequenceRunning"] = running && state?["sequenceRunning"] is JsonValue sequence && sequence.TryGetValue<bool>(out var busy) ? busy : null,
             });
         });
         g.MapPost("/command", async (HttpContext c, IConfiguration config, IHttpClientFactory http, CancellationToken ct) =>

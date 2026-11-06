@@ -13,9 +13,11 @@ public sealed record LearnedMotion(string Day, string Skill, string SkillWords, 
 
 /// <summary>
 /// Her place on MOSAIC's stage, as the workbench reports it: whether the scene runs, where she is, her posture, and the
-/// motions she has learned lately (newest first, at most five, as MOSAIC filters them).
+/// motions she has learned lately (newest first, at most five, as MOSAIC filters them). <paramref name="Notice"/> is the
+/// workbench's last notice, for the owner's eyes only; <paramref name="SequenceRunning"/> says whether its last command line is
+/// still being carried out, null when it does not say.
 /// </summary>
-public sealed record StageState(bool Running, string? Where, string? Posture, IReadOnlyList<LearnedMotion>? Learned = null)
+public sealed record StageState(bool Running, string? Where, string? Posture, IReadOnlyList<LearnedMotion>? Learned = null, string? Notice = null, bool? SequenceRunning = null)
 {
     /// <summary>Sitting or lying, so that "get up" means something.</summary>
     public bool Seated => Posture is "sit" or "lie";
@@ -40,7 +42,8 @@ public sealed class MosaicStage(AijadeApi api)
         {
             if (await api.SendAsync(HttpMethod.Get, "/api/v1/stage", ct: ct).ConfigureAwait(false) is not JsonObject r || r["running"]?.GetValue<bool>() != true)
                 return null;
-            return new StageState(true, r["where"]?.GetValue<string>(), r["posture"]?.GetValue<string>(), Learned(r["learned"] as JsonArray));
+            return new StageState(true, r["where"]?.GetValue<string>(), r["posture"]?.GetValue<string>(), Learned(r["learned"] as JsonArray),
+                Text(r, "notice"), r["sequenceRunning"] is JsonValue v && v.TryGetValue<bool>(out var busy) ? busy : null);
         }
         catch (Exception e) when (e is AijadeApiException or HttpRequestException)
         {
@@ -64,4 +67,21 @@ public sealed class MosaicStage(AijadeApi api)
     /// <summary>Send one command line (<see cref="Stage.CommandLine"/>); a refusal comes back as <see cref="AijadeApiException"/>.</summary>
     public Task SendAsync(string commandLine, CancellationToken ct = default) =>
         api.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = commandLine }, ct);
+
+    /// <summary>
+    /// Follows a command line just sent until the workbench has finished it, then judges the last notice
+    /// (<see cref="Stage.Outcome"/>). Unknown when it does not finish within <paramref name="limit"/> (5 minutes), or when the
+    /// workbench does not say whether it is running a line. While the scene restarts or the server cannot be reached it keeps asking.
+    /// </summary>
+    public async Task<StageReport> FollowAsync(StageAction? action, string? noticeBefore, TimeSpan? every = null, TimeSpan? limit = null, CancellationToken ct = default)
+    {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        while (watch.Elapsed < (limit ?? TimeSpan.FromMinutes(5)))
+        {
+            if (await StateAsync(ct).ConfigureAwait(false) is { SequenceRunning: false } done)
+                return new StageReport(Stage.Outcome(action, noticeBefore, done.Notice), done.Notice);
+            await Task.Delay(every ?? TimeSpan.FromSeconds(2), ct).ConfigureAwait(false);
+        }
+        return new StageReport(StageOutcome.Unknown, null);
+    }
 }

@@ -262,6 +262,7 @@ public class CompanionContractTests
         Assert.Contains("from the app: 在客厅.", sofa[1], StringComparison.Ordinal);
         Assert.Null(Stage.Decide("起来吧", seated: false));
         Assert.Equal("站起来", Stage.Decide("起来吧", seated: true)!.Doing);
+        Assert.Equal(Stage.UndoneNoteTemplate, Load("contract.json").GetProperty("stage").GetProperty("outcome").GetProperty("undoneNote").GetString());
     }
 
     [Fact]

@@ -1,6 +1,6 @@
 # 与 MOSAIC 共享的伴侣契约（非研究线）
 
-决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.4.0（2026-10-29）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 的聊天据此经服务端转发驱动 MOSAIC 的工作台（设置默认关闭）；1.4.0 加入"学到的动作"（她可以提到 MOSAIC 的视频学动作器真学到的动作，不许编造别的）。它属于非研究线：
+决定见 [ADR-002](decisions/ADR-002.md)。契约文件是 [`configs/companion/contract.json`](../configs/companion/contract.json)，当前版本 1.4.1（2026-11-06）：1.1.0 加入"她先开口时说什么"，AIJADE 的聊天据此接入主动开口；1.2.0 加入"文字渠道"规则，AIJADE 的聊天平台据此采用；1.3.0 加入"舞台"规则（她在 MOSAIC 的家里回复之后做什么），AIJADE 的聊天据此经服务端转发驱动 MOSAIC 的工作台（设置默认关闭）；1.4.0 加入"学到的动作"（她可以提到 MOSAIC 的视频学动作器真学到的动作，不许编造别的）；1.4.1 加入"动作有没有做成"（只是 AIJADE 一侧）。它属于非研究线：
 
 - 不是学位论文任何研究的输入、样本、奖励或判定条件；
 - 不触及研究对象；
@@ -139,6 +139,15 @@ MOSAIC 在 2026-10-29 提议，作者接受其中两部分（A、B），第三�
 - **MOSAIC 一侧（r418 实现，r425 采用）**：A、B 已实现，开关 `LiveScene:LearnedRecently` 默认关；本仓库读过 r418 的代码，`LEARNED_SHARED` 与契约逐字相同；`LiveSceneCommands.cs` 与 `home-v1.json` 未变，在 r418 上重新生成的舞台向量与存档相同（只有读取日期不同）。r422 只改了动作库路径的选择（开关 `LiveScene:MotionLibraryFromLearner`，默认关），本仓库读过：`learned` 与它的 8 个字段不变。AIJADE 一侧在 `7e0c4d7` 完成后，MOSAIC 在 r425（2026-10-29，作者在 MOSAIC 会话中同意）把开关改为默认打开并记录采用 1.4.0；没配学动作器的工作目录时 `learned` 仍为空数组。本仓库读过 r425：只改了这个默认值、一项测试与文档，`learned` 的字段与规则原文不变。
 - **2026-10-31 再次核对（MOSAIC r529，只读）**：`companion.py`（最后改于 r418）、`LiveSceneCommands.cs`（r478）与 `home-v1.json`（r470）的哈希与最初记录的不同，但人设原文、`LEARNED_SHARED` 与系统提示中的那一句逐字相同；在它们上重新生成的主动开口与舞台向量内容与存档相同，只更新了源文件哈希与读取日期；`companion_qq.py` 未变。工作台的状态（`running`、`where`、`posture`、`learned`）与 `POST /api/v1/live-scene/command` 也未变（`LiveSceneService.cs` r529），转发不需要改。
 - **2026-11-04 再次核对（MOSAIC 当前文件，只读）**：七份向量重新生成，内容都与存档相同；人设原文、`LEARNED_SHARED`、表情与手势逐字相同。只有 `LiveSceneCommands.cs`（r679）的哈希变了，舞台向量只更新了这个哈希与读取日期。工作台接口（`LiveSceneEndpoints.cs` r614、`LiveSceneService.cs` r683）的路径、请求格式与开关未变，渲染器的 `AijadePackets.cs` 自 r4 未变，转发与外部渲染器链路都不需要改。
+
+## 动作有没有做成（1.4.1）
+
+只是 AIJADE 一侧的改动，MOSAIC 不用改。指令接口的 200 只表示工作台接受了这行；AIJADE 经状态接口已有的 `sequenceRunning` 与 `notice` 跟到执行完，再判定做成了、没做成或不确定（`Stage.Outcome`，详见 [STAGE-MOSAIC](STAGE-MOSAIC.md)）。
+
+- **说明**：没做成时，下一轮在舞台说明之后多加一条（`stage.outcome.undoneNote`），只说一次。
+- **`notice`**：只显示给负责人，不交给模型，因为它可能含本机路径。
+- **依赖**：MOSAIC 没有结果代码，AIJADE 读的是它提示的措辞（`LiveSceneService.cs` r683）。MOSAIC 改了做完动作时的提示，AIJADE 会把做完的动作报成没做成，所以和其它共享词语一样，要告知这边。
+- **一致性**：`configs/companion/stage-notices.json` 存实机复测留下的提示与运行前写定的预期，由单元测试判定。
 
 ## 修改契约
 

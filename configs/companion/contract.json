@@ -1,7 +1,7 @@
 {
   "contract": "aijade-companion",
-  "version": "1.4.0",
-  "date": "2026-10-29",
+  "version": "1.4.1",
+  "date": "2026-11-06",
   "decision": "docs/decisions/ADR-002.md",
   "documentation": "docs/COMPANION-CONTRACT.md",
   "line": "product",
@@ -213,7 +213,14 @@
       "stand": "站起来 (MOSAIC's wording)",
       "others": "AIJADE's wording, since MOSAIC tells its model only the kind: 转一圈, 转过身, 走过来, 往后退一点, 走开, 走一走, 跳一支舞, 鞠躬, 挥手, 挥手告别, 打招呼, 带路, 举手, 理理头发"
     },
-    "notYet": "A live check with MOSAIC's running workbench (MOSAIC's side, the author's call). Since MOSAIC r392 its status (GET /api/v1/live-scene) returns where she is (the same sentence as where_you_are) and her posture (sit, lie, stand), and its dance command without a name picks one from its local dance library.",
+    "status": "Since MOSAIC r392 its status (GET /api/v1/live-scene) returns where she is (the same sentence as where_you_are) and her posture (sit, lie, stand), and its dance command without a name picks one from its local dance library. Checked live on 2026-11-06 against a copy of MOSAIC's workbench (docs/STAGE-MOSAIC.md).",
+    "notYet": "A real chat turn on the live stage, sound, a non-empty learned list, and the workbench on Windows.",
+    "outcome": {
+      "about": "Since 1.4.1, on AIJADE's side only; MOSAIC changes nothing. A 200 from the command endpoint only means the workbench accepted the line. AIJADE follows it through the existing status fields sequenceRunning and notice until the line has finished.",
+      "dependency": "MOSAIC gives no result codes, so AIJADE reads the wording of its notices (src/AijadeWorkbench.Web/Modules/LiveSceneService.cs, r683; implementation Stage.Outcome). If MOSAIC rewords a finished action's notice, AIJADE reports a finished action as not done, so MOSAIC should tell AIJADE's side as for the other shared words.",
+      "undoneNote": "After an earlier reply the app could not make your body do this, so it did not happen: {doing}. If it comes up, say so plainly and never claim that you did it.",
+      "placement": "One more system message after the stage notes, once, on the next turn on the stage. The notice itself is shown only to the owner and is never given to a model, because it can name local paths and AIJADE's chat may use a remote provider."
+    },
     "vectors": "configs/companion/stage-vectors.json, from a copy of MOSAIC's LiveSceneCommands.cs compiled and run outside both repositories (generate_stage_vectors.py); per sentence the place, walk, dance and gesture MOSAIC's functions give, and the decision standing and seated",
     "implementations": {
       "aijade": "src/Aijade.Client/Companion/Stage.cs (decision, notes, command line), MosaicStage.cs (state and commands through the server); src/Aijade.Server/Product/Stage.cs (relay); src/Aijade.UI/Pages/Chat.razor with the setting ModuleSettings.MosaicStage (off by default); learned motions: LearnedMotion and StageState in MosaicStage.cs, Stage.LearnedNote, StageEndpoints.Learned (since 1.4.0)",
