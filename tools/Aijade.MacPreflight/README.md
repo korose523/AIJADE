@@ -4,7 +4,7 @@ This development tool reuses the existing RQ-C prompt builders and format parser
 It does not run the P2 primary experiment, select models by accuracy, qualify a
 device, or write to the historical run directories. See the dated plans under
 `experiments/plans/2026-11-09-mac-*` and
-`docs/MAC-MODEL-PREFLIGHT-2026-11-09.md` for scope, all attempts and limitations.
+`experiments/mac-preflight/2026-11-09-7b8b/README.md` for scope, all attempts and limitations.
 
 Use the repository's pinned .NET SDK and an existing isolated Python environment
 with `psutil` (the recorded run used 7.2.2). No new Python packages are needed

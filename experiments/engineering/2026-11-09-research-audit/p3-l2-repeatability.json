@@ -1,0 +1,57 @@
+{
+  "kind": "L2 deterministic table recomputation, not a new primary experiment",
+  "actualRunDate": "2026-11-09",
+  "modelCalls": 0,
+  "startFromDriverProvenance": "2026-11-09T07:03:37.308432+00:00",
+  "completionFromOutputFileMtime": "2026-11-09T07:23:47.039043+00:00",
+  "approximateElapsedSeconds": 1209.731,
+  "timingMethod": "driver generatedAt at entry to output file final-write mtime; not an independent timing benchmark",
+  "exitCode": 0,
+  "recordedCodeCommit": "188e44beb47af36f7cc435743e70f2bf739e0b21",
+  "recordedCodeTreeDirty": true,
+  "driverHistoricalParagraph": "The raw deviations field is a hardcoded 5 November template; it is preserved, not the actual date or a new supervisor approval.",
+  "archive": {
+    "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/memory/answerable-tables.json",
+    "sha256": "ab98c76fbff2fa1ec4f6b20de38dcba0f1a75618395abd22aabf7cd82e3bb57b"
+  },
+  "newOutput": {
+    "path": "/Users/mac/.cache/aijade-advisor-audit-20261109/p3-l2/answerable-tables.json",
+    "sha256": "de6b93cf653cead59248df3dde998637c9d08e5987f9fdfa0f7ef41caf0d8ece"
+  },
+  "input": {
+    "path": "/Users/mac/.local/share/aijade-data/locomo10.json",
+    "sha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4"
+  },
+  "binary": {
+    "path": "/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Experiments/debug/Aijade.Experiments.dll",
+    "sha256": "3cd600f08205cd4a276805585f42f081ed044571fe2a9710d97f37e72365f464"
+  },
+  "driverReproduction": {
+    "compared": 751,
+    "allMatch": true,
+    "mismatches": []
+  },
+  "archiveComparison": {
+    "blocks": [
+      "answerable",
+      "all"
+    ],
+    "comparedLeaves": 1712,
+    "absoluteTolerance": 1e-09,
+    "differences": [],
+    "excludedExecutionTimings": [
+      {
+        "path": "answerable/pool-check.json/runtimeSeconds",
+        "new": 8,
+        "archive": 14
+      },
+      {
+        "path": "all/pool-check.json/runtimeSeconds",
+        "new": 14,
+        "archive": 17
+      }
+    ]
+  },
+  "archiveOverwritten": false,
+  "claim": "Recomputed statistical/content values match the archived answerable and all-question tables; execution timings may differ."
+}

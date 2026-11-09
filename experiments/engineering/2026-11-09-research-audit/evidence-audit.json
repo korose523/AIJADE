@@ -1,0 +1,248 @@
+{
+  "audit": "2026-11-03 supervisor review against local AIJADE evidence",
+  "comparisonBasis": "working-tree",
+  "localHead": "188e44beb47af36f7cc435743e70f2bf739e0b21",
+  "worktreeModified": true,
+  "newScientificRun": false,
+  "modelCalls": 0,
+  "checks": {
+    "frozenSourcesMatch": true,
+    "p1bScoresRecompute": true,
+    "p3eSourcesMatchComparison": false,
+    "p3ePlansPrecedeRecordedCode": true,
+    "p1cThreeRecordedRounds": true
+  },
+  "frozenSources": [
+    {
+      "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+      "expectedSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "actualSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "matches": true
+    },
+    {
+      "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+      "expectedSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "actualSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "matches": true
+    }
+  ],
+  "productVersionComparison": {
+    "text": {
+      "declaredRunCommit": "c40c46c231e2c8c92859a4916c755ce1f6bfd18a",
+      "resolvedPlanCommit": "6792205dfbc3535b70fa4388f99fcbd5187bb4b2",
+      "planCommitIsAncestor": true,
+      "sourceFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "atDeclaredRunCommitSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "comparisonSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "atDeclaredRunCommitSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "comparisonSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+          "atDeclaredRunCommitSha256": "d4e45d76c97c0603dae38bd6ce60b05d7e10dc13d6a9ad1e74ab0c73c6bf7e55",
+          "comparisonSha256": "971161f0fb3ee8da74e5236058d2b2592598d9132da4e0670aa41e9443253aeb",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Pages/Chat.razor",
+          "atDeclaredRunCommitSha256": "cb9e43669da429fb7498c477c5e07a183f5f7932939be476743ceb0dfc49044f",
+          "comparisonSha256": "87acbb63c5fb0a676b1b98f226319888c8e5d460a2b20657b66cd84fd39b8b02",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Services/AppState.cs",
+          "atDeclaredRunCommitSha256": "e243e7d50bce866c10a0919954572a07334b0e79bc6a02d074b6126dcb92105e",
+          "comparisonSha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.Integrations/CompanionBridge.cs",
+          "atDeclaredRunCommitSha256": "b7f1fdb4d697983a72f3286ae8f41f244bad589e148b0ac7f126668ef5ac4326",
+          "comparisonSha256": "9806793a9fd1dd9d2be4d531736585711f6392acf69a06806643835cb6522416",
+          "matches": false
+        }
+      ],
+      "allComparedSourcesMatch": false,
+      "runtimeExecutableHash": "NOT_RECORDED_IN_ARCHIVE",
+      "note": "Git objects verify sources at the declared commit; they do not independently bind the executed binary."
+    },
+    "embedding": {
+      "declaredRunCommit": "bbafb62891958b2c63f093b936537cd8c2e725cb",
+      "resolvedPlanCommit": "6792205dfbc3535b70fa4388f99fcbd5187bb4b2",
+      "planCommitIsAncestor": true,
+      "sourceFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "atDeclaredRunCommitSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "comparisonSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "atDeclaredRunCommitSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "comparisonSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+          "atDeclaredRunCommitSha256": "d4e45d76c97c0603dae38bd6ce60b05d7e10dc13d6a9ad1e74ab0c73c6bf7e55",
+          "comparisonSha256": "971161f0fb3ee8da74e5236058d2b2592598d9132da4e0670aa41e9443253aeb",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Pages/Chat.razor",
+          "atDeclaredRunCommitSha256": "cb9e43669da429fb7498c477c5e07a183f5f7932939be476743ceb0dfc49044f",
+          "comparisonSha256": "87acbb63c5fb0a676b1b98f226319888c8e5d460a2b20657b66cd84fd39b8b02",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Services/AppState.cs",
+          "atDeclaredRunCommitSha256": "e243e7d50bce866c10a0919954572a07334b0e79bc6a02d074b6126dcb92105e",
+          "comparisonSha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.Integrations/CompanionBridge.cs",
+          "atDeclaredRunCommitSha256": "b7f1fdb4d697983a72f3286ae8f41f244bad589e148b0ac7f126668ef5ac4326",
+          "comparisonSha256": "9806793a9fd1dd9d2be4d531736585711f6392acf69a06806643835cb6522416",
+          "matches": false
+        }
+      ],
+      "allComparedSourcesMatch": false,
+      "runtimeExecutableHash": "NOT_RECORDED_IN_ARCHIVE",
+      "note": "Git objects verify sources at the declared commit; they do not independently bind the executed binary."
+    }
+  },
+  "p1bRecomputation": {
+    "drift": {
+      "recomputed": {
+        "killed": 406,
+        "survived": 164,
+        "noCoverage": 263,
+        "compileError": 366,
+        "timeout": 0,
+        "ignored": 52,
+        "score": 0.4874,
+        "scoreCi95": [
+          0.4536,
+          0.5213
+        ],
+        "executedScore": 0.7123,
+        "executedScoreCi95": [
+          0.6738,
+          0.7479
+        ]
+      },
+      "matchesArchive": true
+    },
+    "gate": {
+      "recomputed": {
+        "killed": 70,
+        "survived": 193,
+        "noCoverage": 326,
+        "compileError": 62,
+        "timeout": 0,
+        "ignored": 42,
+        "score": 0.1188,
+        "scoreCi95": [
+          0.0951,
+          0.1475
+        ],
+        "executedScore": 0.2662,
+        "executedScoreCi95": [
+          0.2164,
+          0.3227
+        ]
+      },
+      "matchesArchive": true
+    }
+  },
+  "artifacts": [
+    {
+      "item": "P1-A",
+      "path": "experiments/p1/alternative-designs.json",
+      "sha256": "dbd75fee2d4ddc33721d0a7d64edc9ffbb48fa48cc61ba3da02d6f6250e4f8bb",
+      "scope": "INPUT_AND_DATA_CASES_RECORDED"
+    },
+    {
+      "item": "P1-A-code",
+      "path": "experiments/p1/alternative-designs-code-faults.json",
+      "sha256": "f8e905b1420fc65c8180ebb328c175a426076e086d93e1e2928aad3162edc78b",
+      "scope": "CODE_FAULT_CASES_RECORDED_WITH_DEVIATIONS"
+    },
+    {
+      "item": "P1-B",
+      "path": "experiments/p1/independent-fault-set.json",
+      "sha256": "2dd5e9b7140abbac6d3453141977ed9a256aeee8ea8ea56a4a6cfb9df55b2d7c",
+      "scope": "MUTANT_ROWS_RECORDED"
+    },
+    {
+      "item": "P1-B-reading",
+      "path": "experiments/p1/survivor-reading.json",
+      "sha256": "99e6de5c4df4ed19065c9d75cc13d31fdda9fbae1d859950b45b82a936148135",
+      "scope": "SINGLE_READER_CATEGORIES"
+    },
+    {
+      "item": "P1-C",
+      "path": "experiments/p1/external-renderer.json",
+      "sha256": "3becacfe7ebda37b09406413278bde175749fe865943728d17cb36406c062146",
+      "scope": "THREE_ROUNDS_RECORDED_NOT_INDEPENDENT_TEAM"
+    },
+    {
+      "item": "P2-A",
+      "path": "experiments/p2-a/multiple-check.json",
+      "sha256": "0c1567fd783d0462a3256664c9009c5f4d78d388e96985381f1307b4a0b7f4c5",
+      "scope": "STATIC_STAGE_ONLY_NO_GENERATION"
+    },
+    {
+      "item": "P3-tables",
+      "path": "experiments/memory/answerable-tables.json",
+      "sha256": "ab98c76fbff2fa1ec4f6b20de38dcba0f1a75618395abd22aabf7cd82e3bb57b",
+      "scope": "RECOMPUTED_TABLES_RECORDED"
+    },
+    {
+      "item": "P3-C-LangChain",
+      "path": "experiments/p3-c/langchain.json",
+      "sha256": "9b5ecf4c3cb6942b807dd942590effd78baf355512e1546ff32d3b8c27b9ba06",
+      "scope": "COMPONENT_PRECHECK_NO_POLICY_COMPARISON"
+    },
+    {
+      "item": "P3-C-LlamaIndex",
+      "path": "experiments/p3-c/llamaindex.json",
+      "sha256": "e98aca0624f1c7a0a996a29bfd86b4f1c2064038f425272c7fa050c1e857e0d5",
+      "scope": "COMPONENT_PRECHECK_NO_POLICY_COMPARISON"
+    },
+    {
+      "item": "P3-C-Mem0",
+      "path": "experiments/p3-c/mem0.json",
+      "sha256": "1d7aa8ba601b49c73ce3b77cf3a5673bcf87c231d8f084013bae29ab6a129cb8",
+      "scope": "TURN_STORAGE_INFER_FALSE"
+    },
+    {
+      "item": "P3-D",
+      "path": "experiments/memory/embedding-check.json",
+      "sha256": "70cc27e8e7b3f21448d56c0147d28419debd3b48b1bea685fcf95e7671e891b7",
+      "scope": "ONE_EMBEDDING_MODEL_RECORDED"
+    },
+    {
+      "item": "P3-E",
+      "path": "experiments/memory/product-path.json",
+      "sha256": "0f45c9ca248aa543507a55c300148c2f33a7fca7247c9104afbd59a9709a6c85",
+      "scope": "HISTORICAL_PRODUCT_SNAPSHOT_ONLY"
+    }
+  ],
+  "interpretation": {
+    "archiveStatistics": "Existing records can be recomputed; unchanged archives are not new observations.",
+    "currentProduct": "DO_NOT_TRANSFER_ARCHIVED_P3E_METRICS",
+    "recallChangeAfterSourceChanges": "NOT_MEASURED",
+    "ch7": "NOT_RUN; backend, frozen checks/adapter and held-out batch remain separate prerequisites.",
+    "host2": "AUTHOR_REPORT: CPU replacement unavailable before January 2027; no hardware qualification inferred."
+  }
+}

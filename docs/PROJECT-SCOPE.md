@@ -15,7 +15,7 @@
 | 6 记忆检索 | 记忆是否相关；对照语料的金标证据话轮 | `src/Aijade.Memory/BioticMemory*`（研究用内核，产品服务端不使用）；产品的实际传递路径（P3-E）：客户端 `src/Aijade.Client/Chat/MemoryContext.cs` 与服务端 `src/Aijade.Server/Memory/MemoryLibrary.cs` | `src/Aijade.Research/MemoryEval`、`aijade-experiments` | `experiments/memory/`、`experiments/memory-longmemeval/` |
 | 7 综合 | 三层判断对照外部证据；最小两轮整合检验（资格确认批次 + 保留批次上 C1 与 C2 的比较） | 计划中（方案草稿在论文仓库，2 月动工前单独推送） | 计划中 | — |
 
-**研究线内部顺序**（导师 2026-10-27 同意；陪伴产品优先级保留，11/09 当前请求另行授权 Mac 开发容量预检，见 [实测记录](MAC-MODEL-PREFLIGHT-2026-11-09.md)；正式研究运行仍按各自门槛）：
+**研究线内部顺序**（导师 2026-10-27 同意；陪伴产品优先级保留，11/09 当前请求另行授权 Mac 开发容量预检，见 [实测记录](../experiments/mac-preflight/2026-11-09-7b8b/README.md)；正式研究运行仍按各自门槛）：
 1. 设备资格与第二主机三次运行的再生成、逐步对照（第 5 章）；
 2. P2-A：移植（先查 MultiPL-E）、难度预实验、精度设计（第 5 章）；
 3. P2-A 主运行与 P2-B（第 5 章）；

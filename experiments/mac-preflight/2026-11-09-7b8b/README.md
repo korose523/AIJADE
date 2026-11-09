@@ -73,10 +73,10 @@ RSS 是私有服务及子进程的常驻量之和，包含共享映射，不是�
 
 接下来按现有 Mac 变更草稿，先确定正式资格标准与冻结干净执行版本；将本次资源准入和停止规则写入正式运行准备，预算同时包括确定性。正式确定性检查及三组再生成仍为 NOT_RUN。P2-A 仍须完成独立参考解/测试审计、开发与选择任务分离、难度/精度设计及均衡暴露；P2-B 大于 8B 的候选顺序与可行性仍未测；P3-C 完整政策比较与第 7 章保留批次仍不能用本次预检替代。所有本机重负载继续串行。
 
-论文第 5 章新增开发预检与资源表，原主结果保持；附录 A/B/C、P2 数据说明、韩中 v0 计划、教授回复草稿和意见核对矩阵同步。研究兴趣与无资助/作者主导事实保留，未补造发送、独立审阅或设备资格回执。
+原主结果与本目录的开发数据分别记录；正式资格、确定性及主运行状态见 `research-readiness.json`。
 
 ## 7. 文件与方法记录
 
-`fixtures.json` 固定输入及来源，`result.json` 与 `admitted-repeat/result.json` 记录全部尝试；每请求目录包含 request、可取得的完整 response、transport、measurement、telemetry；`parser-classification.json` 为既有 C# 判定器的独立格式检查；`archived-call-counts.json`、`determinism-call-counts.json`、`analysis.json` 为调用与预算。`verification.json` 记录源码/二进制、测试和最终服务清理检查，清单保存交付文件哈希。
+`fixtures.json` 固定输入及来源，`result.json` 与 `admitted-repeat/result.json` 记录全部尝试；每请求目录包含 request、可取得的完整 response、transport、measurement、telemetry；`parser-classification.json` 为既有 C# 判定器的独立格式检查；`archived-call-counts.json`、`determinism-call-counts.json`、`analysis.json` 为调用与预算。`verification.json` 记录源码/二进制、测试和最终服务清理检查，各原始请求与响应的哈希由记录及验证文件保存。
 
 资源清点采用 get-available-resources 技能，实际预检为本项目独立驱动。技能方法来源已按当前记录核验：Kassis, T., Agarwal, V., He, Y., Patel, D., & Brueckner, A. M. (2026). *Scientific Agent Skills: A Library of Procedural Knowledge for Research Agents*. [arXiv:2609.00065](https://arxiv.org/abs/2609.00065), DOI: 10.48550/arXiv.2609.00065。该引用说明工具来源，不构成本项目结果的外部验证。

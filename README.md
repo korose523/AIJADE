@@ -4,15 +4,14 @@ A long-running AI companion with verifiable, evidence-gated learning and a biomi
 See [docs/STATUS.md](docs/STATUS.md) for the architecture, feature status and open items, and
 [experiments/README.md](experiments/README.md) for the experiments behind the papers. Design ideas for the virtual-character side were drawn from the open-source Project AIRI (see Acknowledgements).
 
-## Current scope (2026-11-09)
+## Project scope
 
 AIJADE's primary development line is emotional companionship: conversation, initiative, a fictional daily life,
 relationship state, photos, voice and a private media collection. The author prioritises completing AIJADE.
 MOSAIC focuses on connectome research and embodied intelligence; the projects may borrow useful product ideas.
 [ADR-004](docs/decisions/ADR-004.md) supersedes the previous research-first/product-maintenance priority.
-See [the companion feature audit and setup](docs/COMPANION-EXPERIENCE-2026-11-09.md).
-Web and QQ now share the selected character, life/location profile, relationship and media collection through the server.
-See [pairing, live changes and validation boundaries](docs/COMPANION-SYNC-2026-11-09.md).
+Web and QQ share the selected character, life/location profile, relationship and media collection through the server.
+See [the companion setup and sync guide](docs/COMPANION.md) for pairing, live changes, media and optional local services.
 
 The existing dissertation apparatus and archived results remain separate. Product data is never used as research data,
 and the measured memory sources remain frozen. [PROJECT-SCOPE](docs/PROJECT-SCOPE.md) and
@@ -21,11 +20,10 @@ and the measured memory sources remain frozen. [PROJECT-SCOPE](docs/PROJECT-SCOP
 of MOSAIC product functions ([ADR-003](docs/decisions/ADR-003.md)) continue to apply. New product functionality and
 passing engineering checks do not change scientific gates or manuscript readiness.
 
-The 10 November publication archives the companion changes and both Mac development preflight attempts.
-See [the measured preflight](docs/MAC-MODEL-PREFLIGHT-2026-11-09.md) and
-[publication regression receipts](experiments/engineering/2026-11-10-github-validation/receipt.json).
-The original execution identities and failed resource attempt remain recorded; publication does not turn a local
-pre-inference file freeze into prior public registration.
+Research methods, original requests and replies, failures and verification receipts are indexed in
+[experiments](experiments/README.md), including the [Mac model preflight](experiments/mac-preflight/2026-11-09-7b8b/README.md)
+and [engineering regressions](experiments/engineering/2026-11-10-github-validation/receipt.json).
+Development preflights do not replace primary studies or establish prior public registration.
 
 ## Build and test
 

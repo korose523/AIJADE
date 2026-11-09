@@ -11,7 +11,7 @@ retrieval-scoring paper, now P3, and J1 for the Chinese version of P1. Records a
 `plans/` holds analysis plans committed to this repository before the analyses they describe were implemented or run.
 The commit order shows that a plan came before its code; it does not show when the plan became public, because a plan
 and its code may be pushed together. From the main experiments of December 2026, each plan is pushed on its own and sent
-to the supervisor as a PDF before its code is written. The plans are not registered on an external platform.
+to the supervisor as a PDF before its code is written. The plans are not registered on an external platform. The 9 November Mac development preflight and admission repeat are explicit exceptions to prior commit order: local hashes were frozen before their calls, but their plans, code and results were first committed together after execution at `7c0df97b3d8f`.
 
 Records and scripts written before 22 October 2026 (the RQ-C run scripts, `rq-c/family/ABANDONED.md`,
 `rq-c/temperature-sweep-plan.md`, and the `preregistrationDeviation` field of every RQ-C `summary.json`) call the RQ-C
@@ -19,6 +19,12 @@ protocol "pre-registered". That protocol (trials, rounds, tasks, seed, pruning r
 code, in the `Preregistration` class of `src/Aijade.Research/RqC/Harness.cs`, before the runs; it was not registered on
 an external platform. The records keep their original wording, and the class and the field keep their names so that
 archived summaries stay comparable.
+
+## Supporting records
+
+- [Mac 7B/8B development preflight](mac-preflight/2026-11-09-7b8b/README.md): methods, both attempts, exact prompts and replies, model identities, resource telemetry, failure reasons and conditional call budgets.
+- [Existing-results consistency audit](engineering/2026-11-09-research-audit/README.md): archived execution replay and metric-recomputation receipts; no new model generation.
+- [Product regression receipts](engineering/2026-11-10-github-validation/receipt.json): failed and repaired cases, controlled browser flows and monitor checks. These are engineering observations, not primary research results.
 
 | Directory | Paper | Contents | Produced by |
 |---|---|---|---|
