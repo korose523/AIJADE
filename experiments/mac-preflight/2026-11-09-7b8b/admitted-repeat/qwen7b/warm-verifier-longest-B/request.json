@@ -1,0 +1,17 @@
+{
+  "model": "qwen2.5-coder:7b-instruct",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Task: Write a function `parseCsv(line)` that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \"\" inside a quoted field represents a single quote; commas inside quotes are not separators.\nA candidate solution:\n```js\nfunction parseCsv(line) {\n  const fields = [];\n  const quotedField = [];\n  let inQuotes = false;\n  let currentField = '';\n  for (let i = 0; i < line.length; i++) {\n    const char = line[i];\n    if (char === '\"') {\n      inQuotes = !inQuotes;\n      quotedField.push(char);\n    } else if (char === ',' && !inQuotes) {\n      fields.push(currentField.trim());\n      currentField = '';\n    } else {\n      currentField += char;\n    }\n  }\n  if (currentField.trim()) {\n    fields.push(currentField.trim());\n  }\n  if (quotedField.length > 0) {\n    const quotedFieldStr = quotedField.join('');\n    const unescapedField = quotedFieldStr.replace(/\"\"/g, '\"');\n    fields.push(unescapedField);\n  }\n  return fields;\n}\n```\nTest inputs (the expected outputs are not shown):\n  1. [\"a,b,c\"]\n  2. [\"\\\"hello, world\\\",x\"]\n  3. [\"\"]\n  4. [\"\\\"a\\\"\\\"b\\\"\"]\n  5. [\"1,,3\"]\nQuestion: does the candidate return the correct output for every one of these inputs?\nAnswer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification."
+    }
+  ],
+  "stream": false,
+  "keep_alive": 300,
+  "options": {
+    "temperature": 0,
+    "seed": 3759066737,
+    "num_ctx": 4096,
+    "num_predict": 4096
+  }
+}

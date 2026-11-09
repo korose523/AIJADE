@@ -1,0 +1,51 @@
+{
+  "id": "cold-ready",
+  "kind": "startup",
+  "startedAt": "2026-11-09T13:43:21.872874+00:00",
+  "requestSha256": "32e2a08bcc2793994fb4746f68e43ebda3f0a3d26d17158ca59c51130368333c",
+  "observedWallSeconds": 191.25598359503783,
+  "workerExitCode": 0,
+  "metrics": {
+    "completed": true,
+    "doneReason": "stop",
+    "truncated": false,
+    "empty": false,
+    "characters": 5,
+    "wallSeconds": 190.1570522740949,
+    "total_duration": 190133086524,
+    "load_duration": 188955753354,
+    "prompt_eval_duration": 931566000,
+    "eval_duration": 243538000,
+    "prompt_eval_count": 17,
+    "eval_count": 2,
+    "generationTokensPerSecond": 8.212270774991993,
+    "wallOutputTokensPerSecond": 0.010517622018652107,
+    "readyExactly": true
+  },
+  "responseSha256": "95a7d3708abe5e3946b7186dd609e86086cc755d994a585334c758189450107b",
+  "status": "COMPLETED",
+  "loadedModelState": {
+    "models": [
+      {
+        "name": "llama3.1:8b",
+        "model": "llama3.1:8b",
+        "size": 5584516545,
+        "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "llama",
+          "families": [
+            "llama"
+          ],
+          "parameter_size": "8.0B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-09T22:51:32.108183+09:00",
+        "size_vram": 0,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  }
+}

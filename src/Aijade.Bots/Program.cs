@@ -28,6 +28,7 @@ var builder = Host.CreateApplicationBuilder(args);
 var config = builder.Configuration;
 var server = ServerAddressHandler.ParseServer(config["Aijade:Server"]) ?? throw new InvalidOperationException("Aijade:Server must be an http(s) URL");
 var token = config["Aijade:Token"] is { Length: > 0 } t ? t : throw new InvalidOperationException("Aijade:Token is required");
+builder.Services.AddSingleton<CompanionConfiguration>();
 
 builder.Services.AddSingleton(_ =>
 {
@@ -44,6 +45,11 @@ builder.Services.AddSingleton(sp => new CompanionBridge(sp.GetRequiredService<Ai
     Tools = bool.TryParse(config["Bridge:Tools"], out var tools) && tools,
     Memory = !bool.TryParse(config["Bridge:Memory"], out var memory) || memory,
     StateFile = config["Bridge:StateFile"] is { Length: > 0 } f ? f : "aijade-bots-state.json",
+    Companion = sp.GetRequiredService<CompanionConfiguration>().For,
+    ResolveCompanion = sp.GetRequiredService<CompanionConfiguration>().ForAsync,
+    PairCompanion = sp.GetRequiredService<CompanionConfiguration>().PairAsync,
+    SpeakFirst = bool.TryParse(config["Bridge:SpeakFirst"], out var first) && first,
+    TimeZone = sp.GetRequiredService<CompanionConfiguration>().Profile.Zone,
     ReminderPlatforms = bool.TryParse(config["Bridge:Reminders"], out var remind) && !remind
         ? []
         : sp.GetServices<IChannelConnector>().OfType<IProactiveConnector>().Select(c => c.Platform).ToArray(),
@@ -58,6 +64,6 @@ if (config["Telegram:Token"] is { Length: > 0 } telegram)
 foreach (var connector in Connectors.Extra(config))
     builder.Services.AddSingleton(connector);
 if (config["OneBot:NapCat"] is { Length: > 0 })
-    builder.Services.AddSingleton<IChannelConnector>(sp => Connectors.OneBot(config, sp.GetRequiredService<AijadeApi>())!);
+    builder.Services.AddSingleton<IChannelConnector>(sp => Connectors.OneBot(config, sp.GetRequiredService<AijadeApi>(), sp.GetRequiredService<CompanionConfiguration>())!);
 builder.Services.AddHostedService<ConnectorHost>();
 await builder.Build().RunAsync();

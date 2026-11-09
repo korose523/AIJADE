@@ -62,9 +62,10 @@
 
     private async Task TalkToAsync(string id)
     {
+        var origin = Nav.Uri;
         await UseAsync(id);
-        Nav.NavigateTo("");
+        if (Nav.Uri == origin) Nav.NavigateTo("");
     }
 
-    private Task UseAsync(string? id) => State.Settings.UpdateAsync(s => s with { ActiveCharacterId = id });
+    private Task UseAsync(string? id) => State.SelectCompanionAsync(id);
 }

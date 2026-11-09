@@ -1,0 +1,148 @@
+{
+  "kind": "frozen development capacity/latency fixtures; not primary outcome data",
+  "initialTaskCount": 44,
+  "archiveCandidateRowsConsidered": 4621,
+  "selection": "longest initial prompt and longest template-A verifier prompt by UTF-16 length; longest failed code for constructed retry; ties taskId/source/step ordinal; five existing format tasks unchanged",
+  "sampling": {
+    "temperature": 0,
+    "seed": 3759066737,
+    "num_ctx": 4096,
+    "num_predict": 4096
+  },
+  "sourcesSha256": {
+    "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5/trials.jsonl": "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121",
+    "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5/candidates.jsonl": "9f53d82b6e38ff5286fc62c062cc54579d7a6e8fa9a1b1232f84bea486ce4d61",
+    "experiments/rq-c/template-gpu/A/rq-c-s42-ollama-t30-r5/trials.jsonl": "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436",
+    "experiments/rq-c/template-gpu/A/rq-c-s42-ollama-t30-r5/candidates.jsonl": "928a99838f7b57696c2e7fe4731bc3b2890b16c2ed7ef9461d1ad3dae61d2ae3",
+    "experiments/rq-c/template-gpu/B/rq-c-s42-ollama-t30-r5/trials.jsonl": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0",
+    "experiments/rq-c/template-gpu/B/rq-c-s42-ollama-t30-r5/candidates.jsonl": "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2",
+    "src/Aijade.Research/RqC/Backends.cs": "7afabaef394e65bd9cb73ac4b1b6e4922400267ac419cb6c307bc06b9142b50b",
+    "src/Aijade.Research/RqC/FormatPrecheck.cs": "eeda9f3e695be38e63f4e11233b5e5e8360d4457ce313f99f4dbd4e0c54bb9da",
+    "src/Aijade.Research/SkillBench/Bench.cs": "7dd8f52643124d51e254deb308215511c09221e11d5e6e828061ef7ef3234591",
+    "src/Aijade.Research/SkillBench/Sandbox.cs": "78720870f18e64ac01e43508bce026a8585c98d348c2acbf8fa7c5c6fe7afda2",
+    "src/Aijade.Research/SkillBench/bench-data.json": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "tools/Aijade.MacPreflight/Program.cs": "dd2e1293576b541022eabf28dad92321a8a55782014bc465f7aa008a7837f71a",
+    "tools/Aijade.MacPreflight/Aijade.MacPreflight.csproj": "0fc629ed63dd96466a2cc747b29623f3e336b5871c55595e67f6ee178e316963",
+    "tools/Aijade.MacPreflight/run_preflight.py": "f4f3d3a19e49cfa0ae53c6f4ab19566baf8585e2134999cdc2ae83bf77e8f280",
+    "experiments/plans/2026-11-09-mac-capacity-preflight.md": "ba97a69662e8ac6a618ca8f1ad1d441af8c1b7ef91e767312c4963b9f7acb57b"
+  },
+  "binarySha256": {
+    "Acornima.dll": "a11417b8542b4e55330e751fca44da5cbde1d95e79b1519c2aba59be7a7b941c",
+    "Aijade.Core.dll": "54ca7d83fc8b1708762292bcaa916c7e16f6d36598b37e83b743fdbe03c83ab2",
+    "Aijade.Learning.dll": "db72fd6b1286bf9543a395f37f15041f5e71a267e90233e1b6772e559eea25a2",
+    "Aijade.MacPreflight.dll": "c29094925384d73aba58243c77e50e437a6a476e2dc6e779b61bac9983d70460",
+    "Aijade.Memory.dll": "743fde676e278368d0d8c152a21f62f2fc4f30dd64f909b1eb8b6f346eb8513d",
+    "Aijade.Providers.dll": "fa6339bde1da186ea9140be1c5ca076b459fa12712ddc8e027bc9403beed4d7f",
+    "Aijade.Research.dll": "7ffeb9d8be68948e4e447bb59dc84b439c93b134634894cdeb243a01d44d239b",
+    "Aijade.Telemetry.dll": "8ab5efe2eed0303196974336a63cbedca7a9ed093cbe6a1b3106fd20ce1ba5f4",
+    "Jint.dll": "bbfbb6e378d50b91ccb4735d0da63e86081e021ae19ce456d11160cfdb28bbb6",
+    "Microsoft.Extensions.AI.Abstractions.dll": "c102abeb64309810483ed4fed82c0853a9f29f31db989b32939a71e7ed4bb4a6"
+  },
+  "items": [
+    {
+      "id": "cold-ready",
+      "kind": "startup",
+      "taskId": null,
+      "prompt": "Reply with the single word READY.",
+      "promptUtf16Length": 33,
+      "promptSha256": "a48ba54e9a3e9424e093278ebb22ab78048172fd5d87c7b54c01441252d7e719",
+      "archive": null
+    },
+    {
+      "id": "warm-initial-longest",
+      "kind": "generation",
+      "taskId": "parse-csv-line",
+      "prompt": "You are an expert JavaScript programmer.\nImplement the following function. Task: Write a function \u0060parseCsv(line)\u0060 that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \u0022\u0022 inside a quoted field represents a single quote; commas inside quotes are not separators.\nRespond with ONLY a single fenced JavaScript code block (\u0060\u0060\u0060js ... \u0060\u0060\u0060)\nthat defines a function named \u0060solve\u0060 (or a single callable expression).\nDo not include any explanation outside the code block.",
+      "promptUtf16Length": 519,
+      "promptSha256": "3913cd597df9fa2a45b63eb99c00a6165ab8f5f0261f54c4e7599deb9a593712",
+      "archive": null
+    },
+    {
+      "id": "warm-retry-longest-code",
+      "kind": "retry",
+      "taskId": "parse-csv-line",
+      "prompt": "You are an expert JavaScript programmer fixing a previous failure.\nTask: Write a function \u0060parseCsv(line)\u0060 that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \u0022\u0022 inside a quoted field represents a single quote; commas inside quotes are not separators.\n\n--- WHY THE PREVIOUS ATTEMPT FAILED ---\nThe previous implementation was executed against the task\u0027s test suite and FAILED: 2/5 cases passed.\nFailing case indices (0-based): 1, 2, 3.\nThe expected outputs of the test cases are withheld from you. Diagnose the defect from the case inputs and the failure pattern.\nYour own verification step REJECTED the previous implementation with this critique: PASS\nThe code correctly handles quoted fields, commas inside quotes, and empty lines. It also correctly unescapes doubled quotes inside quoted fields.\n\nThe rejected implementation, which you MUST NOT repeat:\n\u0060\u0060\u0060js\nfunction parseCsv(line) {\n  const fields = [];\n  const quotedField = [];\n  let inQuotes = false;\n  let currentField = \u0027\u0027;\n  for (let i = 0; i \u003C line.length; i\u002B\u002B) {\n    const char = line[i];\n    if (char === \u0027\u0022\u0027) {\n      inQuotes = !inQuotes;\n      quotedField.push(char);\n    } else if (char === \u0027,\u0027 \u0026\u0026 !inQuotes) {\n      fields.push(currentField.trim());\n      currentField = \u0027\u0027;\n    } else {\n      currentField \u002B= char;\n    }\n  }\n  if (currentField.trim()) {\n    fields.push(currentField.trim());\n  }\n  if (quotedField.length \u003E 0) {\n    const quotedFieldStr = quotedField.join(\u0027\u0027);\n    const unescapedField = quotedFieldStr.replace(/\u0022\u0022/g, \u0027\u0022\u0027);\n    fields.push(unescapedField);\n  }\n  return fields;\n}\n\u0060\u0060\u0060\n\nWrite a CORRECTED implementation that is materially DIFFERENT from the rejected one.\nRe-examine the specification and the failing cases; do not just re-emit the same logic with cosmetic edits.\nRespond with ONLY a single fenced JavaScript code block (\u0060\u0060\u0060js ... \u0060\u0060\u0060)\nthat defines a function named \u0060solve\u0060 (or a single callable expression).\nDo not include any explanation outside the code block.",
+      "promptUtf16Length": 2021,
+      "promptSha256": "41d13d35761e3a6759467efe677da0c77465b6be439af0f7fd08826868fcabf4",
+      "archive": {
+        "run": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5",
+        "step": 6955,
+        "codeSha256": "6a84b493ac6b6e2da9fb985ef229e936c47eecac27fd139d53272b0a97ff2928",
+        "construction": "one constructed attempt-1 retry using the saved program and current sandbox feedback; not a reconstructed historical trajectory"
+      }
+    },
+    {
+      "id": "warm-verifier-longest-A",
+      "kind": "verifier-A",
+      "taskId": "parse-csv-line",
+      "prompt": "You are verifying a JavaScript solution against a task.\nTask: Write a function \u0060parseCsv(line)\u0060 that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \u0022\u0022 inside a quoted field represents a single quote; commas inside quotes are not separators.\nCandidate code:\n\u0060\u0060\u0060js\nfunction parseCsv(line) {\n  const fields = [];\n  const quotedField = [];\n  let inQuotes = false;\n  let currentField = \u0027\u0027;\n  for (let i = 0; i \u003C line.length; i\u002B\u002B) {\n    const char = line[i];\n    if (char === \u0027\u0022\u0027) {\n      inQuotes = !inQuotes;\n      quotedField.push(char);\n    } else if (char === \u0027,\u0027 \u0026\u0026 !inQuotes) {\n      fields.push(currentField.trim());\n      currentField = \u0027\u0027;\n    } else {\n      currentField \u002B= char;\n    }\n  }\n  if (currentField.trim()) {\n    fields.push(currentField.trim());\n  }\n  if (quotedField.length \u003E 0) {\n    const quotedFieldStr = quotedField.join(\u0027\u0027);\n    const unescapedField = quotedFieldStr.replace(/\u0022\u0022/g, \u0027\u0022\u0027);\n    fields.push(unescapedField);\n  }\n  return fields;\n}\n\u0060\u0060\u0060\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [\u0022a,b,c\u0022] (expected WITHHELD)\n  case 1: args = [\u0022\\\u0022hello, world\\\u0022,x\u0022] (expected WITHHELD)\n  case 2: args = [\u0022\u0022] (expected WITHHELD)\n  case 3: args = [\u0022\\\u0022a\\\u0022\\\u0022b\\\u0022\u0022] (expected WITHHELD)\n  case 4: args = [\u00221,,3\u0022] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \u0022PASS\u0022 or \u0022FAIL\u0022, followed by a short reason.",
+      "promptUtf16Length": 1531,
+      "promptSha256": "6b504be8aef673fcd1c0a281deb6c276dbce3f53108a350dccbfea441c8a1432",
+      "archive": {
+        "run": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5",
+        "step": 6955,
+        "codeSha256": "6a84b493ac6b6e2da9fb985ef229e936c47eecac27fd139d53272b0a97ff2928",
+        "construction": "existing archived candidate"
+      }
+    },
+    {
+      "id": "warm-verifier-longest-B",
+      "kind": "verifier-B",
+      "taskId": "parse-csv-line",
+      "prompt": "Task: Write a function \u0060parseCsv(line)\u0060 that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \u0022\u0022 inside a quoted field represents a single quote; commas inside quotes are not separators.\nA candidate solution:\n\u0060\u0060\u0060js\nfunction parseCsv(line) {\n  const fields = [];\n  const quotedField = [];\n  let inQuotes = false;\n  let currentField = \u0027\u0027;\n  for (let i = 0; i \u003C line.length; i\u002B\u002B) {\n    const char = line[i];\n    if (char === \u0027\u0022\u0027) {\n      inQuotes = !inQuotes;\n      quotedField.push(char);\n    } else if (char === \u0027,\u0027 \u0026\u0026 !inQuotes) {\n      fields.push(currentField.trim());\n      currentField = \u0027\u0027;\n    } else {\n      currentField \u002B= char;\n    }\n  }\n  if (currentField.trim()) {\n    fields.push(currentField.trim());\n  }\n  if (quotedField.length \u003E 0) {\n    const quotedFieldStr = quotedField.join(\u0027\u0027);\n    const unescapedField = quotedFieldStr.replace(/\u0022\u0022/g, \u0027\u0022\u0027);\n    fields.push(unescapedField);\n  }\n  return fields;\n}\n\u0060\u0060\u0060\nTest inputs (the expected outputs are not shown):\n  1. [\u0022a,b,c\u0022]\n  2. [\u0022\\\u0022hello, world\\\u0022,x\u0022]\n  3. [\u0022\u0022]\n  4. [\u0022\\\u0022a\\\u0022\\\u0022b\\\u0022\u0022]\n  5. [\u00221,,3\u0022]\nQuestion: does the candidate return the correct output for every one of these inputs?\nAnswer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification.",
+      "promptUtf16Length": 1309,
+      "promptSha256": "4306d27e64fdf588f5f25f3a6d6da7513f892994d2cbc51ec10a1ce70894e272",
+      "archive": {
+        "run": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5",
+        "step": 6955,
+        "codeSha256": "6a84b493ac6b6e2da9fb985ef229e936c47eecac27fd139d53272b0a97ff2928",
+        "construction": "existing archived candidate"
+      }
+    },
+    {
+      "id": "format-pre-str-count-words",
+      "kind": "format-A",
+      "taskId": "pre-str-count-words",
+      "prompt": "You are verifying a JavaScript solution against a task.\nTask: Write a function \u0060countWords(s)\u0060 that returns the number of whitespace-separated words in s.\nCandidate code:\n\u0060\u0060\u0060js\nfunction countWords(s) { return s.split(/\\s\u002B/).filter(w =\u003E w.length \u003E 0).length; }\n\u0060\u0060\u0060\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [\u0022a b  c\u0022] (expected WITHHELD)\n  case 1: args = [\u0022\u0022] (expected WITHHELD)\n  case 2: args = [\u0022  one \u0022] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \u0022PASS\u0022 or \u0022FAIL\u0022, followed by a short reason.",
+      "promptUtf16Length": 656,
+      "promptSha256": "37ff5d553d24bfd641dc2c5cf886bab62459a45ac5e245ae1200b3646531852a",
+      "archive": null
+    },
+    {
+      "id": "format-pre-arr-last",
+      "kind": "format-A",
+      "taskId": "pre-arr-last",
+      "prompt": "You are verifying a JavaScript solution against a task.\nTask: Write a function \u0060last(arr)\u0060 that returns the last element of arr, or null when arr is empty.\nCandidate code:\n\u0060\u0060\u0060js\nfunction last(arr) { return arr.length ? arr[0] : null; }\n\u0060\u0060\u0060\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [[1,2,3]] (expected WITHHELD)\n  case 1: args = [[]] (expected WITHHELD)\n  case 2: args = [[\u0022x\u0022]] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \u0022PASS\u0022 or \u0022FAIL\u0022, followed by a short reason.",
+      "promptUtf16Length": 628,
+      "promptSha256": "020166ab13c2794b721f9b45ee3dd7b650fef83a574e800c8de0158862b3df81",
+      "archive": null
+    },
+    {
+      "id": "format-pre-math-sum-squares",
+      "kind": "format-A",
+      "taskId": "pre-math-sum-squares",
+      "prompt": "You are verifying a JavaScript solution against a task.\nTask: Write a function \u0060sumOfSquares(nums)\u0060 that returns the sum of the squares of the numbers in nums.\nCandidate code:\n\u0060\u0060\u0060js\nfunction sumOfSquares(nums) { return nums.reduce((s, n) =\u003E s \u002B n * n, 0); }\n\u0060\u0060\u0060\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [[1,2,3]] (expected WITHHELD)\n  case 1: args = [[]] (expected WITHHELD)\n  case 2: args = [[-2]] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \u0022PASS\u0022 or \u0022FAIL\u0022, followed by a short reason.",
+      "promptUtf16Length": 649,
+      "promptSha256": "787b0ffd9f3c7320af88ef1006b7a4108488b26abdd14705ee1c7d829bf717b1",
+      "archive": null
+    },
+    {
+      "id": "format-pre-str-initials",
+      "kind": "format-A",
+      "taskId": "pre-str-initials",
+      "prompt": "You are verifying a JavaScript solution against a task.\nTask: Write a function \u0060initials(name)\u0060 that returns the uppercase first letters of the words in name, e.g. \u0022Ada Lovelace\u0022 -\u003E \u0022AL\u0022.\nCandidate code:\n\u0060\u0060\u0060js\nfunction initials(name) { return name.split(\u0027 \u0027).map(w =\u003E w[0]).join(\u0027\u0027); }\n\u0060\u0060\u0060\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [\u0022Ada Lovelace\u0022] (expected WITHHELD)\n  case 1: args = [\u0022grace brewster hopper\u0022] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \u0022PASS\u0022 or \u0022FAIL\u0022, followed by a short reason.",
+      "promptUtf16Length": 661,
+      "promptSha256": "5e7d69c4a90a3b2d348ff4a1c6e20fb709e6f84df9cfaf199d1a045c8fdd497a",
+      "archive": null
+    },
+    {
+      "id": "format-pre-obj-invert",
+      "kind": "format-A",
+      "taskId": "pre-obj-invert",
+      "prompt": "You are verifying a JavaScript solution against a task.\nTask: Write a function \u0060invert(obj)\u0060 that returns a new object whose keys are obj\u0027s values and whose values are obj\u0027s keys.\nCandidate code:\n\u0060\u0060\u0060js\nfunction invert(obj) { const out = {}; for (const [k, v] of Object.entries(obj)) out[v] = k; return out; }\n\u0060\u0060\u0060\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [{\u0022a\u0022:\u0022x\u0022,\u0022b\u0022:\u0022y\u0022}] (expected WITHHELD)\n  case 1: args = [{}] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \u0022PASS\u0022 or \u0022FAIL\u0022, followed by a short reason.",
+      "promptUtf16Length": 666,
+      "promptSha256": "4c01e29f0542f502211b8902b5381568eded99d8fe503cbddcb869736ee4150e",
+      "archive": null
+    }
+  ]
+}

@@ -24,7 +24,15 @@ public sealed record ChannelMessage(string Platform, string ConversationId, stri
 }
 
 /// <summary>What the companion says back: text, and optionally one picture it drew.</summary>
-public sealed record ChannelReply(string Text, IReadOnlyList<string> Expressions, ImageInfo? Image = null);
+public sealed record ChannelReply(string Text, IReadOnlyList<string> Expressions, ImageInfo? Image = null)
+{
+    public IReadOnlyList<ChannelAttachment> Attachments { get; init; } = [];
+}
+
+/// <summary>Media that a connector can deliver without downloading a private server URL.</summary>
+public sealed record ChannelAttachment(string Kind, string Data);
+
+public sealed record CompanionChatContext(CompanionExperience Experience, Character? Character, string Identity, bool OwnCharacter);
 
 public sealed class BridgeOptions
 {
@@ -75,6 +83,11 @@ public sealed class BridgeOptions
     public Func<PerformanceIntent, ChannelMessage, Task>? OnPerformance { get; init; }
 
     public TimeProvider Time { get; init; } = TimeProvider.System;
+
+    public bool SpeakFirst { get; init; }
+    public Func<ChannelMessage, CompanionExperience>? Companion { get; init; }
+    public Func<ChannelMessage, CancellationToken, Task<CompanionChatContext?>>? ResolveCompanion { get; init; }
+    public Func<ChannelMessage, string, CancellationToken, Task>? PairCompanion { get; init; }
 }
 
 /// <summary>
@@ -103,6 +116,40 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     private ReminderBook? reminders;
     private Character? character;
     private bool characterLoaded;
+    private readonly ConcurrentDictionary<string, ChannelMessage> privateContacts = new(StringComparer.Ordinal);
+
+    public async Task<IReadOnlyList<(ChannelMessage Contact, string Text)>> FirstLinesAsync(Func<string, bool> reachable, CancellationToken ct = default)
+    {
+        var result = new List<(ChannelMessage, string)>();
+        if (!options.SpeakFirst)
+            return result;
+        foreach (var contact in privateContacts.Values.Where(m => reachable(m.Platform)))
+        {
+            var gate = locks.GetOrAdd(contact.Key, _ => new SemaphoreSlim(1, 1));
+            if (!await gate.WaitAsync(0, ct).ConfigureAwait(false))
+                continue;
+            try
+            {
+                var sync = options.ResolveCompanion is null ? null : await options.ResolveCompanion(contact, ct).ConfigureAwait(false);
+                var who = sync?.Character ?? (sync is null ? await CharacterAsync(ct).ConfigureAwait(false) : null);
+                var chat = await ChatForAsync(sync is null ? contact.Key : contact.Key + ":" + sync.Identity, contact.AuthorName, sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
+                var history = await api.MessagesAsync(chat, ct: ct).ConfigureAwait(false);
+                var experience = sync?.Experience ?? options.Companion?.Invoke(contact);
+                var firstOptions = new OrchestratorOptions { Model = options.Orchestrator.Model, CompanionContext = experience is null ? null : experience.SupplyAsync };
+                var orchestrator = new ChatOrchestrator(api, [], firstOptions, options.Time);
+                var zone = experience is not null && !string.IsNullOrWhiteSpace(experience.Profile.TimeZone)
+                    ? experience.Profile.Zone : options.TimeZone ?? TimeZoneInfo.Local;
+                await foreach (var e in orchestrator.SpeakFirstAsync(chat, who, history, $"persona:{who?.Id ?? "default"}",
+                    TimeZoneInfo.ConvertTime(options.Time.GetUtcNow(), zone).Hour, ct).ConfigureAwait(false))
+                {
+                    if (e is TurnCompleted done)
+                        result.Add((contact, done.Reply.Content));
+                }
+            }
+            finally { gate.Release(); }
+        }
+        return result;
+    }
 
     /// <summary>Whether this message is for the companion: private messages, mentions, or its name in the text.</summary>
     public bool ShouldAnswer(ChannelMessage m) =>
@@ -113,6 +160,11 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     {
         if (!ShouldAnswer(message))
             return null;
+        if (message.IsDirect && message.Platform == "qq" && options.PairCompanion is { } pair && CompanionMedia.Command(message.Text, "/bind", "绑定同步") is { } code)
+        {
+            try { await pair(message, code, ct).ConfigureAwait(false); return new ChannelReply("同步绑定完成，后续聊天采用网页所选角色、地点和收藏。", []); }
+            catch (AijadeApiException) { return new ChannelReply("绑定没有完成，请在网页重新生成绑定码后再试。", []); }
+        }
         var now = options.Time.GetUtcNow();
         if (!message.IsDirect && lastReply.TryGetValue(message.Key, out var last) && now - last < options.MinInterval)
             return null;
@@ -121,20 +173,34 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         try
         {
             lastReply[message.Key] = now;
-            var who = await CharacterAsync(ct).ConfigureAwait(false);
-            var chatId = await ChatForAsync(message.Key, message.IsDirect ? $"{message.Platform} · {message.AuthorName}" : $"{message.Platform} · {message.ConversationId}", who, ct).ConfigureAwait(false);
-            var history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false);
+            var sync = options.ResolveCompanion is null ? null : await options.ResolveCompanion(message, ct).ConfigureAwait(false);
+            var who = sync?.Character ?? (sync is null ? await CharacterAsync(ct).ConfigureAwait(false) : null);
+            var chatKey = sync is null ? message.Key : message.Key + ":" + sync.Identity;
+            var chatId = await ChatForAsync(chatKey, message.IsDirect ? $"{message.Platform} · {message.AuthorName}" : $"{message.Platform} · {message.ConversationId}", sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
+            IReadOnlyList<StoredMessage> history;
+            try { history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false); }
+            catch (AijadeApiException e) when (e.Status == 404)
+            {
+                await ForgetAsync(chatKey, ct).ConfigureAwait(false);
+                chatId = await ChatForAsync(chatKey, message.AuthorName, sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
+                history = [];
+            }
+            if (message.IsDirect)
+                privateContacts[message.Key] = message;
+            var experience = sync?.Experience ?? options.Companion?.Invoke(message);
+            if (experience is not null && await CompanionMediaTurn.TryAsync(api, experience, chatId, message.Text, options.Drawing, audio: message.Platform == "qq", ct: ct).ConfigureAwait(false) is { } mediaLine)
+                return new ChannelReply(mediaLine.Content, [], Artistry.ImageOf(mediaLine)) { Attachments = await AttachmentsAsync(mediaLine, ct).ConfigureAwait(false) };
             // Group rooms have many speakers: the model sees who said it.
             var text = message.IsDirect ? message.Text : $"{message.AuthorName}: {message.Text}";
             var session = MemorySession(message);
-            IContextProvider[] providers = options.Memory ? [new MemoryRecallProvider(api, () => true, session: session), .. context ?? []] : [.. context ?? []];
-            var orchestrator = new ChatOrchestrator(api, providers, options.Orchestrator, options.Time, observers);
+            IContextProvider[] providers = [.. options.Memory ? new IContextProvider[] { new MemoryRecallProvider(api, () => true, session: session) } : [], .. context ?? [], .. experience is null ? Array.Empty<IContextProvider>() : [experience]];
+            var orchestrator = new ChatOrchestrator(api, providers, options.Orchestrator, options.Time, [.. observers ?? [], .. experience is null ? Array.Empty<ITurnObserver>() : [experience]]);
             if (options.Memory)
                 _ = RecordAsync(session, message.Text);
             TurnCompleted? done = null;
             string? draw = null;
             var bodiless = options.TextChannelRules ? TextChannel.BodilessChannel(message.Platform) : null;
-            var (reminderNotes, promised) = message.IsDirect && options.ReminderPlatforms.Contains(message.Platform) ? await ReadRemindersAsync(message, ct).ConfigureAwait(false) : ([], null);
+            var (reminderNotes, promised) = message.IsDirect && options.ReminderPlatforms.Contains(message.Platform) ? await ReadRemindersAsync(message, experience?.Profile.Zone, ct).ConfigureAwait(false) : ([], null);
             var notes = (bodiless is null ? [] : TextChannel.Notes(bodiless, message.Text)).Concat(reminderNotes).ToList();
             await foreach (var e in orchestrator.SendAsync(chatId, who, history, text, $"persona:{who?.Id ?? "default"}", notes.Count > 0 ? notes : null, ct).ConfigureAwait(false))
             {
@@ -178,7 +244,18 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                 }
             }
             var replyText = bodiless is null ? done.Reply.Content : TextChannel.PutOff(message.Text, done.Reply.Content);
-            return new ChannelReply(replyText, done.Expressions, image);
+            var attachments = new List<ChannelAttachment>();
+            if (experience is not null && CompanionMedia.Sticker((await experience.Notebook.ReadAsync(ct: ct).ConfigureAwait(false)).Assets, done.Expressions) is { } sticker)
+            {
+                if (await experience.Notebook.AssetAsync(sticker.Id, ct).ConfigureAwait(false) is { } media)
+                    attachments.Add(new("image", media.Data));
+            }
+            if (image is not null && message.Platform == "qq")
+            {
+                var bytes = await api.ImageBytesAsync(image.Id, ct).ConfigureAwait(false);
+                attachments.Add(new("image", $"data:{bytes.Mime};base64,{Convert.ToBase64String(bytes.Bytes)}"));
+            }
+            return new ChannelReply(replyText, done.Expressions, image) { Attachments = attachments };
         }
         finally
         {
@@ -188,13 +265,25 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
 
     private double Now() => options.Time.GetUtcNow().ToUnixTimeMilliseconds() / 1000.0;
 
-    private async Task<(IReadOnlyList<string> Notes, Reminder? Set)> ReadRemindersAsync(ChannelMessage message, CancellationToken ct)
+    private async Task<IReadOnlyList<ChannelAttachment>> AttachmentsAsync(StoredMessage message, CancellationToken ct)
+    {
+        if (message.Meta?["audio"]?["source"]?.GetValue<string>() is { } source)
+            return [new("record", source)];
+        if (Artistry.ImageOf(message) is { } image)
+        {
+            var data = await api.ImageBytesAsync(image.Id, ct).ConfigureAwait(false);
+            return [new("image", $"data:{data.Mime};base64,{Convert.ToBase64String(data.Bytes)}")];
+        }
+        return [];
+    }
+
+    private async Task<(IReadOnlyList<string> Notes, Reminder? Set)> ReadRemindersAsync(ChannelMessage message, TimeZoneInfo? zone, CancellationToken ct)
     {
         await stateGate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
             reminders ??= LoadReminders();
-            var read = reminders.Read(message.Key, message.Text, Now(), options.TimeZone);
+            var read = reminders.Read(message.Key, message.Text, Now(), zone ?? options.TimeZone);
             if (read.Set is not null || read.Notes.Count > 0)
                 SaveReminders();
             return read;
@@ -245,17 +334,27 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         if (due is null)
             return null;
         string? line = null;
+        var chatKey = due.Conversation;
         var gate = locks.GetOrAdd(due.Conversation, _ => new SemaphoreSlim(1, 1));
         await gate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
-            var who = await CharacterAsync(ct).ConfigureAwait(false);
             // A conversation started over since keeps its reminder: her line opens its new chat.
             var split = due.Conversation.IndexOf(':', StringComparison.Ordinal);
-            var chatId = await ChatForAsync(due.Conversation, $"{due.Conversation[..split]} · {due.Conversation[(split + 1)..]}", who, ct).ConfigureAwait(false);
+            var platform = due.Conversation[..split];
+            var subject = due.Conversation[(split + 1)..];
+            var contact = privateContacts.TryGetValue(due.Conversation, out var known) ? known
+                : new ChannelMessage(platform, subject, subject, subject, "", IsDirect: true, AddressesBot: true);
+            var sync = options.ResolveCompanion is null ? null : await options.ResolveCompanion(contact, ct).ConfigureAwait(false);
+            var who = sync is null ? await CharacterAsync(ct).ConfigureAwait(false) : sync.Character;
+            var experience = sync?.Experience ?? options.Companion?.Invoke(contact);
+            chatKey = sync is null ? due.Conversation : due.Conversation + ":" + sync.Identity;
+            var chatId = await ChatForAsync(chatKey, $"{platform} · {subject}", sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
             var history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false);
-            await foreach (var e in new ChatOrchestrator(api, [], options.Orchestrator, options.Time, observers)
-                .RemindAsync(chatId, who, history, $"persona:{who?.Id ?? "default"}", due, options.TimeZone, ct).ConfigureAwait(false))
+            var reminderOptions = new OrchestratorOptions { Model = options.Orchestrator.Model, Temperature = options.Orchestrator.Temperature,
+                CompanionContext = experience is null ? options.Orchestrator.CompanionContext : experience.SupplyAsync };
+            await foreach (var e in new ChatOrchestrator(api, [], reminderOptions, options.Time, observers)
+                .RemindAsync(chatId, who, history, $"persona:{who?.Id ?? "default"}", due, experience?.Profile.Zone ?? options.TimeZone, ct).ConfigureAwait(false))
             {
                 if (e is TurnCompleted c)
                     line = c.Reply.Content;
@@ -263,7 +362,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         }
         catch (AijadeApiException e) when (e.Status == 404)
         {
-            await ForgetAsync(due.Conversation, ct).ConfigureAwait(false); // its chat was deleted: the next check opens a new one
+            await ForgetAsync(chatKey, ct).ConfigureAwait(false); // its chat was deleted: the next check opens a new one
         }
         catch (Exception e) when (e is AijadeApiException or HttpRequestException || (e is OperationCanceledException && !ct.IsCancellationRequested))
         {
@@ -360,7 +459,11 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     }
 
     /// <summary>Forget a conversation's chat (e.g. the user asked to start over); the next message opens a new one.</summary>
-    public Task ResetAsync(ChannelMessage m, CancellationToken ct = default) => ForgetAsync(m.Key, ct);
+    public async Task ResetAsync(ChannelMessage m, CancellationToken ct = default)
+    {
+        var sync = options.ResolveCompanion is null ? null : await options.ResolveCompanion(m, ct).ConfigureAwait(false);
+        await ForgetAsync(sync is null ? m.Key : m.Key + ":" + sync.Identity, ct).ConfigureAwait(false);
+    }
 
     private async Task ForgetAsync(string key, CancellationToken ct)
     {

@@ -28,7 +28,7 @@ public sealed class GatewayRoutes(NpgsqlDataSource db, IDataProtectionProvider d
     public const string ConfigKey = "gateway.routes";
 
     /// <summary>Sections holding one route each (beside the per-alias "models"); their keys are encrypted and masked alike.</summary>
-    public static IReadOnlyList<string> SingleRouteSections { get; } = ["speech", "images", "embeddings", "transcription", "alignment"];
+    public static IReadOnlyList<string> SingleRouteSections { get; } = ["speech", "images", "embeddings", "transcription", "alignment", "singing"];
     private const string Purpose = "Aijade.GatewayKey.v1";
 
     private IDataProtector Protector => dp.CreateProtector(Purpose);
@@ -45,6 +45,8 @@ public sealed class GatewayRoutes(NpgsqlDataSource db, IDataProtectionProvider d
     {
         var node = section == "models" ? doc?["models"]?[alias] : doc?[section];
         if (node is not JsonObject o)
+            return null;
+        if (o["enabled"] is JsonValue enabled && enabled.TryGetValue<bool>(out var active) && !active)
             return null;
         var keys = (o["keys"] as JsonArray ?? []).Select(k => Protector.Unprotect(k!.GetValue<string>())).ToList();
         return new GatewayRoute(alias, o["upstream"]!.GetValue<string>().TrimEnd('/'), o["model"]?.GetValue<string>() ?? alias, keys,
@@ -220,6 +222,7 @@ public static class GatewayEndpoints
 
     public static void Map(IEndpointRouteBuilder app)
     {
+        CompanionLocalServices.Map(app);
         var g = app.MapGroup("/api/v1/openai/v1").RequireAuthorization();
         g.MapGet("/models", async (GatewayRoutes routes, CancellationToken ct) => Results.Json(new JsonObject
         {

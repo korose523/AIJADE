@@ -1,0 +1,52 @@
+{
+  "id": "warm-retry-longest-code",
+  "kind": "retry",
+  "startedAt": "2026-11-09T13:57:43.776024+00:00",
+  "requestSha256": "6303c8d3ed59950e949c4c564911a3dda7abd3fbbe38c7dbbc25cf37c8589319",
+  "observedWallSeconds": 63.408346944022924,
+  "workerExitCode": 0,
+  "metrics": {
+    "completed": true,
+    "doneReason": "stop",
+    "truncated": false,
+    "empty": false,
+    "characters": 573,
+    "wallSeconds": 62.58885720698163,
+    "total_duration": 62560486032,
+    "load_duration": 32072162,
+    "prompt_eval_duration": 19938650000,
+    "eval_duration": 42572886000,
+    "prompt_eval_count": 486,
+    "eval_count": 159,
+    "generationTokensPerSecond": 3.7347714693337917,
+    "wallOutputTokensPerSecond": 2.5403882910689086,
+    "hasJavaScriptCodeFence": true,
+    "onlyRequestedCodeFence": true
+  },
+  "responseSha256": "fbcf9ae63d4300e1c77a621313ca4481c1c0405482b8d9447a3f50ff51d52d75",
+  "status": "COMPLETED",
+  "loadedModelState": {
+    "models": [
+      {
+        "name": "qwen2.5-coder:7b-instruct",
+        "model": "qwen2.5-coder:7b-instruct",
+        "size": 5069917388,
+        "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-09T23:03:46.446622+09:00",
+        "size_vram": 0,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  }
+}

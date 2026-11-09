@@ -1,0 +1,51 @@
+{
+  "id": "cold-ready",
+  "kind": "startup",
+  "startedAt": "2026-11-09T13:53:55.517029+00:00",
+  "requestSha256": "34dfd4f61c34ce17f400a9bf98f929d055fef35112c2256492ad347e07ef648c",
+  "observedWallSeconds": 180.091562588932,
+  "workerExitCode": 0,
+  "metrics": {
+    "completed": true,
+    "doneReason": "stop",
+    "truncated": false,
+    "empty": false,
+    "characters": 5,
+    "wallSeconds": 179.68886439292692,
+    "total_duration": 179662510776,
+    "load_duration": 177349721047,
+    "prompt_eval_duration": 2078311000,
+    "eval_duration": 232261000,
+    "prompt_eval_count": 36,
+    "eval_count": 2,
+    "generationTokensPerSecond": 8.611002277610103,
+    "wallOutputTokensPerSecond": 0.011130350268264737,
+    "readyExactly": true
+  },
+  "responseSha256": "011c76f0900fd2fdb93f9619636a21ea6bcb56104e2360ca11d3dc856598f59d",
+  "status": "COMPLETED",
+  "loadedModelState": {
+    "models": [
+      {
+        "name": "qwen2.5-coder:7b-instruct",
+        "model": "qwen2.5-coder:7b-instruct",
+        "size": 5069917388,
+        "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-09T23:01:55.284917+09:00",
+        "size_vram": 0,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  }
+}

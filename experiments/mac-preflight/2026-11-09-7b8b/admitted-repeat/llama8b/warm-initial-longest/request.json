@@ -1,0 +1,17 @@
+{
+  "model": "llama3.1:8b",
+  "messages": [
+    {
+      "role": "user",
+      "content": "You are an expert JavaScript programmer.\nImplement the following function. Task: Write a function `parseCsv(line)` that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \"\" inside a quoted field represents a single quote; commas inside quotes are not separators.\nRespond with ONLY a single fenced JavaScript code block (```js ... ```)\nthat defines a function named `solve` (or a single callable expression).\nDo not include any explanation outside the code block."
+    }
+  ],
+  "stream": false,
+  "keep_alive": 300,
+  "options": {
+    "temperature": 0,
+    "seed": 3759066737,
+    "num_ctx": 4096,
+    "num_predict": 4096
+  }
+}

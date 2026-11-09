@@ -29,13 +29,21 @@
             }
             @foreach (var m in messages.Where(m => m.Role is "user" or "assistant"))
             {
-                if (Artistry.ImageOf(m) is { } image)
+                if (m.Meta?["audio"] is System.Text.Json.Nodes.JsonObject audio)
+                {
+                    <div class="bubble assistant">@m.Content <audio controls preload="none" src="@audio["source"]"></audio></div>
+                }
+                else if (Artistry.ImageOf(m) is { } image)
                 {
                     <ChatImage @key="m.Id" Image="image" />
                 }
                 else
                 {
                     <div class="bubble @m.Role">@m.Content</div>
+                    @if (StickerFor(m) is { } sticker)
+                    {
+                        <img class="companion-sticker" src="@sticker.Data" alt="@sticker.Name" style="max-width:128px;max-height:128px" />
+                    }
                 }
             }
             @if (drawing)
@@ -104,6 +112,37 @@
     private bool busy;
     private bool drawing;
     private bool attached;
+    private IReadOnlyList<CompanionAsset> stickerAssets = [];
+    private CompanionAsset? StickerFor(StoredMessage m) => m.Role != "assistant" ? null : CompanionMedia.Sticker(stickerAssets,
+        (m.Meta?["expressions"] as JsonArray ?? []).Select(n => n?.GetValue<string>() ?? ""));
+    private double typingSpent;
+
+    private async Task AppendPacedAsync(string text)
+    {
+        if (streaming.Length == 0)
+            typingSpent = 0;
+        if (!State.Settings.Current.Companion.NaturalPacing || typingSpent >= 8000)
+        {
+            streaming += text;
+            StateHasChanged();
+            return;
+        }
+        var elements = System.Globalization.StringInfo.GetTextElementEnumerator(text);
+        var chunk = new System.Text.StringBuilder();
+        var count = 0;
+        while (elements.MoveNext())
+        {
+            chunk.Append(elements.GetTextElement());
+            if (++count < 3 && elements.ElementIndex + elements.GetTextElement().Length < text.Length)
+                continue;
+            var delay = Math.Min(8000 - typingSpent, count * 25);
+            typingSpent += delay;
+            await Task.Delay(TimeSpan.FromMilliseconds(delay), cts?.Token ?? CancellationToken.None);
+            streaming += chunk;
+            chunk.Clear(); count = 0;
+            StateHasChanged();
+        }
+    }
 
     private async Task AttachAsync(InputFileChangeEventArgs e)
     {
@@ -172,13 +211,16 @@
         cts = new CancellationTokenSource();
         try
         {
-            await foreach (var e in Orchestrator().SpeakFirstAsync(chatId, character, messages.ToList(), $"persona:{character?.Id ?? "default"}", DateTime.Now.Hour, cts.Token))
+            var shared = await State.ReloadCompanionAsync();
+            if (shared.CharacterId != character?.Id) return;
+            character = shared.Character;
+            var localHour = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, shared.RuntimeProfile.Zone).Hour;
+            await foreach (var e in Orchestrator().SpeakFirstAsync(chatId, character, messages.ToList(), $"persona:{character?.Id ?? "default"}", localHour, cts.Token))
             {
                 switch (e)
                 {
                     case TextDelta d:
-                        streaming += d.Text;
-                        StateHasChanged();
+                        await AppendPacedAsync(d.Text);
                         break;
                     case TurnFailed:
                         messages = [.. await State.Api.MessagesAsync(chatId)]; // a first line that failed stays unsaid
@@ -231,14 +273,16 @@
         try
         {
             var history = open ? messages.ToList() : [.. await State.Api.MessagesAsync(due.Conversation)];
+            var chat = (await State.Api.ChatsAsync(cts.Token)).FirstOrDefault(c => c.Id == due.Conversation);
+            if (chat is null) { gone = true; return; }
+            var shared = await State.Sync.ReadAsync(chat.CharacterId, ct: cts.Token);
             var home = open && State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
-            await foreach (var e in Orchestrator().RemindAsync(due.Conversation, character, history, $"persona:{character?.Id ?? "default"}", due, ct: cts.Token))
+            await foreach (var e in OrchestratorFor(shared.Character).RemindAsync(due.Conversation, shared.Character, history, $"persona:{shared.CharacterId ?? "default"}", due, shared.RuntimeProfile.Zone, cts.Token))
             {
                 switch (e)
                 {
                     case TextDelta d when open:
-                        streaming += d.Text;
-                        StateHasChanged();
+                        await AppendPacedAsync(d.Text);
                         break;
                     case TurnCompleted done:
                         said = true;
@@ -331,9 +375,21 @@
         if (ChatId == loadedChatId && (busy || messages.Count > 0))
             return;
         loadedChatId = ChatId;
+        var shared = await State.ReloadCompanionAsync();
         messages = ChatId is null ? [] : [.. await State.Api.MessagesAsync(ChatId)];
-        var characterId = State.Settings.Current.ActiveCharacterId;
-        character = characterId is null ? null : (await State.Api.CharactersAsync()).FirstOrDefault(c => c.Id == characterId);
+        var selected = chats.FirstOrDefault(c => c.Id == ChatId);
+        if (selected is not null && selected.CharacterId != shared.CharacterId)
+        {
+            await State.SelectCompanionAsync(selected.CharacterId);
+            shared = State.SharedCompanion!;
+        }
+        character = shared.Character;
+        try { stickerAssets = (await State.CompanionFor(character?.Id).Notebook.ReadAsync(includeMedia: true)).Assets.Where(a => a.Kind == "sticker").ToList(); }
+        catch (Exception e) when (e is JSException or System.Text.Json.JsonException or InvalidOperationException)
+        {
+            stickerAssets = [];
+            Console.Error.WriteLine($"Companion collection unavailable: {e.GetType().Name}");
+        }
     }
 
     private async Task LoadChatsAsync() => chats = await State.Api.ChatsAsync();
@@ -353,20 +409,24 @@
             Nav.NavigateTo("");
     }
 
-    private ChatOrchestrator Orchestrator()
+    private ChatOrchestrator Orchestrator() => OrchestratorFor(character);
+
+    private ChatOrchestrator OrchestratorFor(Character? who)
     {
         var s = State.Settings.Current;
         var learning = Capabilities.For(State.Account?.Id ?? "anonymous");
-        return new ChatOrchestrator(State.Api, [new MemoryRecallProvider(State.Api, () => State.Settings.Current.Modules.Memory), learning, Vision.Context,
+        var companion = State.CompanionFor(who?.Id);
+        return new ChatOrchestrator(State.Api, [new MemoryRecallProvider(State.Api, () => State.Settings.Current.Modules.Memory), learning, Vision.Context, companion,
             new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.BrowserContext),
             new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.IdeContext, "ide")],
             new OrchestratorOptions
             {
-                Model = s.Model, Temperature = s.Temperature, AgentId = character?.Id ?? "aijade", UserScope = State.Account?.Id ?? "default",
+                Model = s.Model, Temperature = s.Temperature, AgentId = who?.Id ?? "aijade", UserScope = State.Account?.Id ?? "default",
                 Drawing = () => canDraw && State.Settings.Current.Modules.Artistry,
                 Tools = () => State.Settings.Current.Modules.Mcp,
+                CompanionContext = companion.SupplyAsync,
             },
-            observers: [learning]);
+            observers: [learning, companion]);
     }
 
     private async Task SendAsync()
@@ -375,6 +435,21 @@
         if (text.Length == 0 || busy)
             return;
         busy = true; // before any navigation, so the parameter reload leaves this turn alone
+        try
+        {
+            var shared = await State.ReloadCompanionAsync();
+            character = shared.Character;
+            if (chats.FirstOrDefault(c => c.Id == ChatId) is { } old && old.CharacterId != shared.CharacterId)
+            {
+                ChatId = null;
+                messages = [];
+                stickerAssets = [];
+            }
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        {
+            error = e.Message; busy = false; return;
+        }
         if (ChatId is null)
         {
             try
@@ -411,6 +486,11 @@
             if (settings.RecordConversations && settings.Modules.Memory)
                 _ = new ConversationRecorder(State.Api, State.MemorySessionId, State.DeviceId).RecordAsync(text);
             canDraw = (await State.CapabilitiesAsync()).Images;
+            if (await CompanionMediaTurn.TryAsync(State.Api, State.CompanionFor(character?.Id), ChatId, text, canDraw && settings.Modules.Artistry, ct: cts.Token) is not null)
+            {
+                messages = [.. await State.Api.MessagesAsync(ChatId)];
+                return;
+            }
             var drawRequests = new List<string>();
             // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
             var home = settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
@@ -418,7 +498,7 @@
             // A reminder asked for, cancelled or asked about is decided by fixed words before the reply, and she is told so (ADR-003).
             var reminders = State.Reminders;
             var book = await reminders.LoadAsync();
-            var (reminderNotes, promised) = book.Read(ChatId, text, Now());
+            var (reminderNotes, promised) = book.Read(ChatId, text, Now(), State.SharedCompanion?.RuntimeProfile.Zone);
             if (promised is not null || reminderNotes.Count > 0)
                 await reminders.SaveAsync(book, Now());
             var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
@@ -429,8 +509,7 @@
                 switch (e)
                 {
                     case TextDelta d:
-                        streaming += d.Text;
-                        StateHasChanged();
+                        await AppendPacedAsync(d.Text);
                         break;
                     case TurnFailed f:
                         error = f.Code == "INSUFFICIENT_FLUX" ? State.Text["chat.noFlux"] : State.Text.Format("chat.error", f.Message);
@@ -441,6 +520,11 @@
                         break;
                     case TurnCompleted done:
                         messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        try { stickerAssets = (await State.CompanionFor(character?.Id).Notebook.ReadAsync(includeMedia: true)).Assets.Where(a => a.Kind == "sticker").ToList(); }
+                        catch (Exception collectionError) when (collectionError is JSException or System.Text.Json.JsonException or InvalidOperationException)
+                        {
+                            Console.Error.WriteLine($"Companion collection unavailable: {collectionError.GetType().Name}");
+                        }
                         if (promised is not null)
                         {
                             // Her answer is kept, so that the due line does not repeat the promise (read afresh: the minute loop may have saved meanwhile).

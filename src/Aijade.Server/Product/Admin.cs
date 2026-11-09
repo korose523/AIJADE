@@ -72,6 +72,7 @@ public static class AdminEndpoints
                     throw ApiException.BadRequest($"models.{alias}.upstream must be an absolute URL", "INVALID_REQUEST");
             }
             ImageEndpoints.Validate(b);
+            CompanionLocalServices.ValidateSections(b);
             await routes.SaveAsync(await routes.ResolveMaskedKeysAsync(b, ct).ConfigureAwait(false), ct).ConfigureAwait(false);
             return Results.Json(new JsonObject { ["ok"] = true });
         });

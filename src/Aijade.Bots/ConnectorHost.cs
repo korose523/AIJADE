@@ -42,6 +42,8 @@ public sealed class ConnectorHost(IEnumerable<IChannelConnector> connectors, Com
                 try
                 {
                     await RemindOnceAsync(bridge, proactive, ct).ConfigureAwait(false);
+                    foreach (var (contact, text) in await bridge.FirstLinesAsync(proactive.ContainsKey, ct).ConfigureAwait(false))
+                        await proactive[contact.Platform].SendAsync(contact.ConversationId, text, ct).ConfigureAwait(false);
                 }
                 catch (Exception e) when (!ct.IsCancellationRequested) // an HttpClient timeout is a TaskCanceledException too
                 {
@@ -118,13 +120,17 @@ public static class Connectors
     /// QQ through NapCat (OneBot:NapCat set), or null. With OneBot:Voice=true her owner's voice messages are transcribed by the
     /// server's speech recognition (the gateway's transcription route; MOSAIC's bridge does it with --asr).
     /// </summary>
-    public static OneBotConnector? OneBot(IConfiguration config, AijadeApi api) =>
+    public static OneBotConnector? OneBot(IConfiguration config, AijadeApi api, CompanionConfiguration? companion = null) =>
         config["OneBot:NapCat"] is not { Length: > 0 } napcat ? null
             : new OneBotConnector(int.TryParse(config["OneBot:Port"], out var port) ? port : 8795, new Uri(napcat),
                 KeyFile(config["OneBot:TokenFile"], "OneBot:TokenFile"), KeyFile(config["OneBot:SecretFile"], "OneBot:SecretFile"),
                 config["OneBot:Owner"] is { Length: > 0 } owner ? owner : throw new InvalidOperationException("OneBot:Owner (the owner's QQ number) is required"),
-                new HttpClient { Timeout = TimeSpan.FromSeconds(30) },
-                bool.TryParse(config["OneBot:Voice"], out var voice) && voice ? (wav, ct) => api.TranscribeAsync(wav, "audio/wav", "zh-CN", 0, ct) : null);
+                new HttpClient(new HttpClientHandler { AllowAutoRedirect = false }) { Timeout = TimeSpan.FromSeconds(30) },
+                bool.TryParse(config["OneBot:Voice"], out var voice) && voice ? (wav, ct) => api.TranscribeAsync(wav, "audio/wav", "zh-CN", 0, ct) : null,
+                null,
+                companion?.Profile.NaturalPacing == true,
+                bool.TryParse(config["OneBot:SpeakReplies"], out var speak) && speak ? (text, ct) => api.SpeechAsync(text, config["OneBot:TtsVoice"] ?? "alloy", ct: ct) : null,
+                companion is null ? null : async ct => (await companion.ForAsync(new ChannelMessage("qq", config["OneBot:Owner"]!, config["OneBot:Owner"]!, "owner", "", true, true), ct).ConfigureAwait(false))!.Experience);
 
     /// <summary>A key read from a file, as MOSAIC's bridge reads them: never from the command line or the environment.</summary>
     private static string KeyFile(string? path, string setting) =>

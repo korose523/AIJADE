@@ -1,0 +1,17 @@
+{
+  "model": "llama3.1:8b",
+  "messages": [
+    {
+      "role": "user",
+      "content": "You are verifying a JavaScript solution against a task.\nTask: Write a function `invert(obj)` that returns a new object whose keys are obj's values and whose values are obj's keys.\nCandidate code:\n```js\nfunction invert(obj) { const out = {}; for (const [k, v] of Object.entries(obj)) out[v] = k; return out; }\n```\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [{\"a\":\"x\",\"b\":\"y\"}] (expected WITHHELD)\n  case 1: args = [{}] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason."
+    }
+  ],
+  "stream": false,
+  "keep_alive": 300,
+  "options": {
+    "temperature": 0,
+    "seed": 3759066737,
+    "num_ctx": 4096,
+    "num_predict": 4096
+  }
+}

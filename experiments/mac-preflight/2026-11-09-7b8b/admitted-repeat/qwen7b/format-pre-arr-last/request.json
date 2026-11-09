@@ -1,0 +1,17 @@
+{
+  "model": "qwen2.5-coder:7b-instruct",
+  "messages": [
+    {
+      "role": "user",
+      "content": "You are verifying a JavaScript solution against a task.\nTask: Write a function `last(arr)` that returns the last element of arr, or null when arr is empty.\nCandidate code:\n```js\nfunction last(arr) { return arr.length ? arr[0] : null; }\n```\nYou are given ONLY the inputs of the test cases, never the expected outputs:\n  case 0: args = [[1,2,3]] (expected WITHHELD)\n  case 1: args = [[]] (expected WITHHELD)\n  case 2: args = [[\"x\"]] (expected WITHHELD)\nFor each case, decide whether the code returns the correct result, then give an overall verdict.\nRespond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason."
+    }
+  ],
+  "stream": false,
+  "keep_alive": 300,
+  "options": {
+    "temperature": 0,
+    "seed": 3759066737,
+    "num_ctx": 4096,
+    "num_predict": 4096
+  }
+}

@@ -33,7 +33,10 @@ public interface ITurnObserver
     Task AssistantTurnAsync(TurnContext turn, string reply, CancellationToken ct);
 }
 
-public sealed record TurnContext(string ChatId, Character? Character, IReadOnlyList<StoredMessage> History, string UserText);
+public sealed record TurnContext(string ChatId, Character? Character, IReadOnlyList<StoredMessage> History, string UserText)
+{
+    public string? UserMessageId { get; init; }
+}
 
 public abstract record OrchestratorEvent;
 
@@ -69,6 +72,9 @@ public sealed class OrchestratorOptions
 
     /// <summary>Tool-call rounds per turn before the model must answer.</summary>
     public int MaxToolRounds { get; set; } = 4;
+
+    /// <summary>Optional fictional life context for product-only first lines; it does not call research memory providers.</summary>
+    public Func<TurnContext, CancellationToken, Task<string?>>? CompanionContext { get; set; }
 }
 
 /// <summary>Lifts [[emote:name]] markers out of streamed text, including markers split across chunks.</summary>
@@ -386,7 +392,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
             yield break;
         }
 
-        var turn = new TurnContext(chatId, character, history, userText);
+        var turn = new TurnContext(chatId, character, history, userText) { UserMessageId = user.Id };
         await NotifyAsync(o => o.UserTurnAsync(turn, ct)).ConfigureAwait(false);
         var supplements = new List<string>();
         foreach (var p in providers)
@@ -524,7 +530,10 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
     private async IAsyncEnumerable<OrchestratorEvent> ProactiveLineAsync(string chatId, Character? character, IReadOnlyList<InitiativeExchange> exchanges,
         string note, string cue, JsonObject extraMeta, string personaSnapshotRef, [EnumeratorCancellation] CancellationToken ct)
     {
-        var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, [])) };
+        var companion = options.CompanionContext is { } supply
+            ? await supply(new TurnContext(chatId, character, exchanges.SelectMany(x => x.User is null ? new[] { x.Reply } : new[] { x.User, x.Reply }).ToList(), cue), ct).ConfigureAwait(false)
+            : null;
+        var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, companion is null ? [] : [companion])) };
         foreach (var x in exchanges.TakeLast(Initiative.HistoryWindow))
         {
             if (x.User is not null)

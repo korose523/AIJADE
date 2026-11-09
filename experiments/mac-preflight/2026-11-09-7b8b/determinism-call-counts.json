@@ -1,0 +1,77 @@
+{
+  "kind": "archived call-count scenarios; new trajectories may differ",
+  "runs": [
+    {
+      "run": "family-gpu/rq-c-s42-ollama-t30-r5",
+      "model": "llama3.1:8b",
+      "verifierTemplate": "A",
+      "sourceSha256": "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121",
+      "fullRun": {
+        "steps": 7200,
+        "initialGenerationCalls": 1440,
+        "retryGenerationCalls": 79,
+        "reusedSteps": 5681,
+        "verifierCalls": 770,
+        "retriesWithoutEnvironmentOrCritique": 0
+      },
+      "firstFiveTrials": {
+        "steps": 1200,
+        "initialGenerationCalls": 240,
+        "retryGenerationCalls": 15,
+        "reusedSteps": 945,
+        "verifierCalls": 130,
+        "retriesWithoutEnvironmentOrCritique": 0
+      },
+      "determinismPasses": 5,
+      "warmupCallsPerPass": 1
+    },
+    {
+      "run": "template-gpu/A/rq-c-s42-ollama-t30-r5",
+      "model": "qwen2.5-coder:7b-instruct",
+      "verifierTemplate": "A",
+      "sourceSha256": "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436",
+      "fullRun": {
+        "steps": 7200,
+        "initialGenerationCalls": 1440,
+        "retryGenerationCalls": 162,
+        "reusedSteps": 5598,
+        "verifierCalls": 852,
+        "retriesWithoutEnvironmentOrCritique": 0
+      },
+      "firstFiveTrials": {
+        "steps": 1200,
+        "initialGenerationCalls": 240,
+        "retryGenerationCalls": 22,
+        "reusedSteps": 938,
+        "verifierCalls": 139,
+        "retriesWithoutEnvironmentOrCritique": 0
+      },
+      "determinismPasses": 5,
+      "warmupCallsPerPass": 1
+    },
+    {
+      "run": "template-gpu/B/rq-c-s42-ollama-t30-r5",
+      "model": "qwen2.5-coder:7b-instruct",
+      "verifierTemplate": "B",
+      "sourceSha256": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0",
+      "fullRun": {
+        "steps": 7200,
+        "initialGenerationCalls": 1440,
+        "retryGenerationCalls": 60,
+        "reusedSteps": 5700,
+        "verifierCalls": 750,
+        "retriesWithoutEnvironmentOrCritique": 0
+      },
+      "firstFiveTrials": {
+        "steps": 1200,
+        "initialGenerationCalls": 240,
+        "retryGenerationCalls": 6,
+        "reusedSteps": 954,
+        "verifierCalls": 123,
+        "retriesWithoutEnvironmentOrCritique": 0
+      },
+      "determinismPasses": 5,
+      "warmupCallsPerPass": 1
+    }
+  ]
+}

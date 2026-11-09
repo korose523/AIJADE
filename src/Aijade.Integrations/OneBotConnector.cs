@@ -6,6 +6,8 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Channels;
 
+using Aijade.Client.Companion;
+
 namespace Aijade.Integrations;
 
 /// <summary>
@@ -43,6 +45,11 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     private readonly string owner;
     private readonly HttpClient http;
     private readonly Func<byte[], CancellationToken, Task<string>>? transcribe;
+    private readonly CompanionExperience? companion;
+    private readonly Func<string, CancellationToken, Task<byte[]>>? speak;
+    private readonly bool pacing;
+    private readonly Func<CancellationToken, Task<CompanionExperience>>? companionSource;
+    private long version;
     private int messages, answered, ignored, heard;
 
     /// <param name="port">The port on 127.0.0.1 where NapCat posts its events.</param>
@@ -52,8 +59,13 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     /// <param name="owner">The owner's QQ number: the one person answered.</param>
     /// <param name="http">For NapCat's actions.</param>
     /// <param name="transcribe">Turns a voice message's WAV into words; without it voice messages are not heard.</param>
+    /// <param name="companion">The owner's private collection, for QQ image imports.</param>
+    /// <param name="pacing">Bounded reading/thinking/typing delays before text segments.</param>
+    /// <param name="speak">Optional real TTS route for voice replies.</param>
+    /// <param name="companionSource">Resolves the current paired server scope, including changes made on the Web.</param>
     public OneBotConnector(int port, Uri napcat, string token, string secret, string owner, HttpClient http,
-        Func<byte[], CancellationToken, Task<string>>? transcribe = null)
+        Func<byte[], CancellationToken, Task<string>>? transcribe = null, CompanionExperience? companion = null,
+        bool pacing = false, Func<string, CancellationToken, Task<byte[]>>? speak = null, Func<CancellationToken, Task<CompanionExperience>>? companionSource = null)
     {
         if (token.Length < 16 || secret.Length < 16)
             throw new ArgumentException("the NapCat token and the event secret need at least 16 characters each");
@@ -68,6 +80,10 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
         this.owner = owner;
         this.http = http;
         this.transcribe = transcribe;
+        this.companion = companion;
+        this.pacing = pacing;
+        this.speak = speak;
+        this.companionSource = companionSource;
     }
 
     public string Platform => "qq";
@@ -84,7 +100,11 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     }
 
     /// <summary>A private message from the owner: its text, the files of its voice messages, how many other segments it has.</summary>
-    public sealed record OwnerMessage(string Text, IReadOnlyList<string> Voices, int Other, string Name);
+    public sealed record OwnerMessage(string Text, IReadOnlyList<string> Voices, int Other, string Name)
+    {
+        public IReadOnlyList<(string File, string Url)> Pictures { get; init; } = [];
+        public long Version { get; init; }
+    }
 
     /// <summary>
     /// A private message from the owner, as MOSAIC's owner_message reads it: the text segments joined (a "string" message
@@ -100,6 +120,7 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
             return new OwnerMessage(plain.Trim(), [], 0, name);
         var text = new StringBuilder();
         var voices = new List<string>();
+        var pictures = new List<(string File, string Url)>();
         var other = 0;
         foreach (var segment in (evt["message"] as JsonArray ?? []).OfType<JsonObject>())
         {
@@ -113,12 +134,16 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
                 case "record" when file is { Length: > 0 }:
                     voices.Add(file);
                     break;
+                case "image":
+                    pictures.Add((file ?? "", data?["url"]?.ToString() ?? ""));
+                    other++;
+                    break;
                 default:
                     other++;
                     break;
             }
         }
-        return new OwnerMessage(text.ToString().Trim(), voices, other, name);
+        return new OwnerMessage(text.ToString().Trim(), voices, other, name) { Pictures = pictures };
     }
 
     /// <summary>A private text message from the owner as a channel message; null for anything else and for a message without words.</summary>
@@ -143,6 +168,11 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
             {
                 try
                 {
+                    if (await ImportAsync(message, ct).ConfigureAwait(false) is { } imported)
+                    {
+                        await SendAsync(owner, imported, ct).ConfigureAwait(false);
+                        continue;
+                    }
                     var text = message.Text;
                     if (transcribe is not null)
                     {
@@ -160,7 +190,7 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
                         continue;
                     }
                     if (await handle(new ChannelMessage("qq", owner, owner, message.Name, text, IsDirect: true, AddressesBot: true), ct).ConfigureAwait(false) is { } reply)
-                        await SendAsync(owner, reply.Text, ct).ConfigureAwait(false);
+                        await SendReplyAsync(reply, message.Version, ct).ConfigureAwait(false);
                 }
                 catch (Exception) when (!ct.IsCancellationRequested)
                 {
@@ -242,7 +272,7 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
             if (ReadOwnerMessage(evt, owner) is { } message)
             {
                 Interlocked.Increment(ref messages);
-                inbox.TryWrite(message);
+                inbox.TryWrite(message with { Version = Interlocked.Increment(ref version) });
             }
             else if (Text(evt["post_type"]) == "message")
             {
@@ -260,8 +290,94 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     {
         if (conversationId != owner)
             throw new InvalidOperationException("only the owner's private conversation is reached");
-        foreach (var part in ChannelText.Split(text, MaxText))
-            await PostAsync(part, ct).ConfigureAwait(false);
+        await SendReplyAsync(new ChannelReply(text, []), Volatile.Read(ref version), ct).ConfigureAwait(false);
+    }
+
+    /// <summary>Uses OneBot image/record segments; a new inbound message interrupts the unsent artificial typing delay.</summary>
+    public async Task SendReplyAsync(ChannelReply reply, long expectedVersion, CancellationToken ct)
+    {
+        var natural = pacing;
+        if (companionSource is not null)
+        {
+            try { natural = (await companionSource(ct).ConfigureAwait(false)).Profile.NaturalPacing; }
+            catch (Exception e) when (!ct.IsCancellationRequested && e is Aijade.Client.Api.AijadeApiException or HttpRequestException) { natural = false; }
+        }
+        foreach (var chunk in ChannelText.Split(reply.Text, MaxText))
+        {
+            foreach (var part in CompanionPacing.Plan(chunk, natural))
+            {
+                await Task.Delay(part.Delay, ct).ConfigureAwait(false);
+                if (Volatile.Read(ref version) != expectedVersion)
+                    return;
+                await PostAsync(part.Text, ct).ConfigureAwait(false);
+            }
+        }
+        foreach (var attachment in reply.Attachments)
+        {
+            if (Volatile.Read(ref version) != expectedVersion)
+                return;
+            var comma = attachment.Data.IndexOf(',', StringComparison.Ordinal);
+            if (attachment.Kind is not ("image" or "record") || comma < 0 || !attachment.Data.StartsWith("data:", StringComparison.Ordinal))
+                throw new ArgumentException("Unsupported QQ media");
+            await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = attachment.Kind, ["data"] = new JsonObject { ["file"] = "base64://" + attachment.Data[(comma + 1)..] } }), ct).ConfigureAwait(false);
+        }
+        if (speak is not null && reply.Attachments.All(a => a.Kind != "record") && reply.Text.Length is > 0 and <= 2000 && Volatile.Read(ref version) == expectedVersion)
+        {
+            var wav = await speak(reply.Text, ct).ConfigureAwait(false);
+            if (Volatile.Read(ref version) == expectedVersion)
+                await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = "record", ["data"] = new JsonObject { ["file"] = "base64://" + Convert.ToBase64String(wav) } }), ct).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<string?> ImportAsync(OwnerMessage message, CancellationToken ct)
+    {
+        var sticker = CompanionMedia.Command(message.Text, "/sticker", "收藏表情");
+        var outfit = CompanionMedia.Command(message.Text, "/outfit", "添加衣服");
+        if (sticker is null && outfit is null)
+            return null;
+        var active = companionSource is null ? companion : await companionSource(ct).ConfigureAwait(false);
+        if (active is null || !active.Profile.Enabled) return null;
+        if (message.Pictures.Count == 0)
+            return "把图片和这条指令一起发送就可以收藏。表情：/sticker joy 名称；衣服：/outfit winter 名称与描述。";
+        var fields = (sticker ?? outfit ?? "").Split(' ', 2, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        var tag = fields.FirstOrDefault() ?? (sticker is null ? "all" : "neutral");
+        var name = fields.Length > 1 ? fields[1] : (sticker is null ? "新衣服" : "新表情");
+        var pic = message.Pictures[0];
+        var url = pic.Url;
+        if (url.Length == 0 && pic.File.Length > 0)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, new Uri(napcat, "get_image")) { Content = new StringContent(new JsonObject { ["file"] = pic.File }.ToJsonString(), Encoding.UTF8, "application/json") };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            using var response = await http.SendAsync(request, ct).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            url = (JsonNode.Parse(await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false)) as JsonObject)?["data"]?["url"]?.GetValue<string>() ?? "";
+        }
+        // An image event must not turn into a request to local services. Only QQ's image CDN is read, without the NapCat token.
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != "https" || uri.Port != 443 || uri.UserInfo.Length > 0 ||
+            !(uri.Host.EndsWith(".qq.com", StringComparison.OrdinalIgnoreCase) || uri.Host.Equals("multimedia.nt.qq.com.cn", StringComparison.OrdinalIgnoreCase) || uri.Host.EndsWith(".qpic.cn", StringComparison.OrdinalIgnoreCase) || uri.Host.EndsWith(".qlogo.cn", StringComparison.OrdinalIgnoreCase)))
+            return "这张图片没有可读取的 QQ 图片地址，请从手机重新发送原图。";
+        using var res = await http.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+        res.EnsureSuccessStatusCode();
+        if (res.Content.Headers.ContentLength > CompanionMedia.MaxBytes)
+            return "图片超过 2 MiB，请缩小后再发。";
+        await using var stream = await res.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
+        using var buffer = new MemoryStream();
+        var chunk = new byte[8192];
+        int read;
+        while ((read = await stream.ReadAsync(chunk, ct).ConfigureAwait(false)) > 0)
+        {
+            if (buffer.Length + read > CompanionMedia.MaxBytes)
+                return "图片超过 2 MiB，请缩小后再发。";
+            await buffer.WriteAsync(chunk.AsMemory(0, read), ct).ConfigureAwait(false);
+        }
+        var mime = res.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
+        try
+        {
+            await active.Notebook.AddAsync(new(Guid.NewGuid().ToString("N"), sticker is null ? "outfit" : "sticker", name,
+                $"data:{mime};base64,{Convert.ToBase64String(buffer.ToArray())}", name, sticker is null ? CompanionMedia.Season(tag) : "all", sticker is null ? "neutral" : CompanionMedia.Emotion(tag)), ct).ConfigureAwait(false);
+        }
+        catch (ArgumentException) { return "没能收藏，请检查图片格式和季节（all/spring/summer/autumn/winter）。"; }
+        return sticker is null ? "新衣服收进衣柜了，会在合适的季节使用。" : "表情收藏好了，聊天时会按情绪使用。";
     }
 
     /// <summary>A voice message as WAV (NapCat get_record, out_format wav), or null when NapCat gives no audio.</summary>
@@ -284,11 +400,14 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     }
 
     private async Task PostAsync(string text, CancellationToken ct)
+        => await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = "text", ["data"] = new JsonObject { ["text"] = text } }), ct).ConfigureAwait(false);
+
+    private async Task PostSegmentsAsync(JsonArray segments, CancellationToken ct)
     {
         var body = new JsonObject
         {
             ["user_id"] = long.Parse(owner, System.Globalization.CultureInfo.InvariantCulture),
-            ["message"] = new JsonArray(new JsonObject { ["type"] = "text", ["data"] = new JsonObject { ["text"] = text } }),
+            ["message"] = segments,
         };
         using var req = new HttpRequestMessage(HttpMethod.Post, new Uri(napcat, "send_private_msg"))
         {

@@ -126,7 +126,15 @@ public sealed class E2EHost : IAsyncLifetime
     {
         var context = await Browser.NewContextAsync(new() { BaseURL = BaseUrl.ToString(), Locale = locale, ViewportSize = new() { Width = 1280, Height = 800 } });
         context.SetDefaultTimeout(30_000);
-        return await context.NewPageAsync();
+        var page = await context.NewPageAsync();
+        if (Environment.GetEnvironmentVariable("AIJADE_E2E_DIAGNOSTICS") is { Length: > 0 } diagnostics)
+        {
+            Directory.CreateDirectory(diagnostics);
+            var log = Path.Combine(diagnostics, "browser-errors.log");
+            page.PageError += (_, message) => File.AppendAllText(log, message + Environment.NewLine);
+            page.Console += (_, message) => { if (message.Type == "error") File.AppendAllText(log, message.Text + Environment.NewLine); };
+        }
+        return page;
     }
 
     /// <summary>Signs up a new account through the UI and waits for the chat page.</summary>

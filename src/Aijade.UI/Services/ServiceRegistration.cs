@@ -22,6 +22,7 @@ public static class ServiceRegistration
         services.AddScoped<SettingsService>();
         services.AddScoped<Strings>();
         services.AddScoped<AppState>();
+        services.AddScoped<BrowserCompanionStore>();
         services.AddScoped<BrowserTelemetryStorage>();
         services.AddScoped<AgentCapabilitiesHost>();
         services.AddScoped<VoiceInput>();

@@ -82,6 +82,7 @@ public static class AijadeServer
         builder.Services.AddSingleton<FluxLedger>();
         builder.Services.AddSingleton<ProductEvents>();
         builder.Services.AddSingleton<ChatHub>();
+        builder.Services.AddSingleton<CompanionSyncStore>();
         builder.Services.AddSingleton<GatewayRoutes>();
         builder.Services.AddSingleton<KeyRotator>();
         builder.Services.AddSingleton<ImageBackends>();
@@ -164,6 +165,7 @@ public static class AijadeServer
             MemoryEndpoints.Map(app);
             MemoryLibrary.Map(app);
             LibraryEndpoints.Map(app);
+            CompanionSyncStore.Map(app);
             GatewayEndpoints.Map(app);
             ImageEndpoints.Map(app);
             LiveContextEndpoints.Map(app);

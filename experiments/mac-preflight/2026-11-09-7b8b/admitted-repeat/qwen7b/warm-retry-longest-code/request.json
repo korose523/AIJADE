@@ -1,0 +1,17 @@
+{
+  "model": "qwen2.5-coder:7b-instruct",
+  "messages": [
+    {
+      "role": "user",
+      "content": "You are an expert JavaScript programmer fixing a previous failure.\nTask: Write a function `parseCsv(line)` that parses a single CSV line into an array of fields. Fields may be quoted with double quotes; a doubled quote \"\" inside a quoted field represents a single quote; commas inside quotes are not separators.\n\n--- WHY THE PREVIOUS ATTEMPT FAILED ---\nThe previous implementation was executed against the task's test suite and FAILED: 2/5 cases passed.\nFailing case indices (0-based): 1, 2, 3.\nThe expected outputs of the test cases are withheld from you. Diagnose the defect from the case inputs and the failure pattern.\nYour own verification step REJECTED the previous implementation with this critique: PASS\nThe code correctly handles quoted fields, commas inside quotes, and empty lines. It also correctly unescapes doubled quotes inside quoted fields.\n\nThe rejected implementation, which you MUST NOT repeat:\n```js\nfunction parseCsv(line) {\n  const fields = [];\n  const quotedField = [];\n  let inQuotes = false;\n  let currentField = '';\n  for (let i = 0; i < line.length; i++) {\n    const char = line[i];\n    if (char === '\"') {\n      inQuotes = !inQuotes;\n      quotedField.push(char);\n    } else if (char === ',' && !inQuotes) {\n      fields.push(currentField.trim());\n      currentField = '';\n    } else {\n      currentField += char;\n    }\n  }\n  if (currentField.trim()) {\n    fields.push(currentField.trim());\n  }\n  if (quotedField.length > 0) {\n    const quotedFieldStr = quotedField.join('');\n    const unescapedField = quotedFieldStr.replace(/\"\"/g, '\"');\n    fields.push(unescapedField);\n  }\n  return fields;\n}\n```\n\nWrite a CORRECTED implementation that is materially DIFFERENT from the rejected one.\nRe-examine the specification and the failing cases; do not just re-emit the same logic with cosmetic edits.\nRespond with ONLY a single fenced JavaScript code block (```js ... ```)\nthat defines a function named `solve` (or a single callable expression).\nDo not include any explanation outside the code block."
+    }
+  ],
+  "stream": false,
+  "keep_alive": 300,
+  "options": {
+    "temperature": 0,
+    "seed": 3759066737,
+    "num_ctx": 4096,
+    "num_predict": 4096
+  }
+}

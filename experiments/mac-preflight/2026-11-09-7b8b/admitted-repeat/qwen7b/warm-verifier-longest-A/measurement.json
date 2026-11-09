@@ -1,0 +1,52 @@
+{
+  "id": "warm-verifier-longest-A",
+  "kind": "verifier-A",
+  "startedAt": "2026-11-09T13:58:47.200199+00:00",
+  "requestSha256": "174d42997a3382ef62dbb9bd650269ae4746eb976b9e259f48e00e5112fbe7c5",
+  "observedWallSeconds": 23.500918878009543,
+  "workerExitCode": 0,
+  "metrics": {
+    "completed": true,
+    "doneReason": "stop",
+    "truncated": false,
+    "empty": false,
+    "characters": 108,
+    "wallSeconds": 23.292500345036387,
+    "total_duration": 23268387740,
+    "load_duration": 32148497,
+    "prompt_eval_duration": 17730291000,
+    "eval_duration": 5478581000,
+    "prompt_eval_count": 430,
+    "eval_count": 23,
+    "generationTokensPerSecond": 4.198167372171736,
+    "wallOutputTokensPerSecond": 0.9874422951291822,
+    "verdictPrefixConforming": true,
+    "singleNonemptyLine": true
+  },
+  "responseSha256": "11a83f4088b69ac6a558762dfaefc7bc67223505bbd213ccea2433b896ff5497",
+  "status": "COMPLETED",
+  "loadedModelState": {
+    "models": [
+      {
+        "name": "qwen2.5-coder:7b-instruct",
+        "model": "qwen2.5-coder:7b-instruct",
+        "size": 5069917388,
+        "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M"
+        },
+        "expires_at": "2026-11-09T23:04:10.572261+09:00",
+        "size_vram": 0,
+        "context_length": 4096,
+        "runner": "llamacpp"
+      }
+    ]
+  }
+}

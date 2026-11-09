@@ -6,6 +6,7 @@ using Aijade.Bots;
 using Aijade.Client.Api;
 using Aijade.Client.Chat;
 using Aijade.Client.Companion;
+using Aijade.Client.Settings;
 using Aijade.Integrations;
 using Aijade.Server.Product;
 
@@ -16,6 +17,65 @@ namespace Aijade.Tests;
 
 public class IntegrationTests
 {
+    [Fact]
+    public async Task Song_delivery_is_only_claimed_on_a_channel_that_can_send_the_recording()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        await using var host = await ServerTestHost.StartAsync(worker: false);
+        var tokens = new MemoryTokenStore(); await tokens.SetAsync(ServerTestHost.Token);
+        var api = new AijadeApi(host.Client, tokens);
+        using var notebook = new CompanionNotebook(new InMemoryKeyValueStore(), "owner");
+        await notebook.AddAsync(new("song", "song", "小曲", "data:audio/wav;base64,UklGRg==", Attribution: "synthetic test fixture"), ct);
+        using var http = new HttpClient();
+        var companion = new CompanionExperience(notebook, () => new(), new(http), "owner");
+        using var bridge = new CompanionBridge(api, new BridgeOptions { Memory = false, Companion = _ => companion });
+        var message = new ChannelMessage("telegram", "12345", "12345", "owner", "/sing 小曲", true, true);
+        var unsupported = await bridge.AnswerAsync(message, ct);
+        Assert.Contains("暂时不能发送歌声", unsupported!.Text, StringComparison.Ordinal);
+        Assert.Empty(unsupported.Attachments);
+        var delivered = await bridge.AnswerAsync(message with { Platform = "qq" }, ct);
+        Assert.Equal("record", Assert.Single(delivered!.Attachments).Kind);
+    }
+
+    [Theory]
+    [InlineData(12, true)]
+    [InlineData(0, false)]
+    public async Task Private_bots_respect_the_configured_clock_cooldown_and_a_request_for_quiet(int localHour, bool shouldShare)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var llm = new ChannelLlm();
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await host.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/routes", new JsonObject
+        {
+            ["models"] = new JsonObject { ["aijade-chat"] = new JsonObject { ["upstream"] = "https://llm.example/v1", ["model"] = "m", ["keys"] = new JsonArray("k") } },
+        }, ServerTestHost.AdminToken);
+        var tokens = new MemoryTokenStore(); await tokens.SetAsync(ServerTestHost.Token);
+        var api = new AijadeApi(host.Client, tokens);
+        var now = DateTimeOffset.UtcNow;
+        var time = new ManualTime(now.ToUnixTimeMilliseconds());
+        var offset = (localHour - now.Hour + 36) % 24 - 12;
+        var zone = TimeZoneInfo.CreateCustomTimeZone("configured-clock", TimeSpan.FromHours(offset), "configured-clock", "configured-clock");
+        using var notebook = new CompanionNotebook(new InMemoryKeyValueStore(), "alice:aijade");
+        using var weatherHttp = new HttpClient();
+        var experience = new CompanionExperience(notebook, () => new(), new(weatherHttp, time), "alice:aijade", time);
+        using var bridge = new CompanionBridge(api, new BridgeOptions { Memory = false, SpeakFirst = true, Time = time, TimeZone = zone, Companion = _ => experience });
+        var contact = new ChannelMessage("qq", "12345", "12345", "Alice", "今天面试，有点紧张", true, true);
+        Assert.NotNull(await bridge.AnswerAsync(contact, ct));
+        time.Advance(TimeSpan.FromSeconds(600));
+        var firstLines = await bridge.FirstLinesAsync(_ => true, ct);
+        if (shouldShare)
+        {
+            Assert.Single(firstLines);
+            Assert.Contains("fictional", SystemPrompt(llm.Chats[^1]), StringComparison.Ordinal);
+        }
+        else Assert.Empty(firstLines);
+        Assert.Empty(await bridge.FirstLinesAsync(_ => true, ct));
+        Assert.NotNull(await bridge.AnswerAsync(contact with { Text = "别打扰，我想休息" }, ct));
+        time.Advance(TimeSpan.FromSeconds(600));
+        Assert.Empty(await bridge.FirstLinesAsync(_ => true, ct));
+    }
+
     private sealed class ChannelLlm : HttpMessageHandler
     {
         public List<JsonNode> Chats { get; } = [];

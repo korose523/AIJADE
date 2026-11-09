@@ -335,6 +335,12 @@ paket-files/
 __pycache__/
 *.pyc
 
+# Final preflight records and their small engineering receipts are archived;
+# transient progress snapshots remain local.
+experiments/mac-preflight/**/result.partial.json
+!experiments/mac-preflight/**/engineering-receipts/*.log
+!experiments/mac-preflight/**/engineering-receipts/*.trx
+
 # Cake - Uncomment if you are using it
 # tools/**
 # !tools/packages.config
@@ -483,3 +489,7 @@ $RECYCLE.BIN/
 
 # MMD bundle build tooling
 tools/mmd-bundle/node_modules/
+
+# Private companion bot notebooks and media; use a state directory outside the checkout.
+/aijade-bots-state.json*
+**/*.companion/

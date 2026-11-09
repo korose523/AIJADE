@@ -23,6 +23,7 @@
   <ItemGroup>
     <!-- Built first, then run as its own process exactly as deployed (static web assets included). -->
     <ProjectReference Include="../../src/Aijade.Server/Aijade.Server.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../../src/Aijade.Bots/Aijade.Bots.csproj" />
   </ItemGroup>
   <Target Name="RecordServerPath" BeforeTargets="GetAssemblyAttributes">
     <MSBuild Projects="../../src/Aijade.Server/Aijade.Server.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">

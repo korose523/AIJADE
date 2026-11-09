@@ -190,6 +190,8 @@ public sealed record AppSettings
 
     public VisionCaptureSettings VisionCapture { get; init; } = new();
 
+    public Aijade.Client.Companion.CompanionProfile Companion { get; init; } = new();
+
     /// <summary>Consent to record research telemetry (persona trajectory, no message text) on this device. Off by default.</summary>
     public bool ResearchConsent { get; init; }
 

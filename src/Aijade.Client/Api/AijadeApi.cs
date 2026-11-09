@@ -367,6 +367,16 @@ public sealed class AijadeApi(HttpClient http, ITokenStore tokens)
         return await res.Content.ReadAsByteArrayAsync(ct).ConfigureAwait(false);
     }
 
+    /// <summary>AIJADE's optional local singing adapter. It returns real WAV bytes, or an explicit unavailable error.</summary>
+    public async Task<byte[]> SingAsync(string song, CancellationToken ct = default)
+    {
+        using var request = await RequestAsync(HttpMethod.Post, "/api/v1/openai/v1/audio/singing", new JsonObject { ["song"] = song }).ConfigureAwait(false);
+        using var response = await http.SendAsync(request, ct).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode)
+            await ReadAsync(response, ct).ConfigureAwait(false);
+        return await response.Content.ReadAsByteArrayAsync(ct).ConfigureAwait(false);
+    }
+
     /// <summary>Keep a selfie her stage took (ADR-003): a JPEG or PNG with its caption, stored for this account like a drawn picture.</summary>
     public async Task<ImageInfo> UploadSelfieAsync(byte[] picture, string caption, string renderer, CancellationToken ct = default)
     {

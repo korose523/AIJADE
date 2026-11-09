@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 
 using Aijade.Client.Companion;
+using Aijade.Client.Settings;
 using Aijade.Integrations;
 
 namespace Aijade.Tests;
@@ -38,9 +39,16 @@ public class OneBotConnectorTests
         public static readonly byte[] Voice = [.. "RIFF"u8, 36, 0, 0, 0, .. "WAVEfmt "u8, 16, 0, 0, 0, 1, 0, 1, 0, 0x80, 0x3E, 0, 0, 0, 0x7D, 0, 0, 2, 0, 16, 0, .. "data"u8, 0, 0, 0, 0];
 
         public List<(string Action, string? Auth, JsonObject Body)> Calls { get; } = [];
+        public int ImageReads { get; private set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (request.Method == HttpMethod.Get)
+            {
+                ImageReads++;
+                Assert.Null(request.Headers.Authorization);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jWQ0AAAAASUVORK5CYII=")) { Headers = { ContentType = new("image/png") } } };
+            }
             var body = (JsonObject)JsonNode.Parse(await request.Content!.ReadAsStringAsync(cancellationToken))!;
             var action = request.RequestUri!.AbsolutePath.TrimStart('/');
             lock (Calls)
@@ -193,6 +201,38 @@ public class OneBotConnectorTests
         using var probe = new TcpListener(IPAddress.Loopback, 0);
         probe.Start();
         return ((IPEndPoint)probe.LocalEndpoint).Port;
+    }
+
+    [Fact]
+    public async Task A_phone_QQ_image_can_be_collected_as_a_sticker_or_outfit_without_leaking_the_NapCat_token()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        using var notebook = new CompanionNotebook(new InMemoryKeyValueStore(), "qq:owner");
+        var transport = new FakeNapCat();
+        using var http = new HttpClient(transport);
+        var companion = new CompanionExperience(notebook, () => new(), new(http), "qq:owner");
+        var port = FreePort();
+        var connector = new OneBotConnector(port, new("http://127.0.0.1:3000"), Token, Secret, Owner, http, companion: companion);
+        using var cancel = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        var (run, post, received, client) = Start(connector, port, cancel.Token);
+        using (client)
+        {
+            static JsonObject Image(string command, string url) => Private(Owner, new JsonArray(
+                new JsonObject { ["type"] = "text", ["data"] = new JsonObject { ["text"] = command } },
+                new JsonObject { ["type"] = "image", ["data"] = new JsonObject { ["url"] = url, ["file"] = "phone.png" } }));
+            Assert.Equal(HttpStatusCode.NoContent, await post(Image("/sticker joy 笑脸", "https://gchat.qpic.cn/phone.png")));
+            for (var i = 0; i < 100 && (await notebook.ReadAsync(ct: TestContext.Current.CancellationToken)).Assets.Count < 1; i++) await Task.Delay(25, ct);
+            Assert.Equal("joy", Assert.Single((await notebook.ReadAsync(ct: TestContext.Current.CancellationToken)).Assets).Emotion);
+            Assert.Equal(HttpStatusCode.NoContent, await post(Image("/outfit winter 红围巾", "https://multimedia.nt.qq.com.cn/scarf.png")));
+            for (var i = 0; i < 100 && (await notebook.ReadAsync(ct: TestContext.Current.CancellationToken)).Assets.Count < 2; i++) await Task.Delay(25, ct);
+            Assert.Equal("winter", (await notebook.ReadAsync(ct: TestContext.Current.CancellationToken)).Assets.Single(a => a.Kind == "outfit").Season);
+            Assert.Equal(HttpStatusCode.NoContent, await post(Image("/sticker joy bad", "http://127.0.0.1/private")));
+            for (var i = 0; i < 100 && transport.Calls.Count(c => c.Action == "send_private_msg") < 3; i++) await Task.Delay(25, ct);
+            Assert.Equal(2, transport.ImageReads);
+            Assert.Equal(2, (await notebook.ReadAsync(ct: TestContext.Current.CancellationToken)).Assets.Count);
+            Assert.Empty(received); // collection commands do not ask a language model to pretend it saved an image
+        }
+        await cancel.CancelAsync(); await run;
     }
 
     [Fact]

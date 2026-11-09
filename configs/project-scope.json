@@ -1,8 +1,9 @@
 {
   "version": 1,
-  "updated": "2026-10-27",
+  "updated": "2026-11-09",
   "scope": "docs/PROJECT-SCOPE.md",
-  "decision": "docs/decisions/ADR-001.md",
+  "decision": "docs/decisions/ADR-004.md",
+  "priority": "AIJADE emotional companionship product first; research apparatus and archived results remain separate",
   "lines": {
     "research": {
       "name": "Research line: the apparatus and artefacts of the dissertation's Chapters 4-7",
@@ -13,7 +14,7 @@
       "mayReference": ["shared"]
     },
     "product": {
-      "name": "Non-research line: the companion product and its extensions (maintained, not extended)",
+      "name": "Companion product: primary development line; includes Web/MAUI and private chat bots",
       "mayReference": ["shared", "product"]
     },
     "tests": {
@@ -25,6 +26,7 @@
     { "path": "src/Aijade.Research", "line": "research", "chapters": [5, 6] },
     { "path": "tools/Aijade.Experiments", "line": "research", "chapters": [4, 5, 6] },
     { "path": "tools/Aijade.Rqc", "line": "research", "chapters": [5] },
+    { "path": "tools/Aijade.MacPreflight", "line": "research", "chapters": [5] },
     { "path": "tools/Aijade.Substrate", "line": "research", "chapters": [5] },
     { "path": "tools/Aijade.P1", "line": "research", "chapters": [4] },
     { "path": "tools/Aijade.Mutation", "line": "research", "chapters": [4] },

@@ -5,13 +5,82 @@ using Aijade.Client.Settings;
 namespace Aijade.UI.Services;
 
 /// <summary>Application state shared by the pages: settings, locale, the signed-in account and device identity.</summary>
-public sealed class AppState(SettingsService settings, Strings strings, AijadeApi api, IKeyValueStore store)
+public sealed class AppState(SettingsService settings, Strings strings, AijadeApi api, IKeyValueStore store, BrowserCompanionStore companionStore)
 {
     public SettingsService Settings => settings;
 
     public Strings Text => strings;
 
     public AijadeApi Api => api;
+
+    private readonly Dictionary<string, Aijade.Client.Companion.CompanionExperience> companions = new(StringComparer.Ordinal);
+    private readonly Aijade.Client.Companion.CompanionWeather weather = new(new HttpClient { Timeout = TimeSpan.FromSeconds(10) });
+
+    public Aijade.Client.Companion.CompanionWeather Weather => weather;
+
+    public Aijade.Client.Companion.CompanionExperience Companion
+        => CompanionFor(Settings.Current.ActiveCharacterId);
+
+    public Aijade.Client.Companion.CompanionExperience CompanionFor(string? characterId)
+    {
+            var scope = $"{Account?.Id ?? "anonymous"}:{characterId ?? "default"}";
+            if (!companions.TryGetValue(scope, out var companion))
+            {
+                var notebook = new Aijade.Client.Companion.SyncedCompanionNotebook(Sync, characterId);
+                companions[scope] = companion = new(notebook, () => notebook.Latest?.RuntimeProfile ?? Settings.Current.Companion, weather, scope);
+            }
+            return companion;
+    }
+
+    public Aijade.Client.Companion.CompanionSync Sync => new(api);
+    public Aijade.Client.Companion.SharedCompanionState? SharedCompanion { get; private set; }
+    public string? CompanionImportWarning { get; private set; }
+    private readonly HashSet<string> bootstrapped = new(StringComparer.Ordinal);
+
+    public async Task<Aijade.Client.Companion.SharedCompanionState> ReloadCompanionAsync()
+    {
+        if (Account is null) throw new InvalidOperationException("Sign in to synchronize the companion");
+        if (!bootstrapped.Contains(Account.Id))
+        {
+            // Copy legacy device data once; leave the original IndexedDB/settings untouched for recovery.
+            var legacyKey = "aijade.companion.legacy." + Account.Id;
+            var original = await store.GetAsync(legacyKey);
+            var legacy = original is null ? Settings.Current : AppSettings.FromJson(original);
+            if (original is null) await store.SetAsync(legacyKey, legacy.ToJson());
+            using var notebook = new Aijade.Client.Companion.CompanionNotebook(companionStore, $"{Account.Id}:{legacy.ActiveCharacterId ?? "default"}");
+            try
+            {
+                await Sync.ImportAsync(legacy.ActiveCharacterId, "web:" + DeviceId, legacy.Companion, await notebook.ReadAsync(), activate: true);
+            }
+            catch (AijadeApiException e) when (e.Status == 404)
+            {
+                // A deleted or inaccessible legacy character is not imported into another character.
+            }
+            catch (AijadeApiException e) when (e.Status is 400 or 409)
+            {
+                // A legacy conflict must not block normal cloud chat or discard the device source.
+                CompanionImportWarning = e.Message;
+            }
+            bootstrapped.Add(Account.Id);
+        }
+        SharedCompanion = await Sync.CurrentAsync();
+        if (Settings.Current.ActiveCharacterId != SharedCompanion.CharacterId || Settings.Current.Companion != SharedCompanion.Profile)
+            await Settings.UpdateAsync(s => s with { ActiveCharacterId = SharedCompanion.CharacterId, Companion = SharedCompanion.Profile });
+        return SharedCompanion;
+    }
+
+    public async Task SelectCompanionAsync(string? characterId)
+    {
+        await Sync.SelectAsync(characterId);
+        await ReloadCompanionAsync();
+    }
+
+    public async Task SaveCompanionProfileAsync(Aijade.Client.Companion.CompanionProfile profile, long revision)
+    {
+        var id = SharedCompanion?.CharacterId;
+        SharedCompanion = await Sync.SaveProfileAsync(id, profile, revision);
+        await Settings.UpdateAsync(s => s with { ActiveCharacterId = id, Companion = SharedCompanion.Profile });
+    }
 
     /// <summary>The reminders she promised in this device's chats (ADR-003), kept per account.</summary>
     public Aijade.Client.Companion.ReminderStore Reminders => new(store, () => Account?.Id ?? "anonymous");
@@ -67,11 +136,15 @@ public sealed class AppState(SettingsService settings, Strings strings, AijadeAp
     public void SetAccount(AccountInfo? account)
     {
         Account = account;
+        SharedCompanion = null;
+        CompanionImportWarning = null;
         capabilities = null;
         Changed?.Invoke();
     }
 
     private ServerCapabilities? capabilities;
+
+    public void InvalidateCapabilities() => capabilities = null;
 
     /// <summary>What the server offers beyond chat (cached per sign-in); nothing when it cannot be asked.</summary>
     public async Task<ServerCapabilities> CapabilitiesAsync()
