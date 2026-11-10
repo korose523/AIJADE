@@ -1,5 +1,6 @@
 using System.Text.Json;
 
+using Aijade.Research.RqC;
 using Aijade.Research.SkillBench;
 
 namespace Aijade.Tests;
@@ -77,6 +78,50 @@ public class SandboxTests(ITestOutputHelper output)
         Assert.NotEqual(Bench.SampleTasks(10, 42).Select(t => t.Id), Bench.SampleTasks(10, 43).Select(t => t.Id));
         Assert.Equal(10, Bench.SampleTasks(10, 1).Select(t => t.Id).Distinct().Count());
         Assert.Equal(Bench.Tasks.Count, Bench.SampleTasks(1000, 1).Count);
+    }
+
+    [Fact]
+    public void Public_task_requires_explicit_solve_and_discloses_it_in_both_prompts()
+    {
+        var task = new BenchTask("public", "Return the first element.", BenchCategory.Array, BenchTier.Easy,
+            [new BenchCase("[[3]]", "3")]) { PublicContract = "Numeric values use Number." };
+        var sandbox = new Sandbox();
+        Assert.True(sandbox.RunTask("const solve = xs => xs[0];", task).Ok);
+        Assert.True(sandbox.RunTask("let solve = xs => xs[0];", task).Ok);
+        Assert.False(sandbox.RunTask("function alternative(xs) { return xs[0]; }", task).Ok);
+        var promptTask = task with { Tests = [new BenchCase("[[(3n)]]", "\"held-output-marker\"")] };
+        var generation = Backends.BuildGeneratePrompt(promptTask, new GenerateContext(0));
+        var verifierPrompts = new[] { Backends.BuildVerifyPrompt(promptTask, "const solve = xs => xs[0];"),
+            Backends.BuildVerifyPromptB(promptTask, "const solve = xs => xs[0];") };
+        Assert.Contains(BenchTask.PublicCallingRule, generation, StringComparison.Ordinal);
+        Assert.All(verifierPrompts, prompt =>
+        {
+            Assert.Contains(BenchTask.PublicCallingRule, prompt, StringComparison.Ordinal);
+            Assert.Contains("[[(3n)]]", prompt, StringComparison.Ordinal);
+            Assert.DoesNotContain("held-output-marker", prompt, StringComparison.Ordinal);
+        });
+    }
+
+    [Theory]
+    [InlineData("9007199254740993n", "9007199254740993n", false, true)]
+    [InlineData("9007199254740992n", "9007199254740993n", false, false)]
+    [InlineData("255n", "(0xffn)", false, true)]
+    [InlineData("-255n", "(-0xffn)", false, true)]
+    [InlineData("1n", "1", false, false)]
+    [InlineData("1.0000004", "1", true, true)]
+    [InlineData("1.0000004", "1", false, false)]
+    [InlineData("'1'", "1", true, false)]
+    [InlineData("true", "1", true, false)]
+    [InlineData("[1.0000004,2]", "[1,2]", true, true)]
+    [InlineData("[1.0000004]", "[1,2]", true, false)]
+    [InlineData("[1,,3]", "[1,2,3]", false, false)]
+    [InlineData("new Date(0)", "{}", false, false)]
+    [InlineData("null", "{}", false, false)]
+    public void Public_comparison_uses_the_case_policy(string actual, string expected, bool tolerance, bool pass)
+    {
+        var task = new BenchTask("public", "Return a value.", BenchCategory.Logic, BenchTier.Easy,
+            [new BenchCase("[]", expected) { PublicFloatTolerance = tolerance }]) { PublicContract = "Return the declared value." };
+        Assert.Equal(pass, new Sandbox().RunTask($"const solve = () => ({actual});", task).Ok);
     }
 }
 

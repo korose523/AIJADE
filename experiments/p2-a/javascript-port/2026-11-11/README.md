@@ -1,0 +1,7 @@
+# P2-A JavaScript port
+
+This packet covers the 425 tasks previously classified as direct, including the 52 with a blocking condition in the Python reference preparation. The plans in `experiments/plans/` record the population, comparison rules, Jint transport corrections and four exact arithmetic repair variants. The archive `76f7f26` supplies the accepted typed reference pass and the released source files.
+
+The port builds JavaScript functions from the supported Python source syntax. The individually written ports under `overrides/` implement the same algorithms or more efficient equivalents. `python-semantics.js` provides the source-language operations required by the generated functions. The task-specific contracts cover exact BigInt values, Unicode code points, tuple and dictionary representations, and the decimal string result of HumanEval/83. Host decoding of trusted scalar hexadecimal expectations preserves exact JavaScript bigint comparison. Generation and both verifier templates state the same `solve` binding rule used by the public-task Jint path.
+
+The exact arithmetic variants use separate case identities and expected values derived from the statement checks. Their code lives under `exact-variants/`. `input-lock.json` identifies the input and code inventories for the final Jint replays. The fixed public inputs and outputs are used for development conformance, and author review of statement interpretations remains a separate step before model evaluation.

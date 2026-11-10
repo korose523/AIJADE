@@ -101,7 +101,7 @@ public static class Backends
         if (informedRetry)
         {
             lines.Add("You are an expert JavaScript programmer fixing a previous failure.");
-            lines.Add($"Task: {task.Instruction}");
+            lines.Add($"Task: {task.ModelInstruction}");
             lines.Add("");
             lines.Add("--- WHY THE PREVIOUS ATTEMPT FAILED ---");
             if (e is not null)
@@ -130,24 +130,29 @@ public static class Backends
         else
         {
             lines.Add("You are an expert JavaScript programmer.");
-            lines.Add($"Implement the following function. Task: {task.Instruction}");
+            lines.Add($"Implement the following function. Task: {task.ModelInstruction}");
         }
         lines.Add("Respond with ONLY a single fenced JavaScript code block (```js ... ```)");
-        lines.Add("that defines a function named `solve` (or a single callable expression).");
+        lines.Add(task.PublicContract is null
+            ? "that defines a function named `solve` (or a single callable expression)."
+            : "that defines the top-level callable `solve`.");
         lines.Add("Do not include any explanation outside the code block.");
         return string.Join("\n", lines);
     }
 
-    /// <summary>The verification prompt: the case inputs (as JSON.stringify writes them) but never the expected outputs.</summary>
+    private static string PromptArgs(BenchTask task, BenchCase test) =>
+        task.PublicContract is null ? JsJson.Stringify(test.Args) : test.Args;
+
+    /// <summary>The verification prompt includes the case inputs and keeps expected outputs in the execution path.</summary>
     public static string BuildVerifyPrompt(BenchTask task, string code) => string.Join("\n",
         "You are verifying a JavaScript solution against a task.",
-        $"Task: {task.Instruction}",
+        $"Task: {task.ModelInstruction}",
         "Candidate code:",
         "```js",
         code,
         "```",
         "You are given ONLY the inputs of the test cases, never the expected outputs:",
-        string.Join("\n", task.Tests.Select((t, i) => $"  case {i}: args = {JsJson.Stringify(t.Args)} (expected WITHHELD)")),
+        string.Join("\n", task.Tests.Select((t, i) => $"  case {i}: args = {PromptArgs(task, t)} (expected WITHHELD)")),
         "For each case, decide whether the code returns the correct result, then give an overall verdict.",
         "Respond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason.");
 
@@ -157,13 +162,13 @@ public static class Backends
     /// phrasing, saying what PASS and FAIL mean.
     /// </summary>
     public static string BuildVerifyPromptB(BenchTask task, string code) => string.Join("\n",
-        $"Task: {task.Instruction}",
+        $"Task: {task.ModelInstruction}",
         "A candidate solution:",
         "```js",
         code,
         "```",
         "Test inputs (the expected outputs are not shown):",
-        string.Join("\n", task.Tests.Select((t, i) => $"  {i + 1}. {JsJson.Stringify(t.Args)}")),
+        string.Join("\n", task.Tests.Select((t, i) => $"  {i + 1}. {PromptArgs(task, t)}")),
         "Question: does the candidate return the correct output for every one of these inputs?",
         "Answer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification.");
 

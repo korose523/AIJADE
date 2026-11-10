@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 using Aijade.Core.Random;
 
@@ -31,9 +32,24 @@ public enum BenchTier
 }
 
 /// <summary>One deterministic case: arguments and expected value as JavaScript literal source.</summary>
-public sealed record BenchCase(string Args, string Expected);
+public sealed record BenchCase(string Args, string Expected)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public bool PublicFloatTolerance { get; init; }
+}
 
-public sealed record BenchTask(string Id, string Instruction, BenchCategory Category, BenchTier Tier, IReadOnlyList<BenchCase> Tests, int? TimeoutMs = null);
+public sealed record BenchTask(string Id, string Instruction, BenchCategory Category, BenchTier Tier, IReadOnlyList<BenchCase> Tests, int? TimeoutMs = null)
+{
+    public const string PublicCallingRule = "Define a top-level callable named `solve`. A function declaration, const binding, or let binding is accepted. Each call receives fresh arguments.";
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? PublicContract { get; init; }
+
+    [JsonIgnore]
+    public string ModelInstruction => PublicContract is null
+        ? Instruction
+        : $"{Instruction}\n{PublicCallingRule}\n{PublicContract}";
+}
 
 public static class Bench
 {

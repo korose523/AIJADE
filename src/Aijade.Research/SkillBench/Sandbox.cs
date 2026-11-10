@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Globalization;
+using System.Numerics;
 using System.Text;
 
 using Acornima;
@@ -71,6 +73,43 @@ public sealed class Sandbox
         Object.getOwnPropertyNames(globalThis).filter(function (k) {
           try { return typeof globalThis[k] === 'function'; } catch (e) { return false; }
         })
+        """;
+
+    private const string PublicSolveSuffix = "\n;globalThis.__CANDIDATE__ = typeof solve === 'function' ? solve : undefined;";
+
+    private const string PublicComparison = """
+        (() => {
+          const keys = Object.keys, owns = Object.hasOwn, prototype = Object.getPrototypeOf;
+          const objectPrototype = Object.prototype, array = Array.isArray;
+          const finite = Number.isFinite, abs = Math.abs;
+          function same(actual, expected, tolerance) {
+            if (typeof actual !== typeof expected) return false;
+            if (typeof expected === 'number') {
+              return finite(actual) && finite(expected) && (actual === expected ||
+                (tolerance && abs(actual - expected) <= 1e-6 + 1e-7 * abs(expected)));
+            }
+            if (expected === null || actual === null || typeof expected !== 'object') {
+              return actual === expected;
+            }
+            if (array(expected)) {
+              if (!array(actual) || actual.length !== expected.length || keys(actual).length !== expected.length) return false;
+              for (let i = 0; i < expected.length; i++) {
+                if (!owns(actual, i) || !same(actual[i], expected[i], tolerance && typeof expected[i] === 'number')) return false;
+              }
+              return true;
+            }
+            const actualPrototype = prototype(actual);
+            if (array(actual) || (actualPrototype !== objectPrototype && actualPrototype !== null)) return false;
+            const names = keys(expected);
+            if (keys(actual).length !== names.length) return false;
+            for (let i = 0; i < names.length; i++) {
+              const key = names[i];
+              if (!owns(actual, key) || !same(actual[key], expected[key], false)) return false;
+            }
+            return true;
+          }
+          return same;
+        })()
         """;
 
     /// <summary>Current argument literals per task and case (the shared fixtures of this "process").</summary>
@@ -158,20 +197,25 @@ public sealed class Sandbox
             new(ok, passed, task.Tests.Count, clock.Elapsed.TotalMilliseconds, failures, error);
 
         var (engine, host) = NewEngine(timeout);
+        var publicTask = task.PublicContract is not null;
+        var publicComparison = publicTask ? engine.Evaluate(PublicComparison) : JsValue.Undefined;
         JsValue fn;
-        try
+        if (!publicTask)
         {
-            engine.SetValue("__INTRINSIC_FNS__", engine.Evaluate(IntrinsicProbe));
-        }
+            try
+            {
+                engine.SetValue("__INTRINSIC_FNS__", engine.Evaluate(IntrinsicProbe));
+            }
 #pragma warning disable CA1031 // A failed probe falls back to the `solve` heuristic.
-        catch (Exception)
+            catch (Exception)
 #pragma warning restore CA1031
-        {
-            engine.SetValue("__INTRINSIC_FNS__", engine.Evaluate("[]"));
+            {
+                engine.SetValue("__INTRINSIC_FNS__", engine.Evaluate("[]"));
+            }
         }
         try
         {
-            engine.Execute(code + DetectionSuffix);
+            engine.Execute(code + (publicTask ? PublicSolveSuffix : DetectionSuffix));
             fn = engine.GetValue("__CANDIDATE__");
         }
 #pragma warning disable CA1031 // Anything the candidate does at load time is a verdict, not a crash.
@@ -181,7 +225,7 @@ public sealed class Sandbox
             return Verdict(false, 0, [], ErrorText(e, timeout));
         }
 
-        if (!fn.IsCallable())
+        if (!fn.IsCallable() && !publicTask)
         {
             try
             {
@@ -197,9 +241,10 @@ public sealed class Sandbox
             }
         }
         if (!fn.IsCallable())
-            return Verdict(false, 0, [], "no callable function found (tried `solve`, single global function, and whole-code expression)");
+            return Verdict(false, 0, [], publicTask ? "the top-level solve binding is missing or not callable"
+                : "no callable function found (tried `solve`, single global function, and whole-code expression)");
 
-        var shared = IsolateArguments ? [.. task.Tests.Select(t => t.Args)] : ArgsOf(task);
+        var shared = IsolateArguments || publicTask ? [.. task.Tests.Select(t => t.Args)] : ArgsOf(task);
         var failures = new List<BenchFailure>();
         var passed = 0;
         for (var i = 0; i < task.Tests.Count; i++)
@@ -212,11 +257,17 @@ public sealed class Sandbox
                 args = engine.Evaluate($"({argsLiteral})");
                 var callArgs = ((JsArray)args).ToArray();
                 var actual = engine.Call(fn, JsValue.Null, callArgs);
-                var expected = engine.Evaluate($"({expectedLiteral})");
-                if (DeepEqual(engine, host, actual, expected))
+                var expected = publicTask && TryReadPublicBigInt(expectedLiteral, out var integer)
+                    ? integer : engine.Evaluate($"({expectedLiteral})");
+                var equal = publicTask
+                    ? engine.Call(publicComparison, JsValue.Undefined, [actual, expected,
+                        task.Tests[i].PublicFloatTolerance ? JsBoolean.True : JsBoolean.False]).AsBoolean()
+                    : DeepEqual(engine, host, actual, expected);
+                if (equal)
                     passed++;
                 else
-                    failures.Add(new BenchFailure(i, argsLiteral, expectedLiteral, Actual: JsLiteral.Of(engine, host, actual)));
+                    failures.Add(new BenchFailure(i, argsLiteral, expectedLiteral,
+                        Actual: publicTask && actual.IsBigInt() ? TypeConverter.ToString(actual) + "n" : JsLiteral.Of(engine, host, actual)));
             }
 #pragma warning disable CA1031 // A failing case is recorded; only a timeout ends the evaluation.
             catch (Exception e)
@@ -229,11 +280,29 @@ public sealed class Sandbox
             finally
             {
                 // Arguments mutated in place stay mutated for later candidates of this task.
-                if (!args.IsUndefined())
+                if (!publicTask && !args.IsUndefined())
                     shared[i] = JsLiteral.Of(engine, host, args);
             }
         }
         return Verdict(failures.Count == 0, passed, failures);
+    }
+
+    // Prepared scalar integers use hexadecimal literals. Decode their exact value in the host without reparsing a large
+    // literal as a program. The candidate still executes with the same Jint limits and is compared as a JavaScript bigint.
+    private static bool TryReadPublicBigInt(string literal, out JsValue value)
+    {
+        var negative = literal.StartsWith("(-0x", StringComparison.Ordinal);
+        var start = negative ? 4 : 3;
+        if ((negative || literal.StartsWith("(0x", StringComparison.Ordinal)) &&
+            literal.EndsWith("n)", StringComparison.Ordinal) && literal.Length > start + 2 &&
+            BigInteger.TryParse(string.Concat("0", literal.AsSpan(start, literal.Length - start - 2)),
+                NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var magnitude))
+        {
+            value = new JsBigInt(negative ? -magnitude : magnitude);
+            return true;
+        }
+        value = JsValue.Undefined;
+        return false;
     }
 
     /// <summary>Realm-agnostic structural equality (NaN equals NaN; null against an object throws).</summary>
