@@ -1,0 +1,113 @@
+{
+  "schema": "aijade.engineering.observed-prompt.v1",
+  "recordedAt": "2026-11-10T09:00:22.009278+00:00",
+  "baseCommit": "c1ac116ce92adc5696bd2019b769f05d7229b912",
+  "status": "SYNTHETIC_INSTRUMENT_QUALIFIED_NOT_A_NEW_CORPUS_STUDY",
+  "newScientificRun": false,
+  "modelCalls": 0,
+  "embeddingCalls": 0,
+  "syntheticCapturedCompletionRequests": 7,
+  "productRuntimeChanged": false,
+  "historicalMetricsChanged": false,
+  "sourceSha256": {
+    "tests/Aijade.Tests/ProductPromptObservation.cs": "47a8792e1969f4c8c4b499abf51e78490e8a270c0dd6867c30823996818422b4",
+    "tests/Aijade.Tests/ProductPromptObservationTests.cs": "542d31de5b29b4e6d60728ee899ee0fc80593d57ae58f66ebecae95a5556ae56",
+    "tests/Aijade.Tests/ProductDeliveryExperimentTests.cs": "c3e3dd51f02c81673ad8bfffae39ec0634d0324b8a4b7100cd45c43b73c5d964"
+  },
+  "targeted": {
+    "passed": 20,
+    "skipped": 1,
+    "failed": 0,
+    "total": 21,
+    "skippedTests": [
+      "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt"
+    ]
+  },
+  "unitIntegration": {
+    "passed": 575,
+    "skipped": 15,
+    "failed": 0,
+    "total": 590,
+    "skippedTests": [
+      "Aijade.Tests.ExternalRendererStudyTests.Seal_session",
+      "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt",
+      "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field",
+      "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+      "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+      "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+      "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+      "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+      "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+      "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+      "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration",
+      "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+      "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+      "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+      "Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime"
+    ]
+  },
+  "syntheticCaptureCheck": "capture-check.json",
+  "protectedInputs": {
+    "files": 853,
+    "changed": [],
+    "manifest": "protected-inputs.json"
+  },
+  "numericConsistency": {
+    "facts": 9878,
+    "unchanged": true,
+    "beforeSha256": "8326b57a0bb7fc7bdef64b6809c4ae21fe423ffcd1334857f300f7a86274fa3f",
+    "sourceTables": {
+      "稿件源/P3_DimensionalMismatch_in_RetrievalScoring_EN.md": {
+        "allPlaceholdersUnchanged": true,
+        "placeholderOccurrences": 860,
+        "allTableRowsUnchanged": true,
+        "tableRows": 203
+      },
+      "稿件源/P3_中文译稿.md": {
+        "allPlaceholdersUnchanged": true,
+        "placeholderOccurrences": 864,
+        "allTableRowsUnchanged": true,
+        "tableRows": 203
+      }
+    }
+  },
+  "initialBuildFailure": "CA1861 in one test assertion; corrected without runtime changes. Original failure log retained.",
+  "paperSources": {
+    "稿件源/P3_DimensionalMismatch_in_RetrievalScoring_EN.md": "510f42ab92d4944937ab526e2b9715666105f39fdc1ea0a08b0453a2835fa3ff",
+    "稿件源/P3_中文译稿.md": "2bacc013103ad0d03b1a300da00c8d340b2e9f935ab4049e7f256873435e7150",
+    "学位论文/章节源/appA_availability.md": "32a1ba52d090694c942baa2641db19ec7145cbd227484491c0f9cc1eb6552394"
+  },
+  "limits": [
+    "Seven synthetic fixtures, real API/PostgreSQL paths, and a local completion-response stand-in; not seven participants or corpus observations.",
+    "Complete text visibility is not model use, semantic correctness, or independently attested source identity. Planned order associates visible unique content with IDs.",
+    "Missing captures and ambiguous blocks are unknown, not observed zero. Partial text does not count as a complete memory.",
+    "The cancelled fixture captures a request but stores no assistant reply; capture and completion are separate outcomes.",
+    "No full LoCoMo text/embedding run, new current-product recall estimate, full Web/QQ, multi-turn, proactive or policy evaluation was performed.",
+    "The v2 study driver compiled but its full-corpus opt-in test remained skipped. Synthetic qualification exercises its shared observer and runtime, not its full corpus loop or aggregation.",
+    "New full studies retain version-fixed plan and supervisor gates. No send receipt, registration, scientific acceptance or final submission approval is inferred.",
+    "Runtime code is unchanged; browser/live-platform/model suites were not rerun. A subsequent GitHub CI is recorded separately against its published commit."
+  ],
+  "artifactSha256": {
+    "README.md": "87f1eedc16997ff4a0aa3bd3478adf1a57c167b89c0bb7529fd501906c488321",
+    "advisor-current.json": "c12d4309778d8c41f6131f91975ca327591f916bf848a32a206881fca29c4a07",
+    "build-initial-analyzer-failure.log": "c9268c96b24126b92b2e22e378bc0bdfd65177f16f4a2d1a2ebdfded04e6899c",
+    "build.log": "44ce9c1449a2cedde55ef8c4083ccbd1a3a2552f26c9dbba2fface6753446c27",
+    "capture-check.json": "5c5ace458c912f6e99e5e033b640341393f10a36c7e142865d6301786cd25dcb",
+    "current-metrics-refusal.json": "c12d4309778d8c41f6131f91975ca327591f916bf848a32a206881fca29c4a07",
+    "expected-refusal.json": "ac466ebe752ba76904e4a68320590eb41cd04f8d5965dd8dce5fdeb12b325523",
+    "numeric-consistency.json": "21ab85418c234d5caa6a2949560e3ac483d336f8ac33ed95e514b70c3cc7a2e4",
+    "preliminary-稿件一致性守卫.py.log": "09c05ce5fe3aa0cfcb501c254a29cb92358687bb070b3602604755388030a754",
+    "protected-inputs.json": "5f27b5ff3cd816e77cf66897b9ba537fc7989ba24c6b22c1852c58500107ce83",
+    "synthetic/budget-exhausted.json": "3b0cec99384675c22492ded3858affa29be302db87ec51c1c93dd6efc789d774",
+    "synthetic/cancelled.json": "d9101b538bf32ae1ad5d63448f008f82ef797fbe7376a6212f78524d8169b45c",
+    "synthetic/disabled.json": "0ee622f2a1b6b84b3fff20ade02bcf376e5bd11aa6ccfeff526b29e07343839d",
+    "synthetic/legacy-long.json": "3e2503268ee729b75ffff04f099f3722c2c0b369b9e7456d50e6f4e277592e65",
+    "synthetic/memory-failure.json": "f8cb3828633a627b368a69d0048e08f78e4ca5550e862b6e3f816b2aa3e04dd7",
+    "synthetic/shared-long.json": "215b8d4e361f12d8983b6f141e2ec9642facd6cdfaa48c0c3ef9b38fc128c4cb",
+    "synthetic/shared-short.json": "63d5f53730e67891b652f673cee9ae95d0085c31a5e323f4e7781eff4d3ea002",
+    "targeted.log": "e45b857d85365cc182a3b747a7d8c8836bf000f1e06f26339ddd472fd9000bf8",
+    "targeted.trx": "e59eaf7ec9f080efec89bbe878ed1337fd305f9430d92a76e6bf32ae8408b70a",
+    "unit.log": "f1d0355b23810415aa027c5db1cedd654e2de33a7c5884e06c5f8ec57328dfa2",
+    "unit.trx": "6297e5ea087eac789203383bf444a279ba72ceea940228c84d264eab68ecb0f5"
+  }
+}

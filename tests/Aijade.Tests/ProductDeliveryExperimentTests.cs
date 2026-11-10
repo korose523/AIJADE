@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
 
@@ -23,10 +24,11 @@ namespace Aijade.Tests;
 /// question goes through <see cref="ChatOrchestrator.SendAsync(string, Aijade.Client.Api.Character?, IReadOnlyList{StoredMessage}, string, string, CancellationToken)"/>
 /// with the product's memory provider; the prompt is captured where the model would be called. Run with AIJADE_EXPERIMENT_DIR,
 /// AIJADE_P3E_CORPUS and AIJADE_P3E_CONDITION (text, or embedding with Ollama on 127.0.0.1:11434); skipped otherwise.
+/// New runs must also select AIJADE_P3E_ENTRY (legacy-direct or shared-memory-only). Version 2 observes full text in the
+/// actual request and writes a distinct schema/file; it must not be fed silently into the archived version 1 aggregator.
 /// </summary>
 public class ProductDeliveryExperimentTests
 {
-    private const string Header = "Things you remember about the user (use only when relevant):\n";
     private const string EmbeddingModel = "nomic-embed-text";
     private const int ServerLimit = 6;
     private const int PromptItems = 5;
@@ -86,11 +88,14 @@ public class ProductDeliveryExperimentTests
             return;
         }
         Assert.True(condition is "text" or "embedding");
+        var entry = Environment.GetEnvironmentVariable("AIJADE_P3E_ENTRY");
+        Assert.True(entry is "legacy-direct" or "shared-memory-only", "select AIJADE_P3E_ENTRY explicitly; shared-memory-only is not the full Web/QQ host");
+        var budget = entry == "legacy-direct" ? null : new PromptBudget();
         Assert.Equal(LocomoCorpus.Sha256, LocomoCorpus.FileSha256(corpusPath));
         var embedding = condition == "embedding";
         var corpus = LocomoCorpus.Load(corpusPath);
         var rows = new JsonArray();
-        int responseMismatches = 0, promptMismatches = 0, failedTurns = 0, skippedTurns = 0, notStored = 0;
+        int responseMismatches = 0, promptMismatches = 0, failedTurns = 0, skippedTurns = 0, notStored = 0, plannedBlockDifferences = 0;
         var clock = Stopwatch.StartNew();
         for (var c = 0; c < corpus.Count; c++)
         {
@@ -127,7 +132,10 @@ public class ProductDeliveryExperimentTests
             var tokens = new MemoryTokenStore();
             await tokens.SetAsync(ServerTestHost.Token);
             var api = new AijadeApi(http, tokens);
-            var orchestrator = new ChatOrchestrator(api, [new MemoryRecallProvider(api, () => true)], new OrchestratorOptions());
+            var memory = new MemoryRecallProvider(api, () => true);
+            var orchestrator = entry == "legacy-direct"
+                ? new ChatOrchestrator(api, [memory], new OrchestratorOptions())
+                : CompanionRuntime.Create(api, [new("memory", memory)], new OrchestratorOptions { PromptBudget = budget });
             var chat = await api.CreateChatAsync(null, $"p3-e {c}", ct);
             var embeddings = host.App.Services.GetRequiredService<EmbeddingService>();
 
@@ -137,11 +145,14 @@ public class ProductDeliveryExperimentTests
                 var question = conv.Qa[q];
                 tap.Reset();
                 var started = clock.Elapsed;
+                var completed = false;
                 await foreach (var e in orchestrator.SendAsync(chat.Id, null, [], question.Question, "p3-e", ct))
                 {
-                    if (e is TurnFailed)
-                        failedTurns++;
+                    if (e is TurnCompleted)
+                        completed = true;
                 }
+                if (!completed)
+                    failedTurns++;
                 var ms = (clock.Elapsed - started).TotalMilliseconds;
                 // On the embedding path the first search has just embedded the store, so read it after that search.
                 store ??= await ReadStoreAsync(host.Db, ct);
@@ -189,11 +200,14 @@ public class ProductDeliveryExperimentTests
                     }
                 }
                 var kept = received.Where(id => !string.Equals(byId[id].Content.Trim(), question.Question.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
-                var inPrompt = kept.OrderByDescending(id => byId[id].CreatedAt).Take(PromptItems).ToList();
+                var planned = kept.OrderByDescending(id => byId[id].CreatedAt).Take(PromptItems).ToList();
                 var byServer = kept.Take(PromptItems).ToList();
-                var block = kept.Count == 0 ? null : Header + string.Join("\n", inPrompt.Select(id => $"- {byId[id].Content}"));
-                if (block is null ? tap.SystemMessage?.Contains(Header, StringComparison.Ordinal) == true : tap.SystemMessage?.Contains(block, StringComparison.Ordinal) != true)
+                var observation = ProductPromptObservation.Observe(tap.SystemMessage, [.. planned.Select(id => new PromptMemory(id, byId[id].Content))]);
+                var inPrompt = observation.FullItemIds;
+                if (!observation.Identifiable)
                     promptMismatches++;
+                if (!observation.Identifiable || !planned.SequenceEqual(inPrompt))
+                    plannedBlockDifferences++;
 
                 var located = question.Evidence.Where(d => conv.Episodes.Any(t => t.Id == d)).Distinct(StringComparer.Ordinal).ToList();
                 var ids = located.Select(d => $"ep_{EventId(c, d)}").ToList();
@@ -207,12 +221,18 @@ public class ProductDeliveryExperimentTests
                 {
                     ["c"] = c, ["q"] = q, ["category"] = question.Category, ["answerable"] = AnswerableReanalysis.Answerable(question),
                     ["evidence"] = question.Evidence.Distinct(StringComparer.Ordinal).Count(), ["located"] = located.Count,
-                    ["stored"] = Count(byId.Keys), ["pool"] = Count(pool), ["above"] = Count(above), ["response"] = Count(received), ["kept"] = Count(kept), ["prompt"] = Count(inPrompt),
+                    ["stored"] = Count(byId.Keys), ["pool"] = Count(pool), ["above"] = Count(above), ["response"] = Count(received), ["kept"] = Count(kept),
+                    ["plannedPrompt"] = Count(planned), ["plannedPromptItems"] = planned.Count,
+                    ["prompt"] = observation.Identifiable ? Count(inPrompt) : null,
                     ["serverTop5"] = Count(byServer),
-                    ["promptItems"] = inPrompt.Count, ["serverTop5Items"] = byServer.Count,
-                    ["newerInPrompt"] = newestEvidence == DateTime.MinValue ? null : inPrompt.Count(i => byId[i].CreatedAt > newestEvidence),
+                    ["promptItems"] = observation.Identifiable ? inPrompt.Count : null, ["serverTop5Items"] = byServer.Count,
+                    ["newerInPrompt"] = !observation.Identifiable || newestEvidence == DateTime.MinValue ? null : inPrompt.Count(i => byId[i].CreatedAt > newestEvidence),
                     ["newerInServerTop5"] = newestEvidence == DateTime.MinValue ? null : byServer.Count(i => byId[i].CreatedAt > newestEvidence),
-                    ["repeatsInPrompt"] = inPrompt.Count - inPrompt.Select(i => byId[i].Content).Distinct(StringComparer.Ordinal).Count(),
+                    ["repeatsInPrompt"] = observation.Identifiable ? inPrompt.Count - inPrompt.Select(i => byId[i].Content).Distinct(StringComparer.Ordinal).Count() : null,
+                    ["promptState"] = observation.State, ["promptIdentifiable"] = observation.Identifiable, ["promptTruncated"] = observation.Truncated,
+                    ["plannedPromptIds"] = new JsonArray([.. planned.Select(i => JsonValue.Create(i))]),
+                    ["observedFullItemIds"] = observation.Identifiable ? new JsonArray([.. inPrompt.Select(i => JsonValue.Create(i))]) : null,
+                    ["systemSha256"] = observation.SystemSha256, ["rawSystem"] = tap.SystemMessage,
                     ["searches"] = tap.Searches.Count, ["termSearch"] = tap.Searches.Count > 1, ["firstEmpty"] = tap.Searches.Count == 0 || tap.Searches[0].Ids.Count == 0,
                     ["echoDropped"] = received.Count - kept.Count, ["fewerThanFive"] = kept.Count < PromptItems, ["mismatch"] = mismatch,
                     ["ms"] = Math.Round(ms, 1), ["calls"] = tap.Calls,
@@ -223,9 +243,17 @@ public class ProductDeliveryExperimentTests
 
         var report = new JsonObject
         {
+            ["schema"] = "aijade.product-path.observed-prompt.v2",
             ["experiment"] = "P3-E: evidence along the product's delivery path",
-            ["plan"] = "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",
-            ["codeCommit"] = Environment.GetEnvironmentVariable("AIJADE_GIT_COMMIT"),
+            ["historicalReferencePlan"] = "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",
+            ["executionGate"] = "New full runs require their own version-fixed plan and existing research gates; this instrumentation is not approval.",
+            ["declaredCodeCommit"] = Environment.GetEnvironmentVariable("AIJADE_GIT_COMMIT"),
+            ["testAssemblySha256"] = Convert.ToHexStringLower(SHA256.HashData(await File.ReadAllBytesAsync(typeof(ProductDeliveryExperimentTests).Assembly.Location, ct))),
+            ["clientAssemblySha256"] = Convert.ToHexStringLower(SHA256.HashData(await File.ReadAllBytesAsync(typeof(CompanionRuntime).Assembly.Location, ct))),
+            ["entry"] = entry,
+            ["scope"] = "memory-only; empty history; no question recording; local model-response stand-in; not full Web/QQ, multi-turn or proactive delivery",
+            ["promptBudget"] = budget is null ? null : global::System.Text.Json.JsonSerializer.SerializeToNode(budget),
+            ["budgetUnit"] = "UTF-16 code units, not tokens",
             ["condition"] = condition,
             ["embeddingModel"] = embedding ? EmbeddingModel : null,
             ["corpusSha256"] = LocomoCorpus.Sha256,
@@ -234,13 +262,18 @@ public class ProductDeliveryExperimentTests
             ["failedTurns"] = failedTurns,
             ["responseMismatches"] = responseMismatches,
             ["promptMismatches"] = promptMismatches,
+            ["plannedBlockDifferences"] = plannedBlockDifferences,
             ["minutes"] = Math.Round(clock.Elapsed.TotalMinutes, 1),
             ["generatedAt"] = DateTimeOffset.UtcNow.ToString("O"),
             ["rows"] = rows,
         };
         Directory.CreateDirectory(dir);
-        await File.WriteAllTextAsync(Path.Combine(dir, $"product-path-{condition}.json"), report.ToJsonString(), ct);
+        await using (var output = new FileStream(Path.Combine(dir, $"product-path-v2-{entry}-{condition}.json"), FileMode.CreateNew))
+            await global::System.Text.Json.JsonSerializer.SerializeAsync(output, report, cancellationToken: ct);
         Assert.Equal(0, failedTurns);
+        Assert.Equal(0, notStored);
+        Assert.Equal(0, responseMismatches);
+        Assert.Equal(0, promptMismatches);
     }
 
     private static string EventId(int conversation, string dia) => $"locomo-{conversation}-{dia.Replace(':', '-')}";

@@ -1,0 +1,95 @@
+{
+  "scope": "Synthetic fixture cross-check, not independent scientific validation",
+  "cases": [
+    {
+      "scenario": "budget-exhausted",
+      "plannedItems": 0,
+      "fullVisibleItems": 0,
+      "state": "absent",
+      "searches": 0,
+      "storedRoles": [
+        "user",
+        "assistant"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    },
+    {
+      "scenario": "cancelled",
+      "plannedItems": 5,
+      "fullVisibleItems": 5,
+      "state": "complete",
+      "searches": 1,
+      "storedRoles": [
+        "user"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    },
+    {
+      "scenario": "disabled",
+      "plannedItems": 0,
+      "fullVisibleItems": 0,
+      "state": "absent",
+      "searches": 0,
+      "storedRoles": [
+        "user",
+        "assistant"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    },
+    {
+      "scenario": "legacy-long",
+      "plannedItems": 5,
+      "fullVisibleItems": 5,
+      "state": "complete",
+      "searches": 1,
+      "storedRoles": [
+        "user",
+        "assistant"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    },
+    {
+      "scenario": "memory-failure",
+      "plannedItems": 0,
+      "fullVisibleItems": 0,
+      "state": "absent",
+      "searches": 1,
+      "storedRoles": [
+        "user",
+        "assistant"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    },
+    {
+      "scenario": "shared-long",
+      "plannedItems": 5,
+      "fullVisibleItems": 2,
+      "state": "truncated",
+      "searches": 1,
+      "storedRoles": [
+        "user",
+        "assistant"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    },
+    {
+      "scenario": "shared-short",
+      "plannedItems": 5,
+      "fullVisibleItems": 5,
+      "state": "complete",
+      "searches": 1,
+      "storedRoles": [
+        "user",
+        "assistant"
+      ],
+      "captureHashMatches": true,
+      "expectedFixturePrefixMatches": true
+    }
+  ]
+}
