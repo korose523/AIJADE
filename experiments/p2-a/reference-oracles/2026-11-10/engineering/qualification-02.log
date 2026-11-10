@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/qualify.py", line 106, in <module>
+    parser=argparse.ArgumentParser(__doc__);parser.add_argument('--out',type=Path,required=True);main(parser.parse_args())
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/qualify.py", line 34, in main
+    passed('ordinaryReferenceAndBaseCheck', receipt['status'] == 'COMPLETE' and records[-1]['nativeAssertions']['status'] == 'PASS')
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/qualify.py", line 29, in passed
+    assert condition, name
+AssertionError: ordinaryReferenceAndBaseCheck

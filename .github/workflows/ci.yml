@@ -31,3 +31,5 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet test --configuration Release
+      - name: Check public-reference type and missing-data conventions
+        run: python3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v

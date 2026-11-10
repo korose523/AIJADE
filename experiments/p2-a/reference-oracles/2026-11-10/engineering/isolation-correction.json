@@ -1,0 +1,20 @@
+{
+  "status": "CORRECTED_BEFORE_CORPUS_EXECUTION",
+  "initialCorpusProgramsExecuted": 0,
+  "failedQualificationAttempts": [
+    1,
+    2
+  ],
+  "initialCondition": "Native interpreter aborted before emitting any record under the initial restricted profile.",
+  "diagnosis": "An artificial READY program succeeded after granting read access to the filesystem root directory as a literal path, without granting the root subtree.",
+  "nativeRootGrant": "(literal \"/\") only; permitted directory itself, not arbitrary descendant contents",
+  "finalQualificationChecks": 16,
+  "deniedFixtures": [
+    "unrelated file content",
+    "unrelated file write",
+    "network"
+  ],
+  "remainingLimits": "Artificial checks are not a complete security certification or hardware qualification.",
+  "finalAttempt": "qualification-07",
+  "sourceTransport": "Pinned Mbpp/404 input infinity preserved, typed records never coerce it into null."
+}

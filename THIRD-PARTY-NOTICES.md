@@ -8,6 +8,7 @@ Every third-party component must be listed here with its licence before it is me
 | .NET runtime and SDK | platform | MIT |
 | NumPy 2.3.5 (optional research tool, not bundled with the product) | independent numerical recomputation of captured P3-E vectors | BSD-3-Clause; installed distribution retains its own bundled-library notices |
 | NumPy 2.5.4 (optional research tool, not bundled with the product) | native external-policy execution and independent P3-policy search recomputation | BSD-3-Clause; installed distribution retains its own bundled-library notices |
+| EvalPlus reference sources at `26d6d00bb1fd0fa37f39c99d5290da67891d1c5e`, HumanEval+ v0.1.10 and MBPP+ v0.2.0 | P2-A reference preparation; separately stored source, data and derived records | Apache-2.0 license supplied by the repository/release repositories; original OpenAI MIT evaluator notices retained in the copied files |
 | xunit.v3, xunit.runner.visualstudio | tests | Apache-2.0 |
 | Microsoft.NET.Test.Sdk | tests | MIT |
 | Jint 4.16.3 | JavaScript sandbox of the skill benchmark (Aijade.Research) | BSD-2-Clause |
