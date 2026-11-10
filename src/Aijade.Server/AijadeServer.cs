@@ -2,7 +2,6 @@ using Aijade.Memory.V9;
 using Aijade.Server.Auth;
 using Aijade.Server.Infrastructure;
 using Aijade.Server.Memory;
-using Aijade.Server.Mcp;
 using Aijade.Server.Product;
 using Aijade.Server.V9;
 
@@ -56,6 +55,10 @@ public static class AijadeServer
         var connection = config["DATABASE_URL"] ?? config.GetConnectionString("Postgres")
             ?? throw new InvalidOperationException("DATABASE_URL (or ConnectionStrings:Postgres) is required");
         var role = config["Aijade:Role"] ?? "all";
+        if (role is not ("api" or "worker" or "all"))
+            throw new InvalidOperationException("Aijade:Role must be api, worker or all");
+        var modules = ServerModules.Read(config);
+        modules.Register(builder.Services, config);
 
         builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(NormalizeConnectionString(connection)).Build());
         builder.Services.AddSingleton(TimeProvider.System);
@@ -87,29 +90,7 @@ public static class AijadeServer
         builder.Services.AddSingleton<KeyRotator>();
         builder.Services.AddSingleton<ImageBackends>();
         builder.Services.AddSingleton<EmbeddingService>();
-        builder.Services.AddAijadeMcp();
-        builder.Services.AddHttpClient(Aijade.Server.Tools.ToolHub.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(60));
-        builder.Services.AddSingleton<Aijade.Server.Tools.ToolsConfigStore>();
-        builder.Services.AddSingleton<Aijade.Server.Tools.ToolHub>();
         builder.Services.AddHttpClient(GatewayEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromMinutes(5));
-        builder.Services.AddHttpClient(BillingEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(30));
-        // The owner's MOSAIC stage: refuse at start a workbench address that is not on this machine (it has no authentication).
-        StageEndpoints.Workbench(config[StageEndpoints.ConfigKey]);
-        builder.Services.AddHttpClient(StageEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(10));
-        builder.Services.Configure<StripeOptions>(o =>
-        {
-            var s = config.GetSection("Stripe");
-            o.SecretKey = s["SecretKey"];
-            o.WebhookSecret = s["WebhookSecret"];
-            o.SuccessUrl = s["SuccessUrl"] ?? o.SuccessUrl;
-            o.CancelUrl = s["CancelUrl"] ?? o.CancelUrl;
-            o.ApiBase = s["ApiBase"] ?? o.ApiBase;
-            foreach (var p in s.GetSection("Prices").GetChildren())
-            {
-                if (long.TryParse(p.Value, out var flux))
-                    o.Prices[p.Key] = flux;
-            }
-        });
         var dataProtection = builder.Services.AddDataProtection().SetApplicationName("aijade");
         if (config["DataProtection:KeysDir"] is { Length: > 0 } keysDir)
             dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysDir));
@@ -130,7 +111,10 @@ public static class AijadeServer
         if (role is "worker" or "all")
         {
             builder.Services.AddSingleton<V9Worker>();
-            builder.Services.AddHostedService(sp => sp.GetRequiredService<V9Worker>());
+            if (modules.Profile == "companion" && string.IsNullOrEmpty(redisUrl))
+                builder.Services.AddHostedService<CompanionWorker>();
+            else
+                builder.Services.AddHostedService(sp => sp.GetRequiredService<V9Worker>());
         }
 
         var app = builder.Build();
@@ -169,11 +153,11 @@ public static class AijadeServer
             GatewayEndpoints.Map(app);
             ImageEndpoints.Map(app);
             LiveContextEndpoints.Map(app);
-            StageEndpoints.Map(app);
-            app.MapAijadeMcp();
-            Aijade.Server.Tools.ToolEndpoints.Map(app);
-            BillingEndpoints.Map(app);
+            modules.Map(app, role, !string.IsNullOrEmpty(redisUrl));
             AdminEndpoints.Map(app);
+            // An absent integration is an API 404, including when the SPA fallback is enabled.
+            app.MapFallback("/api/{**path}", context => ApiErrorMiddleware.WriteAsync(context, 404, "NOT_FOUND", "API endpoint not found", null))
+                .RequireAuthorization();
         }
         return app;
     }

@@ -1,5 +1,6 @@
 using Aijade.Bots;
 using Aijade.Client.Api;
+using Aijade.Client.Chat;
 using Aijade.Integrations;
 
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 //   Aijade:Server        the AIJADE server, e.g. https://aijade.example/
 //   Aijade:Token         a bot account's token (a static token from the server's Auth:StaticTokens, or a session token)
 //   Bridge:CharacterId   optional character the companion plays here; Bridge:Drawing / Bridge:Memory / Bridge:Tools true/false
+//   Bridge:Model, Bridge:MaxToolRounds (default 4), Bridge:MaxToolCalls (default 12)  bounded per-turn tool worker
 //   Bridge:StateFile     where conversation → chat mappings are kept (default ./aijade-bots-state.json)
 //   Bridge:Reminders     false to keep no reminders; otherwise she keeps those asked for in private conversations on the
 //                        platforms that can start a message (QQ, Telegram) and says them when due (ADR-003)
@@ -44,6 +46,12 @@ builder.Services.AddSingleton(sp => new CompanionBridge(sp.GetRequiredService<Ai
     Drawing = bool.TryParse(config["Bridge:Drawing"], out var draw) && draw,
     Tools = bool.TryParse(config["Bridge:Tools"], out var tools) && tools,
     Memory = !bool.TryParse(config["Bridge:Memory"], out var memory) || memory,
+    Orchestrator = new OrchestratorOptions
+    {
+        Model = config["Bridge:Model"] ?? "aijade-chat",
+        MaxToolRounds = int.TryParse(config["Bridge:MaxToolRounds"], out var rounds) ? rounds : 4,
+        MaxToolCalls = int.TryParse(config["Bridge:MaxToolCalls"], out var calls) ? calls : 12,
+    },
     StateFile = config["Bridge:StateFile"] is { Length: > 0 } f ? f : "aijade-bots-state.json",
     Companion = sp.GetRequiredService<CompanionConfiguration>().For,
     ResolveCompanion = sp.GetRequiredService<CompanionConfiguration>().ForAsync,

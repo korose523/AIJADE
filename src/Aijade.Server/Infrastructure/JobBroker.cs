@@ -22,6 +22,12 @@ public interface IJobBroker
     Task<long> LengthAsync(string queue, CancellationToken cancellationToken = default);
 }
 
+/// <summary>An optional wakeup hint. Queue contents remain authoritative; notifications may be coalesced.</summary>
+public interface IJobWakeup
+{
+    Task WaitForWorkAsync(CancellationToken ct);
+}
+
 public static class Queues
 {
     public const string Perception = "aijade:v9:perception";
@@ -34,14 +40,23 @@ public static class Queues
     public const string MemoryDeadLetter = "aijade:memory:dead-letter";
 }
 
-public sealed class InMemoryJobBroker : IJobBroker
+public sealed class InMemoryJobBroker : IJobBroker, IJobWakeup
 {
     private readonly ConcurrentDictionary<string, Channel<string>> lists = new(StringComparer.Ordinal);
+    private readonly Channel<bool> wakeup = Channel.CreateBounded<bool>(new BoundedChannelOptions(1)
+        { FullMode = BoundedChannelFullMode.DropWrite, SingleReader = true });
 
     private Channel<string> List(string name) => lists.GetOrAdd(name, _ => Channel.CreateUnbounded<string>());
 
-    public Task EnqueueAsync(string queue, JsonNode job, CancellationToken cancellationToken = default) =>
-        List(queue).Writer.WriteAsync(job.ToJsonString(), cancellationToken).AsTask();
+    public async Task EnqueueAsync(string queue, JsonNode job, CancellationToken cancellationToken = default)
+    {
+        await List(queue).Writer.WriteAsync(job.ToJsonString(), cancellationToken).ConfigureAwait(false);
+        if (queue is Queues.Perception or Queues.VideoObservation or Queues.Memory or Queues.Promotion)
+            wakeup.Writer.TryWrite(true);
+    }
+
+    public async Task WaitForWorkAsync(CancellationToken ct) =>
+        _ = await wakeup.Reader.ReadAsync(ct).ConfigureAwait(false);
 
     public Task<JsonNode?> TryDequeueAsync(string queue, CancellationToken cancellationToken = default) =>
         Task.FromResult(List(queue).Reader.TryRead(out var raw) ? JsonNode.Parse(raw) : null);

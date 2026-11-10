@@ -1,0 +1,200 @@
+{
+  "schema": "aijade.engineering.runtime-refactor.v1",
+  "status": "PASS",
+  "dateAsiaSeoul": "2026-11-10",
+  "recordedAt": "2026-11-10T00:04:53.417179+00:00",
+  "baseCommit": "e100df6f65a931b8aed9ea38602084d6e22e1200",
+  "executedFrom": "Working tree based on baseCommit. Execution preceded the commit containing this receipt; exact changed source hashes follow.",
+  "scope": "Product engineering refactor; no new primary research or real-model generation",
+  "sourceSha256": {
+    "src/Aijade.Bots/Program.cs": "b214b0e1c56af744fff36b9148b6d33bdeaca096cabc4e8c6f2a3da3d6268a0d",
+    "src/Aijade.Client/Chat/ChatContracts.cs": "c54abc2f3333afc8170c435220143357f227558957e0b3669e4583a083a9b0e5",
+    "src/Aijade.Client/Chat/ChatPresentation.cs": "d5dab500486c2f481c331b3fd0934ff53811e160819573af378309a71f6774d0",
+    "src/Aijade.Client/Chat/CompanionRuntime.cs": "8c1114fd38f49b981b390906183a2d4430ca3367dd6c8d13698b1dfdd30ef243",
+    "src/Aijade.Client/Chat/Orchestrator.cs": "5c84e8509ad2d196a39e1834f22882e8db330b0c808a345c7277ae3e52c25f46",
+    "src/Aijade.Client/Chat/RenderReporter.cs": "08f4996604f922d5186e702efaf782cd3199a14deeadd0792484d7d6ab61108f",
+    "src/Aijade.Client/Chat/ToolConversation.cs": "059713f9ab1ffa8a255aef3439c43d3153f505e74ccfec74231b0520c69b836c",
+    "src/Aijade.Client/Companion/CompanionMediaTurn.cs": "f8204add3ee41f3d4bdfc5c06be8cad9bc3f0917f37eb4d46a34e9eb35b00832",
+    "src/Aijade.Integrations/CompanionBridge.cs": "414bfc1e7abd2448427462e23968a4f4b926c1a15cf1589d92fb8ff3e4697cd0",
+    "src/Aijade.Server/AijadeServer.cs": "3979f23d6279a6aef62599612e37eea66a42865976cff498b7aebd8fb10177a4",
+    "src/Aijade.Server/Infrastructure/JobBroker.cs": "402ffe978cb62a8999b5569c59f53ec0f32192f691a49b05eaaa5523e6460bdd",
+    "src/Aijade.Server/Mcp/AijadeMcpServer.cs": "7070e48bd6e895e663652366991d8dc47d9d37500f6eac1d4cd466325df7ca0f",
+    "src/Aijade.Server/ServerModules.cs": "f2896a464c44f2e92db9fbadc4e6695d5385c23660ac4da2c00155f8af4a7a70",
+    "src/Aijade.UI/Pages/Chat.razor": "601e8319a1b7c7b73f12bc25d0d251b8bc2e828d865d30cab83ae469bef51ece",
+    "tests/Aijade.E2E/CompanionExperienceWebTests.cs": "dedf1bfca46ab8496ac385fec882782fc5eca0c3de70224eb2a44e7f71370cb4",
+    "tests/Aijade.E2E/E2EHost.cs": "5dcf8471e4caf0580f7d2dd9bff6e8cb754e3a38136c514bdb8e88d6bcec423e",
+    "tests/Aijade.E2E/WebAppTests.cs": "726b92adfa0705f840067e4432edf8770313c83bd0011977b1c14325ee736ceb",
+    "tests/Aijade.Tests/CompanionRuntimeTests.cs": "dce9be465799561e0786b0246c46b6110cbbbf11060f53c3a7077e2af4f2dcf1",
+    "tests/Aijade.Tests/ServerModulesTests.cs": "aaccb3d3707f2573f5c22366f56b27eb78a19af8e771c971eb6517e63df80936",
+    "tests/Aijade.Tests/ToolTests.cs": "53960d5697f177e18468349eca1490390ab6760ea6ef85a0b3b1a0800a6d37b5",
+    "tools/run-companion.sh": "f224bcc9e9781c0040d5d124a95e6c27c93523af00ca9b50f8d5dd4fb4b27959"
+  },
+  "validation": {
+    "sdk": "10.0.403",
+    "framework": "net10.0",
+    "build": {
+      "command": "dotnet build Aijade.slnx -c Release",
+      "status": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "logSha256": "9ee20e2f31d5efba816cb2aee77d781edab7392af8a61aad893d25c9db5bbfe1"
+    },
+    "suites": [
+      {
+        "name": "All unit and integration tests",
+        "profile": "full",
+        "counts": {
+          "total": 547,
+          "passed": 533,
+          "failed": 0,
+          "skipped": 14
+        },
+        "rawReceiptFile": "unit-complete.trx",
+        "rawReceiptSha256": "3832d9fdc487413793c779180cd87bb48948060d894b961c8e2c9047da94f592",
+        "skippedTests": [
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+          "Aijade.Tests.ExternalRendererStudyTests.Seal_session",
+          "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+          "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+          "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+          "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration",
+          "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+          "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt",
+          "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+          "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field"
+        ],
+        "command": "dotnet test tests/Aijade.Tests -c Release --no-build"
+      },
+      {
+        "name": "All browser scenarios",
+        "profile": "full",
+        "counts": {
+          "total": 35,
+          "passed": 29,
+          "failed": 0,
+          "skipped": 6
+        },
+        "rawReceiptFile": "browser-verified.trx",
+        "rawReceiptSha256": "2b3a74c1b8fc5573063c15aee29214eb9580678ac26c3ae44629fd0055ef7494",
+        "skippedTests": [
+          "Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips",
+          "Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer",
+          "Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length",
+          "Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply",
+          "Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking",
+          "Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model"
+        ],
+        "command": "AIJADE_E2E=1 dotnet test tests/Aijade.E2E -c Release --no-build"
+      },
+      {
+        "name": "Companion sync, media and offline scenarios",
+        "profile": "companion",
+        "counts": {
+          "total": 8,
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "rawReceiptFile": "browser-companion.trx",
+        "rawReceiptSha256": "7d145d777d49e9077941e7aac8c8038c730b79fb0a652fc302abff7774146a5c",
+        "skippedTests": [],
+        "command": "Aijade__Profile=companion AIJADE_E2E=1 dotnet test tests/Aijade.E2E -c Release --no-build --filter 'FullyQualifiedName~CompanionExperienceWebTests|FullyQualifiedName~CompanionSyncWebTests|FullyQualifiedName~A_a_message_sent_while_the_server_cannot_be_reached|FullyQualifiedName~A_a_due_reminder_is_said'",
+        "testHarnessNote": "Run before assembly-level browser-fixture serialization; production source is identical. The complete full-profile suite was subsequently run serially."
+      }
+    ],
+    "launcher": {
+      "status": "PASS",
+      "argumentsForwarded": true,
+      "childRuntimePathSet": true
+    },
+    "environment": "Existing Docker PostgreSQL, real Chromium, fake model provider and signed local OneBot/NapCat substitute. PATH and DOTNET_ROOT selected the installed user .NET 10 SDK.",
+    "environmentVariablesNeeded": [
+      "AIJADE_ARTIFACTS",
+      "AIJADE_TEST_DATABASE_URL",
+      "AIJADE_E2E=1 for browser suites"
+    ],
+    "researchIntegrity": {
+      "baselineCommit": "e100df6f65a931b8aed9ea38602084d6e22e1200",
+      "protectedFiles": 548,
+      "differences": [],
+      "manifestSha256": "c14a7c458cd101e47ecfcdd8813e3b943ba9dd01f2a57554dd860fed48276159",
+      "frozen": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "sha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "until": "P3-E (the product's delivery path, Chapter 6) is run and archived",
+          "ifChanged": "only when it must change: record it in docs/STATUS.md, list it as a deviation of P3-E, then update this hash"
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "sha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "until": "P3-E (the product's delivery path, Chapter 6) is run and archived",
+          "ifChanged": "only when it must change: record it in docs/STATUS.md, list it as a deviation of P3-E, then update this hash"
+        }
+      ]
+    }
+  },
+  "references": {
+    "file": "references.json",
+    "sha256": "69032cc7da09ef915835c7920109297c988a04cf2e2f28457142b4c6635258cf",
+    "pinnedRepositories": 10,
+    "thirdPartyCodeImported": false
+  },
+  "architecture": {
+    "orchestratorFileLinesBefore": 668,
+    "orchestratorFileLinesAfter": 299,
+    "sharedReplyStreamPaths": 1,
+    "newDotnetProjects": 0,
+    "newPackageReferences": 0,
+    "optionalHostModules": [
+      "Mcp",
+      "Tools",
+      "Stage",
+      "Billing"
+    ],
+    "companionProfileDefaultOptionalModulesEnabled": 0,
+    "memoryAndEvidencePipelineRetained": true,
+    "fullProfileDefaultRetained": true,
+    "inProcessCompanionWorkerWaitsForEnqueue": true,
+    "realCpuOrModelSpeedBenchmarkPerformed": false
+  },
+  "earlierFailuresAndRepairs": [
+    {
+      "observation": "A solution-wide no-restore build lacked assets files for three previously unbuilt research tools.",
+      "repair": "Restored existing declared dependencies during normal solution build. No project or package reference changed."
+    },
+    {
+      "observation": "Child test processes initially selected system .NET 6/7; the server and computer-use MCP process exited with code 150.",
+      "repair": "Selected the installed user .NET 10 SDK for child processes and reran checks. The launcher also checks SDK resolution and forwards its path."
+    },
+    {
+      "observation": "Offline identity sync showed raw fetch errors; an old reminder test expected a model call after identity refresh had already failed.",
+      "repair": "Localized the early offline error, retained the unsent draft and verified due-check failure, release and successful recovery."
+    },
+    {
+      "observation": "Routing a media command through the common entry point could let reminder words in a song title reach channel reminder preparation.",
+      "repair": "Web and QQ skip reminder preparation for media commands; browser and signed-channel regressions cover the case."
+    },
+    {
+      "observation": "A concurrent full-browser run had one intermittent sync failure while scenarios shared mutable gateway configuration and a latest-request log.",
+      "repair": "Serialized the shared fixture and collected browser diagnostics. The complete 35-scenario run passed with 29 passed and 6 environment-gated skips. This is test isolation, not a product concurrency benchmark."
+    }
+  ],
+  "limits": [
+    "QQ outbound and model providers are controlled test substitutes; this is not live QQ login or a real-model acceptance run.",
+    "Licensed MMD model cases and opt-in external research, renderer and Minecraft cases remain skipped as listed.",
+    "No DSH plugin installation, autonomous social posting, voice training, held-out study or thesis scientific gate was executed.",
+    "The in-memory queue remains process-local. External tool actions are not automatically replayed and have no cross-crash exactly-once guarantee."
+  ],
+  "postValidationFormattingOnly": {
+    "change": "Removed one extra blank line at EOF in two newly split source files; no semantic source changes followed validation.",
+    "testedSourceSha256Overrides": {
+      "src/Aijade.Client/Chat/ChatContracts.cs": "b4216bb597ba8d6a47ab2c7c06307b12e6de95f371e8ed2bc488e3438216c2ce",
+      "src/Aijade.Client/Chat/ChatPresentation.cs": "1c5bdea90707cebd0ee377e6c38ce8a9562ebe0c8d42fcc92299e7d7e535237d"
+    }
+  }
+}

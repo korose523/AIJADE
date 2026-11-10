@@ -68,7 +68,7 @@ public sealed class AijadeMcpTools(IHttpContextAccessor http, IHttpClientFactory
             : chats.FirstOrDefault(c => c.Title == ChatTitle) ?? await api.CreateChatAsync(null, ChatTitle, cancellationToken).ConfigureAwait(false);
         var character = chat.CharacterId is { } cid ? (await api.CharactersAsync(cancellationToken).ConfigureAwait(false)).FirstOrDefault(c => c.Id == cid) : null;
         var history = await api.MessagesAsync(chat.Id, ct: cancellationToken).ConfigureAwait(false);
-        var orchestrator = new ChatOrchestrator(api, [new MemoryRecallProvider(api, () => true)], new OrchestratorOptions());
+        var orchestrator = CompanionRuntime.Create(api, [new("memory", new MemoryRecallProvider(api, () => true))], new OrchestratorOptions());
         await foreach (var e in orchestrator.SendAsync(chat.Id, character, history, message.Trim(), $"persona:{character?.Id ?? "default"}", cancellationToken).ConfigureAwait(false))
         {
             switch (e)

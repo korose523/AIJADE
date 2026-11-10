@@ -7,6 +7,10 @@ namespace Aijade.Client.Companion;
 /// <summary>Explicit media requests in the same chat, with an actual stored result before any delivery claim.</summary>
 public static class CompanionMediaTurn
 {
+    public static bool IsRequest(string text) =>
+        CompanionMedia.Command(text, "/photo", "拍照") is not null || CompanionMedia.Command(text, "/sing", "唱歌") is not null ||
+        text.Trim() is "/life" or "看看日常" or "/relationship" or "看看关系";
+
     public static async Task<StoredMessage?> TryAsync(AijadeApi api, CompanionExperience companion, string chatId, string text, bool drawing, bool audio = true, CancellationToken ct = default)
     {
         if (!companion.Profile.Enabled)

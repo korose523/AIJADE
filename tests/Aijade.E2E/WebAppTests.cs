@@ -91,12 +91,12 @@ public sealed class WebAppTests(E2EHost host)
         Task<string> StatusAsync() => page.EvaluateAsync<string>($"() => {books}.flatMap(k => JSON.parse(localStorage.getItem(k)))[0].status");
 
         // The page looks for due reminders once a minute. At the next look the server cannot be reached (every request fails,
-        // as when the network is down; her line's request, a streamed turn, is counted, not the learning loop's calls in the
-        // background), and the reminder is due.
+        // as when the network is down), and the reminder is due. Resolving the reminder's chat and current character comes
+        // before generation. Count that due-check request, rather than an LLM call the offline check must not reach.
         var tried = 0;
         await page.RouteAsync("**/api/v1/**", route =>
         {
-            if (route.Request.Url.Contains("/openai/v1/chat/completions", StringComparison.Ordinal) && route.Request.PostData?.Contains("\"stream\":true", StringComparison.Ordinal) == true)
+            if (route.Request.Method == "GET" && new Uri(route.Request.Url).AbsolutePath == "/api/v1/chats")
                 Interlocked.Increment(ref tried);
             return route.AbortAsync();
         });
@@ -130,13 +130,14 @@ public sealed class WebAppTests(E2EHost host)
         await Expect(page.Locator(".bubble.assistant").Last).ToHaveTextAsync(FakeUpstream.Reply);
 
         // Every request fails, as when the network is down: the chat says so, not the page's generic error bar, and the
-        // message stays shown as sent.
+        // identity sync fails before sending, so the message remains in the composer and is not shown as a stored turn.
         await page.RouteAsync("**/api/v1/**", route => route.AbortAsync());
         await page.GetByPlaceholder("Say something…").FillAsync("Are you there?");
         await page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
         await Expect(page.Locator("p.error[role=alert]")).ToHaveTextAsync("Cannot reach the server; this turn did not finish. When you are back online, reload the chat to see what the server kept.");
         await Expect(page.Locator("#blazor-error-ui")).ToBeHiddenAsync();
-        await Expect(page.Locator(".bubble.user").Last).ToHaveTextAsync("Are you there?");
+        await Expect(page.GetByPlaceholder("Say something…")).ToHaveValueAsync("Are you there?");
+        await Expect(page.Locator(".bubble.user")).ToHaveTextAsync(["Hello"]);
 
         // Back online, the chat goes on and shows what the server kept (the unsent message was not stored).
         await page.UnrouteAsync("**/api/v1/**");

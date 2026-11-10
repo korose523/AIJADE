@@ -2,6 +2,8 @@
 
 AIJADE 的角色、生活与地点时区、关系状态和媒体收藏按账号及角色保存。网页与 QQ 连接同一 AIJADE 服务；修改保存后，后续新回合读取新状态。研究装置与产品数据的边界见 [PROJECT-SCOPE](PROJECT-SCOPE.md)。
 
+共享运行时、精简启动配置和参考项目的采用范围见 [ARCHITECTURE](ARCHITECTURE.md)。普通陪伴部署可以使用 `tools/run-companion.sh`；原有完整部署继续保留。
+
 ## 开始使用与跨端同步
 
 1. 登录网页，在“角色”页创建或修改角色，点击“与此角色聊天”。

@@ -4,9 +4,11 @@
 
 当前优先完善情感陪伴产品，角色、地点时区、关系和收藏按账号／角色共享。配置与同步见 [COMPANION](COMPANION.md)，模块边界见 [PROJECT-SCOPE](PROJECT-SCOPE.md) 和 [ADR-004](decisions/ADR-004.md)。
 
+共享能力装配、统一回复流、精简运行配置和参考来源见 [ARCHITECTURE](ARCHITECTURE.md)。本机 `companion` 队列按任务唤醒，完整配置保留原 worker 时序；研究管线与既有测量源码保留。
+
 研究记录分别索引到 [既有结果复核](../experiments/engineering/2026-11-09-research-audit/README.md) 与 [Mac 模型预检](../experiments/mac-preflight/2026-11-09-7b8b/README.md)。7B 首轮交换阈值停止保留，准入后两模型固定请求各 10/10；正式资格、确定性及 P2 主运行仍各自验收。
 
-[发布回归回执](../experiments/engineering/2026-11-10-github-validation/receipt.json)：定向检查 78 通过、0 失败、5 个真实 Minecraft 环境项跳过，浏览器 8 通过、0 失败、0 跳过，监测器故障测试 8 通过。模型和 QQ 出站为受控替身，修复前失败记录保留。
+[架构重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)：全量单元／集成 533 通过、14 项按条件跳过；完整配置浏览器 29 通过、6 项按条件跳过，精简配置专项 8 通过。模型与 QQ 出站为受控替身，548 个研究／共同基础文件与基线提交保持一致；失败及修复记录保留。此前的[发布回归回执](../experiments/engineering/2026-11-10-github-validation/receipt.json)继续保留原记录。
 
 ## 1. 约束
 
@@ -39,7 +41,7 @@ src/
   Aijade.Telemetry     研究遥测
   Aijade.Providers     LLM 客户端、模型底座与确定性校验
   Aijade.Server        HTTP 服务端：v9/v10 事件管线、渲染身份投影、晋升闸门、长期记忆、账户、计费、网关、管理
-  Aijade.Client        伴侣客户端编排（对话、能力接入）
+  Aijade.Client        跨 Web/MAUI/机器人/MCP 的共享运行时：能力装配、媒体路由、回复流与工具预算
   Aijade.UI / .Web     Blazor 界面与 Web 宿主（舞台、语音、设置、管理后台）
   Aijade.Maui          Android 应用
   Aijade.Bots          机器人宿主（Discord、Telegram、Satori、X、B 站直播、Minecraft）

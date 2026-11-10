@@ -136,6 +136,10 @@ public sealed partial class CompanionExperienceWebTests(E2EHost host)
         await page.GetByRole(AriaRole.Button, new() { Name = "Send", Exact = true }).ClickAsync();
         await Expect(page.Locator(".bubble.assistant").Last).ToContainTextAsync("还没有练好");
         await Expect(page.Locator(".messages audio")).ToHaveCountAsync(1);
+        await page.GetByPlaceholder("Say something…").FillAsync("/sing 十分钟后提醒我喝水");
+        await page.GetByRole(AriaRole.Button, new() { Name = "Send", Exact = true }).ClickAsync();
+        await Expect(page.Locator(".bubble.assistant").Last).ToContainTextAsync("还没有练好");
+        Assert.Equal(0, await page.EvaluateAsync<int>("() => Object.keys(localStorage).filter(k => k.startsWith('aijade.reminders.')).flatMap(k => JSON.parse(localStorage.getItem(k))).length"));
         await page.Context.CloseAsync();
     }
 

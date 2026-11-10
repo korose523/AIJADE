@@ -15,6 +15,9 @@ using Microsoft.Playwright;
 using Npgsql;
 
 [assembly: AssemblyFixture(typeof(Aijade.E2E.E2EHost))]
+// These scenarios intentionally edit one shared gateway and inspect its latest model request. Their service-side
+// state is shared even though browser storage is isolated, so scenarios must not run against each other's configuration.
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace Aijade.E2E;
 

@@ -98,13 +98,26 @@ public sealed class BridgeOptions
 public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null, IEnumerable<IContextProvider>? context = null, IEnumerable<ITurnObserver>? observers = null)
     : IDisposable
 {
-    private readonly BridgeOptions options = Configure(options ?? new BridgeOptions());
+    private readonly BridgeOptions options = options ?? new BridgeOptions();
 
-    private static BridgeOptions Configure(BridgeOptions o)
+    private ChatOrchestrator Runtime(CompanionExperience? companion, Character? who, string? memorySession = null, bool audio = true)
     {
-        o.Orchestrator.Drawing = () => o.Drawing;
-        o.Orchestrator.Tools = () => o.Tools;
-        return o;
+        var modules = new List<ChatModule>();
+        if (memorySession is not null)
+        {
+            if (options.Memory)
+                modules.Add(new("memory", new MemoryRecallProvider(api, () => true, session: memorySession)));
+            modules.AddRange((context ?? []).Select((p, i) => new ChatModule($"channel-context-{i}", p)));
+            modules.AddRange((observers ?? []).Select((o, i) => new ChatModule($"channel-observer-{i}", Observer: o)));
+            if (companion is not null)
+                modules.Add(new("life", companion, companion));
+        }
+        return CompanionRuntime.Create(api, modules, options.Orchestrator with
+        {
+            AgentId = who?.Id ?? options.Orchestrator.AgentId,
+            Drawing = () => options.Drawing,
+            Tools = () => options.Tools,
+        }, companion, audio, options.Time);
     }
 
     /// <summary>The memory session of one person on one platform: recall and recording never cross people.</summary>
@@ -135,8 +148,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                 var chat = await ChatForAsync(sync is null ? contact.Key : contact.Key + ":" + sync.Identity, contact.AuthorName, sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
                 var history = await api.MessagesAsync(chat, ct: ct).ConfigureAwait(false);
                 var experience = sync?.Experience ?? options.Companion?.Invoke(contact);
-                var firstOptions = new OrchestratorOptions { Model = options.Orchestrator.Model, CompanionContext = experience is null ? null : experience.SupplyAsync };
-                var orchestrator = new ChatOrchestrator(api, [], firstOptions, options.Time);
+                var orchestrator = Runtime(experience, who);
                 var zone = experience is not null && !string.IsNullOrWhiteSpace(experience.Profile.TimeZone)
                     ? experience.Profile.Zone : options.TimeZone ?? TimeZoneInfo.Local;
                 await foreach (var e in orchestrator.SpeakFirstAsync(chat, who, history, $"persona:{who?.Id ?? "default"}",
@@ -188,24 +200,26 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
             if (message.IsDirect)
                 privateContacts[message.Key] = message;
             var experience = sync?.Experience ?? options.Companion?.Invoke(message);
-            if (experience is not null && await CompanionMediaTurn.TryAsync(api, experience, chatId, message.Text, options.Drawing, audio: message.Platform == "qq", ct: ct).ConfigureAwait(false) is { } mediaLine)
-                return new ChannelReply(mediaLine.Content, [], Artistry.ImageOf(mediaLine)) { Attachments = await AttachmentsAsync(mediaLine, ct).ConfigureAwait(false) };
+            var mediaRequest = experience?.Profile.Enabled == true && CompanionMediaTurn.IsRequest(message.Text);
             // Group rooms have many speakers: the model sees who said it.
-            var text = message.IsDirect ? message.Text : $"{message.AuthorName}: {message.Text}";
+            var text = new ChatInput(message.Text, message.IsDirect ? null : message.AuthorName);
             var session = MemorySession(message);
-            IContextProvider[] providers = [.. options.Memory ? new IContextProvider[] { new MemoryRecallProvider(api, () => true, session: session) } : [], .. context ?? [], .. experience is null ? Array.Empty<IContextProvider>() : [experience]];
-            var orchestrator = new ChatOrchestrator(api, providers, options.Orchestrator, options.Time, [.. observers ?? [], .. experience is null ? Array.Empty<ITurnObserver>() : [experience]]);
-            if (options.Memory)
+            var orchestrator = Runtime(experience, who, session, audio: message.Platform == "qq");
+            if (options.Memory && !mediaRequest)
                 _ = RecordAsync(session, message.Text);
             TurnCompleted? done = null;
             string? draw = null;
             var bodiless = options.TextChannelRules ? TextChannel.BodilessChannel(message.Platform) : null;
-            var (reminderNotes, promised) = message.IsDirect && options.ReminderPlatforms.Contains(message.Platform) ? await ReadRemindersAsync(message, experience?.Profile.Zone, ct).ConfigureAwait(false) : ([], null);
+            var (reminderNotes, promised) = !mediaRequest && message.IsDirect && options.ReminderPlatforms.Contains(message.Platform)
+                ? await ReadRemindersAsync(message, experience?.Profile.Zone, ct).ConfigureAwait(false) : ([], null);
             var notes = (bodiless is null ? [] : TextChannel.Notes(bodiless, message.Text)).Concat(reminderNotes).ToList();
             await foreach (var e in orchestrator.SendAsync(chatId, who, history, text, $"persona:{who?.Id ?? "default"}", notes.Count > 0 ? notes : null, ct).ConfigureAwait(false))
             {
                 switch (e)
                 {
+                    case MediaCompleted media:
+                        return new ChannelReply(media.Reply.Content, [], Artistry.ImageOf(media.Reply))
+                            { Attachments = await AttachmentsAsync(media.Reply, ct).ConfigureAwait(false) };
                     case TurnCompleted c:
                         done = c;
                         break;
@@ -351,9 +365,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
             chatKey = sync is null ? due.Conversation : due.Conversation + ":" + sync.Identity;
             var chatId = await ChatForAsync(chatKey, $"{platform} · {subject}", sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
             var history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false);
-            var reminderOptions = new OrchestratorOptions { Model = options.Orchestrator.Model, Temperature = options.Orchestrator.Temperature,
-                CompanionContext = experience is null ? options.Orchestrator.CompanionContext : experience.SupplyAsync };
-            await foreach (var e in new ChatOrchestrator(api, [], reminderOptions, options.Time, observers)
+            await foreach (var e in Runtime(experience, who)
                 .RemindAsync(chatId, who, history, $"persona:{who?.Id ?? "default"}", due, experience?.Profile.Zone ?? options.TimeZone, ct).ConfigureAwait(false))
             {
                 if (e is TurnCompleted c)

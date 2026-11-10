@@ -25,6 +25,18 @@ Research methods, original requests and replies, failures and verification recei
 and [engineering regressions](experiments/engineering/2026-11-10-github-validation/receipt.json).
 Development preflights do not replace primary studies or establish prior public registration.
 
+## Runtime composition
+
+The [architecture guide](docs/ARCHITECTURE.md) records the checked DeepSeek Harness, superagent, Comma and companion-plugin
+references and their mapping to the implementation. Web/native apps, chat connectors and MCP compose capabilities through
+`CompanionRuntime`; ordinary chat, first lines and reminders share reply streaming and persistence. Explicit companion media
+commands use that entry point too. Optional modules are named, switchable and isolated from one another's failures.
+
+For a companion deployment, configure the existing PostgreSQL and model gateway, then run `tools/run-companion.sh`.
+It keeps the core, shared memory and evidence pipeline, and mounts MCP, external tools, the MOSAIC bridge and billing only
+when selected. The existing `full` profile remains the default for deployment and research compatibility. No new service stack,
+package dependency or .NET project is required.
+
 ## Build and test
 
 Requires the .NET 10 SDK (pinned in `global.json`).

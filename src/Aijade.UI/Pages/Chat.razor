@@ -416,17 +416,20 @@
         var s = State.Settings.Current;
         var learning = Capabilities.For(State.Account?.Id ?? "anonymous");
         var companion = State.CompanionFor(who?.Id);
-        return new ChatOrchestrator(State.Api, [new MemoryRecallProvider(State.Api, () => State.Settings.Current.Modules.Memory), learning, Vision.Context, companion,
-            new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.BrowserContext),
-            new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.IdeContext, "ide")],
+        return CompanionRuntime.Create(State.Api,
+            [new("memory", new MemoryRecallProvider(State.Api, () => State.Settings.Current.Modules.Memory)),
+             new("learning", learning, learning, () => State.Settings.Current.Modules.Learning),
+             new("vision", Vision.Context, Enabled: () => State.Settings.Current.Modules.Vision),
+             new("life", companion, companion),
+             new("browser", new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.BrowserContext)),
+             new("ide", new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.IdeContext, "ide"))],
             new OrchestratorOptions
             {
                 Model = s.Model, Temperature = s.Temperature, AgentId = who?.Id ?? "aijade", UserScope = State.Account?.Id ?? "default",
                 Drawing = () => canDraw && State.Settings.Current.Modules.Artistry,
                 Tools = () => State.Settings.Current.Modules.Mcp,
-                CompanionContext = companion.SupplyAsync,
             },
-            observers: [learning, companion]);
+            companion);
     }
 
     private async Task SendAsync()
@@ -446,9 +449,13 @@
                 stickerAssets = [];
             }
         }
-        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        catch (AijadeApiException e)
         {
             error = e.Message; busy = false; return;
+        }
+        catch (HttpRequestException)
+        {
+            error = State.Text["chat.unreachable"]; busy = false; return;
         }
         if (ChatId is null)
         {
@@ -486,21 +493,22 @@
             if (settings.RecordConversations && settings.Modules.Memory)
                 _ = new ConversationRecorder(State.Api, State.MemorySessionId, State.DeviceId).RecordAsync(text);
             canDraw = (await State.CapabilitiesAsync()).Images;
-            if (await CompanionMediaTurn.TryAsync(State.Api, State.CompanionFor(character?.Id), ChatId, text, canDraw && settings.Modules.Artistry, ct: cts.Token) is not null)
-            {
-                messages = [.. await State.Api.MessagesAsync(ChatId)];
-                return;
-            }
+            var mediaRequest = State.CompanionFor(character?.Id).Profile.Enabled && CompanionMediaTurn.IsRequest(text);
             var drawRequests = new List<string>();
             // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
-            var home = settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
+            var home = !mediaRequest && settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
             var action = home is null ? null : Stage.Decide(text, home.Seated);
             // A reminder asked for, cancelled or asked about is decided by fixed words before the reply, and she is told so (ADR-003).
             var reminders = State.Reminders;
-            var book = await reminders.LoadAsync();
-            var (reminderNotes, promised) = book.Read(ChatId, text, Now(), State.SharedCompanion?.RuntimeProfile.Zone);
-            if (promised is not null || reminderNotes.Count > 0)
-                await reminders.SaveAsync(book, Now());
+            IReadOnlyList<string> reminderNotes = [];
+            Reminder? promised = null;
+            if (!mediaRequest)
+            {
+                var book = await reminders.LoadAsync();
+                (reminderNotes, promised) = book.Read(ChatId, text, Now(), State.SharedCompanion?.RuntimeProfile.Zone);
+                if (promised is not null || reminderNotes.Count > 0)
+                    await reminders.SaveAsync(book, Now());
+            }
             var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
             if (home is not null)
                 undone = null; // told once
@@ -508,6 +516,9 @@
             {
                 switch (e)
                 {
+                    case MediaCompleted:
+                        messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        break;
                     case TextDelta d:
                         await AppendPacedAsync(d.Text);
                         break;

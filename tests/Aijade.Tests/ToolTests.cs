@@ -147,6 +147,8 @@ public class ToolTests
     private sealed class ToolLlm : HttpMessageHandler
     {
         public List<JsonNode> Bodies { get; } = [];
+        public int CallsPerTurn { get; set; } = 1;
+        public bool MalformedArguments { get; set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -155,7 +157,15 @@ public class ToolTests
             var last = body["messages"]!.AsArray()[^1]!;
             if (body["tools"] is JsonArray && last["role"]!.GetValue<string>() == "user")
             {
-                return Text("""{"choices":[{"message":{"role":"assistant","content":null,"tool_calls":[{"id":"call_1","type":"function","function":{"name":"home__call_service","arguments":"{\"domain\":\"light\",\"service\":\"turn_on\",\"entity_id\":\"light.desk\"}"}}]}}]}""");
+                var response = JsonNode.Parse("""{"choices":[{"message":{"role":"assistant","content":null,"tool_calls":[]}}]}""")!;
+                var calls = response["choices"]![0]!["message"]!["tool_calls"]!.AsArray();
+                for (var i = 0; i < CallsPerTurn; i++)
+                    calls.Add(new JsonObject { ["id"] = $"call_{i + 1}", ["type"] = "function", ["function"] = new JsonObject
+                    {
+                        ["name"] = "home__call_service",
+                        ["arguments"] = MalformedArguments ? "[invalid" : """{"domain":"light","service":"turn_on","entity_id":"light.desk"}""",
+                    } });
+                return Text(response.ToJsonString());
             }
             if (last["role"]!.GetValue<string>() == "tool")
                 return Text("""{"choices":[{"message":{"role":"assistant","content":"[[emote:joy]]The desk light is on now."}}],"usage":{"prompt_tokens":20,"completion_tokens":8}}""");
@@ -230,6 +240,19 @@ public class ToolTests
         Assert.Contains(ha.Requests, r => r.Url == "http://ha.local:8123/api/services/light/turn_on" && r.Body.Contains("\"entity_id\":\"light.desk\"", StringComparison.Ordinal));
         var toolMessage = llm.Bodies[^1]["messages"]!.AsArray()[^1]!;
         Assert.Equal(("tool", "call_1", "Called light.turn_on on light.desk."), (toolMessage["role"]!.GetValue<string>(), toolMessage["tool_call_id"]!.GetValue<string>(), toolMessage["content"]!.GetValue<string>()));
+
+        // Many calls in one model response share a total budget; malformed arguments never become an empty real action.
+        var priorActions = ha.Requests.Count(r => r.Url.EndsWith("/api/services/light/turn_on", StringComparison.Ordinal));
+        llm.CallsPerTurn = 3;
+        await foreach (var _ in CompanionRuntime.Create(api, [], new OrchestratorOptions { Tools = () => true, MaxToolCalls = 1 })
+            .SendAsync(chat.Id, null, [], "Turn on the light", "snap", ct)) { }
+        Assert.Equal(priorActions + 1, ha.Requests.Count(r => r.Url.EndsWith("/api/services/light/turn_on", StringComparison.Ordinal)));
+        Assert.Contains("budget", llm.Bodies[^1]["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        llm.MalformedArguments = true;
+        await foreach (var _ in CompanionRuntime.Create(api, [], new OrchestratorOptions { Tools = () => true })
+            .SendAsync(chat.Id, null, [], "Try the light", "snap", ct)) { }
+        Assert.Equal(priorActions + 1, ha.Requests.Count(r => r.Url.EndsWith("/api/services/light/turn_on", StringComparison.Ordinal)));
+        Assert.Contains("valid JSON", llm.Bodies[^1]["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
 
         // With the module off, no tools are offered and the reply streams as before.
         events.Clear();
