@@ -1,0 +1,3643 @@
+{
+  "audit": "2026-11-03 supervisor review against local AIJADE evidence",
+  "comparisonBasis": "working-tree",
+  "localHead": "1c78bf920902a6aeff6b4b269b9883d1c120a983",
+  "worktreeModified": true,
+  "newScientificRun": false,
+  "modelCalls": 0,
+  "checks": {
+    "frozenSourcesMatch": true,
+    "p1bScoresRecompute": true,
+    "p3eSourcesMatchComparison": false,
+    "p3ePlansPrecedeRecordedCode": true,
+    "p1cThreeRecordedRounds": true,
+    "currentP3PolicyArtifactsValid": true
+  },
+  "frozenSources": [
+    {
+      "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+      "expectedSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "actualSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "matches": true
+    },
+    {
+      "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+      "expectedSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "actualSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "matches": true
+    }
+  ],
+  "productVersionComparison": {
+    "text": {
+      "declaredRunCommit": "c40c46c231e2c8c92859a4916c755ce1f6bfd18a",
+      "resolvedPlanCommit": "6792205dfbc3535b70fa4388f99fcbd5187bb4b2",
+      "planCommitIsAncestor": true,
+      "sourceFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "atDeclaredRunCommitSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "comparisonSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "atDeclaredRunCommitSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "comparisonSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+          "atDeclaredRunCommitSha256": "d4e45d76c97c0603dae38bd6ce60b05d7e10dc13d6a9ad1e74ab0c73c6bf7e55",
+          "comparisonSha256": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Pages/Chat.razor",
+          "atDeclaredRunCommitSha256": "cb9e43669da429fb7498c477c5e07a183f5f7932939be476743ceb0dfc49044f",
+          "comparisonSha256": "aa297d707360f2509a66fe11942028c8f19fce6f77abfc21cd8b311bad87233e",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Services/AppState.cs",
+          "atDeclaredRunCommitSha256": "e243e7d50bce866c10a0919954572a07334b0e79bc6a02d074b6126dcb92105e",
+          "comparisonSha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.Integrations/CompanionBridge.cs",
+          "atDeclaredRunCommitSha256": "b7f1fdb4d697983a72f3286ae8f41f244bad589e148b0ac7f126668ef5ac4326",
+          "comparisonSha256": "684258cf1458e8c6778aec1736c01699e676b3cd236ceeab8682e074e264aef1",
+          "matches": false
+        }
+      ],
+      "allComparedSourcesMatch": false,
+      "runtimeExecutableHash": "NOT_RECORDED_IN_ARCHIVE",
+      "note": "Git objects verify sources at the declared commit; they do not independently bind the executed binary."
+    },
+    "embedding": {
+      "declaredRunCommit": "bbafb62891958b2c63f093b936537cd8c2e725cb",
+      "resolvedPlanCommit": "6792205dfbc3535b70fa4388f99fcbd5187bb4b2",
+      "planCommitIsAncestor": true,
+      "sourceFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "atDeclaredRunCommitSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "comparisonSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "atDeclaredRunCommitSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "comparisonSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+          "atDeclaredRunCommitSha256": "d4e45d76c97c0603dae38bd6ce60b05d7e10dc13d6a9ad1e74ab0c73c6bf7e55",
+          "comparisonSha256": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Pages/Chat.razor",
+          "atDeclaredRunCommitSha256": "cb9e43669da429fb7498c477c5e07a183f5f7932939be476743ceb0dfc49044f",
+          "comparisonSha256": "aa297d707360f2509a66fe11942028c8f19fce6f77abfc21cd8b311bad87233e",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Services/AppState.cs",
+          "atDeclaredRunCommitSha256": "e243e7d50bce866c10a0919954572a07334b0e79bc6a02d074b6126dcb92105e",
+          "comparisonSha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.Integrations/CompanionBridge.cs",
+          "atDeclaredRunCommitSha256": "b7f1fdb4d697983a72f3286ae8f41f244bad589e148b0ac7f126668ef5ac4326",
+          "comparisonSha256": "684258cf1458e8c6778aec1736c01699e676b3cd236ceeab8682e074e264aef1",
+          "matches": false
+        }
+      ],
+      "allComparedSourcesMatch": false,
+      "runtimeExecutableHash": "NOT_RECORDED_IN_ARCHIVE",
+      "note": "Git objects verify sources at the declared commit; they do not independently bind the executed binary."
+    }
+  },
+  "p1bRecomputation": {
+    "drift": {
+      "recomputed": {
+        "killed": 406,
+        "survived": 164,
+        "noCoverage": 263,
+        "compileError": 366,
+        "timeout": 0,
+        "ignored": 52,
+        "score": 0.4874,
+        "scoreCi95": [
+          0.4536,
+          0.5213
+        ],
+        "executedScore": 0.7123,
+        "executedScoreCi95": [
+          0.6738,
+          0.7479
+        ]
+      },
+      "matchesArchive": true
+    },
+    "gate": {
+      "recomputed": {
+        "killed": 70,
+        "survived": 193,
+        "noCoverage": 326,
+        "compileError": 62,
+        "timeout": 0,
+        "ignored": 42,
+        "score": 0.1188,
+        "scoreCi95": [
+          0.0951,
+          0.1475
+        ],
+        "executedScore": 0.2662,
+        "executedScoreCi95": [
+          0.2164,
+          0.3227
+        ]
+      },
+      "matchesArchive": true
+    }
+  },
+  "qualitativeProvenance": {
+    "status": "NOT_REQUESTED"
+  },
+  "currentP3e": {
+    "status": "NOT_REQUESTED"
+  },
+  "currentP3Policies": {
+    "valid": true,
+    "coverage": [
+      {
+        "group": "product",
+        "configuration": "text",
+        "rows": 7944,
+        "matches": true
+      },
+      {
+        "group": "product",
+        "configuration": "embedding",
+        "rows": 7944,
+        "matches": true
+      },
+      {
+        "group": "external",
+        "configuration": "langchain",
+        "rows": 7944,
+        "matches": true
+      },
+      {
+        "group": "external",
+        "configuration": "mem0",
+        "rows": 7944,
+        "matches": true
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "LOCOMO-LICENSE.txt",
+        "matches": true
+      },
+      {
+        "path": "README.md",
+        "matches": true
+      },
+      {
+        "path": "analyze.py",
+        "matches": true
+      },
+      {
+        "path": "corpus-export.json.gz",
+        "matches": true
+      },
+      {
+        "path": "engineering/all-exact.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/all-exact.trx",
+        "matches": true
+      },
+      {
+        "path": "engineering/analysis-tests-final.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/analysis-tests-public.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/analysis-tests-transport-final.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/analysis-tests-transport.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/analysis-tests.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/build-01.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/build-02.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/build-coverage-exact.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/build-exact.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/build-external-exact.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/entity-ollama-owned.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/entity-ollama.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/entity-preparation.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/execution-ci.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/execution-ci.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/operator-attempt-01.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/operator-attempt-02.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/operator-attempt-03.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/pre-execution-all.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/pre-execution-all.trx",
+        "matches": true
+      },
+      {
+        "path": "engineering/public-transport-validation-final.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/public-transport-validation-first.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-01.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-02/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-02.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-03/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-03/synthetic-native-traces.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-03.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-04/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-04/synthetic-native-traces.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-04.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-05/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-05/synthetic-native-traces.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-05.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-06/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-06/synthetic-native-traces.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-06.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-db.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-db.trx",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-dotnet.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-external-exact.log",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification-external-exact.trx",
+        "matches": true
+      },
+      {
+        "path": "engineering/qualification.trx",
+        "matches": true
+      },
+      {
+        "path": "entity-preparation/coverage.json",
+        "matches": true
+      },
+      {
+        "path": "entity-preparation/entity-requests.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "entity-preparation/supplement.json.gz",
+        "matches": true
+      },
+      {
+        "path": "entity-preparation/verification.json",
+        "matches": true
+      },
+      {
+        "path": "execution.json",
+        "matches": true
+      },
+      {
+        "path": "external-environment-packages.json",
+        "matches": true
+      },
+      {
+        "path": "external-source-crosscheck.json",
+        "matches": true
+      },
+      {
+        "path": "external_policies.py",
+        "matches": true
+      },
+      {
+        "path": "figures/collision.json",
+        "matches": true
+      },
+      {
+        "path": "figures/glyphs.json",
+        "matches": true
+      },
+      {
+        "path": "figures/policy_loss.alignment.json",
+        "matches": true
+      },
+      {
+        "path": "figures/policy_loss.pdf",
+        "matches": true
+      },
+      {
+        "path": "figures/policy_loss.png",
+        "matches": true
+      },
+      {
+        "path": "figures/policy_loss.provenance.json",
+        "matches": true
+      },
+      {
+        "path": "figures/policy_loss.svg",
+        "matches": true
+      },
+      {
+        "path": "figures/policy_loss_source.csv",
+        "matches": true
+      },
+      {
+        "path": "figures/source-preflight.log",
+        "matches": true
+      },
+      {
+        "path": "numeric-consistency.json",
+        "matches": true
+      },
+      {
+        "path": "plot_policy_loss.py",
+        "matches": true
+      },
+      {
+        "path": "policy-stage-data.csv",
+        "matches": true
+      },
+      {
+        "path": "prepare_entities.py",
+        "matches": true
+      },
+      {
+        "path": "protected-inputs.json",
+        "matches": true
+      },
+      {
+        "path": "raw-validation.json",
+        "matches": true
+      },
+      {
+        "path": "replay-preflight.json",
+        "matches": true
+      },
+      {
+        "path": "run.py",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/product-embedding-receipt.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/product-embedding.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-1.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-2.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-3.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-4.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-5.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-6.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-7.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-8.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/store-embedding-9.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/embedding/test-results/full-corpus.trx",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/execution.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/external/langchain/langchain.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/external/langchain/started.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/external/langchain/store-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/external-langchain.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/external-qualification/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/external-qualification.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/product-embedding.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/product-text.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/product-text-receipt.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/product-text.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-1.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-2.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-3.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-4.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-5.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-6.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-7.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-8.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/store-text-9.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-01/text/test-results/full-corpus.trx",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/execution.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/langchain-prompts.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/langchain-prompts.jsonl.gz.progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/langchain-prompts.jsonl.gz.receipt.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/langchain.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/started.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-1.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-2.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-3.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-4.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-5.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-6.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-7.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-8.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/store-9.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/langchain/test-results/external-prompts.trx",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/mem0.jsonl.gz.part-000",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/mem0.jsonl.gz.part-001",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/mem0.jsonl.gz.part-002",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/mem0.jsonl.gz.parts.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/started.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-1.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-2.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-3.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-4.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-5.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-6.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-7.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-8.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external/mem0/store-9.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external-langchain.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external-mem0.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external-prompts-langchain.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external-qualification/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external-qualification/synthetic-native-traces.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-02/external-qualification.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/execution.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz.progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz.receipt.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/langchain.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/started.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-1.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-2.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-3.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-4.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-5.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-6.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-7.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-8.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/store-9.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/langchain/test-results/external-prompts.trx",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0-prompts.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0-prompts.jsonl.gz.progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0-prompts.jsonl.gz.receipt.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0.jsonl.gz.part-000",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0.jsonl.gz.part-001",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0.jsonl.gz.part-002",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/mem0.jsonl.gz.parts.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/progress.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/started.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-0.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-1.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-2.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-3.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-4.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-5.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-6.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-7.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-8.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/store-9.json.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external/mem0/test-results/external-prompts.trx",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-langchain.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-mem0.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-prompts-langchain.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-prompts-mem0.log",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-qualification/qualification.json",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-qualification/synthetic-native-traces.jsonl.gz",
+        "matches": true
+      },
+      {
+        "path": "runs/attempt-03/external-qualification.log",
+        "matches": true
+      },
+      {
+        "path": "search-crosscheck.json",
+        "matches": true
+      },
+      {
+        "path": "summary.json",
+        "matches": true
+      },
+      {
+        "path": "test_analyze.py",
+        "matches": true
+      },
+      {
+        "path": "test_transport.py",
+        "matches": true
+      },
+      {
+        "path": "transport-validation.json",
+        "matches": true
+      },
+      {
+        "path": "transport.py",
+        "matches": true
+      },
+      {
+        "path": "verify_searches.py",
+        "matches": true
+      }
+    ],
+    "productSourceFiles": [
+      {
+        "path": "src/Aijade.Bots/Aijade.Bots.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Bots/CompanionConfiguration.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Bots/ConnectorHost.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Bots/DiscordConnector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Bots/Program.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Bots/TelegramConnector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Agent/AgentCapabilities.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Aijade.Client.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Api/AijadeApi.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Api/ClientHost.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/BeatSync.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/ChatContracts.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/ChatPresentation.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/CompanionRuntime.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/LiveContext.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/PromptBudget.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/RenderReporter.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/ToolConversation.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Chat/Vision.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionDelivery.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionDiary.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionExperience.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionLife.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionMedia.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionMediaTurn.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionSync.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/CompanionWeather.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/Initiative.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/LipSync.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/MosaicStage.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/ReminderStore.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/Reminders.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/Selfies.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/Stage.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Companion/TextChannel.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Games/Chess.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Games/ChessCompanion.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/Strings.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/en.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/es.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/fr.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/ja.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/ko.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/ru.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/vi.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/zh-Hans.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/I18n/zh-Hant.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Client/Settings/AppSettings.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/Aijade.ComputerUse.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/ComputerUse.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/MacAccessibility.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/MacDesktop.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/Program.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/WindowsDesktop.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.ComputerUse/WindowsUiAutomation.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Aijade.Core.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Js/JsFormat.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Js/JsNumberJsonConverter.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Js/JsText.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Js/WireName.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Random/Mulberry32.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Core/Schema/WireSchema.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Adapters/ChatLlmAdapter.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Adapters/CryptoSigningAdapter.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Adapters/FileStorageAdapter.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Adapters/HashedVectorSearch.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Adapters/RealPorts.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Adapters/SystemSchedulerAdapter.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Aijade.Growth.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Benchmark/SyntheticLongitudinal.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/GrowthJson.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/GrowthLoop.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/InMemory.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Metrics/Formulas.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Metrics/Identity.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Metrics/Stats.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Pilot/Configs.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Pilot/MemoryPolicies.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Pilot/RunPilot.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Pilot/Simulator.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Ports.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/ArchitectureCritic.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/EpistemicVerifier.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/EvolutionLab.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/InterestService.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/KnowledgeAcquirer.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/LifeJournal.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/PerformanceDirector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/QuestPlanner.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/ReleaseExecutor.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/SharingPolicy.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/SynthesisWorkbench.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/TransferLab.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Growth/Services/TrustedReleaseController.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Aijade.Integrations.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/BilibiliLiveConnector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/CompanionBridge.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McBlocks.g.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McClient.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McClientWorld.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McCrafting.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McEquipment.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McItems.g.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McProtocol.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/McWorld.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Minecraft/MinecraftBehaviour.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/OneBotConnector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/OneBotDelivery.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Renderer/MosaicRendererLink.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/Renderer/RenderEvidence.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/SatoriConnector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Integrations/XConnector.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Aijade.Learning.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Continuous/Learning.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Continuous/Persona.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Forge/Forge.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Forge/SkillPackage.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Skills/SkillRecord.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Learning/Skills/SkillRegistry.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Aijade.Maui.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/App.xaml",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/App.xaml.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/MainPage.xaml",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/MainPage.xaml.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/MauiProgram.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Platforms/Android/AndroidManifest.xml",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Platforms/Android/MainActivity.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Platforms/Android/MainApplication.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Platforms/Android/PermissionGrantingChromeClient.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Resources/AppIcon/appicon.png",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Resources/Splash/splash.png",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/Services/MauiServices.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Maui/wwwroot/index.html",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Aijade.Memory.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Beliefs/BeliefGraph.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/BioticMemory.Subsystems.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/BioticMemory.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Contracts/Contracts.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Contracts/ContractsV8.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Development/Ael.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Development/Dive.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Development/Pef.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Development/Vse.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Dynamics/Dynamics.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Dynamics/Reconsolidation.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Episodic/EpisodicGraph.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Experiments/ExperimentRegistry.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Hac/Hac.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Identity/Cdi.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Interventions/FaultInjection.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Interventions/Intervention.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Kernel/CapabilityToken.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Kernel/CoreStateNode.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Kernel/Events.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Lexical/LexicalIndex.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Lifecycle/Lifecycle.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/LlmDistiller.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Locomo/Locomo.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Locomo/LongMemEval.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Model/MemoryModel.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Pgc/PgcGate.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Pgc/PgcJson.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Pgc/PgcRetrieval.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Pgc/PgcState.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Provenance.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Replay/Cbr.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Retrieval/Scoring.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Salience/SaliencePredictor.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/Storage/Storage.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/V9/MemoryTx.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/V9/ShadowParams.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/V9/V9Runtime.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/V9/V9Schema.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Memory/V9/Weave.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Providers/Aijade.Providers.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Providers/Llm/LlmClient.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Providers/Llm/MeaiAdapters.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Providers/Substrate/Determinism.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Providers/Substrate/Substrate.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/Aijade.Research.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/AnswerableReanalysis.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/MemoryUncertainty.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/MetricDefinitions.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/Parallel.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/RetrievalAblation.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/SalienceDiagnostics.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/SalienceLeakageAudit.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/MemoryEval/WeightAblation.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/Backends.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/FormatPrecheck.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/Harness.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/RqcAnalysis.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/RqcModels.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/RqcRunner.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/RqC/VerifierFeedback.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/SkillBench/Bench.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/SkillBench/DifferentialTesting.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/SkillBench/Sandbox.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/SkillBench/bench-data.json",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/Statistics/Stats.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Research/Steering/Steering.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Aijade.Server.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/AijadeServer.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Auth/Accounts.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Auth/AuthEndpoints.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Auth/Oidc.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Infrastructure/ApiError.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Infrastructure/Database.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Infrastructure/Ids.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Infrastructure/JobBroker.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Mcp/AijadeMcpServer.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Memory/LongTermMemoryService.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Memory/MemoryEndpoints.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0001_v9_pipeline.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0002_accounts.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0003_product.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0004_memory_ownership.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0005_images.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0006_live_context.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Migrations/0007_memory_embeddings.sql",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Admin.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/AliyunSpeech.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Billing.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/CompanionDelivery.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/CompanionDiary.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/CompanionLocalServices.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/CompanionSync.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Flux.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Gateway.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Images.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Library.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/LiveContext.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/LocalVoice.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/ModelServices.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Product/Stage.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Program.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/ServerModules.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Tools/Factorio.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Tools/HomeAssistantTools.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Tools/McpToolProvider.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Tools/ToolHub.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/Tools/Xiaomi.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/Boundary.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/EvidenceDomain.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/PromotionService.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/RenderTraceBackfill.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/ServerRuntime.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/V9Alternative.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/V9Endpoints.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/V9EventService.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Server/V9/V9RuntimeStore.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Telemetry/Aijade.Telemetry.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Telemetry/PersonaTelemetry.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Telemetry/Session.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Telemetry/Telemetry.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Aijade.UI.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/Admin.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/Characters.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/Chat.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/ChessGame.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/Companion.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/CompanionServices.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/Memory.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Pages/Settings.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Routes.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/AgentCapabilitiesHost.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/AppState.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/BeatSyncSession.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/BrowserCompanionStore.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/BrowserServices.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/BrowserTelemetryStorage.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/ServiceRegistration.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Services/VisionSession.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Shared/ChatImage.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Shared/Login.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Shared/MainLayout.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Shared/StagePanel.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/Shared/Toggle.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/_Imports.razor",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/aijade.css",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/aijade.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/audio.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/beat.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/companion-store.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/fonts/xiaolai/OFL.txt",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/fonts/xiaolai/Xiaolai-Regular.ttf",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/lib/THIRD-PARTY-LICENSES.txt",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/lib/index_bg.wasm",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/lib/mmd-backend.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/mmd-renderer.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/stage.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/telemetry-db.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/vision.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.UI/wwwroot/voice.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/Aijade.Web.csproj",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/Program.cs",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/favicon.ico",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/icons/apple-touch-icon.png",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/icons/maskable_icon_x512.png",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/icons/web-app-manifest-192x192.png",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/icons/web-app-manifest-512x512.png",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/index.html",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/manifest.webmanifest",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/service-worker.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      },
+      {
+        "path": "src/Aijade.Web/wwwroot/service-worker.published.js",
+        "matches": true,
+        "executionMatches": {
+          "product": true,
+          "external": true
+        }
+      }
+    ],
+    "measuringSources": [
+      {
+        "path": "tests/Aijade.Tests/ProductPolicySupport.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ProductPolicyExperimentTests.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ProductPolicyQualificationTests.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ProductPromptObservation.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ServerTestHost.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "experiments/p3-policy/2026-11-10/run.py",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ExternalPolicyPromptTests.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ProductPolicySupport.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ProductPromptObservation.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "tests/Aijade.Tests/ServerTestHost.cs",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "experiments/p3-policy/2026-11-10/external_policies.py",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "experiments/p3-policy/2026-11-10/prepare_entities.py",
+        "matchesExecutionCommit": true
+      },
+      {
+        "path": "experiments/p3-policy/2026-11-10/run.py",
+        "matchesExecutionCommit": true
+      }
+    ],
+    "planPrecedesCode": true,
+    "recordingAmendmentPrecedesExternalCode": true,
+    "entityAmendmentPrecedesExternalCode": true,
+    "embeddingPreparationBound": true,
+    "recordedBinaryIdentityBound": true,
+    "scope": "All cells/questions of named configurations, actual prompt captures, conditional replay of existing vectors; no default LLM fact extraction, whole LangChain agent, full Web/QQ or answer accuracy.",
+    "note": "Hash, source and complete-cell consistency; the raw capture/summary and numerical validators remain separate. Recorded identities are not independent execution attestation or scientific approval."
+  },
+  "artifacts": [
+    {
+      "item": "P1-A",
+      "path": "experiments/p1/alternative-designs.json",
+      "sha256": "dbd75fee2d4ddc33721d0a7d64edc9ffbb48fa48cc61ba3da02d6f6250e4f8bb",
+      "scope": "INPUT_AND_DATA_CASES_RECORDED"
+    },
+    {
+      "item": "P1-A-code",
+      "path": "experiments/p1/alternative-designs-code-faults.json",
+      "sha256": "f8e905b1420fc65c8180ebb328c175a426076e086d93e1e2928aad3162edc78b",
+      "scope": "CODE_FAULT_CASES_RECORDED_WITH_DEVIATIONS"
+    },
+    {
+      "item": "P1-B",
+      "path": "experiments/p1/independent-fault-set.json",
+      "sha256": "2dd5e9b7140abbac6d3453141977ed9a256aeee8ea8ea56a4a6cfb9df55b2d7c",
+      "scope": "MUTANT_ROWS_RECORDED"
+    },
+    {
+      "item": "P1-B-reading",
+      "path": "experiments/p1/survivor-reading.json",
+      "sha256": "99e6de5c4df4ed19065c9d75cc13d31fdda9fbae1d859950b45b82a936148135",
+      "scope": "AI_ASSISTED_QUALITATIVE_CODING"
+    },
+    {
+      "item": "P1-C",
+      "path": "experiments/p1/external-renderer.json",
+      "sha256": "3becacfe7ebda37b09406413278bde175749fe865943728d17cb36406c062146",
+      "scope": "THREE_ROUNDS_RECORDED_NOT_INDEPENDENT_TEAM"
+    },
+    {
+      "item": "P2-A",
+      "path": "experiments/p2-a/multiple-check.json",
+      "sha256": "0c1567fd783d0462a3256664c9009c5f4d78d388e96985381f1307b4a0b7f4c5",
+      "scope": "STATIC_STAGE_ONLY_NO_GENERATION"
+    },
+    {
+      "item": "P2-oracle-reading",
+      "path": "experiments/rq-c/oracle-audit.json",
+      "sha256": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+      "scope": "AI_ASSISTED_EXPLORATORY_RESCORE"
+    },
+    {
+      "item": "P2-verifier-reasons",
+      "path": "experiments/rq-c/verifier-reasons.json",
+      "sha256": "5564a8c2b0b295b6ff628c55a1d401c6532a0e3a75c70e425c636a81b914c3cd",
+      "scope": "AI_ASSISTED_QUALITATIVE_CODING"
+    },
+    {
+      "item": "P3-tables",
+      "path": "experiments/memory/answerable-tables.json",
+      "sha256": "ab98c76fbff2fa1ec4f6b20de38dcba0f1a75618395abd22aabf7cd82e3bb57b",
+      "scope": "RECOMPUTED_TABLES_RECORDED"
+    },
+    {
+      "item": "P3-C-LangChain",
+      "path": "experiments/p3-c/langchain.json",
+      "sha256": "9b5ecf4c3cb6942b807dd942590effd78baf355512e1546ff32d3b8c27b9ba06",
+      "scope": "COMPONENT_PRECHECK_NO_POLICY_COMPARISON"
+    },
+    {
+      "item": "P3-C-LlamaIndex",
+      "path": "experiments/p3-c/llamaindex.json",
+      "sha256": "e98aca0624f1c7a0a996a29bfd86b4f1c2064038f425272c7fa050c1e857e0d5",
+      "scope": "COMPONENT_PRECHECK_NO_POLICY_COMPARISON"
+    },
+    {
+      "item": "P3-C-Mem0",
+      "path": "experiments/p3-c/mem0.json",
+      "sha256": "1d7aa8ba601b49c73ce3b77cf3a5673bcf87c231d8f084013bae29ab6a129cb8",
+      "scope": "TURN_STORAGE_INFER_FALSE"
+    },
+    {
+      "item": "P3-D",
+      "path": "experiments/memory/embedding-check.json",
+      "sha256": "70cc27e8e7b3f21448d56c0147d28419debd3b48b1bea685fcf95e7671e891b7",
+      "scope": "ONE_EMBEDDING_MODEL_RECORDED"
+    },
+    {
+      "item": "P3-E",
+      "path": "experiments/memory/product-path.json",
+      "sha256": "0f45c9ca248aa543507a55c300148c2f33a7fca7247c9104afbd59a9709a6c85",
+      "scope": "HISTORICAL_PRODUCT_SNAPSHOT_ONLY"
+    },
+    {
+      "item": "P3-scorer-survey",
+      "path": "experiments/memory/scorer-survey.json",
+      "sha256": "de71de2ec771685ef642759efdbaf5a4502b0ef615fa61e97ced50605ed259dd",
+      "scope": "AI_ASSISTED_SOURCE_CODING_NOT_PERFORMANCE"
+    }
+  ],
+  "interpretation": {
+    "archiveStatistics": "Existing records can be recomputed; unchanged archives are not new observations.",
+    "currentProduct": "DO_NOT_TRANSFER_ARCHIVED_P3E_METRICS",
+    "recallChangeAfterSourceChanges": "NOT_MEASURED_BY_THIS_AUDIT",
+    "ch7": "NOT_RUN; backend, frozen checks/adapter and held-out batch remain separate prerequisites.",
+    "host2": "AUTHOR_REPORT: CPU replacement unavailable before January 2027; no hardware qualification inferred."
+  }
+}

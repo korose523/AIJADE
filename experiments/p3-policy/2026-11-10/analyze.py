@@ -16,6 +16,7 @@ from pathlib import Path
 import random
 import statistics
 import struct
+from transport import gzip_text, verified_parts
 
 SEED = 20261110
 B = 10000
@@ -29,18 +30,22 @@ SAMPLES = [[_rng.randrange(10) for _ in range(10)] for _ in range(B)]
 
 
 def load(path):
-    with (gzip.open(path, 'rt') if str(path).endswith('.gz') else Path(path).open()) as f:
+    with (gzip_text(path) if str(path).endswith('.gz') else Path(path).open()) as f:
         return json.load(f)
 
 
 def lines(path):
-    with gzip.open(path, 'rt') as f:
+    with gzip_text(path) as f:
         for line in f:
             yield json.loads(line)
 
 
 def sha(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    path = Path(path)
+    if path.is_file():
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    verified_parts(path)
+    return json.loads(Path(str(path) + '.parts.json').read_text())['sha256']
 
 
 def quantile(xs, p):
@@ -208,6 +213,7 @@ def external_rows(folder, system, corpus):
     access_rows = 0
     tie_rows = 0
     cutoff_ties = 0
+    entity_counts = set()
     for c, conv in enumerate(corpus):
         snapshot = load(base / ('store-%s.json.gz' % c))
         contents = {t['id']: t['content'] for t in conv['turns']}
@@ -262,6 +268,8 @@ def external_rows(folder, system, corpus):
                     tie_rows += row['rankTies'] > 0
                     cutoff_ties += len(full_ranked) > 8 and full_ranked[7]['used'] == full_ranked[8]['used']
                 else:
+                    if row.get('entityStoreItems') is not None:
+                        entity_counts.add(row['entityStoreItems'])
                     threshold = 0.1 if row['policy'] == 'on' else 0.0
                     assert row['threshold'] == threshold
                     passing = [x for x in row['candidates'] if x['semantic'] >= threshold]
@@ -310,7 +318,8 @@ def external_rows(folder, system, corpus):
                         'differentThresholdMasks': mask_changed}
     return data, receipt, {'states': dict(states), 'itemUnits': unit, 'rowsWithAccessChanges': access_rows,
                            'rowsWithRankTies': tie_rows, 'rowsWithExactCutoffTieAt8': cutoff_ties,
-                           'candidatePoolsMatchedAcrossAllCells': True, 'switchDiagnostics': switch}
+                           'candidatePoolsMatchedAcrossAllCells': True, 'switchDiagnostics': switch,
+                           'observedEntityStoreItemCounts': sorted(entity_counts)}
 
 
 def select(corpus, population):

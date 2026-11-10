@@ -1,0 +1,107 @@
+{
+  "schema": "aijade.p3.policy.execution.v1",
+  "planCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+  "codeCommit": "639322a1221628065c2d69fb27b7fcd6a53dd883",
+  "binaryIdentities": {
+    "Aijade.Tests": {
+      "sha256": "fdacaec0f6f8b5997f7ed05a198bcf0eddbe2771fc6f8bb305d875aa876d258d",
+      "informationalVersion": "0.1.0+639322a1221628065c2d69fb27b7fcd6a53dd883"
+    },
+    "Aijade.Client": {
+      "sha256": "84b1cfed7466f76467bcbbb119d5ca08cab474fbbd757746daab00865f76e152",
+      "informationalVersion": "0.1.0+639322a1221628065c2d69fb27b7fcd6a53dd883"
+    },
+    "Aijade.Server": {
+      "sha256": "9bbea48e3f2a4b55dd63b989937438b8d353c25f21bf1356c4eaf73255b24ae0",
+      "informationalVersion": "0.1.0+639322a1221628065c2d69fb27b7fcd6a53dd883"
+    }
+  },
+  "startedAt": "2026-11-10T13:02:18.908734+00:00",
+  "phases": [
+    {
+      "name": "external-qualification",
+      "command": [
+        "/Users/mac/p3c-env/venv/bin/python",
+        "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+        "--qualify",
+        "--out",
+        "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-02/external-qualification"
+      ],
+      "startedAt": "2026-11-10T13:02:18.910148+00:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-10T13:02:24.931459+00:00"
+    },
+    {
+      "name": "external-langchain",
+      "command": [
+        "/Users/mac/p3c-env/venv/bin/python",
+        "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+        "--system",
+        "langchain",
+        "--out",
+        "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-02/external/langchain",
+        "--source",
+        "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-e/2026-11-10-shared-runtime",
+        "--corpus",
+        "/Users/mac/.local/share/aijade-data/locomo-export.json",
+        "--raw-corpus",
+        "/Users/mac/.local/share/aijade-data/locomo10.json"
+      ],
+      "startedAt": "2026-11-10T13:02:24.933029+00:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-10T13:02:53.045488+00:00"
+    },
+    {
+      "name": "external-prompts-langchain",
+      "command": [
+        "/Users/mac/.dotnet/dotnet",
+        "test",
+        "tests/Aijade.Tests/Aijade.Tests.csproj",
+        "-c",
+        "Release",
+        "--no-build",
+        "--filter",
+        "FullyQualifiedName~ExternalPolicyPromptTests",
+        "--logger",
+        "trx;LogFileName=external-prompts.trx",
+        "--results-directory",
+        "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-02/external/langchain/test-results"
+      ],
+      "startedAt": "2026-11-10T13:02:53.047772+00:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-10T13:06:17.442628+00:00"
+    },
+    {
+      "name": "external-mem0",
+      "command": [
+        "/Users/mac/p3c-env/venv/bin/python",
+        "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+        "--system",
+        "mem0",
+        "--out",
+        "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-02/external/mem0",
+        "--source",
+        "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-e/2026-11-10-shared-runtime",
+        "--corpus",
+        "/Users/mac/.local/share/aijade-data/locomo-export.json",
+        "--raw-corpus",
+        "/Users/mac/.local/share/aijade-data/locomo10.json"
+      ],
+      "startedAt": "2026-11-10T13:06:17.444235+00:00",
+      "exitCode": 1,
+      "endedAt": "2026-11-10T13:13:02.472777+00:00"
+    }
+  ],
+  "recordingAmendmentCommit": "87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2",
+  "completedProductReference": {
+    "text": {
+      "receiptSha256": "0e9124348e9c5752cad7aa4fc56c7b711e73cd3caddec61046a47f49bfd8338b",
+      "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+    },
+    "embedding": {
+      "receiptSha256": "d1165d8999b5642649db012741581bccea856936fe9823abca73466a1ed36ca3",
+      "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+    }
+  },
+  "externalOnlyRestart": true
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "aijade.p3.policy.external-start.v1",
+  "system": "langchain",
+  "planCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+  "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100",
+  "identities": {
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+    "packages": {
+      "langchain-classic": {
+        "version": "1.0.8",
+        "origin": {
+          "url": "https://github.com/langchain-ai/langchain/archive/b4aa7e7d00c452251720ce30b8bc2c41ca44e1f5.zip",
+          "archive_info": {},
+          "subdirectory": "libs/langchain"
+        }
+      },
+      "mem0ai": {
+        "version": "2.2.1",
+        "origin": {
+          "url": "https://github.com/mem0ai/mem0/archive/ed1f10fc87080f0b67f99be370817504888462ab.zip",
+          "archive_info": {}
+        }
+      },
+      "langchain-community": {
+        "version": "0.4.2"
+      },
+      "langchain-core": {
+        "version": "1.7.6"
+      },
+      "qdrant-client": {
+        "version": "1.20.0"
+      },
+      "faiss-cpu": {
+        "version": "1.15.1"
+      },
+      "numpy": {
+        "version": "2.5.4"
+      },
+      "pydantic": {
+        "version": "2.14.2"
+      }
+    },
+    "sourceFiles": {
+      "langchain_classic.retrievers.time_weighted_retriever": {
+        "filename": "time_weighted_retriever.py",
+        "sha256": "c660fd00208251e55baf2e28f2d11de65d279cbf85bf47a1da8ce0a12987761a"
+      },
+      "mem0.memory.main": {
+        "filename": "main.py",
+        "sha256": "e37b2775aafbc654113cb643dae2a8a9cf299d2e7eee29904f1ed212f89aa570"
+      },
+      "mem0.utils.scoring": {
+        "filename": "scoring.py",
+        "sha256": "9a4313fda723ad05cb52278e9ef0b9b5792b71fb3b41ba6318410121022e4527"
+      }
+    }
+  },
+  "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+  "exportSha256": "2c8785700ecb4d36e9f15aec62772455865c99de1db9d0ef266ee327898614e5",
+  "embeddingSourceSha256": "a2598df6ea738c59e807c7baff2be216c1290c38b483e3cbe7ee29b309d2b1f9",
+  "uniqueReplayInputs": 7846,
+  "deviations": [
+    "unprefixed captured vectors, conditional replay",
+    "Mem0 native top_k=60 over-fetches 240 candidates; final readout K=8",
+    "Mem0 OSS rejects timestamp; its own write clock is used and corpus time remains source metadata",
+    "LangChain relevance-only preserves native FAISS relevance; missing default salience maps to zero"
+  ]
+}

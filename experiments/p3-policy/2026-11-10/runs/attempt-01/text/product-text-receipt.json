@@ -1,0 +1,47 @@
+{
+  "schema": "aijade.p3.policy.product.v1",
+  "planCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+  "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100",
+  "mode": "text",
+  "rows": 7944,
+  "baselines": 1986,
+  "writes": 5882,
+  "unknown": 0,
+  "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+  "budget": {
+    "ModuleCharacters": 4000,
+    "SupplementCharacters": 12000,
+    "HistoryCharacters": 24000,
+    "ToolResultCharacters": 8000
+  },
+  "replayCalls": 0,
+  "replayInputs": 7846,
+  "replayMisses": 0,
+  "newModelCalls": 0,
+  "elapsedMinutes": 11.077047158333333,
+  "source": "experiments/p3-e/2026-11-10-shared-runtime/attempt-02",
+  "policies": [
+    "6-newest",
+    "6-server",
+    "60-newest",
+    "60-server"
+  ],
+  "binaries": [
+    {
+      "name": "Aijade.Tests",
+      "sha256": "3e062b09b6860df13a4fc917a649fb535e5bd844dacbc6fe842a0521f04f3c57",
+      "informationalVersion": "0.1.0\u002Bfd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+    },
+    {
+      "name": "Aijade.Client",
+      "sha256": "1630af88b2270ff19cda8df5018a2458cd9eeae17a1b55aa535e6d8176cd4b7d",
+      "informationalVersion": "0.1.0\u002Bfd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+    },
+    {
+      "name": "Aijade.Server",
+      "sha256": "a38d2958510808bed93f39cd4442d2a9bd3ed23746187856238a15b53761250e",
+      "informationalVersion": "0.1.0\u002Bfd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+    }
+  ],
+  "scope": "Complete configured 2x2 policy design; vector replay; single-turn shared memory runtime; no Web/QQ, evolving history or answer evaluation."
+}

@@ -188,6 +188,15 @@ def policy_comparison_receipt(path, current_ref=None):
                              and primary['eligibleQuestions'] == 1536})
     ancestry = all(subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['planCommit'], code], capture_output=True).returncode == 0 for code in codes.values())
     amendment_order = subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['recordingAmendmentCommit'], codes['external']], capture_output=True).returncode == 0
+    entity_order = subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['entityCoverageAmendmentCommit'], codes['external']], capture_output=True).returncode == 0
+    preparation = summary['embeddingPreparation']
+    entity_bound = (preparation == receipt['embeddingPreparation']
+                    and preparation['amendment'] == receipt['entityCoverageAmendmentCommit']
+                    and preparation['originalSourceSha256'] == receipt['sourceReplaySha256']
+                    and len(preparation['modelDigest']) == 64
+                    and preparation['newEmbeddingInputs'] == 735
+                    and preparation['newEmbeddingHttpRequests'] == 12
+                    and preparation['newChatModelCalls'] == 0)
     measured = []
     for record in receipt['measuringSources']:
         name, expected, code = record['path'], record['sha256'], codes[record['study']]
@@ -204,12 +213,13 @@ def policy_comparison_receipt(path, current_ref=None):
              and sources and all(item['matches'] and all(item['executionMatches'].values()) for item in sources) and measured
              and {r['study'] for r in receipt['measuringSources']} == set(codes)
              and all(item['matchesExecutionCommit'] for item in measured) and all(item['matches'] for item in coverage)
-             and ancestry and amendment_order and binary_bound and summary['executionCodeCommits'] == codes
+             and ancestry and amendment_order and entity_order and entity_bound and binary_bound and summary['executionCodeCommits'] == codes
              and summary['planCommit'] == receipt['planCommit'] and receipt['capturedTurns'] == 31776
              and receipt['newModelCalls'] == summary['newModelCalls'] == summary['embeddingPreparation']['newEmbeddingHttpRequests']
              and receipt['newChatModelCalls'] == summary['newChatModelCalls'] == summary['policyExecutionNewModelCalls'] == 0)
     return {'valid': bool(valid), 'coverage': coverage, 'artifacts': artifacts, 'productSourceFiles': sources,
-            'measuringSources': measured, 'planPrecedesCode': ancestry, 'recordingAmendmentPrecedesExternalCode': amendment_order, 'recordedBinaryIdentityBound': binary_bound,
+            'measuringSources': measured, 'planPrecedesCode': ancestry, 'recordingAmendmentPrecedesExternalCode': amendment_order,
+            'entityAmendmentPrecedesExternalCode': entity_order, 'embeddingPreparationBound': entity_bound, 'recordedBinaryIdentityBound': binary_bound,
             'scope': summary['scope'], 'note': 'Hash, source and complete-cell consistency; the raw capture/summary and numerical validators remain separate. Recorded identities are not independent execution attestation or scientific approval.'}
 
 

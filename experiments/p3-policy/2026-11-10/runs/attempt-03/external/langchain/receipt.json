@@ -1,0 +1,70 @@
+{
+  "schema": "aijade.p3.policy.external.v1",
+  "status": "ALL_CONFIGURED_CELLS_COMPLETE",
+  "recordingAmendmentCommit": "87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2",
+  "system": "langchain",
+  "rows": 7944,
+  "conversations": 10,
+  "questionsPerCell": 1986,
+  "planCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+  "codeCommit": "1c78bf920902a6aeff6b4b269b9883d1c120a983",
+  "identities": {
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+    "packages": {
+      "langchain-classic": {
+        "version": "1.0.8",
+        "origin": {
+          "url": "https://github.com/langchain-ai/langchain/archive/b4aa7e7d00c452251720ce30b8bc2c41ca44e1f5.zip",
+          "archive_info": {},
+          "subdirectory": "libs/langchain"
+        }
+      },
+      "mem0ai": {
+        "version": "2.2.1",
+        "origin": {
+          "url": "https://github.com/mem0ai/mem0/archive/ed1f10fc87080f0b67f99be370817504888462ab.zip",
+          "archive_info": {}
+        }
+      },
+      "langchain-community": {
+        "version": "0.4.2"
+      },
+      "langchain-core": {
+        "version": "1.7.6"
+      },
+      "qdrant-client": {
+        "version": "1.20.0"
+      },
+      "faiss-cpu": {
+        "version": "1.15.1"
+      },
+      "numpy": {
+        "version": "2.5.4"
+      },
+      "pydantic": {
+        "version": "2.14.2"
+      }
+    },
+    "sourceFiles": {
+      "langchain_classic.retrievers.time_weighted_retriever": {
+        "filename": "time_weighted_retriever.py",
+        "sha256": "c660fd00208251e55baf2e28f2d11de65d279cbf85bf47a1da8ce0a12987761a"
+      },
+      "mem0.memory.main": {
+        "filename": "main.py",
+        "sha256": "e37b2775aafbc654113cb643dae2a8a9cf299d2e7eee29904f1ed212f89aa570"
+      },
+      "mem0.utils.scoring": {
+        "filename": "scoring.py",
+        "sha256": "9a4313fda723ad05cb52278e9ef0b9b5792b71fb3b41ba6318410121022e4527"
+      }
+    }
+  },
+  "sourceSha256": "276bfa6b9d1cfeae3fb093790add380252d2470d91e37b5792e0870878b2516e",
+  "journalSha256": "e84437d47c0d4c7ca226e1c696aae9eef3d2291973932b44b71f8f51445790c9",
+  "replayLookups": 31472,
+  "replayMisses": 0,
+  "newModelCalls": 0,
+  "elapsedMinutes": 0.50169361870115,
+  "scope": "complete named write/read policy configuration, one source turn/item, conditional vector replay; not an LLM fact-extraction or answer benchmark"
+}

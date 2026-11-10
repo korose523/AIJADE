@@ -1,0 +1,16 @@
+/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py:118: DeprecationWarning: `langchain-community` is being sunset and is no longer actively maintained. See https://github.com/langchain-ai/langchain-community/issues/674 for details and migration guidance toward standalone integration packages.
+  from langchain_community.vectorstores import FAISS
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py", line 369, in <module>
+    run(options)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py", line 294, in run
+    qualify(args.out)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py", line 276, in qualify
+    store = Mem0Store(conv, replay, out / 'fixture-mem0')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py", line 214, in __init__
+    result = self.memory.add([{'role': 'user', 'content': turn['content']}], user_id='p3-policy',
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/p3c-env/venv/lib/python3.12/site-packages/mem0/memory/main.py", line 818, in add
+    raise ValueError(get_temporal_feature_error_message("sync", "add", "timestamp"))
+ValueError: The timestamp parameter is not supported by the OSS Memory SDK.

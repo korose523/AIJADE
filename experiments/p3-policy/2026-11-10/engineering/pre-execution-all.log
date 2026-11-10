@@ -1,0 +1,74 @@
+/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:00:02.88]     Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [SKIP]
+  已跳过 Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [1 ms]
+[xUnit.net 00:00:02.99]     Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [SKIP]
+[xUnit.net 00:00:02.99]     Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [SKIP]
+  已跳过 Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [1 ms]
+  已跳过 Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [1 ms]
+[xUnit.net 00:00:02.99]     Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [SKIP]
+  已跳过 Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [1 ms]
+[xUnit.net 00:00:03.00]     Aijade.Tests.ProductPolicyExperimentTests.All_configured_policies_deliver_captured_prompts [SKIP]
+  已跳过 Aijade.Tests.ProductPolicyExperimentTests.All_configured_policies_deliver_captured_prompts [1 ms]
+[xUnit.net 00:00:03.11]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [SKIP]
+[xUnit.net 00:00:03.11]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [SKIP]
+  已跳过 Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [1 ms]
+  已跳过 Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [1 ms]
+[xUnit.net 00:00:03.35]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [SKIP]
+[xUnit.net 00:00:03.36]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [SKIP]
+[xUnit.net 00:00:03.36]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [SKIP]
+  已跳过 Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [1 ms]
+  已跳过 Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [1 ms]
+  已跳过 Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [1 ms]
+[xUnit.net 00:00:07.31]     Aijade.Tests.ExternalRendererStudyTests.Seal_session [SKIP]
+[xUnit.net 00:00:07.31]     Aijade.Tests.ExternalRendererStudyTests.Send_intents [SKIP]
+[xUnit.net 00:00:07.32]     Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [SKIP]
+  已跳过 Aijade.Tests.ExternalRendererStudyTests.Seal_session [1 ms]
+  已跳过 Aijade.Tests.ExternalRendererStudyTests.Send_intents [1 ms]
+  已跳过 Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [1 ms]
+[xUnit.net 00:00:30.39]     Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [SKIP]
+  已跳过 Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [1 ms]
+[xUnit.net 00:00:33.93]     Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [FAIL]
+  失败 Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [185 ms]
+  错误消息:
+   ModelContextProtocol.Client.ClientTransportClosedException : MCP server process exited unexpectedly (exit code: 150)
+Server's stderr tail:
+
+The following frameworks were found:
+  6.0.18 at [/usr/local/share/dotnet/shared/Microsoft.NETCore.App]
+  7.0.7 at [/usr/local/share/dotnet/shared/Microsoft.NETCore.App]
+
+Learn about framework resolution:
+https://aka.ms/dotnet/app-launch-failed
+
+To install missing framework, download:
+https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=10.0.0&arch=x64&rid=osx.15-x64
+---- System.IO.IOException : MCP server process exited unexpectedly (exit code: 150)
+Server's stderr tail:
+
+The following frameworks were found:
+  6.0.18 at [/usr/local/share/dotnet/shared/Microsoft.NETCore.App]
+  7.0.7 at [/usr/local/share/dotnet/shared/Microsoft.NETCore.App]
+
+Learn about framework resolution:
+https://aka.ms/dotnet/app-launch-failed
+
+To install missing framework, download:
+https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=10.0.0&arch=x64&rid=osx.15-x64
+  堆栈跟踪:
+     at ModelContextProtocol.McpSessionHandler.GetCompletionDetailsAsync(Task channelCompletion)
+   at ModelContextProtocol.Client.McpClientImpl.ConnectAsync(CancellationToken cancellationToken)
+   at ModelContextProtocol.Client.McpClient.CreateAsync(IClientTransport clientTransport, McpClientOptions clientOptions, ILoggerFactory loggerFactory, CancellationToken cancellationToken)
+   at Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/ComputerUseTests.cs:line 216
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+
+[xUnit.net 00:00:33.98]     Aijade.Tests.ExternalPolicyPromptTests.Every_external_policy_result_reaches_an_observed_request [SKIP]
+  已跳过 Aijade.Tests.ExternalPolicyPromptTests.Every_external_policy_result_reaches_an_observed_request [1 ms]
+[xUnit.net 00:00:40.10]     Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [SKIP]
+  已跳过 Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [1 ms]
+[xUnit.net 00:00:57.90]     Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [SKIP]
+  已跳过 Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [1 ms]
+结果文件: /Users/mac/.cache/aijade-p3-policy-20261110/pre-execution-all/pre-execution-all.trx
+
+失败!  - 失败:     1，通过:   582，已跳过:    17，总计:   600，持续时间: 3 m 18 s - Aijade.Tests.dll (net10.0)

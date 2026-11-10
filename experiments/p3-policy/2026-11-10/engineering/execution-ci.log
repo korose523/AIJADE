@@ -1,0 +1,708 @@
+build-test	Set up job	﻿2026-11-10T12:06:32.4601465Z Current runner version: '2.338.2'
+build-test	Set up job	2026-11-10T12:06:32.4625201Z ##[group]Runner Image Provisioner
+build-test	Set up job	2026-11-10T12:06:32.4625911Z Hosted Compute Agent
+build-test	Set up job	2026-11-10T12:06:32.4626379Z Version: 20261028.624
+build-test	Set up job	2026-11-10T12:06:32.4626988Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+build-test	Set up job	2026-11-10T12:06:32.4627604Z Build Date: 2026-10-28T21:51:42Z
+build-test	Set up job	2026-11-10T12:06:32.4628179Z Worker ID: {029fa9d6-e35e-4443-923a-112f388ed7d2}
+build-test	Set up job	2026-11-10T12:06:32.4628764Z Region: westus3
+build-test	Set up job	2026-11-10T12:06:32.4629216Z Cloud: Azure
+build-test	Set up job	2026-11-10T12:06:32.4629701Z ##[endgroup]
+build-test	Set up job	2026-11-10T12:06:32.4631166Z ##[group]Operating System
+build-test	Set up job	2026-11-10T12:06:32.4631751Z Ubuntu
+build-test	Set up job	2026-11-10T12:06:32.4632200Z 26.04.1
+build-test	Set up job	2026-11-10T12:06:32.4632628Z LTS
+build-test	Set up job	2026-11-10T12:06:32.4633146Z ##[endgroup]
+build-test	Set up job	2026-11-10T12:06:32.4633638Z ##[group]Runner Image
+build-test	Set up job	2026-11-10T12:06:32.4634107Z Image: ubuntu-26.04
+build-test	Set up job	2026-11-10T12:06:32.4634624Z Version: 20261101.186.1
+build-test	Set up job	2026-11-10T12:06:32.4635504Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+build-test	Set up job	2026-11-10T12:06:32.4637300Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+build-test	Set up job	2026-11-10T12:06:32.4638059Z ##[endgroup]
+build-test	Set up job	2026-11-10T12:06:32.4639094Z ##[group]GITHUB_TOKEN Permissions
+build-test	Set up job	2026-11-10T12:06:32.4641258Z Contents: read
+build-test	Set up job	2026-11-10T12:06:32.4641815Z Metadata: read
+build-test	Set up job	2026-11-10T12:06:32.4642278Z Packages: read
+build-test	Set up job	2026-11-10T12:06:32.4642783Z ##[endgroup]
+build-test	Set up job	2026-11-10T12:06:32.4644545Z Secret source: Actions
+build-test	Set up job	2026-11-10T12:06:32.4645382Z Cache mode: write
+build-test	Set up job	2026-11-10T12:06:32.4646157Z Prepare workflow directory
+build-test	Set up job	2026-11-10T12:06:32.5034926Z Prepare all required actions
+build-test	Set up job	2026-11-10T12:06:32.5073295Z Getting action download info
+build-test	Set up job	2026-11-10T12:06:32.8244278Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+build-test	Set up job	2026-11-10T12:06:32.9808462Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+build-test	Set up job	2026-11-10T12:06:33.6816883Z Complete job name: build-test
+build-test	Initialize containers	﻿2026-11-10T12:06:33.7306137Z ##[group]Checking docker version
+build-test	Initialize containers	2026-11-10T12:06:33.7316894Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+build-test	Initialize containers	2026-11-10T12:06:33.8132334Z '1.54'
+build-test	Initialize containers	2026-11-10T12:06:33.8144762Z Docker daemon API version: '1.54'
+build-test	Initialize containers	2026-11-10T12:06:33.8145467Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+build-test	Initialize containers	2026-11-10T12:06:33.8306661Z '1.54'
+build-test	Initialize containers	2026-11-10T12:06:33.8320729Z Docker client API version: '1.54'
+build-test	Initialize containers	2026-11-10T12:06:33.8325759Z ##[endgroup]
+build-test	Initialize containers	2026-11-10T12:06:33.8328433Z ##[group]Clean up resources from previous jobs
+build-test	Initialize containers	2026-11-10T12:06:33.8333070Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=af9726"
+build-test	Initialize containers	2026-11-10T12:06:33.8481376Z ##[command]/usr/bin/docker network prune --force --filter "label=af9726"
+build-test	Initialize containers	2026-11-10T12:06:33.8625714Z ##[endgroup]
+build-test	Initialize containers	2026-11-10T12:06:33.8626235Z ##[group]Create local container network
+build-test	Initialize containers	2026-11-10T12:06:33.8634481Z ##[command]/usr/bin/docker network create --label af9726 github_network_35e18d7d5c79468e8dcc4b6280896ea1
+build-test	Initialize containers	2026-11-10T12:06:33.9109436Z 5f478832942f798a44b0f73cd582553220965424112686d5591643fe49ebb9b4
+build-test	Initialize containers	2026-11-10T12:06:33.9146546Z ##[endgroup]
+build-test	Initialize containers	2026-11-10T12:06:33.9167601Z ##[group]Starting postgres service container
+build-test	Initialize containers	2026-11-10T12:06:33.9186549Z ##[command]/usr/bin/docker --config /home/runner/work/_temp/.docker_2b6bb087-da54-4c5d-b82a-1a04b4850ab4 login ghcr.io -u korose523 --password-stdin
+build-test	Initialize containers	2026-11-10T12:06:34.4025451Z ##[command]/usr/bin/docker --config /home/runner/work/_temp/.docker_2b6bb087-da54-4c5d-b82a-1a04b4850ab4 pull ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	Initialize containers	2026-11-10T12:06:35.1602356Z pg18-v1.0.0: Pulling from tensorchord/vchord-postgres
+build-test	Initialize containers	2026-11-10T12:06:35.4550582Z 1adabd6b0d6b: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4552231Z 0dac5f77c330: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4553092Z cdfd017c753d: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4553552Z 1fa512a5b6f3: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4553930Z 5604c3b93920: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4554288Z 974175074a8f: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4555090Z 5e83761a8bfc: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4555516Z 7b697787d5d2: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4555899Z 861643ce2817: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4556267Z ce5a92a4b912: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4556645Z 874755ceb1f0: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4557051Z 4cf7c086165e: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4557394Z bd01fa164bdc: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.4557780Z 799548af46de: Pulling fs layer
+build-test	Initialize containers	2026-11-10T12:06:35.6191449Z 861643ce2817: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.7178515Z 5e83761a8bfc: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.7179326Z 799548af46de: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.8183714Z 974175074a8f: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.8184910Z 0dac5f77c330: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.8185827Z bd01fa164bdc: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.8195655Z 874755ceb1f0: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.8213888Z 4cf7c086165e: Download complete
+build-test	Initialize containers	2026-11-10T12:06:35.8219734Z 1fa512a5b6f3: Download complete
+build-test	Initialize containers	2026-11-10T12:06:36.0177606Z 7b697787d5d2: Download complete
+build-test	Initialize containers	2026-11-10T12:06:36.1183166Z cdfd017c753d: Download complete
+build-test	Initialize containers	2026-11-10T12:06:36.1183867Z 5604c3b93920: Download complete
+build-test	Initialize containers	2026-11-10T12:06:36.1185675Z 1adabd6b0d6b: Download complete
+build-test	Initialize containers	2026-11-10T12:06:36.7218980Z 799548af46de: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:36.7304970Z 1adabd6b0d6b: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:36.8190879Z 861643ce2817: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:36.8279618Z 7b697787d5d2: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:37.0181262Z 5e83761a8bfc: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:37.0190879Z 974175074a8f: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:37.0195596Z 0dac5f77c330: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:37.0251329Z cdfd017c753d: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:39.5176446Z ce5a92a4b912: Download complete
+build-test	Initialize containers	2026-11-10T12:06:41.0183710Z bd01fa164bdc: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:41.0190976Z 874755ceb1f0: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:41.0198971Z 4cf7c086165e: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:41.0225431Z 1fa512a5b6f3: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:41.0241285Z ce5a92a4b912: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:41.0531610Z 5604c3b93920: Pull complete
+build-test	Initialize containers	2026-11-10T12:06:41.0532162Z Digest: sha256:24a51a291b2f7c30214be566a7ad8474ee02de8947482084297d263520a97e16
+build-test	Initialize containers	2026-11-10T12:06:41.0532827Z Status: Downloaded newer image for ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	Initialize containers	2026-11-10T12:06:41.0540913Z ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	Initialize containers	2026-11-10T12:06:41.0620409Z ##[command]/usr/bin/docker create --name e4a871e67b9a4064b23e6fa620abdeca_ghcriotensorchordvchordpostgrespg18v100_48907f --label af9726 --network github_network_35e18d7d5c79468e8dcc4b6280896ea1 --network-alias postgres -p 55432:5432 --health-cmd "pg_isready -U aijade" --health-interval 5s --health-timeout 5s --health-retries 30 -e "POSTGRES_USER=aijade" -e "POSTGRES_PASSWORD=aijade" -e "POSTGRES_DB=aijade" -e GITHUB_ACTIONS=true -e CI=true ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	Initialize containers	2026-11-10T12:06:43.9920511Z 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:43.9935364Z ##[command]/usr/bin/docker start 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:44.2766940Z 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:44.2797746Z ##[command]/usr/bin/docker ps --all --filter id=73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+build-test	Initialize containers	2026-11-10T12:06:44.3011354Z 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2 Up Less than a second (health: starting)
+build-test	Initialize containers	2026-11-10T12:06:44.3034160Z ##[command]/usr/bin/docker port 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:44.3174324Z 5432/tcp -> 0.0.0.0:55432
+build-test	Initialize containers	2026-11-10T12:06:44.3175125Z 5432/tcp -> [::]:55432
+build-test	Initialize containers	2026-11-10T12:06:44.3219505Z ##[endgroup]
+build-test	Initialize containers	2026-11-10T12:06:44.3226577Z ##[group]Waiting for all services to be ready
+build-test	Initialize containers	2026-11-10T12:06:44.3237802Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:44.3375384Z starting
+build-test	Initialize containers	2026-11-10T12:06:44.3397031Z postgres service is starting, waiting 2 seconds before checking again.
+build-test	Initialize containers	2026-11-10T12:06:46.3397574Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:46.3524815Z starting
+build-test	Initialize containers	2026-11-10T12:06:46.3538356Z postgres service is starting, waiting 3 seconds before checking again.
+build-test	Initialize containers	2026-11-10T12:06:50.0159400Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Initialize containers	2026-11-10T12:06:50.0289997Z healthy
+build-test	Initialize containers	2026-11-10T12:06:50.0309689Z postgres service is healthy.
+build-test	Initialize containers	2026-11-10T12:06:50.0310609Z ##[endgroup]
+build-test	Run actions/checkout@v7	﻿2026-11-10T12:06:50.0546293Z ##[group]Run actions/checkout@v7
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0546744Z with:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0546943Z   repository: korose523/AIJADE
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0548931Z   token: ***
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0549117Z   ssh-strict: true
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0549305Z   ssh-user: git
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0549490Z   persist-credentials: true
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0549702Z   clean: true
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0549886Z   sparse-checkout-cone-mode: true
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0550106Z   fetch-depth: 1
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0550505Z   fetch-tags: false
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0550682Z   show-progress: true
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0550862Z   lfs: false
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0551023Z   submodules: false
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0551207Z   set-safe-directory: true
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0551415Z   allow-unsafe-pr-checkout: false
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0551852Z env:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0552219Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.0552461Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2929941Z Syncing repository: korose523/AIJADE
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2931844Z ##[group]Getting Git version info
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2932286Z Working directory is '/home/runner/work/AIJADE/AIJADE'
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2932916Z [command]/usr/bin/git version
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2946294Z git version 2.56.0
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2965679Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2975714Z Temporarily overriding HOME='/home/runner/work/_temp/442c7498-7dd7-43fd-8e8f-49e30ba6617a' before making global git config changes
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2976648Z Adding repository directory to the temporary git global config as a safe directory
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.2980752Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AIJADE/AIJADE
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3041288Z Deleting the contents of '/home/runner/work/AIJADE/AIJADE'
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3050772Z ##[group]Determining repository object format
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3051385Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3051863Z ##[group]Initializing the repository
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3052318Z [command]/usr/bin/git init /home/runner/work/AIJADE/AIJADE
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3141974Z hint: Using 'master' as the name for the initial branch. This default branch name
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3142828Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3143634Z hint: to use in all of your new repositories, which will suppress this warning,
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3144113Z hint: call:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3144342Z hint:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3144587Z hint: 	git config --global init.defaultBranch <name>
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3145087Z hint:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3145350Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3145749Z hint: 'development'. The just-created branch can be renamed via this command:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3146104Z hint:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3146321Z hint: 	git branch -m <name>
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3146522Z hint:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3146781Z hint: Disable this message with "git config set advice.defaultBranchName false"
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3151042Z Initialized empty Git repository in /home/runner/work/AIJADE/AIJADE/.git/
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3162474Z [command]/usr/bin/git remote add origin https://github.com/korose523/AIJADE
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3211741Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3212316Z ##[group]Disabling automatic garbage collection
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3215311Z [command]/usr/bin/git config --local gc.auto 0
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3247692Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3248567Z ##[group]Setting up auth
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3249112Z Removing SSH command configuration
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3254018Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3288139Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3694490Z Removing HTTP extra header
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3699461Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3730066Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3966909Z Removing includeIf entries pointing to credentials config files
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.3971720Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4000956Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4236933Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4269989Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path /home/runner/work/_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4298863Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4333683Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4364606Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4391258Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4391909Z ##[group]Fetching the repository
+build-test	Run actions/checkout@v7	2026-11-10T12:06:50.4396858Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +fd4fb3045711ab9061d12ea65e659c9f0ff2b100:refs/remotes/origin/main
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.1986236Z From https://github.com/korose523/AIJADE
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.1987216Z  * [new ref]         fd4fb3045711ab9061d12ea65e659c9f0ff2b100 -> origin/main
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.1995533Z [command]/usr/bin/git branch --list --remote origin/main
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2020942Z   origin/main
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2027720Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2049998Z fd4fb3045711ab9061d12ea65e659c9f0ff2b100
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2053850Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2054325Z ##[group]Determining the checkout info
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2054859Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2058377Z [command]/usr/bin/git sparse-checkout disable
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2102752Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2130975Z ##[group]Checking out the ref
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.2135658Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.6026478Z Switched to a new branch 'main'
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.6029991Z branch 'main' set up to track 'origin/main'.
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.6082987Z ##[endgroup]
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.6126405Z [command]/usr/bin/git log -1 --format=%H
+build-test	Run actions/checkout@v7	2026-11-10T12:06:54.6150930Z fd4fb3045711ab9061d12ea65e659c9f0ff2b100
+build-test	Run actions/setup-dotnet@v6	﻿2026-11-10T12:06:54.6359791Z ##[group]Run actions/setup-dotnet@v6
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6360044Z with:
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6360343Z   global-json-file: global.json
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6360562Z   skip-lts-prepass: false
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6360760Z   cache: false
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6360923Z env:
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6361373Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.6361627Z ##[endgroup]
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:54.7465876Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:55.1127465Z dotnet-install: .NET Core Runtime with version '10.0.14' is already installed.
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:55.1148560Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+build-test	Run actions/setup-dotnet@v6	2026-11-10T12:06:55.3644793Z dotnet-install: .NET Core SDK with version '10.0.403' is already installed.
+build-test	Run dotnet test --configuration Release	﻿2026-11-10T12:06:55.3785642Z ##[group]Run dotnet test --configuration Release
+build-test	Run dotnet test --configuration Release	2026-11-10T12:06:55.3786000Z ^[[36;1mdotnet test --configuration Release^[[0m
+build-test	Run dotnet test --configuration Release	2026-11-10T12:06:55.3836790Z shell: /usr/bin/bash -e {0}
+build-test	Run dotnet test --configuration Release	2026-11-10T12:06:55.3837023Z env:
+build-test	Run dotnet test --configuration Release	2026-11-10T12:06:55.3837463Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	Run dotnet test --configuration Release	2026-11-10T12:06:55.3837735Z   DOTNET_ROOT: /usr/share/dotnet
+build-test	Run dotnet test --configuration Release	2026-11-10T12:06:55.3837939Z ##[endgroup]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:21.7574914Z   Determining projects to restore...
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:24.7535423Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Core/Aijade.Core.csproj (in 215 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.4552338Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.ComputerUse/Aijade.ComputerUse.csproj (in 1.68 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.4561463Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Growth/Aijade.Growth.csproj (in 2.03 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.4868518Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Server/Aijade.Server.csproj (in 2.05 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.4933149Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Substrate/Aijade.Substrate.csproj (in 3 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.4939334Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Client/Aijade.Client.csproj (in 5 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.4959379Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Bots/Aijade.Bots.csproj (in 2.08 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.5366610Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Telemetry/Aijade.Telemetry.csproj (in 3 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.8671822Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Research/Aijade.Research.csproj (in 325 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.8720820Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Providers/Aijade.Providers.csproj (in 2 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.8764056Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Memory/Aijade.Memory.csproj (in 2 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.8909326Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Learning/Aijade.Learning.csproj (in 2 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.8994613Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Integrations/Aijade.Integrations.csproj (in 4 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:26.9088408Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Rqc/Aijade.Rqc.csproj (in 4 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:27.0111042Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.P1/Aijade.P1.csproj (in 90 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:27.0472433Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.UI/Aijade.UI.csproj (in 533 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:27.0541414Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Mutation/Aijade.Mutation.csproj (in 5 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:27.0771678Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Experiments/Aijade.Experiments.csproj (in 10 ms).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:27.8948661Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/Aijade.Web.csproj (in 1.37 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:28.7585145Z   Restored /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/Aijade.Tests.csproj (in 1.6 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:32.1766173Z   Restored /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/Aijade.E2E.csproj (in 5.68 sec).
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:52.4968170Z   Aijade.Core -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Core/bin/Release/net10.0/Aijade.Core.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:52.8192503Z   Aijade.ComputerUse -> /home/runner/work/AIJADE/AIJADE/src/Aijade.ComputerUse/bin/Release/net10.0/Aijade.ComputerUse.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:55.9764533Z   Aijade.Memory -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Memory/bin/Release/net10.0/Aijade.Memory.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:56.0331991Z   Aijade.Providers -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Providers/bin/Release/net10.0/Aijade.Providers.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:56.0941692Z   Aijade.P1 -> /home/runner/work/AIJADE/AIJADE/tools/Aijade.P1/bin/Release/net10.0/Aijade.P1.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:58.1732142Z   Aijade.Growth -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Growth/bin/Release/net10.0/Aijade.Growth.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:58.1733219Z   Aijade.Learning -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Learning/bin/Release/net10.0/Aijade.Learning.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:07:58.6310582Z   Aijade.Telemetry -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Telemetry/bin/Release/net10.0/Aijade.Telemetry.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:01.8532755Z   Aijade.Client -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Client/bin/Release/net10.0/Aijade.Client.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:01.8691708Z   Aijade.Research -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Research/bin/Release/net10.0/Aijade.Research.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:07.3430769Z   Aijade.UI -> /home/runner/work/AIJADE/AIJADE/src/Aijade.UI/bin/Release/net10.0/Aijade.UI.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:07.3793272Z   Aijade.Integrations -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Integrations/bin/Release/net10.0/Aijade.Integrations.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:09.1515339Z   Aijade.Bots -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Bots/bin/Release/net10.0/Aijade.Bots.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:11.3641250Z   Aijade.Web -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/bin/Release/net10.0/Aijade.Web.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:11.3661515Z   Aijade.Web (Blazor output) -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/bin/Release/net10.0/wwwroot
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:20.5263568Z   Aijade.Server -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Server/bin/Release/net10.0/Aijade.Server.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:23.2992004Z   Aijade.E2E -> /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/bin/Release/net10.0/Aijade.E2E.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:23.3741901Z Test run for /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/bin/Release/net10.0/Aijade.E2E.dll (.NETCoreApp,Version=v10.0)
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:26.1991350Z A total of 1 test files matched the specified pattern.
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5752405Z [xUnit.net 00:00:02.25]     Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5781771Z [xUnit.net 00:00:02.27]     Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5785735Z [xUnit.net 00:00:02.27]     Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5811580Z [xUnit.net 00:00:02.27]     Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5821285Z [xUnit.net 00:00:02.27]     Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5849115Z [xUnit.net 00:00:02.28]     Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5883302Z [xUnit.net 00:00:02.28]     Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5906139Z [xUnit.net 00:00:02.28]     Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.5916448Z [xUnit.net 00:00:02.29]     Aijade.E2E.CompanionExperienceWebTests.Signed_QQ_delivery_rejection_unknown_and_acknowledgement_survive_a_Web_reload_without_claiming_read_receipts [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6164387Z   Skipped Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6167203Z   Skipped Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6168974Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6170790Z   Skipped Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6172482Z   Skipped Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6174396Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6176031Z   Skipped Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6201754Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6226704Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Signed_QQ_delivery_rejection_unknown_and_acknowledgement_survive_a_Web_reload_without_claiming_read_receipts [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6229422Z [xUnit.net 00:00:02.30]     Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6230925Z [xUnit.net 00:00:02.30]     Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6232186Z [xUnit.net 00:00:02.30]     Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6233748Z [xUnit.net 00:00:02.30]     Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6235069Z [xUnit.net 00:00:02.30]     Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6236372Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6237795Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6239284Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6240691Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6241999Z   Skipped Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6243151Z   Skipped Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6251389Z   Skipped Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6252946Z   Skipped Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6254768Z   Skipped Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6256249Z   Skipped Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6257908Z   Skipped Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6259726Z   Skipped Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6261364Z   Skipped Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6263561Z [xUnit.net 00:00:02.32]     Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6267440Z [xUnit.net 00:00:02.32]     Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6268831Z [xUnit.net 00:00:02.32]     Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6296180Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6298015Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6311966Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6418023Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6425409Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6428656Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6436127Z   Skipped Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6499420Z   Skipped Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6537990Z   Skipped Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6572573Z   Skipped Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6587218Z   Skipped Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6588530Z   Skipped Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6589850Z   Skipped Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6611218Z   Skipped Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6612200Z   Skipped Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6613441Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6614655Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6615806Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6616952Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6618010Z [xUnit.net 00:00:02.36]     Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6619197Z [xUnit.net 00:00:02.36]     Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6620532Z [xUnit.net 00:00:02.36]     Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6621671Z [xUnit.net 00:00:02.36]     Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6680146Z [xUnit.net 00:00:02.36]     Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6703665Z   Skipped Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6705185Z   Skipped Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6706523Z   Skipped Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6708052Z   Skipped Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6709239Z   Skipped Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6710698Z   Skipped Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6712300Z   Skipped Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6713576Z   Skipped Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6714855Z   Skipped Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6716174Z [xUnit.net 00:00:02.36]     Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.6717707Z [xUnit.net 00:00:02.37]     Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.7370754Z   Skipped Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.7382189Z   Skipped Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.7410754Z 
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.7462946Z Skipped! - Failed:     0, Passed:     0, Skipped:    38, Total:    38, Duration: 137 ms - Aijade.E2E.dll (net10.0)
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.7890661Z   Aijade.Tests -> /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:29.9381580Z Test run for /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:30.0887531Z A total of 1 test files matched the specified pattern.
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.2754160Z [xUnit.net 00:00:08.82]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.2781391Z [xUnit.net 00:00:08.82]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.2811251Z [xUnit.net 00:00:08.83]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.3513089Z [xUnit.net 00:00:08.90]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.3541206Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.3566343Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.3577240Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.3601363Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.3641194Z [xUnit.net 00:00:08.91]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.5242272Z [xUnit.net 00:00:09.07]     Aijade.Tests.ExternalPolicyPromptTests.Every_external_policy_result_reaches_an_observed_request [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.8191622Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:39.8221911Z   Skipped Aijade.Tests.ExternalPolicyPromptTests.Every_external_policy_result_reaches_an_observed_request [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:43.3443230Z [xUnit.net 00:00:12.89]     Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:43.3653311Z   Skipped Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:43.8422196Z [xUnit.net 00:00:13.39]     Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:45.3419868Z   Skipped Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:47.4983239Z [xUnit.net 00:00:17.05]     Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:47.5003575Z [xUnit.net 00:00:17.05]     Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:47.5071524Z [xUnit.net 00:00:17.05]     Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:47.5351996Z   Skipped Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:47.5406001Z   Skipped Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:08:47.5434662Z   Skipped Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:02.6582077Z [xUnit.net 00:00:32.21]     Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:02.7753068Z   Skipped Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:02.8153053Z [xUnit.net 00:00:32.37]     Aijade.Tests.ProductPolicyExperimentTests.All_configured_policies_deliver_captured_prompts [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:02.8276647Z   Skipped Aijade.Tests.ProductPolicyExperimentTests.All_configured_policies_deliver_captured_prompts [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0111761Z [xUnit.net 00:00:45.56]     Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0202085Z [xUnit.net 00:00:45.57]     Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0221534Z [xUnit.net 00:00:45.57]     Aijade.Tests.ExternalRendererStudyTests.Seal_session [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0251424Z [xUnit.net 00:00:45.57]     Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0281262Z [xUnit.net 00:00:45.57]     Aijade.Tests.ExternalRendererStudyTests.Send_intents [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0311133Z   Skipped Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0312457Z   Skipped Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0341151Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Seal_session [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0368575Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0370872Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Send_intents [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0391437Z [xUnit.net 00:00:45.58]     Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0421515Z [xUnit.net 00:00:45.58]     Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0571465Z   Skipped Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:16.0572988Z   Skipped Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:24.1901981Z [xUnit.net 00:00:53.74]     Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:24.1906166Z   Skipped Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:28.8388956Z [xUnit.net 00:00:58.39]     Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [SKIP]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:09:30.3346133Z   Skipped Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [1 ms]
+build-test	Run dotnet test --configuration Release	2026-11-10T12:10:03.5169010Z 
+build-test	Run dotnet test --configuration Release	2026-11-10T12:10:03.5207049Z Passed!  - Failed:     0, Passed:   578, Skipped:    22, Total:   600, Duration: 1 m 31 s - Aijade.Tests.dll (net10.0)
+build-test	Post Run actions/setup-dotnet@v6	﻿2026-11-10T12:10:03.6057222Z Post job cleanup.
+build-test	Post Run actions/checkout@v7	﻿2026-11-10T12:10:03.7109119Z Post job cleanup.
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7850465Z [command]/usr/bin/git version
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7888196Z git version 2.56.0
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7917991Z Temporarily overriding HOME='/home/runner/work/_temp/dc280f4c-3a73-4350-a126-0e16b1c7e4a2' before making global git config changes
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7919167Z Adding repository directory to the temporary git global config as a safe directory
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7920134Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AIJADE/AIJADE
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7951846Z Removing SSH command configuration
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7956375Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.7990718Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8265835Z Removing HTTP extra header
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8269910Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8303475Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8576314Z Removing includeIf entries pointing to credentials config files
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8582931Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8611153Z includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8611871Z includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8612277Z includeif.gitdir:/github/workspace/.git.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8612609Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8618820Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8639696Z /home/runner/work/_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8647983Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-aa9653d7\-be86\-4cab\-b85a\-af35930c7772\.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8681860Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8704442Z /home/runner/work/_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8712759Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-aa9653d7\-be86\-4cab\-b85a\-af35930c7772\.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8742654Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8762971Z /github/runner_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8768974Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-aa9653d7\-be86\-4cab\-b85a\-af35930c7772\.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8799287Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8820411Z /github/runner_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8827386Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-aa9653d7\-be86\-4cab\-b85a\-af35930c7772\.config
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.8858744Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-test	Post Run actions/checkout@v7	2026-11-10T12:10:03.9097845Z Removing credentials config '/home/runner/work/_temp/git-credentials-aa9653d7-be86-4cab-b85a-af35930c7772.config'
+build-test	Stop containers	﻿2026-11-10T12:10:04.0485262Z Print service container logs: e4a871e67b9a4064b23e6fa620abdeca_ghcriotensorchordvchordpostgrespg18v100_48907f
+build-test	Stop containers	2026-11-10T12:10:04.0488785Z ##[command]/usr/bin/docker logs --details 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Stop containers	2026-11-10T12:10:04.0623219Z  The files belonging to this database system will be owned by user "postgres".
+build-test	Stop containers	2026-11-10T12:10:04.0625617Z  initdb: warning: enabling "trust" authentication for local connections
+build-test	Stop containers	2026-11-10T12:10:04.0626519Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+build-test	Stop containers	2026-11-10T12:10:04.0627710Z  2026-11-10 12:06:45.556 UTC [1] LOG:  starting PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+build-test	Stop containers	2026-11-10T12:10:04.0628651Z  2026-11-10 12:06:45.556 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+build-test	Stop containers	2026-11-10T12:10:04.0629253Z  2026-11-10 12:06:45.556 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+build-test	Stop containers	2026-11-10T12:10:04.0629972Z  2026-11-10 12:06:45.557 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+build-test	Stop containers	2026-11-10T12:10:04.0630845Z  2026-11-10 12:06:45.561 UTC [74] LOG:  database system was shut down at 2026-11-10 12:06:45 UTC
+build-test	Stop containers	2026-11-10T12:10:04.0631437Z  2026-11-10 12:06:45.565 UTC [1] LOG:  database system is ready to accept connections
+build-test	Stop containers	2026-11-10T12:10:04.0631936Z  2026-11-10 12:08:37.552 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0633029Z  2026-11-10 12:08:37.976 UTC [72] LOG:  checkpoint complete: wrote 1282 buffers (7.8%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.105 s, sync=0.314 s, total=0.425 s; sync files=480, longest=0.172 s, average=0.001 s; distance=16275 kB, estimate=16275 kB; lsn=0/2B83298, redo lsn=0/2B77F10
+build-test	Stop containers	2026-11-10T12:10:04.0634296Z  2026-11-10 12:08:37.977 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0635315Z  2026-11-10 12:08:37.979 UTC [72] LOG:  checkpoint complete: wrote 15 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=12, longest=0.001 s, average=0.001 s; distance=45 kB, estimate=14652 kB; lsn=0/2B83370, redo lsn=0/2B83310
+build-test	Stop containers	2026-11-10T12:10:04.0636193Z  2026-11-10 12:08:38.185 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0637036Z  2026-11-10 12:08:38.460 UTC [72] LOG:  checkpoint complete: wrote 1996 buffers (12.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.173 s, sync=0.101 s, total=0.276 s; sync files=954, longest=0.004 s, average=0.001 s; distance=10140 kB, estimate=14201 kB; lsn=0/3696558, redo lsn=0/356A348
+build-test	Stop containers	2026-11-10T12:10:04.0637835Z  This user must also own the server process.
+build-test	Stop containers	2026-11-10T12:10:04.0638060Z  
+build-test	Stop containers	2026-11-10T12:10:04.0638294Z  The database cluster will be initialized with locale "en_US.utf8".
+build-test	Stop containers	2026-11-10T12:10:04.0638965Z  The default database encoding has accordingly been set to "UTF8".
+build-test	Stop containers	2026-11-10T12:10:04.0639300Z  The default text search configuration will be set to "english".
+build-test	Stop containers	2026-11-10T12:10:04.0639563Z  
+build-test	Stop containers	2026-11-10T12:10:04.0639733Z  Data page checksums are enabled.
+build-test	Stop containers	2026-11-10T12:10:04.0639935Z  
+build-test	Stop containers	2026-11-10T12:10:04.0640186Z  fixing permissions on existing directory /var/lib/postgresql/18/docker ... ok
+build-test	Stop containers	2026-11-10T12:10:04.0640815Z  creating subdirectories ... ok
+build-test	Stop containers	2026-11-10T12:10:04.0641197Z  selecting dynamic shared memory implementation ... posix
+build-test	Stop containers	2026-11-10T12:10:04.0641618Z  selecting default "max_connections" ... 100
+build-test	Stop containers	2026-11-10T12:10:04.0641872Z  selecting default "shared_buffers" ... 128MB
+build-test	Stop containers	2026-11-10T12:10:04.0642109Z  selecting default time zone ... Etc/UTC
+build-test	Stop containers	2026-11-10T12:10:04.0642340Z  creating configuration files ... ok
+build-test	Stop containers	2026-11-10T12:10:04.0642558Z  running bootstrap script ... ok
+build-test	Stop containers	2026-11-10T12:10:04.0642798Z  performing post-bootstrap initialization ... ok
+build-test	Stop containers	2026-11-10T12:10:04.0643070Z  syncing data to disk ... ok
+build-test	Stop containers	2026-11-10T12:10:04.0643267Z  
+build-test	Stop containers	2026-11-10T12:10:04.0643616Z  
+build-test	Stop containers	2026-11-10T12:10:04.0643802Z  Success. You can now start the database server using:
+build-test	Stop containers	2026-11-10T12:10:04.0644046Z  
+build-test	Stop containers	2026-11-10T12:10:04.0644248Z      pg_ctl -D /var/lib/postgresql/18/docker -l logfile start
+build-test	Stop containers	2026-11-10T12:10:04.0644500Z  
+build-test	Stop containers	2026-11-10T12:10:04.0645010Z  waiting for server to start....2026-11-10 12:06:45.142 UTC [52] LOG:  starting PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+build-test	Stop containers	2026-11-10T12:10:04.0646661Z  2026-11-10 12:06:45.142 UTC [52] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+build-test	Stop containers	2026-11-10T12:10:04.0647268Z  2026-11-10 12:06:45.146 UTC [58] LOG:  database system was shut down at 2026-11-10 12:06:44 UTC
+build-test	Stop containers	2026-11-10T12:10:04.0648471Z  2026-11-10 12:06:45.150 UTC [52] LOG:  database system is ready to accept connections
+build-test	Stop containers	2026-11-10T12:10:04.0649027Z   done
+build-test	Stop containers	2026-11-10T12:10:04.0649181Z  server started
+build-test	Stop containers	2026-11-10T12:10:04.0649714Z  CREATE DATABASE
+build-test	Stop containers	2026-11-10T12:10:04.0660570Z  
+build-test	Stop containers	2026-11-10T12:10:04.0660802Z  
+build-test	Stop containers	2026-11-10T12:10:04.0661090Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+build-test	Stop containers	2026-11-10T12:10:04.0661429Z  
+build-test	Stop containers	2026-11-10T12:10:04.0661759Z  waiting for server to shut down...2026-11-10 12:06:45.324 UTC [52] LOG:  received fast shutdown request
+build-test	Stop containers	2026-11-10T12:10:04.0662204Z  .2026-11-10 12:06:45.342 UTC [52] LOG:  aborting any active transactions
+build-test	Stop containers	2026-11-10T12:10:04.0662682Z  2026-11-10 12:06:45.344 UTC [52] LOG:  background worker "logical replication launcher" (PID 61) exited with exit code 1
+build-test	Stop containers	2026-11-10T12:10:04.0663099Z  2026-11-10 12:06:45.345 UTC [56] LOG:  shutting down
+build-test	Stop containers	2026-11-10T12:10:04.0663406Z  2026-11-10 12:06:45.345 UTC [56] LOG:  checkpoint starting: shutdown immediate
+build-test	Stop containers	2026-11-10T12:10:04.0664286Z  2026-11-10 12:06:45.433 UTC [56] LOG:  checkpoint complete: wrote 941 buffers (5.7%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.084 s, sync=0.003 s, total=0.088 s; sync files=303, longest=0.002 s, average=0.001 s; distance=4334 kB, estimate=4334 kB; lsn=0/1B92F28, redo lsn=0/1B92F28
+build-test	Stop containers	2026-11-10T12:10:04.0665135Z  2026-11-10 12:06:45.443 UTC [52] LOG:  database system is shut down
+build-test	Stop containers	2026-11-10T12:10:04.0665393Z   done
+build-test	Stop containers	2026-11-10T12:10:04.0665552Z  server stopped
+build-test	Stop containers	2026-11-10T12:10:04.0665718Z  
+build-test	Stop containers	2026-11-10T12:10:04.0665917Z  PostgreSQL init process complete; ready for start up.
+build-test	Stop containers	2026-11-10T12:10:04.0666169Z  
+build-test	Stop containers	2026-11-10T12:10:04.0666442Z  2026-11-10 12:08:38.851 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0667317Z  2026-11-10 12:08:38.956 UTC [72] LOG:  checkpoint complete: wrote 1080 buffers (6.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.058 s, sync=0.045 s, total=0.106 s; sync files=479, longest=0.006 s, average=0.001 s; distance=6711 kB, estimate=13452 kB; lsn=0/3C25B78, redo lsn=0/3BF8118
+build-test	Stop containers	2026-11-10T12:10:04.0668151Z  2026-11-10 12:08:38.957 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0669166Z  2026-11-10 12:08:38.961 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=182 kB, estimate=12125 kB; lsn=0/3C25C50, redo lsn=0/3C25BF0
+build-test	Stop containers	2026-11-10T12:10:04.0669982Z  2026-11-10 12:08:39.431 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0671215Z  2026-11-10 12:08:39.587 UTC [72] LOG:  checkpoint complete: wrote 1029 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.040 s, sync=0.110 s, total=0.156 s; sync files=479, longest=0.014 s, average=0.001 s; distance=5560 kB, estimate=11469 kB; lsn=0/4193C80, redo lsn=0/4193C28
+build-test	Stop containers	2026-11-10T12:10:04.0673427Z  2026-11-10 12:08:40.208 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0674662Z  2026-11-10 12:08:40.356 UTC [72] LOG:  checkpoint complete: wrote 1029 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.058 s, sync=0.080 s, total=0.148 s; sync files=479, longest=0.003 s, average=0.001 s; distance=5653 kB, estimate=10887 kB; lsn=0/4897728, redo lsn=0/4719258
+build-test	Stop containers	2026-11-10T12:10:04.0675843Z  2026-11-10 12:08:40.887 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0677270Z  2026-11-10 12:08:41.137 UTC [72] LOG:  checkpoint complete: wrote 2055 buffers (12.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.075 s, sync=0.170 s, total=0.251 s; sync files=954, longest=0.011 s, average=0.001 s; distance=11002 kB, estimate=11002 kB; lsn=0/520EC20, redo lsn=0/51D7B18
+build-test	Stop containers	2026-11-10T12:10:04.0678154Z  2026-11-10 12:08:41.361 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0679555Z  2026-11-10 12:08:41.431 UTC [72] LOG:  checkpoint complete: wrote 1003 buffers (6.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.042 s, sync=0.026 s, total=0.070 s; sync files=393, longest=0.004 s, average=0.001 s; distance=4728 kB, estimate=10374 kB; lsn=0/577A388, redo lsn=0/5675DA0
+build-test	Stop containers	2026-11-10T12:10:04.0680580Z  2026-11-10 12:08:41.432 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0681390Z  2026-11-10 12:08:41.470 UTC [72] LOG:  checkpoint complete: wrote 125 buffers (0.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.028 s, total=0.038 s; sync files=124, longest=0.004 s, average=0.001 s; distance=1063 kB, estimate=9443 kB; lsn=0/580B2E8, redo lsn=0/577FB60
+build-test	Stop containers	2026-11-10T12:10:04.0682192Z  2026-11-10 12:08:42.401 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0683001Z  2026-11-10 12:08:42.449 UTC [72] LOG:  checkpoint complete: wrote 1144 buffers (7.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.034 s, sync=0.012 s, total=0.048 s; sync files=10, longest=0.008 s, average=0.002 s; distance=11500 kB, estimate=11500 kB; lsn=0/62C9AC8, redo lsn=0/62BAB80
+build-test	Stop containers	2026-11-10T12:10:04.0683829Z  2026-11-10 12:08:42.449 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0684636Z  2026-11-10 12:08:42.453 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.003 s, total=0.004 s; sync files=2, longest=0.002 s, average=0.002 s; distance=59 kB, estimate=10356 kB; lsn=0/62C9BA0, redo lsn=0/62C9B40
+build-test	Stop containers	2026-11-10T12:10:04.0685444Z  2026-11-10 12:08:42.940 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0686268Z  2026-11-10 12:08:42.997 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.029 s, sync=0.025 s, total=0.058 s; sync files=479, longest=0.005 s, average=0.001 s; distance=10857 kB, estimate=10857 kB; lsn=0/6D642E8, redo lsn=0/6D64290
+build-test	Stop containers	2026-11-10T12:10:04.0687084Z  2026-11-10 12:08:43.197 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0688010Z  2026-11-10 12:08:43.284 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.029 s, sync=0.055 s, total=0.087 s; sync files=479, longest=0.029 s, average=0.001 s; distance=5601 kB, estimate=10332 kB; lsn=0/72DC9A0, redo lsn=0/72DC948
+build-test	Stop containers	2026-11-10T12:10:04.0688829Z  2026-11-10 12:08:44.406 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0689629Z  2026-11-10 12:08:44.411 UTC [72] LOG:  checkpoint complete: wrote 68 buffers (0.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.006 s; sync files=39, longest=0.001 s, average=0.001 s; distance=5621 kB, estimate=9861 kB; lsn=0/785A0B8, redo lsn=0/785A060
+build-test	Stop containers	2026-11-10T12:10:04.0690729Z  2026-11-10 12:08:44.732 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0691538Z  2026-11-10 12:08:44.838 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.040 s, sync=0.065 s, total=0.106 s; sync files=479, longest=0.006 s, average=0.001 s; distance=5436 kB, estimate=9418 kB; lsn=0/7DA90C0, redo lsn=0/7DA9068
+build-test	Stop containers	2026-11-10T12:10:04.0692473Z  2026-11-10 12:08:44.977 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0693286Z  2026-11-10 12:08:45.063 UTC [72] LOG:  checkpoint complete: wrote 941 buffers (5.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.049 s, sync=0.034 s, total=0.087 s; sync files=390, longest=0.004 s, average=0.001 s; distance=4400 kB, estimate=8916 kB; lsn=0/831F670, redo lsn=0/81F5238
+build-test	Stop containers	2026-11-10T12:10:04.0694097Z  2026-11-10 12:08:45.572 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0694946Z  2026-11-10 12:08:45.776 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.047 s, sync=0.157 s, total=0.205 s; sync files=126, longest=0.139 s, average=0.002 s; distance=6908 kB, estimate=8715 kB; lsn=0/88FF500, redo lsn=0/88B4280
+build-test	Stop containers	2026-11-10T12:10:04.0696564Z  2026-11-10 12:08:45.776 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0698101Z  2026-11-10 12:08:45.783 UTC [72] LOG:  checkpoint complete: wrote 31 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.007 s; sync files=11, longest=0.001 s, average=0.001 s; distance=300 kB, estimate=7874 kB; lsn=0/891BF90, redo lsn=0/88FF578
+build-test	Stop containers	2026-11-10T12:10:04.0698943Z  2026-11-10 12:08:46.577 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0699853Z  2026-11-10 12:08:46.635 UTC [72] LOG:  checkpoint complete: wrote 1062 buffers (6.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.030 s, sync=0.027 s, total=0.059 s; sync files=486, longest=0.002 s, average=0.001 s; distance=11268 kB, estimate=11268 kB; lsn=0/94007B0, redo lsn=0/9400758
+build-test	Stop containers	2026-11-10T12:10:04.0700858Z  2026-11-10 12:08:46.762 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0701690Z  2026-11-10 12:08:46.844 UTC [72] LOG:  checkpoint complete: wrote 1002 buffers (6.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.030 s, sync=0.051 s, total=0.082 s; sync files=475, longest=0.009 s, average=0.001 s; distance=5152 kB, estimate=10656 kB; lsn=0/99BAF30, redo lsn=0/99089F0
+build-test	Stop containers	2026-11-10T12:10:04.0702512Z  2026-11-10 12:08:47.282 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0703336Z  2026-11-10 12:08:47.435 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.038 s, sync=0.027 s, total=0.153 s; sync files=479, longest=0.003 s, average=0.001 s; distance=6262 kB, estimate=10217 kB; lsn=0/9F263E8, redo lsn=0/9F26390
+build-test	Stop containers	2026-11-10T12:10:04.0704150Z  2026-11-10 12:08:47.921 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0705069Z  2026-11-10 12:08:47.924 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=64 kB, estimate=9202 kB; lsn=0/9F36628, redo lsn=0/9F365D0
+build-test	Stop containers	2026-11-10T12:10:04.0705864Z  2026-11-10 12:08:48.862 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0706665Z  2026-11-10 12:08:48.868 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.007 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5519 kB, estimate=8833 kB; lsn=0/A49A430, redo lsn=0/A49A3D8
+build-test	Stop containers	2026-11-10T12:10:04.0707463Z  2026-11-10 12:08:50.003 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0708253Z  2026-11-10 12:08:50.007 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5506 kB, estimate=8501 kB; lsn=0/A9FADD0, redo lsn=0/A9FAD78
+build-test	Stop containers	2026-11-10T12:10:04.0709170Z  2026-11-10 12:08:51.217 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0709971Z  2026-11-10 12:08:51.220 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5539 kB, estimate=8204 kB; lsn=0/AF63AA0, redo lsn=0/AF63A48
+build-test	Stop containers	2026-11-10T12:10:04.0710995Z  2026-11-10 12:08:52.311 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0711799Z  2026-11-10 12:08:52.313 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5539 kB, estimate=7938 kB; lsn=0/B4CC880, redo lsn=0/B4CC828
+build-test	Stop containers	2026-11-10T12:10:04.0712623Z  2026-11-10 12:08:53.758 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0713423Z  2026-11-10 12:08:53.761 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5539 kB, estimate=7698 kB; lsn=0/BA35738, redo lsn=0/BA356E0
+build-test	Stop containers	2026-11-10T12:10:04.0714227Z  2026-11-10 12:08:55.114 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0715028Z  2026-11-10 12:08:55.117 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5541 kB, estimate=7482 kB; lsn=0/BF9EC28, redo lsn=0/BF9EBD0
+build-test	Stop containers	2026-11-10T12:10:04.0715846Z  2026-11-10 12:08:56.222 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0716646Z  2026-11-10 12:08:56.225 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5539 kB, estimate=7288 kB; lsn=0/C507BB8, redo lsn=0/C507B60
+build-test	Stop containers	2026-11-10T12:10:04.0717446Z  2026-11-10 12:08:57.529 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0718265Z  2026-11-10 12:08:57.598 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.029 s, sync=0.037 s, total=0.069 s; sync files=479, longest=0.004 s, average=0.001 s; distance=11059 kB, estimate=11059 kB; lsn=0/CFD49A0, redo lsn=0/CFD4948
+build-test	Stop containers	2026-11-10T12:10:04.0719084Z  2026-11-10 12:08:58.604 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0720000Z  2026-11-10 12:08:58.691 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.033 s, sync=0.047 s, total=0.088 s; sync files=479, longest=0.003 s, average=0.001 s; distance=5761 kB, estimate=10529 kB; lsn=0/D5B0A08, redo lsn=0/D575080
+build-test	Stop containers	2026-11-10T12:10:04.0721049Z  2026-11-10 12:08:58.751 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0721862Z  2026-11-10 12:08:58.766 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.015 s; sync files=2, longest=0.001 s, average=0.001 s; distance=328 kB, estimate=9509 kB; lsn=0/D5C7128, redo lsn=0/D5C70C8
+build-test	Stop containers	2026-11-10T12:10:04.0722672Z  2026-11-10 12:08:59.896 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0723489Z  2026-11-10 12:08:59.953 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.028 s, sync=0.028 s, total=0.058 s; sync files=479, longest=0.004 s, average=0.001 s; distance=11020 kB, estimate=11020 kB; lsn=0/E0B2AD8, redo lsn=0/E08A1D0
+build-test	Stop containers	2026-11-10T12:10:04.0724431Z  2026-11-10 12:09:00.108 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0725241Z  2026-11-10 12:09:00.184 UTC [72] LOG:  checkpoint complete: wrote 999 buffers (6.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.029 s, sync=0.045 s, total=0.076 s; sync files=469, longest=0.012 s, average=0.001 s; distance=5431 kB, estimate=10461 kB; lsn=0/E68A9E8, redo lsn=0/E5D7E00
+build-test	Stop containers	2026-11-10T12:10:04.0726048Z  2026-11-10 12:09:01.173 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0726857Z  2026-11-10 12:09:01.252 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.043 s, sync=0.035 s, total=0.079 s; sync files=479, longest=0.005 s, average=0.001 s; distance=6262 kB, estimate=10041 kB; lsn=0/EBF58A0, redo lsn=0/EBF5848
+build-test	Stop containers	2026-11-10T12:10:04.0727681Z  2026-11-10 12:09:01.478 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0728484Z  2026-11-10 12:09:01.651 UTC [72] LOG:  checkpoint complete: wrote 1018 buffers (6.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.033 s, sync=0.135 s, total=0.174 s; sync files=479, longest=0.013 s, average=0.001 s; distance=5497 kB, estimate=9587 kB; lsn=0/F1EC0F0, redo lsn=0/F153DD8
+build-test	Stop containers	2026-11-10T12:10:04.0729290Z  2026-11-10 12:09:03.035 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0730094Z  2026-11-10 12:09:03.219 UTC [72] LOG:  checkpoint complete: wrote 1054 buffers (6.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.156 s, sync=0.027 s, total=0.184 s; sync files=437, longest=0.004 s, average=0.001 s; distance=10616 kB, estimate=10616 kB; lsn=0/FCE53B0, redo lsn=0/FBB2030
+build-test	Stop containers	2026-11-10T12:10:04.0731110Z  2026-11-10 12:09:03.665 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0731922Z  2026-11-10 12:09:03.945 UTC [72] LOG:  checkpoint complete: wrote 1188 buffers (7.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.057 s, sync=0.220 s, total=0.281 s; sync files=613, longest=0.143 s, average=0.001 s; distance=6976 kB, estimate=10252 kB; lsn=0/102823B0, redo lsn=0/10282358
+build-test	Stop containers	2026-11-10T12:10:04.0732737Z  2026-11-10 12:09:04.008 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0733538Z  2026-11-10 12:09:04.012 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=152 kB, estimate=9242 kB; lsn=0/102A8538, redo lsn=0/102A84D8
+build-test	Stop containers	2026-11-10T12:10:04.0734340Z  2026-11-10 12:09:04.479 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0735276Z  2026-11-10 12:09:04.606 UTC [72] LOG:  checkpoint complete: wrote 2075 buffers (12.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.062 s, sync=0.062 s, total=0.127 s; sync files=954, longest=0.004 s, average=0.001 s; distance=11339 kB, estimate=11339 kB; lsn=0/10DBB388, redo lsn=0/10DBB330
+build-test	Stop containers	2026-11-10T12:10:04.0736105Z  2026-11-10 12:09:05.041 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0736489Z  2026-11-10 12:09:05.327 UTC [429] FATAL:  terminating connection due to administrator command
+build-test	Stop containers	2026-11-10T12:10:04.0737345Z  2026-11-10 12:09:05.480 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.028 s, sync=0.409 s, total=0.440 s; sync files=479, longest=0.140 s, average=0.001 s; distance=5605 kB, estimate=10766 kB; lsn=0/1135B000, redo lsn=0/11334830
+build-test	Stop containers	2026-11-10T12:10:04.0738209Z  2026-11-10 12:09:05.481 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0739132Z  2026-11-10 12:09:05.483 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=154 kB, estimate=9704 kB; lsn=0/1135B0D8, redo lsn=0/1135B078
+build-test	Stop containers	2026-11-10T12:10:04.0739953Z  2026-11-10 12:09:05.696 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0740936Z  2026-11-10 12:09:05.852 UTC [72] LOG:  checkpoint complete: wrote 1901 buffers (11.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.072 s, sync=0.084 s, total=0.157 s; sync files=834, longest=0.003 s, average=0.001 s; distance=9232 kB, estimate=9657 kB; lsn=0/11F26250, redo lsn=0/11C5F458
+build-test	Stop containers	2026-11-10T12:10:04.0741808Z  2026-11-10 12:09:06.792 UTC [437] FATAL:  terminating connection due to administrator command
+build-test	Stop containers	2026-11-10T12:10:04.0742197Z  2026-11-10 12:09:06.831 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0743025Z  2026-11-10 12:09:07.044 UTC [72] LOG:  checkpoint complete: wrote 1206 buffers (7.4%), wrote 2 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.034 s, sync=0.179 s, total=0.214 s; sync files=480, longest=0.145 s, average=0.001 s; distance=8359 kB, estimate=9527 kB; lsn=0/124B01D8, redo lsn=0/124892C8
+build-test	Stop containers	2026-11-10T12:10:04.0743845Z  2026-11-10 12:09:07.045 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0744681Z  2026-11-10 12:09:07.050 UTC [72] LOG:  checkpoint complete: wrote 46 buffers (0.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.003 s, total=0.005 s; sync files=27, longest=0.001 s, average=0.001 s; distance=155 kB, estimate=8590 kB; lsn=0/124B1CE0, redo lsn=0/124B0250
+build-test	Stop containers	2026-11-10T12:10:04.0745496Z  2026-11-10 12:09:07.086 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0746300Z  2026-11-10 12:09:07.090 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=22 kB, estimate=7733 kB; lsn=0/124B5D40, redo lsn=0/124B5CE0
+build-test	Stop containers	2026-11-10T12:10:04.0747100Z  2026-11-10 12:09:08.505 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0747930Z  2026-11-10 12:09:08.863 UTC [72] LOG:  checkpoint complete: wrote 1454 buffers (8.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.057 s, sync=0.273 s, total=0.358 s; sync files=27, longest=0.159 s, average=0.011 s; distance=16510 kB, estimate=16510 kB; lsn=0/134DD020, redo lsn=0/134D5690
+build-test	Stop containers	2026-11-10T12:10:04.0748770Z  2026-11-10 12:09:08.863 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0749578Z  2026-11-10 12:09:08.868 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.003 s, total=0.005 s; sync files=2, longest=0.002 s, average=0.002 s; distance=30 kB, estimate=14862 kB; lsn=0/134DD0F8, redo lsn=0/134DD098
+build-test	Stop containers	2026-11-10T12:10:04.0750672Z  2026-11-10 12:09:10.319 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0751496Z  2026-11-10 12:09:10.394 UTC [72] LOG:  checkpoint complete: wrote 1803 buffers (11.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.051 s, sync=0.023 s, total=0.076 s; sync files=278, longest=0.003 s, average=0.001 s; distance=16511 kB, estimate=16511 kB; lsn=0/14515C40, redo lsn=0/144FCD00
+build-test	Stop containers	2026-11-10T12:10:04.0752342Z  2026-11-10 12:09:10.395 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0753136Z  2026-11-10 12:09:10.398 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.002 s, total=0.004 s; sync files=2, longest=0.002 s, average=0.001 s; distance=99 kB, estimate=14869 kB; lsn=0/14515D18, redo lsn=0/14515CB8
+build-test	Stop containers	2026-11-10T12:10:04.0754123Z  2026-11-10 12:09:11.599 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0754947Z  2026-11-10 12:09:11.703 UTC [72] LOG:  checkpoint complete: wrote 2102 buffers (12.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.073 s, sync=0.031 s, total=0.105 s; sync files=406, longest=0.002 s, average=0.001 s; distance=16509 kB, estimate=16509 kB; lsn=0/1555D2A0, redo lsn=0/15535448
+build-test	Stop containers	2026-11-10T12:10:04.0755767Z  2026-11-10 12:09:11.704 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0756572Z  2026-11-10 12:09:11.707 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.002 s, total=0.004 s; sync files=2, longest=0.002 s, average=0.001 s; distance=159 kB, estimate=14874 kB; lsn=0/1555D378, redo lsn=0/1555D318
+build-test	Stop containers	2026-11-10T12:10:04.0757376Z  2026-11-10 12:09:12.554 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0758187Z  2026-11-10 12:09:12.677 UTC [72] LOG:  checkpoint complete: wrote 2075 buffers (12.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.070 s, sync=0.052 s, total=0.124 s; sync files=954, longest=0.003 s, average=0.001 s; distance=16508 kB, estimate=16508 kB; lsn=0/1657C6B8, redo lsn=0/1657C660
+build-test	Stop containers	2026-11-10T12:10:04.0759015Z  2026-11-10 12:09:12.864 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0759830Z  2026-11-10 12:09:12.959 UTC [72] LOG:  checkpoint complete: wrote 954 buffers (5.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.064 s, sync=0.030 s, total=0.096 s; sync files=407, longest=0.008 s, average=0.001 s; distance=4516 kB, estimate=15309 kB; lsn=0/16B6A9C8, redo lsn=0/169E5850
+build-test	Stop containers	2026-11-10T12:10:04.0760793Z  2026-11-10 12:09:12.960 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0761629Z  2026-11-10 12:09:12.982 UTC [72] LOG:  checkpoint complete: wrote 185 buffers (1.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.017 s, total=0.023 s; sync files=121, longest=0.003 s, average=0.001 s; distance=1563 kB, estimate=13934 kB; lsn=0/16B919A0, redo lsn=0/16B6C6C8
+build-test	Stop containers	2026-11-10T12:10:04.0762466Z  2026-11-10 12:09:14.091 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0763289Z  2026-11-10 12:09:14.270 UTC [72] LOG:  checkpoint complete: wrote 2075 buffers (12.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.086 s, sync=0.068 s, total=0.180 s; sync files=486, longest=0.021 s, average=0.001 s; distance=11399 kB, estimate=13681 kB; lsn=0/176C3FC0, redo lsn=0/1768E4E0
+build-test	Stop containers	2026-11-10T12:10:04.0764117Z  2026-11-10 12:09:14.271 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0764933Z  2026-11-10 12:09:14.274 UTC [72] LOG:  checkpoint complete: wrote 24 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=16, longest=0.001 s, average=0.001 s; distance=214 kB, estimate=12334 kB; lsn=0/176C4668, redo lsn=0/176C4050
+build-test	Stop containers	2026-11-10T12:10:04.0765859Z  2026-11-10 12:09:14.295 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0766660Z  2026-11-10 12:09:14.298 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=8 kB, estimate=11102 kB; lsn=0/176C61D0, redo lsn=0/176C6170
+build-test	Stop containers	2026-11-10T12:10:04.0767455Z  2026-11-10 12:09:15.767 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0768273Z  2026-11-10 12:09:15.883 UTC [72] LOG:  checkpoint complete: wrote 2114 buffers (12.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.063 s, sync=0.051 s, total=0.116 s; sync files=257, longest=0.021 s, average=0.001 s; distance=16519 kB, estimate=16519 kB; lsn=0/18706960, redo lsn=0/186E7F38
+build-test	Stop containers	2026-11-10T12:10:04.0769207Z  2026-11-10 12:09:15.884 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0770015Z  2026-11-10 12:09:15.886 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=122 kB, estimate=14879 kB; lsn=0/18706A38, redo lsn=0/187069D8
+build-test	Stop containers	2026-11-10T12:10:04.0771000Z  2026-11-10 12:09:17.230 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0771832Z  2026-11-10 12:09:17.462 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.028 s, sync=0.189 s, total=0.233 s; sync files=479, longest=0.085 s, average=0.001 s; distance=16519 kB, estimate=16519 kB; lsn=0/19739E00, redo lsn=0/197289D0
+build-test	Stop containers	2026-11-10T12:10:04.0772666Z  2026-11-10 12:09:17.463 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0773480Z  2026-11-10 12:09:17.474 UTC [72] LOG:  checkpoint complete: wrote 21 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.002 s, total=0.011 s; sync files=14, longest=0.002 s, average=0.001 s; distance=69 kB, estimate=14874 kB; lsn=0/1973A158, redo lsn=0/1973A0B8
+build-test	Stop containers	2026-11-10T12:10:04.0774292Z  2026-11-10 12:09:17.474 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0775088Z  2026-11-10 12:09:17.477 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=1, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=13388 kB; lsn=0/1973BA48, redo lsn=0/1973B9E8
+build-test	Stop containers	2026-11-10T12:10:04.0775886Z  2026-11-10 12:09:18.649 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0776714Z  2026-11-10 12:09:18.780 UTC [72] LOG:  checkpoint complete: wrote 1993 buffers (12.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.069 s, sync=0.039 s, total=0.131 s; sync files=479, longest=0.004 s, average=0.001 s; distance=16507 kB, estimate=16507 kB; lsn=0/1A7AFFF8, redo lsn=0/1A75A860
+build-test	Stop containers	2026-11-10T12:10:04.0777543Z  2026-11-10 12:09:18.781 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0778345Z  2026-11-10 12:09:18.785 UTC [72] LOG:  checkpoint complete: wrote 90 buffers (0.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.005 s; sync files=50, longest=0.002 s, average=0.001 s; distance=342 kB, estimate=14891 kB; lsn=0/1A7B0490, redo lsn=0/1A7B0088
+build-test	Stop containers	2026-11-10T12:10:04.0779145Z  2026-11-10 12:09:18.896 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0779969Z  2026-11-10 12:09:19.031 UTC [72] LOG:  checkpoint complete: wrote 1926 buffers (11.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.062 s, sync=0.069 s, total=0.136 s; sync files=864, longest=0.005 s, average=0.001 s; distance=9286 kB, estimate=14330 kB; lsn=0/1B34BC40, redo lsn=0/1B0C1C70
+build-test	Stop containers	2026-11-10T12:10:04.0781080Z  2026-11-10 12:09:19.707 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0781902Z  2026-11-10 12:09:19.724 UTC [72] LOG:  checkpoint complete: wrote 186 buffers (1.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.011 s, total=0.017 s; sync files=130, longest=0.001 s, average=0.001 s; distance=2603 kB, estimate=13157 kB; lsn=0/1B34CC38, redo lsn=0/1B34CBE0
+build-test	Stop containers	2026-11-10T12:10:04.0782718Z  2026-11-10 12:09:19.865 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0783539Z  2026-11-10 12:09:19.935 UTC [72] LOG:  checkpoint complete: wrote 971 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.037 s, sync=0.032 s, total=0.070 s; sync files=432, longest=0.002 s, average=0.001 s; distance=4750 kB, estimate=12317 kB; lsn=0/1B913098, redo lsn=0/1B7F06D0
+build-test	Stop containers	2026-11-10T12:10:04.0784466Z  2026-11-10 12:09:20.772 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0785285Z  2026-11-10 12:09:20.946 UTC [72] LOG:  checkpoint complete: wrote 1964 buffers (12.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.094 s, sync=0.076 s, total=0.175 s; sync files=474, longest=0.041 s, average=0.001 s; distance=11427 kB, estimate=12228 kB; lsn=0/1C4454C8, redo lsn=0/1C3195E0
+build-test	Stop containers	2026-11-10T12:10:04.0786106Z  2026-11-10 12:09:20.947 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0786913Z  2026-11-10 12:09:20.955 UTC [72] LOG:  checkpoint complete: wrote 126 buffers (0.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.004 s, total=0.008 s; sync files=53, longest=0.003 s, average=0.001 s; distance=1199 kB, estimate=11125 kB; lsn=0/1C4455A0, redo lsn=0/1C445540
+build-test	Stop containers	2026-11-10T12:10:04.0787730Z  2026-11-10 12:09:22.043 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0788546Z  2026-11-10 12:09:22.180 UTC [72] LOG:  checkpoint complete: wrote 2075 buffers (12.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.077 s, sync=0.053 s, total=0.138 s; sync files=954, longest=0.007 s, average=0.001 s; distance=11120 kB, estimate=11124 kB; lsn=0/1CF21728, redo lsn=0/1CF216D0
+build-test	Stop containers	2026-11-10T12:10:04.0789385Z  2026-11-10 12:09:22.385 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0790331Z  2026-11-10 12:09:22.507 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.030 s, sync=0.068 s, total=0.123 s; sync files=479, longest=0.029 s, average=0.001 s; distance=5434 kB, estimate=10555 kB; lsn=0/1D4D71D0, redo lsn=0/1D46FFF0
+build-test	Stop containers	2026-11-10T12:10:04.0791223Z  2026-11-10 12:09:22.659 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0792043Z  2026-11-10 12:09:22.663 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=443 kB, estimate=9544 kB; lsn=0/1D4DEE00, redo lsn=0/1D4DEDA0
+build-test	Stop containers	2026-11-10T12:10:04.0792859Z  2026-11-10 12:09:23.475 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0793687Z  2026-11-10 12:09:23.687 UTC [72] LOG:  checkpoint complete: wrote 2075 buffers (12.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.059 s, sync=0.153 s, total=0.213 s; sync files=954, longest=0.085 s, average=0.001 s; distance=11185 kB, estimate=11185 kB; lsn=0/1DFCB4A0, redo lsn=0/1DFCB448
+build-test	Stop containers	2026-11-10T12:10:04.0794510Z  2026-11-10 12:09:23.818 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0795430Z  2026-11-10 12:09:23.932 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.112 s, total=0.115 s; sync files=2, longest=0.112 s, average=0.056 s; distance=3 kB, estimate=10067 kB; lsn=0/1DFEB360, redo lsn=0/1DFCC250
+build-test	Stop containers	2026-11-10T12:10:04.0796248Z  2026-11-10 12:09:23.950 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0797044Z  2026-11-10 12:09:23.954 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=129 kB, estimate=9073 kB; lsn=0/1DFECA08, redo lsn=0/1DFEC9A8
+build-test	Stop containers	2026-11-10T12:10:04.0797858Z  2026-11-10 12:09:25.197 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0798690Z  2026-11-10 12:09:25.443 UTC [72] LOG:  checkpoint complete: wrote 2075 buffers (12.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 2 recycled; write=0.077 s, sync=0.168 s, total=0.247 s; sync files=601, longest=0.101 s, average=0.001 s; distance=16496 kB, estimate=16496 kB; lsn=0/1F027970, redo lsn=0/1F008BE8
+build-test	Stop containers	2026-11-10T12:10:04.0799617Z  2026-11-10 12:09:25.444 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0800587Z  2026-11-10 12:09:25.447 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=123 kB, estimate=14859 kB; lsn=0/1F027A48, redo lsn=0/1F0279E8
+build-test	Stop containers	2026-11-10T12:10:04.0801415Z  2026-11-10 12:09:25.721 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0802244Z  2026-11-10 12:09:25.924 UTC [72] LOG:  checkpoint complete: wrote 950 buffers (5.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.182 s, sync=0.018 s, total=0.203 s; sync files=336, longest=0.003 s, average=0.001 s; distance=4513 kB, estimate=13824 kB; lsn=0/1F542A88, redo lsn=0/1F48FF80
+build-test	Stop containers	2026-11-10T12:10:04.0803072Z  2026-11-10 12:09:27.106 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0803887Z  2026-11-10 12:09:27.181 UTC [72] LOG:  checkpoint complete: wrote 1048 buffers (6.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.030 s, sync=0.044 s, total=0.075 s; sync files=479, longest=0.004 s, average=0.001 s; distance=6983 kB, estimate=13140 kB; lsn=0/1FB6EC78, redo lsn=0/1FB61D40
+build-test	Stop containers	2026-11-10T12:10:04.0804710Z  2026-11-10 12:09:27.370 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0805520Z  2026-11-10 12:09:27.433 UTC [72] LOG:  checkpoint complete: wrote 994 buffers (6.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.029 s, sync=0.032 s, total=0.064 s; sync files=464, longest=0.002 s, average=0.001 s; distance=5102 kB, estimate=12336 kB; lsn=0/20123770, redo lsn=0/2005D578
+build-test	Stop containers	2026-11-10T12:10:04.0806349Z  2026-11-10 12:09:28.285 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0807170Z  2026-11-10 12:09:28.336 UTC [72] LOG:  checkpoint complete: wrote 950 buffers (5.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.029 s, sync=0.011 s, total=0.052 s; sync files=306, longest=0.005 s, average=0.001 s; distance=5210 kB, estimate=11624 kB; lsn=0/205F2768, redo lsn=0/20573FD8
+build-test	Stop containers	2026-11-10T12:10:04.0808000Z  2026-11-10 12:09:29.355 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0808817Z  2026-11-10 12:09:29.433 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.028 s, sync=0.049 s, total=0.079 s; sync files=144, longest=0.015 s, average=0.001 s; distance=7083 kB, estimate=11170 kB; lsn=0/20C7DE68, redo lsn=0/20C5EDD0
+build-test	Stop containers	2026-11-10T12:10:04.0809631Z  2026-11-10 12:09:29.434 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0810698Z  2026-11-10 12:09:29.464 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.009 s, total=0.031 s; sync files=2, longest=0.009 s, average=0.005 s; distance=124 kB, estimate=10065 kB; lsn=0/20C7DF40, redo lsn=0/20C7DEE0
+build-test	Stop containers	2026-11-10T12:10:04.0811533Z  2026-11-10 12:09:30.696 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0812358Z  2026-11-10 12:09:30.747 UTC [72] LOG:  checkpoint complete: wrote 1081 buffers (6.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.030 s, sync=0.020 s, total=0.051 s; sync files=26, longest=0.016 s, average=0.001 s; distance=11023 kB, estimate=11023 kB; lsn=0/21749CF0, redo lsn=0/21741DB8
+build-test	Stop containers	2026-11-10T12:10:04.0813174Z  2026-11-10 12:09:30.747 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0813980Z  2026-11-10 12:09:30.749 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=31 kB, estimate=9924 kB; lsn=0/21749DC8, redo lsn=0/21749D68
+build-test	Stop containers	2026-11-10T12:10:04.0814890Z  2026-11-10 12:09:31.735 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0815712Z  2026-11-10 12:09:31.777 UTC [72] LOG:  checkpoint complete: wrote 1054 buffers (6.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.029 s, sync=0.013 s, total=0.043 s; sync files=135, longest=0.004 s, average=0.001 s; distance=11010 kB, estimate=11010 kB; lsn=0/2221C120, redo lsn=0/2220A8F0
+build-test	Stop containers	2026-11-10T12:10:04.0816529Z  2026-11-10 12:09:31.778 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0817327Z  2026-11-10 12:09:31.780 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=70 kB, estimate=9916 kB; lsn=0/2221C1F8, redo lsn=0/2221C198
+build-test	Stop containers	2026-11-10T12:10:04.0818134Z  2026-11-10 12:09:32.847 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0818944Z  2026-11-10 12:09:33.037 UTC [72] LOG:  checkpoint complete: wrote 1010 buffers (6.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.003 s, total=0.191 s; sync files=4, longest=0.002 s, average=0.001 s; distance=11009 kB, estimate=11009 kB; lsn=0/22CE02B0, redo lsn=0/22CDC868
+build-test	Stop containers	2026-11-10T12:10:04.0819761Z  2026-11-10 12:09:33.038 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0820704Z  2026-11-10 12:09:33.039 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=14 kB, estimate=9910 kB; lsn=0/22CE0388, redo lsn=0/22CE0328
+build-test	Stop containers	2026-11-10T12:10:04.0821514Z  2026-11-10 12:09:34.116 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0822344Z  2026-11-10 12:09:34.552 UTC [72] LOG:  checkpoint complete: wrote 1047 buffers (6.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.027 s, sync=0.223 s, total=0.437 s; sync files=255, longest=0.208 s, average=0.001 s; distance=11010 kB, estimate=11010 kB; lsn=0/237D2DC8, redo lsn=0/237A0DE8
+build-test	Stop containers	2026-11-10T12:10:04.0823174Z  2026-11-10 12:09:34.553 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0823967Z  2026-11-10 12:09:34.554 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=200 kB, estimate=9929 kB; lsn=0/237D2EA0, redo lsn=0/237D2E40
+build-test	Stop containers	2026-11-10T12:10:04.0824779Z  2026-11-10 12:09:35.576 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0825704Z  2026-11-10 12:09:35.607 UTC [72] LOG:  checkpoint complete: wrote 1025 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.027 s, sync=0.003 s, total=0.032 s; sync files=10, longest=0.002 s, average=0.001 s; distance=11011 kB, estimate=11011 kB; lsn=0/242961C0, redo lsn=0/24293D68
+build-test	Stop containers	2026-11-10T12:10:04.0826531Z  2026-11-10 12:09:35.608 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0827330Z  2026-11-10 12:09:35.609 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=9 kB, estimate=9911 kB; lsn=0/24296298, redo lsn=0/24296238
+build-test	Stop containers	2026-11-10T12:10:04.0828129Z  2026-11-10 12:09:36.552 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0828957Z  2026-11-10 12:09:36.616 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.031 s, total=0.065 s; sync files=479, longest=0.007 s, average=0.001 s; distance=11004 kB, estimate=11004 kB; lsn=0/24D555B0, redo lsn=0/24D55558
+build-test	Stop containers	2026-11-10T12:10:04.0829895Z  2026-11-10 12:09:36.718 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0830908Z  2026-11-10 12:09:36.774 UTC [72] LOG:  checkpoint complete: wrote 982 buffers (6.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.028 s, sync=0.020 s, total=0.056 s; sync files=416, longest=0.002 s, average=0.001 s; distance=4954 kB, estimate=10399 kB; lsn=0/252FE750, redo lsn=0/2522BE98
+build-test	Stop containers	2026-11-10T12:10:04.0831733Z  2026-11-10 12:09:37.674 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0832552Z  2026-11-10 12:09:37.741 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.040 s, total=0.067 s; sync files=479, longest=0.015 s, average=0.001 s; distance=6502 kB, estimate=10010 kB; lsn=0/258858F0, redo lsn=0/25885898
+build-test	Stop containers	2026-11-10T12:10:04.0833374Z  2026-11-10 12:09:37.866 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0834184Z  2026-11-10 12:09:37.937 UTC [72] LOG:  checkpoint complete: wrote 984 buffers (6.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.044 s, sync=0.026 s, total=0.071 s; sync files=429, longest=0.002 s, average=0.001 s; distance=4971 kB, estimate=9506 kB; lsn=0/25E4DD38, redo lsn=0/25D60770
+build-test	Stop containers	2026-11-10T12:10:04.0835002Z  2026-11-10 12:09:38.654 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0835813Z  2026-11-10 12:09:38.706 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.028 s, sync=0.023 s, total=0.052 s; sync files=479, longest=0.002 s, average=0.001 s; distance=6470 kB, estimate=9202 kB; lsn=0/263B2060, redo lsn=0/263B1FF0
+build-test	Stop containers	2026-11-10T12:10:04.0836633Z  2026-11-10 12:09:38.789 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0837440Z  2026-11-10 12:09:38.826 UTC [72] LOG:  checkpoint complete: wrote 939 buffers (5.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.028 s, sync=0.007 s, total=0.037 s; sync files=306, longest=0.002 s, average=0.001 s; distance=4436 kB, estimate=8725 kB; lsn=0/26892F08, redo lsn=0/26807168
+build-test	Stop containers	2026-11-10T12:10:04.0838255Z  2026-11-10 12:09:39.650 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0839069Z  2026-11-10 12:09:39.707 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.030 s, total=0.057 s; sync files=479, longest=0.004 s, average=0.001 s; distance=7204 kB, estimate=8573 kB; lsn=0/26F27608, redo lsn=0/26F102A0
+build-test	Stop containers	2026-11-10T12:10:04.0839876Z  2026-11-10 12:09:39.742 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0840987Z  2026-11-10 12:09:39.745 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=143 kB, estimate=7730 kB; lsn=0/26F34190, redo lsn=0/26F34130
+build-test	Stop containers	2026-11-10T12:10:04.0841804Z  2026-11-10 12:09:40.674 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0842626Z  2026-11-10 12:09:40.757 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.026 s, sync=0.056 s, total=0.084 s; sync files=479, longest=0.016 s, average=0.001 s; distance=11036 kB, estimate=11036 kB; lsn=0/27A1DB58, redo lsn=0/279FB370
+build-test	Stop containers	2026-11-10T12:10:04.0843445Z  2026-11-10 12:09:40.780 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0844276Z  2026-11-10 12:09:40.782 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=146 kB, estimate=9947 kB; lsn=0/27A1FFB0, redo lsn=0/27A1FF58
+build-test	Stop containers	2026-11-10T12:10:04.0845186Z  2026-11-10 12:09:42.160 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	Stop containers	2026-11-10T12:10:04.0845980Z  2026-11-10 12:09:42.162 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=7317 kB, estimate=9684 kB; lsn=0/28145558, redo lsn=0/28145500
+build-test	Stop containers	2026-11-10T12:10:04.0852114Z Stop and remove container: e4a871e67b9a4064b23e6fa620abdeca_ghcriotensorchordvchordpostgrespg18v100_48907f
+build-test	Stop containers	2026-11-10T12:10:04.0856959Z ##[command]/usr/bin/docker rm --force 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Stop containers	2026-11-10T12:10:04.2893473Z 73415a9145c5adcbff4d7a6f5f549d392dff615b65b0363eb16f7d9701a625d2
+build-test	Stop containers	2026-11-10T12:10:04.2930726Z Remove container network: github_network_35e18d7d5c79468e8dcc4b6280896ea1
+build-test	Stop containers	2026-11-10T12:10:04.2934306Z ##[command]/usr/bin/docker network rm github_network_35e18d7d5c79468e8dcc4b6280896ea1
+build-test	Stop containers	2026-11-10T12:10:04.3685041Z github_network_35e18d7d5c79468e8dcc4b6280896ea1
+build-test	Complete job	﻿2026-11-10T12:10:04.3740859Z Cleaning up orphan processes
+build-test	Complete job	2026-11-10T12:10:04.4096511Z Terminate orphan process: pid (3099) (VBCSCompiler)

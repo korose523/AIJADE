@@ -1,0 +1,238 @@
+{
+  "schema": "aijade.p3.policy.combined-execution.v1",
+  "executionCodeCommits": {
+    "product": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100",
+    "external": "1c78bf920902a6aeff6b4b269b9883d1c120a983"
+  },
+  "product": {
+    "schema": "aijade.p3.policy.execution.v1",
+    "planCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+    "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100",
+    "binaryIdentities": {
+      "Aijade.Tests": {
+        "sha256": "3e062b09b6860df13a4fc917a649fb535e5bd844dacbc6fe842a0521f04f3c57",
+        "informationalVersion": "0.1.0+fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+      },
+      "Aijade.Client": {
+        "sha256": "1630af88b2270ff19cda8df5018a2458cd9eeae17a1b55aa535e6d8176cd4b7d",
+        "informationalVersion": "0.1.0+fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+      },
+      "Aijade.Server": {
+        "sha256": "a38d2958510808bed93f39cd4442d2a9bd3ed23746187856238a15b53761250e",
+        "informationalVersion": "0.1.0+fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+      }
+    },
+    "startedAt": "2026-11-10T12:11:42.962746+00:00",
+    "phases": [
+      {
+        "name": "external-qualification",
+        "command": [
+          "/Users/mac/p3c-env/venv/bin/python",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+          "--qualify",
+          "--out",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-01/external-qualification"
+        ],
+        "startedAt": "2026-11-10T12:11:42.963628+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T12:11:48.981485+00:00"
+      },
+      {
+        "name": "product-text",
+        "command": [
+          "/Users/mac/.dotnet/dotnet",
+          "test",
+          "tests/Aijade.Tests/Aijade.Tests.csproj",
+          "-c",
+          "Release",
+          "--no-build",
+          "--filter",
+          "FullyQualifiedName~ProductPolicyExperimentTests",
+          "--logger",
+          "trx;LogFileName=full-corpus.trx",
+          "--results-directory",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-01/text/test-results"
+        ],
+        "startedAt": "2026-11-10T12:11:48.983047+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T12:23:03.532136+00:00"
+      },
+      {
+        "name": "product-embedding",
+        "command": [
+          "/Users/mac/.dotnet/dotnet",
+          "test",
+          "tests/Aijade.Tests/Aijade.Tests.csproj",
+          "-c",
+          "Release",
+          "--no-build",
+          "--filter",
+          "FullyQualifiedName~ProductPolicyExperimentTests",
+          "--logger",
+          "trx;LogFileName=full-corpus.trx",
+          "--results-directory",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-01/embedding/test-results"
+        ],
+        "startedAt": "2026-11-10T12:23:03.533419+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T12:54:28.849341+00:00"
+      },
+      {
+        "name": "external-langchain",
+        "command": [
+          "/Users/mac/p3c-env/venv/bin/python",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+          "--system",
+          "langchain",
+          "--out",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-01/external/langchain",
+          "--source",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-e/2026-11-10-shared-runtime",
+          "--corpus",
+          "/Users/mac/.local/share/aijade-data/locomo-export.json",
+          "--raw-corpus",
+          "/Users/mac/.local/share/aijade-data/locomo10.json"
+        ],
+        "startedAt": "2026-11-10T12:54:28.851628+00:00",
+        "exitCode": 1,
+        "endedAt": "2026-11-10T12:54:36.890614+00:00"
+      }
+    ]
+  },
+  "external": {
+    "schema": "aijade.p3.policy.execution.v1",
+    "planCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+    "codeCommit": "1c78bf920902a6aeff6b4b269b9883d1c120a983",
+    "binaryIdentities": {
+      "Aijade.Tests": {
+        "sha256": "284f95c530c73c610fbea4830372add64653a509a21fec05fbd94c39c89a58c7",
+        "informationalVersion": "0.1.0+1c78bf920902a6aeff6b4b269b9883d1c120a983"
+      },
+      "Aijade.Client": {
+        "sha256": "7aca7a4edb918c1e169ea208d8d4729a4771228461f373f384cac05ea9352b3a",
+        "informationalVersion": "0.1.0+1c78bf920902a6aeff6b4b269b9883d1c120a983"
+      },
+      "Aijade.Server": {
+        "sha256": "d62b44e80e7e829e1cbbe6b31be882c2f23162778adf0cc0b23ba637ae197e96",
+        "informationalVersion": "0.1.0+1c78bf920902a6aeff6b4b269b9883d1c120a983"
+      }
+    },
+    "startedAt": "2026-11-10T13:22:09.093480+00:00",
+    "phases": [
+      {
+        "name": "external-qualification",
+        "command": [
+          "/Users/mac/p3c-env/venv/bin/python",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+          "--qualify",
+          "--out",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-03/external-qualification"
+        ],
+        "startedAt": "2026-11-10T13:22:09.111635+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T13:22:15.138434+00:00"
+      },
+      {
+        "name": "external-langchain",
+        "command": [
+          "/Users/mac/p3c-env/venv/bin/python",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+          "--system",
+          "langchain",
+          "--out",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-03/external/langchain",
+          "--source",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-e/2026-11-10-shared-runtime",
+          "--corpus",
+          "/Users/mac/.local/share/aijade-data/locomo-export.json",
+          "--raw-corpus",
+          "/Users/mac/.local/share/aijade-data/locomo10.json",
+          "--supplement",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/entity-preparation/supplement.json.gz"
+        ],
+        "startedAt": "2026-11-10T13:22:15.139948+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T13:22:47.278997+00:00"
+      },
+      {
+        "name": "external-prompts-langchain",
+        "command": [
+          "/Users/mac/.dotnet/dotnet",
+          "test",
+          "tests/Aijade.Tests/Aijade.Tests.csproj",
+          "-c",
+          "Release",
+          "--no-build",
+          "--filter",
+          "FullyQualifiedName~ExternalPolicyPromptTests",
+          "--logger",
+          "trx;LogFileName=external-prompts.trx",
+          "--results-directory",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-03/external/langchain/test-results"
+        ],
+        "startedAt": "2026-11-10T13:22:47.280973+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T13:26:01.998307+00:00"
+      },
+      {
+        "name": "external-mem0",
+        "command": [
+          "/Users/mac/p3c-env/venv/bin/python",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-policy/2026-11-10/external_policies.py",
+          "--system",
+          "mem0",
+          "--out",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-03/external/mem0",
+          "--source",
+          "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p3-e/2026-11-10-shared-runtime",
+          "--corpus",
+          "/Users/mac/.local/share/aijade-data/locomo-export.json",
+          "--raw-corpus",
+          "/Users/mac/.local/share/aijade-data/locomo10.json",
+          "--supplement",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/entity-preparation/supplement.json.gz"
+        ],
+        "startedAt": "2026-11-10T13:26:01.999464+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T13:32:57.676181+00:00"
+      },
+      {
+        "name": "external-prompts-mem0",
+        "command": [
+          "/Users/mac/.dotnet/dotnet",
+          "test",
+          "tests/Aijade.Tests/Aijade.Tests.csproj",
+          "-c",
+          "Release",
+          "--no-build",
+          "--filter",
+          "FullyQualifiedName~ExternalPolicyPromptTests",
+          "--logger",
+          "trx;LogFileName=external-prompts.trx",
+          "--results-directory",
+          "/Users/mac/.cache/aijade-p3-policy-20261110/attempt-03/external/mem0/test-results"
+        ],
+        "startedAt": "2026-11-10T13:32:57.677766+00:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-10T13:36:14.434180+00:00"
+      }
+    ],
+    "recordingAmendmentCommit": "87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2",
+    "completedProductReference": {
+      "text": {
+        "receiptSha256": "0e9124348e9c5752cad7aa4fc56c7b711e73cd3caddec61046a47f49bfd8338b",
+        "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+      },
+      "embedding": {
+        "receiptSha256": "d1165d8999b5642649db012741581bccea856936fe9823abca73466a1ed36ca3",
+        "codeCommit": "fd4fb3045711ab9061d12ea65e659c9f0ff2b100"
+      }
+    },
+    "externalOnlyRestart": true,
+    "entitySupplementSha256": "3946edeefe5cfea85cc1a3d193af3abaab5b2543a54d2b4bce4cf04a1f8b289c",
+    "entityCoverageAmendmentCommit": "2b1bf563c945618aa1ef8a85efbf642e265fd374",
+    "status": "ALL_EXECUTION_PHASES_COMPLETE_VALIDATE_RAW_DATA_BEFORE_CLAIMS",
+    "endedAt": "2026-11-10T13:36:14.435746+00:00"
+  },
+  "note": "Complete product attempt 01 and fresh complete external attempt 03; zero-row external failure retained; no question-row merging."
+}
