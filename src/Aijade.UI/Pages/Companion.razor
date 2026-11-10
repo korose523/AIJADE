@@ -75,6 +75,33 @@
     <p class="hint">@State.Text["companion.relationship.hint"]</p>
 </section>
 
+<section aria-label="@State.Text["companion.delivery.title"]">
+    <h2>@State.Text["companion.delivery.title"]</h2>
+    <p>@State.Text["companion.delivery.hint"]</p>
+    <button @onclick="ReadDeliveriesAsync" disabled="@busy">@State.Text["companion.delivery.refresh"]</button>
+    @if (deliveries is { } log)
+    {
+        @if (log.Entries.Count == 0) { <p>@State.Text["companion.delivery.empty"]</p> }
+        @if (log.Pruned > 0) { <p>@State.Text.Format("companion.delivery.pruned", log.Pruned)</p> }
+        @foreach (var attempt in log.Entries.Take(20))
+        {
+            var parts = attempt.Parts ?? [];
+            <article class="companion-delivery-entry" style="overflow-wrap:anywhere">
+                <p><strong>@State.Text["companion.delivery." + attempt.State]</strong> · QQ …@Tail(attempt.Destination) · @attempt.StartedAt.ToLocalTime().ToString("g")</p>
+                <p>@State.Text.Format("companion.delivery.parts", parts.Count(p => p.Outcome == "acknowledged"), parts.Count)</p>
+                <details><summary>@State.Text["companion.delivery.source"]</summary>
+                    <p><code>@attempt.MessageId</code> · <code>@attempt.SourceSha256</code></p>
+                    @foreach (var part in parts)
+                    {
+                        <p>@(part.Index + 1) · @part.Kind · @State.Text["companion.delivery." + part.Outcome] · @part.PlatformMessageId</p>
+                        <p><code>@part.PayloadSha256</code></p>
+                    }
+                </details>
+            </article>
+        }
+    }
+</section>
+
 <section aria-label="@State.Text["companion.diary.title"]">
     <h2>@State.Text["companion.diary.title"]</h2>
     <p>@State.Text["companion.diary.hint"]</p>
@@ -134,6 +161,7 @@
     private CompanionProfile p = new();
     private CompanionNotebookData data = new();
     private CompanionDiaryDay? diary;
+    private DeliveryLog? deliveries;
     private DateOnly diaryDate = DateOnly.FromDateTime(DateTime.Today);
     private LifeMoment? moment;
     private WeatherReading? weather;
@@ -194,6 +222,7 @@
         var snapshot = await State.Companion.SnapshotAsync(); moment = snapshot.Moment; weather = snapshot.Weather;
         data = await State.Companion.Notebook.ReadAsync(includeMedia: true); links = await State.Sync.LinksAsync(); remoteChanged = false;
         await LoadDiaryAsync(diary is null ? null : diaryDate);
+        deliveries = await State.Sync.DeliveriesAsync(State.SharedCompanion?.CharacterId);
     });
     private async Task LoadDiaryAsync(DateOnly? day)
     {
@@ -201,6 +230,8 @@
         diaryDate = diary.Day;
     }
     private Task ReadDiaryAsync() => GuardAsync(() => LoadDiaryAsync(diaryDate));
+    private Task ReadDeliveriesAsync() => GuardAsync(async () => deliveries = await State.Sync.DeliveriesAsync(State.SharedCompanion?.CharacterId));
+    private static string Tail(string value) => value.Length <= 4 ? value : value[^4..];
     private Task RemoveDiaryAsync(string id) => GuardAsync(async () =>
     {
         try { await State.Sync.RemoveDiaryEntryAsync(State.SharedCompanion?.CharacterId, id, diary!.Revision); }

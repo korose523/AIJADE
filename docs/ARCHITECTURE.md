@@ -19,7 +19,7 @@ flowchart LR
     foundation["共同基础代码<br/>记忆 · 学习 · 遥测<br/>保留研究约束"]
     subgraph server_host["AIJADE 后端部署 · full 或 companion"]
         core_api["认证 HTTP API<br/>聊天 · 同步 · 媒体 · 证据"]
-        state_store[("PostgreSQL<br/>角色 · 关系 · 收藏 · 日记<br/>地点时区 · 记忆 · 事件<br/>修订号 · 授权绑定")]
+        state_store[("PostgreSQL<br/>角色 · 关系 · 收藏<br/>日记 · 交付记录<br/>地点时区 · 记忆 · 事件<br/>修订号 · 授权绑定")]
         event_worker["既有队列 / Worker<br/>本机唤醒或 Redis<br/>沿用 V9 处理器"]
     end
     model_services["配置的模型/媒体服务<br/>聊天 · 图片 · ASR<br/>TTS · 歌声"]
@@ -67,7 +67,7 @@ flowchart TB
     prompt_build["装配提示/长度预算<br/>保留人设与当前输入<br/>数据库原文不改"]
     bounded_model["聊天/可选工具<br/>4 轮 · 12 次 · 30 秒/次<br/>结果未知停后续工具"]
     store_reply["解析/保存回复<br/>表情 · 表演意图<br/>成功后发完成事件"]
-    channel_delivery["渠道交付<br/>网页/QQ/媒体播放<br/>另行判断平台送达"]
+    channel_delivery["渠道交付<br/>网页 / QQ / 媒体播放<br/>QQ 回复逐片段记录<br/>接受 / 拒绝 / 未知 · 非已读"]
     turn_failure["TurnFailed / 渠道错误<br/>不发完成事件<br/>调用方取消继续传播"]
     channel_input --> command_route
     command_route -->|"是且陪伴启用"| media_command
@@ -93,6 +93,45 @@ flowchart TB
 
 可直接查看[流程 PNG](architecture/turn-flow.png) 或[矢量 SVG](architecture/turn-flow.svg)。主动消息和到期提醒走原有门控，再共用回复解析与保存；它们跳过普通记忆召回与学习观察者，只可带产品生活上下文，不冒充一条用户输入，也不转入外部工具循环。
 
+## 📨 QQ 交付记录与返回阶段
+
+`TurnCompleted` 表示回复成功保存，随后 QQ 平台调用有独立结果。普通回复和经共享运行时处理的 `/photo`、`/sing`、`/life`、`/relationship`、`/diary` 命令携带来源消息 ID；绑定、收藏导入、主动消息与提醒仍走原渠道路径，不在这份来源关联记录内。
+
+<!-- architecture:qq-delivery -->
+```mermaid
+flowchart TB
+    accTitle: Source-linked QQ delivery observations
+    accDescr: A stored reply reserves a retained attempt and records each request before dispatch. Valid acknowledgements permit another part. Rejections, uncertain results and new-input interruptions stop later sends. A platform acknowledgement does not establish recipient delivery or reading.
+    stored_reply["回复已入库<br/>来源 ID / 原文 SHA-256"]
+    prepared["授权范围内登记尝试<br/>已有记录则不再发送"]
+    dispatched["登记片段与请求指纹<br/>调用 QQ 发送 API"]
+    part_ack["片段获平台回执<br/>HTTP 成功 + ok + retcode 0<br/>有效消息编号"]
+    completed["计划片段全部结束<br/>已获平台回执 · 非已读"]
+    rejected["明示拒绝<br/>保留已确认片段，停止后续"]
+    unknown["结果未知<br/>停止后续，不自动重发"]
+    interrupted["新输入或本地失败中断<br/>保留已确认片段"]
+    stored_reply --> prepared
+    prepared --> dispatched
+    dispatched --> part_ack
+    part_ack -->|"还有片段"| dispatched
+    part_ack -->|"结束记录成功"| completed
+    dispatched -->|"明示失败"| rejected
+    dispatched -->|"异步 / 超时 / 残缺回执 / 无法写入观察"| unknown
+    prepared -->|"10 分钟无结束记录"| unknown
+    prepared -->|"中断"| interrupted
+    part_ack -->|"中断"| interrupted
+    classDef active fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a5f
+    classDef accepted fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+    classDef stopped fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
+    class stored_reply,prepared,dispatched active
+    class part_ack,completed accepted
+    class rejected,unknown,interrupted stopped
+```
+
+[交付流程 PNG](architecture/qq-delivery.png) / [SVG](architecture/qq-delivery.svg)。创建发送记录失败时不发出平台请求；片段回执无法持久保存时也不发送下一片段。分段发送不具备整体回滚，未知也不等于未发送。记录由持有授权的 relay 上报，不能抵御 relay 自己伪造观察；不构成独立研究证据。
+
+交付数据仍在现有 PostgreSQL `config_kv` 中，按账号／角色独立、按需读取，普通角色载荷不携带它。每角色最多保留 128 次尝试、每次最多 64 个片段；仅淘汰较早的已结束记录，并累计淘汰数，进行中记录满额则拒绝新增。未结束记录超过 10 分钟投影为未知，原聊天不删。重复阻止仅覆盖仍保留的来源消息，不是永久 exactly-once、入站事件去重、持久 outbox 或重启后自动补发。
+
 ## 🧩 代码职责与状态所有权
 
 | 代码或数据 | 负责内容与边界 |
@@ -103,6 +142,7 @@ flowchart TB
 | [CompanionMediaTurn](../src/Aijade.Client/Companion/CompanionMediaTurn.cs) | `/photo`、`/sing`、`/life`、`/relationship`、`/diary` 显式入口；保存结果后产生 `MediaCompleted`，图片/歌声可能调用已配置的专用服务，日记不调用模型 |
 | [ToolConversation](../src/Aijade.Client/Chat/ToolConversation.cs) | 有界的按需工具执行，工具须在本轮清单内，参数须为 JSON 编码对象。零轮数/零调用数不探测工具，直接走流式聊天 |
 | `CompanionSyncStore` / PostgreSQL | 账户/角色、地点时区、关系与收藏的权威状态；修订号、并发冲突检查、可撤销 QQ 授权。日记使用同一权限边界下独立、按需读取的文档，不进入普通状态载荷 |
+| `ICompanionDelivery` / `OneBotDelivery` | 可选 notebook 能力把已存来源关联到 QQ 的分段发送观察；发送前登记、严格解析回执、按序完成、未知或记录失败停止后续。没有增加宿主、模型调用或后台重试器 |
 | `ServerModules` / `CompanionWorker` | 启动时组合可选集成；精简配置且无 Redis 时排空既有队列，再等待合并唤醒。沿用 `V9Worker.DrainOnceAsync`，不新增调度平台 |
 | `Aijade.Bots` / 渠道连接器 | 授权、会话映射、单会话串行、消息节奏与平台交付。网页 localStorage 的提醒与机器人文件中的提醒仍是各自渠道状态，没有宣称统一同步 |
 
@@ -163,13 +203,13 @@ tools/run-companion.sh --Aijade:Modules:Tools=true --Aijade:Modules:Mcp=true
 | 功能状态 | 内容 |
 |---|---|
 | 已有并继续复用 | 共享角色/地点时区/关系/收藏、普通聊天、主动消息门控、虚拟日常、表情与节奏、照片/语音/唱歌的可配置入口；稳定单轮模块清单、上下文与工具预算 |
-| 当前追加 | 手动保存有来源的日记摘录、全原文哈希和修订控制、Web/QQ 共享读取、注入时钟的跨时区修复；产品提示明确要求可见正文，纯表情回复仍按空回复失败处理 |
+| 当前追加 | 普通 QQ 回复与共享媒体命令的来源关联交付记录、分段平台回执、拒绝／未知／中断状态、网页读取；保留共享日记、时钟注入修复与空回复检查 |
 | 配置后仍需实测 | 真实 QQ 收发、天气联网、图像服务、本地授权音色/歌声、MOSAIC/MMD 舞台与外部工具设备 |
 | 后续独立扩展 | 自动生成且保留历史版本的日记、持久生活任务与平台交付 outbox、多角色社交；当前未实现，不画成已部署模块 |
 
 ## 🧪 验证与研究兼容
 
-工程测试覆盖模块切换、故障/取消、截断后的提示与原始存储、旧直接构造入口、无效工具参数、超时/断网/5xx、零预算，并回归完整聊天与同步流程。最新[共同日记回执](../experiments/engineering/2026-11-10-shared-diary/receipt.json)补充来源校验、跨端摘录、修订冲突、时区注入修复与本地模型检查；本地模型的标记空回复、冷加载超时和就绪后通过分别保留。实际命令、计数、跳过项、日志哈希、源码哈希和保护清单在各轮回执中列明，上一轮[架构回执](../experiments/engineering/2026-11-10-life-architecture/receipt.json)与此前[重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)继续保留。
+工程测试覆盖模块切换、故障/取消、截断后的提示与原始存储、旧直接构造入口、无效工具参数、超时/断网/5xx、零预算，并回归完整聊天与同步流程。最新[交付观察回执](../experiments/engineering/2026-11-10-delivery-receipts/receipt.json)覆盖授权来源、重复登记、部分成功、异步／残缺回执、取消、存储故障和浏览器读取。此前[共同日记回执](../experiments/engineering/2026-11-10-shared-diary/receipt.json)中的标记空回复、冷加载超时和模型就绪后通过分别保留，未改写为本轮运行。实际命令、计数、跳过项、日志与源码哈希和保护清单在各轮回执中列明。
 
 研究/共同基础的既有文件以及声明的研究对象按基线逐字节核对。直接 `new ChatOrchestrator(...)` 且未显式设置 `PromptBudget` 的旧驱动保留原提示长度策略；产品工厂采用新预算，因此 **冻结记忆文件未改不等于产品提示与原实验完全一致**。后续基于产品传递路径的测量须记录新策略和配置，已有论文结果不重写、不据工程 PASS 提升研究结论。
 

@@ -264,6 +264,7 @@ public sealed partial class CompanionSyncStore(NpgsqlDataSource db, TimeProvider
     private static void MapScope(RouteGroupBuilder group)
     {
         MapDiary(group);
+        MapDelivery(group);
         group.MapGet("", async (HttpContext c, CompanionSyncStore store, CancellationToken ct) =>
             await store.StateAsync(await ScopeAsync(c, store, ct).ConfigureAwait(false), null, true, false, ct).ConfigureAwait(false));
         group.MapPost("/selection", async (HttpContext c, CompanionSyncStore store, CancellationToken ct) =>

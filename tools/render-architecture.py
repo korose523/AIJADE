@@ -15,8 +15,8 @@ def main():
     root = Path(__file__).resolve().parents[1]
     source = root / "docs/ARCHITECTURE.md"
     blocks = re.findall(r"<!-- architecture:([a-z-]+) -->\s*```mermaid\n(.*?)\n```", source.read_text(), re.S)
-    if {name for name, _ in blocks} != {"overview", "turn-flow"} or len(blocks) != 2:
-        raise SystemExit("Expected the two named canonical architecture blocks")
+    if {name for name, _ in blocks} != {"overview", "turn-flow", "qq-delivery"} or len(blocks) != 3:
+        raise SystemExit("Expected the three named canonical architecture blocks")
     cli = os.environ.get("MERMAID_CLI") or shutil.which("mmdc")
     if not cli or not Path(cli).is_file():
         raise SystemExit("Set MERMAID_CLI to a locally installed @mermaid-js/mermaid-cli executable")

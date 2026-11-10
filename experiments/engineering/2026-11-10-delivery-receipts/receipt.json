@@ -1,0 +1,224 @@
+{
+  "schema": "aijade.engineering.delivery-observations.v1",
+  "status": "PASS_WITH_DECLARED_LIMITS",
+  "recordedAt": "2026-11-10T05:15:50.983131+00:00",
+  "baseCommit": "d10341bb581e95b46ffcb3fd6e30e94b65ddee11",
+  "scope": "Companion product and dissertation system/method/availability update; no new primary research run",
+  "executionIdentity": "Checks ran on the working tree before the commit containing this receipt. Source and binary fingerprints were captured after these checks; final build logs and raw TRX identify the recorded implementation. The first targeted suite precedes the added storage-failure case, which is included in the final full unit suite.",
+  "sourceSha256": {
+    "src/Aijade.Client/Companion/CompanionDelivery.cs": "73fbd88cc4b06e58839d2ded1c3f29004594d6e70688edc4ad5c0331fcf2f957",
+    "src/Aijade.Client/Companion/CompanionSync.cs": "6f85f85d141c4243f207601f969be82b0bdead6f3806e79f3beefdb5658261b9",
+    "src/Aijade.Client/I18n/en.json": "26cf29003308cceb6301a029af4e519eab2bb7e38bc32348bf93156e091b34f3",
+    "src/Aijade.Client/I18n/es.json": "e66d9e9de67f6310920ba5562bed3fab2f8d42c0a81f9c8bab72e06162e5b578",
+    "src/Aijade.Client/I18n/fr.json": "3c4ee1dcd488f4bbb90e352e38a96079f2d880f8bc8c282647618598295fa357",
+    "src/Aijade.Client/I18n/ja.json": "7f1a97290280592341e4731ef9a32b0d39fcd0385df2ff202d3b4c6b29a18ce0",
+    "src/Aijade.Client/I18n/ko.json": "e6e5a846237afa4fec507dea26726daea6115327fb43d630dbd09dc46b9b8bbf",
+    "src/Aijade.Client/I18n/ru.json": "7cd37dd223a6373a2c5ebbd4e0f33e9cd0fd1ba62cce7f2214b9ea21c15699cf",
+    "src/Aijade.Client/I18n/vi.json": "fc567b56df539d1839a2704dc11147ff07e92ebb0ebab2152d6611871a5b26bf",
+    "src/Aijade.Client/I18n/zh-Hans.json": "0c838b69a9e85a07dd6ac312674859b3f4c2346427f12c3048cbd0566a481125",
+    "src/Aijade.Client/I18n/zh-Hant.json": "1127275aed9ebb01058eaf8e0e778ca526372795be2d1d46e0a8affb8192dde8",
+    "src/Aijade.Integrations/CompanionBridge.cs": "331d96d066fb4ca18b1f582ac38ec797d94facaa33183c27c1439ee3c9fa3b18",
+    "src/Aijade.Integrations/OneBotConnector.cs": "2d4aa0e06c53107ea58dfcf24c0986f4bf6a67a6d3ee467a4bd2f5a66e17389e",
+    "src/Aijade.Integrations/OneBotDelivery.cs": "45025f8a208e6fe7803660e55fb8a82a398fe3260f73de0cec78196b26c68df2",
+    "src/Aijade.Server/Product/CompanionDelivery.cs": "a7a342da83e9788536e89f266938a448cace42a30f13948da0e301252b4c41e8",
+    "src/Aijade.Server/Product/CompanionSync.cs": "8e5f99584c6d7cfc84d4df82242baa857302299935d5c3a1c2c8a5e05c80dae0",
+    "src/Aijade.UI/Pages/Companion.razor": "8ef7e355e9f5b098f5bf5e3e4a88f055377243463a3227e6e2a3cadb06723ca3",
+    "tests/Aijade.E2E/CompanionDeliveryWebTests.cs": "7681a0dc47373a4eed4044dc408ad79b007d3c17845dad5a10eb131a3c279666",
+    "tests/Aijade.E2E/CompanionSyncWebTests.cs": "0eabe0b6cc3231213c806de6269033ad4123a0f72a19ce4ab7966c925ce8522c",
+    "tests/Aijade.Tests/CompanionDeliveryTests.cs": "2c00b4aaeb2ff98c9507292445e775e4aef2b2974de6e1be7461c052b032aef9",
+    "tools/render-architecture.py": "f490702a2567151f30e33443b25022bb5fda1224d11de5674ed9ade1ae66c886"
+  },
+  "binarySha256": {
+    "Aijade.Client": "7d399beed7d303ce325390500bac7d3e160904cd67785dc5f5057b34d65cace0",
+    "Aijade.Integrations": "bdcb856a4c6711ad41139efea7d8963e7639b58fc7076ab191b6fefc7e56a1cf",
+    "Aijade.Server": "832f19333babf764b19f5c5a4103691be632e81d3649acc5320974fc0f4db85b",
+    "Aijade.UI": "2747ab6958b15f8ceb34eaa9d9e0b9f3eaecb6448f4ae36ae5c0d9e977050e3f",
+    "Aijade.Tests": "96b43e42a11e18cb968cd1078925033c39b7a6079e7acb1514d34a7664f1f5b5",
+    "Aijade.E2E": "0e825c07fc0c3ca986b23cbf9ac03ff6711bb1cc175c2b4a246481d54310133e"
+  },
+  "build": {
+    "status": "PASS",
+    "sdk": "10.0.403",
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "finalLog": "build-frozen.log"
+  },
+  "suites": [
+    {
+      "name": "Delivery and compatibility boundaries before final added storage-fault case",
+      "profile": "full",
+      "command": "TZ=UTC dotnet test tests/Aijade.Tests -c Release --no-build --filter 'FullyQualifiedName~CompanionDeliveryTests|FullyQualifiedName~OneBotConnectorTests|FullyQualifiedName~ProjectScopeTests|FullyQualifiedName~CompanionRuntimeTests|FullyQualifiedName~CompanionSyncTests'",
+      "counts": {
+        "passed": 49,
+        "failed": 0,
+        "skipped": 0,
+        "total": 49
+      },
+      "rawTrx": "targeted/targeted.trx",
+      "skippedTests": []
+    },
+    {
+      "name": "UTC full unit and database integration, final implementation",
+      "profile": "full",
+      "command": "TZ=UTC dotnet test tests/Aijade.Tests -c Release --no-build",
+      "counts": {
+        "passed": 562,
+        "failed": 0,
+        "skipped": 15,
+        "total": 577
+      },
+      "rawTrx": "unit/unit.trx",
+      "skippedTests": [
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+        "Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+        "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+        "Aijade.Tests.ExternalRendererStudyTests.Seal_session",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+        "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+        "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+        "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+        "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+        "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field",
+        "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt",
+        "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration"
+      ]
+    },
+    {
+      "name": "Signed QQ delivery and Web view",
+      "profile": "full",
+      "command": "AIJADE_E2E=1 TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build --filter FullyQualifiedName~Signed_QQ_delivery_rejection",
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "total": 1
+      },
+      "rawTrx": "browser-target/browser-target.trx",
+      "skippedTests": []
+    },
+    {
+      "name": "Full browser regression",
+      "profile": "full",
+      "command": "AIJADE_E2E=1 TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build",
+      "counts": {
+        "passed": 31,
+        "failed": 0,
+        "skipped": 6,
+        "total": 37
+      },
+      "rawTrx": "browser-full/browser-full.trx",
+      "skippedTests": [
+        "Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model",
+        "Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking",
+        "Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips",
+        "Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply",
+        "Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer",
+        "Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length"
+      ]
+    },
+    {
+      "name": "Companion profile browser regression",
+      "profile": "companion",
+      "command": "AIJADE_E2E=1 Aijade__Profile=companion TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build --filter 'FullyQualifiedName~CompanionExperienceWebTests|FullyQualifiedName~CompanionSyncWebTests|FullyQualifiedName~A_a_message_sent_while_the_server_cannot_be_reached|FullyQualifiedName~A_a_due_reminder_is_said'",
+      "counts": {
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "total": 10
+      },
+      "rawTrx": "browser-companion/browser-companion.trx",
+      "skippedTests": []
+    }
+  ],
+  "implementation": {
+    "storage": "Separate account-and-character config_kv document in the existing PostgreSQL database",
+    "newServices": 0,
+    "newDotnetProjects": 0,
+    "newNugetPackages": 0,
+    "newDatabaseMigrations": 0,
+    "retainedAttempts": 128,
+    "partsPerAttempt": 64,
+    "observationDeadlineMinutes": 10,
+    "cleanupRequestDeadlineSeconds": 3,
+    "noPromptOrModelConfigurationChange": true
+  },
+  "checks": [
+    "Actor-owned stored assistant source, character scope and paired QQ destination; stale or revoked grants cannot report.",
+    "Concurrent begins serialize; retained source/destination attempts and part identities do not dispatch again.",
+    "HTTP success alone, a missing return code, a missing message identity, asynchronous responses, contradictory or malformed fields and oversized responses do not count as acknowledgements.",
+    "Each actual request payload is hashed; text, image and audio parts stop after an uncertain outcome, rejection or failed observation persistence.",
+    "Cancellation records an unknown observation with bounded cleanup. Acknowledged earlier parts remain recorded when later parts fail.",
+    "Unfinished records are not evicted for capacity; expired records project unknown. Old terminal records roll out and the pruned count is visible.",
+    "The signed local OneBot ingress, actual bridge, application API, PostgreSQL and Chromium expose rejection/unknown/acknowledged records across a Web reload."
+  ],
+  "protocolSource": {
+    "repository": "botuniverse/onebot-11",
+    "commit": "d4456ee706f9ada9c2dfde56a2bcfc69752600e4",
+    "files": [
+      {
+        "path": "communication/http.md",
+        "url": "https://github.com/botuniverse/onebot-11/blob/d4456ee706f9ada9c2dfde56a2bcfc69752600e4/communication/http.md",
+        "gitBlobSha": "bf9c373375b745e8cd59e79e7d171b4790885b6e",
+        "sha256": "7f287e26208665b4f8d30f7150c1d08aa1628783969baeac13e2b98493a0cd12"
+      },
+      {
+        "path": "api/public.md",
+        "url": "https://github.com/botuniverse/onebot-11/blob/d4456ee706f9ada9c2dfde56a2bcfc69752600e4/api/public.md",
+        "gitBlobSha": "284d7a9c37b94263f5fa472014440a37e2e52539",
+        "sha256": "3d77b1dfa1f9f3dc537cf6029ec14fbd579176d433da3e7f34413028a6ef5264"
+      }
+    ],
+    "use": "Protocol fields checked, no third-party runtime or code imported"
+  },
+  "protectedResearch": {
+    "files": 622,
+    "changedFiles": [],
+    "manifest": "research-protected.json"
+  },
+  "dissertationFacts": {
+    "status": "PASS",
+    "facts": 9878,
+    "interpreter": "3.9.6",
+    "exactlyEqualToBefore": true
+  },
+  "recordedDevelopmentFailure": {
+    "log": "build-tests.log",
+    "cause": "xUnit2031: use Assert.Single(collection, predicate) instead of filtering with Where; corrected before final build and full checks."
+  },
+  "limitations": [
+    "Platform responses are synthetic fixtures. No real QQ account/NapCat acceptance or recipient reading was verified.",
+    "These are authenticated relay-reported observations. The server cannot independently attest to the wire or prevent the authorised relay from falsifying observations.",
+    "Duplicate suppression covers retained attempt identities, not all old messages, duplicate inbound events, permanent exactly-once delivery or a persistent resend outbox.",
+    "Automatic first lines, reminders, binding and connector-local collection imports retain earlier delivery paths and are not source-linked in this log.",
+    "No model was called for this iteration. The prior 1.5B marker-only failures, 8B cold timeout and readiness-conditioned success retain their original records and identities.",
+    "No P2-R-Mac primary regeneration, new P3-E evaluation, Chapter 7 held-out C1-C2 run, training, human-user study or supervisor submission occurred."
+  ],
+  "githubCI": "Not observable before this commit is created. Inspect its push workflow; publication metadata in the dissertation records the final verified run.",
+  "artifactsSha256": {
+    "README.md": "62d331f5aa85b6a8d66f634a2e1e450619124e0140dc1091946501e752121529",
+    "architecture-render.json": "f523146bc1feba9e024e391f57d176ad3fc0986e055e3264ad5ab89386d80b2e",
+    "browser-companion/browser-companion.trx": "a06875bd325834f27c7a5322d52c0ce413f9f0f4ab9d760fca882a6052a4ad02",
+    "browser-companion.log": "fbefdcf21154ae8899727f9cd6b1605e0c0982f434bcf7f1c90ed6836a1b8af3",
+    "browser-full/browser-full.trx": "b6733269ffa568d0d6ab7f21ba7f6556c1f1be07e29ab42dc2298f0b27c2ce58",
+    "browser-full-diagnostics/qq-delivery-records.png": "b9112577589b054d3d9c7f86a1f42d95f5aa18db6127a0aceb411fa5b57252af",
+    "browser-full.log": "744024712988037477d52715758835ee8eb1a604c1b62f9a6899e8249b5ab473",
+    "browser-target/browser-target.trx": "94e1b4431e5920d0ebe7721752a9c878ab24af6bdc1b93992b45bf02514e32e9",
+    "browser-target.log": "5d2af48b4cfc33c2f1895d04a7e2210b4ac3b8f12c9b3319f32d4ed73226b08b",
+    "build-browser.log": "a6d86d3bcea5556afaf587e36ce345ad75200ae8d5bceed3feb7df21b825beb5",
+    "build-final.log": "9efb1baa04a60a0842918488600cef0455d00fe56409ebf281c691dc42aedabf",
+    "build-frozen.log": "4f32d729259e2fcb34e5d909d87029967b213d9b9479f180aae23ab34fc5c9e3",
+    "build-initial.log": "1bf74af83a9836f348b8d2021e0fb1a762f6263c6c2f9783e6b2ca09e09f3c26",
+    "build-tests.log": "fcace7dec5ef84046772e499d11ebece1302dd07d55929251d58d908d07d0176",
+    "paper-facts-check.json": "5e14421848b361fcad46142e8eee016b67af1d3dc2a8c68e47c81365ac2182a0",
+    "protocol-source-check.json": "8f13efa6411289de74e34a30c25f13e6f9666c0829195af530bf621988286651",
+    "research-protected.json": "b15f658d8f5874d4d3233138dc09ae638d72cd3703870ea5c7422f8c20cf21d7",
+    "targeted/targeted.trx": "fc0ff976904dcb211add49ea6d43eab323441b5df3f893efb9fc370b48ec388f",
+    "targeted.log": "49c476d167b270c2c69b43f3ce136ffa6d7b053e204a68e97a0cb96e6c61f8a2",
+    "unit/unit.trx": "aba9f262a6e9c42a1eceefdf691859e63e4e574a3b7eabcc49c34e74dcbba2c1",
+    "unit.log": "b2577536159c934a033a5a172a56a461ac041a19fcb6979945e48b9498987fd7"
+  }
+}

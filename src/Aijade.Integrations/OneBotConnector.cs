@@ -22,7 +22,7 @@ namespace Aijade.Integrations;
 /// and the token need at least 16 characters each. NapCat itself, under its own licence, is installed and run by the
 /// author; nothing here downloads it. GET /health gives counts only, never what was said.
 /// </summary>
-public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
+public sealed partial class OneBotConnector : IChannelConnector, IProactiveConnector
 {
     public const int MaxEventBytes = 1 << 20;
 
@@ -152,7 +152,8 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
 
     private static string? Text(JsonNode? node) => node is JsonValue v && v.TryGetValue<string>(out var s) ? s : null;
 
-    public JsonObject Health() => new() { ["ok"] = true, ["messages"] = messages, ["answered"] = answered, ["ignored"] = ignored, ["voicesHeard"] = heard };
+    public JsonObject Health() => new() { ["ok"] = true, ["messages"] = messages, ["answered"] = answered, ["ignored"] = ignored, ["voicesHeard"] = heard,
+        ["rejected"] = rejected, ["unknown"] = unknown, ["deliveryRecordFailures"] = deliveryRecordFailures };
 
     public async Task RunAsync(Func<ChannelMessage, CancellationToken, Task<ChannelReply?>> handle, CancellationToken ct)
     {
@@ -296,6 +297,42 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     /// <summary>Uses OneBot image/record segments; a new inbound message interrupts the unsent artificial typing delay.</summary>
     public async Task SendReplyAsync(ChannelReply reply, long expectedVersion, CancellationToken ct)
     {
+        DeliverySession? delivery = null;
+        if (reply.Delivery is { } target)
+        {
+            DeliveryStart start;
+            try { start = await target.Store.BeginDeliveryAsync(target.MessageId, owner, ct).ConfigureAwait(false); }
+            catch (Exception e) when (e is Aijade.Client.Api.AijadeApiException or HttpRequestException or OperationCanceledException)
+            {
+                Interlocked.Increment(ref deliveryRecordFailures); throw;
+            }
+            if (!start.Created) return; // retained attempts are not resent, including failures and ambiguous outcomes
+            delivery = new(target.Store, start.Attempt.Id);
+        }
+        var reason = "failed";
+        try
+        {
+            reason = await SendReplyCoreAsync(reply, expectedVersion, delivery, ct).ConfigureAwait(false) ? "completed" : "interrupted";
+        }
+        finally
+        {
+            if (delivery is not null)
+            {
+                try
+                {
+                    using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+                    await delivery.Store.FinishDeliveryAsync(delivery.Id, reason, cleanup.Token).ConfigureAwait(false);
+                }
+                catch (Exception e) when (e is Aijade.Client.Api.AijadeApiException or HttpRequestException or OperationCanceledException)
+                {
+                    Interlocked.Increment(ref deliveryRecordFailures); // the server later projects an unfinished attempt as unknown
+                }
+            }
+        }
+    }
+
+    private async Task<bool> SendReplyCoreAsync(ChannelReply reply, long expectedVersion, DeliverySession? delivery, CancellationToken ct)
+    {
         var natural = pacing;
         if (companionSource is not null)
         {
@@ -308,25 +345,26 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
             {
                 await Task.Delay(part.Delay, ct).ConfigureAwait(false);
                 if (Volatile.Read(ref version) != expectedVersion)
-                    return;
-                await PostAsync(part.Text, ct).ConfigureAwait(false);
+                    return false;
+                await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = "text", ["data"] = new JsonObject { ["text"] = part.Text } }), ct, delivery, "text").ConfigureAwait(false);
             }
         }
         foreach (var attachment in reply.Attachments)
         {
             if (Volatile.Read(ref version) != expectedVersion)
-                return;
+                return false;
             var comma = attachment.Data.IndexOf(',', StringComparison.Ordinal);
             if (attachment.Kind is not ("image" or "record") || comma < 0 || !attachment.Data.StartsWith("data:", StringComparison.Ordinal))
                 throw new ArgumentException("Unsupported QQ media");
-            await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = attachment.Kind, ["data"] = new JsonObject { ["file"] = "base64://" + attachment.Data[(comma + 1)..] } }), ct).ConfigureAwait(false);
+            await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = attachment.Kind, ["data"] = new JsonObject { ["file"] = "base64://" + attachment.Data[(comma + 1)..] } }), ct, delivery, attachment.Kind).ConfigureAwait(false);
         }
         if (speak is not null && reply.Attachments.All(a => a.Kind != "record") && reply.Text.Length is > 0 and <= 2000 && Volatile.Read(ref version) == expectedVersion)
         {
             var wav = await speak(reply.Text, ct).ConfigureAwait(false);
             if (Volatile.Read(ref version) == expectedVersion)
-                await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = "record", ["data"] = new JsonObject { ["file"] = "base64://" + Convert.ToBase64String(wav) } }), ct).ConfigureAwait(false);
+                await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = "record", ["data"] = new JsonObject { ["file"] = "base64://" + Convert.ToBase64String(wav) } }), ct, delivery, "record").ConfigureAwait(false);
         }
+        return Volatile.Read(ref version) == expectedVersion;
     }
 
     private async Task<string?> ImportAsync(OwnerMessage message, CancellationToken ct)
@@ -402,23 +440,4 @@ public sealed class OneBotConnector : IChannelConnector, IProactiveConnector
     private async Task PostAsync(string text, CancellationToken ct)
         => await PostSegmentsAsync(new JsonArray(new JsonObject { ["type"] = "text", ["data"] = new JsonObject { ["text"] = text } }), ct).ConfigureAwait(false);
 
-    private async Task PostSegmentsAsync(JsonArray segments, CancellationToken ct)
-    {
-        var body = new JsonObject
-        {
-            ["user_id"] = long.Parse(owner, System.Globalization.CultureInfo.InvariantCulture),
-            ["message"] = segments,
-        };
-        using var req = new HttpRequestMessage(HttpMethod.Post, new Uri(napcat, "send_private_msg"))
-        {
-            Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"),
-        };
-        req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        using var res = await http.SendAsync(req, ct).ConfigureAwait(false);
-        var answer = JsonNode.Parse(await res.Content.ReadAsStringAsync(ct).ConfigureAwait(false)) as JsonObject;
-        var retcode = answer?["retcode"] is JsonValue r && r.TryGetValue<int>(out var code) ? code : 0;
-        if (!res.IsSuccessStatusCode || Text(answer?["status"]) != "ok" || retcode != 0)
-            throw new HttpRequestException($"NapCat send_private_msg failed ({(int)res.StatusCode})");
-        Interlocked.Increment(ref answered);
-    }
 }

@@ -161,6 +161,7 @@ internal sealed class LocalQqHarness : IAsyncDisposable
     private readonly Task running;
     private readonly string directory = Path.Combine(Path.GetTempPath(), "aijade-sync-e2e-" + Guid.NewGuid().ToString("N"));
     private readonly NapCatFixture delivery = new();
+    public string ReplyMode { get => delivery.Mode; set => delivery.Mode = value; }
     public CompanionConfiguration Configuration { get; }
     public IReadOnlyList<string> Texts => [.. delivery.Calls.SelectMany(c => c["message"]!.AsArray()).Where(s => s!["type"]!.GetValue<string>() == "text").Select(s => s!["data"]!["text"]!.GetValue<string>())];
     public int Images => delivery.Calls.SelectMany(c => c["message"]!.AsArray()).Count(s => s!["type"]!.GetValue<string>() == "image");
@@ -202,13 +203,20 @@ internal sealed class LocalQqHarness : IAsyncDisposable
     private sealed class NapCatFixture : HttpMessageHandler
     {
         public ConcurrentQueue<JsonObject> Calls { get; } = new();
+        public string Mode { get; set; } = "ok";
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request.Method == HttpMethod.Get)
                 return new(HttpStatusCode.OK) { Content = new ByteArrayContent(Convert.FromBase64String(FakeUpstream.PngBase64)) { Headers = { ContentType = new("image/png") } } };
             var body = (JsonObject)JsonNode.Parse(await request.Content!.ReadAsStringAsync(cancellationToken))!;
             Assert.Equal("local-test-napcat-token", request.Headers.Authorization?.Parameter); Calls.Enqueue(body);
-            return new(HttpStatusCode.OK) { Content = new StringContent("{\"status\":\"ok\",\"retcode\":0,\"data\":{\"message_id\":7}}", Encoding.UTF8, "application/json") };
+            var response = Mode switch
+            {
+                "failed" => "{\"status\":\"failed\",\"retcode\":100,\"data\":null}",
+                "missing-id" => "{\"status\":\"ok\",\"retcode\":0,\"data\":{}}",
+                _ => "{\"status\":\"ok\",\"retcode\":0,\"data\":{\"message_id\":7}}",
+            };
+            return new(HttpStatusCode.OK) { Content = new StringContent(response, Encoding.UTF8, "application/json") };
         }
     }
 }

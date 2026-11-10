@@ -27,7 +27,11 @@ public sealed record ChannelMessage(string Platform, string ConversationId, stri
 public sealed record ChannelReply(string Text, IReadOnlyList<string> Expressions, ImageInfo? Image = null)
 {
     public IReadOnlyList<ChannelAttachment> Attachments { get; init; } = [];
+    [System.Text.Json.Serialization.JsonIgnore]
+    public ChannelDelivery? Delivery { get; init; }
 }
+
+public sealed record ChannelDelivery(ICompanionDelivery Store, string MessageId);
 
 /// <summary>Media that a connector can deliver without downloading a private server URL.</summary>
 public sealed record ChannelAttachment(string Kind, string Data);
@@ -219,7 +223,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                 {
                     case MediaCompleted media:
                         return new ChannelReply(media.Reply.Content, [], Artistry.ImageOf(media.Reply))
-                            { Attachments = await AttachmentsAsync(media.Reply, ct).ConfigureAwait(false) };
+                            { Attachments = await AttachmentsAsync(media.Reply, ct).ConfigureAwait(false), Delivery = DeliveryFor(experience, media.Reply) };
                     case TurnCompleted c:
                         done = c;
                         break;
@@ -269,7 +273,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                 var bytes = await api.ImageBytesAsync(image.Id, ct).ConfigureAwait(false);
                 attachments.Add(new("image", $"data:{bytes.Mime};base64,{Convert.ToBase64String(bytes.Bytes)}"));
             }
-            return new ChannelReply(replyText, done.Expressions, image) { Attachments = attachments };
+            return new ChannelReply(replyText, done.Expressions, image) { Attachments = attachments, Delivery = DeliveryFor(experience, done.Reply) };
         }
         finally
         {
@@ -278,6 +282,9 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     }
 
     private double Now() => options.Time.GetUtcNow().ToUnixTimeMilliseconds() / 1000.0;
+
+    private static ChannelDelivery? DeliveryFor(CompanionExperience? experience, StoredMessage message) =>
+        experience?.Notebook is ICompanionDelivery store ? new(store, message.Id) : null;
 
     private async Task<IReadOnlyList<ChannelAttachment>> AttachmentsAsync(StoredMessage message, CancellationToken ct)
     {

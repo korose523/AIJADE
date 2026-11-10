@@ -60,6 +60,16 @@ public sealed class CompanionSync(AijadeApi api, string? linkId = null)
         (await api.SendAsync(HttpMethod.Post, Path(id) + "/diary", new JsonObject { ["userMessageId"] = userMessageId, ["assistantMessageId"] = assistantMessageId }, ct).ConfigureAwait(false))!.Deserialize<CompanionDiaryDay>(Json)!;
     public async Task RemoveDiaryEntryAsync(string? id, string entry, long revision, CancellationToken ct = default) =>
         _ = await api.SendAsync(HttpMethod.Delete, Path(id) + "/diary/" + Uri.EscapeDataString(entry) + "?expectedRevision=" + revision.ToString(System.Globalization.CultureInfo.InvariantCulture), ct: ct).ConfigureAwait(false);
+    public async Task<DeliveryLog> DeliveriesAsync(string? id, CancellationToken ct = default) =>
+        (await api.SendAsync(HttpMethod.Get, Path(id) + "/deliveries", ct: ct).ConfigureAwait(false))!.Deserialize<DeliveryLog>(Json)!;
+    public async Task<DeliveryStart> BeginDeliveryAsync(string? id, string messageId, string destination, CancellationToken ct = default) =>
+        (await api.SendAsync(HttpMethod.Post, Path(id) + "/deliveries", new { messageId, destination }, ct).ConfigureAwait(false))!.Deserialize<DeliveryStart>(Json)!;
+    public async Task<DeliveryPartStart> StartDeliveryPartAsync(string? id, string attempt, int index, string kind, string payloadSha256, CancellationToken ct = default) =>
+        (await api.SendAsync(HttpMethod.Post, Path(id) + "/deliveries/" + Uri.EscapeDataString(attempt) + "/parts", new { index, kind, payloadSha256 }, ct).ConfigureAwait(false))!.Deserialize<DeliveryPartStart>(Json)!;
+    public Task CompleteDeliveryPartAsync(string? id, string attempt, int index, DeliveryReceipt receipt, CancellationToken ct = default) =>
+        api.SendAsync(HttpMethod.Post, Path(id) + "/deliveries/" + Uri.EscapeDataString(attempt) + "/parts/" + index.ToString(System.Globalization.CultureInfo.InvariantCulture), receipt, ct);
+    public Task FinishDeliveryAsync(string? id, string attempt, string reason, CancellationToken ct = default) =>
+        api.SendAsync(HttpMethod.Post, Path(id) + "/deliveries/" + Uri.EscapeDataString(attempt) + "/finish", new { reason }, ct);
     public Task<JsonNode?> PairingCodeAsync(CancellationToken ct = default) => api.SendAsync(HttpMethod.Post, "/api/v1/companion/pairing-code", new JsonObject(), ct);
     public async Task<CompanionLink> PairAsync(string code, string subject, CancellationToken ct = default) =>
         (await api.SendAsync(HttpMethod.Post, "/api/v1/companion/pair", new JsonObject { ["code"] = code, ["subject"] = subject, ["platform"] = "qq" }, ct).ConfigureAwait(false))!.Deserialize<CompanionLink>(Json)!;
@@ -71,7 +81,7 @@ public sealed class CompanionSync(AijadeApi api, string? linkId = null)
 }
 
 /// <summary>Reads the same server document on both clients. Media is loaded only for display or delivery.</summary>
-public sealed class SyncedCompanionNotebook(CompanionSync sync, string? characterId, SharedCompanionState? initial = null) : ICompanionNotebook, ICompanionDiary
+public sealed class SyncedCompanionNotebook(CompanionSync sync, string? characterId, SharedCompanionState? initial = null) : ICompanionNotebook, ICompanionDiary, ICompanionDelivery
 {
     public SharedCompanionState? Latest { get; private set; } = initial;
     public async Task<CompanionNotebookData> ReadAsync(bool includeMedia = false, CancellationToken ct = default)
@@ -85,6 +95,11 @@ public sealed class SyncedCompanionNotebook(CompanionSync sync, string? characte
     public Task<CompanionDiaryDay> ReadDiaryAsync(DateOnly? day = null, CancellationToken ct = default) => sync.ReadDiaryAsync(characterId, day, ct);
     public Task<CompanionDiaryDay> SaveExchangeAsync(string userMessageId, string assistantMessageId, CancellationToken ct = default) =>
         sync.SaveExchangeAsync(characterId, userMessageId, assistantMessageId, ct);
+    public Task<DeliveryStart> BeginDeliveryAsync(string messageId, string destination, CancellationToken ct = default) => sync.BeginDeliveryAsync(characterId, messageId, destination, ct);
+    public Task<DeliveryPartStart> StartDeliveryPartAsync(string attempt, int index, string kind, string payloadSha256, CancellationToken ct = default) =>
+        sync.StartDeliveryPartAsync(characterId, attempt, index, kind, payloadSha256, ct);
+    public Task CompleteDeliveryPartAsync(string attempt, int index, DeliveryReceipt receipt, CancellationToken ct = default) => sync.CompleteDeliveryPartAsync(characterId, attempt, index, receipt, ct);
+    public Task FinishDeliveryAsync(string attempt, string reason, CancellationToken ct = default) => sync.FinishDeliveryAsync(characterId, attempt, reason, ct);
     public Task ObserveAsync(TurnContext turn, DateTimeOffset now, CancellationToken ct = default) =>
         turn.UserMessageId is { } id ? sync.ObserveAsync(characterId, id, ct) : throw new InvalidOperationException("A synchronized relationship needs a stored user-message identity");
 }
