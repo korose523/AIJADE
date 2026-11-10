@@ -80,6 +80,10 @@ def run(args):
         print('COMPLETE', name, flush=True)
 
     source_args = ['--source', str(args.source), '--corpus', str(args.corpus), '--raw-corpus', str(args.raw_corpus)]
+    if args.supplement:
+        source_args += ['--supplement',str(args.supplement)]
+        ledger['entitySupplementSha256']=hashlib.sha256(args.supplement.read_bytes()).hexdigest()
+        ledger['entityCoverageAmendmentCommit']='2b1bf563c945618aa1ef8a85efbf642e265fd374'
     script = str(Path(__file__).with_name('external_policies.py'))
     execute('external-qualification', [str(args.external_python), script, '--qualify', '--out', str(args.out / 'external-qualification')])
     test = [str(args.dotnet), 'test', 'tests/Aijade.Tests/Aijade.Tests.csproj', '-c', 'Release', '--no-build']
@@ -109,6 +113,7 @@ if __name__ == '__main__':
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--external-only', action='store_true')
     p.add_argument('--completed-product', type=Path)
+    p.add_argument('--supplement',type=Path)
     p.add_argument('--dotnet', type=Path, default=Path('/Users/mac/.dotnet/dotnet'))
     p.add_argument('--external-python', type=Path, default=Path('/Users/mac/p3c-env/venv/bin/python'))
     p.add_argument('--artifacts', type=Path, default=Path('/Users/mac/.cache/aijade-next-artifacts'))

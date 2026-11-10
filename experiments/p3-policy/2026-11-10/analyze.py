@@ -388,7 +388,7 @@ def d_effect(data, eligible):
             'scope': 'named configured write/read policy, conditional captured vectors; no population-wide policy verdict'}
 
 
-def analyze(folder, corpus_path, external_folder=None):
+def analyze(folder, corpus_path, external_folder=None, supplement=None):
     corpus = load(corpus_path)
     assert len(corpus) == 10 and sum(len(c['questions']) for c in corpus) == 1986
     result = {'schema': 'aijade.p3.policy.summary.v1', 'planCommit': '132bfda51b95fd4b0ebfc23304142d56bfcb455b',
@@ -451,6 +451,13 @@ def analyze(folder, corpus_path, external_folder=None):
     result['multiplicity'] = {'productPrimaryFamily': len(product_family), 'externalSignedPrimaryFamily': len(external_family),
                               'method': 'Holm on exact paired-conversation sign-flip p; D intervals descriptive'}
     result['scope'] = 'All cells/questions of named configurations, actual prompt captures, conditional replay of existing vectors; no default LLM fact extraction, whole LangChain agent, full Web/QQ or answer accuracy.'
+    result['policyExecutionNewModelCalls'] = 0
+    result['newChatModelCalls'] = 0
+    if supplement:
+        extra = load(supplement)
+        result['embeddingPreparation'] = {k:v for k,v in extra.items() if k != 'vectors'}
+        result['entityCoverageAmendmentCommit'] = extra['amendment']
+        result['newModelCalls'] = extra['newEmbeddingHttpRequests']
     return result
 
 
@@ -459,11 +466,12 @@ if __name__ == '__main__':
     parser.add_argument('folder', type=Path)
     parser.add_argument('--corpus', type=Path, required=True)
     parser.add_argument('--external-folder', type=Path)
+    parser.add_argument('--entity-supplement', type=Path)
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
-    output = analyze(args.folder, args.corpus, args.external_folder)
+    output = analyze(args.folder, args.corpus, args.external_folder, args.entity_supplement)
     with args.out.open('x') as f:
         json.dump(output, f, ensure_ascii=False, indent=2, allow_nan=False)
         f.write('\n')
     print(json.dumps({'status': 'VALIDATED_AND_SUMMARIZED', 'codeCommits': output['executionCodeCommits'],
-                      'productConditions': 8, 'externalConditions': 8, 'newModelCalls': 0}))
+                      'productConditions': 8, 'externalConditions': 8, 'newModelCalls': output['newModelCalls'], 'newChatModelCalls':0}))

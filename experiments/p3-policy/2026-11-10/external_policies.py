@@ -13,6 +13,7 @@ import importlib.metadata as metadata
 import inspect
 import json
 import math
+import logging
 import numbers
 import os
 from pathlib import Path
@@ -60,7 +61,7 @@ def write_row(stream, row):
 
 
 class Replay:
-    def __init__(self, packet):
+    def __init__(self, packet, supplement=None):
         receipt = json.loads((packet / 'receipt.json').read_text())
         rel = 'attempt-02/embedding/embeddings-shared-memory-only-embedding.jsonl.gz'
         source = packet / rel
@@ -82,6 +83,15 @@ class Replay:
                     assert len(vector) == 768 and all(math.isfinite(v) for v in vector)
                     assert key not in self.vectors or self.vectors[key] == vector, 'conflicting repeat'
                     self.vectors[key] = vector
+        if supplement:
+            with gzip.open(supplement,'rt') as f:
+                extra=json.load(f)
+            assert extra['schema']=='aijade.p3.policy.entity-supplement.v1' and extra['originalSourceSha256']==self.source_sha
+            for key,values in extra['vectors'].items():
+                vector=array.array('f',values)
+                assert len(vector)==768 and all(math.isfinite(v) for v in vector)
+                assert key not in self.vectors or self.vectors[key]==vector
+                self.vectors[key]=vector
 
     def get(self, text):
         self.calls += 1
@@ -212,6 +222,16 @@ class Mem0Store:
 
         directory.mkdir()
         self.llm = ForbiddenLLM()
+        self.branch_errors=[]
+        self.observed_entity_counts=set()
+        errors=self.branch_errors
+        class BranchErrors(logging.Handler):
+            def emit(self, record):
+                text=record.getMessage()
+                if any(tag in text.lower() for tag in ['entity boost computation failed','entity boost search failed','keyword search failed']):
+                    errors.append(text)
+        self.branch_handler=BranchErrors()
+        logging.getLogger('mem0.memory.main').addHandler(self.branch_handler)
         with patch('mem0.memory.main.EmbedderFactory.create', return_value=E()), patch('mem0.memory.main.LlmFactory.create', return_value=self.llm):
             self.memory = Memory.from_config({
                 'vector_store': {'provider': 'qdrant', 'config': {'path': str(directory / 'qdrant'), 'on_disk': False,
@@ -251,17 +271,23 @@ class Mem0Store:
         with patch('mem0.memory.main.score_and_rank', side_effect=observe):
             raw = self.memory.search(question, filters={'user_id': 'p3-policy'}, top_k=60, threshold=threshold,
                                      rerank=False, explain=True)
-        assert trace and self.llm.calls == 0
+        assert trace and self.llm.calls == 0 and not self.branch_errors,self.branch_errors
+        entity_count=None
+        if self.memory._entity_store is not None:
+            entity=self.memory._entity_store
+            entity_count=entity.client.get_collection(entity.collection_name).points_count
+            self.observed_entity_counts.add(entity_count)
         source = {str(row['id']): row['source'] for row in trace}
         delivered = [{'id': row['id'], 'source': source[str(row['id'])], 'content': row['memory'], 'score': row['score']}
                      for row in raw['results'][:8]]
         return {'candidates': trace, 'poolIds': [row['source'] for row in trace],
                 'aboveIds': [row['source'] for row in trace if row['semantic'] >= threshold],
                 'delivered': delivered, 'rawApiOutput': raw, 'threshold': threshold, 'apiOutputLimit': 60,
-                'internalCandidateLimit': 240, 'accessWrites': [], 'warnings': []}
+                'internalCandidateLimit': 240, 'entityStoreItems': entity_count, 'accessWrites': [], 'warnings': []}
 
     def close(self):
         assert self.llm.calls == 0
+        logging.getLogger('mem0.memory.main').removeHandler(self.branch_handler)
         self.memory.vector_store.client.close()
         if self.memory._entity_store is not None:
             self.memory._entity_store.client.close()
@@ -289,6 +315,8 @@ def qualify(out):
         if scorer == 'relevance':
             assert all(t['used'] == (t['relevance'] if t['relevance'] is not None else 0.0) for t in row['candidates'])
     store = Mem0Store(conv, replay, out / 'fixture-mem0')
+    store.memory._compute_entity_boosts([('person','Caroline')],{'user_id':'p3-policy'})
+    assert store.memory._entity_store is not None and not store.branch_errors
     counts = {}
     for policy, scorer in CELLS:
         row = store.read('fixture-query', policy, scorer)
@@ -313,7 +341,7 @@ def run(args):
     assert sha(args.raw_corpus) == CORPUS_SHA
     corpus = json.loads(args.corpus.read_text())
     assert len(corpus) == 10 and sum(len(c['questions']) for c in corpus) == 1986
-    replay = Replay(args.source)
+    replay = Replay(args.source,args.supplement)
     for c, conv in enumerate(corpus):
         with gzip.open(args.source / f'attempt-02/embedding/store-shared-memory-only-embedding-{c}.json.gz', 'rt') as f:
             by_id = {row['Id']: row for row in json.load(f)}
@@ -380,6 +408,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--system', choices=['langchain', 'mem0'])
     parser.add_argument('--qualify', action='store_true')
+    parser.add_argument('--supplement',type=Path)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--source', type=Path, default=ROOT / 'experiments/p3-e/2026-11-10-shared-runtime')
     parser.add_argument('--corpus', type=Path, default=Path('/Users/mac/.local/share/aijade-data/locomo-export.json'))

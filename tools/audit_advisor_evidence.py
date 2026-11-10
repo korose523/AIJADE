@@ -161,6 +161,7 @@ def policy_comparison_receipt(path, current_ref=None):
     summary = json.loads(summary_path.read_text(encoding='utf-8'))
     source_manifest = json.loads((folder / 'protected-inputs.json').read_text(encoding='utf-8'))
     sources = []
+    codes = receipt['executionCodeCommits']
     for name, expected in source_manifest['sha256'].items():
         if not name.startswith('src/'):
             continue
@@ -168,7 +169,13 @@ def policy_comparison_receipt(path, current_ref=None):
             actual = sha(source(current_ref, name))
         except (FileNotFoundError, subprocess.CalledProcessError):
             actual = None
-        sources.append({'path': name, 'matches': actual == expected})
+        executed = {}
+        for study, code in codes.items():
+            try:
+                executed[study] = sha(source(code, name)) == expected
+            except (FileNotFoundError, subprocess.CalledProcessError):
+                executed[study] = False
+        sources.append({'path': name, 'matches': actual == expected, 'executionMatches': executed})
     coverage = []
     for group, names in [('product', ['text', 'embedding']), ('external', ['langchain', 'mem0'])]:
         for name in names:
@@ -179,8 +186,8 @@ def policy_comparison_receipt(path, current_ref=None):
                              'matches': checked['rows'] == 7944 and checked['questionsPerCell'] == 1986 and checked['cells'] == 4
                              and sum(checked['states'].values()) == 7944 and primary['questions'] == 1540
                              and primary['eligibleQuestions'] == 1536})
-    codes = receipt['executionCodeCommits']
     ancestry = all(subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['planCommit'], code], capture_output=True).returncode == 0 for code in codes.values())
+    amendment_order = subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['recordingAmendmentCommit'], codes['external']], capture_output=True).returncode == 0
     measured = []
     for record in receipt['measuringSources']:
         name, expected, code = record['path'], record['sha256'], codes[record['study']]
@@ -189,18 +196,20 @@ def policy_comparison_receipt(path, current_ref=None):
         except (FileNotFoundError, subprocess.CalledProcessError):
             actual = None
         measured.append({'path': name, 'matchesExecutionCommit': actual == expected})
-    binary_bound = all(set(binaries) == {'Aijade.Tests', 'Aijade.Client', 'Aijade.Server'} and
+    binary_bound = set(receipt['actualBinaryIdentitiesByStudy']) == set(codes) == {'product', 'external'} and all(set(binaries) == {'Aijade.Tests', 'Aijade.Client', 'Aijade.Server'} and
                        all(codes[study] in item['informationalVersion'] and len(item['sha256']) == 64 for item in binaries.values())
                        for study, binaries in receipt['actualBinaryIdentitiesByStudy'].items())
     required = {'summary.json', 'protected-inputs.json', 'search-crosscheck.json', 'execution.json'}
     valid = (required <= set(receipt['artifactSha256']) and all(item['matches'] for item in artifacts)
-             and sources and all(item['matches'] for item in sources) and measured
+             and sources and all(item['matches'] and all(item['executionMatches'].values()) for item in sources) and measured
+             and {r['study'] for r in receipt['measuringSources']} == set(codes)
              and all(item['matchesExecutionCommit'] for item in measured) and all(item['matches'] for item in coverage)
-             and ancestry and binary_bound and summary['executionCodeCommits'] == codes
+             and ancestry and amendment_order and binary_bound and summary['executionCodeCommits'] == codes
              and summary['planCommit'] == receipt['planCommit'] and receipt['capturedTurns'] == 31776
-             and receipt['newModelCalls'] == summary['newModelCalls'] == 0)
+             and receipt['newModelCalls'] == summary['newModelCalls'] == summary['embeddingPreparation']['newEmbeddingHttpRequests']
+             and receipt['newChatModelCalls'] == summary['newChatModelCalls'] == summary['policyExecutionNewModelCalls'] == 0)
     return {'valid': bool(valid), 'coverage': coverage, 'artifacts': artifacts, 'productSourceFiles': sources,
-            'measuringSources': measured, 'planPrecedesCode': ancestry, 'recordedBinaryIdentityBound': binary_bound,
+            'measuringSources': measured, 'planPrecedesCode': ancestry, 'recordingAmendmentPrecedesExternalCode': amendment_order, 'recordedBinaryIdentityBound': binary_bound,
             'scope': summary['scope'], 'note': 'Hash, source and complete-cell consistency; the raw capture/summary and numerical validators remain separate. Recorded identities are not independent execution attestation or scientific approval.'}
 
 
