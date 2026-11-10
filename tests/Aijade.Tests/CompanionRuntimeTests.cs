@@ -30,7 +30,7 @@ public sealed class CompanionRuntimeTests
     }
 
     [Fact]
-    public async Task Optional_modules_fail_independently_and_switches_take_effect_without_losing_the_other_context()
+    public async Task Optional_modules_fail_independently_and_a_switch_applies_to_the_next_complete_turn()
     {
         var ct = TestContext.Current.CancellationToken;
         var enabled = false;
@@ -43,10 +43,17 @@ public sealed class CompanionRuntimeTests
         await modules.UserTurnAsync(turn, ct);
         Assert.Equal(1, good.Observations); Assert.Equal(0, switched.Observations);
         enabled = true;
-        Assert.Equal("a quiet home\n\nthe owner prefers tea", await modules.SupplyAsync(turn, ct));
+        Assert.Equal("a quiet home", await modules.SupplyAsync(turn, ct));
         await modules.AssistantTurnAsync(turn, "hello", ct);
-        Assert.Equal(2, good.Observations); Assert.Equal(1, switched.Observations);
+        Assert.Equal(2, good.Observations); Assert.Equal(0, switched.Observations);
         Assert.Equal(["offline", "offline"], faults);
+        var next = new TurnContext("chat", null, [], "another message");
+        await modules.UserTurnAsync(next, ct);
+        enabled = false;
+        Assert.Equal("a quiet home\n\nthe owner prefers tea", await modules.SupplyAsync(next, ct));
+        await modules.AssistantTurnAsync(next, "still here", ct);
+        Assert.Equal(2, switched.Observations); // the same selected module sees both halves despite a mid-turn switch
+        Assert.Equal("a quiet home", await modules.SupplyAsync(new TurnContext("chat", null, [], "third"), ct));
     }
 
     [Fact]
@@ -64,11 +71,13 @@ public sealed class CompanionRuntimeTests
     private sealed class Llm : HttpMessageHandler
     {
         public int Calls { get; private set; }
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public List<JsonNode> Bodies { get; } = [];
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Calls++;
+            Bodies.Add(JsonNode.Parse(await request.Content!.ReadAsStringAsync(cancellationToken))!);
             const string sse = "data: {\"choices\":[{\"delta\":{\"content\":\"[[emote:joy]]Here I am.\"}}]}\n\ndata: [DONE]\n\n";
-            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") });
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") };
         }
     }
 
@@ -82,6 +91,46 @@ public sealed class CompanionRuntimeTests
         host.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/routes", JsonNode.Parse("""
             {"models":{"aijade-chat":{"upstream":"https://llm.example/v1","model":"test","keys":["test"],"fluxPer1k":0}}}
             """), ServerTestHost.AdminToken);
+
+    [Fact]
+    public async Task Product_prompt_bounds_optional_context_and_old_history_without_clipping_identity_input_or_stored_evidence()
+    {
+        var ct = TestContext.Current.CancellationToken; var llm = new Llm();
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await ConfigureAsync(host);
+        var api = await ApiAsync(host.Client); var chat = await api.CreateChatAsync(null, "bounded", ct);
+        var life = "LIFE " + string.Concat(Enumerable.Repeat("😀", 200));
+        var memory = "MEMORY " + new string('m', 300);
+        var modules = new ChatModule[] { new("life", new Module(life)), new("memory", new Module(memory)), new("external", new Module("EXTERNAL " + new string('x', 300))) };
+        var budget = new PromptBudget { ModuleCharacters = 90, SupplementCharacters = 200, HistoryCharacters = 30 };
+        var original = new string('u', 500);
+        var history = new StoredMessage[]
+        {
+            new("1", 1, "user", "old user message", DateTimeOffset.UtcNow),
+            new("2", 2, "assistant", "OLD OVERFLOW " + new string('o', 1000), DateTimeOffset.UtcNow),
+            new("3", 3, "user", "recent", DateTimeOffset.UtcNow),
+            new("4", 4, "assistant", "short answer", DateTimeOffset.UtcNow),
+        };
+        await foreach (var _ in CompanionRuntime.Create(api, modules, new OrchestratorOptions { PromptBudget = budget })
+            .SendAsync(chat.Id, null, history, original, "snapshot", ct)) { }
+        var sent = llm.Bodies[^1]["messages"]!.AsArray();
+        var system = sent[0]!["content"]!.GetValue<string>();
+        Assert.Contains(ChatOrchestrator.DefaultPersona, system, StringComparison.Ordinal);
+        Assert.Contains("LIFE ", system, StringComparison.Ordinal); Assert.Contains("MEMORY ", system, StringComparison.Ordinal);
+        Assert.DoesNotContain("EXTERNAL", system, StringComparison.Ordinal);
+        Assert.DoesNotContain("\ufffd", system, StringComparison.Ordinal);
+        Assert.True(system.Length <= ChatOrchestrator.SystemPrompt(null, []).Length + 202);
+        Assert.Equal(["recent", "short answer", original], sent.Skip(1).Select(m => m!["content"]!.GetValue<string>()));
+        Assert.Equal(original, (await api.MessagesAsync(chat.Id, ct: ct))[0].Content);
+
+        // The archived direct constructor has no implicit product budget. Source hashes alone cannot prove prompt parity.
+        var legacy = new ChatOrchestrator(api, [new Module(life)], new OrchestratorOptions());
+        await foreach (var _ in legacy.SendAsync(chat.Id, null, history, original, "snapshot", ct)) { }
+        var archived = llm.Bodies[^1]["messages"]!.AsArray();
+        Assert.Contains(life, archived[0]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains(archived, m => m?["content"]?.GetValue<string>() == history[1].Content);
+    }
 
     [Fact]
     public async Task Product_commands_and_normal_chat_use_one_runtime_with_one_stored_exchange_and_no_extra_model_call()

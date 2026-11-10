@@ -1,0 +1,3312 @@
+{
+  "schema": "aijade.engineering.life-architecture.v1",
+  "status": "PASS",
+  "dateAsiaSeoul": "2026-11-10",
+  "recordedAt": "2026-11-10T01:09:31.459808+00:00",
+  "baseCommit": "54ba8a52fd7096ccbcc3260c912236b74b97f184",
+  "executionIdentity": "Tests ran on the working tree before the commit containing this receipt. Changed source hashes identify the tested implementation.",
+  "scope": "Companion product architecture and engineering only; no new scientific experiment or real-model performance claim",
+  "sourceSha256": {
+    "src/Aijade.Bots/Program.cs": "a9711bbb234a7b22004f981cfdb7e31977e1369e3b4f2b428e607d7be25bdc58",
+    "src/Aijade.Client/Chat/ChatContracts.cs": "aef8dc304913557698336561d4038c7890a58b8c6a4c799116f1194bd4b56669",
+    "src/Aijade.Client/Chat/CompanionRuntime.cs": "43714d490ce9dc8d8b558a09a8a5f72584aa280bb1b9ffdabce3fa7e08d5633b",
+    "src/Aijade.Client/Chat/Orchestrator.cs": "97adae52ff6d8293b460a697adb93d0ff6f2ab186ad4c2647c2373c4b7973ff5",
+    "src/Aijade.Client/Chat/PromptBudget.cs": "ef651491460eddf23394265cb180ae400a2b115b4dc1efaf18ca4b1698a69cd8",
+    "src/Aijade.Client/Chat/ToolConversation.cs": "fb4585eda664670f4f60c8adfd1a2c57b72e5e677bec0c14bf498765cdf18c27",
+    "src/Aijade.Client/Settings/AppSettings.cs": "15b94b52eef8f25b5a13f1394f7cdcba540c5b4b2947fae58aa6284aaad6c3e7",
+    "src/Aijade.Integrations/CompanionBridge.cs": "42ec3aaff231c78d64419a88637f1c9772aadac421bb17f2a4cfe9b0cb29d285",
+    "src/Aijade.UI/Pages/Chat.razor": "aa297d707360f2509a66fe11942028c8f19fce6f77abfc21cd8b311bad87233e",
+    "tests/Aijade.Tests/CompanionRuntimeTests.cs": "fb582600f9c8d746f6d619c56f799f562567c9cdf017affdf9bcc8aaf49834ca",
+    "tests/Aijade.Tests/ToolTests.cs": "044123240becb398836acf64cffd84759c9d3ec6c4379b2457901c918dfa0ad1",
+    "tools/render-architecture.py": "e7f622e1e390a421a7549ece44fb9d51b2c89bd35e8196f976370e80856b67eb"
+  },
+  "validation": {
+    "sdk": "10.0.403",
+    "framework": "net10.0",
+    "build": {
+      "command": "dotnet build Aijade.slnx -c Release --no-restore",
+      "status": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "logSha256": "f384aaf9ecc159758a8538a0daec976f37593d4a020583f335d264c2a0702200"
+    },
+    "suites": [
+      {
+        "name": "New boundaries and scope regressions",
+        "profile": "full",
+        "command": "dotnet test tests/Aijade.Tests -c Release --no-build --filter 'FullyQualifiedName~CompanionRuntimeTests|FullyQualifiedName~ToolTests|FullyQualifiedName~ProjectScopeTests'",
+        "counts": {
+          "total": 18,
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0
+        },
+        "rawTrx": {
+          "sha256": "8e8d5a93577ccc491df4233330b29490e665295cccfd40f28c4f3f90ef0c4114",
+          "localPath": "/Users/mac/.cache/aijade-life-architecture-20261110/targeted/targeted.trx"
+        },
+        "skippedTests": [],
+        "results": [
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.A_streamed_reply_is_not_completed_when_storage_fails_in_either_chat_mode(proactive: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.8312239"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.A_streamed_reply_is_not_completed_when_storage_fails_in_either_chat_mode(proactive: True)",
+            "outcome": "Passed",
+            "duration": "00:00:02.7399749"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Optional_modules_fail_independently_and_a_switch_applies_to_the_next_complete_turn",
+            "outcome": "Passed",
+            "duration": "00:00:00.0145216"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Product_commands_and_normal_chat_use_one_runtime_with_one_stored_exchange_and_no_extra_model_call",
+            "outcome": "Passed",
+            "duration": "00:00:00.9981058"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Product_prompt_bounds_optional_context_and_old_history_without_clipping_identity_input_or_stored_evidence",
+            "outcome": "Passed",
+            "duration": "00:00:01.1695157"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Reminder_words_in_a_song_title_do_not_create_a_promised_reminder_on_QQ",
+            "outcome": "Passed",
+            "duration": "00:00:01.0109217"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Required_context_and_caller_cancellation_are_never_silently_skipped",
+            "outcome": "Passed",
+            "duration": "00:00:00.0032202"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Every_declared_module_exists_on_a_known_line",
+            "outcome": "Passed",
+            "duration": "00:00:00.0226454"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Every_module_directory_is_declared",
+            "outcome": "Passed",
+            "duration": "00:00:00.0545731"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Frozen_research_objects_keep_their_recorded_text",
+            "outcome": "Passed",
+            "duration": "00:00:00.0041669"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Project_references_stay_within_the_lines_each_line_may_reference",
+            "outcome": "Passed",
+            "duration": "00:00:00.3371595"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(mode: \"server\")",
+            "outcome": "Passed",
+            "duration": "00:00:01.0342906"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(mode: \"timeout\")",
+            "outcome": "Passed",
+            "duration": "00:00:03.3719048"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(mode: \"transport\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.9977556"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.Factorio_tools_speak_rcon_and_keep_raw_commands_behind_a_switch",
+            "outcome": "Passed",
+            "duration": "00:00:00.0668415"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.Mi_cloud_signing_matches_the_independent_known_answer_vectors",
+            "outcome": "Passed",
+            "duration": "00:00:00.0528376"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.Mi_home_logs_in_signs_calls_and_reports_failures_honestly",
+            "outcome": "Passed",
+            "duration": "00:00:00.0451242"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.The_tool_hub_serves_configured_providers_to_admins_and_the_companion_uses_them",
+            "outcome": "Passed",
+            "duration": "00:00:01.6441711"
+          }
+        ]
+      },
+      {
+        "name": "All unit and integration tests",
+        "profile": "full",
+        "command": "dotnet test tests/Aijade.Tests -c Release --no-build",
+        "counts": {
+          "total": 551,
+          "passed": 537,
+          "failed": 0,
+          "skipped": 14
+        },
+        "rawTrx": {
+          "sha256": "ad1c21fb99b1d3151582477d2c2d5c02c39b83e440c3727082e0ca95445c23aa",
+          "localPath": "/Users/mac/.cache/aijade-life-architecture-20261110/unit/unit.trx"
+        },
+        "skippedTests": [
+          "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+          "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+          "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration",
+          "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+          "Aijade.Tests.ExternalRendererStudyTests.Seal_session",
+          "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+          "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+          "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt",
+          "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field"
+        ],
+        "results": [
+          {
+            "test": "Aijade.Tests.AccountsOidcTests.Deleting_an_account_removes_personal_data_and_ends_sessions",
+            "outcome": "Passed",
+            "duration": "00:00:03.3616041"
+          },
+          {
+            "test": "Aijade.Tests.AccountsOidcTests.Oidc_login_redirects_to_the_provider_with_pkce_and_external_identities_link_by_email",
+            "outcome": "Passed",
+            "duration": "00:00:01.3010253"
+          },
+          {
+            "test": "Aijade.Tests.AdmissionChecksTests.Tampered_learning_proposals_are_refused_before_anything_is_written",
+            "outcome": "Passed",
+            "duration": "00:00:02.2512525"
+          },
+          {
+            "test": "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.active_learning.started\", persisted: False, expected: S1)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000445"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.evidence.gate_evaluated\", persisted: False, expected: S4)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000327"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.evidence.weave_candidate_ready\", persisted: False, expected: S7)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000530"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.learning.proposed.shadow_params\", persisted: False, expected: S3)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010552"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.memory_tx.committed\", persisted: False, expected: S6)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0067192"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.memory_tx.committed\", persisted: True, expected: S8)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000542"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.persona.updated\", persisted: False, expected: S0)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000357"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.pgc.write_plan_ready\", persisted: False, expected: S5)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000443"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Core_state_node_depends_on_topic_and_real_persistence(topic: \"aijade.video.frame_observed\", persisted: False, expected: S2)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000313"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Delta_adds_support_subtracts_counter_and_clamps",
+            "outcome": "Passed",
+            "duration": "00:00:00.0015594"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Evidence_transactions_move_hypothesis_to_accepted_contested_and_retracted",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010745"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Explicit_retraction_keeps_the_entry_and_records_why",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004399"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Starts_at_the_prior_as_a_hypothesis",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005750"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Status_follows_confidence_and_counter_share(confidence: 0.10000000000000001, support: 2, counter: 4, expected: Retracted)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000330"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Status_follows_confidence_and_counter_share(confidence: 0.5, support: 1, counter: 0, expected: Hypothesis)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007435"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Status_follows_confidence_and_counter_share(confidence: 0.5, support: 2, counter: 2, expected: Contested)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000296"
+          },
+          {
+            "test": "Aijade.Tests.BeliefTests.Status_follows_confidence_and_counter_share(confidence: 0.80000000000000004, support: 3, counter: 0, expected: Accepted)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004417"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.A_written_registry_round_trips_byte_for_byte",
+            "outcome": "Passed",
+            "duration": "00:00:00.0025089"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Accepts_a_signed_token_backed_by_an_active_grant",
+            "outcome": "Passed",
+            "duration": "00:00:00.0012045"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Builds_a_valid_manifest_with_defaults",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005314"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Corrupt_or_foreign_registry_reads_as_empty",
+            "outcome": "Passed",
+            "duration": "00:00:00.0019499"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Rejects_a_token_whose_grant_is_unknown_or_has_lapsed",
+            "outcome": "Passed",
+            "duration": "00:00:00.0049869"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Rejects_manifests_that_cannot_be_falsified_or_reproduced",
+            "outcome": "Passed",
+            "duration": "00:00:00.0062840"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Rejects_tokens_outside_their_grant(capability: \"memory.delete\", scope: \"session:s1\", now: 50, reason: \"capability mismatch\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003767"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Rejects_tokens_outside_their_grant(capability: \"memory.write\", scope: \"session:s1\", now: 100, reason: \"token expired or not yet valid\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000801"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Rejects_tokens_outside_their_grant(capability: \"memory.write\", scope: \"session:s1\", now: 5, reason: \"token expired or not yet valid\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0011388"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Rejects_tokens_outside_their_grant(capability: \"memory.write\", scope: \"session:s2\", now: 50, reason: \"scope mismatch\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000816"
+          },
+          {
+            "test": "Aijade.Tests.CapabilityAndExperimentTests.Reregistration_overwrites_but_keeps_the_first_createdAt",
+            "outcome": "Passed",
+            "duration": "00:00:00.0063938"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Consistency_is_one_for_identical_zero_for_disjoint_and_symmetric",
+            "outcome": "Passed",
+            "duration": "00:00:00.0048017"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Intervention_is_pure_and_keeps_the_pair_matchable",
+            "outcome": "Passed",
+            "duration": "00:00:00.0030412"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Ite_and_token_f1_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0052191"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Paired_replay_supports_or_falsifies_the_causal_claim",
+            "outcome": "Passed",
+            "duration": "00:00:00.0032803"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Pairing_requires_identical_events_and_reports_unmatched",
+            "outcome": "Passed",
+            "duration": "00:00:00.0115200"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Replay_log_is_append_only",
+            "outcome": "Passed",
+            "duration": "00:00:00.0032104"
+          },
+          {
+            "test": "Aijade.Tests.CbrTests.Validation_enforces_the_replayability_invariants",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010578"
+          },
+          {
+            "test": "Aijade.Tests.CdiTests.Constitutional_change_needs_a_non_agent_proposer_and_an_explicit_upgrade",
+            "outcome": "Passed",
+            "duration": "00:00:00.0018637"
+          },
+          {
+            "test": "Aijade.Tests.CdiTests.Shadow_evaluation_never_commits",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008781"
+          },
+          {
+            "test": "Aijade.Tests.CdiTests.Signatures_rejections_and_rollback_match_the_golden_data",
+            "outcome": "Passed",
+            "duration": "00:00:00.0168904"
+          },
+          {
+            "test": "Aijade.Tests.CdiTests.The_consent_stage_is_reachable_by_default_but_not_when_consent_is_also_a_safety_bound",
+            "outcome": "Passed",
+            "duration": "00:00:00.0070232"
+          },
+          {
+            "test": "Aijade.Tests.CdiTests.Untraceable_or_evidence_free_candidates_are_rejected",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008329"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.Move_generation_matches_reference_perft_counts(fen: \"8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1\", depth: 4, nodes: 43238)",
+            "outcome": "Passed",
+            "duration": "00:00:00.2282585"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.Move_generation_matches_reference_perft_counts(fen: \"r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1\"···, depth: 3, nodes: 9467)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0330997"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.Move_generation_matches_reference_perft_counts(fen: \"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/\"···, depth: 2, nodes: 2039)",
+            "outcome": "Passed",
+            "duration": "00:00:00.1073584"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.Move_generation_matches_reference_perft_counts(fen: \"rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w K\"···, depth: 3, nodes: 62379)",
+            "outcome": "Passed",
+            "duration": "00:00:00.2717625"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.Move_generation_matches_reference_perft_counts(fen: \"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq\"···, depth: 3, nodes: 8902)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0331329"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.San_fen_and_game_endings",
+            "outcome": "Passed",
+            "duration": "00:00:00.0245554"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.The_companion_moves_in_character_retries_an_illegal_move_and_admits_engine_help",
+            "outcome": "Passed",
+            "duration": "00:00:00.4239900"
+          },
+          {
+            "test": "Aijade.Tests.ChessTests.The_helper_engine_takes_a_free_queen_and_finds_mate_in_one",
+            "outcome": "Passed",
+            "duration": "00:00:00.0145450"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.A_draw_marker_becomes_one_picture_in_the_chat_only_when_drawing_is_enabled",
+            "outcome": "Passed",
+            "duration": "00:00:02.3713685"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Agent_capabilities_learn_from_turns_supply_context_and_forge_skills_in_the_background",
+            "outcome": "Passed",
+            "duration": "00:00:00.0338534"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Beat_detector_finds_each_kick_and_the_tempo(bpm: 120)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007332"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Beat_detector_finds_each_kick_and_the_tempo(bpm: 150)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0011656"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Beat_detector_finds_each_kick_and_the_tempo(bpm: 90)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0122038"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Beat_detector_stays_quiet_on_silence_and_steady_noise_and_respects_the_refractory_time",
+            "outcome": "Passed",
+            "duration": "00:00:00.0066667"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Dialogue_acts_and_expressions_drive_the_performance_intent",
+            "outcome": "Passed",
+            "duration": "00:00:00.0102884"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Draw_markers_keep_their_case_and_only_listed_kinds_are_lifted",
+            "outcome": "Passed",
+            "duration": "00:00:00.0041377"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Every_locale_has_every_key_and_resolution_falls_back_sensibly",
+            "outcome": "Passed",
+            "duration": "00:00:00.0192928"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Expression_markers_are_lifted_out_even_when_split_across_chunks",
+            "outcome": "Passed",
+            "duration": "00:00:00.0012813"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Live_context_from_the_browser_extension_reaches_the_companion_only_when_fresh_and_enabled",
+            "outcome": "Passed",
+            "duration": "00:00:02.0487033"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Orchestrator_streams_stores_and_reports_a_verifiable_render_through_the_real_server",
+            "outcome": "Passed",
+            "duration": "00:00:02.0076908"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Settings_round_trip_survive_corruption_and_import_only_aijade_exports",
+            "outcome": "Passed",
+            "duration": "00:00:00.0087113"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Speaking_first_stores_her_line_alone_and_gives_the_model_the_contracts_note_and_silence",
+            "outcome": "Passed",
+            "duration": "00:00:02.1522330"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Sse_parser_yields_text_and_usage_and_stops_at_done",
+            "outcome": "Passed",
+            "duration": "00:00:00.0087437"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Stage_scenes_are_saved_with_the_settings_and_restore_the_arrangement",
+            "outcome": "Passed",
+            "duration": "00:00:00.0067748"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Vision_context_keeps_the_live_view_while_fresh_and_an_attachment_for_one_turn",
+            "outcome": "Passed",
+            "duration": "00:00:00.0045186"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Vision_interpreter_sends_the_frame_as_multimodal_content_through_the_gateway",
+            "outcome": "Passed",
+            "duration": "00:00:01.7360199"
+          },
+          {
+            "test": "Aijade.Tests.ClientTests.Without_a_character_the_default_companion_is_aijade_9",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004022"
+          },
+          {
+            "test": "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Connection_check_only_reads_health_and_does_not_claim_a_trained_voice",
+            "outcome": "Passed",
+            "duration": "00:00:02.2929330"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Invalid_or_half_locations_are_rejected(latitude: 0, longitude: 181)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0009937"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Invalid_or_half_locations_are_rejected(latitude: 10, longitude: null)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005383"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Invalid_or_half_locations_are_rejected(latitude: 91, longitude: 0)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000664"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Invalid_or_half_locations_are_rejected(latitude: NaN, longitude: 0)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000863"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Local_service_forms_preserve_other_routes_and_saved_keys_and_require_an_admin",
+            "outcome": "Passed",
+            "duration": "00:00:02.5941430"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Location_can_be_left_empty_changed_and_restored_without_an_online_lookup",
+            "outcome": "Passed",
+            "duration": "00:00:00.0527633"
+          },
+          {
+            "test": "Aijade.Tests.CompanionConfigurationTests.Singing_uses_new_settings_without_a_restart_and_returns_actual_audio_or_an_explicit_failure",
+            "outcome": "Passed",
+            "duration": "00:00:02.7338038"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.A_chat_becomes_exchanges_and_turns_as_mosaic_counts_them",
+            "outcome": "Passed",
+            "duration": "00:00:00.0099648"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.Speaking_first_asks_no_model_when_a_gate_holds_her_back",
+            "outcome": "Passed",
+            "duration": "00:00:00.0175751"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.Text_channel_rules_apply_only_where_she_has_no_body",
+            "outcome": "Passed",
+            "duration": "00:00:00.0071334"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_default_persona_is_the_contract_persona",
+            "outcome": "Passed",
+            "duration": "00:00:00.0021663"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_expression_names_and_their_mapping_cover_the_stage_vocabulary",
+            "outcome": "Passed",
+            "duration": "00:00:00.0151008"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_initiative_parameters_and_words_are_the_contract_values",
+            "outcome": "Passed",
+            "duration": "00:00:00.0055508"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_initiative_rule_decides_as_mosaic_did_on_every_vector",
+            "outcome": "Passed",
+            "duration": "00:00:00.0048509"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_learned_note_is_the_contracts_and_leaves_out_third_party_content",
+            "outcome": "Passed",
+            "duration": "00:00:00.0117234"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_note_and_silence_of_a_first_line_are_mosaics_word_for_word",
+            "outcome": "Passed",
+            "duration": "00:00:00.0119271"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_stage_decides_as_mosaic_did_on_every_sentence",
+            "outcome": "Passed",
+            "duration": "00:00:00.0149356"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_stage_notes_are_the_contract_notes",
+            "outcome": "Passed",
+            "duration": "00:00:00.0075039"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_stage_words_and_spots_are_mosaics",
+            "outcome": "Passed",
+            "duration": "00:00:00.0206278"
+          },
+          {
+            "test": "Aijade.Tests.CompanionContractTests.The_text_channel_rules_are_mosaics_word_for_word",
+            "outcome": "Passed",
+            "duration": "00:00:00.0105739"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.A_corrupt_optional_notebook_is_reported_without_being_overwritten_or_blocking_context",
+            "outcome": "Passed",
+            "duration": "00:00:00.0037643"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Conversation_context_and_photos_use_the_same_life_and_clothes_without_changing_research_memory",
+            "outcome": "Passed",
+            "duration": "00:00:01.3957231"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Daily_life_obeys_the_chosen_timezone_season_and_identity_and_changes_with_time",
+            "outcome": "Passed",
+            "duration": "00:00:00.0061979"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Natural_pacing_preserves_graphemes_and_limits_total_artificial_wait",
+            "outcome": "Passed",
+            "duration": "00:00:00.0066107"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Private_collections_survive_reopening_and_do_not_cross_people_or_characters",
+            "outcome": "Passed",
+            "duration": "00:00:00.0032891"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.QQ_replies_deliver_actual_image_and_audio_segments_and_reject_other_recipients",
+            "outcome": "Passed",
+            "duration": "00:00:00.0186397"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Relationship_updates_are_bounded_rate_limited_idempotent_and_do_not_punish_absence",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007135"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Unsupported_media_and_songs_without_permission_are_rejected_and_unknown_songs_are_not_claimed",
+            "outcome": "Passed",
+            "duration": "00:00:00.0016445"
+          },
+          {
+            "test": "Aijade.Tests.CompanionExperienceTests.Weather_uses_configured_coordinates_caches_and_fails_without_fabrication",
+            "outcome": "Passed",
+            "duration": "00:00:00.0211564"
+          },
+          {
+            "test": "Aijade.Tests.CompanionLifeTests.A_closed_page_still_ends_the_loop",
+            "outcome": "Passed",
+            "duration": "00:00:00.0013190"
+          },
+          {
+            "test": "Aijade.Tests.CompanionLifeTests.A_day_counts_only_what_is_stored",
+            "outcome": "Passed",
+            "duration": "00:00:00.0009996"
+          },
+          {
+            "test": "Aijade.Tests.CompanionLifeTests.A_day_without_lines_is_not_invented",
+            "outcome": "Passed",
+            "duration": "00:00:00.0075762"
+          },
+          {
+            "test": "Aijade.Tests.CompanionLifeTests.A_failed_minute_step_is_reported_and_the_loop_can_go_on",
+            "outcome": "Passed",
+            "duration": "00:00:00.0025923"
+          },
+          {
+            "test": "Aijade.Tests.CompanionLifeTests.Mood_fades_to_its_base_with_the_half_life",
+            "outcome": "Passed",
+            "duration": "00:00:00.0002681"
+          },
+          {
+            "test": "Aijade.Tests.CompanionLifeTests.Talking_lifts_her_mood_and_an_unanswered_line_lowers_it",
+            "outcome": "Passed",
+            "duration": "00:00:00.0428736"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.A_streamed_reply_is_not_completed_when_storage_fails_in_either_chat_mode(proactive: False)",
+            "outcome": "Passed",
+            "duration": "00:00:01.8670905"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.A_streamed_reply_is_not_completed_when_storage_fails_in_either_chat_mode(proactive: True)",
+            "outcome": "Passed",
+            "duration": "00:00:03.3455275"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Optional_modules_fail_independently_and_a_switch_applies_to_the_next_complete_turn",
+            "outcome": "Passed",
+            "duration": "00:00:00.0102126"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Product_commands_and_normal_chat_use_one_runtime_with_one_stored_exchange_and_no_extra_model_call",
+            "outcome": "Passed",
+            "duration": "00:00:02.7128065"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Product_prompt_bounds_optional_context_and_old_history_without_clipping_identity_input_or_stored_evidence",
+            "outcome": "Passed",
+            "duration": "00:00:02.8636451"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Reminder_words_in_a_song_title_do_not_create_a_promised_reminder_on_QQ",
+            "outcome": "Passed",
+            "duration": "00:00:03.1085642"
+          },
+          {
+            "test": "Aijade.Tests.CompanionRuntimeTests.Required_context_and_caller_cancellation_are_never_silently_skipped",
+            "outcome": "Passed",
+            "duration": "00:00:00.0029528"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients",
+            "outcome": "Passed",
+            "duration": "00:00:02.6878777"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Both_clients_share_relations_and_media_while_other_characters_remain_separate",
+            "outcome": "Passed",
+            "duration": "00:00:02.4776755"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Concurrent_clients_keep_all_items_and_one_user_message_changes_the_relationship_once",
+            "outcome": "Passed",
+            "duration": "00:00:02.6586642"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Expired_codes_fail_and_rebinding_revokes_the_previous_grant",
+            "outcome": "Passed",
+            "duration": "00:00:01.8584910"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Pair_codes_are_one_use_hashed_and_revocation_blocks_old_scopes",
+            "outcome": "Passed",
+            "duration": "00:00:02.7731119"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Profiles_and_private_characters_are_shared_by_explicit_pairing_and_refresh_on_the_next_read",
+            "outcome": "Passed",
+            "duration": "00:00:02.8494816"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Reimport_is_idempotent_and_cannot_resurrect_a_deleted_collection_or_overwrite_new_settings",
+            "outcome": "Passed",
+            "duration": "00:00:01.9701990"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.Stale_profile_saves_cannot_overwrite_a_newer_profile_or_erase_collections",
+            "outcome": "Passed",
+            "duration": "00:00:03.1895658"
+          },
+          {
+            "test": "Aijade.Tests.CompanionSyncTests.The_bot_resolver_reads_current_selection_instead_of_the_cached_character_or_location",
+            "outcome": "Passed",
+            "duration": "00:00:03.3419493"
+          },
+          {
+            "test": "Aijade.Tests.ComputerUseTests.Numbered_elements_from_an_accessibility_capture_can_be_clicked_and_filled",
+            "outcome": "Passed",
+            "duration": "00:00:00.0218105"
+          },
+          {
+            "test": "Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size",
+            "outcome": "Passed",
+            "duration": "00:00:00.0384305"
+          },
+          {
+            "test": "Aijade.Tests.ComputerUseTests.Read_only_actions_always_run_and_desktop_changes_need_explicit_allowance",
+            "outcome": "Passed",
+            "duration": "00:00:00.0109758"
+          },
+          {
+            "test": "Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions",
+            "outcome": "Passed",
+            "duration": "00:00:06.2946172"
+          },
+          {
+            "test": "Aijade.Tests.ComputerUseTests.Windows_ui_automation_output_is_parsed_and_caller_strings_never_reach_the_script_text",
+            "outcome": "Passed",
+            "duration": "00:00:00.0148710"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Admission_admits_an_honest_proposal_and_refuses_each_mismatch",
+            "outcome": "Passed",
+            "duration": "00:00:02.2719765"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Dispatch_carries_time_risk_and_tick_into_the_proposal",
+            "outcome": "Passed",
+            "duration": "00:00:02.1806226"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Dispatch_skips_learning_with_no_render_identity",
+            "outcome": "Passed",
+            "duration": "00:00:03.0393667"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Dispatch_uses_the_latest_render_identity",
+            "outcome": "Passed",
+            "duration": "00:00:02.0007428"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Evidence_reader_grows_firmer_with_more_spans_up_to_its_cap",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008902"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Evidence_reader_refuses_what_it_cannot_read",
+            "outcome": "Passed",
+            "duration": "00:00:00.0016452"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Evidence_reader_takes_text_and_hash_from_their_fields",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008942"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Job_parser_reads_the_fields_the_gates_use_and_refuses_a_malformed_job",
+            "outcome": "Passed",
+            "duration": "00:00:00.0187477"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Projection_marks_a_trace_paired_only_with_both_sides",
+            "outcome": "Passed",
+            "duration": "00:00:02.0206185"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Projection_refuses_a_second_render_on_one_trace",
+            "outcome": "Passed",
+            "duration": "00:00:01.9280612"
+          },
+          {
+            "test": "Aijade.Tests.ConsumerExpectationTests.Projection_stores_what_the_request_and_receipt_carry",
+            "outcome": "Passed",
+            "duration": "00:00:01.7593664"
+          },
+          {
+            "test": "Aijade.Tests.ContinuousLearningTests.Discourse_memory_compacts_overflow_into_sinks",
+            "outcome": "Passed",
+            "duration": "00:00:00.0048183"
+          },
+          {
+            "test": "Aijade.Tests.ContinuousLearningTests.Learning_loop_moves_persona_feeds_memory_and_evolves_skills",
+            "outcome": "Passed",
+            "duration": "00:00:00.1158192"
+          },
+          {
+            "test": "Aijade.Tests.ContinuousLearningTests.Llm_signal_falls_back_to_the_lexicon",
+            "outcome": "Passed",
+            "duration": "00:00:00.0366526"
+          },
+          {
+            "test": "Aijade.Tests.ContinuousLearningTests.Signals_fingerprints_and_trajectory_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0534181"
+          },
+          {
+            "test": "Aijade.Tests.ContinuousLearningTests.Telemetry_records_only_with_consent_and_purges_on_withdrawal",
+            "outcome": "Passed",
+            "duration": "00:00:00.0365614"
+          },
+          {
+            "test": "Aijade.Tests.ContractDriftMatrixTests.Matrix_log_equals_the_recorded_baseline_line_by_line",
+            "outcome": "Passed",
+            "duration": "00:00:05.2315168"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Action_record_is_traceable_to_an_episode_and_an_actor",
+            "outcome": "Passed",
+            "duration": "00:00:00.0014257"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Appraisal_is_bounded",
+            "outcome": "Passed",
+            "duration": "00:00:00.0026895"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Capability_grant_needs_source_consent_and_a_later_expiry",
+            "outcome": "Passed",
+            "duration": "00:00:00.0017739"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Experiment_manifest_needs_seed_conditions_and_metrics",
+            "outcome": "Passed",
+            "duration": "00:00:00.0021488"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Feedback_binds_to_a_target_and_declares_its_kind",
+            "outcome": "Passed",
+            "duration": "00:00:00.0028523"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Goal_has_source_status_and_a_budget_that_is_not_overspent",
+            "outcome": "Passed",
+            "duration": "00:00:00.0022847"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Memory_candidate_requires_a_source",
+            "outcome": "Passed",
+            "duration": "00:00:00.0013303"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Plan_graph_rejects_dangling_dependencies_and_cycles",
+            "outcome": "Passed",
+            "duration": "00:00:00.0066007"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Semantic_motion_is_non_trivial_non_negative_and_sourced",
+            "outcome": "Passed",
+            "duration": "00:00:00.0218992"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Skill_package_has_semver_capability_manifest_and_source",
+            "outcome": "Passed",
+            "duration": "00:00:00.0059436"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.Snapshot_fingerprint_is_deterministic_and_matches_the_typescript_implementation",
+            "outcome": "Passed",
+            "duration": "00:00:00.0086915"
+          },
+          {
+            "test": "Aijade.Tests.ContractTests.State_snapshot_is_frozen_fingerprinted_and_bounded",
+            "outcome": "Passed",
+            "duration": "00:00:00.0032436"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Associations_keep_their_path_and_high_tier_transfers_are_validated",
+            "outcome": "Passed",
+            "duration": "00:00:00.0017422"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Evolution_is_recoverable_tested_and_signed",
+            "outcome": "Passed",
+            "duration": "00:00:00.0011785"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Interest_thread_needs_history_bounded_values_budget_and_abandon_reason",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008605"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Journal_and_share_candidates_are_policy_bound",
+            "outcome": "Passed",
+            "duration": "00:00:00.0018523"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Learning_quest_must_be_bounded_before_it_starts",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005948"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Performance_intent_is_bounded_and_identity_anchored",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005772"
+          },
+          {
+            "test": "Aijade.Tests.ContractV8Tests.Source_record_claim_map_and_artifact_keep_provenance",
+            "outcome": "Passed",
+            "duration": "00:00:00.0019886"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Exceptional_states_resume_or_terminate",
+            "outcome": "Passed",
+            "duration": "00:00:00.0022125"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"abandoned\", signal: Probe, expected: null)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000257"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"active\", signal: Deepen, expected: \"active\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000234"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"active\", signal: Incubate, expected: \"incubating\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000263"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"active\", signal: Satisfy, expected: \"satisfied\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003081"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"active\", signal: Seed, expected: \"latent\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000229"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"incubating\", signal: Abandon, expected: \"abandoned\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000230"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"incubating\", signal: Revisit, expected: \"active\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000254"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"incubating\", signal: Saturate, expected: \"satisfied\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000263"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"latent\", signal: Incubate, expected: null)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000258"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"latent\", signal: Probe, expected: \"active\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000269"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"latent\", signal: Satisfy, expected: null)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000223"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Interest_lifecycle(current: \"satisfied\", signal: Abandon, expected: null)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005634"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Intrinsic_value_needs_both_attraction_and_inhibition",
+            "outcome": "Passed",
+            "duration": "00:00:00.0021827"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Lifecycle_events_are_byte_identical_to_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0342308"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Lifecycle_events_validate_before_emitting",
+            "outcome": "Passed",
+            "duration": "00:00:00.0092593"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Portfolio_respects_budget_forbidden_subjects_reserve_and_diversity",
+            "outcome": "Passed",
+            "duration": "00:00:00.0363254"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Quest_pipeline_runs_in_order_and_completes_after_reflect",
+            "outcome": "Passed",
+            "duration": "00:00:00.0153193"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Sources_quarantine_and_origins",
+            "outcome": "Passed",
+            "duration": "00:00:00.0171069"
+          },
+          {
+            "test": "Aijade.Tests.DiveAelTests.Values_portfolios_and_clusters_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0114553"
+          },
+          {
+            "test": "Aijade.Tests.EpisodicAndReconsolidationTests.Causal_candidates_entities_and_expressions_are_recorded_not_adjudicated",
+            "outcome": "Passed",
+            "duration": "00:00:00.0105693"
+          },
+          {
+            "test": "Aijade.Tests.EpisodicAndReconsolidationTests.Conflicting_sources_coexist_and_are_reported",
+            "outcome": "Passed",
+            "duration": "00:00:00.0070961"
+          },
+          {
+            "test": "Aijade.Tests.EpisodicAndReconsolidationTests.Disabled_engine_and_noop_detector_never_mutate",
+            "outcome": "Passed",
+            "duration": "00:00:00.0029618"
+          },
+          {
+            "test": "Aijade.Tests.EpisodicAndReconsolidationTests.Labile_window_cooldown_and_version_cap_bound_updates",
+            "outcome": "Passed",
+            "duration": "00:00:00.0033343"
+          },
+          {
+            "test": "Aijade.Tests.EpisodicAndReconsolidationTests.Sourceless_events_are_refused_and_counted",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008356"
+          },
+          {
+            "test": "Aijade.Tests.EpisodicAndReconsolidationTests.Temporal_edges_stay_acyclic_and_after_is_the_inverse_of_before",
+            "outcome": "Passed",
+            "duration": "00:00:00.0043857"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Each_required_envelope_field_is_really_required",
+            "outcome": "Passed",
+            "duration": "00:00:00.0023376"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_and_events_are_strict_objects",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004623"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_has_exactly_13_required_and_3_optional_fields",
+            "outcome": "Passed",
+            "duration": "00:00:00.0045107"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"origin_device\", value: \"\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003352"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"privacy_level\", value: 4)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003967"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"replay_mode\", value: \"rewind\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001186"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"risk_level\", value: \"extreme\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001187"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"risk_score\", value: 1.5)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000911"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"timestamp\", value: -1)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001067"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Envelope_values_are_checked_not_just_present(field: \"timestamp\", value: 1.5)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007769"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Learning_requests_must_be_bounded_before_they_start",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008999"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Render_request_and_receipt_are_pairable_and_honest",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007282"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Unknown_topics_and_malformed_payloads_are_rejected",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010045"
+          },
+          {
+            "test": "Aijade.Tests.EventTests.Video_and_learning_events_need_tick_and_causality",
+            "outcome": "Passed",
+            "duration": "00:00:00.0023513"
+          },
+          {
+            "test": "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.ExternalRendererStudyTests.Seal_session",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Component_crash_throws_naming_the_component",
+            "outcome": "Passed",
+            "duration": "00:00:00.0122974"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Duplicates_corruption_and_latency_behave_as_declared",
+            "outcome": "Passed",
+            "duration": "00:00:00.0018226"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Matches_the_original_harness(name: \"corrupt\", kind: ValueCorruption, rate: 0.40000000000000002, seed: 11, target: null, maxLatencyMs: 500)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0009170"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Matches_the_original_harness(name: \"drop\", kind: MessageDrop, rate: 0.40000000000000002, seed: 11, target: null, maxLatencyMs: 500)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001901"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Matches_the_original_harness(name: \"dropTarget\", kind: MessageDrop, rate: 0.90000000000000002, seed: 11, target: \"m1\", maxLatencyMs: 500)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0040824"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Matches_the_original_harness(name: \"dup\", kind: DuplicateEvent, rate: 0.40000000000000002, seed: 2.5, target: null, maxLatencyMs: 500)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0018619"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Matches_the_original_harness(name: \"latency\", kind: LatencyInjection, rate: 0.40000000000000002, seed: 123456789, target: null, maxLatencyMs: 900)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0012080"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Rate_one_drops_everything_and_rate_zero_nothing",
+            "outcome": "Passed",
+            "duration": "00:00:00.0006656"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Registers_a_fault_scenario",
+            "outcome": "Passed",
+            "duration": "00:00:00.0920719"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Selection_is_deterministic_seeded_and_input_order_independent",
+            "outcome": "Passed",
+            "duration": "00:00:00.0183719"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Store_fails_closed_on_component_crash_and_reports_faults",
+            "outcome": "Passed",
+            "duration": "00:00:00.0218953"
+          },
+          {
+            "test": "Aijade.Tests.FaultInjectionTests.Store_is_untouched_by_default_and_by_rate_zero",
+            "outcome": "Passed",
+            "duration": "00:00:00.0092480"
+          },
+          {
+            "test": "Aijade.Tests.FormatPrecheckTests.A_model_passes_only_when_every_reply_begins_with_PASS_or_FAIL",
+            "outcome": "Passed",
+            "duration": "00:00:00.0156588"
+          },
+          {
+            "test": "Aijade.Tests.FormatPrecheckTests.The_precheck_tasks_are_outside_the_bench_and_their_candidates_are_labelled_correctly",
+            "outcome": "Passed",
+            "duration": "00:00:00.3781436"
+          },
+          {
+            "test": "Aijade.Tests.GrowthPilotTests.Benchmark_is_byte_identical_to_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0964470"
+          },
+          {
+            "test": "Aijade.Tests.GrowthPilotTests.Formulas_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0070450"
+          },
+          {
+            "test": "Aijade.Tests.GrowthPilotTests.Locators_encode_and_decode_like_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0170368"
+          },
+          {
+            "test": "Aijade.Tests.GrowthPilotTests.Pilot_reproduces_the_archived_result_files_byte_for_byte",
+            "outcome": "Passed",
+            "duration": "00:00:01.2489530"
+          },
+          {
+            "test": "Aijade.Tests.GrowthPilotTests.Statistics_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0067886"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.Crypto_signing_verifies_and_rejects_tampering",
+            "outcome": "Passed",
+            "duration": "00:00:00.0014138"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.File_storage_round_trips_records_and_survives_restarts",
+            "outcome": "Passed",
+            "duration": "00:00:00.0481582"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.Hashed_vector_search_ranks_by_similarity_within_scopes",
+            "outcome": "Passed",
+            "duration": "00:00:00.0227325"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.Hashed_vector_search_reads_a_document_directory",
+            "outcome": "Passed",
+            "duration": "00:00:00.0076743"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.Ids_follow_the_original_scheme",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010270"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.Real_ports_wire_file_storage_and_a_budgeted_loop",
+            "outcome": "Passed",
+            "duration": "00:00:00.0557498"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.Services_match_the_original_scenario",
+            "outcome": "Passed",
+            "duration": "00:00:00.4673900"
+          },
+          {
+            "test": "Aijade.Tests.GrowthServicesTests.System_scheduler_refills_tokens_and_persists_the_ledger",
+            "outcome": "Passed",
+            "duration": "00:00:00.0091876"
+          },
+          {
+            "test": "Aijade.Tests.HacTests.Ablated_dynamics_freeze_the_state",
+            "outcome": "Passed",
+            "duration": "00:00:00.0054921"
+          },
+          {
+            "test": "Aijade.Tests.HacTests.Closed_loop_trajectory_decisions_noise_and_snapshot_match",
+            "outcome": "Passed",
+            "duration": "00:00:00.0269230"
+          },
+          {
+            "test": "Aijade.Tests.HacTests.Replay_selection_trades_utility_against_redundancy",
+            "outcome": "Passed",
+            "duration": "00:00:00.0024535"
+          },
+          {
+            "test": "Aijade.Tests.HarnessTests.Differential_suites_perturb_arguments_by_type_and_the_reference_agrees_with_itself",
+            "outcome": "Passed",
+            "duration": "00:00:00.2190677"
+          },
+          {
+            "test": "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.HarnessTests.Mock_run_replays_the_original_step_for_step",
+            "outcome": "Passed",
+            "duration": "00:00:07.6168013"
+          },
+          {
+            "test": "Aijade.Tests.HarnessTests.Prompts_and_locked_seed_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0134802"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.A_satori_server_delivers_events_and_receives_replies",
+            "outcome": "Passed",
+            "duration": "00:00:01.5381155"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Bilibili_live_frames_decode_plain_zlib_and_brotli_batches_into_danmaku",
+            "outcome": "Passed",
+            "duration": "00:00:00.0318080"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Long_replies_split_at_natural_breaks_within_the_platform_limit",
+            "outcome": "Passed",
+            "duration": "00:00:00.0036102"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.On_a_text_channel_she_is_told_she_has_no_body_and_a_promised_movement_is_put_off",
+            "outcome": "Passed",
+            "duration": "00:00:02.3122541"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Platform_messages_map_to_channel_messages",
+            "outcome": "Passed",
+            "duration": "00:00:00.0273291"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Private_bots_respect_the_configured_clock_cooldown_and_a_request_for_quiet(localHour: 0, shouldShare: False)",
+            "outcome": "Passed",
+            "duration": "00:00:02.4765649"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Private_bots_respect_the_configured_clock_cooldown_and_a_request_for_quiet(localHour: 12, shouldShare: True)",
+            "outcome": "Passed",
+            "duration": "00:00:02.3466312"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Satori_and_x_events_map_to_channel_messages",
+            "outcome": "Passed",
+            "duration": "00:00:00.1734529"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.Song_delivery_is_only_claimed_on_a_channel_that_can_send_the_recording",
+            "outcome": "Passed",
+            "duration": "00:00:02.8569403"
+          },
+          {
+            "test": "Aijade.Tests.IntegrationTests.The_bridge_answers_dms_and_mentions_keeps_one_chat_per_conversation_and_memory_per_person",
+            "outcome": "Passed",
+            "duration": "00:00:04.5350702"
+          },
+          {
+            "test": "Aijade.Tests.InterventionTests.Points_cover_every_group_with_full_mechanism_defaults",
+            "outcome": "Passed",
+            "duration": "00:00:00.0020322"
+          },
+          {
+            "test": "Aijade.Tests.InterventionTests.Registration_writes_a_manifest_condition",
+            "outcome": "Passed",
+            "duration": "00:00:00.0407511"
+          },
+          {
+            "test": "Aijade.Tests.InterventionTests.Resolution_merges_defaults_and_is_order_independent",
+            "outcome": "Passed",
+            "duration": "00:00:00.0071950"
+          },
+          {
+            "test": "Aijade.Tests.InterventionTests.Rng_matches_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010705"
+          },
+          {
+            "test": "Aijade.Tests.InterventionTests.Shipped_plan_fingerprints_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0138414"
+          },
+          {
+            "test": "Aijade.Tests.InterventionTests.Validation_rejects_empty_unknown_and_anonymous_plans",
+            "outcome": "Passed",
+            "duration": "00:00:00.0213731"
+          },
+          {
+            "test": "Aijade.Tests.JsFormatTests.Canonical_json_and_content_hash_match",
+            "outcome": "Passed",
+            "duration": "00:00:00.0012242"
+          },
+          {
+            "test": "Aijade.Tests.JsFormatTests.Fnv1a_matches",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003552"
+          },
+          {
+            "test": "Aijade.Tests.JsFormatTests.Numbers_print_as_javascript_does",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004619"
+          },
+          {
+            "test": "Aijade.Tests.JsFormatTests.Strings_are_escaped_as_json_stringify_does",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005790"
+          },
+          {
+            "test": "Aijade.Tests.LifecycleTests.Ledger_never_deletes_silently",
+            "outcome": "Passed",
+            "duration": "00:00:00.0100378"
+          },
+          {
+            "test": "Aijade.Tests.LifecycleTests.State_gate_and_presentation_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0033784"
+          },
+          {
+            "test": "Aijade.Tests.LifecycleTests.Sweeps_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0088083"
+          },
+          {
+            "test": "Aijade.Tests.LifecycleTests.Tiers_only_go_down_and_candidates_need_cold_unaccessed_dwell",
+            "outcome": "Passed",
+            "duration": "00:00:00.0084435"
+          },
+          {
+            "test": "Aijade.Tests.LifecycleTests.ToFixed_matches_javascript",
+            "outcome": "Passed",
+            "duration": "00:00:00.0028482"
+          },
+          {
+            "test": "Aijade.Tests.LipSyncTests.An_aligned_reply_lasts_as_many_frames_as_its_audio_and_only_a_wav_is_aligned",
+            "outcome": "Passed",
+            "duration": "00:00:00.0015088"
+          },
+          {
+            "test": "Aijade.Tests.LipSyncTests.Every_case_is_shaped_as_MOSAICs_module_shapes_it",
+            "outcome": "Passed",
+            "duration": "00:00:00.0614599"
+          },
+          {
+            "test": "Aijade.Tests.LlmDistillerTests.Model_failure_or_empty_reply_keeps_the_lexical_facts",
+            "outcome": "Passed",
+            "duration": "00:00:00.0043994"
+          },
+          {
+            "test": "Aijade.Tests.LlmDistillerTests.Model_lines_replace_content_and_missing_lines_fall_back",
+            "outcome": "Passed",
+            "duration": "00:00:00.0941849"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"\", expected: \"auto\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000262"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"en-US\", expected: \"English\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000387"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"fr-FR\", expected: \"auto\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000415"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"ja-JP\", expected: \"Japanese\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000368"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"ko\", expected: \"Korean\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000285"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"yue\", expected: \"Cantonese\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001700"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"zh\", expected: \"Chinese\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000255"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"zh-CN\", expected: \"Chinese\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000307"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"zh-HK\", expected: \"Cantonese\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000313"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: \"zh-TW\", expected: \"Chinese\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000291"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_language_tag_becomes_one_of_the_recognizer_names(tag: null, expected: \"auto\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004747"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.A_spoken_reply_is_timed_by_the_local_aligner_in_its_own_format",
+            "outcome": "Passed",
+            "duration": "00:00:02.4688393"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.Other_speech_providers_are_not_given_the_emotion",
+            "outcome": "Passed",
+            "duration": "00:00:04.2689914"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.Speech_and_recognition_go_to_the_local_services_in_their_own_formats",
+            "outcome": "Passed",
+            "duration": "00:00:02.6527482"
+          },
+          {
+            "test": "Aijade.Tests.LocalVoiceTests.The_emotions_are_the_contract_mapping_of_the_stage_expressions",
+            "outcome": "Passed",
+            "duration": "00:00:00.0228795"
+          },
+          {
+            "test": "Aijade.Tests.McpServerTests.Mcp_clients_can_talk_with_the_companion_and_use_the_callers_memory",
+            "outcome": "Passed",
+            "duration": "00:00:04.3416998"
+          },
+          {
+            "test": "Aijade.Tests.MeaiAdapterTests.Aijade_and_Microsoft_Extensions_AI_clients_wrap_each_other_without_losing_roles_options_or_usage",
+            "outcome": "Passed",
+            "duration": "00:00:00.2438485"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Competition_ranks_average_ties",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003578"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Conflict_needs_a_shared_entity_and_opposite_polarity(a: \"Caroline went to the LGBTQ support group\", b: \"Caroline did not go to the group\", expected: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000844"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Conflict_needs_a_shared_entity_and_opposite_polarity(a: \"Caroline went to the group\", b: \"Caroline went to the park\", expected: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000970"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Conflict_needs_a_shared_entity_and_opposite_polarity(a: \"I never eat sushi\", b: \"We don't like sushi\", expected: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004542"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Conflict_needs_a_shared_entity_and_opposite_polarity(a: \"Melanie painted in 2022\", b: \"It isn't 2022, Melanie painted in 2023\", expected: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0010230"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Conflict_needs_a_shared_entity_and_opposite_polarity(a: \"Melanie painted in 2022\", b: \"It wasn't 2022, Melanie painted in 2023\", expected: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003544"
+          },
+          {
+            "test": "Aijade.Tests.MemoryScoringTests.Zero_variance_component_contributes_zero",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005928"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Block_names_pick_tools_and_gear_upgrades_choose_the_best_material",
+            "outcome": "Passed",
+            "duration": "00:00:00.0383715"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Chunks_decode_and_paths_walk_around_walls_up_steps_and_down_drops",
+            "outcome": "Passed",
+            "duration": "00:00:00.0426496"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade place a block at 4 -60 4\", kind: Place, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0034344"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade stop\", kind: Stop, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001464"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 做两个木棍\", kind: Craft, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003645"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 停下\", kind: Stop, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000626"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 打僵尸\", kind: Attack, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005462"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 挖 1, -61, 2\", kind: Dig, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001646"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 捡起来\", kind: Collect, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000838"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 穿上盔甲\", kind: Equip, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.1219744"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade 过来\", kind: Come, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000928"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, attack that pig\", kind: Attack, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0022232"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, come here\", kind: Come, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000684"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, craft 4 sticks\", kind: Craft, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0350842"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, gear up\", kind: Equip, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001672"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, go to 10 -60 -3\", kind: GoTo, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001097"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, pick up the stuff\", kind: Collect, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001530"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, put on your armor\", kind: Equip, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000752"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade, where are you?\", kind: Where, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001541"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"Aijade，跟着我\", kind: Follow, chinese: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000676"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Commands_are_recognised_in_english_and_chinese(text: \"follow me Aijade!\", kind: Follow, chinese: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000877"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Craft_commands_name_the_item_and_the_quantity(text: \"Aijade 做两个木棍\", item: \"stick\", count: 2)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0043155"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Craft_commands_name_the_item_and_the_quantity(text: \"Aijade 合成工作台\", item: \"crafting_table\", count: 1)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0036874"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Craft_commands_name_the_item_and_the_quantity(text: \"Aijade, craft 4 sticks\", item: \"stick\", count: 4)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0061349"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Craft_commands_name_the_item_and_the_quantity(text: \"Aijade, make a crafting table\", item: \"crafting_table\", count: 1)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0311103"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Craft_commands_name_the_item_and_the_quantity(text: \"Aijade, make a wooden pickaxe\", item: \"wooden_pickaxe\", count: 1)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0108960"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Offline_uuids_and_varints_follow_the_protocol",
+            "outcome": "Passed",
+            "duration": "00:00:00.0091171"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Ordinary_chat_is_not_a_command(text: \"Aijade 你在做什么\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0001148"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Ordinary_chat_is_not_a_command(text: \"Aijade, I love to build things\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0005907"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Ordinary_chat_is_not_a_command(text: \"Aijade, how are you?\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000961"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Ordinary_chat_is_not_a_command(text: \"Aijade, let's go somewhere nice\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0008057"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Ordinary_chat_is_not_a_command(text: \"Aijade, let's hit the road\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0006348"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Ordinary_chat_is_not_a_command(text: \"Aijade, make me laugh\")",
+            "outcome": "Passed",
+            "duration": "00:00:00.0023948"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Paths_swim_across_water_climb_ladders_and_avoid_lava",
+            "outcome": "Passed",
+            "duration": "00:00:00.2184252"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.Text_components_in_network_nbt_become_plain_text",
+            "outcome": "Passed",
+            "duration": "00:00:00.0056523"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.The_bot_logs_in_configures_plays_and_answers_chat_that_names_it",
+            "outcome": "Passed",
+            "duration": "00:00:00.0661799"
+          },
+          {
+            "test": "Aijade.Tests.MinecraftTests.The_recipe_book_reads_shaped_and_shapeless_displays",
+            "outcome": "Passed",
+            "duration": "00:00:00.1010438"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.A_message_is_read_as_MOSAICs_bridge_reads_it",
+            "outcome": "Passed",
+            "duration": "00:00:00.0149995"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.A_phone_QQ_image_can_be_collected_as_a_sticker_or_outfit_without_leaking_the_NapCat_token",
+            "outcome": "Passed",
+            "duration": "00:00:00.1319538"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.A_step_that_times_out_costs_only_its_own_message",
+            "outcome": "Passed",
+            "duration": "00:00:00.3486244"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.Only_a_private_text_message_from_the_owner_is_a_channel_message",
+            "outcome": "Passed",
+            "duration": "00:00:00.0094161"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.She_can_start_a_message_to_the_owner_and_to_nobody_else",
+            "outcome": "Passed",
+            "duration": "00:00:00.0154959"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.Short_keys_and_a_missing_owner_are_refused",
+            "outcome": "Passed",
+            "duration": "00:00:00.0014931"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.Signed_owner_messages_are_answered_through_napcat_and_the_rest_is_refused_or_ignored",
+            "outcome": "Passed",
+            "duration": "00:00:00.1024036"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.The_signature_is_the_hmac_sha1_of_the_body_under_the_secret",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004567"
+          },
+          {
+            "test": "Aijade.Tests.OneBotConnectorTests.Voice_messages_are_heard_and_a_message_without_words_gets_MOSAICs_fixed_line",
+            "outcome": "Passed",
+            "duration": "00:00:00.0826218"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Evidence_domain_lists_a_sessions_references_and_flags_dangling_ones",
+            "outcome": "Passed",
+            "duration": "00:00:02.4740336"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Ingest_bench_reports_nearest_rank_percentiles_with_raw_samples",
+            "outcome": "Passed",
+            "duration": "00:00:03.0279728"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Main_flow_passes_every_check",
+            "outcome": "Passed",
+            "duration": "00:00:03.3743976"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Negative_fork_never_forges_a_render_identity",
+            "outcome": "Passed",
+            "duration": "00:00:04.3443212"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Perception_persists_the_causal_chain_and_replay_recomputes_it",
+            "outcome": "Passed",
+            "duration": "00:00:02.6281904"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Persona_derive_refuses_without_evidence_and_persists_a_validated_kernel_intent",
+            "outcome": "Passed",
+            "duration": "00:00:01.8598704"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Promotion_requires_integrity_evidence_and_pgc_gates_and_writes_nothing_on_refusal",
+            "outcome": "Passed",
+            "duration": "00:00:03.2426833"
+          },
+          {
+            "test": "Aijade.Tests.P1EndToEndTests.Render_trace_backfill_pairs_history_idempotently_and_never_invents_identity",
+            "outcome": "Passed",
+            "duration": "00:00:02.5716519"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Clamp_and_channels_respect_ranges",
+            "outcome": "Passed",
+            "duration": "00:00:00.0016145"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Consistency_verdicts_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0221886"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Duplex_scheduling_and_degrade_policy",
+            "outcome": "Passed",
+            "duration": "00:00:00.0014229"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Expression_and_channels_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0087739"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Intent_and_render_events_are_byte_identical_to_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0013771"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Persona_mapping_follows_the_declared_modulations",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007950"
+          },
+          {
+            "test": "Aijade.Tests.PefTests.Render_events_refuse_empty_identities_and_lying_receipts",
+            "outcome": "Passed",
+            "duration": "00:00:00.0037829"
+          },
+          {
+            "test": "Aijade.Tests.PgcStateTests.Offline_consolidation_needs_both_fatigue_and_idleness",
+            "outcome": "Passed",
+            "duration": "00:00:00.0074304"
+          },
+          {
+            "test": "Aijade.Tests.PgcStateTests.Stimulus_evaluation_and_trajectory_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0281745"
+          },
+          {
+            "test": "Aijade.Tests.PgcTxTests.Gate_requires_a_capability_token_and_versions_always_carry_evidence",
+            "outcome": "Passed",
+            "duration": "00:00:00.1056654"
+          },
+          {
+            "test": "Aijade.Tests.PgcTxTests.Transactions_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0255591"
+          },
+          {
+            "test": "Aijade.Tests.PgcTxTests.W_max_bounds_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0135450"
+          },
+          {
+            "test": "Aijade.Tests.PgcTxTests.Write_plan_event_reproduces_the_original_policy_version_segment",
+            "outcome": "Passed",
+            "duration": "00:00:00.0023481"
+          },
+          {
+            "test": "Aijade.Tests.PgcTxTests.Write_plans_are_byte_identical_to_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0332746"
+          },
+          {
+            "test": "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Accounts_sign_up_sign_in_session_and_sign_out",
+            "outcome": "Passed",
+            "duration": "00:00:01.5453230"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Admin_requires_the_admin_role_and_manages_users_and_pipeline_health",
+            "outcome": "Passed",
+            "duration": "00:00:02.1817857"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Aliyun_native_speech_qwen_tts_downloads_the_audio_and_cosyvoice_speaks_the_duplex_protocol",
+            "outcome": "Passed",
+            "duration": "00:00:01.1849966"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Characters_chats_and_messages_are_owner_scoped_and_pushed_over_websocket",
+            "outcome": "Passed",
+            "duration": "00:00:01.7360318"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Flux_ledger_is_idempotent_and_never_negative",
+            "outcome": "Passed",
+            "duration": "00:00:02.3074311"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Gateway_routes_rotates_keys_streams_and_meters_flux",
+            "outcome": "Passed",
+            "duration": "00:00:01.2583199"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Images_are_drawn_by_each_backend_charged_stored_per_owner_and_validated",
+            "outcome": "Passed",
+            "duration": "00:00:03.0615868"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Memory_items_are_owner_scoped_searchable_forgettable_and_portable",
+            "outcome": "Passed",
+            "duration": "00:00:02.0409281"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Memory_search_goes_by_meaning_with_embeddings_and_speech_routes_reach_their_providers",
+            "outcome": "Passed",
+            "duration": "00:00:02.0528051"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Provider_secrets_are_encrypted_and_never_returned",
+            "outcome": "Passed",
+            "duration": "00:00:01.0435311"
+          },
+          {
+            "test": "Aijade.Tests.ProductServerTests.Stripe_checkout_and_signed_webhook_credit_flux_exactly_once",
+            "outcome": "Passed",
+            "duration": "00:00:02.2496945"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Every_declared_module_exists_on_a_known_line",
+            "outcome": "Passed",
+            "duration": "00:00:00.0538895"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Every_module_directory_is_declared",
+            "outcome": "Passed",
+            "duration": "00:00:00.0330323"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Frozen_research_objects_keep_their_recorded_text",
+            "outcome": "Passed",
+            "duration": "00:00:00.0108410"
+          },
+          {
+            "test": "Aijade.Tests.ProjectScopeTests.Project_references_stay_within_the_lines_each_line_may_reference",
+            "outcome": "Passed",
+            "duration": "00:00:01.1496142"
+          },
+          {
+            "test": "Aijade.Tests.PromotionGateMatrixTests.Tampered_candidates_are_refused_without_writes_and_the_control_and_probes_are_promoted",
+            "outcome": "Passed",
+            "duration": "00:00:01.4497553"
+          },
+          {
+            "test": "Aijade.Tests.RemindersTests.A_timeout_costs_one_check_and_the_checks_go_on",
+            "outcome": "Passed",
+            "duration": "00:00:02.0371514"
+          },
+          {
+            "test": "Aijade.Tests.RemindersTests.Every_case_is_read_as_MOSAICs_module_reads_it",
+            "outcome": "Passed",
+            "duration": "00:00:00.0118697"
+          },
+          {
+            "test": "Aijade.Tests.RemindersTests.Her_due_line_is_stored_alone_with_the_reminder_and_says_why_she_speaks",
+            "outcome": "Passed",
+            "duration": "00:00:02.5510168"
+          },
+          {
+            "test": "Aijade.Tests.RemindersTests.On_a_channel_she_keeps_a_reminder_asked_in_private_and_says_it_through_the_connector_when_due",
+            "outcome": "Passed",
+            "duration": "00:00:03.4786449"
+          },
+          {
+            "test": "Aijade.Tests.RemindersTests.The_book_sets_cancels_claims_and_lets_go_as_MOSAIC_does",
+            "outcome": "Passed",
+            "duration": "00:00:00.0752657"
+          },
+          {
+            "test": "Aijade.Tests.RenderEvidenceTests.A_healthy_file_gives_one_receipt_per_registered_intent_bound_to_the_registry",
+            "outcome": "Passed",
+            "duration": "00:00:00.0043382"
+          },
+          {
+            "test": "Aijade.Tests.RenderEvidenceTests.File_level_faults_stop_the_whole_import_and_leave_every_intent_unknown",
+            "outcome": "Passed",
+            "duration": "00:00:00.0390196"
+          },
+          {
+            "test": "Aijade.Tests.RenderEvidenceTests.Row_level_faults_cost_only_the_rows_and_intents_they_touch",
+            "outcome": "Passed",
+            "duration": "00:00:00.0229493"
+          },
+          {
+            "test": "Aijade.Tests.RenderEvidenceTests.The_registry_is_on_disk_before_anything_reads_it_and_the_importer_stops_at_the_first_refused_post",
+            "outcome": "Passed",
+            "duration": "00:00:00.0704407"
+          },
+          {
+            "test": "Aijade.Tests.RendererLinkTests.Intents_become_whitelisted_packets_with_bounded_values",
+            "outcome": "Passed",
+            "duration": "00:00:00.0077593"
+          },
+          {
+            "test": "Aijade.Tests.RendererLinkTests.Packets_arrive_as_one_json_object_per_loopback_datagram",
+            "outcome": "Passed",
+            "duration": "00:00:00.0262103"
+          },
+          {
+            "test": "Aijade.Tests.RendererLinkTests.Render_states_become_one_receipt_per_intent_with_the_renderers_own_hash",
+            "outcome": "Passed",
+            "duration": "00:00:00.0115062"
+          },
+          {
+            "test": "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.Tests.RendererLinkTests.The_stamper_keeps_one_strictly_increasing_stream_per_packet_type_and_never_turns_time_back",
+            "outcome": "Passed",
+            "duration": "00:00:00.0111769"
+          },
+          {
+            "test": "Aijade.Tests.RetrievalKDependenceTests.LongMemEval_questions_become_one_question_conversations_and_large_samples_use_monte_carlo_sign_flips",
+            "outcome": "Passed",
+            "duration": "00:00:00.0394235"
+          },
+          {
+            "test": "Aijade.Tests.RetrievalKDependenceTests.Paired_contrasts_resample_conversations_and_the_sign_flip_test_is_exact",
+            "outcome": "Passed",
+            "duration": "00:00:00.0216280"
+          },
+          {
+            "test": "Aijade.Tests.RetrievalKDependenceTests.The_first_k_of_a_top_8_ranking_equal_a_top_k_ranking(mode: Rrf)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0260487"
+          },
+          {
+            "test": "Aijade.Tests.RetrievalKDependenceTests.The_first_k_of_a_top_8_ranking_equal_a_top_k_ranking(mode: Standardized)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0248946"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.A_non_conforming_reply_is_counted_and_its_whole_text_kept_for_audit",
+            "outcome": "Passed",
+            "duration": "00:00:00.0054119"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.A_reply_at_the_token_cap_is_no_answer_and_the_cap_is_off_by_default",
+            "outcome": "Passed",
+            "duration": "00:00:00.0116810"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.A_reply_the_server_aborts_for_repetition_is_a_failed_answer_not_a_crash",
+            "outcome": "Passed",
+            "duration": "00:00:00.0151678"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.A_sampled_run_is_a_different_experiment_and_says_it_deviates_from_the_preregistration",
+            "outcome": "Passed",
+            "duration": "00:00:00.0917878"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.An_interrupted_run_resumes_by_replaying_its_recorded_generations",
+            "outcome": "Passed",
+            "duration": "00:00:05.3157232"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Artifacts_match_the_original_cli",
+            "outcome": "Passed",
+            "duration": "00:00:05.2817556"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Fingerprint_and_sampling_seed_reproduce_the_recorded_live_run",
+            "outcome": "Passed",
+            "duration": "00:00:00.0083830"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Ollama_runs_send_one_discarded_warm_up_request_first(warmUp: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0934658"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Ollama_runs_send_one_discarded_warm_up_request_first(warmUp: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0799075"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Saved_candidates_line_up_with_the_steps_and_leave_the_artifacts_unchanged",
+            "outcome": "Passed",
+            "duration": "00:00:03.2182932"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.The_fallback_reads_every_recorded_reply_of_the_earlier_runs_exactly_as_the_preregistered_rule",
+            "outcome": "Passed",
+            "duration": "00:00:01.2232327"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.The_inert_negative_control_is_flagged_as_a_constructive_zero",
+            "outcome": "Passed",
+            "duration": "00:00:05.5449931"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"  fail - case 2 is wrong\", fallback: False, pass: False, conforming: True, byFallback: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000378"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"PASS, although an earlier draft had verdict: FAIL\", fallback: True, pass: True, conforming: True, byFallback: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007220"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"PASS: all cases correct\", fallback: False, pass: True, conforming: True, byFallback: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000388"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"Pass.\", fallback: False, pass: True, conforming: True, byFallback: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000367"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"The code returns the correct result, so it passes.\", fallback: True, pass: False, conforming: False, byFallback: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000527"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"\\n* Case 0: PASS\\n* Case 1: FAIL\\n\\nVerdict - FAIL\", fallback: True, pass: False, conforming: False, byFallback: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000470"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"\\n* Case 0: PASS\\n* Case 1: PASS\\n\\nOverall verdic\"···, fallback: False, pass: False, conforming: False, byFallback: False)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003743"
+          },
+          {
+            "test": "Aijade.Tests.RqcCliTests.Verifier_replies_are_read_by_the_preregistered_rule_and_the_optional_fallback(reply: \"\\n* Case 0: PASS\\n* Case 1: PASS\\n\\nOverall verdic\"···, fallback: True, pass: True, conforming: False, byFallback: True)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000603"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.A_saturated_logistic_regression_reproduces_the_closed_form_log_odds_interaction",
+            "outcome": "Passed",
+            "duration": "00:00:00.2898641"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.Gauss_Hermite_nodes_integrate_low_moments_exactly",
+            "outcome": "Passed",
+            "duration": "00:00:00.0017493"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.Only_recoveries_with_changed_code_count_as_feedback_reaching_the_generator",
+            "outcome": "Passed",
+            "duration": "00:00:00.0014468"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.Task_composition_alone_makes_a_marginal_interaction_that_task_adjusted_models_remove",
+            "outcome": "Passed",
+            "duration": "00:02:21.7037493"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.The_clustered_McNemar_statistic_and_the_diagnostic_counts_match_hand_computation",
+            "outcome": "Passed",
+            "duration": "00:00:00.0305883"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.The_guard_credits_only_recoveries_with_changed_code_when_the_log_has_fingerprints",
+            "outcome": "Passed",
+            "duration": "00:00:00.0004436"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.The_simulated_positive_control_recovers_the_injected_self_verification_error_rates",
+            "outcome": "Passed",
+            "duration": "00:00:00.0399693"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.The_slot_level_analysis_keeps_only_the_last_skill_of_each_slot",
+            "outcome": "Passed",
+            "duration": "00:00:00.0152108"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.Without_task_heterogeneity_conditional_logit_agrees_with_the_logistic_regression",
+            "outcome": "Passed",
+            "duration": "00:00:00.5731004"
+          },
+          {
+            "test": "Aijade.Tests.RqcModelsTests.Without_task_heterogeneity_the_mixed_model_collapses_to_the_logistic_regression",
+            "outcome": "Passed",
+            "duration": "00:00:00.1220785"
+          },
+          {
+            "test": "Aijade.Tests.RqcReanalysisTests.Recorded_summary_is_recomputed_from_the_step_log(run: \"redo/rq-c-s42-ollama-t30-r5\")",
+            "outcome": "Passed",
+            "duration": "00:00:03.1018968"
+          },
+          {
+            "test": "Aijade.Tests.RqcReanalysisTests.Recorded_summary_is_recomputed_from_the_step_log(run: \"rq-c-s42-mock-t30-r5\")",
+            "outcome": "Passed",
+            "duration": "00:00:03.9320054"
+          },
+          {
+            "test": "Aijade.Tests.RqcReanalysisTests.Recorded_summary_is_recomputed_from_the_step_log(run: \"rq-c-s42-ollama-t30-r5\")",
+            "outcome": "Passed",
+            "duration": "00:00:05.7517161"
+          },
+          {
+            "test": "Aijade.Tests.SandboxTests.Code_extraction_and_sampling",
+            "outcome": "Passed",
+            "duration": "00:00:00.0015493"
+          },
+          {
+            "test": "Aijade.Tests.SandboxTests.Reference_solutions_pass_and_wrong_candidates_fail_everywhere",
+            "outcome": "Passed",
+            "duration": "00:00:00.6588801"
+          },
+          {
+            "test": "Aijade.Tests.SandboxTests.Verdicts_match_node_vm_case_by_case",
+            "outcome": "Passed",
+            "duration": "00:00:27.5685981"
+          },
+          {
+            "test": "Aijade.Tests.SelfiesTests.A_selfie_is_kept_for_the_account_and_put_in_the_chat_as_her_line",
+            "outcome": "Passed",
+            "duration": "00:00:02.2550486"
+          },
+          {
+            "test": "Aijade.Tests.SelfiesTests.Her_phone_is_where_MOSAICs_SelfieShot_puts_it",
+            "outcome": "Passed",
+            "duration": "00:00:01.8588442"
+          },
+          {
+            "test": "Aijade.Tests.SelfiesTests.Only_todays_pictures_count_and_two_days_are_kept",
+            "outcome": "Passed",
+            "duration": "00:00:00.0230781"
+          },
+          {
+            "test": "Aijade.Tests.SelfiesTests.She_takes_a_picture_when_MOSAICs_rules_would",
+            "outcome": "Passed",
+            "duration": "00:00:00.0189925"
+          },
+          {
+            "test": "Aijade.Tests.ServerModulesTests.An_idle_queue_waits_for_work_without_polling_and_wakeup_hints_do_not_consume_jobs",
+            "outcome": "Passed",
+            "duration": "00:00:00.0038425"
+          },
+          {
+            "test": "Aijade.Tests.ServerModulesTests.Profiles_preserve_full_compatibility_and_reject_misspelled_or_invalid_module_configuration",
+            "outcome": "Passed",
+            "duration": "00:00:00.0014433"
+          },
+          {
+            "test": "Aijade.Tests.ServerModulesTests.The_companion_profile_mounts_only_selected_integrations_and_still_processes_memory_outbox(tools: False)",
+            "outcome": "Passed",
+            "duration": "00:00:01.9855887"
+          },
+          {
+            "test": "Aijade.Tests.ServerModulesTests.The_companion_profile_mounts_only_selected_integrations_and_still_processes_memory_outbox(tools: True)",
+            "outcome": "Passed",
+            "duration": "00:00:02.5939522"
+          },
+          {
+            "test": "Aijade.Tests.SkillForgeTests.Chat_parsing_tolerates_fences_prose_and_missing_fields",
+            "outcome": "Passed",
+            "duration": "00:00:00.0127161"
+          },
+          {
+            "test": "Aijade.Tests.SkillForgeTests.Forge_detects_generates_repairs_validates_and_evolves",
+            "outcome": "Passed",
+            "duration": "00:00:00.1085393"
+          },
+          {
+            "test": "Aijade.Tests.SkillForgeTests.Measured_registry_tracks_lifecycle_and_persists",
+            "outcome": "Passed",
+            "duration": "00:00:00.2400242"
+          },
+          {
+            "test": "Aijade.Tests.SkillForgeTests.Schema_issues_markdown_and_prompts_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0926304"
+          },
+          {
+            "test": "Aijade.Tests.SkillForgeTests.Validation_scores_sandbox_and_reviewer",
+            "outcome": "Passed",
+            "duration": "00:00:00.0145563"
+          },
+          {
+            "test": "Aijade.Tests.SkillLibraryTests.Counters_precision_and_self_verification",
+            "outcome": "Passed",
+            "duration": "00:00:00.0208065"
+          },
+          {
+            "test": "Aijade.Tests.SkillLibraryTests.Jsonl_store_reads_the_original_files_and_round_trips",
+            "outcome": "Passed",
+            "duration": "00:00:00.1774376"
+          },
+          {
+            "test": "Aijade.Tests.SkillLibraryTests.Learning_loop_cells_are_finite_and_default_pools_oracle_domains",
+            "outcome": "Passed",
+            "duration": "00:00:00.0035644"
+          },
+          {
+            "test": "Aijade.Tests.SkillLibraryTests.Metrics_tables_and_diagnostics_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0260403"
+          },
+          {
+            "test": "Aijade.Tests.SkillLibraryTests.Retirement_pruning_and_oracle_guard",
+            "outcome": "Passed",
+            "duration": "00:00:00.0210730"
+          },
+          {
+            "test": "Aijade.Tests.SmokeTests.Solution_builds_and_runs_tests",
+            "outcome": "Passed",
+            "duration": "00:00:00.0002277"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.A_line_that_never_finishes_or_a_workbench_that_does_not_say_is_not_called_a_failure",
+            "outcome": "Passed",
+            "duration": "00:00:00.2074361"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.A_reply_becomes_expression_speech_and_the_decided_action",
+            "outcome": "Passed",
+            "duration": "00:00:00.0007605"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.Every_command_the_chat_can_send_is_one_the_workbench_and_the_relay_take",
+            "outcome": "Passed",
+            "duration": "00:00:00.0269673"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.Following_a_line_waits_until_it_has_finished_and_keeps_asking_through_a_restart",
+            "outcome": "Passed",
+            "duration": "00:00:00.0174930"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.Speech_is_cut_into_pieces_the_workbench_takes",
+            "outcome": "Passed",
+            "duration": "00:00:00.0406513"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.The_model_is_told_which_action_did_not_happen_and_not_the_workbenchs_words",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003614"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.The_notices_of_the_live_run_are_judged_as_expected_before_it",
+            "outcome": "Passed",
+            "duration": "00:00:00.0062880"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.The_relay_cuts_the_notice_and_takes_only_a_string",
+            "outcome": "Passed",
+            "duration": "00:00:00.0006382"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.The_relay_passes_only_the_contracts_fields_of_at_most_five_learned_motions",
+            "outcome": "Passed",
+            "duration": "00:00:00.0020347"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.The_relay_reaches_only_a_workbench_on_this_machine_and_only_with_the_chats_commands",
+            "outcome": "Passed",
+            "duration": "00:00:00.0045849"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.The_server_relays_the_stage_for_admins_only",
+            "outcome": "Passed",
+            "duration": "00:00:04.3915536"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"dance\", notice: \"指令序列中止：还没有舞蹈库：先运行 tools/build_dance_library.py。\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000440"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"dance\", notice: \"舞蹈「check-plie」播完，已在场景内切回 idle.vmd\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0006604"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"gesture\", notice: \"手势「bye」在她现在的位置播不了（这个片段绑在原点），没有重启场景。\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000730"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"gesture\", notice: \"手势「bye」播完，已在场景内切回 idle.vmd\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000317"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"gesture\", notice: \"提醒：该喝水了\", expected: Unknown)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000424"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"不知道「沙发」在哪里\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000304"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"到了沙发，但还没有坐下、躺下的片段：先运行 tools/build_home_poses.py。\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000296"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"去不了沙发：规划去处失败\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000327"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"去沙发\", expected: Unknown)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000281"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"去沙发（3.1 m）\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0199929"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"她到了篮球场\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000293"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"她在床上躺下了\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000273"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"她在沙发坐下了\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000394"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"语音服务没开：合成。回复会改用系统语音\", expected: Unknown)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000276"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"place\", notice: \"走不到沙发\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000317"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"stand\", notice: \"她没有坐着或躺着。\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000262"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"stand\", notice: \"她站起来了\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000433"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"stand\", notice: \"她起床了\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000278"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"stand\", notice: \"指令序列中止：动作库（LiveScene:MotionLibrary）不在了，她站不起来。\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000333"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"stand\", notice: \"起来\", expected: Unknown)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000290"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"walk\", notice: \"她到了沙发\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000285"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"walk\", notice: \"走路在她现在的位置播不了（这个片段绑在原点），没有重启场景。\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000348"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"walk\", notice: \"走路播完切回原片段在她现在的位置播不了（这个片段绑在原点），没有重启场景。\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000284"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"walk\", notice: \"走路播完：停在走到的位置（路程 1.49 m，转过 114.6°），已在场景内切回 idle.vmd\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000291"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"walk\", notice: \"走路片段已生成并重启播放：路程 1.49 m，最终朝向 114.6°（a.vmd）\", expected: Done)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000287"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.What_is_left_in_the_notice_says_whether_her_body_did_it(kind: \"walk\", notice: \"走路（规则转向）：已在场景内切换播放（路程 1.49 m，最终朝向 114.6°，a.vmd）\", expected: Failed)",
+            "outcome": "Passed",
+            "duration": "00:00:00.0000319"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.Without_a_workbench_address_there_is_no_stage",
+            "outcome": "Passed",
+            "duration": "00:00:02.3174981"
+          },
+          {
+            "test": "Aijade.Tests.StageTests.Without_an_action_only_a_newly_stopped_line_counts_and_a_missing_notice_says_nothing",
+            "outcome": "Passed",
+            "duration": "00:00:00.0002986"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Contingency_tests_match",
+            "outcome": "Passed",
+            "duration": "00:00:00.0076136"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Effect_sizes_and_risk_difference_intervals_match",
+            "outcome": "Passed",
+            "duration": "00:00:00.0024386"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Holm_step_down_matches_including_untestable_entries",
+            "outcome": "Passed",
+            "duration": "00:00:00.0329654"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Mulberry32_reproduces_the_javascript_sequence_exactly",
+            "outcome": "Passed",
+            "duration": "00:00:00.0003921"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Normal_distribution_functions_match",
+            "outcome": "Passed",
+            "duration": "00:00:00.0006971"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Power_analysis_matches",
+            "outcome": "Passed",
+            "duration": "00:00:00.0233644"
+          },
+          {
+            "test": "Aijade.Tests.StatsGoldenTests.Seeded_bootstraps_match",
+            "outcome": "Passed",
+            "duration": "00:00:00.0671308"
+          },
+          {
+            "test": "Aijade.Tests.SteeringTests.Null_models_and_recovery_table_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0666284"
+          },
+          {
+            "test": "Aijade.Tests.SteeringTests.Self_test_of_the_original_holds",
+            "outcome": "Passed",
+            "duration": "00:00:00.0116129"
+          },
+          {
+            "test": "Aijade.Tests.StoreResearchTests.Cbr_logs_bundles_estimates_ite_and_persists",
+            "outcome": "Passed",
+            "duration": "00:00:00.0263362"
+          },
+          {
+            "test": "Aijade.Tests.StoreResearchTests.Interventions_are_opt_in_and_drive_switch_queries",
+            "outcome": "Passed",
+            "duration": "00:00:00.0012424"
+          },
+          {
+            "test": "Aijade.Tests.StoreResearchTests.Interventions_persist_and_can_be_registered",
+            "outcome": "Passed",
+            "duration": "00:00:00.0157430"
+          },
+          {
+            "test": "Aijade.Tests.StoreResearchTests.Provenance_graph_traces_and_explains",
+            "outcome": "Passed",
+            "duration": "00:00:00.0141504"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Cdi_is_part_of_the_opt_in_loop",
+            "outcome": "Passed",
+            "duration": "00:00:00.0356524"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Hac_is_opt_in_and_its_noise_grows_with_load",
+            "outcome": "Passed",
+            "duration": "00:00:00.0956913"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Integrated_store_matches_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0162185"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Json_file_adapter_persists_and_clears",
+            "outcome": "Passed",
+            "duration": "00:00:00.2198549"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Quantile_consolidation_matches_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0064404"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Storage_rehydrates_collections_hac_and_identity",
+            "outcome": "Passed",
+            "duration": "00:00:00.0786984"
+          },
+          {
+            "test": "Aijade.Tests.StoreTests.Validity_status_and_conflict_rules",
+            "outcome": "Passed",
+            "duration": "00:00:00.0073363"
+          },
+          {
+            "test": "Aijade.Tests.SubstrateTests.Fingerprints_and_audits_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0585168"
+          },
+          {
+            "test": "Aijade.Tests.SubstrateTests.Guards_refuse_unreproducible_configurations",
+            "outcome": "Passed",
+            "duration": "00:00:00.0161757"
+          },
+          {
+            "test": "Aijade.Tests.TelemetryTests.File_storage_round_trips_the_original_format",
+            "outcome": "Passed",
+            "duration": "00:00:00.1774773"
+          },
+          {
+            "test": "Aijade.Tests.TelemetryTests.Fingerprints_sweeps_and_ablations_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0753524"
+          },
+          {
+            "test": "Aijade.Tests.TelemetryTests.Session_export_and_summary_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.1596798"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(mode: \"server\")",
+            "outcome": "Passed",
+            "duration": "00:00:03.2178740"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(mode: \"timeout\")",
+            "outcome": "Passed",
+            "duration": "00:00:03.3406908"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(mode: \"transport\")",
+            "outcome": "Passed",
+            "duration": "00:00:02.7483163"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.Factorio_tools_speak_rcon_and_keep_raw_commands_behind_a_switch",
+            "outcome": "Passed",
+            "duration": "00:00:00.0425605"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.Mi_cloud_signing_matches_the_independent_known_answer_vectors",
+            "outcome": "Passed",
+            "duration": "00:00:00.0045011"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.Mi_home_logs_in_signs_calls_and_reports_failures_honestly",
+            "outcome": "Passed",
+            "duration": "00:00:00.0416954"
+          },
+          {
+            "test": "Aijade.Tests.ToolTests.The_tool_hub_serves_configured_providers_to_admins_and_the_companion_uses_them",
+            "outcome": "Passed",
+            "duration": "00:00:02.9024395"
+          },
+          {
+            "test": "Aijade.Tests.V9RuntimeTests.Forged_input_hash_is_rejected_before_anything_is_stored",
+            "outcome": "Passed",
+            "duration": "00:00:00.0052850"
+          },
+          {
+            "test": "Aijade.Tests.V9RuntimeTests.Runtime_artifacts_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0150072"
+          },
+          {
+            "test": "Aijade.Tests.V9RuntimeTests.Tampered_proposals_fail_anchor_verification_and_video_needs_real_refs",
+            "outcome": "Passed",
+            "duration": "00:00:00.0026905"
+          },
+          {
+            "test": "Aijade.Tests.ValidationOverheadTests.Strict_validation_rejects_unknown_fields_and_its_cost_is_measured",
+            "outcome": "Passed",
+            "duration": "00:00:00.0088578"
+          },
+          {
+            "test": "Aijade.Tests.VerifierFeedbackTests.Rates_differences_consistency_and_within_task_counts_match_hand_computation",
+            "outcome": "Passed",
+            "duration": "00:00:00.0349203"
+          },
+          {
+            "test": "Aijade.Tests.VerifierFeedbackTests.The_simulated_positive_control_shows_no_feedback_difference_and_recovers_the_injected_rates",
+            "outcome": "Passed",
+            "duration": "00:00:00.3545142"
+          },
+          {
+            "test": "Aijade.Tests.VerifyTemplateTests.Template_B_is_the_registered_wording",
+            "outcome": "Passed",
+            "duration": "00:00:01.9616978"
+          },
+          {
+            "test": "Aijade.Tests.VerifyTemplateTests.The_verifier_sends_template_A_by_default_and_B_when_asked",
+            "outcome": "Passed",
+            "duration": "00:00:00.0651956"
+          },
+          {
+            "test": "Aijade.Tests.ViewerFollowTests.In_an_MMD_scene_the_same_walk_gives_the_same_shot_at_its_scale",
+            "outcome": "Passed",
+            "duration": "00:00:01.3231795"
+          },
+          {
+            "test": "Aijade.Tests.ViewerFollowTests.The_port_moves_the_camera_as_MOSAICs_class_does",
+            "outcome": "Passed",
+            "duration": "00:00:00.4419166"
+          },
+          {
+            "test": "Aijade.Tests.VseTests.Buckets_and_objectives_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0096954"
+          },
+          {
+            "test": "Aijade.Tests.VseTests.Candidate_selection_keeps_the_hard_constraints",
+            "outcome": "Passed",
+            "duration": "00:00:00.0016533"
+          },
+          {
+            "test": "Aijade.Tests.VseTests.Grades_bound_what_the_agent_may_change",
+            "outcome": "Passed",
+            "duration": "00:00:00.0051605"
+          },
+          {
+            "test": "Aijade.Tests.VseTests.Pipeline_advances_in_order_and_ends_kept_or_rolled_back",
+            "outcome": "Passed",
+            "duration": "00:00:00.0275920"
+          },
+          {
+            "test": "Aijade.Tests.VseTests.Promotion_requires_every_gate_present_to_pass",
+            "outcome": "Passed",
+            "duration": "00:00:00.0024020"
+          },
+          {
+            "test": "Aijade.Tests.VseTests.Routing_is_stable_per_user_and_needs_an_identity",
+            "outcome": "Passed",
+            "duration": "00:00:00.0125142"
+          },
+          {
+            "test": "Aijade.Tests.WeaveRetrievalTests.Retrieval_gating_matches_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0062997"
+          },
+          {
+            "test": "Aijade.Tests.WeaveRetrievalTests.Weaves_and_their_event_match_the_original",
+            "outcome": "Passed",
+            "duration": "00:00:00.0191127"
+          },
+          {
+            "test": "Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much",
+            "outcome": "Passed",
+            "duration": "00:00:21.6526433"
+          },
+          {
+            "test": "Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall",
+            "outcome": "Passed",
+            "duration": "00:00:39.6711173"
+          },
+          {
+            "test": "Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact",
+            "outcome": "Passed",
+            "duration": "00:00:44.0974687"
+          }
+        ]
+      },
+      {
+        "name": "All browser scenarios",
+        "profile": "full",
+        "command": "AIJADE_E2E=1 dotnet test tests/Aijade.E2E -c Release --no-build",
+        "counts": {
+          "total": 35,
+          "passed": 29,
+          "failed": 0,
+          "skipped": 6
+        },
+        "rawTrx": {
+          "sha256": "ef22959d8c44331bd3584f96593037f5d171a1c9a1358b8d8f4799e6d71c7cb9",
+          "localPath": "/Users/mac/.cache/aijade-life-architecture-20261110/browser/browser.trx"
+        },
+        "skippedTests": [
+          "Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model",
+          "Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply",
+          "Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking",
+          "Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length",
+          "Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer",
+          "Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips"
+        ],
+        "results": [
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined",
+            "outcome": "Passed",
+            "duration": "00:00:04.5138927"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model",
+            "outcome": "Passed",
+            "duration": "00:00:05.0283793"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo",
+            "outcome": "Passed",
+            "duration": "00:00:02.7900793"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt",
+            "outcome": "Passed",
+            "duration": "00:00:06.5805436"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared",
+            "outcome": "Passed",
+            "duration": "00:00:07.8509323"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections",
+            "outcome": "Passed",
+            "duration": "00:00:16.7014326"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting",
+            "outcome": "Passed",
+            "duration": "00:00:03.0860370"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached",
+            "outcome": "Passed",
+            "duration": "00:02:02.1606869"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat",
+            "outcome": "Passed",
+            "duration": "00:00:03.1717895"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise",
+            "outcome": "Passed",
+            "duration": "00:00:03.0057272"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt",
+            "outcome": "Passed",
+            "duration": "00:00:04.4586483"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten",
+            "outcome": "Passed",
+            "duration": "00:00:06.8960972"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion",
+            "outcome": "Passed",
+            "duration": "00:00:02.0647241"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn",
+            "outcome": "Passed",
+            "duration": "00:00:03.1077677"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture",
+            "outcome": "Passed",
+            "duration": "00:00:05.5076263"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server",
+            "outcome": "Passed",
+            "duration": "00:00:02.9239403"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard",
+            "outcome": "Passed",
+            "duration": "00:00:07.0642782"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going",
+            "outcome": "Passed",
+            "duration": "00:00:02.7672360"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage",
+            "outcome": "Passed",
+            "duration": "00:00:02.3563503"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly",
+            "outcome": "Passed",
+            "duration": "00:00:03.2476885"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent",
+            "outcome": "Passed",
+            "duration": "00:00:06.8113911"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage",
+            "outcome": "Passed",
+            "duration": "00:00:02.9740490"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo",
+            "outcome": "Passed",
+            "duration": "00:00:06.1535493"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model",
+            "outcome": "Passed",
+            "duration": "00:00:01.8852624"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips",
+            "outcome": "NotExecuted",
+            "duration": "00:00:00.0010000"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists",
+            "outcome": "Passed",
+            "duration": "00:00:03.7102529"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal",
+            "outcome": "Passed",
+            "duration": "00:00:03.9766950"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats",
+            "outcome": "Passed",
+            "duration": "00:00:03.3208642"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys",
+            "outcome": "Passed",
+            "duration": "00:00:06.2721630"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages",
+            "outcome": "Passed",
+            "duration": "00:00:00.2042455"
+          }
+        ]
+      },
+      {
+        "name": "Companion sync, media, reminder and offline scenarios",
+        "profile": "companion",
+        "command": "Aijade__Profile=companion AIJADE_E2E=1 dotnet test tests/Aijade.E2E -c Release --no-build --filter 'FullyQualifiedName~CompanionExperienceWebTests|FullyQualifiedName~CompanionSyncWebTests|FullyQualifiedName~A_a_message_sent_while_the_server_cannot_be_reached|FullyQualifiedName~A_a_due_reminder_is_said'",
+        "counts": {
+          "total": 8,
+          "passed": 8,
+          "failed": 0,
+          "skipped": 0
+        },
+        "rawTrx": {
+          "sha256": "3c170f5754f2ab00f774c5142e50ac43e3cf83afd62b1b6aa673388c4c738e35",
+          "localPath": "/Users/mac/.cache/aijade-life-architecture-20261110/companion/companion.trx"
+        },
+        "skippedTests": [],
+        "results": [
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined",
+            "outcome": "Passed",
+            "duration": "00:00:04.5110719"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model",
+            "outcome": "Passed",
+            "duration": "00:00:05.0600199"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo",
+            "outcome": "Passed",
+            "duration": "00:00:02.8294527"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt",
+            "outcome": "Passed",
+            "duration": "00:00:06.5451793"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared",
+            "outcome": "Passed",
+            "duration": "00:00:07.5913282"
+          },
+          {
+            "test": "Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections",
+            "outcome": "Passed",
+            "duration": "00:00:16.7797100"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached",
+            "outcome": "Passed",
+            "duration": "00:02:02.0527772"
+          },
+          {
+            "test": "Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat",
+            "outcome": "Passed",
+            "duration": "00:00:03.1127693"
+          }
+        ]
+      }
+    ],
+    "environment": "Existing local PostgreSQL; real headless Chromium and built Blazor application; controlled model/media providers, signed local OneBot/NapCat substitute and tool transports.",
+    "environmentVariables": [
+      "PATH and DOTNET_ROOT select the user .NET 10 SDK",
+      "AIJADE_ARTIFACTS points to native macOS storage",
+      "AIJADE_TEST_DATABASE_URL points to the local development test database",
+      "AIJADE_E2E=1 enables browser scenarios"
+    ],
+    "browserDiagnostics": {
+      "observed": "503 and net::ERR_FAILED responses during intentional unavailable/offline scenarios",
+      "unhandledPageErrorsObserved": false,
+      "logSha256": "c361c62adf578b7a563638d9ed44e6b5065b3e60a9ba86476de249f422a864f1"
+    },
+    "researchProtection": {
+      "baselineCommit": "54ba8a52fd7096ccbcc3260c912236b74b97f184",
+      "existingProtectedFiles": 550,
+      "changedProtectedFiles": 0,
+      "manifestSha256": "ef6fbc94a96d1c362ebe7522f0db50aa8d81ba2ff30516288fd30385ef987c21",
+      "selection": "Tracked baseline files in research/shared modules plus every declared researchObjects path in configs/project-scope.json. Newly appended engineering records are outside the pre-change manifest.",
+      "frozenFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "sha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "until": "P3-E (the product's delivery path, Chapter 6) is run and archived",
+          "ifChanged": "only when it must change: record it in docs/STATUS.md, list it as a deviation of P3-E, then update this hash",
+          "actualSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d"
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "sha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "until": "P3-E (the product's delivery path, Chapter 6) is run and archived",
+          "ifChanged": "only when it must change: record it in docs/STATUS.md, list it as a deviation of P3-E, then update this hash",
+          "actualSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf"
+        }
+      ]
+    },
+    "credentialPatternFindings": 0
+  },
+  "references": {
+    "file": "references.json",
+    "sha256": "71eaf367b6558aaa724492844ddbd5149804f81ac99a3e9e5a9aa2a5b69bffa5",
+    "candidateRepositories": 42,
+    "selectedDistinctRepositories": 30,
+    "selectedWithPinnedReadmeAndLicense": 30,
+    "sourceSampledRepositories": 6,
+    "sourceSampledFiles": 7,
+    "otherArchitectureReferences": 3,
+    "independentArchitecturesClaimed": false,
+    "thirdPartyPluginsInstalled": false,
+    "thirdPartyCodeImported": false,
+    "thirdPartyAssetsImported": false
+  },
+  "architecture": {
+    "newDotnetProjects": 0,
+    "newNugetPackageReferences": 0,
+    "newRuntimeServiceStack": false,
+    "sharedRuntimeIsAnInProcessLibrary": true,
+    "serverOwnsSharedIdentityAndCompanionState": true,
+    "moduleSelectionStableForOneTurnContext": true,
+    "productPromptPolicy": {
+      "id": "bounded-context-v1",
+      "unit": "UTF-16 characters, not tokens",
+      "perModule": 4000,
+      "allSupplements": 12000,
+      "history": 24000,
+      "perToolResult": 8000,
+      "unchangedInputs": [
+        "character/persona",
+        "current user text",
+        "channel rules",
+        "original stored messages"
+      ],
+      "notAWholeModelContextGuarantee": true,
+      "oldDirectConstructorWithoutExplicitBudgetRetainsLegacyLengthPolicy": true,
+      "researchEvaluationOfNewProductPolicy": "NOT_RUN; source integrity is not prompt or scientific equivalence"
+    },
+    "toolWorker": {
+      "defaultRounds": 4,
+      "defaultExternalCalls": 12,
+      "defaultPerCallDeadlineSeconds": 30,
+      "zeroBudgetSkipsDiscoveryAndUsesStreaming": true,
+      "wrongArgumentWireTypesExecuteNothing": true,
+      "ambiguousOutcomes": "Timeout, HTTP 408/5xx, network interruption or unreadable receipt; no further tools that turn and no automatic replay",
+      "doesNotGuarantee": [
+        "remote rollback",
+        "exactly-once across crashes",
+        "real-model compliance with the error explanation"
+      ]
+    }
+  },
+  "diagrams": {
+    "canonical": "docs/ARCHITECTURE.md",
+    "mermaidCli": "12.2.0",
+    "diagrams": [
+      {
+        "name": "overview",
+        "mermaidSha256": "28f5ddad9f24b1b1da0f113043b367c36c36bb5b4f2952092de33cd125cdb636",
+        "artifactsSha256": {
+          "docs/architecture/overview.svg": "9cfa8af7a03626fb794d0bdcbf3d548c390799e738c2ec3b6b83681fdc422215",
+          "docs/architecture/overview.png": "bb095f623d0515651be7bf0fe12a1283c6a98680c236b5d0b7343be15116fe62"
+        }
+      },
+      {
+        "name": "turn-flow",
+        "mermaidSha256": "3d7631212a6918c32a895a66433e6502efff82aace648bd2e69585f4a5741fc7",
+        "artifactsSha256": {
+          "docs/architecture/turn-flow.svg": "56b541c4768f42fbed06eb42519f16fa3d1071b572da07f40f2f91ccc9fc8132",
+          "docs/architecture/turn-flow.png": "6ab26a6f667bec53174a308e5e81e5744d0ed07c7d995eb1e116e45e592000aa"
+        }
+      }
+    ],
+    "canonicalSha256": "7d57993342f85c074c376f8baee03c162e1d58ccddea96205e0b154ee4f0cffe",
+    "renderScriptSha256": "e7f622e1e390a421a7549ece44fb9d51b2c89bd35e8196f976370e80856b67eb",
+    "visualQa": "PNG views inspected for Chinese glyphs, node and edge readability, optional integrations, library/process distinction and research separation.",
+    "tooling": "Mermaid CLI 12.2.0 installed in a user-local skill environment with no browser download; existing Playwright Chromium reused.",
+    "initialRenderAdjustment": "CLI 12 removed -w; checked installed --help and switched to --size before successful rendering."
+  },
+  "limits": [
+    "Third-party plugins were read but not installed or executed; README experience claims remain unverified.",
+    "Live QQ accounts, licensed MMD assets, local trained voices/singing, actual device tools and real-model behavior require their own acceptance checks.",
+    "No autonomous social-platform login/posting, diary worker, dynamic code installation or automatic persona rewriting was introduced.",
+    "The in-memory queue is process-local; persistent deployments continue to require the existing Redis option.",
+    "Research baselines and original results were not rewritten. Product prompt policy changes require new configuration identity in future research."
+  ]
+}

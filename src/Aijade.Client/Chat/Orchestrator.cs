@@ -136,9 +136,10 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         }
         var drawing = options.Drawing();
         var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, supplements, drawing)) };
-        messages.AddRange(history.Where(m => m.Role is "user" or "assistant").TakeLast(options.HistoryWindow)
+        var recent = history.Where(m => m.Role is "user" or "assistant").TakeLast(Math.Max(0, options.HistoryWindow))
             .Select(m => (m.Role, Selfies.IsSelfie(m) ? $"[I sent them a selfie from the stage: {m.Content}]"
-                : Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content)));
+                : Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content));
+        messages.AddRange(options.PromptBudget is { } budget ? budget.History(recent) : recent);
         messages.AddRange((notesBeforeMessage ?? []).Select(n => ("system", n)));
         messages.Add(("user", user.Content));
         var stream = options.Tools() ? new ToolConversation(api, options).ReplyAsync(messages, ct)
@@ -198,13 +199,17 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         var companion = options.CompanionContext is { } supply
             ? await supply(new TurnContext(chatId, character, exchanges.SelectMany(x => x.User is null ? new[] { x.Reply } : new[] { x.User, x.Reply }).ToList(), cue), ct).ConfigureAwait(false)
             : null;
+        if (companion is not null && options.PromptBudget is { } limit)
+            companion = PromptBudget.Limit(companion, Math.Min(PromptBudget.Bound(limit.ModuleCharacters), PromptBudget.Bound(limit.SupplementCharacters)));
         var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, companion is null ? [] : [companion])) };
+        var history = new List<(string Role, string Content)>();
         foreach (var x in exchanges.TakeLast(Initiative.HistoryWindow))
         {
             if (x.User is not null)
-                messages.Add(("user", x.User.Content));
-            messages.Add(("assistant", x.Reply.Content));
+                history.Add(("user", x.User.Content));
+            history.Add(("assistant", x.Reply.Content));
         }
+        messages.AddRange(options.PromptBudget is { } budget ? budget.History(history) : history);
         messages.Add(("system", note));
         messages.Add(("user", cue));
 

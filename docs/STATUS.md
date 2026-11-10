@@ -8,7 +8,9 @@
 
 研究记录分别索引到 [既有结果复核](../experiments/engineering/2026-11-09-research-audit/README.md) 与 [Mac 模型预检](../experiments/mac-preflight/2026-11-09-7b8b/README.md)。7B 首轮交换阈值停止保留，准入后两模型固定请求各 10/10；正式资格、确定性及 P2 主运行仍各自验收。
 
-[架构重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)：全量单元／集成 533 通过、14 项按条件跳过；完整配置浏览器 29 通过、6 项按条件跳过，精简配置专项 8 通过。模型与 QQ 出站为受控替身，548 个研究／共同基础文件与基线提交保持一致；失败及修复记录保留。此前的[发布回归回执](../experiments/engineering/2026-11-10-github-validation/receipt.json)继续保留原记录。
+[本轮陪伴架构回执](../experiments/engineering/2026-11-10-life-architecture/receipt.json)：全量单元／集成 537 通过、14 项按条件跳过；完整配置浏览器 29 通过、6 项按条件跳过，精简配置专项 8 通过。新增边界专项 18 通过。30 个陪伴参考仓库均核对固定提交的 README 与 LICENSE，其中 6 个抽样阅读关键源码；另保留 3 个架构主参考，均未安装或导入其源码/素材。550 个既有研究／共同基础及声明测量文件与本轮基线 `54ba8a5` 逐字节一致。模型、媒体和 QQ 出站使用受控替身。
+
+本轮在共享运行时中固定单轮模块选择，并加入 `bounded-context-v1` 产品长度策略、工具调用期限和结果未知时停止后续工具。它不改变原始存储文本；旧直接构造入口未显式设置预算时保留原长度策略。产品提示策略已改变，冻结记忆文件未改不等于实验条件一致；新策略的研究评估尚未运行。可编辑架构源与 PNG/SVG 见 [ARCHITECTURE](ARCHITECTURE.md)，完整参考目录见 [COMPANION-REFERENCES](COMPANION-REFERENCES.md)。此前的[运行时重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)和[发布回归回执](../experiments/engineering/2026-11-10-github-validation/receipt.json)保留原记录。
 
 ## 1. 约束
 

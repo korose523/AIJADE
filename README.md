@@ -32,6 +32,12 @@ references and their mapping to the implementation. Web/native apps, chat connec
 `CompanionRuntime`; ordinary chat, first lines and reminders share reply streaming and persistence. Explicit companion media
 commands use that entry point too. Optional modules are named, switchable and isolated from one another's failures.
 
+The [30-project companion reference catalogue](docs/COMPANION-REFERENCES.md) pins source and licence checks; third-party
+plugins were not installed or copied. The [system overview](docs/architecture/overview.png) and
+[message flow](docs/architecture/turn-flow.png) are rendered from editable Mermaid in the architecture guide.
+Product turns keep a stable module selection, bound optional prompt/history size and stop further tools after an
+uncertain tool outcome. Character limits are configurable and are not model-token or real-model speed guarantees.
+
 For a companion deployment, configure the existing PostgreSQL and model gateway, then run `tools/run-companion.sh`.
 It keeps the core, shared memory and evidence pipeline, and mounts MCP, external tools, the MOSAIC bridge and billing only
 when selected. The existing `full` profile remains the default for deployment and research compatibility. No new service stack,

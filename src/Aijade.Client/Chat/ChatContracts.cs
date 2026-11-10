@@ -73,6 +73,12 @@ public sealed record OrchestratorOptions
     /// <summary>Total external tool calls per turn, across all rounds. Zero allows conversation only.</summary>
     public int MaxToolCalls { get; set; } = 12;
 
+    /// <summary>Deadline for one tool call, clamped to 1..300 seconds. Timeout does not prove that an effect was undone.</summary>
+    public int ToolTimeoutSeconds { get; set; } = 30;
+
+    /// <summary>Null preserves the archived direct caller's prompt construction; the product factory supplies defaults.</summary>
+    public PromptBudget? PromptBudget { get; set; }
+
     /// <summary>Optional fictional life context for product-only first lines; it does not call research memory providers.</summary>
     public Func<TurnContext, CancellationToken, Task<string?>>? CompanionContext { get; set; }
 

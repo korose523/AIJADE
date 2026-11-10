@@ -417,17 +417,18 @@
         var learning = Capabilities.For(State.Account?.Id ?? "anonymous");
         var companion = State.CompanionFor(who?.Id);
         return CompanionRuntime.Create(State.Api,
-            [new("memory", new MemoryRecallProvider(State.Api, () => State.Settings.Current.Modules.Memory)),
-             new("learning", learning, learning, () => State.Settings.Current.Modules.Learning),
-             new("vision", Vision.Context, Enabled: () => State.Settings.Current.Modules.Vision),
-             new("life", companion, companion),
-             new("browser", new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.BrowserContext)),
-             new("ide", new LiveContextProvider(State.Api, () => State.Settings.Current.Modules.IdeContext, "ide"))],
+            [new("life", companion, companion),
+             new("memory", new MemoryRecallProvider(State.Api, () => s.Modules.Memory)),
+             new("learning", learning, learning, () => s.Modules.Learning),
+             new("vision", Vision.Context, Enabled: () => s.Modules.Vision),
+             new("browser", new LiveContextProvider(State.Api, () => s.Modules.BrowserContext)),
+             new("ide", new LiveContextProvider(State.Api, () => s.Modules.IdeContext, "ide"))],
             new OrchestratorOptions
             {
                 Model = s.Model, Temperature = s.Temperature, AgentId = who?.Id ?? "aijade", UserScope = State.Account?.Id ?? "default",
-                Drawing = () => canDraw && State.Settings.Current.Modules.Artistry,
-                Tools = () => State.Settings.Current.Modules.Mcp,
+                Drawing = () => canDraw && s.Modules.Artistry,
+                Tools = () => s.Modules.Mcp,
+                PromptBudget = s.PromptBudget, ToolTimeoutSeconds = s.ToolTimeoutSeconds,
             },
             companion);
     }

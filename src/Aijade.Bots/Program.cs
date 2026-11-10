@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 //   Aijade:Token         a bot account's token (a static token from the server's Auth:StaticTokens, or a session token)
 //   Bridge:CharacterId   optional character the companion plays here; Bridge:Drawing / Bridge:Memory / Bridge:Tools true/false
 //   Bridge:Model, Bridge:MaxToolRounds (default 4), Bridge:MaxToolCalls (default 12)  bounded per-turn tool worker
+//   Bridge:ToolTimeoutSeconds (default 30), Bridge:PromptBudget:{Module,Supplement,History,ToolResult}Characters
 //   Bridge:StateFile     where conversation → chat mappings are kept (default ./aijade-bots-state.json)
 //   Bridge:Reminders     false to keep no reminders; otherwise she keeps those asked for in private conversations on the
 //                        platforms that can start a message (QQ, Telegram) and says them when due (ADR-003)
@@ -51,6 +52,14 @@ builder.Services.AddSingleton(sp => new CompanionBridge(sp.GetRequiredService<Ai
         Model = config["Bridge:Model"] ?? "aijade-chat",
         MaxToolRounds = int.TryParse(config["Bridge:MaxToolRounds"], out var rounds) ? rounds : 4,
         MaxToolCalls = int.TryParse(config["Bridge:MaxToolCalls"], out var calls) ? calls : 12,
+        ToolTimeoutSeconds = int.TryParse(config["Bridge:ToolTimeoutSeconds"], out var seconds) ? seconds : 30,
+        PromptBudget = new PromptBudget
+        {
+            ModuleCharacters = int.TryParse(config["Bridge:PromptBudget:ModuleCharacters"], out var moduleChars) ? moduleChars : 4_000,
+            SupplementCharacters = int.TryParse(config["Bridge:PromptBudget:SupplementCharacters"], out var supplementChars) ? supplementChars : 12_000,
+            HistoryCharacters = int.TryParse(config["Bridge:PromptBudget:HistoryCharacters"], out var historyChars) ? historyChars : 24_000,
+            ToolResultCharacters = int.TryParse(config["Bridge:PromptBudget:ToolResultCharacters"], out var toolChars) ? toolChars : 8_000,
+        },
     },
     StateFile = config["Bridge:StateFile"] is { Length: > 0 } f ? f : "aijade-bots-state.json",
     Companion = sp.GetRequiredService<CompanionConfiguration>().For,

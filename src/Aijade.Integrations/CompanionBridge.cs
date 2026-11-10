@@ -105,12 +105,12 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         var modules = new List<ChatModule>();
         if (memorySession is not null)
         {
+            if (companion is not null)
+                modules.Add(new("life", companion, companion));
             if (options.Memory)
                 modules.Add(new("memory", new MemoryRecallProvider(api, () => true, session: memorySession)));
             modules.AddRange((context ?? []).Select((p, i) => new ChatModule($"channel-context-{i}", p)));
             modules.AddRange((observers ?? []).Select((o, i) => new ChatModule($"channel-observer-{i}", Observer: o)));
-            if (companion is not null)
-                modules.Add(new("life", companion, companion));
         }
         return CompanionRuntime.Create(api, modules, options.Orchestrator with
         {

@@ -149,6 +149,7 @@ public class ToolTests
         public List<JsonNode> Bodies { get; } = [];
         public int CallsPerTurn { get; set; } = 1;
         public bool MalformedArguments { get; set; }
+        public JsonNode? ArgumentNode { get; set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -163,7 +164,7 @@ public class ToolTests
                     calls.Add(new JsonObject { ["id"] = $"call_{i + 1}", ["type"] = "function", ["function"] = new JsonObject
                     {
                         ["name"] = "home__call_service",
-                        ["arguments"] = MalformedArguments ? "[invalid" : """{"domain":"light","service":"turn_on","entity_id":"light.desk"}""",
+                        ["arguments"] = ArgumentNode?.DeepClone() ?? JsonValue.Create(MalformedArguments ? "[invalid" : """{"domain":"light","service":"turn_on","entity_id":"light.desk"}"""),
                     } });
                 return Text(response.ToJsonString());
             }
@@ -253,6 +254,11 @@ public class ToolTests
             .SendAsync(chat.Id, null, [], "Try the light", "snap", ct)) { }
         Assert.Equal(priorActions + 1, ha.Requests.Count(r => r.Url.EndsWith("/api/services/light/turn_on", StringComparison.Ordinal)));
         Assert.Contains("valid JSON", llm.Bodies[^1]["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        llm.ArgumentNode = new JsonObject { ["domain"] = "light" }; // wrong wire type, not a JSON-encoded string
+        await foreach (var _ in CompanionRuntime.Create(api, [], new OrchestratorOptions { Tools = () => true })
+            .SendAsync(chat.Id, null, [], "Try a malformed response", "snap", ct)) { }
+        Assert.Equal(priorActions + 1, ha.Requests.Count(r => r.Url.EndsWith("/api/services/light/turn_on", StringComparison.Ordinal)));
+        Assert.Contains("valid JSON", llm.Bodies[^1]["messages"]!.AsArray()[^1]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
 
         // With the module off, no tools are offered and the reply streams as before.
         events.Clear();
@@ -260,6 +266,65 @@ public class ToolTests
             events.Add(e);
         Assert.Equal("No tools here.", Assert.IsType<TurnCompleted>(events[^1]).Reply.Content);
         Assert.Null(llm.Bodies[^1]["tools"]);
+    }
+
+    private sealed class ToolTransport(HttpMessageHandler server, string mode) : DelegatingHandler(server)
+    {
+        public int Discoveries { get; private set; }
+        public int Executions { get; private set; }
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            if (request.RequestUri!.AbsolutePath == "/api/v1/tools")
+            {
+                Discoveries++;
+                return Text("""{"tools":[{"name":"home__call_service","description":"Switch a lamp","parameters":{"type":"object"}}]}""");
+            }
+            if (request.RequestUri.AbsolutePath == "/api/v1/tools/call")
+            {
+                Executions++;
+                if (mode == "timeout")
+                    await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+                if (mode == "transport")
+                    throw new HttpRequestException("Connection dropped after request dispatch");
+                return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable) { Content = new StringContent("""{"error":"TOOL_SERVER_DOWN","message":"upstream unavailable"}""", Encoding.UTF8, "application/json") };
+            }
+            return await base.SendAsync(request, cancellationToken);
+        }
+    }
+
+    [Theory]
+    [InlineData("timeout")]
+    [InlineData("transport")]
+    [InlineData("server")]
+    public async Task An_ambiguous_tool_outcome_stops_the_batch_and_is_returned_to_the_model_without_an_automatic_retry(string mode)
+    {
+        var ct = TestContext.Current.CancellationToken; var llm = new ToolLlm { CallsPerTurn = 3 };
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await host.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/routes", JsonNode.Parse("""
+            {"models":{"aijade-chat":{"upstream":"https://llm.example/v1","model":"m","keys":["k"]}}}
+            """), ServerTestHost.AdminToken);
+        using var transport = new ToolTransport(host.App.GetTestServer().CreateHandler(), mode);
+        using var http = new HttpClient(transport) { BaseAddress = host.Client.BaseAddress };
+        var tokens = new MemoryTokenStore(); await tokens.SetAsync(ServerTestHost.Token);
+        var api = new AijadeApi(http, tokens); var chat = await api.CreateChatAsync(null, "uncertain", ct);
+        var options = new OrchestratorOptions { Tools = () => true, ToolTimeoutSeconds = 1 };
+        await foreach (var _ in CompanionRuntime.Create(api, [], options).SendAsync(chat.Id, null, [], "Switch the lamp", "snapshot", ct)) { }
+        Assert.Equal(1, transport.Executions);
+        Assert.Equal(2, llm.Bodies.Count); Assert.Null(llm.Bodies[^1]["tools"]);
+        var results = llm.Bodies[^1]["messages"]!.AsArray().Where(m => m?["role"]?.GetValue<string>() == "tool").ToList();
+        Assert.Equal(3, results.Count);
+        Assert.Contains("outcome unknown", results[0]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.All(results.Skip(1), r => Assert.Contains("No further tools were executed", r!["content"]!.GetValue<string>(), StringComparison.Ordinal));
+
+        // A zero call or round budget does not make a discovery request and keeps the streaming path.
+        foreach (var zero in new[] { options with { MaxToolCalls = 0 }, options with { MaxToolRounds = 0 } })
+        {
+            var events = new List<OrchestratorEvent>();
+            await foreach (var e in CompanionRuntime.Create(api, [], zero).SendAsync(chat.Id, null, [], "Just talk", "snapshot", ct)) events.Add(e);
+            Assert.Equal("No tools here.", Assert.IsType<TurnCompleted>(events[^1]).Reply.Content);
+        }
+        Assert.Equal(1, transport.Discoveries); Assert.Equal(1, transport.Executions);
     }
 
     /// <summary>Sends ha.local to the Home Assistant fake and everything else to the test server.</summary>

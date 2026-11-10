@@ -177,6 +177,11 @@ public sealed record AppSettings
 
     public double? Temperature { get; init; }
 
+    /// <summary>Optional context and history limits; exported with settings and applied to the next product turn.</summary>
+    public Aijade.Client.Chat.PromptBudget PromptBudget { get; init; } = new();
+
+    public int ToolTimeoutSeconds { get; init; } = 30;
+
     public string? ActiveCharacterId { get; init; }
 
     /// <summary>Record conversations to long-term memory.</summary>
