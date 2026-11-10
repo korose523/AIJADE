@@ -15,6 +15,7 @@ import math
 from pathlib import Path
 import random
 import statistics
+import struct
 
 SEED = 20261110
 B = 10000
@@ -144,11 +145,19 @@ def product_rows(folder, mode, corpus):
         contents = {r['Id']: r['Content'] for r in stored}
         dates = {r['Id']: r['CreatedAt'] for r in stored}
         assert len(stored) == len(conv['turns'])
+        for turn in conv['turns']:
+            source_id = evidence_id(c, turn['id'])
+            assert contents[source_id] == turn['content']
+            when = dt.datetime.fromisoformat(dates[source_id].replace('Z', '+00:00'))
+            if when.tzinfo is None:
+                when = when.replace(tzinfo=dt.timezone.utc)
+            assert round(when.timestamp() * 1000) == turn['createdAt']
         for q, question in enumerate(conv['questions']):
             expected_gold = {evidence_id(c, source) for source in question['evidence']}
             for cell in POLICIES:
                 row = data[(c, q, cell)]
                 assert row['completed'] and row['mode'] == mode
+                assert row['searches'][0]['Query'] == question['question']
                 assert (c + q + row['position']) % 4 == POLICIES.index(cell)
                 assert row['answerable'] == (question['category'] != 5)
                 assert set(row['goldIds']) == expected_gold and row['evidence'] == len(expected_gold)
@@ -198,6 +207,7 @@ def external_rows(folder, system, corpus):
     lengths = []
     access_rows = 0
     tie_rows = 0
+    cutoff_ties = 0
     for c, conv in enumerate(corpus):
         snapshot = load(base / ('store-%s.json.gz' % c))
         contents = {t['id']: t['content'] for t in conv['turns']}
@@ -215,6 +225,8 @@ def external_rows(folder, system, corpus):
             assert {x['metadata']['source_turn'] for x in snapshot['items']} == sources
             assert all(x['memory'] == contents[x['metadata']['source_turn']] for x in snapshot['items'])
         for q, question in enumerate(conv['questions']):
+            reference_pool = set(data[(c, q, CELLS[0])]['poolIds'])
+            assert all(set(data[(c, q, cell)]['poolIds']) == reference_pool for cell in CELLS), 'external cells changed the candidate pool'
             for cell in CELLS:
                 row = data[(c, q, cell)]
                 capture = prompts[(c, q, cell)]
@@ -232,10 +244,14 @@ def external_rows(folder, system, corpus):
                         old = dt.datetime.fromisoformat(candidate['lastAccess'])
                         relevance = candidate['relevance'] if candidate['relevance'] is not None else 0.0
                         expected = 0.99 ** ((now - old).total_seconds() / 3600) + relevance
+                        if candidate['nativeOwnType'] == 'float32':
+                            f32 = lambda x: struct.unpack('f', struct.pack('f', x))[0]
+                            expected = f32(f32(0.99 ** ((now - old).total_seconds() / 3600)) + f32(relevance))
                         assert abs(candidate['own'] - expected) < 1e-12
                         used = relevance if row['scorer'] == 'relevance' else expected
                         assert abs(candidate['used'] - used) < 1e-12
-                    ranked = sorted(row['candidates'], key=lambda x: -x['used'])[:8]
+                    full_ranked = sorted(row['candidates'], key=lambda x: -x['used'])
+                    ranked = full_ranked[:8]
                     assert [r['source'] for r in ranked] == [r['source'] for r in row['delivered']]
                     for update in row['accessWrites']:
                         assert update['before'] == state[cell][update['source']]
@@ -244,15 +260,19 @@ def external_rows(folder, system, corpus):
                             state[cell][update['source']] = update['written']
                     access_rows += bool(row['accessWrites'])
                     tie_rows += row['rankTies'] > 0
+                    cutoff_ties += len(full_ranked) > 8 and full_ranked[7]['used'] == full_ranked[8]['used']
                 else:
                     threshold = 0.1 if row['policy'] == 'on' else 0.0
                     assert row['threshold'] == threshold
                     passing = [x for x in row['candidates'] if x['semantic'] >= threshold]
                     assert set(row['aboveIds']) == {x['source'] for x in passing}
                     for candidate in passing:
-                        candidate['expectedScore'] = candidate['semantic'] if row['scorer'] == 'relevance' else min(
+                        candidate['expectedScore'] = min(candidate['semantic'], 1.0) if row['scorer'] == 'relevance' else min(
                             (candidate['semantic'] + candidate['bm25'] + candidate['entity']) / candidate['divisor'], 1.0)
-                    ranked = sorted(passing, key=lambda x: -x['expectedScore'])[:8]
+                    full_ranked = sorted(passing, key=lambda x: -x['expectedScore'])
+                    ranked = full_ranked[:8]
+                    tie_rows += any(a['expectedScore'] == b['expectedScore'] for a, b in zip(full_ranked, full_ranked[1:]))
+                    cutoff_ties += len(full_ranked) > 8 and full_ranked[7]['expectedScore'] == full_ranked[8]['expectedScore']
                     assert [x['source'] for x in ranked] == [x['source'] for x in row['delivered']]
                     assert all(abs(a['expectedScore'] - b['score']) < 1e-12 for a, b in zip(ranked, row['delivered']))
                 assert len(row['delivered']) <= 8
@@ -277,7 +297,20 @@ def external_rows(folder, system, corpus):
     unit = {'items': len(lengths), 'unit': 'source turn', 'sourceTurnsPerItemMedian': 1, 'sourceTurnsPerItemMax': 1,
             'lengthUnit': 'UTF-16 code units', 'median': statistics.median(lengths), 'q1': quantile(lengths, .25),
             'q3': quantile(lengths, .75), 'max': max(lengths)}
-    return data, receipt, {'states': dict(states), 'itemUnits': unit, 'rowsWithAccessChanges': access_rows, 'rowsWithRankTies': tie_rows}
+    switch = {}
+    for name, a_cell, b_cell in [('policyUnderOwn', 'on-own', 'off-own'), ('scorePolicyOn', 'on-own', 'on-relevance')]:
+        changed = gold_changed = mask_changed = 0
+        for c, conv in enumerate(corpus):
+            for q in range(len(conv['questions'])):
+                a, b = data[(c, q, a_cell)], data[(c, q, b_cell)]
+                changed += [r['source'] for r in a['delivered']] != [r['source'] for r in b['delivered']]
+                gold_changed += a['delivered8'] != b['delivered8']
+                mask_changed += set(a['aboveIds']) != set(b['aboveIds'])
+        switch[name] = {'questions': 1986, 'differentOrderedTop8': changed, 'differentGoldCountsAt8': gold_changed,
+                        'differentThresholdMasks': mask_changed}
+    return data, receipt, {'states': dict(states), 'itemUnits': unit, 'rowsWithAccessChanges': access_rows,
+                           'rowsWithRankTies': tie_rows, 'rowsWithExactCutoffTieAt8': cutoff_ties,
+                           'candidatePoolsMatchedAcrossAllCells': True, 'switchDiagnostics': switch}
 
 
 def select(corpus, population):
@@ -355,19 +388,23 @@ def d_effect(data, eligible):
             'scope': 'named configured write/read policy, conditional captured vectors; no population-wide policy verdict'}
 
 
-def analyze(folder, corpus_path):
+def analyze(folder, corpus_path, external_folder=None):
     corpus = load(corpus_path)
     assert len(corpus) == 10 and sum(len(c['questions']) for c in corpus) == 1986
     result = {'schema': 'aijade.p3.policy.summary.v1', 'planCommit': '132bfda51b95fd4b0ebfc23304142d56bfcb455b',
+              'recordingAmendmentCommit': '87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2',
+              'corpusSha256': '79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4',
+              'corpusExportSha256': sha(corpus_path),
               'bootstrapSeed': SEED, 'bootstrapReplicates': B, 'resamplingUnit': 'conversation',
               'percentileMethod': 'linear interpolation of sorted resamples', 'newModelCalls': 0,
               'product': {}, 'external': {}}
     product_family = []
     external_family = []
-    commits = set()
+    product_commits = set()
+    external_commits = set()
     for mode in ['text', 'embedding']:
         data, receipt, states = product_rows(folder, mode, corpus)
-        commits.add(receipt['codeCommit'])
+        product_commits.add(receipt['codeCommit'])
         item = {'validation': {'rows': len(data), 'questionsPerCell': 1986, 'cells': 4, 'states': states, 'baselineIdMatches': receipt['baselines']}, 'populations': {}}
         for population in ['answerable', 'all', 'located']:
             eligible, counts = select(corpus, population)
@@ -396,8 +433,8 @@ def analyze(folder, corpus_path):
             item['populations'][population] = population_result
         result['product'][mode] = item
     for system in ['langchain', 'mem0']:
-        data, receipt, validation = external_rows(folder, system, corpus)
-        commits.add(receipt['codeCommit'])
+        data, receipt, validation = external_rows(external_folder or folder, system, corpus)
+        external_commits.add(receipt['codeCommit'])
         item = {'validation': {'rows': len(data), 'questionsPerCell': 1986, 'cells': 4, **validation}, 'populations': {}}
         for population in ['answerable', 'all', 'located']:
             eligible, counts = select(corpus, population)
@@ -407,8 +444,8 @@ def analyze(folder, corpus_path):
                 effects = item['populations'][population]['effects']
                 external_family.extend([effects['scoringOwnMinusRelevancePolicyOn'], effects['policyOnMinusOffOwnScorer']])
         result['external'][system] = item
-    assert len(commits) == 1, 'mixed execution commits'
-    result['executionCodeCommit'] = commits.pop()
+    assert len(product_commits) == len(external_commits) == 1, 'mixed execution commits within a study'
+    result['executionCodeCommits'] = {'product': product_commits.pop(), 'external': external_commits.pop()}
     holm(product_family)
     holm(external_family)
     result['multiplicity'] = {'productPrimaryFamily': len(product_family), 'externalSignedPrimaryFamily': len(external_family),
@@ -421,11 +458,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('folder', type=Path)
     parser.add_argument('--corpus', type=Path, required=True)
+    parser.add_argument('--external-folder', type=Path)
     parser.add_argument('--out', type=Path, required=True)
     args = parser.parse_args()
-    output = analyze(args.folder, args.corpus)
+    output = analyze(args.folder, args.corpus, args.external_folder)
     with args.out.open('x') as f:
         json.dump(output, f, ensure_ascii=False, indent=2, allow_nan=False)
         f.write('\n')
-    print(json.dumps({'status': 'VALIDATED_AND_SUMMARIZED', 'codeCommit': output['executionCodeCommit'],
+    print(json.dumps({'status': 'VALIDATED_AND_SUMMARIZED', 'codeCommits': output['executionCodeCommits'],
                       'productConditions': 8, 'externalConditions': 8, 'newModelCalls': 0}))

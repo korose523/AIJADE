@@ -141,7 +141,70 @@ def current_product_receipt(path, current_ref=None):
             'note': 'Artifact/source/coverage consistency only. The separate capture validator checks rows against the corpus. Binary hashes are recorded, not independently attested. No all-feature Web/QQ, causal version effect or answer accuracy is inferred.'}
 
 
-def audit(current_ref=None, qualitative_manifest=None, current_receipt=None):
+def policy_comparison_receipt(path, current_ref=None):
+    """Check the named policy package without transferring its results to other/default configurations."""
+    receipt = json.loads(path.read_text(encoding='utf-8'))
+    if receipt['schema'] != 'aijade.p3.policy.run.v1':
+        raise ValueError('Unknown configured P3 policy receipt schema')
+    folder = (ROOT / receipt['artifactRoot']).resolve()
+    if not folder.is_relative_to(ROOT.resolve()):
+        raise ValueError('P3 policy package is outside the repository')
+    artifacts = []
+    for name, expected in receipt['artifactSha256'].items():
+        target = (folder / name).resolve()
+        if not target.is_relative_to(folder):
+            raise ValueError('P3 policy artifact escapes its package')
+        artifacts.append({'path': name, 'matches': target.is_file() and sha(target.read_bytes()) == expected})
+    summary_path = (folder / receipt['summary']).resolve()
+    if not summary_path.is_relative_to(folder):
+        raise ValueError('P3 policy summary escapes its package')
+    summary = json.loads(summary_path.read_text(encoding='utf-8'))
+    source_manifest = json.loads((folder / 'protected-inputs.json').read_text(encoding='utf-8'))
+    sources = []
+    for name, expected in source_manifest['sha256'].items():
+        if not name.startswith('src/'):
+            continue
+        try:
+            actual = sha(source(current_ref, name))
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            actual = None
+        sources.append({'path': name, 'matches': actual == expected})
+    coverage = []
+    for group, names in [('product', ['text', 'embedding']), ('external', ['langchain', 'mem0'])]:
+        for name in names:
+            item = summary[group][name]
+            checked = item['validation']
+            primary = item['populations']['answerable']['population']
+            coverage.append({'group': group, 'configuration': name, 'rows': checked['rows'],
+                             'matches': checked['rows'] == 7944 and checked['questionsPerCell'] == 1986 and checked['cells'] == 4
+                             and sum(checked['states'].values()) == 7944 and primary['questions'] == 1540
+                             and primary['eligibleQuestions'] == 1536})
+    codes = receipt['executionCodeCommits']
+    ancestry = all(subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['planCommit'], code], capture_output=True).returncode == 0 for code in codes.values())
+    measured = []
+    for record in receipt['measuringSources']:
+        name, expected, code = record['path'], record['sha256'], codes[record['study']]
+        try:
+            actual = sha(source(code, name))
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            actual = None
+        measured.append({'path': name, 'matchesExecutionCommit': actual == expected})
+    binary_bound = all(set(binaries) == {'Aijade.Tests', 'Aijade.Client', 'Aijade.Server'} and
+                       all(codes[study] in item['informationalVersion'] and len(item['sha256']) == 64 for item in binaries.values())
+                       for study, binaries in receipt['actualBinaryIdentitiesByStudy'].items())
+    required = {'summary.json', 'protected-inputs.json', 'search-crosscheck.json', 'execution.json'}
+    valid = (required <= set(receipt['artifactSha256']) and all(item['matches'] for item in artifacts)
+             and sources and all(item['matches'] for item in sources) and measured
+             and all(item['matchesExecutionCommit'] for item in measured) and all(item['matches'] for item in coverage)
+             and ancestry and binary_bound and summary['executionCodeCommits'] == codes
+             and summary['planCommit'] == receipt['planCommit'] and receipt['capturedTurns'] == 31776
+             and receipt['newModelCalls'] == summary['newModelCalls'] == 0)
+    return {'valid': bool(valid), 'coverage': coverage, 'artifacts': artifacts, 'productSourceFiles': sources,
+            'measuringSources': measured, 'planPrecedesCode': ancestry, 'recordedBinaryIdentityBound': binary_bound,
+            'scope': summary['scope'], 'note': 'Hash, source and complete-cell consistency; the raw capture/summary and numerical validators remain separate. Recorded identities are not independent execution attestation or scientific approval.'}
+
+
+def audit(current_ref=None, qualitative_manifest=None, current_receipt=None, policy_receipt=None):
     frozen = load('configs/project-scope.json')['frozen']
     frozen_checks = [{'path': f['path'], 'expectedSha256': f['sha256'],
                       'actualSha256': sha(source(current_ref, f['path']))} for f in frozen]
@@ -209,6 +272,9 @@ def audit(current_ref=None, qualitative_manifest=None, current_receipt=None):
     ]
     inventory = [{'item': item, 'path': path, 'sha256': sha((ROOT/path).read_bytes()), 'scope': scope}
                  for item, path, scope in artifacts]
+    policies = policy_comparison_receipt(policy_receipt, current_ref) if policy_receipt else {'status': 'NOT_SELECTED'}
+    if policy_receipt:
+        checks['currentP3PolicyArtifactsValid'] = policies['valid']
     return {
         'audit': '2026-11-03 supervisor review against local AIJADE evidence',
         'comparisonBasis': current_ref or 'working-tree',
@@ -219,6 +285,7 @@ def audit(current_ref=None, qualitative_manifest=None, current_receipt=None):
         'productVersionComparison': comparisons, 'p1bRecomputation': by_matrix,
         'qualitativeProvenance': qualitative,
         'currentP3e': current,
+        'currentP3Policies': policies,
         'artifacts': inventory,
         'interpretation': {
             'archiveStatistics': 'Existing records can be recomputed; unchanged archives are not new observations.',
@@ -239,8 +306,10 @@ def main():
                         help='Correction manifest for AI-assisted interpretations; verifies original artifact hashes without rewriting them')
     parser.add_argument('--current-product-receipt', type=Path,
                         help='Validate a new full-corpus shared-runtime receipt separately from historical v1 figures')
+    parser.add_argument('--policy-receipt', type=Path,
+                        help='Validate configured full policy comparisons separately from historical component pre-checks')
     args = parser.parse_args()
-    result = audit(args.current_ref, args.qualitative_provenance, args.current_product_receipt)
+    result = audit(args.current_ref, args.qualitative_provenance, args.current_product_receipt, args.policy_receipt)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     if not result['checks']['frozenSourcesMatch'] or not result['checks']['p1bScoresRecompute']:
@@ -249,7 +318,9 @@ def main():
         return 4
     if not result['checks'].get('currentP3eArtifactsValid', True):
         return 5
-    if args.require_current_version and not (result['checks']['p3eSourcesMatchComparison'] or result['checks'].get('currentP3eArtifactsValid')):
+    if not result['checks'].get('currentP3PolicyArtifactsValid', True):
+        return 6
+    if args.require_current_version and not (result['checks']['p3eSourcesMatchComparison'] or result['checks'].get('currentP3eArtifactsValid') or result['checks'].get('currentP3PolicyArtifactsValid')):
         return 3
     return 0
 

@@ -13,6 +13,7 @@ import importlib.metadata as metadata
 import inspect
 import json
 import math
+import numbers
 import os
 from pathlib import Path
 import subprocess
@@ -46,7 +47,15 @@ def dump(path, value):
 
 
 def write_row(stream, row):
-    stream.write(json.dumps(row, ensure_ascii=False, separators=(',', ':'), allow_nan=False) + '\n')
+    def native_scalar(value):
+        if isinstance(value, numbers.Integral):
+            return int(value)
+        if isinstance(value, numbers.Real):
+            return float(value)
+        if type(value).__module__.startswith('numpy') and type(value).__name__ == 'bool_':
+            return bool(value)
+        raise TypeError('Unsupported native recording value: ' + type(value).__name__)
+    stream.write(json.dumps(row, ensure_ascii=False, separators=(',', ':'), allow_nan=False, default=native_scalar) + '\n')
     stream.flush()
 
 
@@ -135,8 +144,10 @@ class LangChainTrajectory:
             def _get_combined_score(self, document, vector_relevance, current_time):
                 own = super()._get_combined_score(document, vector_relevance, current_time)
                 score = (vector_relevance if vector_relevance is not None else 0.0) if self.relevance_only else own
-                self.trace.append({'source': document.metadata['source_turn'], 'own': own, 'relevance': vector_relevance,
-                                   'used': score, 'lastAccess': document.metadata['last_accessed_at'].isoformat(),
+                self.trace.append({'source': document.metadata['source_turn'], 'own': float(own),
+                                   'relevance': None if vector_relevance is None else float(vector_relevance),
+                                   'used': float(score), 'nativeOwnType': type(own).__name__, 'nativeUsedType': type(score).__name__,
+                                   'lastAccess': document.metadata['last_accessed_at'].isoformat(),
                                    'time': current_time.isoformat()})
                 return score
 
@@ -266,8 +277,11 @@ def qualify(out):
         {'id': 'F3', 'content': 'fixture-mid', 'createdAt': 0},
     ]}
     trajectories = {cell: LangChainTrajectory(conv, replay, *cell) for cell in CELLS}
+    trace_path = out / 'synthetic-native-traces.jsonl.gz'
+    traces = gzip.open(trace_path, 'xt', encoding='utf-8')
     for (policy, scorer), trajectory in trajectories.items():
         row = trajectory.read('fixture-query', 1)
+        write_row(traces, {'policy': policy, 'scorer': scorer, **row})
         assert len(row['delivered']) == 3 and len(row['accessWrites']) == 3
         initial = {r['source']: r['lastAccess'] for r in trajectory.initial}
         after = {d.metadata['source_turn']: d.metadata['last_accessed_at'].isoformat() for d in trajectory.retriever.memory_stream}
@@ -278,9 +292,11 @@ def qualify(out):
     counts = {}
     for policy, scorer in CELLS:
         row = store.read('fixture-query', policy, scorer)
+        write_row(traces, {'system': 'mem0', 'policy': policy, 'scorer': scorer, **row})
         counts[policy + '-' + scorer] = len(row['delivered'])
         assert ('F2' in {r['source'] for r in row['delivered']}) == (policy == 'off')
     store.close()
+    traces.close()
     dump(out / 'qualification.json', {'status': 'PASS', 'packageIdentities': identities(), 'mem0OutputCounts': counts,
                                     'langchainCells': 4, 'sourceMapping': 'one unique source per stored turn',
                                     'newModelCalls': 0, 'fixtureOnly': True})
@@ -310,6 +326,7 @@ def run(args):
             assert question['question'].strip() in replay.vectors
     code = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
     dump(args.out / 'started.json', {'schema': 'aijade.p3.policy.external-start.v1', 'system': args.system,
+                                    'recordingAmendmentCommit': '87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2',
                                     'planCommit': PLAN, 'codeCommit': code, 'identities': identity,
                                     'corpusSha256': CORPUS_SHA, 'exportSha256': sha(args.corpus),
                                     'embeddingSourceSha256': replay.source_sha, 'uniqueReplayInputs': len(replay.vectors),
@@ -349,6 +366,7 @@ def run(args):
             print(args.system, 'conversation', c, 'rows', total, flush=True)
     assert total == 7944 and replay.misses == 0
     dump(args.out / 'receipt.json', {'schema': 'aijade.p3.policy.external.v1', 'status': 'ALL_CONFIGURED_CELLS_COMPLETE',
+                                   'recordingAmendmentCommit': '87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2',
                                    'system': args.system, 'rows': total, 'conversations': 10, 'questionsPerCell': 1986,
                                    'planCommit': PLAN, 'codeCommit': code, 'identities': identity,
                                    'sourceSha256': sha(Path(__file__)), 'journalSha256': sha(path),

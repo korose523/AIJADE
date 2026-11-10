@@ -32,6 +32,17 @@ def run(args):
         binaries[name] = {'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'informationalVersion': identity.group().decode()}
     ledger = {'schema': 'aijade.p3.policy.execution.v1', 'planCommit': PLAN, 'codeCommit': commit,
               'binaryIdentities': binaries, 'startedAt': dt.datetime.now(dt.timezone.utc).isoformat(), 'phases': []}
+    if args.external_only:
+        ledger['recordingAmendmentCommit'] = '87e2f3189ad3eb7fdabd4e45ae298cf8d84b78e2'
+        assert args.completed_product is not None
+        saved = {}
+        for mode in ['text', 'embedding']:
+            path = args.completed_product / mode / ('product-%s-receipt.json' % mode)
+            old = json.loads(path.read_text())
+            assert old['rows'] == 7944 and old['baselines'] == 1986 and old['replayMisses'] == 0
+            saved[mode] = {'receiptSha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'codeCommit': old['codeCommit']}
+        ledger['completedProductReference'] = saved
+        ledger['externalOnlyRestart'] = True
     identity_path = args.out / 'execution.json'
 
     def save():
@@ -72,7 +83,7 @@ def run(args):
     script = str(Path(__file__).with_name('external_policies.py'))
     execute('external-qualification', [str(args.external_python), script, '--qualify', '--out', str(args.out / 'external-qualification')])
     test = [str(args.dotnet), 'test', 'tests/Aijade.Tests/Aijade.Tests.csproj', '-c', 'Release', '--no-build']
-    for mode in ['text', 'embedding']:
+    for mode in ([] if args.external_only else ['text', 'embedding']):
         target = args.out / mode
         target.mkdir()
         command = test + ['--filter', 'FullyQualifiedName~ProductPolicyExperimentTests', '--logger', 'trx;LogFileName=full-corpus.trx', '--results-directory', str(target / 'test-results')]
@@ -96,6 +107,8 @@ def run(args):
 if __name__ == '__main__':
     p = argparse.ArgumentParser(__doc__)
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--external-only', action='store_true')
+    p.add_argument('--completed-product', type=Path)
     p.add_argument('--dotnet', type=Path, default=Path('/Users/mac/.dotnet/dotnet'))
     p.add_argument('--external-python', type=Path, default=Path('/Users/mac/p3c-env/venv/bin/python'))
     p.add_argument('--artifacts', type=Path, default=Path('/Users/mac/.cache/aijade-next-artifacts'))

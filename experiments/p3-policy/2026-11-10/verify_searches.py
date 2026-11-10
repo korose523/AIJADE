@@ -19,6 +19,8 @@ def verify(folder, packet):
     replay = Replay(packet)
     totals = {}
     ties = []
+    exact_boundary_ties = 0
+    near_boundary_ties = 0
     for mode in ['text', 'embedding']:
         current = None
         checked = 0
@@ -63,6 +65,11 @@ def verify(folder, packet):
                         assert all(abs(scores_by_id[a] - scores_by_id[b]) <= 1e-12 for a, b in zip(actual, expected))
                         ties.append({'c': current, 'q': row['q'], 'policy': row['policy'], 'actual': actual, 'numerical': expected})
                     if mode == 'embedding':
+                        limit = search['Limit']
+                        if len(ranked) > limit:
+                            delta = scores_by_id[ranked[limit - 1]] - scores_by_id[ranked[limit]]
+                            exact_boundary_ties += delta == 0
+                            near_boundary_ties += abs(delta) <= 1e-12
                         for item in json.loads(search['RawBody'])['items']:
                             assert abs(item['score'] - scores_by_id[item['id']]) <= .000050000001
                     checked += 1
@@ -71,6 +78,7 @@ def verify(folder, packet):
         totals[mode] = checked
     return {'schema': 'aijade.p3.policy.search-crosscheck.v1', 'status': 'PASS' if not ties else 'PASS_WITH_REPORTED_FLOAT_TIES',
             'numpyVersion': np.__version__, 'actualSearchesChecked': totals, 'floatingRankTies': ties,
+            'exactTieSearchesAtResponseBoundary': exact_boundary_ties, 'nearTieSearchesAtResponseBoundary1e12': near_boundary_ties,
             'newModelCalls': 0, 'scope': 'Numerical/text predicate cross-check of the same actual inputs and API responses; not independent data or replication.'}
 
 

@@ -57,6 +57,18 @@ class AnalysisChecks(unittest.TestCase):
         self.assertEqual(result['ci95'], [1, 1])
         self.assertEqual(result['signFlipP'], 2 / 1024)
 
+    def test_D_is_absolute_macro_effect_not_mean_absolute_effect(self):
+        data = {}
+        eligible = []
+        for c in range(10):
+            own = int(c < 5)
+            for cell in a.CELLS:
+                data[(c, 0, cell)] = {'hit8': own if cell.endswith('own') else 1 - own, 'planned': 1}
+            eligible.append((c, 0, 1))
+        result = a.d_effect(data, eligible)
+        self.assertEqual(result['D']['mean'], 0)
+        self.assertEqual(result['D']['reading'], 'sizes not distinguished on this corpus')
+
 
 if __name__ == '__main__':
     unittest.main()
