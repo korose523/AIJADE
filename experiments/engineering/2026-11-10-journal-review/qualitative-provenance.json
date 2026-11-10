@@ -1,0 +1,55 @@
+{
+  "schema": "aijade.qualitative-provenance.v1",
+  "recordedAt": "2026-11-10T06:28:47.380499+00:00",
+  "baseCommit": "cac86c10cf4afae6f06dacad195d2530a333a600",
+  "authorClarification": {
+    "date": "2026-11-10",
+    "statement": "全部AI辅助判读",
+    "context": "The author identified all four listed readings as AI-assisted. This does not establish independent human coding or manuscript approval."
+  },
+  "independentHumanValidation": "NOT_DOCUMENTED",
+  "archivePolicy": "Original JSON, analysis scripts, categorical labels, counts and numerical results are retained byte-for-byte. This correction supersedes unsupported human-reader attribution; it does not certify the labels.",
+  "items": [
+    {
+      "id": "P1-B-categories",
+      "path": "experiments/p1/survivor-reading.json",
+      "sha256": "99e6de5c4df4ed19065c9d75cc13d31fdda9fbae1d859950b45b82a936148135",
+      "readerField": [
+        "reader"
+      ],
+      "codingMethod": "AI_ASSISTED_EXPLORATORY",
+      "scope": "Mutation-survivor categories and equivalence-adjusted sensitivity scores"
+    },
+    {
+      "id": "P2-oracle-reading",
+      "path": "experiments/rq-c/oracle-audit.json",
+      "sha256": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+      "readerField": [
+        "testAudit",
+        "reader"
+      ],
+      "codingMethod": "AI_ASSISTED_EXPLORATORY",
+      "scope": "Task/test-case interpretation and exploratory re-scoring; original execution labels remain primary"
+    },
+    {
+      "id": "P2-verifier-reasons",
+      "path": "experiments/rq-c/verifier-reasons.json",
+      "sha256": "5564a8c2b0b295b6ff628c55a1d401c6532a0e3a75c70e425c636a81b914c3cd",
+      "readerField": [
+        "status"
+      ],
+      "codingMethod": "AI_ASSISTED_EXPLORATORY",
+      "scope": "Qualitative categories for the verifier reasons; computed counts do not validate the categories"
+    },
+    {
+      "id": "P3-scorer-survey",
+      "path": "experiments/memory/scorer-survey.json",
+      "sha256": "de71de2ec771685ef642759efdbaf5a4502b0ef615fa61e97ced50605ed259dd",
+      "readerField": [
+        "reader"
+      ],
+      "codingMethod": "AI_ASSISTED_EXPLORATORY",
+      "scope": "Pinned-source coding of ranking conventions, not a system execution or performance comparison"
+    }
+  ]
+}

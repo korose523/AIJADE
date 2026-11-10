@@ -1,0 +1,316 @@
+{
+  "audit": "2026-11-03 supervisor review against local AIJADE evidence",
+  "comparisonBasis": "working-tree",
+  "localHead": "cac86c10cf4afae6f06dacad195d2530a333a600",
+  "worktreeModified": true,
+  "newScientificRun": false,
+  "modelCalls": 0,
+  "checks": {
+    "frozenSourcesMatch": true,
+    "p1bScoresRecompute": true,
+    "p3eSourcesMatchComparison": false,
+    "p3ePlansPrecedeRecordedCode": true,
+    "p1cThreeRecordedRounds": true,
+    "qualitativeProvenanceHashesMatch": false
+  },
+  "frozenSources": [
+    {
+      "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+      "expectedSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "actualSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "matches": true
+    },
+    {
+      "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+      "expectedSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "actualSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "matches": true
+    }
+  ],
+  "productVersionComparison": {
+    "text": {
+      "declaredRunCommit": "c40c46c231e2c8c92859a4916c755ce1f6bfd18a",
+      "resolvedPlanCommit": "6792205dfbc3535b70fa4388f99fcbd5187bb4b2",
+      "planCommitIsAncestor": true,
+      "sourceFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "atDeclaredRunCommitSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "comparisonSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "atDeclaredRunCommitSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "comparisonSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+          "atDeclaredRunCommitSha256": "d4e45d76c97c0603dae38bd6ce60b05d7e10dc13d6a9ad1e74ab0c73c6bf7e55",
+          "comparisonSha256": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Pages/Chat.razor",
+          "atDeclaredRunCommitSha256": "cb9e43669da429fb7498c477c5e07a183f5f7932939be476743ceb0dfc49044f",
+          "comparisonSha256": "aa297d707360f2509a66fe11942028c8f19fce6f77abfc21cd8b311bad87233e",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Services/AppState.cs",
+          "atDeclaredRunCommitSha256": "e243e7d50bce866c10a0919954572a07334b0e79bc6a02d074b6126dcb92105e",
+          "comparisonSha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.Integrations/CompanionBridge.cs",
+          "atDeclaredRunCommitSha256": "b7f1fdb4d697983a72f3286ae8f41f244bad589e148b0ac7f126668ef5ac4326",
+          "comparisonSha256": "684258cf1458e8c6778aec1736c01699e676b3cd236ceeab8682e074e264aef1",
+          "matches": false
+        }
+      ],
+      "allComparedSourcesMatch": false,
+      "runtimeExecutableHash": "NOT_RECORDED_IN_ARCHIVE",
+      "note": "Git objects verify sources at the declared commit; they do not independently bind the executed binary."
+    },
+    "embedding": {
+      "declaredRunCommit": "bbafb62891958b2c63f093b936537cd8c2e725cb",
+      "resolvedPlanCommit": "6792205dfbc3535b70fa4388f99fcbd5187bb4b2",
+      "planCommitIsAncestor": true,
+      "sourceFiles": [
+        {
+          "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+          "atDeclaredRunCommitSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "comparisonSha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+          "atDeclaredRunCommitSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "comparisonSha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+          "matches": true
+        },
+        {
+          "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+          "atDeclaredRunCommitSha256": "d4e45d76c97c0603dae38bd6ce60b05d7e10dc13d6a9ad1e74ab0c73c6bf7e55",
+          "comparisonSha256": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Pages/Chat.razor",
+          "atDeclaredRunCommitSha256": "cb9e43669da429fb7498c477c5e07a183f5f7932939be476743ceb0dfc49044f",
+          "comparisonSha256": "aa297d707360f2509a66fe11942028c8f19fce6f77abfc21cd8b311bad87233e",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.UI/Services/AppState.cs",
+          "atDeclaredRunCommitSha256": "e243e7d50bce866c10a0919954572a07334b0e79bc6a02d074b6126dcb92105e",
+          "comparisonSha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+          "matches": false
+        },
+        {
+          "path": "src/Aijade.Integrations/CompanionBridge.cs",
+          "atDeclaredRunCommitSha256": "b7f1fdb4d697983a72f3286ae8f41f244bad589e148b0ac7f126668ef5ac4326",
+          "comparisonSha256": "684258cf1458e8c6778aec1736c01699e676b3cd236ceeab8682e074e264aef1",
+          "matches": false
+        }
+      ],
+      "allComparedSourcesMatch": false,
+      "runtimeExecutableHash": "NOT_RECORDED_IN_ARCHIVE",
+      "note": "Git objects verify sources at the declared commit; they do not independently bind the executed binary."
+    }
+  },
+  "p1bRecomputation": {
+    "drift": {
+      "recomputed": {
+        "killed": 406,
+        "survived": 164,
+        "noCoverage": 263,
+        "compileError": 366,
+        "timeout": 0,
+        "ignored": 52,
+        "score": 0.4874,
+        "scoreCi95": [
+          0.4536,
+          0.5213
+        ],
+        "executedScore": 0.7123,
+        "executedScoreCi95": [
+          0.6738,
+          0.7479
+        ]
+      },
+      "matchesArchive": true
+    },
+    "gate": {
+      "recomputed": {
+        "killed": 70,
+        "survived": 193,
+        "noCoverage": 326,
+        "compileError": 62,
+        "timeout": 0,
+        "ignored": 42,
+        "score": 0.1188,
+        "scoreCi95": [
+          0.0951,
+          0.1475
+        ],
+        "executedScore": 0.2662,
+        "executedScoreCi95": [
+          0.2164,
+          0.3227
+        ]
+      },
+      "matchesArchive": true
+    }
+  },
+  "qualitativeProvenance": {
+    "status": "INPUT_HASHES_CHECKED",
+    "manifestSha256": "d5c28333ca0f78098f9fd2d2e5eaee24b4a77ae8ea20ca8af2392480342a5ae8",
+    "authorClarification": {
+      "date": "2026-11-10",
+      "statement": "全部AI辅助判读",
+      "context": "The author identified all four listed readings as AI-assisted. This does not establish independent human coding or manuscript approval."
+    },
+    "independentHumanValidation": "NOT_DOCUMENTED",
+    "items": [
+      {
+        "id": "P1-B-categories",
+        "path": "experiments/p1/survivor-reading.json",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "readerField": [
+          "reader"
+        ],
+        "codingMethod": "AI_ASSISTED_EXPLORATORY",
+        "scope": "Mutation-survivor categories and equivalence-adjusted sensitivity scores",
+        "actualSha256": "99e6de5c4df4ed19065c9d75cc13d31fdda9fbae1d859950b45b82a936148135",
+        "matches": false,
+        "archivedAttribution": "Claude; one reader; the first author has not yet read it"
+      },
+      {
+        "id": "P2-oracle-reading",
+        "path": "experiments/rq-c/oracle-audit.json",
+        "sha256": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+        "readerField": [
+          "testAudit",
+          "reader"
+        ],
+        "codingMethod": "AI_ASSISTED_EXPLORATORY",
+        "scope": "Task/test-case interpretation and exploratory re-scoring; original execution labels remain primary",
+        "actualSha256": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+        "matches": true,
+        "archivedAttribution": "the first author's judgment: one reader, after the results were known"
+      },
+      {
+        "id": "P2-verifier-reasons",
+        "path": "experiments/rq-c/verifier-reasons.json",
+        "sha256": "5564a8c2b0b295b6ff628c55a1d401c6532a0e3a75c70e425c636a81b914c3cd",
+        "readerField": [
+          "status"
+        ],
+        "codingMethod": "AI_ASSISTED_EXPLORATORY",
+        "scope": "Qualitative categories for the verifier reasons; computed counts do not validate the categories",
+        "actualSha256": "5564a8c2b0b295b6ff628c55a1d401c6532a0e3a75c70e425c636a81b914c3cd",
+        "matches": true,
+        "archivedAttribution": "Exploratory, after every result was known; no plan preceded it; one reader coded the reasons."
+      },
+      {
+        "id": "P3-scorer-survey",
+        "path": "experiments/memory/scorer-survey.json",
+        "sha256": "de71de2ec771685ef642759efdbaf5a4502b0ef615fa61e97ced50605ed259dd",
+        "readerField": [
+          "reader"
+        ],
+        "codingMethod": "AI_ASSISTED_EXPLORATORY",
+        "scope": "Pinned-source coding of ranking conventions, not a system execution or performance comparison",
+        "actualSha256": "de71de2ec771685ef642759efdbaf5a4502b0ef615fa61e97ced50605ed259dd",
+        "matches": true,
+        "archivedAttribution": "One reader; no second reader has checked the coding."
+      }
+    ],
+    "allArtifactsMatch": false,
+    "interpretation": "Checks input identity and declared AI assistance, not category accuracy or scientific acceptance."
+  },
+  "artifacts": [
+    {
+      "item": "P1-A",
+      "path": "experiments/p1/alternative-designs.json",
+      "sha256": "dbd75fee2d4ddc33721d0a7d64edc9ffbb48fa48cc61ba3da02d6f6250e4f8bb",
+      "scope": "INPUT_AND_DATA_CASES_RECORDED"
+    },
+    {
+      "item": "P1-A-code",
+      "path": "experiments/p1/alternative-designs-code-faults.json",
+      "sha256": "f8e905b1420fc65c8180ebb328c175a426076e086d93e1e2928aad3162edc78b",
+      "scope": "CODE_FAULT_CASES_RECORDED_WITH_DEVIATIONS"
+    },
+    {
+      "item": "P1-B",
+      "path": "experiments/p1/independent-fault-set.json",
+      "sha256": "2dd5e9b7140abbac6d3453141977ed9a256aeee8ea8ea56a4a6cfb9df55b2d7c",
+      "scope": "MUTANT_ROWS_RECORDED"
+    },
+    {
+      "item": "P1-B-reading",
+      "path": "experiments/p1/survivor-reading.json",
+      "sha256": "99e6de5c4df4ed19065c9d75cc13d31fdda9fbae1d859950b45b82a936148135",
+      "scope": "SINGLE_READER_CATEGORIES"
+    },
+    {
+      "item": "P1-C",
+      "path": "experiments/p1/external-renderer.json",
+      "sha256": "3becacfe7ebda37b09406413278bde175749fe865943728d17cb36406c062146",
+      "scope": "THREE_ROUNDS_RECORDED_NOT_INDEPENDENT_TEAM"
+    },
+    {
+      "item": "P2-A",
+      "path": "experiments/p2-a/multiple-check.json",
+      "sha256": "0c1567fd783d0462a3256664c9009c5f4d78d388e96985381f1307b4a0b7f4c5",
+      "scope": "STATIC_STAGE_ONLY_NO_GENERATION"
+    },
+    {
+      "item": "P3-tables",
+      "path": "experiments/memory/answerable-tables.json",
+      "sha256": "ab98c76fbff2fa1ec4f6b20de38dcba0f1a75618395abd22aabf7cd82e3bb57b",
+      "scope": "RECOMPUTED_TABLES_RECORDED"
+    },
+    {
+      "item": "P3-C-LangChain",
+      "path": "experiments/p3-c/langchain.json",
+      "sha256": "9b5ecf4c3cb6942b807dd942590effd78baf355512e1546ff32d3b8c27b9ba06",
+      "scope": "COMPONENT_PRECHECK_NO_POLICY_COMPARISON"
+    },
+    {
+      "item": "P3-C-LlamaIndex",
+      "path": "experiments/p3-c/llamaindex.json",
+      "sha256": "e98aca0624f1c7a0a996a29bfd86b4f1c2064038f425272c7fa050c1e857e0d5",
+      "scope": "COMPONENT_PRECHECK_NO_POLICY_COMPARISON"
+    },
+    {
+      "item": "P3-C-Mem0",
+      "path": "experiments/p3-c/mem0.json",
+      "sha256": "1d7aa8ba601b49c73ce3b77cf3a5673bcf87c231d8f084013bae29ab6a129cb8",
+      "scope": "TURN_STORAGE_INFER_FALSE"
+    },
+    {
+      "item": "P3-D",
+      "path": "experiments/memory/embedding-check.json",
+      "sha256": "70cc27e8e7b3f21448d56c0147d28419debd3b48b1bea685fcf95e7671e891b7",
+      "scope": "ONE_EMBEDDING_MODEL_RECORDED"
+    },
+    {
+      "item": "P3-E",
+      "path": "experiments/memory/product-path.json",
+      "sha256": "0f45c9ca248aa543507a55c300148c2f33a7fca7247c9104afbd59a9709a6c85",
+      "scope": "HISTORICAL_PRODUCT_SNAPSHOT_ONLY"
+    }
+  ],
+  "interpretation": {
+    "archiveStatistics": "Existing records can be recomputed; unchanged archives are not new observations.",
+    "currentProduct": "DO_NOT_TRANSFER_ARCHIVED_P3E_METRICS",
+    "recallChangeAfterSourceChanges": "NOT_MEASURED",
+    "ch7": "NOT_RUN; backend, frozen checks/adapter and held-out batch remain separate prerequisites.",
+    "host2": "AUTHOR_REPORT: CPU replacement unavailable before January 2027; no hardware qualification inferred."
+  }
+}

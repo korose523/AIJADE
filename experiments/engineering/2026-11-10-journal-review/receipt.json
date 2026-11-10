@@ -1,0 +1,99 @@
+{
+  "schema": "aijade.engineering.journal-review.v1",
+  "recordedAt": "2026-11-10T06:39:53.396109+00:00",
+  "baseCommit": "cac86c10cf4afae6f06dacad195d2530a333a600",
+  "status": "ENGINEERING_CHECKS_PASS_SCIENTIFIC_AND_SUBMISSION_GATES_REMAIN",
+  "newScientificRun": false,
+  "modelCalls": 0,
+  "productRuntimeChanged": false,
+  "sourceSha256": {
+    "tools/audit_advisor_evidence.py": "f194c3f93028e2b92d55cf15e36d041a1dd1225b14ad982f03bec4f7d7927a50"
+  },
+  "manuscriptSourceSha256": {
+    "_工具/build_submission.py": "939ac6aa10f5b62851267d4510ca8b6d94bb1e3e6e2ae863c94e819732c8e496",
+    "_工具/稿件一致性守卫.py": "bb82e22ab23298a55e40977565afd54f3f077efc9499c98fba8f15c91f4768d7",
+    "学位论文/章节源/front_ai_declaration.md": "da81ff41b34f53848bb08af053eef94f0cb7cf5074b171f3fb6854252c64c913",
+    "稿件源/P1_VerifiableEventDrivenArchitecture_and_EvidenceGatedLearning_EN.md": "f434875b4c9da4b692f9df5695d21230cbf0fb3ff31c7a5ced895b87010f34d8",
+    "稿件源/P2_SelfAssessmentReliability_of_AgentGeneratedSkills_EN.md": "d64cd903579e4f4eaf97b6dd8697cc65e9c88044924d781e773c8a281ef82279",
+    "稿件源/P2_中文译稿.md": "522c279c1e4a5239105b539197c13c9de3a72ec71255d66440f07a4cab13e934",
+    "稿件源/P3_DimensionalMismatch_in_RetrievalScoring_EN.md": "e590a8a66149f83238f225455d8a5159422d06fbf14eb0ea078438cf2981f226",
+    "稿件源/P3_中文译稿.md": "22dc57ac5e3588f3ccb6f50c2e769de92dfe9627373c55531a208ce8a7228b31",
+    "稿件源/parts/P2_front.md": "938a604993e357395a747f032ab94dfb73670c68a4f5d5d771e3ccd44c74f8d0",
+    "稿件源/parts/P2_head.md": "b19f622ad55e25dc73ce41b9d38c3ac44e43a21e786b2bd6089ce6ec508aa3fc",
+    "稿件源/parts/P2_results_tables.md": "4d7f54e9872e14442b88004b88c3e22237b411fc8a11ecec8dab8a6d131f139d",
+    "稿件源/parts/P2_tail.md": "5c3afc533b306c1f4a061a1fe43ef23bdcda162a9be813327bd08885027cfc40",
+    "稿件源/parts/P2_validity.md": "635c5503d7acdec02fe8cb75e352ef8fadd086781c812a2f0629dabcde3adfe8",
+    "稿件源/parts/P2_zh_head.md": "42a2552135364739ac71f423bcf44d1a5d3d875e6d8f50c9163f86bbc9cc1d31",
+    "稿件源/parts/P2_zh_results_tables.md": "6d481e167213b57a376c5c56245951098babd8594b93a9bd897a476f2dce7a2e",
+    "稿件源/parts/P2_zh_tail.md": "a377d09c94edbe66b0f77b3267d573f8d7149652799d05adea774f6c46091c3d",
+    "稿件源/parts/P2_zh_validity.md": "cde88faf9bad1ca474192d956f9261c33432bc787257c9bee6af19bfdf7a7886"
+  },
+  "supervisorSource": {
+    "reviewPages": 15,
+    "reviewSha256": "2860175dad4fad450010c4e2dd3fe3a6734820732b36e83f81cbaeef23ec68ac",
+    "structurePages": 2,
+    "structureSha256": "9b4f0b37729478b898286eb424a9d4d3eeab00858e4b0eeb6f36a8b3c0fe8c47"
+  },
+  "qualitativeCorrection": "qualitative-provenance.json",
+  "readOnlyAudit": "advisor-final.json",
+  "expectedRefusals": [
+    {
+      "case": "hash-mismatch",
+      "expectedExit": 4,
+      "actualExit": 4,
+      "report": "hash-mismatch.json",
+      "status": "EXPECTED_REFUSAL"
+    },
+    {
+      "case": "current-metrics-refusal",
+      "expectedExit": 3,
+      "actualExit": 3,
+      "report": "current-metrics-refusal.json",
+      "status": "EXPECTED_REFUSAL"
+    }
+  ],
+  "numericConsistency": "numeric-consistency.json",
+  "attributionRegression": "attribution-guard-check.json",
+  "protectedInputs": {
+    "files": 839,
+    "changed": [],
+    "manifest": "protected-inputs.json"
+  },
+  "manuscriptChecks": {
+    "englishAbstractWords": {
+      "P1": 199,
+      "P2": 196,
+      "P3": 200
+    },
+    "chineseAbstractCharacters": {
+      "P2": 299,
+      "P3": 297
+    },
+    "guardCategories": 12,
+    "journalEditorDecision": "NOT_PROVIDED_SUPERVISOR_REVIEW_ONLY",
+    "finalManuscriptPDFs": "Built after the containing code commit is published; verified separately in the manuscript publication record."
+  },
+  "limits": [
+    "Input hashes and a declared AI-assisted method do not validate qualitative labels. No independent human coding or inter-rater validation is documented.",
+    "Historical JSON and measurement scripts retain their original attribution text and values; the correction is a separate versioned record.",
+    "No new P2 qualification/regeneration, P3 full-policy comparison, or Chapter 7 held-out study was run.",
+    "Current product recall was not remeasured. Its source mismatch against P3-E remains an expected refusal.",
+    "Source-only audit changes do not require rerunning unchanged .NET product suites; the publication CI runs independently.",
+    "No submission, supervisor notice or final author approval is inferred."
+  ],
+  "artifactSha256": {
+    "README.md": "601c039e1fbc2d8d6a3ea440555b0b861defe1763d6e7e6f7ba890c7b72e83a7",
+    "advisor-final.json": "2f8e7b6dad8c1ef3c7ffe20365b214524c6faa753809235f77aabc6b7a5505ec",
+    "attribution-guard-check.json": "c1475c435c0808dbedd9c9746c3e0f389cda1a5b612ca4e4553427acf48b5b13",
+    "audit-negative-checks.json": "a5348856e7393c5cbc4c22805e303a0cbd265439b185751ba3e022db463928e2",
+    "build-cn-checked.log": "4a92a159da1ff348863f6e27035d8cbff070e69e4b8744e1fb50ccef95de3b99",
+    "build-en-checked.log": "428edcfd1d937741ceed442b58c5fd850e633a67ee1bf8c278e6c2e3c8087013",
+    "build-thesis-checked.log": "901483bcef68062f4b207376c77d9af461f8110df615e2441dfa986b9a24a2a4",
+    "current-metrics-refusal.json": "b7dd07b6d7cf978053249a7f26bc57e39cada9a4cec89f7a64e474ff162a32af",
+    "guard-checked.log": "09c05ce5fe3aa0cfcb501c254a29cb92358687bb070b3602604755388030a754",
+    "hash-mismatch.json": "c2e1666416bde7f790372a5507b024d0b57f59acb7c1bdd36a9090eadb2bb4f1",
+    "numeric-consistency.json": "9996369bc83ef47c706e996e5b6edc594a593c9221252f09e891bcea2f089b0e",
+    "protected-inputs.json": "2b955af2cada07764cc5e09c393839c6933ec98eedd9285853d47fcab78b8d7e",
+    "qualitative-provenance.json": "b6b3f48f3b4cfa128a738ed24cb1a8185db9d3da07ec0cc8a9a06cabac44091a"
+  }
+}
