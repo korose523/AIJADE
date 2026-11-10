@@ -46,7 +46,7 @@ public sealed record TurnCompleted(StoredMessage Reply, PerformanceIntent Intent
 
 public sealed record TurnFailed(string Code, string Message) : OrchestratorEvent;
 
-/// <summary>An explicit photo, song, life or relationship command completed without a chat-model request.</summary>
+/// <summary>An explicit photo, song, life, relationship or diary command completed without a chat-model request.</summary>
 public sealed record MediaCompleted(StoredMessage Reply) : OrchestratorEvent;
 
 public sealed record OrchestratorOptions
@@ -78,6 +78,9 @@ public sealed record OrchestratorOptions
 
     /// <summary>Null preserves the archived direct caller's prompt construction; the product factory supplies defaults.</summary>
     public PromptBudget? PromptBudget { get; set; }
+
+    /// <summary>Additional product output rules; null retains the archived direct caller's system prompt.</summary>
+    public string? ReplyInstruction { get; set; }
 
     /// <summary>Optional fictional life context for product-only first lines; it does not call research memory providers.</summary>
     public Func<TurnContext, CancellationToken, Task<string?>>? CompanionContext { get; set; }

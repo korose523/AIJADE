@@ -1,0 +1,17 @@
+/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:00:08.64]     Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history [FAIL]
+  失败 Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history [793 ms]
+  错误消息:
+   Aijade.Client.Api.AijadeApiException : Invalid pairing input
+  堆栈跟踪:
+     at Aijade.Client.Api.AijadeApi.ReadAsync(HttpResponseMessage res, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs:line 109
+   at Aijade.Client.Api.AijadeApi.SendAsync(HttpMethod method, String path, Object body, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs:line 117
+   at Aijade.Client.Companion.CompanionSync.PairAsync(String code, String subject, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Companion/CompanionSync.cs:line 65
+   at Aijade.Tests.CompanionDiaryTests.LinkAsync(CompanionSync owner, CompanionSync relay, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs:line 26
+   at Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs:line 38
+   at Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs:line 67
+--- End of stack trace from previous location ---
+结果文件: /Users/mac/.cache/aijade-journal-20261110/targeted-utc/targeted-utc.trx
+
+失败!  - 失败:     1，通过:    10，已跳过:     0，总计:    11，持续时间: 6 s - Aijade.Tests.dll (net10.0)

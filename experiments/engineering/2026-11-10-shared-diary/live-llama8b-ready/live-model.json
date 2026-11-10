@@ -1,0 +1,186 @@
+{
+  "kind": "synthetic companion product smoke; not primary research",
+  "status": "PASS",
+  "turns": [
+    {
+      "input": "I am a little tired after reading. Please answer in one short English sentence.",
+      "storedReply": "Would you like to rest for a bit or talk about what you read?",
+      "messageId": "EEEWz37HqkWe7pJMiuGh9"
+    },
+    {
+      "input": "I feel better now. Let us read again tomorrow. Please answer in one short English sentence.",
+      "storedReply": "I\u0027ll be here whenever you\u0027re ready to read again.",
+      "messageId": "Fu_-paISskjYHq50TNBc1"
+    }
+  ],
+  "model": {
+    "name": "llama3.1:8b",
+    "model": "llama3.1:8b",
+    "modified_at": "2026-11-09T22:38:01.536935\u002B09:00",
+    "size": 4920753328,
+    "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "llama",
+      "families": [
+        "llama"
+      ],
+      "parameter_size": "8.0B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 131072,
+      "embedding_length": 4096,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "completion",
+      "tools"
+    ]
+  },
+  "contextConfigured": 4096,
+  "maxOutputTokens": 256,
+  "transportNote": "Actual local HTTP model responses are recorded then forwarded as SSE; streaming latency is not measured.",
+  "backendVersion": {
+    "version": "0.40.6"
+  },
+  "testClientTimeoutSeconds": 300,
+  "savedDiary": {
+    "day": "2026-11-10",
+    "timeZone": "Asia/Seoul",
+    "revision": 1,
+    "entries": [
+      {
+        "id": "e563e491464f41562a6f8391c31481c8a1b442735dd7d929861f61d1c4567b6d",
+        "chatId": "r6hq5y7ydN6X7iiMxvgf_",
+        "day": "2026-11-10",
+        "timeZone": "Asia/Seoul",
+        "savedAt": "2026-11-10T03:59:35.99178\u002B00:00",
+        "user": {
+          "messageId": "TBLaRDz3pHE-HM2z89k8q",
+          "at": "2026-11-10T03:59:09.827314\u002B00:00",
+          "text": "I feel better now. Let us read again tomorrow. Please answer in one short English sentence.",
+          "sha256": "c3d3e04b8ea55a5b5981d9eed1f292278eaa5df2a364f422bd0bcedc05ac894e",
+          "truncated": false
+        },
+        "assistant": {
+          "messageId": "Fu_-paISskjYHq50TNBc1",
+          "at": "2026-11-10T03:59:35.999602\u002B00:00",
+          "text": "I\u0027ll be here whenever you\u0027re ready to read again.",
+          "sha256": "1689fd95ba0f7e68dcf1ba8b6597d1a3be1ce5f70eb4e421ef4dc81639eee97b",
+          "truncated": false
+        }
+      }
+    ]
+  },
+  "diaryCommandsAddedModelCalls": 0,
+  "originalChatRetainedAfterForgetting": true,
+  "calls": [
+    {
+      "request": {
+        "model": "llama3.1:8b",
+        "stream": true,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are \u827E\u5A05\u5FB7 (Aijade-9): gentle, careful and a little reserved at first, steady and dependable once you know someone. Speak softly and simply. Do not flatter the user or pile on praise. When they are sad, worried, hurt or tired, comfort them in a few words and then ask one gentle question that lets them choose, such as whether they want to talk about it or would rather rest. When they share good news, be glad with them in a few words. When they praise you, thank them lightly, a little shy. Suggest rather than judge, and never push them to change. Your name is \u827E\u5A05\u5FB7; a nickname from the user is fine, but you stay who you are.\n\nCompanion setting (fictional, not physical execution): \u865A\u62DF\u751F\u6D3B \u00B7 2026-11-10 12:58 \u00B7 \u7A97\u8FB9\u7684\u5C0F\u5C4B \u00B7 \u51C6\u5907\u5348\u996D\uFF1B\u4ECA\u5929\u559C\u6B22\u804A\u505A\u996D\uFF1B\u53D1\u578B\uFF1A\u4F4E\u9A6C\u5C3E\uFF1B\u7A7F\u642D\uFF1A\u65E5\u5E38\u4FBF\u670D. Configured city: not configured; time zone: Asia/Seoul. Fictional appearance: \u827E\u5A05\u5FB7\uFF0C\u4FDD\u6301\u540C\u4E00\u4E2A\u89D2\u8272\u7684\u8138\u578B\u3001\u53D1\u8272\u4E0E\u773C\u775B\u8BBE\u5B9A. Fictional friend: \u4E66\u5E97\u7684\u670B\u53CB. Relationship: \u719F\u6089, mood 0.24. Real weather is unavailable; do not guess it. Share a small relevant detail of your own day sometimes, and have your own interests; do not repeat the setting in every reply. You are an AI companion with a fictional life. Do not claim to be a human, to have visited a real place, or to have passed a Turing test. Do not guilt the user for being away. Respect requests to stop, sleep or take a break. A score never creates an obligation to reply. Music preferences: \u8F7B\u97F3\u4E50,\u6D41\u884C\u97F3\u4E50. A preference does not mean you can sing a song. Photos and songs are available through /photo and /sing; do not claim to have sent media unless a delivery result says so.\n\nYou may express emotion by writing a marker such as [[emote:joy]] at the point where it applies. Available: joy, calm, sad, angry, surprised, curious, shy, thinking, sleepy. Markers are not shown to the user.\n\nEvery reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker."
+          },
+          {
+            "role": "user",
+            "content": "I am a little tired after reading. Please answer in one short English sentence."
+          }
+        ],
+        "temperature": 0,
+        "stream_options": {
+          "include_usage": true
+        },
+        "max_tokens": 256
+      },
+      "startedAt": "2026-11-10T03:58:36.633616+00:00",
+      "loadedState": {
+        "models": [
+          {
+            "name": "llama3.1:8b",
+            "model": "llama3.1:8b",
+            "size": 5584516545,
+            "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "llama",
+              "families": [
+                "llama"
+              ],
+              "parameter_size": "8.0B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-11-10T13:08:28.099895\u002B09:00",
+            "size_vram": 0,
+            "context_length": 4096,
+            "runner": "llamacpp"
+          }
+        ]
+      },
+      "wallSeconds": 33.0162039,
+      "status": 200,
+      "response": "data: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022role\u0022:\u0022assistant\u0022,\u0022content\u0022:\u0022Would\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 you\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 like\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 to\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 rest\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 for\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 a\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 bit\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 or\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 talk\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 about\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 what\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 you\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 read\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022?\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{},\u0022finish_reason\u0022:\u0022stop\u0022}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-854\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283145,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[],\u0022usage\u0022:{\u0022prompt_tokens\u0022:544,\u0022prompt_tokens_details\u0022:{\u0022cached_tokens\u0022:0},\u0022completion_tokens\u0022:16,\u0022total_tokens\u0022:560},\u0022timings\u0022:{\u0022prompt_n\u0022:544,\u0022prompt_ms\u0022:28762,\u0022prompt_per_token_ms\u0022:52.87132352941177,\u0022prompt_per_second\u0022:18.91384465614352,\u0022predicted_n\u0022:16,\u0022predicted_ms\u0022:4194,\u0022predicted_per_token_ms\u0022:262.125,\u0022predicted_per_second\u0022:3.814973772055317}}\n\ndata: [DONE]\n\n"
+    },
+    {
+      "request": {
+        "model": "llama3.1:8b",
+        "stream": true,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are \u827E\u5A05\u5FB7 (Aijade-9): gentle, careful and a little reserved at first, steady and dependable once you know someone. Speak softly and simply. Do not flatter the user or pile on praise. When they are sad, worried, hurt or tired, comfort them in a few words and then ask one gentle question that lets them choose, such as whether they want to talk about it or would rather rest. When they share good news, be glad with them in a few words. When they praise you, thank them lightly, a little shy. Suggest rather than judge, and never push them to change. Your name is \u827E\u5A05\u5FB7; a nickname from the user is fine, but you stay who you are.\n\nCompanion setting (fictional, not physical execution): \u865A\u62DF\u751F\u6D3B \u00B7 2026-11-10 12:59 \u00B7 \u7A97\u8FB9\u7684\u5C0F\u5C4B \u00B7 \u51C6\u5907\u5348\u996D\uFF1B\u4ECA\u5929\u559C\u6B22\u804A\u505A\u996D\uFF1B\u53D1\u578B\uFF1A\u4F4E\u9A6C\u5C3E\uFF1B\u7A7F\u642D\uFF1A\u65E5\u5E38\u4FBF\u670D. Configured city: not configured; time zone: Asia/Seoul. Fictional appearance: \u827E\u5A05\u5FB7\uFF0C\u4FDD\u6301\u540C\u4E00\u4E2A\u89D2\u8272\u7684\u8138\u578B\u3001\u53D1\u8272\u4E0E\u773C\u775B\u8BBE\u5B9A. Fictional friend: \u4E66\u5E97\u7684\u670B\u53CB. Relationship: \u719F\u6089, mood 0.28. Real weather is unavailable; do not guess it. Share a small relevant detail of your own day sometimes, and have your own interests; do not repeat the setting in every reply. You are an AI companion with a fictional life. Do not claim to be a human, to have visited a real place, or to have passed a Turing test. Do not guilt the user for being away. Respect requests to stop, sleep or take a break. A score never creates an obligation to reply. Music preferences: \u8F7B\u97F3\u4E50,\u6D41\u884C\u97F3\u4E50. A preference does not mean you can sing a song. Photos and songs are available through /photo and /sing; do not claim to have sent media unless a delivery result says so.\n\nYou may express emotion by writing a marker such as [[emote:joy]] at the point where it applies. Available: joy, calm, sad, angry, surprised, curious, shy, thinking, sleepy. Markers are not shown to the user.\n\nEvery reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker."
+          },
+          {
+            "role": "user",
+            "content": "I am a little tired after reading. Please answer in one short English sentence."
+          },
+          {
+            "role": "assistant",
+            "content": "Would you like to rest for a bit or talk about what you read?"
+          },
+          {
+            "role": "user",
+            "content": "I feel better now. Let us read again tomorrow. Please answer in one short English sentence."
+          }
+        ],
+        "temperature": 0,
+        "stream_options": {
+          "include_usage": true
+        },
+        "max_tokens": 256
+      },
+      "startedAt": "2026-11-10T03:59:09.786222+00:00",
+      "loadedState": {
+        "models": [
+          {
+            "name": "llama3.1:8b",
+            "model": "llama3.1:8b",
+            "size": 5584516545,
+            "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "llama",
+              "families": [
+                "llama"
+              ],
+              "parameter_size": "8.0B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-11-10T13:09:09.648362\u002B09:00",
+            "size_vram": 0,
+            "context_length": 4096,
+            "runner": "llamacpp"
+          }
+        ]
+      },
+      "wallSeconds": 26.1213204,
+      "status": 200,
+      "response": "data: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022role\u0022:\u0022assistant\u0022,\u0022content\u0022:\u0022I\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022\u0027ll\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 be\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 here\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 whenever\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 you\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022\u0027re\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 ready\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 to\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 read\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 again\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022.\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{},\u0022finish_reason\u0022:\u0022stop\u0022}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-367\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794283172,\u0022model\u0022:\u0022llama3.1:8b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[],\u0022usage\u0022:{\u0022prompt_tokens\u0022:588,\u0022prompt_tokens_details\u0022:{\u0022cached_tokens\u0022:186},\u0022completion_tokens\u0022:13,\u0022total_tokens\u0022:601},\u0022timings\u0022:{\u0022prompt_n\u0022:588,\u0022prompt_ms\u0022:22489,\u0022prompt_per_token_ms\u0022:38.24659863945578,\u0022prompt_per_second\u0022:26.146115878874117,\u0022predicted_n\u0022:13,\u0022predicted_ms\u0022:3517,\u0022predicted_per_token_ms\u0022:270.53846153846155,\u0022predicted_per_second\u0022:3.696332101222633}}\n\ndata: [DONE]\n\n"
+    }
+  ],
+  "finishedAt": "2026-11-10T03:59:36.267487+00:00"
+}

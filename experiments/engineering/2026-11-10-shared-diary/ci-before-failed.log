@@ -1,0 +1,628 @@
+build-test	UNKNOWN STEP	﻿2026-11-10T01:11:20.4031027Z Current runner version: '2.338.2'
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4047558Z ##[group]Runner Image Provisioner
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4048095Z Hosted Compute Agent
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4048665Z Version: 20261028.624
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4049139Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4049583Z Build Date: 2026-10-28T21:51:42Z
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4050029Z Worker ID: {d4f3a015-2f67-46c6-a4d5-816f42191d34}
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4050467Z Region: southcentralus
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4050823Z Cloud: Azure
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4051224Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4052074Z ##[group]Operating System
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4052476Z Ubuntu
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4052807Z 26.04.1
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4053122Z LTS
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4053503Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4053859Z ##[group]Runner Image
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4054210Z Image: ubuntu-26.04
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4054598Z Version: 20261101.186.1
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4055639Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4056587Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4057154Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4057928Z ##[group]GITHUB_TOKEN Permissions
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4059574Z Contents: read
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4059938Z Metadata: read
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4060275Z Packages: read
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4060645Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4061946Z Secret source: Actions
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4062588Z Cache mode: write
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4063145Z Prepare workflow directory
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4335053Z Prepare all required actions
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.4370039Z Getting action download info
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.6742698Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+build-test	UNKNOWN STEP	2026-11-10T01:11:20.7930558Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.2667974Z Complete job name: build-test
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3061348Z ##[group]Checking docker version
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3069731Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3789422Z '1.54'
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3801259Z Docker daemon API version: '1.54'
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3801743Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3966932Z '1.54'
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3981340Z Docker client API version: '1.54'
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3985445Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3986867Z ##[group]Clean up resources from previous jobs
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.3990377Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=76c114"
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4123312Z ##[command]/usr/bin/docker network prune --force --filter "label=76c114"
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4240578Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4240907Z ##[group]Create local container network
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4249032Z ##[command]/usr/bin/docker network create --label 76c114 github_network_d25f57d535454042abf5ed2cf3dd09aa
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4670583Z 0aabf8312d301132b4388bc543d3cc5a9d8186b1eda6ffc2a9d2f0b49ef88338
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4694288Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4712206Z ##[group]Starting postgres service container
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.4730000Z ##[command]/usr/bin/docker --config /home/runner/work/_temp/.docker_535644f6-3e82-4952-8082-4216558b3f3a login ghcr.io -u korose523 --password-stdin
+build-test	UNKNOWN STEP	2026-11-10T01:11:21.8728439Z ##[command]/usr/bin/docker --config /home/runner/work/_temp/.docker_535644f6-3e82-4952-8082-4216558b3f3a pull ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.4380393Z pg18-v1.0.0: Pulling from tensorchord/vchord-postgres
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7184912Z 799548af46de: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7188551Z 5604c3b93920: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7189379Z 7b697787d5d2: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7190090Z 861643ce2817: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7190678Z cdfd017c753d: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7191254Z 974175074a8f: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7192187Z 0dac5f77c330: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7192764Z 5e83761a8bfc: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7193348Z ce5a92a4b912: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7193926Z 1adabd6b0d6b: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7194513Z 874755ceb1f0: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7195089Z 1fa512a5b6f3: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7195731Z 4cf7c086165e: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.7196401Z bd01fa164bdc: Pulling fs layer
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.8876045Z 799548af46de: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.9870931Z 7b697787d5d2: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.9872382Z 861643ce2817: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.9875119Z 0dac5f77c330: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.9881227Z 5e83761a8bfc: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:22.9881882Z bd01fa164bdc: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.0868419Z 1fa512a5b6f3: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.0871874Z cdfd017c753d: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.0875379Z 974175074a8f: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.0881338Z 874755ceb1f0: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.0882396Z 4cf7c086165e: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.2870471Z 1adabd6b0d6b: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.3871931Z 5604c3b93920: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.8874598Z 799548af46de: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.8899332Z 7b697787d5d2: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.8910071Z 861643ce2817: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:23.8964497Z 1adabd6b0d6b: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:24.0878569Z 0dac5f77c330: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:24.0897575Z 5e83761a8bfc: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:24.0914030Z cdfd017c753d: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:24.0921673Z 974175074a8f: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:26.4866297Z ce5a92a4b912: Download complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.6902265Z ce5a92a4b912: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7736839Z bd01fa164bdc: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7742215Z 1fa512a5b6f3: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7751334Z 874755ceb1f0: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7761196Z 4cf7c086165e: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7781506Z 5604c3b93920: Pull complete
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7782426Z Digest: sha256:24a51a291b2f7c30214be566a7ad8474ee02de8947482084297d263520a97e16
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7784781Z Status: Downloaded newer image for ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7787179Z ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	UNKNOWN STEP	2026-11-10T01:11:27.7860456Z ##[command]/usr/bin/docker create --name c2714f7a48374b7d9047cd3f3a633638_ghcriotensorchordvchordpostgrespg18v100_9dc113 --label 76c114 --network github_network_d25f57d535454042abf5ed2cf3dd09aa --network-alias postgres -p 55432:5432 --health-cmd "pg_isready -U aijade" --health-interval 5s --health-timeout 5s --health-retries 30 -e "POSTGRES_USER=aijade" -e "POSTGRES_PASSWORD=aijade" -e "POSTGRES_DB=aijade" -e GITHUB_ACTIONS=true -e CI=true ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.6669584Z d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.6694603Z ##[command]/usr/bin/docker start d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8322800Z d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8344169Z ##[command]/usr/bin/docker ps --all --filter id=d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8514699Z d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551 Up Less than a second (health: starting)
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8534998Z ##[command]/usr/bin/docker port d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8650429Z 5432/tcp -> 0.0.0.0:55432
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8650756Z 5432/tcp -> [::]:55432
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8691990Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8697945Z ##[group]Waiting for all services to be ready
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8707219Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8817044Z starting
+build-test	UNKNOWN STEP	2026-11-10T01:11:30.8837376Z postgres service is starting, waiting 2 seconds before checking again.
+build-test	UNKNOWN STEP	2026-11-10T01:11:32.8830300Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:32.8935673Z starting
+build-test	UNKNOWN STEP	2026-11-10T01:11:32.8960763Z postgres service is starting, waiting 3 seconds before checking again.
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.8890685Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9018232Z healthy
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9036395Z postgres service is healthy.
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9036858Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9221493Z ##[group]Run actions/checkout@v7
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9221784Z with:
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9221923Z   repository: korose523/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9223314Z   token: ***
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9223438Z   ssh-strict: true
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9223563Z   ssh-user: git
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9223693Z   persist-credentials: true
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9223838Z   clean: true
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9223970Z   sparse-checkout-cone-mode: true
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224133Z   fetch-depth: 1
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224253Z   fetch-tags: false
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224379Z   show-progress: true
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224504Z   lfs: false
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224620Z   submodules: false
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224748Z   set-safe-directory: true
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9224900Z   allow-unsafe-pr-checkout: false
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9225117Z env:
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9225366Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	UNKNOWN STEP	2026-11-10T01:11:36.9225545Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1189202Z Syncing repository: korose523/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1190076Z ##[group]Getting Git version info
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1190302Z Working directory is '/home/runner/work/AIJADE/AIJADE'
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1190636Z [command]/usr/bin/git version
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1213202Z git version 2.56.0
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1227362Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1236723Z Temporarily overriding HOME='/home/runner/work/_temp/8b49ef97-a89d-4126-b7f4-264781b35321' before making global git config changes
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1237424Z Adding repository directory to the temporary git global config as a safe directory
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1240967Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AIJADE/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1296800Z Deleting the contents of '/home/runner/work/AIJADE/AIJADE'
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1299280Z ##[group]Determining repository object format
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1300399Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1300771Z ##[group]Initializing the repository
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1303768Z [command]/usr/bin/git init /home/runner/work/AIJADE/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1383681Z hint: Using 'master' as the name for the initial branch. This default branch name
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1384312Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1384736Z hint: to use in all of your new repositories, which will suppress this warning,
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1384990Z hint: call:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1385117Z hint:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1385346Z hint: 	git config --global init.defaultBranch <name>
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1385546Z hint:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1385724Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1386028Z hint: 'development'. The just-created branch can be renamed via this command:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1386250Z hint:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1386378Z hint: 	git branch -m <name>
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1386520Z hint:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1386738Z hint: Disable this message with "git config set advice.defaultBranchName false"
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1395694Z Initialized empty Git repository in /home/runner/work/AIJADE/AIJADE/.git/
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1405598Z [command]/usr/bin/git remote add origin https://github.com/korose523/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1451053Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1451460Z ##[group]Disabling automatic garbage collection
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1454585Z [command]/usr/bin/git config --local gc.auto 0
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1488381Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1488730Z ##[group]Setting up auth
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1491815Z Removing SSH command configuration
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1494784Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1530301Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1887096Z Removing HTTP extra header
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1892559Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.1921128Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2133712Z Removing includeIf entries pointing to credentials config files
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2137490Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2170458Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2381114Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2410841Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path /home/runner/work/_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2436701Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2464269Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2491383Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2517844Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2518063Z ##[group]Fetching the repository
+build-test	UNKNOWN STEP	2026-11-10T01:11:37.2524124Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4af8d5b9756dbc95f7a70b8afa89ff0192169918:refs/remotes/origin/main
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6259146Z From https://github.com/korose523/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6259734Z  * [new ref]         4af8d5b9756dbc95f7a70b8afa89ff0192169918 -> origin/main
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6268643Z [command]/usr/bin/git branch --list --remote origin/main
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6293952Z   origin/main
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6301513Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6322820Z 4af8d5b9756dbc95f7a70b8afa89ff0192169918
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6325900Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6326425Z ##[group]Determining the checkout info
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6327032Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6330209Z [command]/usr/bin/git sparse-checkout disable
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6390584Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6399133Z ##[group]Checking out the ref
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.6400629Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.8731757Z Switched to a new branch 'main'
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.8734232Z branch 'main' set up to track 'origin/main'.
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.8763663Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.8809310Z [command]/usr/bin/git log -1 --format=%H
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.8833552Z 4af8d5b9756dbc95f7a70b8afa89ff0192169918
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9030733Z ##[group]Run actions/setup-dotnet@v6
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9030903Z with:
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9031031Z   global-json-file: global.json
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9031183Z   skip-lts-prepass: false
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9031315Z   cache: false
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9031429Z env:
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9031834Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	UNKNOWN STEP	2026-11-10T01:11:38.9032005Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.0014572Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.3305386Z dotnet-install: .NET Core Runtime with version '10.0.14' is already installed.
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.3325038Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.5927950Z dotnet-install: .NET Core SDK with version '10.0.403' is already installed.
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6049766Z ##[group]Run dotnet test --configuration Release
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6050020Z ^[[36;1mdotnet test --configuration Release^[[0m
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6096461Z shell: /usr/bin/bash -e {0}
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6096609Z env:
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6096944Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6097124Z   DOTNET_ROOT: /usr/share/dotnet
+build-test	UNKNOWN STEP	2026-11-10T01:11:39.6097267Z ##[endgroup]
+build-test	UNKNOWN STEP	2026-11-10T01:11:43.7451923Z   Determining projects to restore...
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.3596260Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Telemetry/Aijade.Telemetry.csproj (in 852 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.3597180Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.UI/Aijade.UI.csproj (in 852 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.5653333Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Rqc/Aijade.Rqc.csproj (in 198 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.6456870Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.P1/Aijade.P1.csproj (in 74 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.6725792Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Mutation/Aijade.Mutation.csproj (in 7 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.7096677Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Experiments/Aijade.Experiments.csproj (in 26 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.7803364Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/Aijade.Web.csproj (in 1.35 sec).
+build-test	UNKNOWN STEP	2026-11-10T01:11:45.9029905Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Substrate/Aijade.Substrate.csproj (in 2 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.0150465Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Growth/Aijade.Growth.csproj (in 2 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.1983945Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Server/Aijade.Server.csproj (in 548 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.2210957Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Core/Aijade.Core.csproj (in 1 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.2679754Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Client/Aijade.Client.csproj (in 2 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.4134655Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.ComputerUse/Aijade.ComputerUse.csproj (in 152 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.5769771Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Bots/Aijade.Bots.csproj (in 241 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.7444882Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Research/Aijade.Research.csproj (in 7 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.9866136Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Memory/Aijade.Memory.csproj (in 2 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:46.9867347Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Providers/Aijade.Providers.csproj (in 3 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:47.0967861Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Learning/Aijade.Learning.csproj (in 3 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:47.0976130Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Integrations/Aijade.Integrations.csproj (in 3 ms).
+build-test	UNKNOWN STEP	2026-11-10T01:11:47.1355932Z   Restored /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/Aijade.Tests.csproj (in 1.41 sec).
+build-test	UNKNOWN STEP	2026-11-10T01:11:49.9524567Z   Restored /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/Aijade.E2E.csproj (in 5.53 sec).
+build-test	UNKNOWN STEP	2026-11-10T01:11:54.8531431Z   Aijade.Core -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Core/bin/Release/net10.0/Aijade.Core.dll
+build-test	UNKNOWN STEP	2026-11-10T01:11:55.0287125Z   Aijade.ComputerUse -> /home/runner/work/AIJADE/AIJADE/src/Aijade.ComputerUse/bin/Release/net10.0/Aijade.ComputerUse.dll
+build-test	UNKNOWN STEP	2026-11-10T01:11:58.6877979Z   Aijade.Memory -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Memory/bin/Release/net10.0/Aijade.Memory.dll
+build-test	UNKNOWN STEP	2026-11-10T01:11:58.7630343Z   Aijade.P1 -> /home/runner/work/AIJADE/AIJADE/tools/Aijade.P1/bin/Release/net10.0/Aijade.P1.dll
+build-test	UNKNOWN STEP	2026-11-10T01:11:58.7850585Z   Aijade.Providers -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Providers/bin/Release/net10.0/Aijade.Providers.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:00.0206384Z   Aijade.Learning -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Learning/bin/Release/net10.0/Aijade.Learning.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:00.2781858Z   Aijade.Growth -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Growth/bin/Release/net10.0/Aijade.Growth.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:00.4144698Z   Aijade.Telemetry -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Telemetry/bin/Release/net10.0/Aijade.Telemetry.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:03.1599778Z   Aijade.Research -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Research/bin/Release/net10.0/Aijade.Research.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:03.4066093Z   Aijade.Client -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Client/bin/Release/net10.0/Aijade.Client.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:04.6055883Z   Aijade.Integrations -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Integrations/bin/Release/net10.0/Aijade.Integrations.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:06.1917746Z   Aijade.UI -> /home/runner/work/AIJADE/AIJADE/src/Aijade.UI/bin/Release/net10.0/Aijade.UI.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:06.2072082Z   Aijade.Bots -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Bots/bin/Release/net10.0/Aijade.Bots.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:08.1008067Z   Aijade.Web -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/bin/Release/net10.0/Aijade.Web.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:08.1013441Z   Aijade.Web (Blazor output) -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/bin/Release/net10.0/wwwroot
+build-test	UNKNOWN STEP	2026-11-10T01:12:12.5596282Z   Aijade.Server -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Server/bin/Release/net10.0/Aijade.Server.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:19.7108876Z   Aijade.Tests -> /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:20.9323162Z   Aijade.E2E -> /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/bin/Release/net10.0/Aijade.E2E.dll
+build-test	UNKNOWN STEP	2026-11-10T01:12:20.9376392Z Test run for /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)
+build-test	UNKNOWN STEP	2026-11-10T01:12:21.0421644Z Test run for /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/bin/Release/net10.0/Aijade.E2E.dll (.NETCoreApp,Version=v10.0)
+build-test	UNKNOWN STEP	2026-11-10T01:12:21.2989238Z A total of 1 test files matched the specified pattern.A total of 1 test files matched the specified pattern.
+build-test	UNKNOWN STEP	2026-11-10T01:12:21.2989650Z 
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.4750460Z [xUnit.net 00:00:00.76]     Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.4859625Z [xUnit.net 00:00:00.77]     Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.4879617Z [xUnit.net 00:00:00.77]     Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.4900675Z [xUnit.net 00:00:00.78]     Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.4907184Z [xUnit.net 00:00:00.78]     Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.4926457Z [xUnit.net 00:00:00.78]     Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.5030411Z [xUnit.net 00:00:00.79]     Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.5057151Z [xUnit.net 00:00:00.79]     Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.5073820Z [xUnit.net 00:00:00.79]     Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6006561Z   Skipped Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6039186Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6059101Z   Skipped Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6079522Z   Skipped Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6080357Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6080882Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6081366Z   Skipped Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6081784Z   Skipped Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6082208Z   Skipped Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6082725Z [xUnit.net 00:00:00.82]     Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6083214Z [xUnit.net 00:00:00.82]     Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6083681Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6084156Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6084622Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6085058Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6085551Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6086047Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6086488Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6086968Z   Skipped Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6087401Z   Skipped Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6087830Z   Skipped Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6088469Z   Skipped Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6089199Z   Skipped Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6089839Z   Skipped Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6090827Z   Skipped Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6091571Z   Skipped Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6092231Z   Skipped Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6092918Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6093650Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6094356Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6095044Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6095916Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6096613Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6097443Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6098438Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6099203Z [xUnit.net 00:00:00.83]     Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6099848Z   Skipped Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6100545Z   Skipped Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6101286Z   Skipped Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6101949Z   Skipped Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6102555Z   Skipped Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6103188Z   Skipped Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6104001Z   Skipped Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6104786Z   Skipped Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6105509Z   Skipped Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6106287Z [xUnit.net 00:00:00.84]     Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6107020Z [xUnit.net 00:00:00.84]     Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6107882Z [xUnit.net 00:00:00.85]     Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6111830Z [xUnit.net 00:00:00.85]     Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6112662Z [xUnit.net 00:00:00.85]     Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6113448Z [xUnit.net 00:00:00.85]     Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6114209Z [xUnit.net 00:00:00.86]     Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6115293Z [xUnit.net 00:00:00.86]     Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6770788Z   Skipped Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6785785Z   Skipped Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6786701Z   Skipped Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6787484Z   Skipped Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6788438Z   Skipped Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6789600Z   Skipped Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6819646Z   Skipped Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6820564Z   Skipped Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6829936Z 
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.6830572Z Skipped! - Failed:     0, Passed:     0, Skipped:    35, Total:    35, Duration: 128 ms - Aijade.E2E.dll (net10.0)
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.7207842Z [xUnit.net 00:00:01.06]     Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.7405539Z [xUnit.net 00:00:01.08]     Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.8218908Z   Skipped Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:22.8220292Z   Skipped Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:23.0610103Z [xUnit.net 00:00:01.40]     Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:23.2917064Z   Skipped Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:30.6489302Z [xUnit.net 00:00:08.98]     Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:30.6511499Z   Skipped Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.6890382Z [xUnit.net 00:00:12.02]     Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.6909256Z [xUnit.net 00:00:12.03]     Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.6917431Z [xUnit.net 00:00:12.03]     Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.6988415Z   Skipped Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.7009132Z   Skipped Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.7039069Z   Skipped Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.9789805Z [xUnit.net 00:00:12.31]     Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.9819078Z   Skipped Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.9820358Z [xUnit.net 00:00:12.32]     Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.9835308Z [xUnit.net 00:00:12.32]     Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:33.9999163Z   Skipped Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:34.0029055Z   Skipped Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:34.0059156Z [xUnit.net 00:00:12.34]     Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:34.0333550Z   Skipped Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.8193001Z [xUnit.net 00:00:14.16]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.8255668Z [xUnit.net 00:00:14.16]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.8322821Z [xUnit.net 00:00:14.17]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.8919613Z [xUnit.net 00:00:14.23]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.8979940Z [xUnit.net 00:00:14.23]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.9019357Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.9029123Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.9059305Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.9060483Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:35.9061733Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.5803366Z [xUnit.net 00:00:15.92]     Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients [FAIL]
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6233647Z   Failed Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients [821 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6235142Z   Error Message:
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6235781Z    Assert.Equal() Failure: Strings differ
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6236662Z            ↓ (pos 0)
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6237011Z Expected: "Asia/Seoul"
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6237351Z Actual:   "Etc/UTC"
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6238868Z            ↑ (pos 0)
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6239227Z   Stack Trace:
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6240491Z      at Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients() in /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/CompanionSyncTests.cs:line 164
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6242071Z    at Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients() in /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/CompanionSyncTests.cs:line 165
+build-test	UNKNOWN STEP	2026-11-10T01:12:37.6242969Z --- End of stack trace from previous location ---
+build-test	UNKNOWN STEP	2026-11-10T01:12:40.9907605Z [xUnit.net 00:00:19.33]     Aijade.Tests.ExternalRendererStudyTests.Seal_session [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:40.9931658Z [xUnit.net 00:00:19.33]     Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:40.9932690Z [xUnit.net 00:00:19.33]     Aijade.Tests.ExternalRendererStudyTests.Send_intents [SKIP]
+build-test	UNKNOWN STEP	2026-11-10T01:12:41.4975056Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Seal_session [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:41.5001288Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:12:41.5001967Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Send_intents [1 ms]
+build-test	UNKNOWN STEP	2026-11-10T01:13:28.9372584Z 
+build-test	UNKNOWN STEP	2026-11-10T01:13:28.9402428Z Failed!  - Failed:     1, Passed:   531, Skipped:    19, Total:   551, Duration: 1 m 6 s - Aijade.Tests.dll (net10.0)
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0119930Z ##[error]Process completed with exit code 1.
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0216025Z Post job cleanup.
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0796382Z [command]/usr/bin/git version
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0849192Z git version 2.56.0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0880393Z Temporarily overriding HOME='/home/runner/work/_temp/33496a61-6161-410d-b8fe-ed1d9123b6a0' before making global git config changes
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0881292Z Adding repository directory to the temporary git global config as a safe directory
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0883767Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AIJADE/AIJADE
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0921528Z Removing SSH command configuration
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0925639Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.0958504Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1316854Z Removing HTTP extra header
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1322244Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1375376Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1716917Z Removing includeIf entries pointing to credentials config files
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1727982Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1756903Z includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1757628Z includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1759550Z includeif.gitdir:/github/workspace/.git.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1759887Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1779700Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1802515Z /home/runner/work/_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1811567Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-407babaf\-6138\-4577\-886e\-1ea382418cbc\.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1861729Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1900738Z /home/runner/work/_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1912376Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-407babaf\-6138\-4577\-886e\-1ea382418cbc\.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1964407Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.1991333Z /github/runner_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2031292Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-407babaf\-6138\-4577\-886e\-1ea382418cbc\.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2067492Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2086272Z /github/runner_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2091311Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-407babaf\-6138\-4577\-886e\-1ea382418cbc\.config
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2118998Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2332746Z Removing credentials config '/home/runner/work/_temp/git-credentials-407babaf-6138-4577-886e-1ea382418cbc.config'
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2444829Z Print service container logs: c2714f7a48374b7d9047cd3f3a633638_ghcriotensorchordvchordpostgrespg18v100_9dc113
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2448529Z ##[command]/usr/bin/docker logs --details d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2554242Z  The files belonging to this database system will be owned by user "postgres".
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2556398Z  initdb: warning: enabling "trust" authentication for local connections
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2556634Z  This user must also own the server process.
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2557163Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2560141Z  2026-11-10 01:11:31.990 UTC [1] LOG:  starting PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2560936Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2561249Z  The database cluster will be initialized with locale "en_US.utf8".
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2561790Z  The default database encoding has accordingly been set to "UTF8".
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2562294Z  The default text search configuration will be set to "english".
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2562579Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2562755Z  Data page checksums are enabled.
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2563125Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2563392Z  fixing permissions on existing directory /var/lib/postgresql/18/docker ... ok
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2575861Z  creating subdirectories ... ok
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2576169Z  selecting dynamic shared memory implementation ... posix
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2576471Z  selecting default "max_connections" ... 100
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2576734Z  selecting default "shared_buffers" ... 128MB
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577018Z  selecting default time zone ... Etc/UTC
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577180Z  creating configuration files ... ok
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577342Z  running bootstrap script ... ok
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577520Z  performing post-bootstrap initialization ... ok
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577695Z  syncing data to disk ... ok
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577825Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2577923Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2578060Z  Success. You can now start the database server using:
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2578413Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2578636Z      pg_ctl -D /var/lib/postgresql/18/docker -l logfile start
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2578898Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2579216Z  2026-11-10 01:11:31.990 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2579598Z  2026-11-10 01:11:31.990 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2580034Z  2026-11-10 01:11:31.991 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2580387Z  2026-11-10 01:11:31.994 UTC [74] LOG:  database system was shut down at 2026-11-10 01:11:31 UTC
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2580673Z  2026-11-10 01:11:31.997 UTC [1] LOG:  database system is ready to accept connections
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2580944Z  2026-11-10 01:12:25.132 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2581586Z  2026-11-10 01:12:25.278 UTC [72] LOG:  checkpoint complete: wrote 1676 buffers (10.2%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 2 recycled; write=0.104 s, sync=0.039 s, total=0.147 s; sync files=480, longest=0.004 s, average=0.001 s; distance=21716 kB, estimate=21716 kB; lsn=0/30D0778, redo lsn=0/30C7F98
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2582241Z  2026-11-10 01:12:25.278 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2582843Z  2026-11-10 01:12:25.283 UTC [72] LOG:  checkpoint complete: wrote 13 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.001 s, total=0.006 s; sync files=10, longest=0.001 s, average=0.001 s; distance=34 kB, estimate=19547 kB; lsn=0/30D0850, redo lsn=0/30D07F0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2583622Z  2026-11-10 01:12:25.556 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2584365Z  2026-11-10 01:12:25.879 UTC [72] LOG:  checkpoint complete: wrote 3081 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.243 s, sync=0.077 s, total=0.324 s; sync files=659, longest=0.005 s, average=0.001 s; distance=16519 kB, estimate=19245 kB; lsn=0/414F258, redo lsn=0/40F25C8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2584980Z  2026-11-10 01:12:25.880 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2585565Z  2026-11-10 01:12:25.882 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=371 kB, estimate=17357 kB; lsn=0/414F440, redo lsn=0/414F3D8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2586150Z  2026-11-10 01:12:26.494 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2586757Z  2026-11-10 01:12:26.698 UTC [72] LOG:  checkpoint complete: wrote 3081 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.120 s, sync=0.082 s, total=0.204 s; sync files=696, longest=0.003 s, average=0.001 s; distance=21713 kB, estimate=21713 kB; lsn=0/5723550, redo lsn=0/5683928
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2587378Z  2026-11-10 01:12:26.699 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2587970Z  2026-11-10 01:12:26.702 UTC [72] LOG:  checkpoint complete: wrote 110 buffers (0.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=54, longest=0.001 s, average=0.001 s; distance=639 kB, estimate=19605 kB; lsn=0/5724158, redo lsn=0/57235C8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2588701Z  2026-11-10 01:12:26.882 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2589313Z  2026-11-10 01:12:27.214 UTC [72] LOG:  checkpoint complete: wrote 2984 buffers (18.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.151 s, sync=0.168 s, total=0.332 s; sync files=1429, longest=0.009 s, average=0.001 s; distance=14876 kB, estimate=19132 kB; lsn=0/67EA9F8, redo lsn=0/65AA748
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2589917Z  2026-11-10 01:12:27.231 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2590511Z  2026-11-10 01:12:27.407 UTC [72] LOG:  checkpoint complete: wrote 194 buffers (1.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.106 s, total=0.177 s; sync files=86, longest=0.105 s, average=0.002 s; distance=2307 kB, estimate=17450 kB; lsn=0/6802550, redo lsn=0/67EB708
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2591111Z  2026-11-10 01:12:27.437 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2591711Z  2026-11-10 01:12:27.442 UTC [72] LOG:  checkpoint complete: wrote 48 buffers (0.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.006 s; sync files=27, longest=0.001 s, average=0.001 s; distance=200 kB, estimate=15725 kB; lsn=0/681E6B8, redo lsn=0/681D8C0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2592304Z  2026-11-10 01:12:27.452 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2592889Z  2026-11-10 01:12:27.455 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=11 kB, estimate=14154 kB; lsn=0/6820588, redo lsn=0/6820520
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2593478Z  2026-11-10 01:12:27.969 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2594079Z  2026-11-10 01:12:28.046 UTC [72] LOG:  checkpoint complete: wrote 1296 buffers (7.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.053 s, sync=0.023 s, total=0.078 s; sync files=479, longest=0.001 s, average=0.001 s; distance=16290 kB, estimate=16290 kB; lsn=0/7809C98, redo lsn=0/7808DB0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2594767Z  2026-11-10 01:12:28.047 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2595449Z  2026-11-10 01:12:28.048 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=1, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=14661 kB; lsn=0/7809D70, redo lsn=0/7809D10
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2596043Z  2026-11-10 01:12:28.405 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2596645Z  2026-11-10 01:12:28.484 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.038 s, sync=0.039 s, total=0.079 s; sync files=479, longest=0.003 s, average=0.001 s; distance=10869 kB, estimate=14282 kB; lsn=0/82DDB98, redo lsn=0/82A7500
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2597248Z  2026-11-10 01:12:28.518 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2597839Z  2026-11-10 01:12:28.524 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.004 s, total=0.007 s; sync files=4, longest=0.004 s, average=0.001 s; distance=232 kB, estimate=12877 kB; lsn=0/83A4530, redo lsn=0/82E1528
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2598562Z  2026-11-10 01:12:29.034 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2599161Z  2026-11-10 01:12:29.166 UTC [72] LOG:  checkpoint complete: wrote 2471 buffers (15.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.093 s, sync=0.036 s, total=0.133 s; sync files=184, longest=0.024 s, average=0.001 s; distance=16343 kB, estimate=16343 kB; lsn=0/92F6810, redo lsn=0/92D7130
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2599757Z  2026-11-10 01:12:29.166 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2600346Z  2026-11-10 01:12:29.168 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=125 kB, estimate=14721 kB; lsn=0/92F68F0, redo lsn=0/92F6888
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2600931Z  2026-11-10 01:12:29.926 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2601528Z  2026-11-10 01:12:30.078 UTC [72] LOG:  checkpoint complete: wrote 2756 buffers (16.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.079 s, sync=0.071 s, total=0.152 s; sync files=892, longest=0.004 s, average=0.001 s; distance=21724 kB, estimate=21724 kB; lsn=0/A876F08, redo lsn=0/A82D9C0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2602122Z  2026-11-10 01:12:30.079 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2602714Z  2026-11-10 01:12:30.082 UTC [72] LOG:  checkpoint complete: wrote 59 buffers (0.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=32, longest=0.001 s, average=0.001 s; distance=293 kB, estimate=19581 kB; lsn=0/A8774C8, redo lsn=0/A876F80
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2603310Z  2026-11-10 01:12:30.112 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2603899Z  2026-11-10 01:12:30.128 UTC [72] LOG:  checkpoint complete: wrote 144 buffers (0.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.011 s, total=0.016 s; sync files=75, longest=0.004 s, average=0.001 s; distance=785 kB, estimate=17701 kB; lsn=0/A9C7610, redo lsn=0/A93B3C0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2604487Z  2026-11-10 01:12:30.507 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2605087Z  2026-11-10 01:12:30.566 UTC [72] LOG:  checkpoint complete: wrote 894 buffers (5.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.026 s, sync=0.033 s, total=0.060 s; sync files=425, longest=0.002 s, average=0.001 s; distance=10114 kB, estimate=16942 kB; lsn=0/B31BCE0, redo lsn=0/B31BC88
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2605770Z  2026-11-10 01:12:30.672 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2606442Z  2026-11-10 01:12:30.774 UTC [72] LOG:  checkpoint complete: wrote 973 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.031 s, sync=0.066 s, total=0.102 s; sync files=420, longest=0.008 s, average=0.001 s; distance=4777 kB, estimate=15726 kB; lsn=0/BD09FD0, redo lsn=0/B7C62F8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2607046Z  2026-11-10 01:12:31.209 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2607649Z  2026-11-10 01:12:31.301 UTC [72] LOG:  checkpoint complete: wrote 1163 buffers (7.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.031 s, sync=0.058 s, total=0.092 s; sync files=584, longest=0.003 s, average=0.001 s; distance=11934 kB, estimate=15347 kB; lsn=0/C37B108, redo lsn=0/C36DB98
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2608372Z  2026-11-10 01:12:31.328 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2608957Z  2026-11-10 01:12:31.332 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=62 kB, estimate=13818 kB; lsn=0/C37D690, redo lsn=0/C37D638
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2609549Z  2026-11-10 01:12:31.931 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2610138Z  2026-11-10 01:12:31.934 UTC [72] LOG:  checkpoint complete: wrote 57 buffers (0.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=36, longest=0.001 s, average=0.001 s; distance=5586 kB, estimate=12995 kB; lsn=0/C8F2288, redo lsn=0/C8F2230
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2610734Z  2026-11-10 01:12:32.249 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2611334Z  2026-11-10 01:12:32.338 UTC [72] LOG:  checkpoint complete: wrote 1038 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.063 s, total=0.090 s; sync files=484, longest=0.006 s, average=0.001 s; distance=5496 kB, estimate=12245 kB; lsn=0/CE50408, redo lsn=0/CE503B0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2611935Z  2026-11-10 01:12:32.399 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2612516Z  2026-11-10 01:12:32.407 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.008 s; sync files=2, longest=0.001 s, average=0.001 s; distance=48 kB, estimate=11025 kB; lsn=0/CE5C6F0, redo lsn=0/CE5C690
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2613104Z  2026-11-10 01:12:32.902 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2613699Z  2026-11-10 01:12:32.964 UTC [72] LOG:  checkpoint complete: wrote 1043 buffers (6.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.026 s, sync=0.034 s, total=0.062 s; sync files=312, longest=0.005 s, average=0.001 s; distance=10869 kB, estimate=11010 kB; lsn=0/D9214C0, redo lsn=0/D8F9B50
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2614302Z  2026-11-10 01:12:32.964 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2614889Z  2026-11-10 01:12:32.968 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.002 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=158 kB, estimate=9925 kB; lsn=0/D921598, redo lsn=0/D921538
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2615477Z  2026-11-10 01:12:33.505 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2616080Z  2026-11-10 01:12:33.557 UTC [72] LOG:  checkpoint complete: wrote 1057 buffers (6.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.027 s, sync=0.023 s, total=0.053 s; sync files=251, longest=0.004 s, average=0.001 s; distance=10896 kB, estimate=10896 kB; lsn=0/E3CF7A8, redo lsn=0/E3C5670
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2616761Z  2026-11-10 01:12:33.558 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2617421Z  2026-11-10 01:12:33.559 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=40 kB, estimate=9810 kB; lsn=0/E3CF880, redo lsn=0/E3CF820
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2618013Z  2026-11-10 01:12:33.880 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2618796Z  2026-11-10 01:12:33.964 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.058 s, total=0.084 s; sync files=479, longest=0.012 s, average=0.001 s; distance=10865 kB, estimate=10865 kB; lsn=0/EE6BDD8, redo lsn=0/EE6BD80
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2619397Z  2026-11-10 01:12:34.256 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2619998Z  2026-11-10 01:12:34.369 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.054 s, sync=0.058 s, total=0.114 s; sync files=954, longest=0.008 s, average=0.001 s; distance=10980 kB, estimate=10980 kB; lsn=0/F925438, redo lsn=0/F925128
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2620601Z  2026-11-10 01:12:34.421 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2621178Z  2026-11-10 01:12:34.428 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.008 s; sync files=2, longest=0.001 s, average=0.001 s; distance=86 kB, estimate=9891 kB; lsn=0/F93A9F8, redo lsn=0/F93A998
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2621756Z  2026-11-10 01:12:34.495 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2622348Z  2026-11-10 01:12:34.673 UTC [72] LOG:  checkpoint complete: wrote 962 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.043 s, sync=0.124 s, total=0.179 s; sync files=699, longest=0.006 s, average=0.001 s; distance=4381 kB, estimate=9340 kB; lsn=0/10426A78, redo lsn=0/FD81DB8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2622950Z  2026-11-10 01:12:34.952 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2623548Z  2026-11-10 01:12:35.056 UTC [72] LOG:  checkpoint complete: wrote 1120 buffers (6.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.031 s, sync=0.068 s, total=0.105 s; sync files=479, longest=0.005 s, average=0.001 s; distance=12248 kB, estimate=12248 kB; lsn=0/10978CF0, redo lsn=0/10977EF0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2624146Z  2026-11-10 01:12:35.057 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2624739Z  2026-11-10 01:12:35.060 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=1, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=11023 kB; lsn=0/10978DC8, redo lsn=0/10978D68
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2625327Z  2026-11-10 01:12:35.151 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2625906Z  2026-11-10 01:12:35.157 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.001 s, total=0.007 s; sync files=2, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=9921 kB; lsn=0/109799F8, redo lsn=0/10979998
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2626530Z  2026-11-10 01:12:35.611 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2627127Z  2026-11-10 01:12:35.673 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.035 s, sync=0.025 s, total=0.063 s; sync files=247, longest=0.008 s, average=0.001 s; distance=10859 kB, estimate=10859 kB; lsn=0/1141C418, redo lsn=0/11414818
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2627876Z  2026-11-10 01:12:35.674 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2628656Z  2026-11-10 01:12:35.675 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=31 kB, estimate=9776 kB; lsn=0/1141C4F0, redo lsn=0/1141C490
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2629249Z  2026-11-10 01:12:36.135 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2629854Z  2026-11-10 01:12:36.266 UTC [72] LOG:  checkpoint complete: wrote 2045 buffers (12.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.078 s, sync=0.051 s, total=0.131 s; sync files=716, longest=0.003 s, average=0.001 s; distance=16164 kB, estimate=16164 kB; lsn=0/124510B8, redo lsn=0/123E57C0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2630466Z  2026-11-10 01:12:36.267 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2631064Z  2026-11-10 01:12:36.272 UTC [72] LOG:  checkpoint complete: wrote 32 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.002 s, total=0.005 s; sync files=18, longest=0.001 s, average=0.001 s; distance=430 kB, estimate=14591 kB; lsn=0/12451190, redo lsn=0/12451130
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2631661Z  2026-11-10 01:12:36.529 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2632263Z  2026-11-10 01:12:36.675 UTC [72] LOG:  checkpoint complete: wrote 2058 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.054 s, sync=0.091 s, total=0.147 s; sync files=954, longest=0.004 s, average=0.001 s; distance=11024 kB, estimate=14234 kB; lsn=0/12F154F8, redo lsn=0/12F154A0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2632871Z  2026-11-10 01:12:36.714 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2633457Z  2026-11-10 01:12:36.718 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=1, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=12811 kB; lsn=0/12F16530, redo lsn=0/12F164D0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2634047Z  2026-11-10 01:12:36.901 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2634653Z  2026-11-10 01:12:37.054 UTC [72] LOG:  checkpoint complete: wrote 1974 buffers (12.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.058 s, sync=0.094 s, total=0.153 s; sync files=903, longest=0.005 s, average=0.001 s; distance=10033 kB, estimate=12533 kB; lsn=0/13A76810, redo lsn=0/138E2A90
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2635253Z  2026-11-10 01:12:37.241 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2635857Z  2026-11-10 01:12:37.353 UTC [72] LOG:  checkpoint complete: wrote 1165 buffers (7.1%), wrote 2 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.043 s, sync=0.068 s, total=0.113 s; sync files=581, longest=0.002 s, average=0.001 s; distance=7056 kB, estimate=11986 kB; lsn=0/14012358, redo lsn=0/13FC6C90
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2636460Z  2026-11-10 01:12:37.385 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2637048Z  2026-11-10 01:12:37.397 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.003 s, sync=0.001 s, total=0.012 s; sync files=2, longest=0.001 s, average=0.001 s; distance=358 kB, estimate=10823 kB; lsn=0/14020748, redo lsn=0/140206E8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2637637Z  2026-11-10 01:12:37.499 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2638386Z  2026-11-10 01:12:37.519 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.021 s; sync files=2, longest=0.001 s, average=0.001 s; distance=107 kB, estimate=9751 kB; lsn=0/1403B588, redo lsn=0/1403B528
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2639183Z  2026-11-10 01:12:38.048 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2639786Z  2026-11-10 01:12:38.123 UTC [72] LOG:  checkpoint complete: wrote 1039 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.025 s, sync=0.045 s, total=0.075 s; sync files=479, longest=0.007 s, average=0.001 s; distance=16289 kB, estimate=16289 kB; lsn=0/1503D270, redo lsn=0/15023A20
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2640388Z  2026-11-10 01:12:38.123 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2640980Z  2026-11-10 01:12:38.126 UTC [72] LOG:  checkpoint complete: wrote 30 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=21, longest=0.001 s, average=0.001 s; distance=103 kB, estimate=14670 kB; lsn=0/1503E0F8, redo lsn=0/1503D658
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2641586Z  2026-11-10 01:12:38.319 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2642195Z  2026-11-10 01:12:38.451 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.055 s, sync=0.074 s, total=0.133 s; sync files=954, longest=0.006 s, average=0.001 s; distance=10873 kB, estimate=14290 kB; lsn=0/15ADBBF8, redo lsn=0/15ADBBA0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2642801Z  2026-11-10 01:12:38.636 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2643397Z  2026-11-10 01:12:38.702 UTC [72] LOG:  checkpoint complete: wrote 1023 buffers (6.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.026 s, sync=0.037 s, total=0.066 s; sync files=479, longest=0.001 s, average=0.001 s; distance=5568 kB, estimate=13418 kB; lsn=0/16093960, redo lsn=0/1604BDD8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2644001Z  2026-11-10 01:12:38.702 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2644596Z  2026-11-10 01:12:38.705 UTC [72] LOG:  checkpoint complete: wrote 14 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=9, longest=0.001 s, average=0.001 s; distance=287 kB, estimate=12105 kB; lsn=0/16093A38, redo lsn=0/160939D8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2645183Z  2026-11-10 01:12:38.779 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2645771Z  2026-11-10 01:12:38.783 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=2, longest=0.001 s, average=0.001 s; distance=52 kB, estimate=10900 kB; lsn=0/160A0D80, redo lsn=0/160A0D20
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2646364Z  2026-11-10 01:12:39.317 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2646958Z  2026-11-10 01:12:39.324 UTC [72] LOG:  checkpoint complete: wrote 158 buffers (1.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.001 s, total=0.008 s; sync files=4, longest=0.001 s, average=0.001 s; distance=10884 kB, estimate=10898 kB; lsn=0/16B432B8, redo lsn=0/16B41EA8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2647549Z  2026-11-10 01:12:39.324 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2648376Z  2026-11-10 01:12:39.325 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=1, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=9809 kB; lsn=0/16B43390, redo lsn=0/16B43330
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2648971Z  2026-11-10 01:12:39.772 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2649576Z  2026-11-10 01:12:39.834 UTC [72] LOG:  checkpoint complete: wrote 1042 buffers (6.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.025 s, sync=0.032 s, total=0.062 s; sync files=361, longest=0.008 s, average=0.001 s; distance=10864 kB, estimate=10864 kB; lsn=0/175E2598, redo lsn=0/175DF4D0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2650343Z  2026-11-10 01:12:39.834 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2650932Z  2026-11-10 01:12:39.839 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.002 s, total=0.005 s; sync files=2, longest=0.002 s, average=0.001 s; distance=12 kB, estimate=9779 kB; lsn=0/175E2670, redo lsn=0/175E2610
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2651520Z  2026-11-10 01:12:40.284 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2652123Z  2026-11-10 01:12:40.346 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.024 s, sync=0.036 s, total=0.063 s; sync files=479, longest=0.002 s, average=0.001 s; distance=10861 kB, estimate=10861 kB; lsn=0/180A5EC8, redo lsn=0/1807DCC0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2652732Z  2026-11-10 01:12:40.437 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2653333Z  2026-11-10 01:12:40.502 UTC [72] LOG:  checkpoint complete: wrote 978 buffers (6.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.036 s, total=0.065 s; sync files=415, longest=0.006 s, average=0.001 s; distance=4945 kB, estimate=10270 kB; lsn=0/186593C8, redo lsn=0/18552210
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2653935Z  2026-11-10 01:12:40.789 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2654535Z  2026-11-10 01:12:40.846 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.024 s, sync=0.032 s, total=0.058 s; sync files=479, longest=0.006 s, average=0.001 s; distance=6492 kB, estimate=9892 kB; lsn=0/18BA9388, redo lsn=0/18BA9330
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2655139Z  2026-11-10 01:12:41.194 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2655747Z  2026-11-10 01:12:41.299 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.054 s, sync=0.049 s, total=0.106 s; sync files=954, longest=0.004 s, average=0.001 s; distance=11042 kB, estimate=11042 kB; lsn=0/19671F40, redo lsn=0/19671EE8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2656352Z  2026-11-10 01:12:41.379 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2656944Z  2026-11-10 01:12:41.384 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=108 kB, estimate=9949 kB; lsn=0/1968D038, redo lsn=0/1968CFE0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2657536Z  2026-11-10 01:12:41.517 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2658281Z  2026-11-10 01:12:41.577 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.032 s, sync=0.027 s, total=0.060 s; sync files=479, longest=0.002 s, average=0.001 s; distance=5486 kB, estimate=9503 kB; lsn=0/19BE88D0, redo lsn=0/19BE8878
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2658885Z  2026-11-10 01:12:41.797 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2659496Z  2026-11-10 01:12:41.874 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.026 s, sync=0.049 s, total=0.077 s; sync files=479, longest=0.006 s, average=0.001 s; distance=5587 kB, estimate=9111 kB; lsn=0/1A15D708, redo lsn=0/1A15D6B0
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2660102Z  2026-11-10 01:12:42.135 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2660701Z  2026-11-10 01:12:42.202 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.039 s, total=0.067 s; sync files=479, longest=0.007 s, average=0.001 s; distance=5673 kB, estimate=8767 kB; lsn=0/1A6E7C90, redo lsn=0/1A6E7C38
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2661461Z  2026-11-10 01:12:42.433 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2662065Z  2026-11-10 01:12:42.489 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.019 s, sync=0.036 s, total=0.056 s; sync files=479, longest=0.009 s, average=0.001 s; distance=5602 kB, estimate=8451 kB; lsn=0/1AC60650, redo lsn=0/1AC605F8
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2662662Z  2026-11-10 01:12:42.678 UTC [72] LOG:  checkpoint starting: immediate force wait
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2663250Z  2026-11-10 01:12:42.680 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=109 kB, estimate=7617 kB; lsn=0/1AC7BBB8, redo lsn=0/1AC7BB60
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2664059Z  waiting for server to start....2026-11-10 01:11:31.586 UTC [52] LOG:  starting PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2664550Z  2026-11-10 01:11:31.587 UTC [52] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2664865Z  2026-11-10 01:11:31.590 UTC [58] LOG:  database system was shut down at 2026-11-10 01:11:31 UTC
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665144Z  2026-11-10 01:11:31.593 UTC [52] LOG:  database system is ready to accept connections
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665356Z   done
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665466Z  server started
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665581Z  CREATE DATABASE
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665696Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665795Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2665977Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2666198Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2666408Z  waiting for server to shut down...2026-11-10 01:11:31.763 UTC [52] LOG:  received fast shutdown request
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2666699Z  .2026-11-10 01:11:31.763 UTC [52] LOG:  aborting any active transactions
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2667016Z  2026-11-10 01:11:31.766 UTC [52] LOG:  background worker "logical replication launcher" (PID 61) exited with exit code 1
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2667310Z  2026-11-10 01:11:31.767 UTC [56] LOG:  shutting down
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2667529Z  2026-11-10 01:11:31.767 UTC [56] LOG:  checkpoint starting: shutdown immediate
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2668252Z  2026-11-10 01:11:31.857 UTC [56] LOG:  checkpoint complete: wrote 941 buffers (5.7%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.082 s, sync=0.007 s, total=0.090 s; sync files=303, longest=0.006 s, average=0.001 s; distance=4334 kB, estimate=4334 kB; lsn=0/1B92F28, redo lsn=0/1B92F28
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2668852Z  2026-11-10 01:11:31.867 UTC [52] LOG:  database system is shut down
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2669033Z   done
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2669143Z  server stopped
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2669254Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2669388Z  PostgreSQL init process complete; ready for start up.
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2669568Z  
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2673337Z Stop and remove container: c2714f7a48374b7d9047cd3f3a633638_ghcriotensorchordvchordpostgrespg18v100_9dc113
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.2676479Z ##[command]/usr/bin/docker rm --force d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.3855344Z d8a8471f2d717edf43d7e6dea5725979b2fe956630c280ff2ccff068fd1b5551
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.3885601Z Remove container network: github_network_d25f57d535454042abf5ed2cf3dd09aa
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.3888549Z ##[command]/usr/bin/docker network rm github_network_d25f57d535454042abf5ed2cf3dd09aa
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.4418368Z github_network_d25f57d535454042abf5ed2cf3dd09aa
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.4490981Z Cleaning up orphan processes
+build-test	UNKNOWN STEP	2026-11-10T01:13:29.4706238Z Terminate orphan process: pid (2943) (VBCSCompiler)

@@ -2,15 +2,19 @@
 
 本文件描述 AIJADE（.NET 实现）的架构、功能状态、研究装置与实验产物，以及尚未完成的事项。每一项功能都给出证据：测试名（`tests/Aijade.Tests` 下的单元 / 集成测试，`tests/Aijade.E2E` 下的浏览器端到端测试）或实测说明。最后一节是进度总览表，每轮工作结束时更新。
 
-当前优先完善情感陪伴产品，角色、地点时区、关系和收藏按账号／角色共享。配置与同步见 [COMPANION](COMPANION.md)，模块边界见 [PROJECT-SCOPE](PROJECT-SCOPE.md) 和 [ADR-004](decisions/ADR-004.md)。
+当前优先完善情感陪伴产品，角色、地点时区、关系、收藏和主动保存的共同日记按账号／角色共享。配置与同步见 [COMPANION](COMPANION.md)，模块边界见 [PROJECT-SCOPE](PROJECT-SCOPE.md) 和 [ADR-004](decisions/ADR-004.md)。
 
 共享能力装配、统一回复流、精简运行配置和参考来源见 [ARCHITECTURE](ARCHITECTURE.md)。本机 `companion` 队列按任务唤醒，完整配置保留原 worker 时序；研究管线与既有测量源码保留。
 
 研究记录分别索引到 [既有结果复核](../experiments/engineering/2026-11-09-research-audit/README.md) 与 [Mac 模型预检](../experiments/mac-preflight/2026-11-09-7b8b/README.md)。7B 首轮交换阈值停止保留，准入后两模型固定请求各 10/10；正式资格、确定性及 P2 主运行仍各自验收。
 
-[本轮陪伴架构回执](../experiments/engineering/2026-11-10-life-architecture/receipt.json)：全量单元／集成 537 通过、14 项按条件跳过；完整配置浏览器 29 通过、6 项按条件跳过，精简配置专项 8 通过。新增边界专项 18 通过。30 个陪伴参考仓库均核对固定提交的 README 与 LICENSE，其中 6 个抽样阅读关键源码；另保留 3 个架构主参考，均未安装或导入其源码/素材。550 个既有研究／共同基础及声明测量文件与本轮基线 `54ba8a5` 逐字节一致。模型、媒体和 QQ 出站使用受控替身。
+[本轮共同日记回执](../experiments/engineering/2026-11-10-shared-diary/receipt.json)记录服务器来源校验、跨端保存／读取／遗忘、冲突与隔离，以及时钟注入修复。修复前 GitHub Linux CI 的空白时区用例受到宿主环境影响；默认时钟注册改为不覆盖显式注入，UTC 全量单元／集成 544 通过、15 项按条件跳过。完整配置浏览器 30 通过、6 项授权 MMD 环境项跳过；精简配置专项 9 通过、无跳过，均无失败。跳过清单和原始失败按各自回执列出。552 个既有研究／共同基础与声明测量文件相对 `4af8d5b` 的基线逐字节不变。
 
-本轮在共享运行时中固定单轮模块选择，并加入 `bounded-context-v1` 产品长度策略、工具调用期限和结果未知时停止后续工具。它不改变原始存储文本；旧直接构造入口未显式设置预算时保留原长度策略。产品提示策略已改变，冻结记忆文件未改不等于实验条件一致；新策略的研究评估尚未运行。可编辑架构源与 PNG/SVG 见 [ARCHITECTURE](ARCHITECTURE.md)，完整参考目录见 [COMPANION-REFERENCES](COMPANION-REFERENCES.md)。此前的[运行时重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)和[发布回归回执](../experiments/engineering/2026-11-10-github-validation/receipt.json)保留原记录。
+本轮还实际接通缓存本地模型检查，结果与受控替身测试分开：1.5B 两次只输出情绪标记，均未完成可见回复；增加可见文字指令也未使第二次通过。8B 冷加载超过普通 300 秒期限；另一次在独立预加载约 246 秒后完成两轮聊天与日记保存／读取／遗忘，上游请求约 33、26 秒。记录器先收全真实响应再转发 SSE，未测首字延迟。此次输出上限 256 token，不能作为正式模型资格、持续容量或主研究结果。全部失败、资源采样、输入和响应保留在上述目录。
+
+[上轮陪伴架构回执](../experiments/engineering/2026-11-10-life-architecture/receipt.json)：全量单元／集成 537 通过、14 项按条件跳过；完整配置浏览器 29 通过、6 项按条件跳过，精简配置专项 8 通过。新增边界专项 18 通过。30 个陪伴参考仓库均核对固定提交的 README 与 LICENSE，其中 6 个抽样阅读关键源码；另保留 3 个架构主参考，均未安装或导入其源码/素材。550 个既有研究／共同基础及声明测量文件与该轮基线 `54ba8a5` 逐字节一致。该轮模型、媒体和 QQ 出站使用受控替身。
+
+共享运行时固定单轮模块选择，并采用 `bounded-context-v1` 产品长度策略、工具调用期限和结果未知时停止后续工具。本轮补充可见文字回复指令，标记本身不能算完成回复；指令不保证模型服从，也不触发自动重试或编造兜底文字。原始存储文本不改；旧直接构造入口未显式选择新选项时保留原提示行为。产品提示策略已改变，冻结记忆文件未改不等于实验条件一致；新策略的研究评估尚未运行。可编辑架构源与 PNG/SVG 见 [ARCHITECTURE](ARCHITECTURE.md)，完整参考目录见 [COMPANION-REFERENCES](COMPANION-REFERENCES.md)。此前的[运行时重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)和[发布回归回执](../experiments/engineering/2026-11-10-github-validation/receipt.json)保留原记录。
 
 ## 1. 约束
 
@@ -74,6 +78,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 |---|---|---|
 | 多会话聊天、流式输出 | ✓ | E2E `A_sign_up_chat_streams…`、`A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat`（断网时在聊天里提示，不弹页面的通用错误条；联网后照常）、`C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server`（回复已经完成，只是之后的渲染回执和朗读发不出去，不提示“这一轮没有完成”）；`Sse_parser…` |
 | 角色卡与人设（默认艾娅德） | ✓ | E2E `A_a_character_card_drives_the_persona_and_greeting`、`Without_a_character_the_default_companion_is_aijade_9` |
+| 共同日记：显式保存普通对话、网页／QQ 读取、网页遗忘 | ✓ | `CompanionDiaryTests`；E2E `A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat`；真实本地 8B 就绪后的两轮开发检查。保存摘录不验证所述活动真实性，遗忘不删除原聊天，非自动日记或历史版本归档 |
 | 上下文管理（历史窗口、视觉 / 浏览器 / IDE 上下文） | ✓ | `Orchestrator_streams_stores_and_reports…` 及上下文测试 |
 | 分层记忆：近期、摘要、长期（持久化、浏览、搜索、遗忘、导入导出、记录开关、语义检索） | ✓ | E2E `A_what_the_user_says_reaches_long_term_memory…`；`ProductServerTests`；`Memory_search_goes_by_meaning…`；`ContinuousLearningTests` |
 | 情绪与表情驱动 | ✓ | `Expression_markers…`、`Dialogue_acts_and_expressions…`；E2E `D_an_mmd_model_loads_and_its_morphs_follow_the_reply` |
@@ -140,7 +145,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 
 ## 6. 未完成与需作者处理的事项
 
-1. **需要作者操作**：macOS / iOS 构建（Xcode）；论文中第一作者的 CRediT 角色、资助、利益冲突与致谢，以及投稿信中的期刊、日期与预印本等占位（单位与导师的作者贡献角色已于 10-27 按导师意见写入）。
+1. **需要作者操作**：macOS / iOS 构建（Xcode）；利益冲突、致谢及正式投稿批准，以及投稿信中的期刊、日期与预印本等占位。作者已确认主导全部项目和论文、没有资助；这些事实不再重复列为缺失。单位与导师的作者贡献角色沿用 10-27 的记录。
 2. **未能在本机完整验证**：Windows 桌面与计算机控制、各聊天平台与 B 站的真实联网、阿里云与 Google 的真实接口。
 3. **检索打分（研究内核，已定性）**：冲突惩罚按冲突对累乘、总是压低较旧的一方（标准化模式下扫描前 150 个候选，关闭后交付召回大幅上升），加和模式的扫描窗口随 K 变化。这些都是 P3 测量与复现的对象，按设计保留并已在代码中注明；它们只存在于研究用记忆内核（`BioticMemory`），服务端记忆库不使用该内核。绝对的检索下限（0.02）由评测施加，`Retrieve()` 本身不用它。冲突判定对真实矛盾的精确度未评估，是否修改惩罚需先做这项评估。
 

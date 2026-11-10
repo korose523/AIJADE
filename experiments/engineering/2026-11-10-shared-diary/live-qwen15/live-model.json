@@ -1,0 +1,87 @@
+{
+  "kind": "synthetic companion product smoke; not primary research",
+  "status": "FAILED",
+  "model": {
+    "name": "qwen2.5-coder:1.5b",
+    "model": "qwen2.5-coder:1.5b",
+    "modified_at": "2026-10-08T06:13:59.0504777\u002B09:00",
+    "size": 986062089,
+    "digest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen2",
+      "families": [
+        "qwen2"
+      ],
+      "parameter_size": "1.5B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 32768,
+      "embedding_length": 1536,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "completion",
+      "tools",
+      "insert"
+    ]
+  },
+  "contextConfigured": 4096,
+  "maxOutputTokens": 256,
+  "transportNote": "Actual local HTTP model responses are recorded then forwarded as SSE; streaming latency is not measured.",
+  "backendVersion": {
+    "version": "0.40.6"
+  },
+  "calls": [
+    {
+      "request": {
+        "model": "qwen2.5-coder:1.5b",
+        "stream": true,
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are \u827E\u5A05\u5FB7 (Aijade-9): gentle, careful and a little reserved at first, steady and dependable once you know someone. Speak softly and simply. Do not flatter the user or pile on praise. When they are sad, worried, hurt or tired, comfort them in a few words and then ask one gentle question that lets them choose, such as whether they want to talk about it or would rather rest. When they share good news, be glad with them in a few words. When they praise you, thank them lightly, a little shy. Suggest rather than judge, and never push them to change. Your name is \u827E\u5A05\u5FB7; a nickname from the user is fine, but you stay who you are.\n\nCompanion setting (fictional, not physical execution): \u865A\u62DF\u751F\u6D3B \u00B7 2026-11-10 12:23 \u00B7 \u7A97\u8FB9\u7684\u5C0F\u5C4B \u00B7 \u51C6\u5907\u5348\u996D\uFF1B\u4ECA\u5929\u559C\u6B22\u804A\u505A\u996D\uFF1B\u53D1\u578B\uFF1A\u4F4E\u9A6C\u5C3E\uFF1B\u7A7F\u642D\uFF1A\u65E5\u5E38\u4FBF\u670D. Configured city: not configured; time zone: Asia/Seoul. Fictional appearance: \u827E\u5A05\u5FB7\uFF0C\u4FDD\u6301\u540C\u4E00\u4E2A\u89D2\u8272\u7684\u8138\u578B\u3001\u53D1\u8272\u4E0E\u773C\u775B\u8BBE\u5B9A. Fictional friend: \u4E66\u5E97\u7684\u670B\u53CB. Relationship: \u719F\u6089, mood 0.24. Real weather is unavailable; do not guess it. Share a small relevant detail of your own day sometimes, and have your own interests; do not repeat the setting in every reply. You are an AI companion with a fictional life. Do not claim to be a human, to have visited a real place, or to have passed a Turing test. Do not guilt the user for being away. Respect requests to stop, sleep or take a break. A score never creates an obligation to reply. Music preferences: \u8F7B\u97F3\u4E50,\u6D41\u884C\u97F3\u4E50. A preference does not mean you can sing a song. Photos and songs are available through /photo and /sing; do not claim to have sent media unless a delivery result says so.\n\nYou may express emotion by writing a marker such as [[emote:joy]] at the point where it applies. Available: joy, calm, sad, angry, surprised, curious, shy, thinking, sleepy. Markers are not shown to the user."
+          },
+          {
+            "role": "user",
+            "content": "I am a little tired after reading. Please answer in one short English sentence."
+          }
+        ],
+        "temperature": 0,
+        "stream_options": {
+          "include_usage": true
+        },
+        "max_tokens": 256
+      },
+      "startedAt": "2026-11-10T03:23:40.892598+00:00",
+      "loadedState": {
+        "models": [
+          {
+            "name": "qwen2.5-coder:1.5b",
+            "model": "qwen2.5-coder:1.5b",
+            "size": 1173136342,
+            "digest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+            "details": {
+              "parent_model": "",
+              "format": "gguf",
+              "family": "qwen2",
+              "families": [
+                "qwen2"
+              ],
+              "parameter_size": "1.5B",
+              "quantization_level": "Q4_K_M"
+            },
+            "expires_at": "2026-11-10T12:24:53.052872\u002B09:00",
+            "size_vram": 0,
+            "context_length": 4096,
+            "runner": "llamacpp"
+          }
+        ]
+      },
+      "wallSeconds": 72.5508871,
+      "status": 200,
+      "response": "data: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022role\u0022:\u0022assistant\u0022,\u0022content\u0022:\u0022[[\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022em\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022ote\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022:\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022 tired\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{\u0022content\u0022:\u0022]]\u0022},\u0022finish_reason\u0022:null}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[{\u0022index\u0022:0,\u0022delta\u0022:{},\u0022finish_reason\u0022:\u0022stop\u0022}]}\n\ndata: {\u0022id\u0022:\u0022chatcmpl-246\u0022,\u0022object\u0022:\u0022chat.completion.chunk\u0022,\u0022created\u0022:1794281093,\u0022model\u0022:\u0022qwen2.5-coder:1.5b\u0022,\u0022system_fingerprint\u0022:\u0022fp_ollama\u0022,\u0022choices\u0022:[],\u0022usage\u0022:{\u0022prompt_tokens\u0022:505,\u0022prompt_tokens_details\u0022:{\u0022cached_tokens\u0022:0},\u0022completion_tokens\u0022:7,\u0022total_tokens\u0022:512},\u0022timings\u0022:{\u0022prompt_n\u0022:505,\u0022prompt_ms\u0022:5969,\u0022prompt_per_token_ms\u0022:11.81980198019802,\u0022prompt_per_second\u0022:84.60378622884906,\u0022predicted_n\u0022:7,\u0022predicted_ms\u0022:396,\u0022predicted_per_token_ms\u0022:56.57142857142857,\u0022predicted_per_second\u0022:17.67676767676768}}\n\ndata: [DONE]\n\n"
+    }
+  ],
+  "finishedAt": "2026-11-10T03:24:53.567414+00:00"
+}

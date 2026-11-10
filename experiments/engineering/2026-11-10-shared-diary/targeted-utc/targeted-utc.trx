@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="60cb16d1-fb8a-49da-94ae-6d2570b9e7b4" name="@macdeMacBook-Pro 2026-11-10 03:00:22" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-10T03:00:22.9944680+00:00" queuing="2026-11-10T03:00:22.9944680+00:00" start="2026-11-10T03:00:17.7516180+00:00" finish="2026-11-10T03:00:27.3233840+00:00" />
+  <TestSettings name="default" id="63efa1a9-de2b-430a-aec5-f37681ada1fd">
+    <Deployment runDeploymentRoot="_macdeMacBook-Pro_2026-11-10_03_00_22" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="8e1fce92-e15b-4d3c-8097-c24c9065002b" testId="ab528255-3fa6-7e09-a826-553de1ee41d7" testName="Aijade.Tests.ProjectScopeTests.Every_module_directory_is_declared" computerName="macdeMacBook-Pro" duration="00:00:00.0402946" startTime="2026-11-10T03:00:21.1382970+00:00" endTime="2026-11-10T03:00:21.1907350+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8e1fce92-e15b-4d3c-8097-c24c9065002b" />
+    <UnitTestResult executionId="7f7ca766-0dd9-493f-9438-4834baa6166f" testId="dbbbf7be-39b5-ebf7-07b2-9bd3f7fc6b4a" testName="Aijade.Tests.ProjectScopeTests.Frozen_research_objects_keep_their_recorded_text" computerName="macdeMacBook-Pro" duration="00:00:00.0064339" startTime="2026-11-10T03:00:21.5030410+00:00" endTime="2026-11-10T03:00:21.5095470+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f7ca766-0dd9-493f-9438-4834baa6166f" />
+    <UnitTestResult executionId="fd56d649-8bd1-40be-9700-63c894a884da" testId="e45b27ec-d7b2-58ad-ed82-e130b629bda3" testName="Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients(zone: &quot;ROK&quot;, expected: &quot;Asia/Seoul&quot;)" computerName="macdeMacBook-Pro" duration="00:00:02.1678639" startTime="2026-11-10T03:00:21.1382890+00:00" endTime="2026-11-10T03:00:23.3163910+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd56d649-8bd1-40be-9700-63c894a884da" />
+    <UnitTestResult executionId="fd6f0f7e-4b7a-469d-b0bd-9afc93ce0f68" testId="5eac5bf4-0296-44aa-4f2d-e0642514534c" testName="Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history" computerName="macdeMacBook-Pro" duration="00:00:00.7930064" startTime="2026-11-10T03:00:26.4171030+00:00" endTime="2026-11-10T03:00:27.2274330+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd6f0f7e-4b7a-469d-b0bd-9afc93ce0f68">
+      <Output>
+        <ErrorInfo>
+          <Message>Aijade.Client.Api.AijadeApiException : Invalid pairing input</Message>
+          <StackTrace>   at Aijade.Client.Api.AijadeApi.ReadAsync(HttpResponseMessage res, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs:line 109
+   at Aijade.Client.Api.AijadeApi.SendAsync(HttpMethod method, String path, Object body, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs:line 117
+   at Aijade.Client.Companion.CompanionSync.PairAsync(String code, String subject, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Companion/CompanionSync.cs:line 65
+   at Aijade.Tests.CompanionDiaryTests.LinkAsync(CompanionSync owner, CompanionSync relay, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs:line 26
+   at Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs:line 38
+   at Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs:line 67
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d146edcc-89ca-468a-a7b3-9967d8e68dec" testId="8a34cd43-3eba-36ac-6802-6050f4291038" testName="Aijade.Tests.CompanionDiaryTests.Excerpts_keep_complete_source_digests_and_their_original_local_day_after_timezone_changes" computerName="macdeMacBook-Pro" duration="00:00:02.6412648" startTime="2026-11-10T03:00:21.1382890+00:00" endTime="2026-11-10T03:00:23.7878260+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d146edcc-89ca-468a-a7b3-9967d8e68dec" />
+    <UnitTestResult executionId="bec1a559-59a5-4a79-a9cd-9b70efa0be9a" testId="ac2dac91-e7b0-17a5-63d3-e82e3312765f" testName="Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients(zone: &quot;America/Los_Angeles&quot;, expected: &quot;America/Los_Angeles&quot;)" computerName="macdeMacBook-Pro" duration="00:00:01.2330677" startTime="2026-11-10T03:00:23.3207760+00:00" endTime="2026-11-10T03:00:24.5538950+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bec1a559-59a5-4a79-a9cd-9b70efa0be9a" />
+    <UnitTestResult executionId="20ec6ddf-ad0a-4fe5-8622-f1d44b9f121b" testId="d021a269-f2fb-474d-4e2e-1c226f0260a5" testName="Aijade.Tests.CompanionDiaryTests.Source_validation_rejects_other_roles_interleaved_turns_commands_and_unsolicited_replies" computerName="macdeMacBook-Pro" duration="00:00:01.0079920" startTime="2026-11-10T03:00:25.4081730+00:00" endTime="2026-11-10T03:00:26.4162690+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20ec6ddf-ad0a-4fe5-8622-f1d44b9f121b" />
+    <UnitTestResult executionId="3c4fd625-c318-4e2e-a708-2990cc93dd8c" testId="885a71e1-4da0-6700-4eb5-11efb0f22b82" testName="Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients(zone: &quot;UTC&quot;, expected: &quot;Etc/UTC&quot;)" computerName="macdeMacBook-Pro" duration="00:00:00.8658329" startTime="2026-11-10T03:00:24.5548630+00:00" endTime="2026-11-10T03:00:25.4207750+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c4fd625-c318-4e2e-a708-2990cc93dd8c" />
+    <UnitTestResult executionId="a05b4225-c674-4401-a1ff-0cdcea82f216" testId="1057a5d8-eb53-c8a9-de88-bb42c36cdd22" testName="Aijade.Tests.ProjectScopeTests.Every_declared_module_exists_on_a_known_line" computerName="macdeMacBook-Pro" duration="00:00:00.0211829" startTime="2026-11-10T03:00:21.5099610+00:00" endTime="2026-11-10T03:00:21.5311920+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a05b4225-c674-4401-a1ff-0cdcea82f216" />
+    <UnitTestResult executionId="1e0db6be-aad9-4d8d-a8b4-a5744581ec41" testId="65531c92-c6a4-c0f4-721d-035498ae68f6" testName="Aijade.Tests.ProjectScopeTests.Project_references_stay_within_the_lines_each_line_may_reference" computerName="macdeMacBook-Pro" duration="00:00:00.3023934" startTime="2026-11-10T03:00:21.1996430+00:00" endTime="2026-11-10T03:00:21.5021410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e0db6be-aad9-4d8d-a8b4-a5744581ec41" />
+    <UnitTestResult executionId="f34ffd46-3dab-4c05-aa82-c3e501416eb7" testId="855d38ba-fdb3-6de7-b1ce-f30df7c4771c" testName="Aijade.Tests.CompanionDiaryTests.Shared_diary_commands_use_the_existing_Web_and_bot_entry_point_with_no_extra_model_calls" computerName="macdeMacBook-Pro" duration="00:00:01.6167098" startTime="2026-11-10T03:00:23.7900080+00:00" endTime="2026-11-10T03:00:25.4068040+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f34ffd46-3dab-4c05-aa82-c3e501416eb7" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Aijade.Tests.CompanionDiaryTests.Source_validation_rejects_other_roles_interleaved_turns_commands_and_unsolicited_replies" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="d021a269-f2fb-474d-4e2e-1c226f0260a5">
+      <Execution id="20ec6ddf-ad0a-4fe5-8622-f1d44b9f121b" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionDiaryTests" name="Source_validation_rejects_other_roles_interleaved_turns_commands_and_unsolicited_replies" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients(zone: &quot;UTC&quot;, expected: &quot;Etc/UTC&quot;)" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="885a71e1-4da0-6700-4eb5-11efb0f22b82">
+      <Execution id="3c4fd625-c318-4e2e-a708-2990cc93dd8c" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionSyncTests" name="Blank_zones_use_the_same_server_clock_for_both_clients" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.CompanionDiaryTests.Shared_diary_commands_use_the_existing_Web_and_bot_entry_point_with_no_extra_model_calls" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="855d38ba-fdb3-6de7-b1ce-f30df7c4771c">
+      <Execution id="f34ffd46-3dab-4c05-aa82-c3e501416eb7" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionDiaryTests" name="Shared_diary_commands_use_the_existing_Web_and_bot_entry_point_with_no_extra_model_calls" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.ProjectScopeTests.Every_module_directory_is_declared" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="ab528255-3fa6-7e09-a826-553de1ee41d7">
+      <Execution id="8e1fce92-e15b-4d3c-8097-c24c9065002b" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.ProjectScopeTests" name="Every_module_directory_is_declared" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients(zone: &quot;America/Los_Angeles&quot;, expected: &quot;America/Los_Angeles&quot;)" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="ac2dac91-e7b0-17a5-63d3-e82e3312765f">
+      <Execution id="bec1a559-59a5-4a79-a9cd-9b70efa0be9a" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionSyncTests" name="Blank_zones_use_the_same_server_clock_for_both_clients" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.CompanionSyncTests.Blank_zones_use_the_same_server_clock_for_both_clients(zone: &quot;ROK&quot;, expected: &quot;Asia/Seoul&quot;)" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="e45b27ec-d7b2-58ad-ed82-e130b629bda3">
+      <Execution id="fd56d649-8bd1-40be-9700-63c894a884da" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionSyncTests" name="Blank_zones_use_the_same_server_clock_for_both_clients" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.ProjectScopeTests.Frozen_research_objects_keep_their_recorded_text" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="dbbbf7be-39b5-ebf7-07b2-9bd3f7fc6b4a">
+      <Execution id="7f7ca766-0dd9-493f-9438-4834baa6166f" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.ProjectScopeTests" name="Frozen_research_objects_keep_their_recorded_text" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.CompanionDiaryTests.Excerpts_keep_complete_source_digests_and_their_original_local_day_after_timezone_changes" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="8a34cd43-3eba-36ac-6802-6050f4291038">
+      <Execution id="d146edcc-89ca-468a-a7b3-9967d8e68dec" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionDiaryTests" name="Excerpts_keep_complete_source_digests_and_their_original_local_day_after_timezone_changes" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.ProjectScopeTests.Project_references_stay_within_the_lines_each_line_may_reference" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="65531c92-c6a4-c0f4-721d-035498ae68f6">
+      <Execution id="1e0db6be-aad9-4d8d-a8b4-a5744581ec41" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.ProjectScopeTests" name="Project_references_stay_within_the_lines_each_line_may_reference" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="5eac5bf4-0296-44aa-4f2d-e0642514534c">
+      <Execution id="fd6f0f7e-4b7a-469d-b0bd-9afc93ce0f68" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionDiaryTests" name="Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history" />
+    </UnitTest>
+    <UnitTest name="Aijade.Tests.ProjectScopeTests.Every_declared_module_exists_on_a_known_line" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="1057a5d8-eb53-c8a9-de88-bb42c36cdd22">
+      <Execution id="a05b4225-c674-4401-a1ff-0cdcea82f216" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.ProjectScopeTests" name="Every_declared_module_exists_on_a_known_line" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ab528255-3fa6-7e09-a826-553de1ee41d7" executionId="8e1fce92-e15b-4d3c-8097-c24c9065002b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dbbbf7be-39b5-ebf7-07b2-9bd3f7fc6b4a" executionId="7f7ca766-0dd9-493f-9438-4834baa6166f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e45b27ec-d7b2-58ad-ed82-e130b629bda3" executionId="fd56d649-8bd1-40be-9700-63c894a884da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5eac5bf4-0296-44aa-4f2d-e0642514534c" executionId="fd6f0f7e-4b7a-469d-b0bd-9afc93ce0f68" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a34cd43-3eba-36ac-6802-6050f4291038" executionId="d146edcc-89ca-468a-a7b3-9967d8e68dec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac2dac91-e7b0-17a5-63d3-e82e3312765f" executionId="bec1a559-59a5-4a79-a9cd-9b70efa0be9a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d021a269-f2fb-474d-4e2e-1c226f0260a5" executionId="20ec6ddf-ad0a-4fe5-8622-f1d44b9f121b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="885a71e1-4da0-6700-4eb5-11efb0f22b82" executionId="3c4fd625-c318-4e2e-a708-2990cc93dd8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1057a5d8-eb53-c8a9-de88-bb42c36cdd22" executionId="a05b4225-c674-4401-a1ff-0cdcea82f216" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="65531c92-c6a4-c0f4-721d-035498ae68f6" executionId="1e0db6be-aad9-4d8d-a8b4-a5744581ec41" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="855d38ba-fdb3-6de7-b1ce-f30df7c4771c" executionId="f34ffd46-3dab-4c05-aa82-c3e501416eb7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="11" executed="11" passed="10" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.14)
+[xUnit.net 00:00:01.07]   Discovering: Aijade.Tests
+[xUnit.net 00:00:01.91]   Discovered:  Aijade.Tests
+[xUnit.net 00:00:02.82]   Starting:    Aijade.Tests
+[xUnit.net 00:00:08.65]       Aijade.Client.Api.AijadeApiException : Invalid pairing input
+[xUnit.net 00:00:08.65]       Stack Trace:
+[xUnit.net 00:00:08.65]         /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs(109,0): at Aijade.Client.Api.AijadeApi.ReadAsync(HttpResponseMessage res, CancellationToken ct)
+[xUnit.net 00:00:08.65]         /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs(117,0): at Aijade.Client.Api.AijadeApi.SendAsync(HttpMethod method, String path, Object body, CancellationToken ct)
+[xUnit.net 00:00:08.65]         /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Companion/CompanionSync.cs(65,0): at Aijade.Client.Companion.CompanionSync.PairAsync(String code, String subject, CancellationToken ct)
+[xUnit.net 00:00:08.65]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs(26,0): at Aijade.Tests.CompanionDiaryTests.LinkAsync(CompanionSync owner, CompanionSync relay, CancellationToken ct)
+[xUnit.net 00:00:08.65]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs(38,0): at Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history()
+[xUnit.net 00:00:08.65]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionDiaryTests.cs(67,0): at Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history()
+[xUnit.net 00:00:08.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.65]   Finished:    Aijade.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="macdeMacBook-Pro" outcome="Error" timestamp="2026-11-10T03:00:27.2345200+00:00">
+        <Text>[xUnit.net 00:00:08.64]     Aijade.Tests.CompanionDiaryTests.Explicit_excerpts_share_one_revision_across_Web_and_QQ_without_sharing_private_chat_history [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

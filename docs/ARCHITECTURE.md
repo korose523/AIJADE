@@ -19,7 +19,7 @@ flowchart LR
     foundation["共同基础代码<br/>记忆 · 学习 · 遥测<br/>保留研究约束"]
     subgraph server_host["AIJADE 后端部署 · full 或 companion"]
         core_api["认证 HTTP API<br/>聊天 · 同步 · 媒体 · 证据"]
-        state_store[("PostgreSQL<br/>角色 · 关系 · 收藏<br/>地点时区 · 记忆 · 事件<br/>修订号 · 授权绑定")]
+        state_store[("PostgreSQL<br/>角色 · 关系 · 收藏 · 日记<br/>地点时区 · 记忆 · 事件<br/>修订号 · 授权绑定")]
         event_worker["既有队列 / Worker<br/>本机唤醒或 Redis<br/>沿用 V9 处理器"]
     end
     model_services["配置的模型/媒体服务<br/>聊天 · 图片 · ASR<br/>TTS · 歌声"]
@@ -61,7 +61,7 @@ flowchart TB
     accDescr: A bound channel request takes either the explicit media route or the ordinary conversation route. Successful persistence precedes completion and channel delivery, and uncertain tool outcomes stop further tool actions.
     channel_input["渠道准备<br/>核对绑定/共享状态<br/>准备渠道规则"]
     command_route{"显式陪伴命令？"}
-    media_command["媒体专用处理并保存<br/>照片/歌曲/日常/关系<br/>不调用聊天模型"]
+    media_command["显式命令处理并保存<br/>媒体/日常/关系/日记<br/>不调用聊天模型"]
     store_user["保存用户消息<br/>创建 TurnContext"]
     module_snapshot["固定本轮模块选择<br/>生活→记忆→学习<br/>再取可选上下文"]
     prompt_build["装配提示/长度预算<br/>保留人设与当前输入<br/>数据库原文不改"]
@@ -100,9 +100,9 @@ flowchart TB
 | [CompanionRuntime / ChatModuleSet](../src/Aijade.Client/Chat/CompanionRuntime.cs) | 一张有序清单同时装配上下文和观察者；每个 `TurnContext` 的模块选择只确定一次，开关影响下一轮。可选模块故障独立降级，调用方取消保留。缓存以弱引用关联回合，不启动清理循环 |
 | [ChatOrchestrator](../src/Aijade.Client/Chat/Orchestrator.cs) | 保存用户消息、提示装配与模型调用；普通聊天、主动消息、提醒共用回复解析/存储/意图构建。写入失败发出 `TurnFailed` |
 | [PromptBudget](../src/Aijade.Client/Chat/PromptBudget.cs) | 产品附加上下文、历史与工具结果长度限制。截断有标记，不切开 UTF-16 代理对；优先保留近期历史，不改数据库中的原文 |
-| [CompanionMediaTurn](../src/Aijade.Client/Companion/CompanionMediaTurn.cs) | `/photo`、`/sing`、`/life`、`/relationship` 专用入口；保存结果后产生 `MediaCompleted`，图片/歌声可能调用已配置的专用服务 |
+| [CompanionMediaTurn](../src/Aijade.Client/Companion/CompanionMediaTurn.cs) | `/photo`、`/sing`、`/life`、`/relationship`、`/diary` 显式入口；保存结果后产生 `MediaCompleted`，图片/歌声可能调用已配置的专用服务，日记不调用模型 |
 | [ToolConversation](../src/Aijade.Client/Chat/ToolConversation.cs) | 有界的按需工具执行，工具须在本轮清单内，参数须为 JSON 编码对象。零轮数/零调用数不探测工具，直接走流式聊天 |
-| `CompanionSyncStore` / PostgreSQL | 账户/角色、地点时区、关系与收藏的权威状态；修订号、并发冲突检查、可撤销 QQ 授权。客户端下一轮重新读取 |
+| `CompanionSyncStore` / PostgreSQL | 账户/角色、地点时区、关系与收藏的权威状态；修订号、并发冲突检查、可撤销 QQ 授权。日记使用同一权限边界下独立、按需读取的文档，不进入普通状态载荷 |
 | `ServerModules` / `CompanionWorker` | 启动时组合可选集成；精简配置且无 Redis 时排空既有队列，再等待合并唤醒。沿用 `V9Worker.DrainOnceAsync`，不新增调度平台 |
 | `Aijade.Bots` / 渠道连接器 | 授权、会话映射、单会话串行、消息节奏与平台交付。网页 localStorage 的提醒与机器人文件中的提醒仍是各自渠道状态，没有宣称统一同步 |
 
@@ -162,14 +162,14 @@ tools/run-companion.sh --Aijade:Modules:Tools=true --Aijade:Modules:Mcp=true
 
 | 功能状态 | 内容 |
 |---|---|
-| 已有并继续复用 | 共享角色/地点时区/关系/收藏、普通聊天、主动消息门控、虚拟日常、表情与节奏、照片/语音/唱歌的可配置入口 |
-| 本轮改变 | 稳定的单轮模块清单、有限上下文与历史、工具超时与结果未知处理、零预算直接流式、源码核对目录与可编辑架构图 |
+| 已有并继续复用 | 共享角色/地点时区/关系/收藏、普通聊天、主动消息门控、虚拟日常、表情与节奏、照片/语音/唱歌的可配置入口；稳定单轮模块清单、上下文与工具预算 |
+| 当前追加 | 手动保存有来源的日记摘录、全原文哈希和修订控制、Web/QQ 共享读取、注入时钟的跨时区修复；产品提示明确要求可见正文，纯表情回复仍按空回复失败处理 |
 | 配置后仍需实测 | 真实 QQ 收发、天气联网、图像服务、本地授权音色/歌声、MOSAIC/MMD 舞台与外部工具设备 |
-| 后续独立扩展 | 带事实来源与版本的日记、持久生活任务与平台交付 outbox、多角色社交；本轮未实现，不画成已部署模块 |
+| 后续独立扩展 | 自动生成且保留历史版本的日记、持久生活任务与平台交付 outbox、多角色社交；当前未实现，不画成已部署模块 |
 
 ## 🧪 验证与研究兼容
 
-工程测试覆盖模块切换、故障/取消、截断后的提示与原始存储、旧直接构造入口、无效工具参数、超时/断网/5xx、零预算，并回归完整聊天与同步流程。实际命令、计数、跳过项、日志哈希、源码哈希和保护清单见[本轮回执](../experiments/engineering/2026-11-10-life-architecture/receipt.json)，上一轮[重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)继续保留。
+工程测试覆盖模块切换、故障/取消、截断后的提示与原始存储、旧直接构造入口、无效工具参数、超时/断网/5xx、零预算，并回归完整聊天与同步流程。最新[共同日记回执](../experiments/engineering/2026-11-10-shared-diary/receipt.json)补充来源校验、跨端摘录、修订冲突、时区注入修复与本地模型检查；本地模型的标记空回复、冷加载超时和就绪后通过分别保留。实际命令、计数、跳过项、日志哈希、源码哈希和保护清单在各轮回执中列明，上一轮[架构回执](../experiments/engineering/2026-11-10-life-architecture/receipt.json)与此前[重构回执](../experiments/engineering/2026-11-10-runtime-refactor/receipt.json)继续保留。
 
 研究/共同基础的既有文件以及声明的研究对象按基线逐字节核对。直接 `new ChatOrchestrator(...)` 且未显式设置 `PromptBudget` 的旧驱动保留原提示长度策略；产品工厂采用新预算，因此 **冻结记忆文件未改不等于产品提示与原实验完全一致**。后续基于产品传递路径的测量须记录新策略和配置，已有论文结果不重写、不据工程 PASS 提升研究结论。
 

@@ -1,0 +1,366 @@
+{
+  "schema": "aijade.engineering.shared-diary.v1",
+  "status": "COMPLETED_WITH_RECORDED_FAILURES",
+  "recordedAt": "2026-11-10T04:13:24.203019+00:00",
+  "baseCommit": "4af8d5b9756dbc95f7a70b8afa89ff0192169918",
+  "scope": "Companion product engineering and dissertation method/availability update; no new primary research run",
+  "executionIdentity": "Local checks ran before the commit containing this receipt; changed source hashes, raw TRX, and per-attempt identities distinguish execution. Earlier failed attempts precede the final implementation.",
+  "sourceSha256": {
+    "src/Aijade.Client/Chat/ChatContracts.cs": "be12bd04187afbe44ee3c448aaaefe0f6dc83bc6c66de043fd65332ecc31e3cb",
+    "src/Aijade.Client/Chat/CompanionRuntime.cs": "33daab50e1d2d9822e5414dd90c93e40656a98b0b785dc8b027a181f8187cd82",
+    "src/Aijade.Client/Chat/Orchestrator.cs": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+    "src/Aijade.Client/Companion/CompanionDiary.cs": "8c222b39d8a3899736d4564a928a2256c2fdae684a4022fb1cef4f5f1c65562f",
+    "src/Aijade.Client/Companion/CompanionMediaTurn.cs": "6cc608e8865838adcc05d9a0042d72c0fcef1fb863b32b503157f9bea8be3138",
+    "src/Aijade.Client/Companion/CompanionSync.cs": "b8105867e6730375ed00060ce28626fbbf8cfec7a05978d662e48107e68ab185",
+    "src/Aijade.Client/I18n/en.json": "998a7ee00c7658e4cdac259160fbbaa286d32c8d728a137415db00456025597c",
+    "src/Aijade.Client/I18n/es.json": "558396d6883923a3bb23998b0c762dd14bb9ac14950724c4d0a114f1332ebbb4",
+    "src/Aijade.Client/I18n/fr.json": "07702e92c5c23fc21b3a7a8a10c3ae75ff73729b4bc7f7188ad00bbb03394dbb",
+    "src/Aijade.Client/I18n/ja.json": "c9885a6c32f19709269e0bdbcc87612b37b672ed269122001bc37d99af764991",
+    "src/Aijade.Client/I18n/ko.json": "226e4a2173bcae419f4738b71768eae86642f1fb8a0525c91b819269ed20bd87",
+    "src/Aijade.Client/I18n/ru.json": "9b2e356337631a4827e689b9bc45bc31a16b5e0a74da8eb46036906d525f87c7",
+    "src/Aijade.Client/I18n/vi.json": "9f4c966eb7ef3e5db61974a3b8f42d5f805198379260029ad72c625acea85889",
+    "src/Aijade.Client/I18n/zh-Hans.json": "8e8f71b8a8c3224ea93753102de167efc1e882d828e1d691ac11c7313503b78c",
+    "src/Aijade.Client/I18n/zh-Hant.json": "eb6360875f5eb22e20329a449d62e6755939c5b5a89ecca86578ff28aec51da9",
+    "src/Aijade.Server/AijadeServer.cs": "21223aa4e33e683557486bd1fd253bc61b1e00e9a38d386264ff8e6eb6eff84c",
+    "src/Aijade.Server/Product/CompanionDiary.cs": "9e8d2145169d40f8138002c28ff6c651bba4ef7472aa24f8e05e12dcd2809a3a",
+    "src/Aijade.Server/Product/CompanionSync.cs": "79f7a1830f9e64c8f96e091f05a8aca1872a73873be7bd36498c4e550c77d53d",
+    "src/Aijade.UI/Pages/Companion.razor": "03d29ed756977f38adc0395acdae82d470de595e7b8fa2d3a14deaec28180c08",
+    "tests/Aijade.E2E/CompanionDiaryWebTests.cs": "c87e0aa5e2470abba5f0ec045b9195141d99f2981fe53253ae913821e8e0da9f",
+    "tests/Aijade.Tests/CompanionDiaryTests.cs": "8763d2ec64897e65fcded896043a2361c203dbb6196f5e1cf80e9baf8671cd40",
+    "tests/Aijade.Tests/CompanionLiveTests.cs": "3f44717b334920c4e4d4951beeaa4ae0d671c9d1bc5043f4b5848b0a228f95f2",
+    "tests/Aijade.Tests/CompanionRuntimeTests.cs": "e8d0033f3e62b10e0a2926c2152b4c7ac45abc84b76fc7bd361b1387ac85b70d",
+    "tests/Aijade.Tests/CompanionSyncTests.cs": "5721969cead9a03decc1d7a1059ee1d982de3d1ad3b3b47294cf0db40552ec47",
+    "tools/check-companion-live.py": "d79df61da529ae116bc645cf97d38d122c917dacf338720f0a9af15ba674f2e2"
+  },
+  "validation": {
+    "sdk": "10.0.403",
+    "framework": "net10.0",
+    "timeZone": "UTC",
+    "environment": "Existing local PostgreSQL/VectorChord, .NET 10 and Chromium. Controlled model/media/QQ outbound in browser suites; actual cached Ollama in separate live attempts.",
+    "build": {
+      "status": "PASS",
+      "warnings": 0,
+      "errors": 0,
+      "log": "build-final-8b.log",
+      "finalBrowserTestOnlyRebuild": "build-browser-final.log"
+    },
+    "suites": [
+      {
+        "name": "UTC unit and PostgreSQL integration",
+        "profile": "full",
+        "command": "TZ=UTC dotnet test tests/Aijade.Tests -c Release --no-build",
+        "counts": {
+          "passed": 544,
+          "failed": 0,
+          "skipped": 15,
+          "total": 559
+        },
+        "rawTrx": "unit-final/unit-final.trx",
+        "rawTrxSha256": "42bfedac40e20695d6c99cedfb556eefc4d188464aa7ed28a2f360d4b24844ea",
+        "skippedTests": [
+          "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration",
+          "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+          "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+          "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field",
+          "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+          "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+          "Aijade.Tests.ExternalRendererStudyTests.Seal_session",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+          "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+          "Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime",
+          "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+          "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt"
+        ]
+      },
+      {
+        "name": "Full browser regression",
+        "profile": "full",
+        "command": "AIJADE_E2E=1 TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build",
+        "counts": {
+          "passed": 30,
+          "failed": 0,
+          "skipped": 6,
+          "total": 36
+        },
+        "rawTrx": "browser-full/browser-full.trx",
+        "rawTrxSha256": "ae20621dd92b9256af5b72ae0723abd37ad8d33675ae482ddeec7a28b5da4db5",
+        "skippedTests": [
+          "Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply",
+          "Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length",
+          "Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips",
+          "Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking",
+          "Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model",
+          "Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer"
+        ]
+      },
+      {
+        "name": "Companion-profile browser regression",
+        "profile": "companion",
+        "command": "AIJADE_E2E=1 Aijade__Profile=companion TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build --filter 'FullyQualifiedName~CompanionExperienceWebTests|FullyQualifiedName~CompanionSyncWebTests|FullyQualifiedName~A_a_message_sent_while_the_server_cannot_be_reached|FullyQualifiedName~A_a_due_reminder_is_said'",
+        "counts": {
+          "passed": 9,
+          "failed": 0,
+          "skipped": 0,
+          "total": 9
+        },
+        "rawTrx": "browser-companion/browser-companion.trx",
+        "rawTrxSha256": "2815b955d658a21f749deabbda2e5e7f410acf72e926a7c7e750321d9414ac6f",
+        "skippedTests": []
+      }
+    ]
+  },
+  "priorGitHubFailure": {
+    "runUrl": "https://github.com/korose523/AIJADE/actions/runs/42733940974",
+    "commit": "4af8d5b9756dbc95f7a70b8afa89ff0192169918",
+    "passed": 531,
+    "failed": 1,
+    "skipped": 19,
+    "rootCause": "AddSingleton(TimeProvider.System) overwrote the explicitly injected clock; ambient Linux UTC masked the intended custom-zone check. TryAddSingleton retains explicit registrations; three-zone injection regression added.",
+    "log": "ci-before-failed.log",
+    "nextCI": "Not known before this commit is created; inspect the GitHub Actions run for the resulting public commit."
+  },
+  "localModelAttempts": [
+    {
+      "directory": "live-qwen15",
+      "status": "FAILED",
+      "model": "qwen2.5-coder:1.5b",
+      "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+      "warmupRequested": false,
+      "phases": null,
+      "admissionPassed": true,
+      "minimumAdmissionAvailableGiB": 4.819984436035156,
+      "minimumExecutionAvailableGiB": 4.013538360595703,
+      "maximumSwapGrowthGiB": 2.354248046875,
+      "guardStopReason": null,
+      "upstreamWallSeconds": [
+        72.5508871
+      ],
+      "turns": null,
+      "diaryCommandsAddedModelCalls": null,
+      "originalChatRetainedAfterForgetting": null,
+      "modelUnloadedAfter": true
+    },
+    {
+      "directory": "live-qwen15-visible",
+      "status": "FAILED",
+      "model": "qwen2.5-coder:1.5b",
+      "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+      "warmupRequested": false,
+      "phases": null,
+      "admissionPassed": true,
+      "minimumAdmissionAvailableGiB": 5.9900970458984375,
+      "minimumExecutionAvailableGiB": 5.307708740234375,
+      "maximumSwapGrowthGiB": 1.374755859375,
+      "guardStopReason": null,
+      "upstreamWallSeconds": [
+        41.7058679
+      ],
+      "turns": [
+        {
+          "input": "I am a little tired after reading. Please answer in one short English sentence.",
+          "failureCode": "EMPTY_REPLY",
+          "failureMessage": "The model returned no reply."
+        }
+      ],
+      "diaryCommandsAddedModelCalls": null,
+      "originalChatRetainedAfterForgetting": null,
+      "modelUnloadedAfter": true
+    },
+    {
+      "directory": "live-llama8b",
+      "status": "FAILED",
+      "model": "llama3.1:8b",
+      "modelDigest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+      "warmupRequested": false,
+      "phases": null,
+      "admissionPassed": true,
+      "minimumAdmissionAvailableGiB": 7.5909576416015625,
+      "minimumExecutionAvailableGiB": 3.7311477661132812,
+      "maximumSwapGrowthGiB": 0.486572265625,
+      "guardStopReason": null,
+      "upstreamWallSeconds": [
+        null
+      ],
+      "turns": [
+        {
+          "input": "I am a little tired after reading. Please answer in one short English sentence.",
+          "failureCode": "UPSTREAM_TIMEOUT",
+          "failureMessage": "The model request timed out."
+        }
+      ],
+      "diaryCommandsAddedModelCalls": null,
+      "originalChatRetainedAfterForgetting": null,
+      "modelUnloadedAfter": true
+    },
+    {
+      "directory": "live-llama8b-ready",
+      "status": "PASS",
+      "model": "llama3.1:8b",
+      "modelDigest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+      "warmupRequested": true,
+      "phases": [
+        {
+          "name": "model-readiness",
+          "startedSeconds": 0.6461278579663485,
+          "exitCode": 0,
+          "finishedSeconds": 246.6526231870521
+        },
+        {
+          "name": "product-smoke",
+          "startedSeconds": 246.65997930290177,
+          "exitCode": 0,
+          "finishedSeconds": 316.1652919079643
+        }
+      ],
+      "admissionPassed": true,
+      "minimumAdmissionAvailableGiB": 7.722023010253906,
+      "minimumExecutionAvailableGiB": 4.584682464599609,
+      "maximumSwapGrowthGiB": 1.621826171875,
+      "guardStopReason": null,
+      "upstreamWallSeconds": [
+        33.0162039,
+        26.1213204
+      ],
+      "turns": [
+        {
+          "input": "I am a little tired after reading. Please answer in one short English sentence.",
+          "storedReply": "Would you like to rest for a bit or talk about what you read?",
+          "messageId": "EEEWz37HqkWe7pJMiuGh9"
+        },
+        {
+          "input": "I feel better now. Let us read again tomorrow. Please answer in one short English sentence.",
+          "storedReply": "I'll be here whenever you're ready to read again.",
+          "messageId": "Fu_-paISskjYHq50TNBc1"
+        }
+      ],
+      "diaryCommandsAddedModelCalls": 0,
+      "originalChatRetainedAfterForgetting": true,
+      "modelUnloadedAfter": true
+    }
+  ],
+  "localModelLimitations": [
+    "The two 1.5B attempts returned only [[emote: tired]]. The first did not capture a structured TurnFailed code; the second explicitly recorded EMPTY_REPLY. The visible-text instruction did not fix that attempt.",
+    "The initial 8B attempt recorded UPSTREAM_TIMEOUT during cold load with the ordinary 300-second request deadline. Its resource guard did not trigger.",
+    "The separate 8B readiness attempt preloaded the cached model before two successful synthetic English turns. Cold-start failure remains a separate observation.",
+    "The real-model recorder buffers the actual upstream SSE before forwarding. Reported wall durations are not first-token or streaming-latency benchmarks.",
+    "4096 context and a 256-token output cap are development settings, not the primary study output budget or formal capacity/qualification protocol.",
+    "Neither 1.5B attempt has a complete pre-execution source/binary fingerprint; the visible-instruction attempt has an explicitly post-run identity. The 8B attempts capture identity before execution.",
+    "No model weights were downloaded, copied or modified. Only owned idle build servers were shut down before 8B admission; no user application or operating-system cache was cleared."
+  ],
+  "corrections": [
+    "Initial targeted run: 10 passed / 1 failed because a new pairing fixture used a nonnumeric QQ subject; fixture corrected to the existing synthetic numeric QQ identity.",
+    "Initial diary browser run waited for the nonexistent wording 绑定成功. The production contract returns 同步绑定完成; the test was corrected and rerun.",
+    "Two development builds hit CA1827 and CA1869; their logs are retained. Final solution and browser builds passed without warnings."
+  ],
+  "protectedResearch": {
+    "fileCount": 552,
+    "changedFiles": [],
+    "manifest": "research-protected.json",
+    "note": "Prior research, shared foundations, archived experiments and declared research objects are byte-identical to the starting baseline. Frozen memory does not imply prompt parity for the newly configured product path."
+  },
+  "dissertationFacts": {
+    "status": "PASS",
+    "buildInterpreter": "3.9.6",
+    "baselineFactCount": 9878,
+    "exactlyEqualOnBuildInterpreter": true,
+    "changedReportedValues": 0,
+    "crossInterpreterNote": "Python 3.12 was also inspected: three floating-point values differ by at most 1.12e-16; all source usages report .3f and remain identical. The dissertation is built using the original Python 3.9.6 interpreter.",
+    "crossInterpreterDifferences": {
+      "p3.all.scale.pool.nonrel": {
+        "baseline": 0.14147592499221578,
+        "python312": 0.14147592499221576,
+        "absoluteDifference": 2.7755575615628914e-17,
+        "reportedBaseline": "0.141",
+        "reportedPython312": "0.141"
+      },
+      "p3.all.scale.top8.nonrel": {
+        "baseline": 0.5851637412862446,
+        "python312": 0.5851637412862445,
+        "absoluteDifference": 1.1102230246251565e-16,
+        "reportedBaseline": "0.585",
+        "reportedPython312": "0.585"
+      },
+      "p3.scale.top8.total": {
+        "baseline": 0.6425444492919721,
+        "python312": 0.6425444492919722,
+        "absoluteDifference": 1.1102230246251565e-16,
+        "reportedBaseline": "0.643",
+        "reportedPython312": "0.643"
+      }
+    }
+  },
+  "remainingGates": [
+    "Real QQ/NapCat delivery, human-facing companion quality, authorised voice/singing data, actual configured media services and sustained capacity require their own acceptance.",
+    "No P2-R-Mac primary regeneration, new P3-E scientific evaluation, held-out Chapter 7 C1-C2 comparison, training or supervisor submission was performed.",
+    "Manual diary revisions provide conflict control, not a historical version archive or an independent truth oracle. Original private chat histories remain separate."
+  ],
+  "artifactsSha256": {
+    "README.md": "bebeb034f03bc8f71b6b5837f40dad8a1583146eb5436c519925aefd9186c0aa",
+    "architecture-render.json": "50dc531cca8978ff357f1cba3ac44822b96954e51a87f037cec784d647502f2a",
+    "browser-companion/browser-companion.trx": "2815b955d658a21f749deabbda2e5e7f410acf72e926a7c7e750321d9414ac6f",
+    "browser-companion.log": "43e8a2b207dc57df0e9e9c10aa35c89a1f1d6a6c47669c2dc56e95753b42ab6e",
+    "browser-full/browser-full.trx": "ae20621dd92b9256af5b72ae0723abd37ad8d33675ae482ddeec7a28b5da4db5",
+    "browser-full.log": "adf08c794a2258940451389b29a9c3d8502f20030d7fadaa11e47f0ff34e7106",
+    "build-browser-final.log": "1784f1302a32d3fdca0576cb040b2833f8a39c6f172964a07134e83742b809c1",
+    "build-final-8b.log": "45098e546c176053107a2b7ae58a126915b864854dc59e4636ccec33cb2d02b1",
+    "build-final.log": "52a5ca23d3d43ad564663893d18293f89092960ea37a27d5d05ee7b353779c79",
+    "build-frozen-final.log": "aaccec33ffc83b8e617d59785690083f1c7802bf217d1ba74ed505f6accb066f",
+    "build-frozen.log": "692d1ad75070c6be7b1b0e9864eafb4654ef6ec25627cf4ba4cb0a1740dc97f4",
+    "build-initial.log": "62f88b82128521aaa19b3b7f143eaed3d33cdef8db1b57556ff5faee00bd3073",
+    "build-live-ready.log": "6f8ec586c5d5aab01f26e911cf6ea44a2dc1763ba033bab2079715040824a3b0",
+    "build-text-contract.log": "8dd77bc0073fc7e5bbe5732d9222ec8b476383aff0ab9ce2b08d61c0cbd5d411",
+    "build-visible-reply.log": "6236e6c77a55133a7e4a52bc824998773e903dfca3aca937d60115485990a1bb",
+    "build-with-browser.log": "35be14f46aea02670bf5aa693b7dd9bdd3ef41f934953543856161a3d01c5882",
+    "build.log": "b3bbce42679bce189b51ef42024526c845e962579d233f17c8e9589e46041e28",
+    "ci-before-failed.log": "758a15b7b6824a5e2db29378d743875dd253e68957b7419e8e0dee9348d9c7bd",
+    "diary-browser/diary-browser.trx": "90fde41296115aff926ad2598fce163ff3e1f646bdb86c13ff32ee68ddeb20cb",
+    "diary-browser-fixed/diary-browser-fixed.trx": "75c21b28577a47cd3ea27f22b6b001f68841046c1a898afa086d805cfb154ca6",
+    "diary-browser-fixed.log": "bc3abb00f1701fbf6469eaf6604e6210a16531bd06fed2156b1d62382dfdfce6",
+    "diary-browser.log": "fddf1de4c69ebe7b3e65cf80cdf4aa7d54fe3a5116299f1dafac5ea38fd236eb",
+    "live-llama8b/admission.json": "3c46ce9f716645bdc5de4df138e1e0a1d0991c1c63267fa8af86ca4b5329775c",
+    "live-llama8b/execution-source.json": "d4e15123602652deaaca2165ac4aa39effd1cfd9f02aa4e11d11281592733c81",
+    "live-llama8b/live-model.json": "70af19533bb22e49d12a3cf36509028f125fe134c8402fc180ddce1517d9050f",
+    "live-llama8b/resource-trace.json": "07f5222a59930644fe8547997ff735578ee051253fe8e4e2cb8d4e5409f7a04b",
+    "live-llama8b/run.json": "b3e67c340cd2735ba324ba63b1861e2a0f03e9e5527d7a8433f7f934f306e3a3",
+    "live-llama8b/run.log": "ea1103b5fdbd105d92dc6ab5b87d1afe734471084639e4ea36c97d0a94e13b70",
+    "live-llama8b/tests/live.trx": "21671d2540442d30af4556fde8bdd9600ac6086f1f816508dfec60eea4e0ae6a",
+    "live-llama8b-ready/admission.json": "40d1f8832504ddc262dd5ca4efe6e38b93593f9a99f870516c3303ff0bc170da",
+    "live-llama8b-ready/execution-source.json": "31d26bc0f769db691823bfb5e3baf40d82b63133404d08642d0f751843b3214e",
+    "live-llama8b-ready/live-model.json": "a48e17e4c755f8349b283dbd6df25e1f4da496c5b4e35b74e374d7b86bcd36b5",
+    "live-llama8b-ready/resource-trace.json": "262e5ea68cbe70fdd91748fce31e334a7ccc4ca978d43be2dc795969706aaa11",
+    "live-llama8b-ready/run.json": "c8c970f322707a64c36c2c254157db60582300605902d7c7d2bf0cbced45295a",
+    "live-llama8b-ready/run.log": "c3963a6e7f8ca417e1881c67c2b4b9da62f19f92b11cb5750c559ee6897fc5b9",
+    "live-llama8b-ready/tests/live.trx": "cf2e8a877cfd3e8304428140352600f894fd619124ca87b0ad98d57fc245c581",
+    "live-llama8b-ready/warmup-request.json": "69e36d4705493ab3fcfd9485d5287119d9e99a0539cc92178c57df3a73d4bc5c",
+    "live-llama8b-ready/warmup-response.json": "4c2ed64f38c54fe6b467703e94b600c6fd5139d4f50c86b2f78721cf477fdc16",
+    "live-qwen15/admission.json": "0873efa6b353df16f592e22324b786daea4bbe9c7e2bb6bd3e82097ee6c12cc0",
+    "live-qwen15/live-model.json": "3243935d31d7112ecb6674585617cc403b4ffc5281ab8d128db65a7b3ef0a536",
+    "live-qwen15/resource-trace.json": "11765505295a7f8f51248ea81b881c7a0d1e10a21eb0c7901b0905d5e4846c10",
+    "live-qwen15/run.json": "4061c48431c7b9749ea826167565f5218d6485a9dd5b52e03931cc5d9483f211",
+    "live-qwen15/run.log": "27f260ee3c0c96101aede4907dc7acf5b26bd8507af4de0805d14246d16d334f",
+    "live-qwen15/tests/live.trx": "a89cdca12e7bd7741cf6d6e8ce73f358aeca8792e9d9a8c476324067155caeca",
+    "live-qwen15-visible/admission.json": "d7db9c703892805eab5134db756228769d41e459b12f1cd4675e664718b3d582",
+    "live-qwen15-visible/execution-source.json": "29ff2810857085157268a6227783b955864767df677f7aaa8c452b8922d7dc5a",
+    "live-qwen15-visible/live-model.json": "d7ac205b17a01f8ee7aaff5de1e4b6531ce6b52673adbbc74d035780ec6a94d2",
+    "live-qwen15-visible/resource-trace.json": "4db60be2baee6966d248a481893fadbb0230db28ce051e7056606b1254efa5b6",
+    "live-qwen15-visible/run.json": "4061c48431c7b9749ea826167565f5218d6485a9dd5b52e03931cc5d9483f211",
+    "live-qwen15-visible/run.log": "92b4eddd878160ced728ff9b5e45590bf969b7e29fb86741fd96dfb350f1db17",
+    "live-qwen15-visible/tests/live.trx": "2d9633434b35475e376539d3a7429203637cd296669a2ac6d7f25161b64f4fb8",
+    "ollama-readiness-server.log": "b1693484cdaffa83ce11a82706c49a877c6c8562450a44e2436c8f4f50621ebd",
+    "ollama-server.log": "c98571a3e7fbe9974de62a6ddb290b21ef3d16ef97417a8041570029819f1482",
+    "ollama-warm-server.log": "d9c077576df0e54eea50d5ced0c13d4456825971179becd6a4a6c852cdaff537",
+    "paper-facts-comparison.json": "9a09838a921bfeb970cd201d0985134231c871103a16ef9a26f72825546a61b8",
+    "research-protected.json": "dec24ae174e32975b528839380aab5fdfe7c9f15d3c01333caa3bbe605640204",
+    "targeted-utc/targeted-utc.trx": "c2a10bc6623e7fea7fa191133192b04a16439abd88d960d3263445c88c4dfadc",
+    "targeted-utc-fixed/targeted-utc.trx": "b9e89382e6ef08dcfba5feb132d454b5beb74063fa3695aa2b41b9a82a9ccab8",
+    "targeted-utc-fixed.log": "4942c2d189e92094701a9f75f9d3c33f18e9cceec267440122296bfe93d46a80",
+    "targeted-utc.log": "a59fabb556beab22bd74a4332efbaa7d8c43f4b60433e36945608c7fa8a79cf3",
+    "unit-final/unit-final.trx": "42bfedac40e20695d6c99cedfb556eefc4d188464aa7ed28a2f360d4b24844ea",
+    "unit-final.log": "1fc4fb059f45be59d0aefeeaab0ed1ec627e99d555f33c276eba710b8af73b22",
+    "unit-utc/unit-utc.trx": "991babb389a3590d61b30b730bcec5bc55078432860354c775a825bf536cabc2",
+    "unit-utc.log": "1e6922818b4fc25eadd05ab82a35cf126bb36d228ad9c985b07a97dafc96771f"
+  }
+}

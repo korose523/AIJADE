@@ -1,0 +1,16 @@
+/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:05:04.36]     Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [FAIL]
+  失败 Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [5 m 1 s]
+  错误消息:
+   Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(Aijade.Client.Chat.TurnCompleted)
+Actual:   typeof(Aijade.Client.Chat.TurnFailed)
+  堆栈跟踪:
+     at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs:line 86
+   at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs:line 104
+   at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs:line 111
+--- End of stack trace from previous location ---
+结果文件: /Users/mac/.cache/aijade-journal-20261110/live-llama8b/tests/live.trx
+
+失败!  - 失败:     1，通过:     0，已跳过:     0，总计:     1，持续时间: 5 m 1 s - Aijade.Tests.dll (net10.0)

@@ -152,16 +152,21 @@ public sealed class CompanionSyncTests
         Assert.NotEqual(first.Identity, next.Identity);
     }
 
-    [Fact]
-    public async Task Blank_zones_use_the_same_server_clock_for_both_clients()
+    [Theory]
+    [InlineData("ROK", "Asia/Seoul")]
+    [InlineData("UTC", "Etc/UTC")]
+    [InlineData("America/Los_Angeles", "America/Los_Angeles")]
+    public async Task Blank_zones_use_the_same_server_clock_for_both_clients(string zone, string expected)
     {
         var ct = TestContext.Current.CancellationToken;
-        await using var host = await ServerTestHost.StartAsync(worker: false, services: s => s.AddSingleton<TimeProvider>(new SharedClock()));
+        var clock = new SharedClock(zone);
+        await using var host = await ServerTestHost.StartAsync(worker: false, services: s => s.AddSingleton<TimeProvider>(clock));
+        Assert.Same(clock, host.App.Services.GetRequiredService<TimeProvider>());
         var owner = new CompanionSync(await ApiAsync(host, ServerTestHost.Token));
         var relayApi = await ApiAsync(host, ServerTestHost.AdminToken); var relay = new CompanionSync(relayApi);
         var link = await LinkAsync(owner, relay);
         var web = await owner.CurrentAsync(ct); var qq = await new CompanionSync(relayApi, link.Id).CurrentAsync(ct);
-        Assert.Equal("", web.Profile.TimeZone); Assert.Equal("Asia/Seoul", web.EffectiveTimeZone);
+        Assert.Equal("", web.Profile.TimeZone); Assert.Equal(expected, web.EffectiveTimeZone);
         Assert.Equal(web.RuntimeProfile.Zone, qq.RuntimeProfile.Zone);
     }
 
@@ -182,8 +187,8 @@ public sealed class CompanionSyncTests
         Assert.Equal(second.Id, (await relay.ResolveAsync("123456789", ct))!.Id);
     }
 
-    private sealed class SharedClock : TimeProvider
+    private sealed class SharedClock(string zone) : TimeProvider
     {
-        public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.FindSystemTimeZoneById("ROK");
+        public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.FindSystemTimeZoneById(zone);
     }
 }

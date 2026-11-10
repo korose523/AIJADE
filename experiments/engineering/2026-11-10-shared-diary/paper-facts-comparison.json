@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "buildInterpreter": "3.9.6",
+  "baselineFactCount": 9878,
+  "exactlyEqualOnBuildInterpreter": true,
+  "changedReportedValues": 0,
+  "crossInterpreterNote": "Python 3.12 was also inspected: three floating-point values differ by at most 1.12e-16; all source usages report .3f and remain identical. The dissertation is built using the original Python 3.9.6 interpreter.",
+  "crossInterpreterDifferences": {
+    "p3.all.scale.pool.nonrel": {
+      "baseline": 0.14147592499221578,
+      "python312": 0.14147592499221576,
+      "absoluteDifference": 2.7755575615628914e-17,
+      "reportedBaseline": "0.141",
+      "reportedPython312": "0.141"
+    },
+    "p3.all.scale.top8.nonrel": {
+      "baseline": 0.5851637412862446,
+      "python312": 0.5851637412862445,
+      "absoluteDifference": 1.1102230246251565e-16,
+      "reportedBaseline": "0.585",
+      "reportedPython312": "0.585"
+    },
+    "p3.scale.top8.total": {
+      "baseline": 0.6425444492919721,
+      "python312": 0.6425444492919722,
+      "absoluteDifference": 1.1102230246251565e-16,
+      "reportedBaseline": "0.643",
+      "reportedPython312": "0.643"
+    }
+  }
+}

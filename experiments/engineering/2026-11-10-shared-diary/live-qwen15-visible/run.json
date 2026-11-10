@@ -1,0 +1,37 @@
+{
+  "kind": "synthetic product smoke; not primary research",
+  "model": {
+    "name": "qwen2.5-coder:1.5b",
+    "model": "qwen2.5-coder:1.5b",
+    "modified_at": "2026-10-08T06:13:59.0504777+09:00",
+    "size": 986062089,
+    "digest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen2",
+      "families": [
+        "qwen2"
+      ],
+      "parameter_size": "1.5B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 32768,
+      "embedding_length": 1536,
+      "runner": "ggml"
+    },
+    "capabilities": [
+      "completion",
+      "tools",
+      "insert"
+    ]
+  },
+  "status": "FAILED",
+  "stopReason": null,
+  "exitCode": 1,
+  "modelUnloadError": null,
+  "after": {
+    "models": []
+  },
+  "contextRequirement": "Start the exclusive service with OLLAMA_CONTEXT_LENGTH=4096, OLLAMA_MAX_LOADED_MODELS=1 and OLLAMA_NUM_PARALLEL=1",
+  "tempDatabaseNote": "The test fixture deletes its own database on normal completion; a forcibly stopped process may leave its temporary test database."
+}

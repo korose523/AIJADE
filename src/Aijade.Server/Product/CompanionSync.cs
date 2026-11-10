@@ -14,7 +14,7 @@ using Npgsql;
 namespace Aijade.Server.Product;
 
 /// <summary>Account/character documents in the existing configuration store; mutations serialize in PostgreSQL.</summary>
-public sealed class CompanionSyncStore(NpgsqlDataSource db, TimeProvider time)
+public sealed partial class CompanionSyncStore(NpgsqlDataSource db, TimeProvider time)
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
     private sealed record Selection(string? CharacterId = null, long Revision = 0);
@@ -263,6 +263,7 @@ public sealed class CompanionSyncStore(NpgsqlDataSource db, TimeProvider time)
         await V9Endpoints.ReadJsonAsync(c.Request, "INVALID_COMPANION_STATE", ct).ConfigureAwait(false) as JsonObject ?? throw Invalid("JSON object required");
     private static void MapScope(RouteGroupBuilder group)
     {
+        MapDiary(group);
         group.MapGet("", async (HttpContext c, CompanionSyncStore store, CancellationToken ct) =>
             await store.StateAsync(await ScopeAsync(c, store, ct).ConfigureAwait(false), null, true, false, ct).ConfigureAwait(false));
         group.MapPost("/selection", async (HttpContext c, CompanionSyncStore store, CancellationToken ct) =>

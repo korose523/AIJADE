@@ -15,6 +15,8 @@ public sealed record ChatModule(string Id, IContextProvider? Context = null, ITu
 /// </summary>
 public static class CompanionRuntime
 {
+    public const string VisibleReplyInstruction = "Every reply must include ordinary visible words that answer the user. " +
+        "Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker.";
     public static ChatOrchestrator Create(AijadeApi api, IEnumerable<ChatModule> modules, OrchestratorOptions options,
         CompanionExperience? companion = null, bool audio = true, TimeProvider? time = null,
         Action<string, Exception>? moduleFailed = null)
@@ -27,6 +29,7 @@ public static class CompanionRuntime
             Audio = audio,
             CompanionContext = companion is null ? options.CompanionContext : companion.SupplyAsync,
             PromptBudget = budget,
+            ReplyInstruction = options.ReplyInstruction ?? VisibleReplyInstruction,
         };
         return new ChatOrchestrator(api, [pipeline], configured, time, [pipeline]);
     }

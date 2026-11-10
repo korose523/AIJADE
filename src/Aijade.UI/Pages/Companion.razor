@@ -75,6 +75,30 @@
     <p class="hint">@State.Text["companion.relationship.hint"]</p>
 </section>
 
+<section aria-label="@State.Text["companion.diary.title"]">
+    <h2>@State.Text["companion.diary.title"]</h2>
+    <p>@State.Text["companion.diary.hint"]</p>
+    <label>@State.Text["companion.diary.date"] <input type="date" @bind="diaryDate" /></label>
+    <button @onclick="ReadDiaryAsync" disabled="@busy">@State.Text["companion.diary.refresh"]</button>
+    @if (diary is { } book)
+    {
+        @if (book.Entries.Count == 0) { <p>@State.Text["companion.diary.empty"]</p> }
+        @foreach (var entry in book.Entries)
+        {
+            <article class="companion-diary-entry">
+                <p><strong>@State.Text["companion.diary.user"]</strong>: @entry.User.Text @(entry.User.Truncated ? "…" : "")</p>
+                <p><strong>@State.Text["companion.diary.assistant"]</strong>: @entry.Assistant.Text @(entry.Assistant.Truncated ? "…" : "")</p>
+                <details style="overflow-wrap:anywhere"><summary>@State.Text["companion.diary.sources"]</summary>
+                    <p>@entry.User.At.ToString("u") · @entry.TimeZone</p>
+                    <p><code>@entry.User.MessageId</code> · <code>@entry.User.Sha256</code></p>
+                    <p><code>@entry.Assistant.MessageId</code> · <code>@entry.Assistant.Sha256</code></p>
+                </details>
+                <button @onclick="() => RemoveDiaryAsync(entry.Id)" disabled="@busy">@State.Text["companion.diary.remove"]</button>
+            </article>
+        }
+    }
+</section>
+
 <section>
     <h2>@State.Text["companion.collection"]</h2>
     <p>@State.Text["companion.collection.hint"]</p>
@@ -109,6 +133,8 @@
 @code {
     private CompanionProfile p = new();
     private CompanionNotebookData data = new();
+    private CompanionDiaryDay? diary;
+    private DateOnly diaryDate = DateOnly.FromDateTime(DateTime.Today);
     private LifeMoment? moment;
     private WeatherReading? weather;
     private IReadOnlyList<CompanionPlace> places = [];
@@ -167,6 +193,19 @@
         (home, appearance, interests, music, friends, hair) = (p.Home, p.Appearance, p.Interests, p.MusicPreferences, p.Friends, p.Hairstyles);
         var snapshot = await State.Companion.SnapshotAsync(); moment = snapshot.Moment; weather = snapshot.Weather;
         data = await State.Companion.Notebook.ReadAsync(includeMedia: true); links = await State.Sync.LinksAsync(); remoteChanged = false;
+        await LoadDiaryAsync(diary is null ? null : diaryDate);
+    });
+    private async Task LoadDiaryAsync(DateOnly? day)
+    {
+        diary = await State.Sync.ReadDiaryAsync(State.SharedCompanion?.CharacterId, day);
+        diaryDate = diary.Day;
+    }
+    private Task ReadDiaryAsync() => GuardAsync(() => LoadDiaryAsync(diaryDate));
+    private Task RemoveDiaryAsync(string id) => GuardAsync(async () =>
+    {
+        try { await State.Sync.RemoveDiaryEntryAsync(State.SharedCompanion?.CharacterId, id, diary!.Revision); }
+        catch (AijadeApiException e) when (e.Status == 409) { await LoadDiaryAsync(diaryDate); throw; }
+        await LoadDiaryAsync(diaryDate);
     });
     private bool DraftChanged() => home != p.Home || appearance != p.Appearance || interests != p.Interests || music != p.MusicPreferences || friends != p.Friends || hair != p.Hairstyles ||
         locationLabel != p.City || timeZone != p.TimeZone || latitude != p.Latitude || longitude != p.Longitude;

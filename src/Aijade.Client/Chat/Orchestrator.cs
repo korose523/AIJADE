@@ -33,7 +33,10 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         "shy. Suggest rather than judge, and never push them to change. Your name is 艾娅德; a nickname from the user is fine, but you " +
         "stay who you are.";
 
-    public static string SystemPrompt(Character? character, IEnumerable<string> supplements, bool drawing = false)
+    public static string SystemPrompt(Character? character, IEnumerable<string> supplements, bool drawing = false) =>
+        ComposeSystemPrompt(character, supplements, drawing, null);
+
+    private static string ComposeSystemPrompt(Character? character, IEnumerable<string> supplements, bool drawing, string? replyInstruction)
     {
         var parts = new List<string>();
         if (character is not null)
@@ -52,6 +55,8 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         parts.Add(Expressions.Instruction);
         if (drawing)
             parts.Add(Artistry.Instruction);
+        if (!string.IsNullOrWhiteSpace(replyInstruction))
+            parts.Add(replyInstruction);
         return string.Join("\n\n", parts);
     }
 
@@ -135,7 +140,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
                 supplements.Add(supplement);
         }
         var drawing = options.Drawing();
-        var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, supplements, drawing)) };
+        var messages = new List<(string Role, string Content)> { ("system", ComposeSystemPrompt(character, supplements, drawing, options.ReplyInstruction)) };
         var recent = history.Where(m => m.Role is "user" or "assistant").TakeLast(Math.Max(0, options.HistoryWindow))
             .Select(m => (m.Role, Selfies.IsSelfie(m) ? $"[I sent them a selfie from the stage: {m.Content}]"
                 : Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content));
@@ -201,7 +206,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
             : null;
         if (companion is not null && options.PromptBudget is { } limit)
             companion = PromptBudget.Limit(companion, Math.Min(PromptBudget.Bound(limit.ModuleCharacters), PromptBudget.Bound(limit.SupplementCharacters)));
-        var messages = new List<(string Role, string Content)> { ("system", SystemPrompt(character, companion is null ? [] : [companion])) };
+        var messages = new List<(string Role, string Content)> { ("system", ComposeSystemPrompt(character, companion is null ? [] : [companion], false, options.ReplyInstruction)) };
         var history = new List<(string Role, string Content)>();
         foreach (var x in exchanges.TakeLast(Initiative.HistoryWindow))
         {

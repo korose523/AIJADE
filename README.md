@@ -10,7 +10,7 @@ AIJADE's primary development line is emotional companionship: conversation, init
 relationship state, photos, voice and a private media collection. The author prioritises completing AIJADE.
 MOSAIC focuses on connectome research and embodied intelligence; the projects may borrow useful product ideas.
 [ADR-004](docs/decisions/ADR-004.md) supersedes the previous research-first/product-maintenance priority.
-Web and QQ share the selected character, life/location profile, relationship and media collection through the server.
+Web and QQ share the selected character, life/location profile, relationship, media collection and explicitly saved diary excerpts through the server.
 See [the companion setup and sync guide](docs/COMPANION.md) for pairing, live changes, media and optional local services.
 
 The existing dissertation apparatus and archived results remain separate. Product data is never used as research data,
@@ -22,7 +22,7 @@ passing engineering checks do not change scientific gates or manuscript readines
 
 Research methods, original requests and replies, failures and verification receipts are indexed in
 [experiments](experiments/README.md), including the [Mac model preflight](experiments/mac-preflight/2026-11-09-7b8b/README.md)
-and [engineering regressions](experiments/engineering/2026-11-10-github-validation/receipt.json).
+and [engineering regressions and local-model product checks](experiments/engineering/2026-11-10-shared-diary/receipt.json).
 Development preflights do not replace primary studies or establish prior public registration.
 
 ## Runtime composition
@@ -37,6 +37,12 @@ plugins were not installed or copied. The [system overview](docs/architecture/ov
 [message flow](docs/architecture/turn-flow.png) are rendered from editable Mermaid in the architecture guide.
 Product turns keep a stable module selection, bound optional prompt/history size and stop further tools after an
 uncertain tool outcome. Character limits are configurable and are not model-token or real-model speed guarantees.
+
+`/diary save` stores a completed exchange using server-checked source messages; `/diary` reads today's excerpts.
+The companion page reads and forgets the same account-and-character diary. Forgetting an excerpt retains the original
+chat. This is mutable product data, and an assistant's saved words are not independent research evidence.
+The [optional local-model check](docs/COMPANION.md) records real replies and readiness separately from controlled-provider
+regressions; cold-start failures and marker-only responses are kept in the engineering records.
 
 For a companion deployment, configure the existing PostgreSQL and model gateway, then run `tools/run-companion.sh`.
 It keeps the core, shared memory and evidence pipeline, and mounts MCP, external tools, the MOSAIC bridge and billing only

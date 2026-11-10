@@ -68,7 +68,7 @@ public sealed class CompanionRuntimeTests
         Assert.Throws<ArgumentException>(() => new ChatModuleSet([new("same", new Module("a")), new("same", new Module("b"))]));
     }
 
-    private sealed class Llm : HttpMessageHandler
+    private sealed class Llm(string reply = "[[emote:joy]]Here I am.") : HttpMessageHandler
     {
         public int Calls { get; private set; }
         public List<JsonNode> Bodies { get; } = [];
@@ -76,7 +76,8 @@ public sealed class CompanionRuntimeTests
         {
             Calls++;
             Bodies.Add(JsonNode.Parse(await request.Content!.ReadAsStringAsync(cancellationToken))!);
-            const string sse = "data: {\"choices\":[{\"delta\":{\"content\":\"[[emote:joy]]Here I am.\"}}]}\n\ndata: [DONE]\n\n";
+            var body = new JsonObject { ["choices"] = new JsonArray(new JsonObject { ["delta"] = new JsonObject { ["content"] = reply } }) };
+            var sse = "data: " + body.ToJsonString() + "\n\ndata: [DONE]\n\n";
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") };
         }
     }
@@ -120,7 +121,8 @@ public sealed class CompanionRuntimeTests
         Assert.Contains("LIFE ", system, StringComparison.Ordinal); Assert.Contains("MEMORY ", system, StringComparison.Ordinal);
         Assert.DoesNotContain("EXTERNAL", system, StringComparison.Ordinal);
         Assert.DoesNotContain("\ufffd", system, StringComparison.Ordinal);
-        Assert.True(system.Length <= ChatOrchestrator.SystemPrompt(null, []).Length + 202);
+        Assert.Contains(CompanionRuntime.VisibleReplyInstruction, system, StringComparison.Ordinal);
+        Assert.True(system.Length <= ChatOrchestrator.SystemPrompt(null, []).Length + CompanionRuntime.VisibleReplyInstruction.Length + 204);
         Assert.Equal(["recent", "short answer", original], sent.Skip(1).Select(m => m!["content"]!.GetValue<string>()));
         Assert.Equal(original, (await api.MessagesAsync(chat.Id, ct: ct))[0].Content);
 
@@ -129,7 +131,23 @@ public sealed class CompanionRuntimeTests
         await foreach (var _ in legacy.SendAsync(chat.Id, null, history, original, "snapshot", ct)) { }
         var archived = llm.Bodies[^1]["messages"]!.AsArray();
         Assert.Contains(life, archived[0]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.DoesNotContain(CompanionRuntime.VisibleReplyInstruction, archived[0]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
         Assert.Contains(archived, m => m?["content"]?.GetValue<string>() == history[1].Content);
+    }
+
+    [Fact]
+    public async Task A_marker_only_model_response_is_rejected_without_a_stored_assistant_or_a_fabricated_fallback()
+    {
+        var ct = TestContext.Current.CancellationToken; var llm = new Llm("[[emote:joy]]");
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await ConfigureAsync(host); var api = await ApiAsync(host.Client); var chat = await api.CreateChatAsync(null, "marker only", ct);
+        var events = new List<OrchestratorEvent>();
+        await foreach (var e in CompanionRuntime.Create(api, [], new OrchestratorOptions()).SendAsync(chat.Id, null, [], "hello", "snapshot", ct)) events.Add(e);
+        Assert.Equal("EMPTY_REPLY", Assert.IsType<TurnFailed>(events[^1]).Code);
+        Assert.DoesNotContain(events, e => e is TurnCompleted);
+        Assert.Equal("user", Assert.Single(await api.MessagesAsync(chat.Id, ct: ct)).Role);
+        Assert.Equal(1, llm.Calls); // the runtime neither makes up text nor silently loops the model
     }
 
     [Fact]

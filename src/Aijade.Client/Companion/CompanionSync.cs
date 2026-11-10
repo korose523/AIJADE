@@ -54,6 +54,12 @@ public sealed class CompanionSync(AijadeApi api, string? linkId = null)
     public Task RemoveAsync(string? id, string asset, CancellationToken ct = default) => api.SendAsync(HttpMethod.Delete, Path(id) + "/assets/" + Uri.EscapeDataString(asset), ct: ct);
     public Task ObserveAsync(string? id, string messageId, CancellationToken ct = default) =>
         api.SendAsync(HttpMethod.Post, Path(id) + "/observe", new JsonObject { ["messageId"] = messageId }, ct);
+    public async Task<CompanionDiaryDay> ReadDiaryAsync(string? id, DateOnly? day = null, CancellationToken ct = default) =>
+        (await api.SendAsync(HttpMethod.Get, Path(id) + "/diary" + (day is { } date ? "?day=" + date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) : ""), ct: ct).ConfigureAwait(false))!.Deserialize<CompanionDiaryDay>(Json)!;
+    public async Task<CompanionDiaryDay> SaveExchangeAsync(string? id, string userMessageId, string assistantMessageId, CancellationToken ct = default) =>
+        (await api.SendAsync(HttpMethod.Post, Path(id) + "/diary", new JsonObject { ["userMessageId"] = userMessageId, ["assistantMessageId"] = assistantMessageId }, ct).ConfigureAwait(false))!.Deserialize<CompanionDiaryDay>(Json)!;
+    public async Task RemoveDiaryEntryAsync(string? id, string entry, long revision, CancellationToken ct = default) =>
+        _ = await api.SendAsync(HttpMethod.Delete, Path(id) + "/diary/" + Uri.EscapeDataString(entry) + "?expectedRevision=" + revision.ToString(System.Globalization.CultureInfo.InvariantCulture), ct: ct).ConfigureAwait(false);
     public Task<JsonNode?> PairingCodeAsync(CancellationToken ct = default) => api.SendAsync(HttpMethod.Post, "/api/v1/companion/pairing-code", new JsonObject(), ct);
     public async Task<CompanionLink> PairAsync(string code, string subject, CancellationToken ct = default) =>
         (await api.SendAsync(HttpMethod.Post, "/api/v1/companion/pair", new JsonObject { ["code"] = code, ["subject"] = subject, ["platform"] = "qq" }, ct).ConfigureAwait(false))!.Deserialize<CompanionLink>(Json)!;
@@ -65,7 +71,7 @@ public sealed class CompanionSync(AijadeApi api, string? linkId = null)
 }
 
 /// <summary>Reads the same server document on both clients. Media is loaded only for display or delivery.</summary>
-public sealed class SyncedCompanionNotebook(CompanionSync sync, string? characterId, SharedCompanionState? initial = null) : ICompanionNotebook
+public sealed class SyncedCompanionNotebook(CompanionSync sync, string? characterId, SharedCompanionState? initial = null) : ICompanionNotebook, ICompanionDiary
 {
     public SharedCompanionState? Latest { get; private set; } = initial;
     public async Task<CompanionNotebookData> ReadAsync(bool includeMedia = false, CancellationToken ct = default)
@@ -76,6 +82,9 @@ public sealed class SyncedCompanionNotebook(CompanionSync sync, string? characte
     public Task<CompanionAsset?> AssetAsync(string id, CancellationToken ct = default) => sync.AssetAsync(characterId, id, ct);
     public Task AddAsync(CompanionAsset asset, CancellationToken ct = default) => sync.AddAsync(characterId, asset, ct);
     public Task RemoveAsync(string id, CancellationToken ct = default) => sync.RemoveAsync(characterId, id, ct);
+    public Task<CompanionDiaryDay> ReadDiaryAsync(DateOnly? day = null, CancellationToken ct = default) => sync.ReadDiaryAsync(characterId, day, ct);
+    public Task<CompanionDiaryDay> SaveExchangeAsync(string userMessageId, string assistantMessageId, CancellationToken ct = default) =>
+        sync.SaveExchangeAsync(characterId, userMessageId, assistantMessageId, ct);
     public Task ObserveAsync(TurnContext turn, DateTimeOffset now, CancellationToken ct = default) =>
         turn.UserMessageId is { } id ? sync.ObserveAsync(characterId, id, ct) : throw new InvalidOperationException("A synchronized relationship needs a stored user-message identity");
 }

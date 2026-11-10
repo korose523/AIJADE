@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a547edfd-5849-4ea7-a4ed-884d0cd35839" name="@macdeMacBook-Pro 2026-11-10 12:32:42" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-10T12:32:42.7059410+09:00" queuing="2026-11-10T12:32:42.7059410+09:00" start="2026-11-10T12:31:54.7750310+09:00" finish="2026-11-10T12:32:42.7109130+09:00" />
+  <TestSettings name="default" id="79e32e98-e1d8-400c-9e11-8b0ad12a5eb6">
+    <Deployment runDeploymentRoot="_macdeMacBook-Pro_2026-11-10_12_32_42" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3c217541-d33f-4f7f-83b1-0439f1e9ec1d" testId="9990f706-517d-ea11-ce20-ef8825fe9733" testName="Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime" computerName="macdeMacBook-Pro" duration="00:00:43.5736422" startTime="2026-11-10T12:31:58.5980950+09:00" endTime="2026-11-10T12:32:42.2027250+09:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c217541-d33f-4f7f-83b1-0439f1e9ec1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(Aijade.Client.Chat.TurnCompleted)
+Actual:   typeof(Aijade.Client.Chat.TurnFailed)</Message>
+          <StackTrace>   at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs:line 84
+   at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs:line 102
+   at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs:line 109
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.tests/release/aijade.tests.dll" id="9990f706-517d-ea11-ce20-ef8825fe9733">
+      <Execution id="3c217541-d33f-4f7f-83b1-0439f1e9ec1d" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.Tests.CompanionLiveTests" name="A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9990f706-517d-ea11-ce20-ef8825fe9733" executionId="3c217541-d33f-4f7f-83b1-0439f1e9ec1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.14)
+[xUnit.net 00:00:00.91]   Discovering: Aijade.Tests
+[xUnit.net 00:00:01.68]   Discovered:  Aijade.Tests
+[xUnit.net 00:00:02.89]   Starting:    Aijade.Tests
+[xUnit.net 00:00:46.27]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:46.27]       Expected: typeof(Aijade.Client.Chat.TurnCompleted)
+[xUnit.net 00:00:46.27]       Actual:   typeof(Aijade.Client.Chat.TurnFailed)
+[xUnit.net 00:00:46.27]       Stack Trace:
+[xUnit.net 00:00:46.27]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs(84,0): at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime()
+[xUnit.net 00:00:46.27]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs(102,0): at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime()
+[xUnit.net 00:00:46.27]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/CompanionLiveTests.cs(109,0): at Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime()
+[xUnit.net 00:00:46.27]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:46.29]   Finished:    Aijade.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="macdeMacBook-Pro" outcome="Error" timestamp="2026-11-10T12:32:42.2104450+09:00">
+        <Text>[xUnit.net 00:00:46.27]     Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="24238b83-e945-48a3-8f7a-f4f44f1c1c6b" name="@macdeMacBook-Pro 2026-11-10 04:01:28" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-10T04:01:28.1613310+00:00" queuing="2026-11-10T04:01:28.1613310+00:00" start="2026-11-10T04:00:44.2764610+00:00" finish="2026-11-10T04:01:28.1689840+00:00" />
+  <TestSettings name="default" id="9a7bc680-7f37-4501-a89a-d1c281ce396d">
+    <Deployment runDeploymentRoot="_macdeMacBook-Pro_2026-11-10_04_01_28" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ba5438b0-6d77-41eb-8738-8d409de1b3a6" testId="5fc13eb6-7e7a-67b0-2f68-e0958f0f3dc3" testName="Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat" computerName="macdeMacBook-Pro" duration="00:00:34.8654853" startTime="2026-11-10T04:00:52.9456510+00:00" endTime="2026-11-10T04:01:27.8362250+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba5438b0-6d77-41eb-8738-8d409de1b3a6">
+      <Output>
+        <ErrorInfo>
+          <Message>The local OneBot round trip did not complete</Message>
+          <StackTrace>   at Aijade.E2E.LocalQqHarness.WaitAsync(Func`1 ready, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionSyncWebTests.cs:line 195
+   at Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDiaryWebTests.cs:line 34
+   at Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDiaryWebTests.cs:line 57
+   at Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDiaryWebTests.cs:line 57
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat" storage="/users/mac/.cache/aijade-next-artifacts/bin/aijade.e2e/release/aijade.e2e.dll" id="5fc13eb6-7e7a-67b0-2f68-e0958f0f3dc3">
+      <Execution id="ba5438b0-6d77-41eb-8738-8d409de1b3a6" />
+      <TestMethod codeBase="/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.E2E/release/Aijade.E2E.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Aijade.E2E.CompanionExperienceWebTests" name="A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="5fc13eb6-7e7a-67b0-2f68-e0958f0f3dc3" executionId="ba5438b0-6d77-41eb-8738-8d409de1b3a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.14)
+[xUnit.net 00:00:01.08]   Discovering: Aijade.E2E
+[xUnit.net 00:00:01.79]   Discovered:  Aijade.E2E
+[xUnit.net 00:00:02.98]   Starting:    Aijade.E2E
+[xUnit.net 00:00:42.29]       The local OneBot round trip did not complete
+[xUnit.net 00:00:42.29]       Stack Trace:
+[xUnit.net 00:00:42.29]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionSyncWebTests.cs(195,0): at Aijade.E2E.LocalQqHarness.WaitAsync(Func`1 ready, CancellationToken ct)
+[xUnit.net 00:00:42.29]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDiaryWebTests.cs(34,0): at Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat()
+[xUnit.net 00:00:42.29]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDiaryWebTests.cs(57,0): at Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat()
+[xUnit.net 00:00:42.29]         /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDiaryWebTests.cs(57,0): at Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat()
+[xUnit.net 00:00:42.29]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:42.49]   Finished:    Aijade.E2E
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="macdeMacBook-Pro" outcome="Error" timestamp="2026-11-10T04:01:27.8466650+00:00">
+        <Text>[xUnit.net 00:00:42.29]     Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

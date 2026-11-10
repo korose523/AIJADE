@@ -7,6 +7,7 @@ using Aijade.Server.V9;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Npgsql;
 
@@ -61,7 +62,7 @@ public static class AijadeServer
         modules.Register(builder.Services, config);
 
         builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(NormalizeConnectionString(connection)).Build());
-        builder.Services.AddSingleton(TimeProvider.System);
+        builder.Services.TryAddSingleton(TimeProvider.System);
         var redisUrl = config["REDIS_URL"];
         if (!string.IsNullOrEmpty(redisUrl))
         {
