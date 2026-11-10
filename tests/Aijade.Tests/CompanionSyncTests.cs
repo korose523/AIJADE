@@ -153,7 +153,7 @@ public sealed class CompanionSyncTests
     }
 
     [Theory]
-    [InlineData("ROK", "Asia/Seoul")]
+    [InlineData("Asia/Seoul", "Asia/Seoul")]
     [InlineData("UTC", "Etc/UTC")]
     [InlineData("America/Los_Angeles", "America/Los_Angeles")]
     public async Task Blank_zones_use_the_same_server_clock_for_both_clients(string zone, string expected)
@@ -189,6 +189,7 @@ public sealed class CompanionSyncTests
 
     private sealed class SharedClock(string zone) : TimeProvider
     {
+        // Canonical zones are present without an optional legacy-alias database on Linux.
         public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.FindSystemTimeZoneById(zone);
     }
 }

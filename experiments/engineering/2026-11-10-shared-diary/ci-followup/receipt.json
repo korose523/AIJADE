@@ -1,0 +1,40 @@
+{
+  "schema": "aijade.engineering.canonical-clock-fixture.v1",
+  "recordedAt": "2026-11-10T04:23:51.101208+00:00",
+  "status": "LOCAL_PASS_CI_PENDING",
+  "baseCommit": "caf405dee27aa3fcdb2d977a2018522ed75658e4",
+  "scope": "Clock fixture portability and retained CI evidence; runtime unchanged",
+  "priorCI": {
+    "url": "https://github.com/korose523/AIJADE/actions/runs/42754614544",
+    "passed": 538,
+    "failed": 1,
+    "skipped": 20,
+    "failedCase": "Blank_zones_use_the_same_server_clock_for_both_clients(zone: ROK, expected: Asia/Seoul)",
+    "observedFailure": "CurrentAsync returned HTTP 500 while evaluating the injected ROK-clock case; the precise server exception was not exposed in the CI log. UTC and America/Los_Angeles cases passed."
+  },
+  "change": "Use the canonical Asia/Seoul ID in the injected-clock fixture instead of looking up a platform-dependent ROK alias. The Assert.Same identity assertion, empty-profile-zone assertion and Web/QQ consistency assertion remain. The actual TryAddSingleton runtime fix is unchanged.",
+  "externalCheck": {
+    "url": "https://packages.ubuntu.com/noble/all/tzdata/filelist",
+    "observed": "The official base tzdata file list includes /usr/share/zoneinfo/Asia/Seoul but no /usr/share/zoneinfo/ROK. No complete inventory of the actual GitHub runner was collected; dependency on a legacy alias is removed without changing the intended zone or expected result.",
+    "retrievedAt": "2026-11-10"
+  },
+  "localValidation": {
+    "command": "TZ=UTC dotnet test tests/Aijade.Tests -c Release --no-build --filter FullyQualifiedName~Blank_zones_use_the_same_server_clock",
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "buildWarnings": 0,
+    "buildErrors": 0,
+    "scopeNote": "Only the test fixture changed; prior full local unit/browser suites remain identified by the preceding receipt. GitHub runs the full solution again for this follow-up commit."
+  },
+  "protectedResearchFilesUnchanged": 552,
+  "changedTestSha256": {
+    "tests/Aijade.Tests/CompanionSyncTests.cs": "e10ae9b731bef69bef0d77a50e044148af0144ed439cce12d427ffe1cce49ac4"
+  },
+  "artifactsSha256": {
+    "build-ci-fixture.log": "cba2be940dc3db4d10134d16a50248de17922e17c22e33776cc1c29d8ddf4157",
+    "ci-clock.log": "11f1e71dedee66e29060bf9ab126766dbae70616dd7bea347bac39cfb56a5080",
+    "ci-clock.trx": "8bf140490c22b46b3466013dd6292f8bff1013025a356ab26a6e95cd5164df9a",
+    "ci-shared-diary-failed.log": "71743a35d150fcb0e25510dd70c4d36cd2a40cb0789d1e59689558aadbd33203"
+  }
+}
