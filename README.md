@@ -44,10 +44,10 @@ chat. This is mutable product data, and an assistant's saved words are not indep
 The [optional local-model check](docs/COMPANION.md) records real replies and readiness separately from controlled-provider
 regressions; cold-start failures and marker-only responses are kept in the engineering records.
 
-Ordinary QQ replies and shared-runtime commands now attach a stored message identity to a bounded delivery log.
+Ordinary QQ replies, proactive first messages, due reminders and shared-runtime commands attach a stored message identity to a bounded delivery log.
 Text, image and audio parts require complete platform acknowledgements; uncertain results or failed observation writes
 stop later parts without an automatic resend. The companion page shows these records. Acceptance by the platform is
-distinct from recipient delivery or reading; automatic first lines and reminders retain their earlier delivery paths.
+distinct from recipient delivery or reading. The Web view labels reply origins and reminder identities. Consuming a stored reminder line remains separate from platform acceptance; retained attempts prevent redispatch of the same stored source.
 
 For a companion deployment, configure the existing PostgreSQL and model gateway, then run `tools/run-companion.sh`.
 It keeps the core, shared memory and evidence pipeline, and mounts MCP, external tools, the MOSAIC bridge and billing only

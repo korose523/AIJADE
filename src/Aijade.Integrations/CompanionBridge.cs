@@ -137,7 +137,14 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
 
     public async Task<IReadOnlyList<(ChannelMessage Contact, string Text)>> FirstLinesAsync(Func<string, bool> reachable, CancellationToken ct = default)
     {
-        var result = new List<(ChannelMessage, string)>();
+        var replies = await FirstRepliesAsync(reachable, ct).ConfigureAwait(false);
+        return [.. replies.Select(r => (r.Contact, r.Reply.Text))];
+    }
+
+    /// <summary>First lines with the stored source and optional delivery capability retained for the connector.</summary>
+    public async Task<IReadOnlyList<(ChannelMessage Contact, ChannelReply Reply)>> FirstRepliesAsync(Func<string, bool> reachable, CancellationToken ct = default)
+    {
+        var result = new List<(ChannelMessage, ChannelReply)>();
         if (!options.SpeakFirst)
             return result;
         foreach (var contact in privateContacts.Values.Where(m => reachable(m.Platform)))
@@ -159,7 +166,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
                     TimeZoneInfo.ConvertTime(options.Time.GetUtcNow(), zone).Hour, ct).ConfigureAwait(false))
                 {
                     if (e is TurnCompleted done)
-                        result.Add((contact, done.Reply.Content));
+                        result.Add((contact, new ChannelReply(done.Reply.Content, done.Expressions) { Delivery = DeliveryFor(experience, done.Reply) }));
                 }
             }
             finally { gate.Release(); }
@@ -338,6 +345,13 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
     /// </summary>
     public async Task<(Reminder Reminder, string Line)?> DueReminderAsync(Func<string, bool> reachable, CancellationToken ct = default)
     {
+        var due = await DueReminderReplyAsync(reachable, ct).ConfigureAwait(false);
+        return due is null ? null : (due.Value.Reminder, due.Value.Reply.Text);
+    }
+
+    /// <summary>A due reminder with its stored source retained. A stored line consumes the promise before platform dispatch.</summary>
+    public async Task<(Reminder Reminder, ChannelReply Reply)?> DueReminderReplyAsync(Func<string, bool> reachable, CancellationToken ct = default)
+    {
         Reminder? due;
         await stateGate.WaitAsync(ct).ConfigureAwait(false);
         try
@@ -354,7 +368,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         }
         if (due is null)
             return null;
-        string? line = null;
+        ChannelReply? reply = null;
         var chatKey = due.Conversation;
         var gate = locks.GetOrAdd(due.Conversation, _ => new SemaphoreSlim(1, 1));
         await gate.WaitAsync(ct).ConfigureAwait(false);
@@ -372,11 +386,20 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
             chatKey = sync is null ? due.Conversation : due.Conversation + ":" + sync.Identity;
             var chatId = await ChatForAsync(chatKey, $"{platform} · {subject}", sync?.OwnCharacter == false ? null : who, ct).ConfigureAwait(false);
             var history = await api.MessagesAsync(chatId, ct: ct).ConfigureAwait(false);
-            await foreach (var e in Runtime(experience, who)
-                .RemindAsync(chatId, who, history, $"persona:{who?.Id ?? "default"}", due, experience?.Profile.Zone ?? options.TimeZone, ct).ConfigureAwait(false))
+            // A process may have stopped after storage but before its reminder file was updated. Reuse that source,
+            // so the retained delivery attempt can suppress a resend instead of generating a new assistant identity.
+            var stored = history.LastOrDefault(m => m.Role == "assistant" && m.Meta?["reminder"] is JsonObject tag &&
+                tag["id"] is JsonValue id && id.TryGetValue<string>(out var value) && value == due.Id);
+            if (stored is not null)
+                reply = new(stored.Content, []) { Delivery = DeliveryFor(experience, stored) };
+            else
             {
-                if (e is TurnCompleted c)
-                    line = c.Reply.Content;
+                await foreach (var e in Runtime(experience, who)
+                    .RemindAsync(chatId, who, history, $"persona:{who?.Id ?? "default"}", due, experience?.Profile.Zone ?? options.TimeZone, ct).ConfigureAwait(false))
+                {
+                    if (e is TurnCompleted c)
+                        reply = new(c.Reply.Content, c.Expressions) { Delivery = DeliveryFor(experience, c.Reply) };
+                }
             }
         }
         catch (AijadeApiException e) when (e.Status == 404)
@@ -390,15 +413,15 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         finally
         {
             gate.Release();
+            // Consuming a stored line and recording platform acceptance are separate stages. Cancellation must not
+            // silently put a stored line back into the generation queue; cleanup itself remains bounded.
+            using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+            await UpdateRemindersAsync(book =>
+            {
+                if (reply is null) book.Release(due.Id); else book.Done(due.Id);
+            }, cleanup.Token).ConfigureAwait(false);
         }
-        await UpdateRemindersAsync(book =>
-        {
-            if (line is null)
-                book.Release(due.Id);
-            else
-                book.Done(due.Id);
-        }, ct).ConfigureAwait(false);
-        return line is null ? null : (due, line);
+        return reply is null ? null : (due, reply);
     }
 
     private string? RemindersFile => options.StateFile is { } file ? file + ".reminders.json" : null;
@@ -533,6 +556,9 @@ public interface IProactiveConnector
     string Platform { get; }
 
     Task SendAsync(string conversationId, string text, CancellationToken ct);
+
+    /// <summary>Rich dispatch preserves source metadata when supported; text-only connectors retain their existing behavior.</summary>
+    Task SendReplyAsync(string conversationId, ChannelReply reply, CancellationToken ct) => SendAsync(conversationId, reply.Text, ct);
 }
 
 /// <summary>A platform connection: it reports incoming messages and posts what the handler answers.</summary>

@@ -158,6 +158,7 @@ internal sealed class LocalQqHarness : IAsyncDisposable
     private readonly HttpClient events;
     private readonly HttpClient napcat;
     private readonly CompanionBridge bridge;
+    private readonly Dictionary<string, IProactiveConnector> reach;
     private readonly Task running;
     private readonly string directory = Path.Combine(Path.GetTempPath(), "aijade-sync-e2e-" + Guid.NewGuid().ToString("N"));
     private readonly NapCatFixture delivery = new();
@@ -166,17 +167,21 @@ internal sealed class LocalQqHarness : IAsyncDisposable
     public IReadOnlyList<string> Texts => [.. delivery.Calls.SelectMany(c => c["message"]!.AsArray()).Where(s => s!["type"]!.GetValue<string>() == "text").Select(s => s!["data"]!["text"]!.GetValue<string>())];
     public int Images => delivery.Calls.SelectMany(c => c["message"]!.AsArray()).Count(s => s!["type"]!.GetValue<string>() == "image");
 
-    public LocalQqHarness(AijadeApi api, CancellationToken ct)
+    public LocalQqHarness(AijadeApi api, CancellationToken ct, TimeProvider? time = null, bool speakFirst = false)
     {
         stop = CancellationTokenSource.CreateLinkedTokenSource(ct);
         Configuration = new(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?> { ["Bridge:StateFile"] = Path.Combine(directory, "bridge.json") }).Build(), api);
-        bridge = new(api, new BridgeOptions { Memory = false, Drawing = true, StateFile = Path.Combine(directory, "bridge.json"), ResolveCompanion = Configuration.ForAsync, PairCompanion = Configuration.PairAsync });
+        bridge = new(api, new BridgeOptions { Memory = false, Drawing = true, Time = time ?? TimeProvider.System, SpeakFirst = speakFirst,
+            ReminderPlatforms = ["qq"], StateFile = Path.Combine(directory, "bridge.json"), ResolveCompanion = Configuration.ForAsync, PairCompanion = Configuration.PairAsync });
         var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start(); var port = ((IPEndPoint)listener.LocalEndpoint).Port; listener.Stop();
         events = new() { BaseAddress = new Uri($"http://127.0.0.1:{port}/") }; napcat = new(delivery);
         var connector = new OneBotConnector(port, new Uri("http://127.0.0.1:3000"), "local-test-napcat-token", Secret, Owner, napcat,
             companionSource: async token => (await Configuration.ForAsync(Contact, token))!.Experience);
+        reach = new Dictionary<string, IProactiveConnector> { ["qq"] = connector };
         running = connector.RunAsync(bridge.AnswerAsync, stop.Token);
     }
+    public Task<int> SpeakFirstAsync(CancellationToken ct) => ConnectorHost.SpeakFirstOnceAsync(bridge, reach, ct);
+    public Task<int> RemindAsync(CancellationToken ct) => ConnectorHost.RemindOnceAsync(bridge, reach, ct);
     public async Task SendAsync(string text, CancellationToken ct, bool picture = false)
     {
         var segments = new JsonArray(new JsonObject { ["type"] = "text", ["data"] = new JsonObject { ["text"] = text } });

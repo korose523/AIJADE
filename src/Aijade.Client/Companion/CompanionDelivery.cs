@@ -6,7 +6,7 @@ public sealed record DeliveryPart(int Index, string Kind, string PayloadSha256, 
 
 public sealed record DeliveryAttempt(string Id, string MessageId, string SourceSha256, string Destination,
     DateTimeOffset StartedAt, string State = "preparing", IReadOnlyList<DeliveryPart>? Parts = null,
-    DateTimeOffset? FinishedAt = null, string? FinishReason = null);
+    DateTimeOffset? FinishedAt = null, string? FinishReason = null, string Kind = "reply", string? TriggerId = null);
 
 public sealed record DeliveryLog(long Pruned, IReadOnlyList<DeliveryAttempt> Entries);
 public sealed record DeliveryStart(DeliveryAttempt Attempt, bool Created);

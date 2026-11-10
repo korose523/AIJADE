@@ -42,8 +42,7 @@ public sealed class ConnectorHost(IEnumerable<IChannelConnector> connectors, Com
                 try
                 {
                     await RemindOnceAsync(bridge, proactive, ct).ConfigureAwait(false);
-                    foreach (var (contact, text) in await bridge.FirstLinesAsync(proactive.ContainsKey, ct).ConfigureAwait(false))
-                        await proactive[contact.Platform].SendAsync(contact.ConversationId, text, ct).ConfigureAwait(false);
+                    await SpeakFirstOnceAsync(bridge, proactive, ct).ConfigureAwait(false);
                 }
                 catch (Exception e) when (!ct.IsCancellationRequested) // an HttpClient timeout is a TaskCanceledException too
                 {
@@ -56,14 +55,26 @@ public sealed class ConnectorHost(IEnumerable<IChannelConnector> connectors, Com
         }
     }
 
-    /// <summary>Says the reminders due now (several when the host was stopped meanwhile); how many were said.</summary>
+    /// <summary>Hands due stored reminder lines to their connectors; the count is not a platform acceptance count.</summary>
     public static async Task<int> RemindOnceAsync(CompanionBridge bridge, IReadOnlyDictionary<string, IProactiveConnector> proactive, CancellationToken ct)
     {
         var said = 0;
-        while (await bridge.DueReminderAsync(key => proactive.ContainsKey(key[..key.IndexOf(':', StringComparison.Ordinal)]), ct).ConfigureAwait(false) is { } due)
+        while (await bridge.DueReminderReplyAsync(key => proactive.ContainsKey(key[..key.IndexOf(':', StringComparison.Ordinal)]), ct).ConfigureAwait(false) is { } due)
         {
             var split = due.Reminder.Conversation.IndexOf(':', StringComparison.Ordinal);
-            await proactive[due.Reminder.Conversation[..split]].SendAsync(due.Reminder.Conversation[(split + 1)..], due.Line, ct).ConfigureAwait(false);
+            await proactive[due.Reminder.Conversation[..split]].SendReplyAsync(due.Reminder.Conversation[(split + 1)..], due.Reply, ct).ConfigureAwait(false);
+            said++;
+        }
+        return said;
+    }
+
+    /// <summary>Dispatches eligible first lines without discarding their stored source identities.</summary>
+    public static async Task<int> SpeakFirstOnceAsync(CompanionBridge bridge, IReadOnlyDictionary<string, IProactiveConnector> proactive, CancellationToken ct)
+    {
+        var said = 0;
+        foreach (var (contact, reply) in await bridge.FirstRepliesAsync(proactive.ContainsKey, ct).ConfigureAwait(false))
+        {
+            await proactive[contact.Platform].SendReplyAsync(contact.ConversationId, reply, ct).ConfigureAwait(false);
             said++;
         }
         return said;

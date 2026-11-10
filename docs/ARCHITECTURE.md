@@ -95,14 +95,17 @@ flowchart TB
 
 ## 📨 QQ 交付记录与返回阶段
 
-`TurnCompleted` 表示回复成功保存，随后 QQ 平台调用有独立结果。普通回复和经共享运行时处理的 `/photo`、`/sing`、`/life`、`/relationship`、`/diary` 命令携带来源消息 ID；绑定、收藏导入、主动消息与提醒仍走原渠道路径，不在这份来源关联记录内。
+`TurnCompleted` 表示回复成功保存，随后 QQ 平台调用有独立结果。普通回复、主动消息、到期提醒和经共享运行时处理的 `/photo`、`/sing`、`/life`、`/relationship`、`/diary` 命令都携带来源消息 ID，通过同一 QQ 发送器登记回执。服务端从已存来源的元数据识别普通回复、主动消息或提醒，并为提醒保留触发 ID；绑定和收藏导入命令仍不在这份记录内。
 
 <!-- architecture:qq-delivery -->
 ```mermaid
 flowchart TB
     accTitle: Source-linked QQ delivery observations
-    accDescr: A stored reply reserves a retained attempt and records each request before dispatch. Valid acknowledgements permit another part. Rejections, uncertain results and new-input interruptions stop later sends. A platform acknowledgement does not establish recipient delivery or reading.
-    stored_reply["回复已入库<br/>来源 ID / 原文 SHA-256"]
+    accDescr: Ordinary replies, gated first lines and due reminders retain their stored identities and reserve an attempt before dispatch. Reminder generation consumes a local promise separately from platform acceptance. Valid acknowledgements permit another part; rejections and unknown outcomes stop later sends. Acceptance does not establish recipient delivery or reading.
+    reply_origin["普通回复 / 显式命令"]
+    initiative_origin["主动门控通过<br/>生成并保存主动消息"]
+    reminder_origin["约定提醒到期<br/>复用已存来源或生成保存<br/>消费本地提醒 · 不等于发送成功"]
+    stored_reply["回复已入库<br/>来源 ID / 原文 SHA-256<br/>来源类型 / 提醒触发 ID"]
     prepared["授权范围内登记尝试<br/>已有记录则不再发送"]
     dispatched["登记片段与请求指纹<br/>调用 QQ 发送 API"]
     part_ack["片段获平台回执<br/>HTTP 成功 + ok + retcode 0<br/>有效消息编号"]
@@ -110,6 +113,9 @@ flowchart TB
     rejected["明示拒绝<br/>保留已确认片段，停止后续"]
     unknown["结果未知<br/>停止后续，不自动重发"]
     interrupted["新输入或本地失败中断<br/>保留已确认片段"]
+    reply_origin --> stored_reply
+    initiative_origin --> stored_reply
+    reminder_origin --> stored_reply
     stored_reply --> prepared
     prepared --> dispatched
     dispatched --> part_ack
@@ -123,7 +129,7 @@ flowchart TB
     classDef active fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a5f
     classDef accepted fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
     classDef stopped fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
-    class stored_reply,prepared,dispatched active
+    class reply_origin,initiative_origin,reminder_origin,stored_reply,prepared,dispatched active
     class part_ack,completed accepted
     class rejected,unknown,interrupted stopped
 ```
@@ -131,6 +137,8 @@ flowchart TB
 [交付流程 PNG](architecture/qq-delivery.png) / [SVG](architecture/qq-delivery.svg)。创建发送记录失败时不发出平台请求；片段回执无法持久保存时也不发送下一片段。分段发送不具备整体回滚，未知也不等于未发送。记录由持有授权的 relay 上报，不能抵御 relay 自己伪造观察；不构成独立研究证据。
 
 交付数据仍在现有 PostgreSQL `config_kv` 中，按账号／角色独立、按需读取，普通角色载荷不携带它。每角色最多保留 128 次尝试、每次最多 64 个片段；仅淘汰较早的已结束记录，并累计淘汰数，进行中记录满额则拒绝新增。未结束记录超过 10 分钟投影为未知，原聊天不删。重复阻止仅覆盖仍保留的来源消息，不是永久 exactly-once、入站事件去重、持久 outbox 或重启后自动补发。
+
+`FirstRepliesAsync` 与 `DueReminderReplyAsync` 返回带来源的 `ChannelReply`，旧文本接口继续兼容。`IProactiveConnector.SendReplyAsync` 允许 QQ 复用普通回复发送器；其他连接器默认仍使用原文本发送接口。提醒簿的 `done` 只表示提醒文本已存，平台拒绝或结果未知不会重新生成。若进程在保存文本后、更新提醒文件前停止，下一次检查会按同一聊天内的提醒 ID 复用已存消息；原尝试仍在保留窗口内时不再发送。这不覆盖聊天删除、角色切换或保留记录被淘汰后的重复。调度与提醒簿继续归各渠道所有，没有新增中央调度器。
 
 ## 🧩 代码职责与状态所有权
 
@@ -209,7 +217,7 @@ tools/run-companion.sh --Aijade:Modules:Tools=true --Aijade:Modules:Mcp=true
 
 ## 🧪 验证与研究兼容
 
-工程测试覆盖模块切换、故障/取消、截断后的提示与原始存储、旧直接构造入口、无效工具参数、超时/断网/5xx、零预算，并回归完整聊天与同步流程。最新[交付观察回执](../experiments/engineering/2026-11-10-delivery-receipts/receipt.json)覆盖授权来源、重复登记、部分成功、异步／残缺回执、取消、存储故障和浏览器读取。此前[共同日记回执](../experiments/engineering/2026-11-10-shared-diary/receipt.json)中的标记空回复、冷加载超时和模型就绪后通过分别保留，未改写为本轮运行。实际命令、计数、跳过项、日志与源码哈希和保护清单在各轮回执中列明。
+工程测试覆盖模块切换、故障/取消、截断后的提示与原始存储、旧直接构造入口、无效工具参数、超时/断网/5xx、零预算，并回归完整聊天与同步流程。最新[主动消息与提醒回执](../experiments/engineering/2026-11-10-proactive-delivery/receipt.json)补充来源类型、提醒触发身份、已存提醒恢复和跨端显示；[上轮交付观察回执](../experiments/engineering/2026-11-10-delivery-receipts/receipt.json)覆盖授权来源、重复登记、部分成功、异步／残缺回执、取消、存储故障和浏览器读取。此前[共同日记回执](../experiments/engineering/2026-11-10-shared-diary/receipt.json)中的标记空回复、冷加载超时和模型就绪后通过分别保留，未改写为本轮运行。实际命令、计数、跳过项、日志与源码哈希和保护清单在各轮回执中列明。
 
 研究/共同基础的既有文件以及声明的研究对象按基线逐字节核对。直接 `new ChatOrchestrator(...)` 且未显式设置 `PromptBudget` 的旧驱动保留原提示长度策略；产品工厂采用新预算，因此 **冻结记忆文件未改不等于产品提示与原实验完全一致**。后续基于产品传递路径的测量须记录新策略和配置，已有论文结果不重写、不据工程 PASS 提升研究结论。
 

@@ -1,0 +1,267 @@
+{
+  "schema": "aijade.engineering.proactive-delivery.v1",
+  "status": "PASS_WITH_DECLARED_LIMITS",
+  "recordedAt": "2026-11-10T06:10:14.474937+00:00",
+  "baseCommit": "a7b1aad4c026c3515ef876831952d3a1acb90dd1",
+  "scope": "Source-linked QQ first messages and due reminders, typed Web history and dissertation methods update; no primary research run",
+  "executionIdentity": "Tests ran on the working tree before this receipt was committed. Final source and binary fingerprints identify the checked implementation. Targeted unit checks precede a browser-only fixture initialization correction; final full suites include that correction.",
+  "sourceSha256": {
+    "src/Aijade.Bots/ConnectorHost.cs": "ebd5359a24ea38ea7f91b70ed629d920505123fe926eab3a84dcf09d14ed449b",
+    "src/Aijade.Client/Companion/CompanionDelivery.cs": "42fd04b8303c3e57fd931b27a033d353332aef8d63cf5b48f7c546e6464df908",
+    "src/Aijade.Client/I18n/en.json": "c2b142d0f92ce7e85252fcbab387c3c386dd4799a8b24e37de70aa538576a9f5",
+    "src/Aijade.Client/I18n/es.json": "b74376d8729134be45f45467eb54be2d76ff24415e08c76b2dd547da94878932",
+    "src/Aijade.Client/I18n/fr.json": "cda70193b93c17ee25cac4e3e9070c6a078b054aeecc6c05ff72dfa57afc172a",
+    "src/Aijade.Client/I18n/ja.json": "529b73785fb6dd442aac701b3061056d52c9cf83bc65f76720b8623807740e2a",
+    "src/Aijade.Client/I18n/ko.json": "de4c65966aafd382a62a45f9fc84c06c56956dffa199bdc51b92faf2ec1063e4",
+    "src/Aijade.Client/I18n/ru.json": "5ca75fd105cec983b8a9ce2b1c998ead61453669099b6ccf8b2fe3104d913e9d",
+    "src/Aijade.Client/I18n/vi.json": "bfd9d8a39b5bc7f15fd6502693190b6cbb2ae1c0869b1c56f129dc1de2e6f965",
+    "src/Aijade.Client/I18n/zh-Hans.json": "5500d6f8655909cadaf6a833b8603804e22d329919cb4f5bf697603e78fc2f58",
+    "src/Aijade.Client/I18n/zh-Hant.json": "ca62b4e24c4dee98346f1bab7b557442e04991a5e60512544b3f4ea410eaf520",
+    "src/Aijade.Integrations/CompanionBridge.cs": "684258cf1458e8c6778aec1736c01699e676b3cd236ceeab8682e074e264aef1",
+    "src/Aijade.Integrations/OneBotConnector.cs": "f1a324ef2d04674c8ba43be3af1d411de6faddab30ba6ec9fe5694acc9ef6475",
+    "src/Aijade.Server/Product/CompanionDelivery.cs": "ea98adf149da1a74bc50654e3aa69bf93ca3c95f40f6c5d1c0d8d29bed673efc",
+    "src/Aijade.UI/Pages/Companion.razor": "c4df0f1d96ab0b691d5efe68b0264064588af925afce3b1a395f31ec16b78a5d",
+    "tests/Aijade.E2E/CompanionDeliveryWebTests.cs": "7894a64704803ddd12a82b32106a494242f15440211ce4ed4b1576c7ddf8b23e",
+    "tests/Aijade.E2E/CompanionSyncWebTests.cs": "588aea2877d23735612a139140c0391f873c417e26fe8388bfcc3062bea3fc88",
+    "tests/Aijade.Tests/ProactiveDeliveryTests.cs": "ad9944778c07969b4ece1a20cbd40e60aa558eb1f1d985b19846faec12e0100d"
+  },
+  "binarySha256": {
+    "Aijade.Client": "f0be5fe877b905fbf065b5685b99884337a2ccbc23566c021b1c997dbcc28f21",
+    "Aijade.Integrations": "44e3847b0542821f6e0e90355b17e9416d565f920fcfbc77d7725ddeb736f919",
+    "Aijade.Bots": "44dc7cfe8118e906dff0f5e3e857a553201ec26a48efca8916beadbf83fb7b6d",
+    "Aijade.Server": "9c08e53a42f23f685d2c78dc392b2eea4eb3e69ed41ce6fec2d8be53736605fb",
+    "Aijade.UI": "8a088213f1a940c700edb4b9593479d1c1ea8b9579c5fbc2cda841c8d7b23da0",
+    "Aijade.Tests": "71135eb5c7359e627d27d35951cd3cf400aa736365da63fdad5cfe14f344be19",
+    "Aijade.E2E": "0e1afb84e93fbbb0c6ae9dfad1fd6aff09d84a5d2833a591614ec6b79bf671fa"
+  },
+  "build": {
+    "status": "PASS",
+    "sdk": "10.0.403",
+    "configuration": "Release",
+    "warnings": 0,
+    "errors": 0,
+    "log": "build-frozen.log"
+  },
+  "suites": [
+    {
+      "name": "UTC delivery, scheduling and compatibility boundaries",
+      "profile": "full",
+      "command": "TZ=UTC dotnet test tests/Aijade.Tests -c Release --no-build --filter 'FullyQualifiedName~ProactiveDeliveryTests|FullyQualifiedName~RemindersTests|FullyQualifiedName~IntegrationTests|FullyQualifiedName~CompanionDeliveryTests|FullyQualifiedName~CompanionRuntimeTests|FullyQualifiedName~ProjectScopeTests'",
+      "counts": {
+        "passed": 50,
+        "failed": 0,
+        "skipped": 0,
+        "total": 50
+      },
+      "rawTrx": "targeted/targeted.trx",
+      "times": {
+        "creation": "2026-11-10T05:58:17.8906200+00:00",
+        "queuing": "2026-11-10T05:58:17.8906200+00:00",
+        "start": "2026-11-10T05:58:10.6812550+00:00",
+        "finish": "2026-11-10T05:58:58.1704290+00:00"
+      },
+      "skippedTests": []
+    },
+    {
+      "name": "UTC full unit and database integration",
+      "profile": "full",
+      "command": "TZ=UTC dotnet test tests/Aijade.Tests -c Release --no-build",
+      "counts": {
+        "passed": 567,
+        "failed": 0,
+        "skipped": 15,
+        "total": 582
+      },
+      "rawTrx": "unit/unit.trx",
+      "times": {
+        "creation": "2026-11-10T05:59:56.5468670+00:00",
+        "queuing": "2026-11-10T05:59:56.5468670+00:00",
+        "start": "2026-11-10T05:59:52.5372710+00:00",
+        "finish": "2026-11-10T06:03:57.6533660+00:00"
+      },
+      "skippedTests": [
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game",
+        "Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration",
+        "Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts",
+        "Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime",
+        "Aijade.Tests.ExternalRendererStudyTests.Send_intents",
+        "Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder",
+        "Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt",
+        "Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows",
+        "Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration",
+        "Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original",
+        "Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool",
+        "Aijade.Tests.ExternalRendererStudyTests.Seal_session"
+      ]
+    },
+    {
+      "name": "Typed proactive and reminder Web records after initial import",
+      "profile": "full",
+      "command": "AIJADE_E2E=1 TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build --filter FullyQualifiedName~QQ_first_lines_and_due_reminders",
+      "counts": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "total": 1
+      },
+      "rawTrx": "browser-fixed/browser-fixed.trx",
+      "times": {
+        "creation": "2026-11-10T06:00:16.8223740+00:00",
+        "queuing": "2026-11-10T06:00:16.8223750+00:00",
+        "start": "2026-11-10T05:59:52.5059970+00:00",
+        "finish": "2026-11-10T06:00:19.6573350+00:00"
+      },
+      "skippedTests": []
+    },
+    {
+      "name": "Full browser regression",
+      "profile": "full",
+      "command": "AIJADE_E2E=1 TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build",
+      "counts": {
+        "passed": 32,
+        "failed": 0,
+        "skipped": 6,
+        "total": 38
+      },
+      "rawTrx": "browser-full/browser-full.trx",
+      "times": {
+        "creation": "2026-11-10T06:01:06.3233740+00:00",
+        "queuing": "2026-11-10T06:01:06.3233740+00:00",
+        "start": "2026-11-10T06:00:47.9734260+00:00",
+        "finish": "2026-11-10T06:06:10.0172570+00:00"
+      },
+      "skippedTests": [
+        "Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length",
+        "Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer",
+        "Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model",
+        "Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking",
+        "Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips",
+        "Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply"
+      ]
+    },
+    {
+      "name": "Companion deployment browser regression",
+      "profile": "companion",
+      "command": "AIJADE_E2E=1 Aijade__Profile=companion TZ=UTC dotnet test tests/Aijade.E2E -c Release --no-build --filter 'FullyQualifiedName~CompanionExperienceWebTests|FullyQualifiedName~CompanionSyncWebTests|FullyQualifiedName~A_a_message_sent_while_the_server_cannot_be_reached|FullyQualifiedName~A_a_due_reminder_is_said'",
+      "counts": {
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "total": 11
+      },
+      "rawTrx": "browser-companion/browser-companion.trx",
+      "times": {
+        "creation": "2026-11-10T06:05:30.9515980+00:00",
+        "queuing": "2026-11-10T06:05:30.9515980+00:00",
+        "start": "2026-11-10T06:05:10.4695460+00:00",
+        "finish": "2026-11-10T06:08:41.9826620+00:00"
+      },
+      "skippedTests": []
+    }
+  ],
+  "retainedDevelopmentFailures": [
+    {
+      "stage": "Test fixture compilation",
+      "logs": [
+        "proactive-initial.log",
+        "proactive-targeted.log"
+      ],
+      "reason": "Profile API argument/revision field and CA1859 fixture type corrections"
+    },
+    {
+      "name": "Initial Web fixture revision conflict",
+      "profile": "full",
+      "command": "Same browser target before waiting for initial Web import",
+      "counts": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "total": 1
+      },
+      "rawTrx": "browser-target/browser-target.trx",
+      "times": {
+        "creation": "2026-11-10T05:58:29.1631710+00:00",
+        "queuing": "2026-11-10T05:58:29.1631710+00:00",
+        "start": "2026-11-10T05:58:10.6690910+00:00",
+        "finish": "2026-11-10T05:58:30.7980790+00:00"
+      },
+      "skippedTests": [],
+      "log": "browser-target.log",
+      "reason": "Web initial notebook import had not completed before the API profile save; server correctly rejected the stale revision. Fixture now waits for Companion life initialization and uses the current character/profile revision."
+    }
+  ],
+  "implementation": {
+    "newServices": 0,
+    "newDotnetProjects": 0,
+    "newNugetPackages": 0,
+    "newDatabaseMigrations": 0,
+    "retainedAttempts": 128,
+    "partsPerAttempt": 64,
+    "observationDeadlineMinutes": 10,
+    "sourceKinds": [
+      "reply",
+      "initiative",
+      "reminder"
+    ],
+    "reminderTriggerFromStoredMetadata": true,
+    "noPromptOrModelConfigurationChange": true
+  },
+  "checks": [
+    "Ordinary replies and first messages retain the actual stored assistant identity through the production host helper and QQ interface dispatch.",
+    "Due reminders record acknowledged, rejected and unknown outcomes with a source-derived trigger identity.",
+    "Restoring the pending reminder file after source storage reuses the same chat message and retained attempt, adding neither a model request nor a NapCat request, in all three outcomes.",
+    "Generation failure releases the claim without creating a delivery attempt; the next successful check generates and dispatches once.",
+    "Signed OneBot ingress, the production bridge, application API, PostgreSQL and Chromium display typed reply/proactive/reminder records and reminder identities across reload.",
+    "Existing night, cooldown and quiet-request gates, reminder contract cases, legacy text connectors and delivery faults remain in regression coverage."
+  ],
+  "protectedResearch": {
+    "files": 644,
+    "changedFiles": [],
+    "manifest": "research-protected.json"
+  },
+  "dissertationFacts": {
+    "python": "3.9.6",
+    "facts": 9878,
+    "identical": true,
+    "changedKeys": [],
+    "beforeSha256": "8326b57a0bb7fc7bdef64b6809c4ae21fe423ffcd1334857f300f7a86274fa3f",
+    "afterSha256": "8326b57a0bb7fc7bdef64b6809c4ae21fe423ffcd1334857f300f7a86274fa3f",
+    "check": "paper-facts-check.json"
+  },
+  "limits": [
+    "Model and NapCat replies are controlled fixtures. Scheduling clocks are advanced in tests, not live ten-minute timing measurements. No real QQ account or new model performance run was used.",
+    "Records are authenticated relay reports, not independent attestations. Platform acceptance does not establish recipient delivery or reading.",
+    "Reminder done means its line was stored, independently of platform acceptance. Web and bot reminder schedules remain channel-local.",
+    "Recovery assumes the stored reminder is visible in the same chat and the delivery attempt remains retained; chat deletion, role changes and retention expiry are outside this duplicate protection.",
+    "No permanent exactly-once, inbound-event deduplication, persistent outbox or automatic resend. Other platforms retain text-send fallback.",
+    "No observations were added to chapter datasets, P2-R-Mac, P3-E or the held-out Chapter 7 comparison."
+  ],
+  "artifactSha256": {
+    "README.md": "cfe0d00c2596035e2b5b062d4342e7fa101c0b29dfaca6b4d1c7051f218de5b4",
+    "architecture-render.json": "cedd8c6a9ca398226bdfbedf2821a7b505d344a5477b0f291648c4781e72b56c",
+    "browser-companion/browser-companion.trx": "2aae961bb0681c6e6bbd82e7e51b44ba453bc6a9b0c0585cc1a1f17616027464",
+    "browser-companion.log": "edff4182c2b04aa8fd256149cc60a593957d6bda427fe5ba0fb59ce3ba42dc3e",
+    "browser-fixed/browser-fixed.trx": "093c1d1e1e083fda34f73ca53a40e79393f68c88193c97caf52bcb30980581ac",
+    "browser-fixed.log": "e31010a2e808c25f7c3237b493eb66834b9ad7f56cd275a6cc7634729054dd14",
+    "browser-full/browser-full.trx": "15e65345e7a5c4f30efcbe5110f231c0a4ee995d7a0e67d75d8a85b336cfb9a8",
+    "browser-full.log": "4fb8cc7bc35193dd08bbfd6d8b2dea62291656290814d3c988003353c287ea16",
+    "browser-target/browser-target.trx": "5425a1369bdc909b88ed6ed5f983dbb4c2eb85914eb91f20c703c1734a20b4ea",
+    "browser-target.log": "040295676444dfa1890bac55741292f38f9fcacccc152a6e92a7d4d236c98605",
+    "build-browser-fix.log": "22eb2869099e4a352cfd51f468d3b82729e01c96dd9a1be0e093610a45332d3d",
+    "build-frozen.log": "2fee8e088d15bb6fd87f081079238ec666e27d3d5a998c07032af17f2c65a1c7",
+    "build-initial.log": "78c3870bf9e580fed145baa2104e623b5bcd431716c3aefaa372b0d9978af690",
+    "build-tests.log": "363745a3fb44e5f3a89a260870276836ef00be9bf55ba6b6455f1739411e4bbd",
+    "paper-facts-check.json": "ea26c7b2389a58a1e5455a9befd5e34d91448b8b107cbd011d118e2a489d95fc",
+    "proactive-initial.log": "f182de300e2f5341c643fd4af994664e3fc4e9fe5d293b6158cf49301f58494c",
+    "proactive-targeted.log": "ba0eadc83181334130eb5b2e13c8bbaa6f2b1269c81d1c14ef1ed2f4f8a5c977",
+    "qq-proactive-reminder-records.png": "258d6c88a7a7a4fbe2193533bfe44e33b656ebec30baff78c9b35724031b52f8",
+    "research-protected.json": "0f1dcc9ec89f6949bc5422b9bd263e6136b6a22892d0605b0559d9e7526bf38f",
+    "targeted/targeted.trx": "3400e838d835cf0542efe5873e4f3a8c9ec26959614cb1a0243a6e7b7dd119df",
+    "targeted.log": "bae0a7d6c4231b4a15047e399a93ebc3126c0a4f0d83bf1ff235859a90547187",
+    "unit/unit.trx": "6de795e9b3137d36526a3e9888088d1a3e5cb371eb45470367942af5d95d51b5",
+    "unit.log": "3d324f08933f97c0683aa85529aa39b05de7aa2ee29a2859e5c2e5071bb58387"
+  }
+}

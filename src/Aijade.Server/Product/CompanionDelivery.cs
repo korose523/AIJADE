@@ -59,9 +59,9 @@ public sealed partial class CompanionSyncStore
                 if (link is null || link.RelayId != actor || link.OwnerId != owner || link.Subject != destination || link.Platform != "qq") throw ApiException.NotFound();
             }
             var sources = await Sql.QueryAsync(conn, tx,
-                "SELECT m.content,c.character_id FROM chat_messages m JOIN chats c ON c.id=m.chat_id " +
+                "SELECT m.content,c.character_id,m.meta::text FROM chat_messages m JOIN chats c ON c.id=m.chat_id " +
                 "WHERE m.id=$1 AND m.role='assistant' AND c.owner_id=$2 AND c.deleted_at IS NULL",
-                r => (Text: r.GetString(0), Character: r.IsDBNull(1) ? null : r.GetString(1)), ct, Sql.Text(message), Sql.Text(actor)).ConfigureAwait(false);
+                r => (Text: r.GetString(0), Character: r.IsDBNull(1) ? null : r.GetString(1), Meta: r.IsDBNull(2) ? null : JsonNode.Parse(r.GetString(2)) as JsonObject), ct, Sql.Text(message), Sql.Text(actor)).ConfigureAwait(false);
             if (sources.Count != 1 || (actor == owner && sources[0].Character != character) || (sources[0].Character is not null && sources[0].Character != character))
                 throw ApiException.NotFound();
             var id = Hash(message + ":qq:" + destination);
@@ -74,7 +74,11 @@ public sealed partial class CompanionSyncStore
                     ?? throw DeliveryConflict("Too many unfinished delivery records");
                 items.Remove(oldest); pruned++;
             }
-            var attempt = new DeliveryAttempt(id, message, Hash(sources[0].Text), destination, time.GetUtcNow(), Parts: []);
+            var meta = sources[0].Meta;
+            var reminder = meta?["reminder"] is JsonObject reminderMeta && reminderMeta["id"] is JsonValue value &&
+                value.TryGetValue<string>(out var trigger) && trigger.Length is > 0 and <= 128 ? trigger : null;
+            var kind = reminder is not null ? "reminder" : meta?["initiative"] is JsonObject ? "initiative" : "reply";
+            var attempt = new DeliveryAttempt(id, message, Hash(sources[0].Text), destination, time.GetUtcNow(), Parts: [], Kind: kind, TriggerId: reminder);
             items.Add(new(attempt, actor, grant));
             return (new DeliveryDocument(pruned, items), new DeliveryStart(attempt, true));
         }, ct);

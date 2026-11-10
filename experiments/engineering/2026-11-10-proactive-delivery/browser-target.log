@@ -1,0 +1,15 @@
+/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.E2E/release/Aijade.E2E.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:00:15.94]     Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload [FAIL]
+  失败 Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload [4 s]
+  错误消息:
+   Aijade.Client.Api.AijadeApiException : The profile changed on another client; refresh before saving
+  堆栈跟踪:
+     at Aijade.Client.Api.AijadeApi.ReadAsync(HttpResponseMessage res, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs:line 109
+   at Aijade.Client.Api.AijadeApi.SendAsync(HttpMethod method, String path, Object body, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Api/AijadeApi.cs:line 117
+   at Aijade.Client.Companion.CompanionSync.SaveProfileAsync(String id, CompanionProfile profile, Int64 revision, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Client/Companion/CompanionSync.cs:line 44
+   at Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.E2E/CompanionDeliveryWebTests.cs:line 29
+--- End of stack trace from previous location ---
+结果文件: /Users/mac/.cache/aijade-proactive-delivery-20261110/browser-target/browser-target.trx
+
+失败!  - 失败:     1，通过:     0，已跳过:     0，总计:     1，持续时间: 4 s - Aijade.E2E.dll (net10.0)

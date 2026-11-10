@@ -288,10 +288,13 @@ public sealed partial class OneBotConnector : IChannelConnector, IProactiveConne
 
     /// <summary>A message to the owner, the one conversation here (a reminder she promised, or a reply), split if long.</summary>
     public async Task SendAsync(string conversationId, string text, CancellationToken ct)
+        => await SendReplyAsync(conversationId, new ChannelReply(text, []), ct).ConfigureAwait(false);
+
+    public async Task SendReplyAsync(string conversationId, ChannelReply reply, CancellationToken ct)
     {
         if (conversationId != owner)
             throw new InvalidOperationException("only the owner's private conversation is reached");
-        await SendReplyAsync(new ChannelReply(text, []), Volatile.Read(ref version), ct).ConfigureAwait(false);
+        await SendReplyAsync(reply, Volatile.Read(ref version), ct).ConfigureAwait(false);
     }
 
     /// <summary>Uses OneBot image/record segments; a new inbound message interrupts the unsent artificial typing delay.</summary>

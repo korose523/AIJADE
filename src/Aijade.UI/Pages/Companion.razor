@@ -88,9 +88,11 @@
             var parts = attempt.Parts ?? [];
             <article class="companion-delivery-entry" style="overflow-wrap:anywhere">
                 <p><strong>@State.Text["companion.delivery." + attempt.State]</strong> · QQ …@Tail(attempt.Destination) · @attempt.StartedAt.ToLocalTime().ToString("g")</p>
+                <p>@State.Text["companion.delivery.kind." + attempt.Kind]</p>
                 <p>@State.Text.Format("companion.delivery.parts", parts.Count(p => p.Outcome == "acknowledged"), parts.Count)</p>
                 <details><summary>@State.Text["companion.delivery.source"]</summary>
                     <p><code>@attempt.MessageId</code> · <code>@attempt.SourceSha256</code></p>
+                    @if (attempt.TriggerId is not null) { <p>@State.Text["companion.delivery.trigger"]: <code>@attempt.TriggerId</code></p> }
                     @foreach (var part in parts)
                     {
                         <p>@(part.Index + 1) · @part.Kind · @State.Text["companion.delivery." + part.Outcome] · @part.PlatformMessageId</p>
