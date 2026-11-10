@@ -1,0 +1,167 @@
+{
+  "datasets": {
+    "HumanEval+": {
+      "tasks": 164,
+      "staticClasses": {
+        "direct": {
+          "tasks": 117,
+          "ready": 103
+        },
+        "needs-adapter": {
+          "tasks": 8,
+          "ready": 0
+        },
+        "direct-with-caution": {
+          "tasks": 24,
+          "ready": 0
+        },
+        "incompatible": {
+          "tasks": 15,
+          "ready": 0
+        }
+      },
+      "bothPassesComplete": 162,
+      "sameComparableSemantics": 162,
+      "mechanicalPreparationCriteriaMet": 128,
+      "readyAmongStaticDirect": 103,
+      "perPass": {
+        "1": {
+          "attemptedTasks": 164,
+          "completeTasks": 162,
+          "cases": 124219,
+          "referenceExceptions": 0,
+          "nativeAssertionsPass": 162,
+          "nativeAssertionsFail": 0,
+          "missingCases": 34,
+          "rootOutputTypes": {
+            "bool": 22950,
+            "list": 31632,
+            "float": 5104,
+            "tuple": 5441,
+            "str": 22965,
+            "none": 174,
+            "int": 35290,
+            "dict": 663
+          },
+          "flags": {
+            "flat-float-output-needs-upstream-tolerance": 5104,
+            "integer-outside-js-exact-range": 2577,
+            "astral-string": 1265
+          }
+        },
+        "2": {
+          "attemptedTasks": 164,
+          "completeTasks": 162,
+          "cases": 124219,
+          "referenceExceptions": 0,
+          "nativeAssertionsPass": 162,
+          "nativeAssertionsFail": 0,
+          "missingCases": 34,
+          "rootOutputTypes": {
+            "bool": 22950,
+            "list": 31632,
+            "float": 5104,
+            "tuple": 5441,
+            "str": 22965,
+            "none": 174,
+            "int": 35290,
+            "dict": 663
+          },
+          "flags": {
+            "flat-float-output-needs-upstream-tolerance": 5104,
+            "integer-outside-js-exact-range": 2577,
+            "astral-string": 1265
+          }
+        }
+      }
+    },
+    "MBPP+": {
+      "tasks": 378,
+      "staticClasses": {
+        "needs-adapter": {
+          "tasks": 34,
+          "ready": 0
+        },
+        "direct": {
+          "tasks": 308,
+          "ready": 270
+        },
+        "incompatible": {
+          "tasks": 26,
+          "ready": 0
+        },
+        "direct-with-caution": {
+          "tasks": 10,
+          "ready": 0
+        }
+      },
+      "bothPassesComplete": 375,
+      "sameComparableSemantics": 371,
+      "mechanicalPreparationCriteriaMet": 281,
+      "readyAmongStaticDirect": 270,
+      "perPass": {
+        "1": {
+          "attemptedTasks": 378,
+          "completeTasks": 375,
+          "cases": 40802,
+          "referenceExceptions": 0,
+          "nativeAssertionsPass": 374,
+          "nativeAssertionsFail": 1,
+          "missingCases": 213,
+          "rootOutputTypes": {
+            "tuple": 3286,
+            "bool": 5747,
+            "list": 8270,
+            "int": 14849,
+            "str": 3207,
+            "float": 3505,
+            "dict": 850,
+            "unsupported": 186,
+            "none": 679,
+            "set": 223
+          },
+          "flags": {
+            "flat-float-output-needs-upstream-tolerance": 3505,
+            "integer-outside-js-exact-range": 1766,
+            "unsupported-value": 186,
+            "nonstring-dict-key": 440,
+            "complex-value": 348,
+            "nonfinite-float": 47,
+            "set-value": 223
+          }
+        },
+        "2": {
+          "attemptedTasks": 378,
+          "completeTasks": 375,
+          "cases": 40802,
+          "referenceExceptions": 0,
+          "nativeAssertionsPass": 374,
+          "nativeAssertionsFail": 1,
+          "missingCases": 213,
+          "rootOutputTypes": {
+            "tuple": 3286,
+            "bool": 5747,
+            "list": 8270,
+            "int": 14849,
+            "str": 3207,
+            "float": 3505,
+            "dict": 850,
+            "unsupported": 186,
+            "none": 679,
+            "set": 223
+          },
+          "flags": {
+            "flat-float-output-needs-upstream-tolerance": 3505,
+            "integer-outside-js-exact-range": 1766,
+            "unsupported-value": 186,
+            "nonstring-dict-key": 440,
+            "complex-value": 348,
+            "nonfinite-float": 47,
+            "set-value": 223
+          }
+        }
+      }
+    }
+  },
+  "scope": "Finite Python reference/preparation ledger; not a JavaScript port, independent semantic oracle, device qualification, model pilot or verifier-rate estimate."
+}
