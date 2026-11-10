@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -37,6 +38,7 @@ public class ProductDeliveryExperimentTests
     private sealed class Tap(HttpMessageHandler server) : DelegatingHandler(server)
     {
         public List<(string Query, List<string> Ids)> Searches { get; } = [];
+        public List<JsonObject> Responses { get; } = [];
 
         public string? SystemMessage { get; private set; }
 
@@ -45,6 +47,7 @@ public class ProductDeliveryExperimentTests
         public void Reset()
         {
             Searches.Clear();
+            Responses.Clear();
             SystemMessage = null;
             Calls = 0;
         }
@@ -67,7 +70,8 @@ public class ProductDeliveryExperimentTests
             {
                 var text = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 var query = global::System.Web.HttpUtility.ParseQueryString(request.RequestUri.Query)["q"] ?? "";
-                Searches.Add((query, [.. JsonNode.Parse(text)!["items"]!.AsArray().Select(i => i!["id"]!.GetValue<string>())]));
+                Responses.Add(new JsonObject { ["query"] = query, ["status"] = (int)response.StatusCode, ["rawBody"] = text });
+                Searches.Add((query, response.IsSuccessStatusCode ? [.. JsonNode.Parse(text)!["items"]!.AsArray().Select(i => i!["id"]!.GetValue<string>())] : []));
                 response.Content = new StringContent(text, Encoding.UTF8, "application/json");
             }
             return response;
@@ -91,16 +95,35 @@ public class ProductDeliveryExperimentTests
         var entry = Environment.GetEnvironmentVariable("AIJADE_P3E_ENTRY");
         Assert.True(entry is "legacy-direct" or "shared-memory-only", "select AIJADE_P3E_ENTRY explicitly; shared-memory-only is not the full Web/QQ host");
         var budget = entry == "legacy-direct" ? null : new PromptBudget();
+        var planCommit = Environment.GetEnvironmentVariable("AIJADE_P3E_PLAN_COMMIT");
+        Assert.True(planCommit?.Length == 40, "record the separately pushed current-version plan commit");
         Assert.Equal(LocomoCorpus.Sha256, LocomoCorpus.FileSha256(corpusPath));
+        Directory.CreateDirectory(dir);
+        var journal = Path.Combine(dir, $"rows-{entry}-{condition}.jsonl");
+        var embeddingJournal = Path.Combine(dir, $"embeddings-{entry}-{condition}.jsonl");
+        foreach (var path in new[] { journal, embeddingJournal })
+            using (new FileStream(path, FileMode.CreateNew)) { }
+        await using (var metadata = new FileStream(Path.Combine(dir, $"run-{entry}-{condition}.json"), FileMode.CreateNew))
+            await global::System.Text.Json.JsonSerializer.SerializeAsync(metadata, new
+            {
+                entry, condition, planCommit, declaredCodeCommit = Environment.GetEnvironmentVariable("AIJADE_GIT_COMMIT"),
+                productBase = "d9dcf6bdc928f822e7a2fc3bf4e2cb00a36ebade", startedAt = DateTimeOffset.UtcNow,
+                testAssemblySha256 = Hash(typeof(ProductDeliveryExperimentTests).Assembly.Location),
+                clientAssemblySha256 = Hash(typeof(CompanionRuntime).Assembly.Location),
+                serverAssemblySha256 = Hash(typeof(EmbeddingService).Assembly.Location),
+                corpusSha256 = LocomoCorpus.Sha256,
+            }, cancellationToken: ct);
         var embedding = condition == "embedding";
         var corpus = LocomoCorpus.Load(corpusPath);
         var rows = new JsonArray();
-        int responseMismatches = 0, promptMismatches = 0, failedTurns = 0, skippedTurns = 0, notStored = 0, plannedBlockDifferences = 0;
+        int responseMismatches = 0, promptMismatches = 0, failedTurns = 0, skippedTurns = 0, notStored = 0, plannedBlockDifferences = 0, ambiguousPrompts = 0, embeddingMisses = 0;
         var clock = Stopwatch.StartNew();
         for (var c = 0; c < corpus.Count; c++)
         {
             var conv = corpus[c];
-            await using var host = await ServerTestHost.StartAsync(worker: false);
+            using var embeddingTap = new ProductEmbeddingObservation(new HttpClientHandler(), embeddingJournal);
+            await using var host = await ServerTestHost.StartAsync(worker: false,
+                services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => embeddingTap));
             if (embedding)
             {
                 var routes = new JsonObject { ["embeddings"] = new JsonObject { ["upstream"] = "http://127.0.0.1:11434/v1", ["model"] = EmbeddingModel, ["keys"] = new JsonArray("ollama") } };
@@ -137,13 +160,12 @@ public class ProductDeliveryExperimentTests
                 ? new ChatOrchestrator(api, [memory], new OrchestratorOptions())
                 : CompanionRuntime.Create(api, [new("memory", memory)], new OrchestratorOptions { PromptBudget = budget });
             var chat = await api.CreateChatAsync(null, $"p3-e {c}", ct);
-            var embeddings = host.App.Services.GetRequiredService<EmbeddingService>();
-
             List<Stored>? store = null;
             for (var q = 0; q < conv.Qa.Count; q++)
             {
                 var question = conv.Qa[q];
                 tap.Reset();
+                embeddingTap.Vectors.Clear();
                 var started = clock.Elapsed;
                 var completed = false;
                 await foreach (var e in orchestrator.SendAsync(chat.Id, null, [], question.Question, "p3-e", ct))
@@ -155,7 +177,13 @@ public class ProductDeliveryExperimentTests
                     failedTurns++;
                 var ms = (clock.Elapsed - started).TotalMilliseconds;
                 // On the embedding path the first search has just embedded the store, so read it after that search.
-                store ??= await ReadStoreAsync(host.Db, ct);
+                if (store is null)
+                {
+                    store = await ReadStoreAsync(host.Db, ct);
+                    await using var output = new FileStream(Path.Combine(dir, $"store-{entry}-{condition}-{c}.json.gz"), FileMode.CreateNew);
+                    await using var compressed = new GZipStream(output, CompressionLevel.SmallestSize);
+                    await global::System.Text.Json.JsonSerializer.SerializeAsync(compressed, store, cancellationToken: ct);
+                }
                 var byId = store.ToDictionary(s => s.Id, StringComparer.Ordinal);
 
                 // Step 2 and 3: the pool and what passes the threshold, recomputed with the server's predicate and formula.
@@ -167,8 +195,13 @@ public class ProductDeliveryExperimentTests
                     List<string> expected;
                     if (embedding)
                     {
-                        var v = (await embeddings.EmbedAsync(ServerTestHost.UserId, [query.Trim()], ct))![0];
-                        var scored = store
+                        if (!embeddingTap.Vectors.TryGetValue(query.Trim(), out var v))
+                        {
+                            embeddingMisses++;
+                            mismatch = true;
+                            continue;
+                        }
+                        var scored = store.Take(2000)
                             .Select(s => (s.Id, Score: EmbeddingService.Cosine(s.Vector!, v) + (s.Content.Contains(query.Trim(), StringComparison.OrdinalIgnoreCase) ? 0.15 : 0)))
                             .ToList();
                         pool.UnionWith(scored.Select(s => s.Id));
@@ -204,8 +237,10 @@ public class ProductDeliveryExperimentTests
                 var byServer = kept.Take(PromptItems).ToList();
                 var observation = ProductPromptObservation.Observe(tap.SystemMessage, [.. planned.Select(id => new PromptMemory(id, byId[id].Content))]);
                 var inPrompt = observation.FullItemIds;
-                if (!observation.Identifiable)
+                if (!observation.Identifiable && observation.State != "ambiguous-source")
                     promptMismatches++;
+                if (observation.State == "ambiguous-source")
+                    ambiguousPrompts++;
                 if (!observation.Identifiable || !planned.SequenceEqual(inPrompt))
                     plannedBlockDifferences++;
 
@@ -217,7 +252,7 @@ public class ProductDeliveryExperimentTests
                     return ids.Count(s.Contains);
                 }
                 var newestEvidence = ids.Where(byId.ContainsKey).Select(i => byId[i].CreatedAt).DefaultIfEmpty(DateTime.MinValue).Max();
-                rows.Add(new JsonObject
+                var row = new JsonObject
                 {
                     ["c"] = c, ["q"] = q, ["category"] = question.Category, ["answerable"] = AnswerableReanalysis.Answerable(question),
                     ["evidence"] = question.Evidence.Distinct(StringComparer.Ordinal).Count(), ["located"] = located.Count,
@@ -233,10 +268,21 @@ public class ProductDeliveryExperimentTests
                     ["plannedPromptIds"] = new JsonArray([.. planned.Select(i => JsonValue.Create(i))]),
                     ["observedFullItemIds"] = observation.Identifiable ? new JsonArray([.. inPrompt.Select(i => JsonValue.Create(i))]) : null,
                     ["systemSha256"] = observation.SystemSha256, ["rawSystem"] = tap.SystemMessage,
+                    ["completed"] = completed, ["providerConsulted"] = tap.Searches.Count > 0,
+                    ["searchTrace"] = new JsonArray([.. tap.Responses.Select(r => r.DeepClone())]),
+                    ["embeddingRequestsSoFar"] = embeddingTap.Requests, ["embeddingFailuresSoFar"] = embeddingTap.Failures,
                     ["searches"] = tap.Searches.Count, ["termSearch"] = tap.Searches.Count > 1, ["firstEmpty"] = tap.Searches.Count == 0 || tap.Searches[0].Ids.Count == 0,
                     ["echoDropped"] = received.Count - kept.Count, ["fewerThanFive"] = kept.Count < PromptItems, ["mismatch"] = mismatch,
                     ["ms"] = Math.Round(ms, 1), ["calls"] = tap.Calls,
-                });
+                };
+                rows.Add(row);
+                await ProductEmbeddingObservation.AppendAsync(journal, row, ct);
+                await File.WriteAllTextAsync(Path.Combine(dir, $"progress-{entry}-{condition}.json"), new JsonObject
+                {
+                    ["condition"] = condition, ["conversation"] = c, ["question"] = q, ["rows"] = rows.Count,
+                    ["minutes"] = Math.Round(clock.Elapsed.TotalMinutes, 2), ["failedTurns"] = failedTurns,
+                    ["responseMismatches"] = responseMismatches, ["promptMismatches"] = promptMismatches,
+                }.ToJsonString(), ct);
             }
             TestContext.Current.SendDiagnosticMessage($"conversation {c}: {written} turns, {conv.Qa.Count} questions, {clock.Elapsed.TotalMinutes:F1} min");
         }
@@ -244,9 +290,11 @@ public class ProductDeliveryExperimentTests
         var report = new JsonObject
         {
             ["schema"] = "aijade.product-path.observed-prompt.v2",
+            ["instrumentationRevision"] = "durable-upstream-capture-20261110",
+            ["plan"] = "experiments/plans/2026-11-10-p3-e-shared-runtime.md", ["planCommit"] = planCommit,
             ["experiment"] = "P3-E: evidence along the product's delivery path",
             ["historicalReferencePlan"] = "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",
-            ["executionGate"] = "New full runs require their own version-fixed plan and existing research gates; this instrumentation is not approval.",
+            ["executionGate"] = "Author explicitly requested this Mac full-corpus run; no supervisor receipt or external registration is inferred. See current plan decision.",
             ["declaredCodeCommit"] = Environment.GetEnvironmentVariable("AIJADE_GIT_COMMIT"),
             ["testAssemblySha256"] = Convert.ToHexStringLower(SHA256.HashData(await File.ReadAllBytesAsync(typeof(ProductDeliveryExperimentTests).Assembly.Location, ct))),
             ["clientAssemblySha256"] = Convert.ToHexStringLower(SHA256.HashData(await File.ReadAllBytesAsync(typeof(CompanionRuntime).Assembly.Location, ct))),
@@ -263,6 +311,7 @@ public class ProductDeliveryExperimentTests
             ["responseMismatches"] = responseMismatches,
             ["promptMismatches"] = promptMismatches,
             ["plannedBlockDifferences"] = plannedBlockDifferences,
+            ["ambiguousPrompts"] = ambiguousPrompts, ["embeddingObservationMisses"] = embeddingMisses,
             ["minutes"] = Math.Round(clock.Elapsed.TotalMinutes, 1),
             ["generatedAt"] = DateTimeOffset.UtcNow.ToString("O"),
             ["rows"] = rows,
@@ -274,7 +323,10 @@ public class ProductDeliveryExperimentTests
         Assert.Equal(0, notStored);
         Assert.Equal(0, responseMismatches);
         Assert.Equal(0, promptMismatches);
+        Assert.Equal(0, embeddingMisses);
     }
+
+    private static string Hash(string path) => Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(path)));
 
     private static string EventId(int conversation, string dia) => $"locomo-{conversation}-{dia.Replace(':', '-')}";
 
