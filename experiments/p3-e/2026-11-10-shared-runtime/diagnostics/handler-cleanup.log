@@ -1,0 +1,39 @@
+  Aijade.Core -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Core/release/Aijade.Core.dll
+  Aijade.ComputerUse -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.ComputerUse/release/Aijade.ComputerUse.dll
+  Aijade.P1 -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.P1/release/Aijade.P1.dll
+  Aijade.Providers -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Providers/release/Aijade.Providers.dll
+  Aijade.Memory -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Memory/release/Aijade.Memory.dll
+  Aijade.Learning -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Learning/release/Aijade.Learning.dll
+  Aijade.Growth -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Growth/release/Aijade.Growth.dll
+  Aijade.Telemetry -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Telemetry/release/Aijade.Telemetry.dll
+  Aijade.Client -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Client/release/Aijade.Client.dll
+  Aijade.Research -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Research/release/Aijade.Research.dll
+  Aijade.Integrations -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Integrations/release/Aijade.Integrations.dll
+  Aijade.UI -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.UI/release/Aijade.UI.dll
+  Aijade.Bots -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Bots/release/Aijade.Bots.dll
+  Aijade.Web -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Web/release/Aijade.Web.dll
+  Aijade.Web (Blazor output) -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Web/release/wwwroot
+  Aijade.Server -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Server/release/Aijade.Server.dll
+  Aijade.Tests -> /Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll
+/Users/mac/.cache/aijade-next-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:00:15.24]     Aijade.Tests.ProductEmbeddingObservationTests.A_conversation_observer_remains_usable_across_named_client_creation [FAIL]
+  失败 Aijade.Tests.ProductEmbeddingObservationTests.A_conversation_observer_remains_usable_across_named_client_creation [13 s]
+  错误消息:
+   System.ObjectDisposedException : Cannot access a disposed object.
+Object name: 'Aijade.Tests.ProductEmbeddingObservation'.
+  堆栈跟踪:
+     at System.Net.Http.DelegatingHandler.SetOperationStarted()
+   at System.Net.Http.DelegatingHandler.SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Aijade.Tests.ProductEmbeddingObservation.<>n__0(HttpRequestMessage request, CancellationToken cancellationToken)
+   at Aijade.Tests.ProductEmbeddingObservation.SendAsync(HttpRequestMessage request, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/ProductEmbeddingObservation.cs:line 17
+   at Microsoft.Extensions.Http.Logging.LoggingHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at Microsoft.Extensions.Http.Logging.LoggingScopeHttpMessageHandler.<SendCoreAsync>g__Core|4_0(HttpRequestMessage request, Boolean useAsync, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at Aijade.Tests.ProductEmbeddingObservationTests.<>c__DisplayClass0_0.<<A_conversation_observer_remains_usable_across_named_client_creation>g__SendAsync|1>d.MoveNext() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/ProductEmbeddingObservationTests.cs:line 25
+--- End of stack trace from previous location ---
+   at Aijade.Tests.ProductEmbeddingObservationTests.A_conversation_observer_remains_usable_across_named_client_creation() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/ProductEmbeddingObservationTests.cs:line 34
+--- End of stack trace from previous location ---
+结果文件: /Users/mac/.cache/aijade-p3e-current-20261110/handler-cleanup/handler-cleanup.trx
+
+失败!  - 失败:     1，通过:     0，已跳过:     0，总计:     1，持续时间: 13 s - Aijade.Tests.dll (net10.0)

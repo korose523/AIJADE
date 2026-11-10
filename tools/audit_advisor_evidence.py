@@ -7,6 +7,7 @@ This does not generate model outputs, modify archived results, or qualify Ch7.
 version-control check. A matching source version is not scientific acceptance.
 """
 import argparse
+import gzip
 import hashlib
 import importlib.util
 import json
@@ -83,7 +84,64 @@ def qualitative_provenance(path):
             'interpretation': 'Checks input identity and declared AI assistance, not category accuracy or scientific acceptance.'}
 
 
-def audit(current_ref=None, qualitative_manifest=None):
+def current_product_receipt(path, current_ref=None):
+    """Check a new fixed-scope run separately from the historical v1 comparison; not independent attestation."""
+    receipt = json.loads(path.read_text(encoding='utf-8'))
+    if receipt['schema'] != 'aijade.p3e.current-run.v1':
+        raise ValueError('Unknown current P3-E receipt schema')
+    folder = (ROOT / receipt['artifactRoot']).resolve()
+    if not folder.is_relative_to(ROOT.resolve()):
+        raise ValueError('Current P3-E artifacts are outside the repository')
+    artifacts = []
+    for name, expected in receipt['artifactSha256'].items():
+        target = (folder / name).resolve()
+        if not target.is_relative_to(folder):
+            raise ValueError('Current P3-E artifact escapes its package')
+        artifacts.append({'path': name, 'matches': target.is_file() and sha(target.read_bytes()) == expected})
+    summary = json.loads((folder / 'summary.json').read_text(encoding='utf-8'))
+    manifest = json.loads((folder / 'protected-inputs.json').read_text(encoding='utf-8'))
+    entries = []
+    for name, expected in manifest['sha256'].items():
+        if not name.startswith('src/'):
+            continue
+        try:
+            actual = sha(source(current_ref, name))
+        except (FileNotFoundError, subprocess.CalledProcessError):
+            actual = None
+        entries.append({'path': name, 'matches': actual == expected})
+    coverage = []
+    for condition in ['text', 'embedding']:
+        raw_path = (folder / receipt['reports'][condition]).resolve()
+        if not raw_path.is_relative_to(folder):
+            raise ValueError('Current P3-E report escapes its package')
+        with gzip.open(raw_path, 'rt', encoding='utf-8') as stream:
+            raw = json.load(stream)
+        rows = raw['rows']
+        keys = {(r['c'], r['q']) for r in rows}
+        saved = summary['conditions'][condition]['validation']
+        coverage.append({'condition': condition, 'rows': len(rows), 'uniqueQuestions': len(keys),
+                         'conversations': len({r['c'] for r in rows}),
+                         'matches': len(rows) == len(keys) == 1986 and len({r['c'] for r in rows}) == 10 and
+                         sum(r['answerable'] for r in rows) == 1540 and all(r['completed'] for r in rows) and
+                         raw['entry'] == 'shared-memory-only' and raw['condition'] == condition and
+                         raw['corpusSha256'] == summary['corpusSha256'] and raw['planCommit'] == receipt['planCommit'] and
+                         raw['declaredCodeCommit'] == receipt['instrumentationCommit'] and
+                         saved['captureAndSourceChecks'] == 'PASS' and
+                         all(raw[k] == 0 for k in ['failedTurns', 'turnsNotStored', 'responseMismatches', 'promptMismatches', 'embeddingObservationMisses'])})
+    ancestry = subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', receipt['planCommit'], receipt['instrumentationCommit']], capture_output=True).returncode == 0
+    source_paths = {e['path'] for e in entries}
+    required = {'src/Aijade.Client/Chat/MemoryContext.cs', 'src/Aijade.Client/Chat/CompanionRuntime.cs',
+                'src/Aijade.Client/Chat/PromptBudget.cs', 'src/Aijade.Client/Chat/Orchestrator.cs',
+                'src/Aijade.Server/Memory/MemoryLibrary.cs', 'src/Aijade.Server/Product/ModelServices.cs'}
+    required_artifacts = {'summary.json', 'protected-inputs.json', *receipt['reports'].values()}
+    valid = (required_artifacts <= set(receipt['artifactSha256']) and all(e['matches'] for e in artifacts) and all(e['matches'] for e in entries) and required <= source_paths and
+             all(e['matches'] for e in coverage) and ancestry and receipt['planCommit'] == summary['planCommit'])
+    return {'valid': valid, 'artifacts': artifacts, 'productSourceFiles': entries, 'coverage': coverage,
+            'planPrecedesInstrumentation': ancestry, 'scope': 'shared-memory-only; single-turn empty history; text and one embedding model',
+            'note': 'Artifact/source/coverage consistency only. The separate capture validator checks rows against the corpus. Binary hashes are recorded, not independently attested. No all-feature Web/QQ, causal version effect or answer accuracy is inferred.'}
+
+
+def audit(current_ref=None, qualitative_manifest=None, current_receipt=None):
     frozen = load('configs/project-scope.json')['frozen']
     frozen_checks = [{'path': f['path'], 'expectedSha256': f['sha256'],
                       'actualSha256': sha(source(current_ref, f['path']))} for f in frozen]
@@ -129,6 +187,9 @@ def audit(current_ref=None, qualitative_manifest=None):
     qualitative = qualitative_provenance(qualitative_manifest) if qualitative_manifest else {'status': 'NOT_REQUESTED'}
     if qualitative_manifest:
         checks['qualitativeProvenanceHashesMatch'] = qualitative['allArtifactsMatch']
+    current = current_product_receipt(current_receipt, current_ref) if current_receipt else {'status': 'NOT_REQUESTED'}
+    if current_receipt:
+        checks['currentP3eArtifactsValid'] = current['valid']
     artifacts = [
         ('P1-A', 'experiments/p1/alternative-designs.json', 'INPUT_AND_DATA_CASES_RECORDED'),
         ('P1-A-code', 'experiments/p1/alternative-designs-code-faults.json', 'CODE_FAULT_CASES_RECORDED_WITH_DEVIATIONS'),
@@ -157,11 +218,12 @@ def audit(current_ref=None, qualitative_manifest=None):
         'checks': checks, 'frozenSources': frozen_checks,
         'productVersionComparison': comparisons, 'p1bRecomputation': by_matrix,
         'qualitativeProvenance': qualitative,
+        'currentP3e': current,
         'artifacts': inventory,
         'interpretation': {
             'archiveStatistics': 'Existing records can be recomputed; unchanged archives are not new observations.',
             'currentProduct': 'VERSION_MATCH_ONLY' if checks['p3eSourcesMatchComparison'] else 'DO_NOT_TRANSFER_ARCHIVED_P3E_METRICS',
-            'recallChangeAfterSourceChanges': 'NOT_MEASURED',
+            'recallChangeAfterSourceChanges': 'CURRENT_FIXED_CONFIGURATION_RECORDED_NOT_A_CAUSAL_VERSION_EFFECT' if current.get('valid') else 'NOT_MEASURED_BY_THIS_AUDIT',
             'ch7': 'NOT_RUN; backend, frozen checks/adapter and held-out batch remain separate prerequisites.',
             'host2': 'AUTHOR_REPORT: CPU replacement unavailable before January 2027; no hardware qualification inferred.',
         },
@@ -175,15 +237,19 @@ def main():
     parser.add_argument('--require-current-version', action='store_true')
     parser.add_argument('--qualitative-provenance', type=Path,
                         help='Correction manifest for AI-assisted interpretations; verifies original artifact hashes without rewriting them')
+    parser.add_argument('--current-product-receipt', type=Path,
+                        help='Validate a new full-corpus shared-runtime receipt separately from historical v1 figures')
     args = parser.parse_args()
-    result = audit(args.current_ref, args.qualitative_provenance)
+    result = audit(args.current_ref, args.qualitative_provenance, args.current_product_receipt)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     if not result['checks']['frozenSourcesMatch'] or not result['checks']['p1bScoresRecompute']:
         return 2
     if not result['checks'].get('qualitativeProvenanceHashesMatch', True):
         return 4
-    if args.require_current_version and not result['checks']['p3eSourcesMatchComparison']:
+    if not result['checks'].get('currentP3eArtifactsValid', True):
+        return 5
+    if args.require_current_version and not (result['checks']['p3eSourcesMatchComparison'] or result['checks'].get('currentP3eArtifactsValid')):
         return 3
     return 0
 

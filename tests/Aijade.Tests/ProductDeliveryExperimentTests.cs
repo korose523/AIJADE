@@ -121,9 +121,10 @@ public class ProductDeliveryExperimentTests
         for (var c = 0; c < corpus.Count; c++)
         {
             var conv = corpus[c];
-            using var embeddingTap = new ProductEmbeddingObservation(new HttpClientHandler(), embeddingJournal);
+            var embeddingTap = new ProductEmbeddingCapture(embeddingJournal);
             await using var host = await ServerTestHost.StartAsync(worker: false,
-                services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => embeddingTap));
+                services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() =>
+                    new ProductEmbeddingObservation(new HttpClientHandler(), embeddingTap)));
             if (embedding)
             {
                 var routes = new JsonObject { ["embeddings"] = new JsonObject { ["upstream"] = "http://127.0.0.1:11434/v1", ["model"] = EmbeddingModel, ["keys"] = new JsonArray("ollama") } };
@@ -276,7 +277,7 @@ public class ProductDeliveryExperimentTests
                     ["ms"] = Math.Round(ms, 1), ["calls"] = tap.Calls,
                 };
                 rows.Add(row);
-                await ProductEmbeddingObservation.AppendAsync(journal, row, ct);
+                await ProductEmbeddingCapture.AppendAsync(journal, row, ct);
                 await File.WriteAllTextAsync(Path.Combine(dir, $"progress-{entry}-{condition}.json"), new JsonObject
                 {
                     ["condition"] = condition, ["conversation"] = c, ["question"] = q, ["rows"] = rows.Count,
@@ -290,7 +291,8 @@ public class ProductDeliveryExperimentTests
         var report = new JsonObject
         {
             ["schema"] = "aijade.product-path.observed-prompt.v2",
-            ["instrumentationRevision"] = "durable-upstream-capture-20261110",
+            ["instrumentationRevision"] = "durable-capture-factory-owned-handlers-20261110",
+            ["handlerOwnership"] = "one handler per factory creation; shared conversation capture; default product handler lifetime retained",
             ["plan"] = "experiments/plans/2026-11-10-p3-e-shared-runtime.md", ["planCommit"] = planCommit,
             ["experiment"] = "P3-E: evidence along the product's delivery path",
             ["historicalReferencePlan"] = "experiments/plans/2026-11-05-p3-e-product-delivery-path.md",

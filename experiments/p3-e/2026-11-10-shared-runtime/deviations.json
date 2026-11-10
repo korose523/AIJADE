@@ -1,0 +1,12 @@
+{
+  "recordedAt": "2026-11-10T10:21:27.800341+00:00",
+  "attempt": "attempt-01",
+  "status": "INTERRUPTED_INSTRUMENT_FAILURE_NOT_PRIMARY",
+  "codeCommit": "e57d3b105a2ea54fda1722d05f3b8767bc6a8981",
+  "textCompleteQuestions": 1986,
+  "embeddingRetainedQuestions": 915,
+  "memoryHttp500": 28,
+  "reproduction": "The named-client factory retires and disposes the reused ProductEmbeddingObservation; delayed-cleanup diagnostic reproduces ObjectDisposedException. Rotation alone had passed, so the delayed cleanup boundary is retained.",
+  "repair": "Factory creates distinct transport handlers; only capture state is shared. Default product handler lifetime and all product sources remain unchanged.",
+  "rerun": "Both conditions will run from fresh stores in attempt-02; no rows are merged with this attempt."
+}
