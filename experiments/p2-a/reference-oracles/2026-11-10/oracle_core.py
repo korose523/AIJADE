@@ -21,7 +21,12 @@ def canonical(value):
 
 def source_json(value):
     """Preserve release input constants (Mbpp/404 includes infinity); records stay strictly typed JSON."""
-    return json.dumps(value, ensure_ascii=True, sort_keys=True, separators=(',', ':'), allow_nan=True)
+    return json.dumps(value, ensure_ascii=True, sort_keys=False, separators=(',', ':'), allow_nan=True)
+
+
+def ordered_json(value):
+    """Strict JSON for projected arguments; object insertion order is retained."""
+    return json.dumps(value, ensure_ascii=True, sort_keys=False, separators=(',', ':'), allow_nan=False)
 
 
 def digest_bytes(value):
@@ -132,7 +137,7 @@ def typed(value, ancestors=None):
             if type(key) is not str:
                 flags.add('nonstring-dict-key')
             items.append([key_, item_])
-        return {'t': 'dict', 'items': sorted(items, key=lambda x: canonical(x[0]))}, flags
+        return {'t': 'dict', 'items': items}, flags
     items = []
     for item in value:
         encoded, child_flags = typed(item, ancestors)

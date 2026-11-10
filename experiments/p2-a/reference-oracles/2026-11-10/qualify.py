@@ -40,6 +40,12 @@ def main(args):
     passed('nonfiniteSourcePreservedAsTypedRecords', r['status'] == 'COMPLETE' and all('nonfinite-float' in x['inputFlags'] and 'nonfinite-float' in x['outputFlags'] for x in inf_rows if x['kind'] == 'case'))
     validate_rows(inf_rows, 'HumanEval+', inf)
 
+    order = problem('Artificial/dictionary-order', 'def solve(x):\n    return list(x.keys())\n', base=[[{'z':1,'a':2}]], plus=[[{'b':3,'a':4}]], test='def check(candidate):\n    assert candidate({"z":1,"a":2}) == ["z","a"]\n')
+    r, order_rows = run_case('dictionary-input-order', order)
+    order_values = [js_value(x['output']) for x in order_rows if x['kind'] == 'case']
+    passed('dictionaryInputOrderRetained', r['status'] == 'COMPLETE' and order_values == [['z','a'],['b','a']])
+    validate_rows(order_rows, 'HumanEval+', order)
+
     bad = copy.deepcopy(records); bad.pop(1)
     try:
         validate_rows(bad, 'HumanEval+', p)

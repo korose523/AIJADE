@@ -127,6 +127,7 @@ def analyze(folder):
     execution = json.loads((folder/'execution.json').read_text())
     assert execution['schema'] == 'aijade.p2a.reference.execution.v1'
     assert execution['newModelCalls'] == 0
+    assert execution['inputOrderAmendmentCommit'] == '9c755f06ad3ccd9e3ed9d86e633e535cb5002a4f'
     passes = {str(n): one_pass(folder/f'pass-{n}', order if n == 1 else list(reversed(order))) for n in [1, 2] if (folder/f'pass-{n}').exists()}
     screen = json.loads((HERE.parents[1]/'evalplus-compatibility.json').read_text())['datasets']
     classes = {r['taskId']: r['class'] for ds in screen.values() for r in ds['perTask']}
@@ -173,6 +174,7 @@ def analyze(folder):
                 sums['missingCases'] += len(problem['base_input'])+len(problem['plus_input'])
     return {'schema': 'aijade.p2a.reference.summary.v1', 'executionCodeCommit': execution['executionCodeCommit'],
             'planCommit': execution['planCommit'], 'sourceExecutionStatus': execution['status'], 'newModelCalls': 0,
+            'inputOrderAmendmentCommit': execution['inputOrderAmendmentCommit'],
             'taskCount': len(order), 'plannedInputCallsPerPass': 165268, 'datasets': by_dataset, 'ledger': ledger,
             'scope': 'Finite Python reference/preparation ledger; not a JavaScript port, independent semantic oracle, device qualification, model pilot or verifier-rate estimate.'}
 

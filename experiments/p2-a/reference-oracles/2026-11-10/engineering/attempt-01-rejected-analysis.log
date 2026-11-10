@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 185, in <module>
+    result = analyze(args.folder)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 130, in analyze
+    passes = {str(n): one_pass(folder/f'pass-{n}', order if n == 1 else list(reversed(order))) for n in [1, 2] if (folder/f'pass-{n}').exists()}
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 130, in <dictcomp>
+    passes = {str(n): one_pass(folder/f'pass-{n}', order if n == 1 else list(reversed(order))) for n in [1, 2] if (folder/f'pass-{n}').exists()}
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 109, in one_pass
+    result = finish(pending, cursor)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 102, in finish
+    result = validate_rows([row for _, row in records], dataset, problem, execution['status'] == 'COMPLETE')
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 54, in validate_rows
+    assert record['serializedArgsJson'] == json.dumps(raw, ensure_ascii=False, separators=(',', ':'))
+AssertionError

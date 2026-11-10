@@ -11,7 +11,7 @@ Records preserve original serialized arguments, restored Python types, reference
 Execution is explicit and refuses a dirty source tree or an existing output directory:
 
 ```sh
-python3 run.py --execute --qualification engineering/qualification-07/qualification.json --out /path/to/new-private-output
+python3 run.py --execute --qualification engineering/qualification-08/qualification.json --out /path/to/new-private-output
 python3 analyze.py /path/to/new-private-output --out /path/to/summary.json
 python3 verify.py /path/to/new-private-output --summary /path/to/summary.json --out /path/to/validation.json
 python3 export_bank.py /path/to/new-private-output --summary /path/to/summary.json --out /path/to/new-bank

@@ -1,0 +1,46 @@
+test_base_assertion_failure_does_not_relabel_reference_calls (test_reference.ReferenceChecks) ... FAIL
+test_dictionary_order_survives_transport_types_and_bank_projection (test_reference.ReferenceChecks) ... ok
+test_duplicate_case_and_changed_input_reject (test_reference.ReferenceChecks) ... ok
+test_extreme_integer_preserved_and_not_projected (test_reference.ReferenceChecks) ... ok
+test_missing_complete_case_rejects_but_interrupted_prefix_stays_missing (test_reference.ReferenceChecks) ... FAIL
+test_nonfinite_never_becomes_successful_null (test_reference.ReferenceChecks) ... ok
+test_null_boolean_and_number_never_collapse (test_reference.ReferenceChecks) ... ok
+test_official_type_restoration_not_raw_json_calling (test_reference.ReferenceChecks) ... ok
+test_release_infinity_survives_source_transport_but_not_record_coercion (test_reference.ReferenceChecks) ... ok
+test_tuple_projection_is_declared_but_set_and_object_keys_are_blocked (test_reference.ReferenceChecks) ... ok
+test_unsupported_equal_type_labels_are_not_value_agreement (test_reference.ReferenceChecks) ... FAIL
+
+======================================================================
+FAIL: test_base_assertion_failure_does_not_relabel_reference_calls (test_reference.ReferenceChecks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/test_reference.py", line 120, in test_base_assertion_failure_does_not_relabel_reference_calls
+    result = validate_rows(records, 'HumanEval+', p)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 29, in validate_rows
+    assert begin['taskId'] == task_id and begin['dataset'] == dataset and begin['problemSha256'] == expected_hash
+AssertionError
+
+======================================================================
+FAIL: test_missing_complete_case_rejects_but_interrupted_prefix_stays_missing (test_reference.ReferenceChecks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/test_reference.py", line 95, in test_missing_complete_case_rejects_but_interrupted_prefix_stays_missing
+    result = validate_rows([records[0]], 'HumanEval+', p, complete=False)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 29, in validate_rows
+    assert begin['taskId'] == task_id and begin['dataset'] == dataset and begin['problemSha256'] == expected_hash
+AssertionError
+
+======================================================================
+FAIL: test_unsupported_equal_type_labels_are_not_value_agreement (test_reference.ReferenceChecks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/test_reference.py", line 113, in test_unsupported_equal_type_labels_are_not_value_agreement
+    result = validate_rows(records, 'HumanEval+', p)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/reference-oracles/2026-11-10/analyze.py", line 29, in validate_rows
+    assert begin['taskId'] == task_id and begin['dataset'] == dataset and begin['problemSha256'] == expected_hash
+AssertionError
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.034s
+
+FAILED (failures=3)

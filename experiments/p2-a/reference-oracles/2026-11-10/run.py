@@ -17,6 +17,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 PYTHON = Path('/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/bin/python3.12')
 PLAN = 'c97638dec08db3a74d5ac6bd105f8ba5f7e5194c'
+AMENDMENT = '9c755f06ad3ccd9e3ed9d86e633e535cb5002a4f'
 ENVIRONMENT = {'PYTHONHASHSEED': '0', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONUTF8': '1', 'LC_ALL': 'C', 'TZ': 'UTC'}
 
 
@@ -91,12 +92,14 @@ def main(args):
     code = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip()
     assert not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT), 'Execution source must be clean'
     subprocess.run(['git', 'merge-base', '--is-ancestor', PLAN, code], cwd=ROOT, check=True)
+    subprocess.run(['git', 'merge-base', '--is-ancestor', AMENDMENT, code], cwd=ROOT, check=True)
     qualification = json.loads(args.qualification.read_text())
     assert qualification['status'] == 'PASS' and qualification['sourceSha256'] == {n: digest_file(HERE/n) for n in ['run.py', 'worker.py', 'oracle_core.py']}
     problems = read_problems(HERE/'inputs')
     args.out.mkdir(parents=True)
     start = time.monotonic()
     receipt = {'schema': 'aijade.p2a.reference.execution.v1', 'planCommit': PLAN, 'executionCodeCommit': code,
+               'inputOrderAmendmentCommit': AMENDMENT,
                'status': 'RUNNING', 'startedAt': dt.datetime.now(dt.timezone.utc).isoformat(),
                'pythonSha256': digest_file(PYTHON), 'pythonVersion': subprocess.check_output([str(PYTHON), '--version'], env=ENVIRONMENT).decode().strip(),
                'sourceSha256': {n: digest_file(HERE/n) for n in ['run.py', 'worker.py', 'oracle_core.py']},

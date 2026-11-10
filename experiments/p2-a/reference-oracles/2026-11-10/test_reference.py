@@ -8,7 +8,7 @@ import unittest
 
 from analyze import validate_rows
 from oracle_core import (canonical, comparator_requirements, js_value, load_deserializer,
-                         SAFE_INT, source_json, typed)
+                         SAFE_INT, source_json, ordered_json, typed)
 
 HERE = Path(__file__).resolve().parent
 
@@ -19,7 +19,7 @@ def fixture():
     _, fn = load_deserializer(HERE/'upstream')
     records = [
         {'kind': 'begin', 'taskId': p['task_id'], 'dataset': 'HumanEval+',
-         'problemSha256': hashlib.sha256(canonical(p).encode()).hexdigest(),
+         'problemSha256': hashlib.sha256(json.dumps(p,ensure_ascii=True,separators=(',',':'),allow_nan=True).encode()).hexdigest(),
          'codeSha256': hashlib.sha256(p['canonical_solution'].encode()).hexdigest(),
          'deserializerFunctionSha256': fn, 'comparatorRequirements': [], 'hashSeed': '0',
          'namespacePerPartition': True, 'argumentsDeepcopiedPerCall': True},
@@ -64,6 +64,15 @@ class ReferenceChecks(unittest.TestCase):
         tag, flags = typed(restored['input'])
         self.assertIn('nonfinite-float', flags)
         canonical(tag)
+
+    def test_dictionary_order_survives_transport_types_and_bank_projection(self):
+        value = {'z': 1, 'a': 2}
+        restored = json.loads(source_json({'args': [value]}))['args'][0]
+        self.assertEqual(list(restored), ['z','a'])
+        tag, _ = typed(restored)
+        self.assertEqual([key['v'] for key, _ in tag['items']], ['z','a'])
+        projected = json.loads(ordered_json({'args': [js_value(tag)]}))['args'][0]
+        self.assertEqual(list(projected), ['z','a'])
 
     def test_tuple_projection_is_declared_but_set_and_object_keys_are_blocked(self):
         self.assertEqual(js_value(typed((1, 2))[0]), [1, 2])

@@ -4,7 +4,7 @@ import gzip
 import json
 from pathlib import Path
 
-from oracle_core import canonical, digest_file, js_value, read_problems
+from oracle_core import canonical, digest_file, js_value, ordered_json, read_problems
 
 HERE=Path(__file__).resolve().parent
 
@@ -27,7 +27,7 @@ def main(args):
             row=json.loads(line)
             if row['kind']=='case' and row['taskId'] in ready:
                 assert row['status']=='OK'
-                dest.write(canonical({'taskId':row['taskId'],'partition':row['partition'],'index':row['index'],
+                dest.write(ordered_json({'taskId':row['taskId'],'partition':row['partition'],'index':row['index'],
                                       'args':js_value(row['input']),'expected':js_value(row['output'])})+'\n')
                 counts[row['taskId']]+=1
     for row in summary['ledger']:
