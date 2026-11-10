@@ -1,0 +1,935 @@
+{
+  "schema": "aijade.p3e.current-summary.v1",
+  "plan": "experiments/plans/2026-11-10-p3-e-shared-runtime.md",
+  "planCommit": "d1527e01d19c7e5524a0afa3f003d741a9d131a6",
+  "corpusSha256": "79fa87e90f04081343b8c8debecb80a9a6842b76a7aa537dc9fdf651ea698ff4",
+  "bootstrapSeed": 20261110,
+  "bootstrapReplicates": 10000,
+  "resamplingUnit": "conversation",
+  "conditions": {
+    "text": {
+      "declaredCodeCommit": "c6c48eb3ac531a8d798c675809740cb15fd8013d",
+      "entry": "shared-memory-only",
+      "scope": "memory-only; empty history; no question recording; local model-response stand-in; not full Web/QQ, multi-turn or proactive delivery",
+      "promptBudget": {
+        "ModuleCharacters": 4000,
+        "SupplementCharacters": 12000,
+        "HistoryCharacters": 24000,
+        "ToolResultCharacters": 8000
+      },
+      "rawReportSha256": "cabcb79d0955af4db472c00ac50152693738f170b61fd5ce0e556b3fdc47a40b",
+      "validation": {
+        "questions": 1986,
+        "answerableQuestions": 1540,
+        "conversations": 10,
+        "states": {
+          "complete": 1973,
+          "absent": 13
+        },
+        "captureAndSourceChecks": "PASS"
+      },
+      "answerable": {
+        "questions": 1540,
+        "eligibleQuestions": 1536,
+        "conversations": 10,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "unknownEligiblePrompts": 0,
+        "denominator": "evidence",
+        "recall": {
+          "stored": {
+            "mean": 0.996227,
+            "ci95": [
+              0.992393,
+              0.999077
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "pool": {
+            "mean": 0.593162,
+            "ci95": [
+              0.562689,
+              0.627055
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "above": {
+            "mean": 0.593162,
+            "ci95": [
+              0.562689,
+              0.627055
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "response": {
+            "mean": 0.455166,
+            "ci95": [
+              0.435857,
+              0.473348
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "kept": {
+            "mean": 0.455166,
+            "ci95": [
+              0.435857,
+              0.473348
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "plannedPrompt": {
+            "mean": 0.118183,
+            "ci95": [
+              0.089561,
+              0.144012
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "prompt": {
+            "mean": 0.118183,
+            "ci95": [
+              0.089561,
+              0.144012
+            ],
+            "questions": 1536,
+            "conversations": 10
+          }
+        },
+        "primaryPointIdentified": true,
+        "counts": {
+          "states": {
+            "complete": 1528,
+            "absent": 12
+          },
+          "termSearches": 1540,
+          "firstSearchEmpty": 1540,
+          "fewerThanFive": 87,
+          "providerNotConsulted": 0,
+          "echoDropped": 0,
+          "plannedVersusObservedDifferent": 0
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.403066,
+            "ci95": [
+              0.369801,
+              0.433643
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "pool->above": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "above->response": {
+            "mean": 0.137996,
+            "ci95": [
+              0.114987,
+              0.162361
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "kept->plannedPrompt": {
+            "mean": 0.336983,
+            "ci95": [
+              0.321022,
+              0.358376
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "plannedPrompt->prompt": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "pool->prompt": {
+            "mean": 0.474979,
+            "ci95": [
+              0.448793,
+              0.500073
+            ],
+            "questions": 1536,
+            "conversations": 10
+          }
+        },
+        "upstreamPreBudgetArm": {
+          "serverTop5": {
+            "mean": 0.28889,
+            "ci95": [
+              0.257535,
+              0.316368
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "plannedNewest5": {
+            "mean": 0.118183,
+            "ci95": [
+              0.089561,
+              0.144012
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "warning": "These are pre-budget candidates, not an actually delivered equal-budget alternative."
+        }
+      },
+      "all": {
+        "questions": 1986,
+        "eligibleQuestions": 1982,
+        "conversations": 10,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "unknownEligiblePrompts": 0,
+        "denominator": "evidence",
+        "recall": {
+          "stored": {
+            "mean": 0.997049,
+            "ci95": [
+              0.994,
+              0.999283
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "pool": {
+            "mean": 0.620771,
+            "ci95": [
+              0.594036,
+              0.650091
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "above": {
+            "mean": 0.620771,
+            "ci95": [
+              0.594036,
+              0.650091
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "response": {
+            "mean": 0.481954,
+            "ci95": [
+              0.464233,
+              0.498368
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "kept": {
+            "mean": 0.481954,
+            "ci95": [
+              0.464233,
+              0.498368
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "plannedPrompt": {
+            "mean": 0.136918,
+            "ci95": [
+              0.106793,
+              0.161859
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "prompt": {
+            "mean": 0.136918,
+            "ci95": [
+              0.106793,
+              0.161859
+            ],
+            "questions": 1982,
+            "conversations": 10
+          }
+        },
+        "primaryPointIdentified": true,
+        "counts": {
+          "states": {
+            "complete": 1973,
+            "absent": 13
+          },
+          "termSearches": 1986,
+          "firstSearchEmpty": 1986,
+          "fewerThanFive": 119,
+          "providerNotConsulted": 0,
+          "echoDropped": 0,
+          "plannedVersusObservedDifferent": 0
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.376278,
+            "ci95": [
+              0.347653,
+              0.403209
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "pool->above": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "above->response": {
+            "mean": 0.138817,
+            "ci95": [
+              0.11333,
+              0.162268
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "kept->plannedPrompt": {
+            "mean": 0.345036,
+            "ci95": [
+              0.325665,
+              0.36691
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "plannedPrompt->prompt": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "pool->prompt": {
+            "mean": 0.483852,
+            "ci95": [
+              0.45336,
+              0.513763
+            ],
+            "questions": 1982,
+            "conversations": 10
+          }
+        },
+        "upstreamPreBudgetArm": {
+          "serverTop5": {
+            "mean": 0.307101,
+            "ci95": [
+              0.272982,
+              0.332154
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "plannedNewest5": {
+            "mean": 0.136918,
+            "ci95": [
+              0.106793,
+              0.161859
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "warning": "These are pre-budget candidates, not an actually delivered equal-budget alternative."
+        }
+      },
+      "locatedEvidence": {
+        "questions": 1540,
+        "eligibleQuestions": 1531,
+        "conversations": 10,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "unknownEligiblePrompts": 0,
+        "denominator": "located",
+        "recall": {
+          "stored": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "pool": {
+            "mean": 0.595276,
+            "ci95": [
+              0.564806,
+              0.628789
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "above": {
+            "mean": 0.595276,
+            "ci95": [
+              0.564806,
+              0.628789
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "response": {
+            "mean": 0.45663,
+            "ci95": [
+              0.437456,
+              0.474395
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "kept": {
+            "mean": 0.45663,
+            "ci95": [
+              0.437456,
+              0.474395
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "plannedPrompt": {
+            "mean": 0.118571,
+            "ci95": [
+              0.089752,
+              0.144482
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "prompt": {
+            "mean": 0.118571,
+            "ci95": [
+              0.089752,
+              0.144482
+            ],
+            "questions": 1531,
+            "conversations": 10
+          }
+        },
+        "primaryPointIdentified": true,
+        "counts": {
+          "states": {
+            "complete": 1528,
+            "absent": 12
+          },
+          "termSearches": 1540,
+          "firstSearchEmpty": 1540,
+          "fewerThanFive": 87,
+          "providerNotConsulted": 0,
+          "echoDropped": 0,
+          "plannedVersusObservedDifferent": 0
+        }
+      },
+      "historicalComparison": {
+        "historicalRawReportSha256": "8d4ef16e5da3dd97fe3d5a273f6f1193363243927632519e0a5cc18cc305344b",
+        "historicalCodeCommit": "c40c46c231e2c8c92859a4916c755ce1f6bfd18a",
+        "matchedQuestionKeys": 1986,
+        "unknownCurrentPrompts": 0,
+        "questionsWithDifferentGoldPromptCounts": 0,
+        "macroPrimaryRecallDelta": 0.0,
+        "scope": "Descriptive paired point comparison on the same question keys; no causal version effect or general prompt equivalence is established."
+      }
+    },
+    "embedding": {
+      "declaredCodeCommit": "c6c48eb3ac531a8d798c675809740cb15fd8013d",
+      "entry": "shared-memory-only",
+      "scope": "memory-only; empty history; no question recording; local model-response stand-in; not full Web/QQ, multi-turn or proactive delivery",
+      "promptBudget": {
+        "ModuleCharacters": 4000,
+        "SupplementCharacters": 12000,
+        "HistoryCharacters": 24000,
+        "ToolResultCharacters": 8000
+      },
+      "rawReportSha256": "eba9978878ddeb9314b4c5f1c3e3fa8b1e279dad9d50bf9f83a8c2c308afe0ea",
+      "validation": {
+        "questions": 1986,
+        "answerableQuestions": 1540,
+        "conversations": 10,
+        "states": {
+          "complete": 1986
+        },
+        "captureAndSourceChecks": "PASS"
+      },
+      "answerable": {
+        "questions": 1540,
+        "eligibleQuestions": 1536,
+        "conversations": 10,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "unknownEligiblePrompts": 0,
+        "denominator": "evidence",
+        "recall": {
+          "stored": {
+            "mean": 0.996227,
+            "ci95": [
+              0.992393,
+              0.999077
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "pool": {
+            "mean": 0.996227,
+            "ci95": [
+              0.992393,
+              0.999077
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "above": {
+            "mean": 0.995246,
+            "ci95": [
+              0.991519,
+              0.998123
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "response": {
+            "mean": 0.282259,
+            "ci95": [
+              0.21346,
+              0.354651
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "kept": {
+            "mean": 0.282259,
+            "ci95": [
+              0.21346,
+              0.354651
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "plannedPrompt": {
+            "mean": 0.247552,
+            "ci95": [
+              0.186023,
+              0.311994
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "prompt": {
+            "mean": 0.247552,
+            "ci95": [
+              0.186023,
+              0.311994
+            ],
+            "questions": 1536,
+            "conversations": 10
+          }
+        },
+        "primaryPointIdentified": true,
+        "counts": {
+          "states": {
+            "complete": 1540
+          },
+          "termSearches": 0,
+          "firstSearchEmpty": 0,
+          "fewerThanFive": 0,
+          "providerNotConsulted": 0,
+          "echoDropped": 0,
+          "plannedVersusObservedDifferent": 0
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "pool->above": {
+            "mean": 0.000981,
+            "ci95": [
+              0.0,
+              0.002136
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "above->response": {
+            "mean": 0.712987,
+            "ci95": [
+              0.642106,
+              0.780848
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "kept->plannedPrompt": {
+            "mean": 0.034707,
+            "ci95": [
+              0.023512,
+              0.04629
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "plannedPrompt->prompt": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "pool->prompt": {
+            "mean": 0.748675,
+            "ci95": [
+              0.685437,
+              0.808867
+            ],
+            "questions": 1536,
+            "conversations": 10
+          }
+        },
+        "upstreamPreBudgetArm": {
+          "serverTop5": {
+            "mean": 0.259945,
+            "ci95": [
+              0.193636,
+              0.330586
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "plannedNewest5": {
+            "mean": 0.247552,
+            "ci95": [
+              0.186023,
+              0.311994
+            ],
+            "questions": 1536,
+            "conversations": 10
+          },
+          "warning": "These are pre-budget candidates, not an actually delivered equal-budget alternative."
+        }
+      },
+      "all": {
+        "questions": 1986,
+        "eligibleQuestions": 1982,
+        "conversations": 10,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "unknownEligiblePrompts": 0,
+        "denominator": "evidence",
+        "recall": {
+          "stored": {
+            "mean": 0.997049,
+            "ci95": [
+              0.994,
+              0.999283
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "pool": {
+            "mean": 0.997049,
+            "ci95": [
+              0.994,
+              0.999283
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "above": {
+            "mean": 0.996284,
+            "ci95": [
+              0.993344,
+              0.998553
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "response": {
+            "mean": 0.316415,
+            "ci95": [
+              0.257876,
+              0.379926
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "kept": {
+            "mean": 0.316415,
+            "ci95": [
+              0.257876,
+              0.379926
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "plannedPrompt": {
+            "mean": 0.282157,
+            "ci95": [
+              0.227976,
+              0.33995
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "prompt": {
+            "mean": 0.282157,
+            "ci95": [
+              0.227976,
+              0.33995
+            ],
+            "questions": 1982,
+            "conversations": 10
+          }
+        },
+        "primaryPointIdentified": true,
+        "counts": {
+          "states": {
+            "complete": 1986
+          },
+          "termSearches": 0,
+          "firstSearchEmpty": 0,
+          "fewerThanFive": 0,
+          "providerNotConsulted": 0,
+          "echoDropped": 0,
+          "plannedVersusObservedDifferent": 0
+        },
+        "loss": {
+          "stored->pool": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "pool->above": {
+            "mean": 0.000765,
+            "ci95": [
+              0.0,
+              0.001656
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "above->response": {
+            "mean": 0.679869,
+            "ci95": [
+              0.61729,
+              0.737624
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "response->kept": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "kept->plannedPrompt": {
+            "mean": 0.034258,
+            "ci95": [
+              0.024139,
+              0.044839
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "plannedPrompt->prompt": {
+            "mean": 0.0,
+            "ci95": [
+              0.0,
+              0.0
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "pool->prompt": {
+            "mean": 0.714892,
+            "ci95": [
+              0.658282,
+              0.768033
+            ],
+            "questions": 1982,
+            "conversations": 10
+          }
+        },
+        "upstreamPreBudgetArm": {
+          "serverTop5": {
+            "mean": 0.291375,
+            "ci95": [
+              0.235197,
+              0.353433
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "plannedNewest5": {
+            "mean": 0.282157,
+            "ci95": [
+              0.227976,
+              0.33995
+            ],
+            "questions": 1982,
+            "conversations": 10
+          },
+          "warning": "These are pre-budget candidates, not an actually delivered equal-budget alternative."
+        }
+      },
+      "locatedEvidence": {
+        "questions": 1540,
+        "eligibleQuestions": 1531,
+        "conversations": 10,
+        "noEvidenceListed": 4,
+        "evidenceNotLocated": 9,
+        "unknownEligiblePrompts": 0,
+        "denominator": "located",
+        "recall": {
+          "stored": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "pool": {
+            "mean": 1.0,
+            "ci95": [
+              1.0,
+              1.0
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "above": {
+            "mean": 0.999019,
+            "ci95": [
+              0.997864,
+              1.0
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "response": {
+            "mean": 0.282957,
+            "ci95": [
+              0.214027,
+              0.355155
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "kept": {
+            "mean": 0.282957,
+            "ci95": [
+              0.214027,
+              0.355155
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "plannedPrompt": {
+            "mean": 0.248118,
+            "ci95": [
+              0.186823,
+              0.312351
+            ],
+            "questions": 1531,
+            "conversations": 10
+          },
+          "prompt": {
+            "mean": 0.248118,
+            "ci95": [
+              0.186823,
+              0.312351
+            ],
+            "questions": 1531,
+            "conversations": 10
+          }
+        },
+        "primaryPointIdentified": true,
+        "counts": {
+          "states": {
+            "complete": 1540
+          },
+          "termSearches": 0,
+          "firstSearchEmpty": 0,
+          "fewerThanFive": 0,
+          "providerNotConsulted": 0,
+          "echoDropped": 0,
+          "plannedVersusObservedDifferent": 0
+        }
+      },
+      "historicalComparison": {
+        "historicalRawReportSha256": "5b04d938950c9dce384ae76939ae904b408b7e9d23b152d8aee6c3cab3d13c89",
+        "historicalCodeCommit": "bbafb62891958b2c63f093b936537cd8c2e725cb",
+        "matchedQuestionKeys": 1986,
+        "unknownCurrentPrompts": 0,
+        "questionsWithDifferentGoldPromptCounts": 0,
+        "macroPrimaryRecallDelta": 0.0,
+        "scope": "Descriptive paired point comparison on the same question keys; no causal version effect or general prompt equivalence is established."
+      }
+    }
+  }
+}

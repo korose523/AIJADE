@@ -1,0 +1,63 @@
+{
+  "planCommit": "d1527e01d19c7e5524a0afa3f003d741a9d131a6",
+  "codeCommit": "c6c48eb3ac531a8d798c675809740cb15fd8013d",
+  "attempt": "attempt-02",
+  "binaryIdentities": {
+    "Aijade.Tests": {
+      "sha256": "c5f666de96ab3177ef8b1321f68fc357751917571dec57f16560430b7b5280ca",
+      "informationalVersion": "0.1.0+c6c48eb3ac531a8d798c675809740cb15fd8013d"
+    },
+    "Aijade.Client": {
+      "sha256": "7b841282bad0ac3bf5f1ee65217270f83646dc365c5e9e0e7144400bbc387758",
+      "informationalVersion": "0.1.0+c6c48eb3ac531a8d798c675809740cb15fd8013d"
+    },
+    "Aijade.Server": {
+      "sha256": "fbe1df1203ea2c8b116b18106e3b10b22f30d28f3c0fcd0094b562409ec2bbc4",
+      "informationalVersion": "0.1.0+c6c48eb3ac531a8d798c675809740cb15fd8013d"
+    }
+  },
+  "commands": [
+    {
+      "condition": "text",
+      "startedAt": "2026-11-10T10:25:15.064781+00:00",
+      "command": [
+        "/Users/mac/.dotnet/dotnet",
+        "test",
+        "tests/Aijade.Tests/Aijade.Tests.csproj",
+        "-c",
+        "Release",
+        "--no-build",
+        "--filter",
+        "FullyQualifiedName~ProductDeliveryExperimentTests",
+        "--logger",
+        "trx;LogFileName=full-corpus.trx",
+        "--results-directory",
+        "/Users/mac/.cache/aijade-p3e-current-20261110/attempt-02/text/test-results"
+      ],
+      "descendantGroupCleanupRequested": false,
+      "exitCode": 0,
+      "endedAt": "2026-11-10T10:31:18.788237+00:00"
+    },
+    {
+      "condition": "embedding",
+      "startedAt": "2026-11-10T10:31:18.894363+00:00",
+      "command": [
+        "/Users/mac/.dotnet/dotnet",
+        "test",
+        "tests/Aijade.Tests/Aijade.Tests.csproj",
+        "-c",
+        "Release",
+        "--no-build",
+        "--filter",
+        "FullyQualifiedName~ProductDeliveryExperimentTests",
+        "--logger",
+        "trx;LogFileName=full-corpus.trx",
+        "--results-directory",
+        "/Users/mac/.cache/aijade-p3e-current-20261110/attempt-02/embedding/test-results"
+      ],
+      "descendantGroupCleanupRequested": false,
+      "exitCode": 0,
+      "endedAt": "2026-11-10T10:53:34.408225+00:00"
+    }
+  ]
+}

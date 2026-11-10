@@ -6,6 +6,7 @@ Every third-party component must be listed here with its licence before it is me
 | Component | Used for | Licence |
 |---|---|---|
 | .NET runtime and SDK | platform | MIT |
+| NumPy 2.3.5 (optional research tool, not bundled with the product) | independent numerical recomputation of captured P3-E vectors | BSD-3-Clause; installed distribution retains its own bundled-library notices |
 | xunit.v3, xunit.runner.visualstudio | tests | Apache-2.0 |
 | Microsoft.NET.Test.Sdk | tests | MIT |
 | Jint 4.16.3 | JavaScript sandbox of the skill benchmark (Aijade.Research) | BSD-2-Clause |

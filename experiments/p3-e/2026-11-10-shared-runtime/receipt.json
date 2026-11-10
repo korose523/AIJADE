@@ -1,0 +1,202 @@
+{
+  "schema": "aijade.p3e.current-run.v1",
+  "recordedAt": "2026-11-10T10:54:19.582102+00:00",
+  "artifactRoot": "experiments/p3-e/2026-11-10-shared-runtime",
+  "status": "FULL_CORPUS_CAPTURE_VALIDATED_FIXED_SHARED_MEMORY_CONFIGURATION",
+  "newScientificRun": true,
+  "chatModelCalls": 0,
+  "planCommit": "d1527e01d19c7e5524a0afa3f003d741a9d131a6",
+  "instrumentationCommit": "c6c48eb3ac531a8d798c675809740cb15fd8013d",
+  "productBaseCommit": "d9dcf6bdc928f822e7a2fc3bf4e2cb00a36ebade",
+  "actualBinaryIdentities": {
+    "Aijade.Tests": {
+      "sha256": "c5f666de96ab3177ef8b1321f68fc357751917571dec57f16560430b7b5280ca",
+      "informationalVersion": "0.1.0+c6c48eb3ac531a8d798c675809740cb15fd8013d"
+    },
+    "Aijade.Client": {
+      "sha256": "7b841282bad0ac3bf5f1ee65217270f83646dc365c5e9e0e7144400bbc387758",
+      "informationalVersion": "0.1.0+c6c48eb3ac531a8d798c675809740cb15fd8013d"
+    },
+    "Aijade.Server": {
+      "sha256": "fbe1df1203ea2c8b116b18106e3b10b22f30d28f3c0fcd0094b562409ec2bbc4",
+      "informationalVersion": "0.1.0+c6c48eb3ac531a8d798c675809740cb15fd8013d"
+    }
+  },
+  "reports": {
+    "text": "attempt-02/text/product-path-v2-shared-memory-only-text.json.gz",
+    "embedding": "attempt-02/embedding/product-path-v2-shared-memory-only-embedding.json.gz"
+  },
+  "summary": "summary.json",
+  "validation": {
+    "text": {
+      "questions": 1986,
+      "answerableQuestions": 1540,
+      "conversations": 10,
+      "states": {
+        "complete": 1973,
+        "absent": 13
+      },
+      "captureAndSourceChecks": "PASS"
+    },
+    "embedding": {
+      "questions": 1986,
+      "answerableQuestions": 1540,
+      "conversations": 10,
+      "states": {
+        "complete": 1986
+      },
+      "captureAndSourceChecks": "PASS"
+    }
+  },
+  "embeddingModelDigest": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+  "protectedInputs": {
+    "files": 875,
+    "changed": []
+  },
+  "losslessRawSourceSha256": {
+    "attempt-02/embedding/product-path-v2-shared-memory-only-embedding.json.gz": "eba9978878ddeb9314b4c5f1c3e3fa8b1e279dad9d50bf9f83a8c2c308afe0ea",
+    "attempt-02/embedding/operator-progress.jsonl.gz": "8cdfae8cb2a12fc6e7e3431836019835bd7592377c49c1bfd408fcbd548efebc",
+    "attempt-02/embedding/rows-shared-memory-only-embedding.jsonl.gz": "e773e6c80c918aab6c950d559ac621e73f92af61a30ccfef609055b892296374",
+    "attempt-02/embedding/embeddings-shared-memory-only-embedding.jsonl.gz": "e31440a6e58b2d89077a51a4c4bfb065abb93c94d2698ffcf8b3b13e5668cfcb",
+    "attempt-02/text/product-path-v2-shared-memory-only-text.json.gz": "cabcb79d0955af4db472c00ac50152693738f170b61fd5ce0e556b3fdc47a40b",
+    "attempt-02/text/rows-shared-memory-only-text.jsonl.gz": "1729b673d4eb8e76aeaf9b6a1338fa8adf0c97ebdbb9bfe25423831713034ab7",
+    "attempt-02/text/operator-progress.jsonl.gz": "898c70179ed2319c12400e4dc5b7447cbb38f167129fc8a0bb921adae3fdf229"
+  },
+  "scope": "All 10 LoCoMo conversations and 1,986 questions per condition; primary 1,540 answerable, recall denominator excludes no-evidence questions. Shared runtime memory-only, empty history, no question recording or chat model.",
+  "excludedAttempt": {
+    "path": "attempt-01/",
+    "reason": "Recording-handler lifecycle failure; 28 HTTP 500 responses. Both conditions rerun fresh, no row merging."
+  },
+  "limits": [
+    "No all-feature Web/QQ, evolving conversation, life-context, proactive or reminder measurement.",
+    "One existing embedding model on one Mac; one complete pass per condition, not independent replication or repeatability.",
+    "Complete text visibility and source consistency do not establish answer accuracy, source truth, scientific acceptance or final submission approval.",
+    "No supervisor receipt or external preregistration is inferred; author explicitly authorized this current run.",
+    "Historical v1 files and their claims remain version-bound; no causal product-version effect or general equivalence is asserted."
+  ],
+  "artifactSha256": {
+    "LOCOMO-LICENSE.txt": "059874f76aaa9e1afa6a0543de17763cdb432175035c38b5dad15834b571e8fd",
+    "README.md": "fe0c715f155666019879dc04af9ff4f56594e749a59496528c9875439146ef3d",
+    "attempt-01/diagnosis.json": "5ac48762222d1e9f058a1fa2d282d5256cb6a31f8a243a464ea9b58e78c886d9",
+    "attempt-01/embedding/embeddings-shared-memory-only-embedding.jsonl.gz": "b83d97b82f7b867ec12ff7e780a681b550d7342ac3937a59b666b5ed9e18b009",
+    "attempt-01/embedding/progress-shared-memory-only-embedding.json": "dd8758ffb60939ec6ca07b7949cc7d331d26f6d5fffc571c15da49d8523a4bf0",
+    "attempt-01/embedding/rows-shared-memory-only-embedding.jsonl.gz": "bb8a7cbcc0cb7ee54d6f744d34b0cb94ac6be2b0341da37a3543f19f65434563",
+    "attempt-01/embedding/run-shared-memory-only-embedding.json": "be6a81ec169524858b0eb382b96a62ea26c485099e34c7925f7f4aa779e58d18",
+    "attempt-01/embedding/run.log": "3601c014328a13898587f52bfe8ed4c91252e759a1d761940f07a30db86eba80",
+    "attempt-01/embedding/store-shared-memory-only-embedding-0.json.gz": "10dc3ebac60b144b6b6a4d21ffc62aa6606ef23995ff989435f40bbe739c38ae",
+    "attempt-01/embedding/store-shared-memory-only-embedding-1.json.gz": "6d98a2dd63f9f912c65706a2bbc64b51a3336fce018980014d6dfbe5455d9e3b",
+    "attempt-01/embedding/store-shared-memory-only-embedding-2.json.gz": "d1c4ab01c7b54dffd077a03df81f635acadb8a0853b20dd8442d9333dc19f28c",
+    "attempt-01/embedding/store-shared-memory-only-embedding-3.json.gz": "0c4267f5f104c85f2be57cbedc866fe7df530d730bd8cfd7a3fddb89d0258890",
+    "attempt-01/embedding/store-shared-memory-only-embedding-4.json.gz": "cd64dd7fd031e1a4950ba8a7fc6edb61b70ea5769527c5bbeb6c50f8a10d8030",
+    "attempt-01/termination.json": "d9edadfba30b9ca22378ae3f57bdc548f791b636e30d263c27dadd4e410fef65",
+    "attempt-01/text/embeddings-shared-memory-only-text.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "attempt-01/text/product-path-v2-shared-memory-only-text.json.gz": "0b8d2ab0c6ad16b3195da750b9ad2d01b12c279c4d57fbae4a611742311f7bce",
+    "attempt-01/text/progress-shared-memory-only-text.json": "655e86d71d5f186e47af45cd3a397966b6e4fc1a167f0ebcac769c8921390531",
+    "attempt-01/text/rows-shared-memory-only-text.jsonl.gz": "aa58b675d1375efcde4c032bf6260469eea1a3c23349e7b487663e7a0370abae",
+    "attempt-01/text/run-shared-memory-only-text.json": "af751d6952bd849aa3d25a554bd5feeb98dc37cd072bbd93a52a478d9dc8a645",
+    "attempt-01/text/run.log": "c0bb12c878fb695fce75c0fd9f355d5b0d46094df903ec25413fa3b8a68dffa2",
+    "attempt-01/text/store-shared-memory-only-text-0.json.gz": "3d386feb4851ac60e243474ebb8129af8ab418084c7cab1f6ce0a097fdc3a92d",
+    "attempt-01/text/store-shared-memory-only-text-1.json.gz": "ff9da80d01560332c4b9a5246c443488c5beff988614315f144f2cd9c9d94516",
+    "attempt-01/text/store-shared-memory-only-text-2.json.gz": "b4b7ea18150f4b8683fb30f99fc80b267a3c7591782edd98aa1bd14c95f16639",
+    "attempt-01/text/store-shared-memory-only-text-3.json.gz": "82b8389c9fa8f121d9e6914c89a72e344cfbd040d911e6a0761852c13c55a907",
+    "attempt-01/text/store-shared-memory-only-text-4.json.gz": "a9c616be26b97993062da24425c3e6cad0058357a94e5d6db43f228284eec39e",
+    "attempt-01/text/store-shared-memory-only-text-5.json.gz": "1696cd963bbb6ab0b7f6797275f410cf31697e865ba27b278ed587c8e588b22d",
+    "attempt-01/text/store-shared-memory-only-text-6.json.gz": "19819b25be1194e62b92c4168d7fd552277abce937d55990be187463df1502d7",
+    "attempt-01/text/store-shared-memory-only-text-7.json.gz": "ea9f2c9f6646d74685a0b6024e00fcdbdf1a7a9755672191ec2604313d819974",
+    "attempt-01/text/store-shared-memory-only-text-8.json.gz": "873f18956b581f40501a83f8c6127c21ef2262ec0930ac6f64c24244e9854f32",
+    "attempt-01/text/store-shared-memory-only-text-9.json.gz": "dff875ba3e5566cde1e735bb174f6e7e4dfb7ce8f601d3db58f43d1ddab57e97",
+    "attempt-01/text/test-results/full-corpus.trx": "f7bdfea17dd1f0bd732b0ee211f961d5f7798d43e72fee2140013ef5593970e6",
+    "attempt-02/embedding/embeddings-shared-memory-only-embedding.jsonl.gz": "a2598df6ea738c59e807c7baff2be216c1290c38b483e3cbe7ee29b309d2b1f9",
+    "attempt-02/embedding/operator-progress.jsonl.gz": "c5ffec335aaf20b2ef644b6f14178e32fbace07a5bc30fb03a37c94138f9291a",
+    "attempt-02/embedding/product-path-v2-shared-memory-only-embedding.json.gz": "d07267fdf2e0d1437730845443633458669e0629645b677d8976ad04aa1557f7",
+    "attempt-02/embedding/progress-shared-memory-only-embedding.json": "3d30fe7d3421779314268aa030d2d2c2f5411298b0ce485f19ad8196b7c0b0d5",
+    "attempt-02/embedding/rows-shared-memory-only-embedding.jsonl.gz": "2c431ddd5bda094db2133b11f57fdbbc12453f30da355e5d46905455fe3deaa7",
+    "attempt-02/embedding/run-shared-memory-only-embedding.json": "7d108740f41b8c4a342f602640319705da7b46379ebb49de2384294c1a28274a",
+    "attempt-02/embedding/run.log": "f66bf3a501e040cb505f1852c214abbc23604a1722b7b8faedd574e39b2908d0",
+    "attempt-02/embedding/store-shared-memory-only-embedding-0.json.gz": "10dc3ebac60b144b6b6a4d21ffc62aa6606ef23995ff989435f40bbe739c38ae",
+    "attempt-02/embedding/store-shared-memory-only-embedding-1.json.gz": "6d98a2dd63f9f912c65706a2bbc64b51a3336fce018980014d6dfbe5455d9e3b",
+    "attempt-02/embedding/store-shared-memory-only-embedding-2.json.gz": "d1c4ab01c7b54dffd077a03df81f635acadb8a0853b20dd8442d9333dc19f28c",
+    "attempt-02/embedding/store-shared-memory-only-embedding-3.json.gz": "0c4267f5f104c85f2be57cbedc866fe7df530d730bd8cfd7a3fddb89d0258890",
+    "attempt-02/embedding/store-shared-memory-only-embedding-4.json.gz": "cd64dd7fd031e1a4950ba8a7fc6edb61b70ea5769527c5bbeb6c50f8a10d8030",
+    "attempt-02/embedding/store-shared-memory-only-embedding-5.json.gz": "8eff5236d7a3b11b6bcc8d8dee49b2dba166e12f724f9410560db4615ae92f48",
+    "attempt-02/embedding/store-shared-memory-only-embedding-6.json.gz": "8d100fc18506013abe9bede39daae61b015f0fd4fc045faf0af513387ca15c35",
+    "attempt-02/embedding/store-shared-memory-only-embedding-7.json.gz": "b2743f8e6b75fe8ef51fe46409b4868cbd3f1db6b723e3f4fc668e86239e483f",
+    "attempt-02/embedding/store-shared-memory-only-embedding-8.json.gz": "d311309adbac243f9c120ec726302e152813257a7ad22be6694aba86971daa3d",
+    "attempt-02/embedding/store-shared-memory-only-embedding-9.json.gz": "137619c63348fb5cda83d5f4d96145fe1cc74a8f116585ad3009a9fed84b2c36",
+    "attempt-02/embedding/test-results/full-corpus.trx": "091880a07d4b5d4095661fee2e28468d0679142d7ad3fa95c748444f53546e3f",
+    "attempt-02/text/embeddings-shared-memory-only-text.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "attempt-02/text/operator-progress.jsonl.gz": "5a8e95f87ec0f460f01dc09605e4b6e960f95b31fcf64168263a4a2765feedee",
+    "attempt-02/text/product-path-v2-shared-memory-only-text.json.gz": "1481f10643475771b164bc552c83da4ce58952c31dffb60175ece42d56ee6883",
+    "attempt-02/text/progress-shared-memory-only-text.json": "90e64d9943d718d9641d8aab0577bf2cf3da229c7b53a71b91707487ad679ddb",
+    "attempt-02/text/rows-shared-memory-only-text.jsonl.gz": "0c488380e10e05535c6a13de3384f786d278435d5484d9b0ae76a169b8a8f68b",
+    "attempt-02/text/run-shared-memory-only-text.json": "5e7d8de53477263ce5272287cc2b06e44a5bbaa3666c9d139f56b2594fbbf6f3",
+    "attempt-02/text/run.log": "a758f7d8e3391256dbd99156f7f47ea4f55ac0fe95fd6c5ca123ce2c01bed2f2",
+    "attempt-02/text/store-shared-memory-only-text-0.json.gz": "3d386feb4851ac60e243474ebb8129af8ab418084c7cab1f6ce0a097fdc3a92d",
+    "attempt-02/text/store-shared-memory-only-text-1.json.gz": "ff9da80d01560332c4b9a5246c443488c5beff988614315f144f2cd9c9d94516",
+    "attempt-02/text/store-shared-memory-only-text-2.json.gz": "b4b7ea18150f4b8683fb30f99fc80b267a3c7591782edd98aa1bd14c95f16639",
+    "attempt-02/text/store-shared-memory-only-text-3.json.gz": "82b8389c9fa8f121d9e6914c89a72e344cfbd040d911e6a0761852c13c55a907",
+    "attempt-02/text/store-shared-memory-only-text-4.json.gz": "a9c616be26b97993062da24425c3e6cad0058357a94e5d6db43f228284eec39e",
+    "attempt-02/text/store-shared-memory-only-text-5.json.gz": "1696cd963bbb6ab0b7f6797275f410cf31697e865ba27b278ed587c8e588b22d",
+    "attempt-02/text/store-shared-memory-only-text-6.json.gz": "19819b25be1194e62b92c4168d7fd552277abce937d55990be187463df1502d7",
+    "attempt-02/text/store-shared-memory-only-text-7.json.gz": "ea9f2c9f6646d74685a0b6024e00fcdbdf1a7a9755672191ec2604313d819974",
+    "attempt-02/text/store-shared-memory-only-text-8.json.gz": "873f18956b581f40501a83f8c6127c21ef2262ec0930ac6f64c24244e9854f32",
+    "attempt-02/text/store-shared-memory-only-text-9.json.gz": "dff875ba3e5566cde1e735bb174f6e7e4dfb7ce8f601d3db58f43d1ddab57e97",
+    "attempt-02/text/test-results/full-corpus.trx": "a5343524fa6dcd8d8bb12b6f4954c512b0244cfd396970c06259bb28949ae212",
+    "audit-negative-checks.json": "99e5af01f3fb7582f91934274ae3318ae0f2cfc0d9c361d7e1f08f3941e69213",
+    "capture-negative-checks.json": "c7615b7be0cb1b6e7dc3f31b9f7f4d405442d93514f9a923d9611baaf5c62c45",
+    "checked-build_submission.py.log": "d8f3cf77ac8e8e358e97ee0f5555d17769b04fa6751e6946bc42b2f7bb970705",
+    "checked-build_submission_cn.py.log": "265ed1649e4c47c9d518d2f8cc346a2dea32fee31a1399c2ea6b9fb396596700",
+    "checked-build_thesis.py.log": "5ff4cfbd31c67a3d6eff95fcac277a2837c623d995072b3ef5bf4685b4d42a67",
+    "checked-render.py.log": "c5b5283fe244e1ca674cc45c9e88a637f7ab850785b3a67a153bfe052989e18e",
+    "checked-稿件一致性守卫.py.log": "09c05ce5fe3aa0cfcb501c254a29cb92358687bb070b3602604755388030a754",
+    "deviations.json": "6b8fa2fb77b6067bf8126ba5baf4de24eaa3a537ed033551243f469991e21410",
+    "diagnostics/analysis-unknown-check.json": "d0bfcf3e1d4933ceb20d83aceb19e01b4f0a2efbeafae92c3e4d2e890e123054",
+    "diagnostics/handler-cleanup.log": "7ea92cdc7aa5497b78b325b1b6d66f29989be1b1fc9cfabb3e6b80afad6681e0",
+    "diagnostics/handler-cleanup.trx": "822d75cbee38c3b718163f006427d18821d56218c7cdff1b6de57c56cfcb9c87",
+    "diagnostics/handler-diagnostic.log": "e8a1832ab78bfadfdeb02479f6a5e1657ab15495466e5555b765bf86d00ce4ea",
+    "diagnostics/handler-rotation.trx": "08c755304fab25965641617262d14c86e281c87f16f5db0c886dd079e919df46",
+    "embedding-preflight.json": "6852750cd64e487709793c04729f6aa8e0fb842ae831234c49f4186fc9d6d92b",
+    "embedding-runtime-attempt-01.json": "8fc26aa18a9091bc7d9a277d9468d8bcbf9c9bd22ccf6ddbdaf304d74d0f5272",
+    "embedding-runtime.json": "564066de8b878679726db055c934e1d01291f08aab5500f78d2d7c14c56f341b",
+    "execution-identity-attempt-02.json": "e67618fb0043380326c5135e6a2d38fcfb521c4558d5cd1b9ed4b33e09d438a1",
+    "instrumentation-ci.json": "a875e151fde7d31d9e795af30990f45af764da5d89252d4f5efe248c6f0d5148",
+    "instrumentation-ci.log": "bb85459ae1af08f88127df83e3a111abebd8167a96a3777741409ff28116f2e9",
+    "numeric-consistency.json": "d2d1b779c34d5f1d44e977ddc5c9718a5c647dc4bd112826db9e16b30c75b639",
+    "protected-inputs.json": "e827b729a0834e947a6799cfbf7eea1e35d3aa2555ecd31e56dda82a53f3bc9b",
+    "qualification-exact.log": "f9a5fb51500cdcdc901bd56024a8fa7ce8865080f8ef6187f8dd1cd0488ea2b0",
+    "qualification-exact.trx": "5cb369d713c15ede41b7ad5f83cfc766ea7add9652dde854f5c8eebd9efb4a7b",
+    "qualification-fixed.log": "74fc1b413b95399d29f8fdffc9d91e773b0197c6830d06817ff625977992b5b5",
+    "qualification-fixed.trx": "6129ebe9f6603f5a0537a8797b7c1d5760d15056d740c649d2ef5447b5a68652",
+    "qualification.log": "746db574fbfaa2bc1a317bb3866d9edf97efea19a9c699cfc8feff8b849942f0",
+    "qualification.trx": "2bf6e9a6d86881a04898b2372cdbb9de4c21f32772602d9ce07ea0e1e259957f",
+    "summarize.py": "edbcd47ee5447ccaf2d8901043989a2a77997efb41cea297cefbbafe0b112f68",
+    "summary.json": "92a2508da2aacf63d3c3b303606d9b3c77e2515ad077867abe202a3aedb3d78e",
+    "vector-crosscheck.json": "7a70ce6c578d6d06e2af3ec8b3306a1c055679ffc6d82bc776284495a593660f",
+    "verify_embeddings.py": "57722d5a53720c3610623a1de99b129aa99f4247e1eb1387be035337b54d7555"
+  },
+  "stubChatCompletionRequests": 3972,
+  "actualEmbeddingGatewayHttpRequests": 2081,
+  "actualEmbeddingInputCount": 7868,
+  "vectorNumericalCheck": {
+    "report": "vector-crosscheck.json",
+    "status": "PASS",
+    "independentDataOrHumanCoding": false
+  },
+  "binaryBuildCommitVerified": true,
+  "numericConsistency": "numeric-consistency.json",
+  "captureRejectionChecks": "capture-negative-checks.json",
+  "manuscriptGuards": "checked-稿件一致性守卫.py.log",
+  "manuscriptSourceSha256": {
+    "_工具/facts.py": "1cb7a955e7ae6c50a388847616792469b42575e691a1e74fb0ab94f9e4a05e99",
+    "学位论文/章节源/appA_availability.md": "833ed984eeb6f21317949c370fc152d33eb7611f91c0bbf7c86fc18e2d73a3bd",
+    "学位论文/章节源/appB_plans.md": "fba9abce37064bc9bed03964b9a8fd9cf03fd111e9e445f9cad57daa8485ec94",
+    "学位论文/章节源/ch03_system_and_method.md": "f4ec3f0d118b504b64315f855e268b543956da799f73f5c24de8ad3b4889b4ac",
+    "学位论文/章节源/ch06_planned.md": "cc3808ef6d5f86a656c75ddd6f971d91ce5ab5ef972c08be8a4fd42d56e183b8",
+    "稿件源/P3_DimensionalMismatch_in_RetrievalScoring_EN.md": "ddf6181c30b4bcace32c2189e6f5dd1b564bbf71e0db90a373431ac47d22f51f",
+    "稿件源/P3_中文译稿.md": "4d6da6c4c9535ec79d7c0fa1ca471a921a93c28732a915ffd0f4eda0805bf58c"
+  },
+  "publicCompressedReplay": {
+    "statisticalSummaryIdentical": true,
+    "numericalReportIdentical": true
+  }
+}

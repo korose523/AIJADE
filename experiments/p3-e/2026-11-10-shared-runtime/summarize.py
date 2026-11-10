@@ -25,10 +25,25 @@ def check(ok, message):
         raise ValueError(message)
 
 
+def resolved(path):
+    return path if path.exists() else path.with_name(path.name + '.gz')
+
+
 def load(path):
+    path = resolved(path)
     opener = gzip.open if path.suffix == '.gz' else open
     with opener(path, 'rt', encoding='utf-8') as stream:
         return json.load(stream)
+
+
+def raw_digest(path):
+    path = resolved(path)
+    opener = gzip.open if path.suffix == '.gz' else open
+    h = hashlib.sha256()
+    with opener(path, 'rb') as stream:
+        for block in iter(lambda: stream.read(1024*1024), b''):
+            h.update(block)
+    return h.hexdigest()
 
 
 def visible(system, planned):
@@ -67,8 +82,9 @@ def validate(folder, data, corpus):
     check(len(keys) == len(set(keys)) == len(expected) == 1986 and set(keys) == expected, 'incomplete or duplicate question coverage')
     check(sum(r['answerable'] for r in rows) == 1540, 'wrong primary question set')
     condition = data['condition']
-    journal = folder / ('rows-shared-memory-only-' + condition + '.jsonl')
-    with journal.open(encoding='utf-8') as stream:
+    journal = resolved(folder / ('rows-shared-memory-only-' + condition + '.jsonl'))
+    opener = gzip.open if journal.suffix == '.gz' else open
+    with opener(journal, 'rt', encoding='utf-8') as stream:
         check([json.loads(line) for line in stream] == rows, 'durable journal/report differ')
     stores = {c: {p['Id']: p for p in load(folder / ('store-shared-memory-only-%s-%s.json.gz' % (condition, c)))} for c in range(10)}
     states = Counter()
@@ -178,9 +194,30 @@ def main():
         rows = data['rows']
         report['conditions'][condition] = {
             'declaredCodeCommit': data['declaredCodeCommit'], 'entry': data['entry'], 'scope': data['scope'], 'promptBudget': data['promptBudget'],
-            'rawReportSha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'validation': valid,
+            'rawReportSha256': raw_digest(path), 'validation': valid,
             'answerable': part([r for r in rows if r['answerable']]), 'all': part(rows),
             'locatedEvidence': part([r for r in rows if r['answerable']], 'located')}
+        old_path = Path(__file__).resolve().parents[3] / 'experiments/memory/product-path' / ('product-path-' + condition + '.json')
+        old_data = load(old_path)
+        old_rows = {(r['c'], r['q']): r for r in old_data['rows']}
+        check(set(old_rows) == {(r['c'], r['q']) for r in rows}, 'historical comparison question keys differ')
+        differences = defaultdict(list)
+        changed = 0
+        unknown = 0
+        for r in rows:
+            old = old_rows[r['c'], r['q']]
+            check(old['evidence'] == r['evidence'] and old['answerable'] == r['answerable'], 'historical comparison denominator differs')
+            if r['prompt'] is None:
+                unknown += 1
+                continue
+            changed += r['prompt'] != old['prompt']
+            if r['answerable'] and r['evidence']:
+                differences[r['c']].append((r['prompt'] - old['prompt']) / r['evidence'])
+        report['conditions'][condition]['historicalComparison'] = {
+            'historicalRawReportSha256': hashlib.sha256(old_path.read_bytes()).hexdigest(), 'historicalCodeCommit': old_data['codeCommit'],
+            'matchedQuestionKeys': len(rows), 'unknownCurrentPrompts': unknown, 'questionsWithDifferentGoldPromptCounts': changed,
+            'macroPrimaryRecallDelta': statistics.fmean(statistics.fmean(v) for v in differences.values()) if not unknown else None,
+            'scope': 'Descriptive paired point comparison on the same question keys; no causal version effect or general prompt equivalence is established.'}
     with args.out.open('x', encoding='utf-8') as stream:
         json.dump(report, stream, ensure_ascii=False, indent=2)
         stream.write('\n')

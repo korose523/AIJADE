@@ -1,0 +1,30 @@
+{
+  "positiveValidation": {
+    "questions": 1986,
+    "answerableQuestions": 1540,
+    "conversations": 10,
+    "states": {
+      "complete": 1973,
+      "absent": 13
+    },
+    "captureAndSourceChecks": "PASS"
+  },
+  "negativeChecks": [
+    {
+      "case": "missing-row",
+      "status": "EXPECTED_REFUSAL",
+      "message": "incomplete or duplicate question coverage"
+    },
+    {
+      "case": "duplicate-question",
+      "status": "EXPECTED_REFUSAL",
+      "message": "incomplete or duplicate question coverage"
+    },
+    {
+      "case": "corrupt-capture-hash-in-report-and-journal",
+      "status": "EXPECTED_REFUSAL",
+      "message": "system capture hash differs"
+    }
+  ],
+  "originalFilesModified": false
+}
