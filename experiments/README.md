@@ -63,3 +63,8 @@ checked against its SHA-256.
 `missRate`, the predictive values P(unusable | self-pass) / P(usable | self-fail). The estimands of P2 §3.2 condition on the
 oracle instead; `RqcAnalysis` and `aijade-experiments p2-models` now report both families under their own names
 (`falseDiscoveryRate`, `falseOmissionRate`), and the papers read the recomputed `p2-models.json`.
+
+The later [retrieval-led Chapter 7 packet](ch7/retrieval-led-2026-11-12/README.md)
+retains both attempts, same-database prefix/render/suffix records, three real-API
+routing controls and five rejected corruptions. Its ten known development cases
+supply no held-out or C1/C2 contrast; the earlier replay packet remains unchanged.

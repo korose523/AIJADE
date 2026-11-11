@@ -1,0 +1,312 @@
+[
+  {
+    "condition": 0,
+    "deletePrevious": null,
+    "write": {
+      "request": {
+        "event_id": "route-control-0",
+        "session_id": "ch7-route-control",
+        "trace_id": "trace-route-control-0",
+        "correlation_id": "corr-route-control-0",
+        "timestamp": 1794412800000,
+        "origin_device": "ch7-research",
+        "privacy_level": 1,
+        "risk_score": 0.1,
+        "source": "chat",
+        "content": "ch7_route_control {\u0022caseId\u0022:\u0022control\u0022,\u0022taskId\u0022:\u0022arr-sum\u0022,\u0022codeSha256\u0022:\u0022575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9\u0022,\u0022requestedAct\u0022:\u0022comfort\u0022}"
+      },
+      "status": 201,
+      "response": {
+        "ok": true,
+        "txId": "tx_route-control-0",
+        "status": "committed",
+        "committedCount": 1,
+        "rejectedCount": 0,
+        "throttledCount": 0
+      }
+    },
+    "read": {
+      "path": "/api/v1/memory/items/?q=ch7_route_control\u0026limit=6",
+      "status": 200,
+      "response": {
+        "items": [
+          {
+            "id": "ep_route-control-0",
+            "sessionId": "ch7-route-control",
+            "source": "chat",
+            "content": "ch7_route_control {\u0022caseId\u0022:\u0022control\u0022,\u0022taskId\u0022:\u0022arr-sum\u0022,\u0022codeSha256\u0022:\u0022575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9\u0022,\u0022requestedAct\u0022:\u0022comfort\u0022}",
+            "createdAt": "2026-11-11T16:00:00\u002B00:00",
+            "memoryVersions": 1
+          }
+        ]
+      }
+    },
+    "route": {
+      "caseId": "control",
+      "memoryContentSha256": "b88c274c2bb7a96621b2139edd70b6e3d13c94c5cf7cf742d9cc1b805c3116a2",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.4717,
+      "failures": [],
+      "error": null
+    },
+    "intent": {
+      "id": "pi_control_0",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mappedAct": "comfort",
+    "gatewayAttempts": 0
+  },
+  {
+    "condition": 1,
+    "deletePrevious": {
+      "path": "/api/v1/memory/items/ep_route-control-0",
+      "status": 200,
+      "response": {
+        "forgotten": "ep_route-control-0",
+        "memoryVersionsRemoved": 1
+      }
+    },
+    "write": {
+      "request": {
+        "event_id": "route-control-1",
+        "session_id": "ch7-route-control",
+        "trace_id": "trace-route-control-1",
+        "correlation_id": "corr-route-control-1",
+        "timestamp": 1794412800000,
+        "origin_device": "ch7-research",
+        "privacy_level": 1,
+        "risk_score": 0.1,
+        "source": "chat",
+        "content": "ch7_route_control {\u0022caseId\u0022:\u0022control\u0022,\u0022taskId\u0022:\u0022arr-sum\u0022,\u0022codeSha256\u0022:\u0022575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9\u0022,\u0022requestedAct\u0022:\u0022celebrate\u0022}"
+      },
+      "status": 201,
+      "response": {
+        "ok": true,
+        "txId": "tx_route-control-1",
+        "status": "committed",
+        "committedCount": 1,
+        "rejectedCount": 0,
+        "throttledCount": 0
+      }
+    },
+    "read": {
+      "path": "/api/v1/memory/items/?q=ch7_route_control\u0026limit=6",
+      "status": 200,
+      "response": {
+        "items": [
+          {
+            "id": "ep_route-control-1",
+            "sessionId": "ch7-route-control",
+            "source": "chat",
+            "content": "ch7_route_control {\u0022caseId\u0022:\u0022control\u0022,\u0022taskId\u0022:\u0022arr-sum\u0022,\u0022codeSha256\u0022:\u0022575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9\u0022,\u0022requestedAct\u0022:\u0022celebrate\u0022}",
+            "createdAt": "2026-11-11T16:00:00\u002B00:00",
+            "memoryVersions": 1
+          }
+        ]
+      }
+    },
+    "route": {
+      "caseId": "control",
+      "memoryContentSha256": "2880d74b7660950e29e6c4dea4e4a7d2019156d04f7285c4cfea0f7b7745cd79",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 4
+    },
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.4437,
+      "failures": [],
+      "error": null
+    },
+    "intent": {
+      "id": "pi_control_1",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.4,
+        "arousal": 0.65,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.5,
+        "reflection": 0.4,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.615,
+        "pitch": 0.6200000000000001,
+        "energy": 0.625
+      },
+      "face": "bright_smile",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mappedAct": "celebrate",
+    "gatewayAttempts": 0
+  },
+  {
+    "condition": 2,
+    "deletePrevious": {
+      "path": "/api/v1/memory/items/ep_route-control-1",
+      "status": 200,
+      "response": {
+        "forgotten": "ep_route-control-1",
+        "memoryVersionsRemoved": 1
+      }
+    },
+    "write": {
+      "request": {
+        "event_id": "route-control-2",
+        "session_id": "ch7-route-control",
+        "trace_id": "trace-route-control-2",
+        "correlation_id": "corr-route-control-2",
+        "timestamp": 1794412800000,
+        "origin_device": "ch7-research",
+        "privacy_level": 1,
+        "risk_score": 0.1,
+        "source": "chat",
+        "content": "ch7_route_control {\u0022caseId\u0022:\u0022control\u0022,\u0022taskId\u0022:\u0022parse-query-string\u0022,\u0022codeSha256\u0022:\u00226dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da\u0022,\u0022requestedAct\u0022:\u0022comfort\u0022}"
+      },
+      "status": 201,
+      "response": {
+        "ok": true,
+        "txId": "tx_route-control-2",
+        "status": "committed",
+        "committedCount": 1,
+        "rejectedCount": 0,
+        "throttledCount": 0
+      }
+    },
+    "read": {
+      "path": "/api/v1/memory/items/?q=ch7_route_control\u0026limit=6",
+      "status": 200,
+      "response": {
+        "items": [
+          {
+            "id": "ep_route-control-2",
+            "sessionId": "ch7-route-control",
+            "source": "chat",
+            "content": "ch7_route_control {\u0022caseId\u0022:\u0022control\u0022,\u0022taskId\u0022:\u0022parse-query-string\u0022,\u0022codeSha256\u0022:\u00226dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da\u0022,\u0022requestedAct\u0022:\u0022comfort\u0022}",
+            "createdAt": "2026-11-11T16:00:00\u002B00:00",
+            "memoryVersions": 1
+          }
+        ]
+      }
+    },
+    "route": {
+      "caseId": "control",
+      "memoryContentSha256": "2d2bd85d22d3283a317a4411da4ee00246cccc2ce1bc8006358ca165a048c5de",
+      "program": {
+        "taskId": "parse-query-string",
+        "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+        "code": "function solve(qs) {\n  return qs.split(\u0027\u0026\u0027).reduce((acc, pair) =\u003E {\n    const [key, value] = pair.split(\u0027=\u0027);\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}"
+      },
+      "requestedAct": 3
+    },
+    "execution": {
+      "ok": false,
+      "passed": 5,
+      "total": 6,
+      "durationMs": 0.858,
+      "failures": [
+        {
+          "index": 1,
+          "args": "[\u0022\u0022]",
+          "expected": "{}",
+          "actual": "{\u0022\u0022:\u0022undefined\u0022}",
+          "error": null
+        }
+      ],
+      "error": null
+    },
+    "intent": {
+      "id": "pi_control_2",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0,
+        "arousal": 0.4,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.7,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.45,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.5399999999999999,
+        "pitch": 0.46,
+        "energy": 0.5
+      },
+      "face": "neutral_attentive",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mappedAct": "inform",
+    "gatewayAttempts": 0
+  }
+]

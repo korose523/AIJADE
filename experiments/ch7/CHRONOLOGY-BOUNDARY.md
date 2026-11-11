@@ -36,3 +36,9 @@ parent README describes that later causal order; its initial retrieval-to-
 execution edge was not exercised by the archived development batch. Case counts,
 order and formal protocol approval remain open. All existing development cases
 remain development material.
+
+Later update (same date): the separately frozen
+[retrieval-led development packet](retrieval-led-2026-11-12/README.md) now records
+actual retrieval-led execution/rendering on retained case databases. That new
+qualification does not change this chronology finding or its original replay
+records. C1, comparative scoring and the new held-out batch remain open.

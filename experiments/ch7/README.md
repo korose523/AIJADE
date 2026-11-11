@@ -17,10 +17,14 @@ The [chronology audit](CHRONOLOGY-BOUNDARY.md) narrows the accepted batch to
 artifact-replay qualification from receipt import/admission through state,
 write-back and second-round reuse. Code execution/rendering was prepared before
 the per-case initial retrieval; that retrieval did not drive the earlier prefix.
-The graph below is the intended later causal order. Its initial retrieval-to-
-execution edge still needs same-round implementation and qualification before
-the held-out comparison. Original measurements, failed attempts and counters are
-unchanged.
+The separately frozen [retrieval-led development batch](retrieval-led-2026-11-12/README.md)
+now qualifies the graph below on ten already-known cases. Actual retrieved task,
+code hash and requested act select a frozen program before execution/mapping;
+the renderer starts afterwards. Each original case database remains alive across
+rendering and the import/state/write-back/reuse suffix. Three actual-API cue
+changes and five corruptions are independently checked. Original replay
+measurements, failed attempts and counters remain unchanged. The new path is
+operational development qualification, without a C1/C2 effect or held-out data.
 
 ```mermaid
 flowchart TD
@@ -62,3 +66,12 @@ At the implementation commit the development qualification was NOT_RUN. The
 [separately archived complete measurement](2026-11-12/README.md) now qualifies
 the ten declared C2 development cases on that artifact-replay path and retains the original failed observer
 attempt. The held-out C1/C2 batch remains **NOT_RUN**.
+
+The later packet retains its own failed initialization attempt (no retrieval or
+renderer reached), the separately pushed [narrow amendment](../plans/2026-11-12-ch7-retrieval-led-initialization-amendment.md),
+and a fresh complete ten-case run. Its [acceptance record](retrieval-led-20261112.json)
+pins all 65 public files, including the manifest. The raw audit reconstructs
+chronology, database continuity and both applied-parameter hash conventions.
+S1 still admits a semantically wrong allowed act; round-2 reuse executes only the
+skill, without another render or generated answer. C1, comparative scoring and
+a newly frozen held-out batch remain to be implemented.

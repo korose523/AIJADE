@@ -25,6 +25,13 @@ Research methods, original requests and replies, failures and verification recei
 and [engineering regressions and local-model product checks](experiments/engineering/2026-11-10-shared-diary/receipt.json).
 Development preflights do not replace primary studies or establish prior public registration.
 
+The [Chapter 7 research adapter](experiments/ch7/README.md) now has separately
+archived retrieval-led development evidence: actual memory content selects a
+frozen program before execution and rendering, and each original test database
+continues into state/write-back/reuse. Ten known C2 cases are retained with the
+failed initialization attempt and a semantic counterexample. This supplies no
+C1/C2 effect, held-out result or product automatic-learning claim.
+
 ## Runtime composition
 
 The [architecture guide](docs/ARCHITECTURE.md) records the checked DeepSeek Harness, superagent, Comma and companion-plugin

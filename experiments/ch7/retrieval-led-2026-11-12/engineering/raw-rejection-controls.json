@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "rejectedControls": 5,
+  "results": [
+    {
+      "control": "phase-order",
+      "rejected": true,
+      "reason": "case phase order: H"
+    },
+    {
+      "control": "retrieved-code",
+      "rejected": true,
+      "reason": "retrieved route/code mismatch"
+    },
+    {
+      "control": "database-continuity",
+      "rejected": true,
+      "reason": "database identity changed"
+    },
+    {
+      "control": "missing-case",
+      "rejected": true,
+      "reason": "missing/reordered case"
+    },
+    {
+      "control": "revoked-positive-reuse",
+      "rejected": true,
+      "reason": "impossible or missing positive reuse"
+    }
+  ]
+}
