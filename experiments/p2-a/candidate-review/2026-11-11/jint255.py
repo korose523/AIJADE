@@ -18,7 +18,7 @@ sys.path.insert(0, str(JAVASCRIPT))
 from prepare import project
 
 OLD_CACHE = Path('/Users/mac/.cache/aijade-p2a-js-20261111')
-DOTNET = Path('/usr/local/share/dotnet/dotnet')
+DOTNET = Path('/Users/mac/.dotnet/dotnet')
 DLL = OLD_CACHE / 'dotnet-final/bin/JintReplay/release/JintReplay.dll'
 PORT = OLD_CACHE / 'ports-06/Mbpp-255.js'
 MODE = {'bigint': False, 'tuples': False, 'entries': False, 'decimalDigits': False}
