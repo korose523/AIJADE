@@ -23,10 +23,19 @@ static void encode(const struct llama_vocab *vocab, const char *input, int32_t l
     if (text_needed > 0) fail("unexpected successful zero-buffer detokenize");
     text_needed = -text_needed;
     if (text_needed > 4194304) fail("decoded-text limit");
-    char *decoded = malloc((size_t)text_needed + 1);
+    int32_t capacity = text_needed + 256;
+    char *decoded = malloc((size_t)capacity);
     if (!decoded) fail("allocate decoded text");
-    int32_t actual = llama_detokenize(vocab, tokens, count, decoded, text_needed, false, true);
-    if (actual != text_needed) fail("detokenized size changed");
+    int32_t actual = llama_detokenize(vocab, tokens, count, decoded, capacity, false, true);
+    if (actual < 0) {
+        capacity = -actual + 256;
+        if (capacity > 4194304) fail("decoded-text retry limit");
+        char *larger = realloc(decoded, (size_t)capacity);
+        if (!larger) fail("allocate decoded retry");
+        decoded = larger;
+        actual = llama_detokenize(vocab, tokens, count, decoded, capacity, false, true);
+    }
+    if (actual < 0 || actual > capacity) fail("detokenized size exceeds buffer");
     write_u32((uint32_t)actual); write_bytes(decoded, (size_t)actual);
     free(decoded); free(tokens);
 }

@@ -1,7 +1,7 @@
 """Tokenize one fixed model's complete prompt corpus in two independent engines."""
 import argparse
 from collections import Counter
-import hashlib,json,os,resource,struct,subprocess,sys,time
+import gzip,hashlib,json,os,resource,struct,subprocess,sys,time
 from pathlib import Path
 
 from gguf_metadata import read_metadata
@@ -17,7 +17,9 @@ def file_state(path):
 class Native:
     def __init__(self,executable,model,out):
         self.stderr=(out/'native.stderr.log').open('wb')
-        self.archive=(out/'native-token-ids.bin').open('wb')
+        self.archive=gzip.open(out/'native-token-ids.bin.gz','wb')
+        self.logical_hash=hashlib.sha256()
+        self.logical_bytes=0
         self.child=subprocess.Popen([str(executable),str(model)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr)
         assert self.read(8)==b'P2TOK01\0'
         fields=struct.unpack('<5I',self.read(20));version=self.read(self.u32()).decode()
@@ -28,7 +30,7 @@ class Native:
             block=self.child.stdout.read(size-len(value))
             if not block:raise ValueError('Native tokenizer ended before the complete record')
             value.extend(block)
-        result=bytes(value);self.archive.write(result);return result
+        result=bytes(value);self.archive.write(result);self.logical_hash.update(result);self.logical_bytes+=len(result);return result
     def u32(self):return struct.unpack('<I',self.read(4))[0]
     def encode(self,text):
         raw=text.encode();assert len(raw)<=1048576
@@ -69,7 +71,8 @@ def run(config,corpus,executable,out):
         assert native.info['addBos']==independent.add_bos and native.info['addEos']==independent.add_eos
         assert native.info['bosId']==independent.bos and native.info['eosId']==independent.eos
         counts=Counter()
-        with corpus.open(encoding='utf-8') as inputs,(out/'measurements.jsonl').open('w',encoding='utf-8') as output,(out/'independent-token-ids.bin').open('wb') as ids_output:
+        independent_hash=hashlib.sha256();independent_bytes=0
+        with corpus.open(encoding='utf-8') as inputs,(out/'measurements.jsonl').open('w',encoding='utf-8') as output,gzip.open(out/'independent-token-ids.bin.gz','wb') as ids_output:
             for line in inputs:
                 row=json.loads(line);measurements={};row_pass=True
                 assert sha(row['rawPrompt'].encode())==row['rawSha256']
@@ -84,7 +87,8 @@ def run(config,corpus,executable,out):
                         same=actual_ids==reference_ids
                         decoded_ok=actual_text==expected and reference_text==expected
                         name=prefix+('WithSpecial' if special else 'NoSpecial')
-                        data=packed(reference_ids);ids_output.write(struct.pack('<I',len(reference_ids)));ids_output.write(data)
+                        data=packed(reference_ids);frame=struct.pack('<I',len(reference_ids))+data;ids_output.write(frame)
+                        independent_hash.update(frame);independent_bytes+=len(frame)
                         measurements[name]={'count':len(actual_ids),'independentCount':len(reference_ids),
                             'nativeTokenSha256':sha(packed(actual_ids)),'independentTokenSha256':sha(data),'idsAgree':same,
                             'decodedSha256':sha(actual_text.encode()),'independentDecodedSha256':sha(reference_text.encode()),
@@ -98,6 +102,8 @@ def run(config,corpus,executable,out):
                 output.write(json.dumps(result,ensure_ascii=False,sort_keys=True,separators=(',',':'))+'\n');output.flush();ids_output.flush()
                 summary['rows']+=1;counts[result['status']]+=1;summary['counts']=dict(counts)
                 (out/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')
+        summary['losslessStreams']={'codec':'gzip','nativeLogicalSha256':native.logical_hash.hexdigest(),'nativeLogicalBytes':native.logical_bytes,
+                                    'independentLogicalSha256':independent_hash.hexdigest(),'independentLogicalBytes':independent_bytes}
         native.close();native=None
         summary['modelFileStateAfter']=file_state(model);assert summary['modelFileStateAfter']==cfg['modelFileState']
         usage=resource.getrusage(resource.RUSAGE_CHILDREN)
