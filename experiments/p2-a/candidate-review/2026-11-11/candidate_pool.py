@@ -198,7 +198,12 @@ def build(pack, recovery, jint, nsw, out):
             case_decisions.append(row)
         assert len(decision['retainedCaseIds']) + len(decision['excludedCaseIds']) == len(all_ids)
         if proposed:
-            assert {'base', 'plus'} == {item[0] for item in decision['retainedCaseIds']}
+            retained_partitions = {item[0] for item in decision['retainedCaseIds']}
+            assert 'base' in retained_partitions
+            if problem['plus_input']:
+                assert 'plus' in retained_partitions
+            else:
+                decision['coverageNote'] = 'The pinned release contains base cases only.'
             if disposition == 'REVIEW_EXACT_VARIANT':
                 variant = variant_specs[tid]
                 statement, contract = variant['statement'], variant['contract']
