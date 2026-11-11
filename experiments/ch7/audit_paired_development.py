@@ -10,6 +10,21 @@ from audit_retrieval_suffix import require, applied_hashes, verify_suffix
 from score_paired_development import CONTRACT_SHA256, LAYOUT_SHA256, IDS, score_directory
 
 
+def wire_proposal_of_dto(dto):
+    required={'proposalId','sessionId','inputHash','anchorKind','anchorVerified','candidateParams','confidence'}
+    optional={'renderRef','appliedParamsHash','assetVersionHash','evidenceHash','claimText'}
+    require(set(dto)==required|optional,'diagnostic proposal fields missing/unknown')
+    require(type(dto['anchorKind']) is int and dto['anchorKind'] in [0,1],'unknown diagnostic anchor enum')
+    require(all(isinstance(dto[k],str) for k in ['proposalId','sessionId','inputHash']) and
+            isinstance(dto['candidateParams'],dict) and type(dto['anchorVerified']) is bool,'invalid diagnostic proposal types')
+    require(all(dto[k] is None or isinstance(dto[k],str) for k in optional),'invalid diagnostic optional type')
+    result=copy.deepcopy(dto)
+    result['anchorKind']={0:'shadow_params',1:'evidence'}[dto['anchorKind']]
+    for key in optional:
+        if result[key] is None:del result[key]
+    return result
+
+
 def verify(root, repo):
     receipt=load(root,'receipt.json'); identity=load(root,'input-identities.json')
     layout=load(root,'layout.json'); selection=load(root,'selection.json'); rows=load(root,'cases.json')
@@ -97,7 +112,7 @@ def verify(root, repo):
         for report in final['reportRows']:require(report['result']['promoted'] is True,'persisted promotion report')
         for call in row['promotionAttempts']:
             require(call['transactionMode']==('service_owned' if condition=='C1' else 'caller_owned'),'transaction mode')
-            require(call['job']['proposal']==row['proposal'] and call['job']['evaluationPack']['unitContractPropertyTests']['passed'] is True,'service received actual proposal/execution pack')
+            require(wire_proposal_of_dto(call['job']['proposal'])==row['proposal'] and call['job']['evaluationPack']['unitContractPropertyTests']['passed'] is True,'service received actual proposal/execution pack')
         if case=='I8':
             require(row['databaseErrorCode']=='P0001' and not final['authority'] and not final['outcomes'] and final['outboxCount']==0 and final['outcomeMemoryCount']==0,'controlled state failure rollback')
             require(len(row['promotionAttempts'])==1 and row['promotionAttempts'][0]['serviceResult']['ok'] is True,'transient promotion observation missing')
