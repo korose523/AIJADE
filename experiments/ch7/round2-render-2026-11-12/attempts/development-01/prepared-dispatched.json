@@ -1,0 +1,2804 @@
+[
+  {
+    "caseId": "u_6f517fd12e4ada03",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_6f517fd12e4ada03",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_6f517fd12e4ada03",
+        "assetVersionOverride": "different-asset",
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_6f517fd12e4ada03",
+      "memoryContentSha256": "e5020a878e4b15f29ffb294bb2d143bbc093e906b263374b89f58f9cc7fec227",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_6f517fd12e4ada03",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 877.9047,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_24ab60b5b5044ef2a859467e6f2923d1",
+      "token": "c74698feea164443889dd76eb908fb81"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433292417
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 0,
+        "t_sim": 0.0359,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 0,
+        "t_sim": 0.0379,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_6f517fd12e4ada03",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_6f517fd12e4ada03",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_6f517fd12e4ada03",
+        "assetVersionOverride": "different-asset",
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_6f517fd12e4ada03",
+      "memoryContentSha256": "e5020a878e4b15f29ffb294bb2d143bbc093e906b263374b89f58f9cc7fec227",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_6f517fd12e4ada03",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 1.3517,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_98ca385420c8418fb46e3074f4c9e5b9",
+      "token": "9dddced3f0b342e8b51e7ad4cf5577d3"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433292417
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 0,
+        "t_sim": 0.0359,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_6f517fd12e4ada03",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 0,
+        "t_sim": 0.0379,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_3262407f7b06f468",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_3262407f7b06f468",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "omit",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_3262407f7b06f468",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_3262407f7b06f468",
+      "memoryContentSha256": "978be1c654f702300eb7cd331a5f7beaea874d2086631d8d7bfabf3e6c15f8cb",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_3262407f7b06f468",
+    "execution": null,
+    "intentId": "pi_ch7-act-development-01_u_3262407f7b06f468",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_3262407f7b06f468",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0,
+        "arousal": 0.4,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.7,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.45,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.5399999999999999,
+        "pitch": 0.46,
+        "energy": 0.5
+      },
+      "face": "neutral_attentive",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "inform",
+    "databaseBefore": {
+      "database": "aijade_test_21649d5b04fb44a396b0a7ede188da11",
+      "token": "24f71a85aaf34d43ad11003a06eecaff"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_3262407f7b06f468",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433293458
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_3262407f7b06f468",
+        "avatar_emotion_vector": [
+          0,
+          0.4,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 1,
+        "t_sim": 1.0641,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_3262407f7b06f468",
+        "pose_params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 1,
+        "t_sim": 1.0643,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_3262407f7b06f468",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_3262407f7b06f468",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "omit",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_3262407f7b06f468",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_3262407f7b06f468",
+      "memoryContentSha256": "978be1c654f702300eb7cd331a5f7beaea874d2086631d8d7bfabf3e6c15f8cb",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_3262407f7b06f468",
+    "execution": null,
+    "intentId": "pi_ch7-act-development-01_u_3262407f7b06f468",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_3262407f7b06f468",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0,
+        "arousal": 0.4,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.7,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.45,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.5399999999999999,
+        "pitch": 0.46,
+        "energy": 0.5
+      },
+      "face": "neutral_attentive",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "inform",
+    "databaseBefore": {
+      "database": "aijade_test_0387ca4b02414c00b3a7fc689cdb3528",
+      "token": "59c8b090982340a3b53ee4f4e2d48396"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_3262407f7b06f468",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433293458
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_3262407f7b06f468",
+        "avatar_emotion_vector": [
+          0,
+          0.4,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 1,
+        "t_sim": 1.0641,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_3262407f7b06f468",
+        "pose_params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 1,
+        "t_sim": 1.0643,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_b655e4fdcca80f86",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_b655e4fdcca80f86",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_b655e4fdcca80f86",
+        "assetVersionOverride": null,
+        "claimedStage": "pixels_observed",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_b655e4fdcca80f86",
+      "memoryContentSha256": "f75be1bf0cbd114bb69b942dd941b9dafa941aa07873789d183cc18fc6eecb1d",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_b655e4fdcca80f86",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.9804,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_ec37356ee4054d028c4427075e4408b4",
+      "token": "ebfee3f7e0514840b41bfbab419d2ca2"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433294483
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 2,
+        "t_sim": 2.0907,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 2,
+        "t_sim": 2.0907,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_b655e4fdcca80f86",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_b655e4fdcca80f86",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_b655e4fdcca80f86",
+        "assetVersionOverride": null,
+        "claimedStage": "pixels_observed",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_b655e4fdcca80f86",
+      "memoryContentSha256": "f75be1bf0cbd114bb69b942dd941b9dafa941aa07873789d183cc18fc6eecb1d",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_b655e4fdcca80f86",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.9039,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_110b826966d44ecfbd6178aac17abbee",
+      "token": "f20a026421404b9fb68e26e881d65171"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433294483
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 2,
+        "t_sim": 2.0907,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_b655e4fdcca80f86",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 2,
+        "t_sim": 2.0907,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_1b81d876de1008b4",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_1b81d876de1008b4",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_1b81d876de1008b4",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_1b81d876de1008b4",
+      "memoryContentSha256": "82e96d69d46eb5e14ffd730fa226098660266466fa2a9459f4f79fd32874c1af",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_1b81d876de1008b4",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.8519,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_8a7bb8449fee4599b225e276c0f0c604",
+      "token": "d0b87087ec7e46f3ba46ce7a303d94e4"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433295509
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 3,
+        "t_sim": 3.1191,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 3,
+        "t_sim": 3.1191,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_1b81d876de1008b4",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_1b81d876de1008b4",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_1b81d876de1008b4",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_1b81d876de1008b4",
+      "memoryContentSha256": "82e96d69d46eb5e14ffd730fa226098660266466fa2a9459f4f79fd32874c1af",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_1b81d876de1008b4",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 1.3676,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_a2bbcb6b420745d6b40809241ee3cb4c",
+      "token": "01867031466e476d8e08eda29739792a"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433295509
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 3,
+        "t_sim": 3.1191,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_1b81d876de1008b4",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 3,
+        "t_sim": 3.1191,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_7c1fde769e93f69b",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_7c1fde769e93f69b",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_2d69e7fd46cf9c05",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_7c1fde769e93f69b",
+      "memoryContentSha256": "8227588670e90f0b6d4d3420173e15895cc515f242331cf0e4c92849cfce2249",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_7c1fde769e93f69b",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 1.0456,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_1de575a9270f4becb4b48ad8de925f14",
+      "token": "0a73614687844283b37347fb2f28a591"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433296538
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 4,
+        "t_sim": 4.1452,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 4,
+        "t_sim": 4.1452,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_7c1fde769e93f69b",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_7c1fde769e93f69b",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_2d69e7fd46cf9c05",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_7c1fde769e93f69b",
+      "memoryContentSha256": "8227588670e90f0b6d4d3420173e15895cc515f242331cf0e4c92849cfce2249",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_7c1fde769e93f69b",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 1.0453,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_d69b924773594a49b22a945c0e3acd6d",
+      "token": "7c2a4bd0136a435aa57992a5233c5e56"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433296538
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 4,
+        "t_sim": 4.1452,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_7c1fde769e93f69b",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 4,
+        "t_sim": 4.1452,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_b731af9ded39a494",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_b731af9ded39a494",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "parse-query-string",
+      "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_b731af9ded39a494",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "parse-query-string",
+    "code": "function solve(qs) {\n  return qs.split(\u0027\u0026\u0027).reduce((acc, pair) =\u003E {\n    const [key, value] = pair.split(\u0027=\u0027);\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}",
+    "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+    "route": {
+      "caseId": "u_b731af9ded39a494",
+      "memoryContentSha256": "cc4335afdd45e34f7626fdd8efe81da3ccdf802b3d0e03829fbe0ac01aeddaa9",
+      "program": {
+        "taskId": "parse-query-string",
+        "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+        "code": "function solve(qs) {\n  return qs.split(\u0027\u0026\u0027).reduce((acc, pair) =\u003E {\n    const [key, value] = pair.split(\u0027=\u0027);\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_b731af9ded39a494",
+    "execution": {
+      "ok": false,
+      "passed": 5,
+      "total": 6,
+      "durationMs": 17.6297,
+      "failures": [
+        {
+          "index": 1,
+          "args": "[\u0022\u0022]",
+          "expected": "{}",
+          "actual": "{\u0022\u0022:\u0022undefined\u0022}",
+          "error": null
+        }
+      ],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_b731af9ded39a494",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_b731af9ded39a494",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0,
+        "arousal": 0.4,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.7,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.45,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.5399999999999999,
+        "pitch": 0.46,
+        "energy": 0.5
+      },
+      "face": "neutral_attentive",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "inform",
+    "databaseBefore": {
+      "database": "aijade_test_2c028e4e6e944fef9286361022a41b8c",
+      "token": "23d8efc091eb4425a0a747a582e3b560"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_b731af9ded39a494",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433297564
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_b731af9ded39a494",
+        "avatar_emotion_vector": [
+          0,
+          0.4,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 5,
+        "t_sim": 5.1716,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_b731af9ded39a494",
+        "pose_params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 5,
+        "t_sim": 5.1716,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_b731af9ded39a494",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_b731af9ded39a494",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "parse-query-string",
+      "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_b731af9ded39a494",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "parse-query-string",
+    "code": "function solve(qs) {\n  return qs.split(\u0027\u0026\u0027).reduce((acc, pair) =\u003E {\n    const [key, value] = pair.split(\u0027=\u0027);\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}",
+    "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+    "route": {
+      "caseId": "u_b731af9ded39a494",
+      "memoryContentSha256": "cc4335afdd45e34f7626fdd8efe81da3ccdf802b3d0e03829fbe0ac01aeddaa9",
+      "program": {
+        "taskId": "parse-query-string",
+        "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da",
+        "code": "function solve(qs) {\n  return qs.split(\u0027\u0026\u0027).reduce((acc, pair) =\u003E {\n    const [key, value] = pair.split(\u0027=\u0027);\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_b731af9ded39a494",
+    "execution": {
+      "ok": false,
+      "passed": 5,
+      "total": 6,
+      "durationMs": 1.5652,
+      "failures": [
+        {
+          "index": 1,
+          "args": "[\u0022\u0022]",
+          "expected": "{}",
+          "actual": "{\u0022\u0022:\u0022undefined\u0022}",
+          "error": null
+        }
+      ],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_b731af9ded39a494",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_b731af9ded39a494",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0,
+        "arousal": 0.4,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.7,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.45,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.5399999999999999,
+        "pitch": 0.46,
+        "energy": 0.5
+      },
+      "face": "neutral_attentive",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "inform",
+    "databaseBefore": {
+      "database": "aijade_test_936ce51658e9404cb6944b867afcaeff",
+      "token": "bc9fb2aac9e54c6193733e67ecb28071"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_b731af9ded39a494",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433297564
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_b731af9ded39a494",
+        "avatar_emotion_vector": [
+          0,
+          0.4,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 5,
+        "t_sim": 5.1716,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_b731af9ded39a494",
+        "pose_params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 5,
+        "t_sim": 5.1716,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_51f0799d11b47ca8",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_51f0799d11b47ca8",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_51f0799d11b47ca8",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": true,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_51f0799d11b47ca8",
+      "memoryContentSha256": "d187488a4d5905da233cb7a7a244a494fe675ac8d41574e94e1dbf6d0c2ebbbd",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_51f0799d11b47ca8",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 1.2173,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_3e53365e84e449ec881775875027aa87",
+      "token": "431290827436448abdd22a2ae6b08f37"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433298590
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 6,
+        "t_sim": 6.1954,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 6,
+        "t_sim": 6.1954,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_51f0799d11b47ca8",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_51f0799d11b47ca8",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_51f0799d11b47ca8",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": true,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_51f0799d11b47ca8",
+      "memoryContentSha256": "d187488a4d5905da233cb7a7a244a494fe675ac8d41574e94e1dbf6d0c2ebbbd",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_51f0799d11b47ca8",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 1.1442,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_7dedee2b4a974523809bbc7c1192623c",
+      "token": "94d78027d3da4ebc81b255931b48b23b"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433298590
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 6,
+        "t_sim": 6.1954,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_51f0799d11b47ca8",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 6,
+        "t_sim": 6.1954,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_2d69e7fd46cf9c05",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_2d69e7fd46cf9c05",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": "celebrate",
+        "receiptCaseId": "u_2d69e7fd46cf9c05",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_2d69e7fd46cf9c05",
+      "memoryContentSha256": "67d2fd61395e5a7f1993b277be4a08edecfb54a9c92d56098e71d6d46870eb07",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_2d69e7fd46cf9c05",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.8245,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.4,
+        "arousal": 0.65,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.5,
+        "reflection": 0.4,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.615,
+        "pitch": 0.6200000000000001,
+        "energy": 0.625
+      },
+      "face": "bright_smile",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "celebrate",
+    "dispatchedAct": "celebrate",
+    "databaseBefore": {
+      "database": "aijade_test_9178e5d8e3dc472ebc7ad2f9a770657f",
+      "token": "94e628bfbce6401f823784a3ade8f5c4"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433299614
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+        "avatar_emotion_vector": [
+          0.4,
+          0.65,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "bright_smile",
+        "run_id": "ch7-act-development-01",
+        "seq": 7,
+        "t_sim": 7.2215,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+        "pose_params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 7,
+        "t_sim": 7.2215,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_2d69e7fd46cf9c05",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_2d69e7fd46cf9c05",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": "celebrate",
+        "receiptCaseId": "u_2d69e7fd46cf9c05",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_2d69e7fd46cf9c05",
+      "memoryContentSha256": "67d2fd61395e5a7f1993b277be4a08edecfb54a9c92d56098e71d6d46870eb07",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_2d69e7fd46cf9c05",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.6021,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.4,
+        "arousal": 0.65,
+        "dominance": 0.5,
+        "intimacy": 0.4,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.5,
+        "reflection": 0.4,
+        "urgency": 0.2
+      },
+      "duration": 2,
+      "textStyle": "neutral",
+      "voiceProsody": {
+        "rate": 0.615,
+        "pitch": 0.6200000000000001,
+        "energy": 0.625
+      },
+      "face": "bright_smile",
+      "gaze": "natural_conversational",
+      "gesture": "rest_neutral",
+      "posture": "neutral_engaged",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "celebrate",
+    "dispatchedAct": "celebrate",
+    "databaseBefore": {
+      "database": "aijade_test_e4e0a137af4e4dacb10f904aa2fd9cc0",
+      "token": "93630bd04c194163b359676fc9bd998d"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433299614
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+        "avatar_emotion_vector": [
+          0.4,
+          0.65,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "bright_smile",
+        "run_id": "ch7-act-development-01",
+        "seq": 7,
+        "t_sim": 7.2215,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_2d69e7fd46cf9c05",
+        "pose_params": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 7,
+        "t_sim": 7.2215,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_d13d4ca584242835",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_d13d4ca584242835",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_d13d4ca584242835",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": true
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_d13d4ca584242835",
+      "memoryContentSha256": "66579f5bfc45a2d25db256b111aca6dbc4e9a355d14b9cf546d5a9107a641fca",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_d13d4ca584242835",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.6955,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_d13d4ca584242835",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_d13d4ca584242835",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_b09eca481ff04c0095169f30269abc40",
+      "token": "3d51c3b77c3844fdbc6e28b684ef29df"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_d13d4ca584242835",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433300640
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_d13d4ca584242835",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 8,
+        "t_sim": 8.2492,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_d13d4ca584242835",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 8,
+        "t_sim": 8.2493,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_d13d4ca584242835",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_d13d4ca584242835",
+      "conditions": [
+        "C1",
+        "C2"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_d13d4ca584242835",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": false,
+        "revokeBeforeReuse": false,
+        "failStateWrite": true
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_d13d4ca584242835",
+      "memoryContentSha256": "66579f5bfc45a2d25db256b111aca6dbc4e9a355d14b9cf546d5a9107a641fca",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_d13d4ca584242835",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.6457,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_d13d4ca584242835",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_d13d4ca584242835",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_63d94959be224c299cdb05bb9dcb335a",
+      "token": "efd2c7ae19454d369119e28333ddbe66"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_d13d4ca584242835",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433300640
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_d13d4ca584242835",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 8,
+        "t_sim": 8.2492,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_d13d4ca584242835",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 8,
+        "t_sim": 8.2493,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_5b459708324f5e70",
+    "condition": "C2",
+    "runtimeCase": {
+      "caseId": "u_5b459708324f5e70",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_5b459708324f5e70",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": true,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_5b459708324f5e70",
+      "memoryContentSha256": "6fba72b15998b52a05983336fbeb51d59130769010abe458d61a29377b3ae29d",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_5b459708324f5e70",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.5765,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_5b459708324f5e70",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_5b459708324f5e70",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_018a956fb8c6400bbb27d47ab23cba24",
+      "token": "4837bef2e58f4812a28d9d3529241e5b"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_5b459708324f5e70",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433301671
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_5b459708324f5e70",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 9,
+        "t_sim": 9.2771,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_5b459708324f5e70",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 9,
+        "t_sim": 9.2771,
+        "schema_version": "v1.0"
+      }
+    ]
+  },
+  {
+    "caseId": "u_5b459708324f5e70",
+    "condition": "C1",
+    "runtimeCase": {
+      "caseId": "u_5b459708324f5e70",
+      "conditions": [
+        "C2",
+        "C1"
+      ],
+      "taskId": "arr-sum",
+      "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+      "requestedAct": "comfort",
+      "operations": {
+        "execution": "run",
+        "mapperActOverride": null,
+        "receiptCaseId": "u_5b459708324f5e70",
+        "assetVersionOverride": null,
+        "claimedStage": "behavior_overlay_pre_solve",
+        "repeatOutcome": true,
+        "revokeBeforeReuse": false,
+        "failStateWrite": false
+      }
+    },
+    "taskId": "arr-sum",
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+    "route": {
+      "caseId": "u_5b459708324f5e70",
+      "memoryContentSha256": "6fba72b15998b52a05983336fbeb51d59130769010abe458d61a29377b3ae29d",
+      "program": {
+        "taskId": "arr-sum",
+        "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9",
+        "code": "function solve(nums) {\n  return nums.reduce((acc, num) =\u003E acc \u002B num, 0);\n}"
+      },
+      "requestedAct": 3
+    },
+    "routeVersion": "ch7-retrieved-catalogue-v1",
+    "benchSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "archivedSelfVerdict": "pass",
+    "executionId": "execution-ch7-act-development-01-u_5b459708324f5e70",
+    "execution": {
+      "ok": true,
+      "passed": 5,
+      "total": 5,
+      "durationMs": 0.5659,
+      "failures": [],
+      "error": null
+    },
+    "intentId": "pi_ch7-act-development-01_u_5b459708324f5e70",
+    "mappedIntent": {
+      "id": "pi_ch7-act-development-01_u_5b459708324f5e70",
+      "agentId": "aijade-ch7",
+      "userScope": "user:ch7",
+      "personaSnapshotRef": "persona:ch7",
+      "timeMarked": 0,
+      "expression": {
+        "valence": 0.1,
+        "arousal": 0.25,
+        "dominance": 0.5,
+        "intimacy": 0.7,
+        "certainty": 0.6,
+        "curiosity": 0.5,
+        "playfulness": 0.3,
+        "reflection": 0.4,
+        "urgency": 0.1
+      },
+      "duration": 2,
+      "textStyle": "warm",
+      "voiceProsody": {
+        "rate": 0.46,
+        "pitch": 0.41500000000000004,
+        "energy": 0.425
+      },
+      "face": "neutral_attentive",
+      "gaze": "sustained_soft",
+      "gesture": "gentle_open_palm",
+      "posture": "relaxed_settled",
+      "turnTaking": "hold",
+      "cameraBehavior": "medium_static",
+      "sceneContext": null,
+      "traceId": null
+    },
+    "mapperVersion": "ch7-allowlisted-acts-v1",
+    "requestedAct": "comfort",
+    "mapperInputAct": "comfort",
+    "dispatchedAct": "comfort",
+    "databaseBefore": {
+      "database": "aijade_test_9c0a5c6320204b0d8375cbfae5400320",
+      "token": "dd21139485bd46df802903a235f7b0fc"
+    },
+    "registered": {
+      "intentId": "pi_ch7-act-development-01_u_5b459708324f5e70",
+      "personaSnapshotRef": "persona:ch7",
+      "sentMs": 1794433301671
+    },
+    "packets": [
+      {
+        "packet_type": "AffectToAvatarPacket",
+        "trace_id": "pi_ch7-act-development-01_u_5b459708324f5e70",
+        "avatar_emotion_vector": [
+          0.1,
+          0.25,
+          0.5,
+          0.5
+        ],
+        "avatar_emotion_semantics": [
+          "valence",
+          "arousal",
+          "dominance",
+          "curiosity"
+        ],
+        "animation_state_hint": "neutral_attentive",
+        "run_id": "ch7-act-development-01",
+        "seq": 9,
+        "t_sim": 9.2771,
+        "schema_version": "v1.0"
+      },
+      {
+        "packet_type": "ControlToAvatarPosePacket",
+        "trace_id": "pi_ch7-act-development-01_u_5b459708324f5e70",
+        "pose_params": [
+          0,
+          -0.05,
+          0.15,
+          -0.15
+        ],
+        "pose_semantics": [
+          "head_yaw",
+          "head_pitch",
+          "head_roll",
+          "lean"
+        ],
+        "locomotion_mode": "idle",
+        "run_id": "ch7-act-development-01",
+        "seq": 9,
+        "t_sim": 9.2771,
+        "schema_version": "v1.0"
+      }
+    ]
+  }
+]

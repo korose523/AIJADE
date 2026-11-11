@@ -6,6 +6,36 @@ proposal admission and promotion. It is hosted by `tests/Aijade.Tests`, not
 registered in the companion server. It does not make the product an automatic
 learning system.
 
+## Current extension: second-round persisted-act command delivery
+
+The [prospective plan](../plans/2026-11-12-ch7-round2-persisted-act.md) was
+pushed alone before implementation `d78ccf8`. The [new complete packet](round2-render-2026-11-12/README.md)
+uses the same ten known scenarios and twenty original case/arm databases. After
+authorized sandbox reuse, a research-only delivery bridge reads the actual stored
+promotion specification and maps its allow-listed act into a separately registered
+second-session command. The original request is a post-run reference, never a
+replacement for a wrong stored act. No promotion/reuse permission or semantic
+gate changes.
+
+C1 sends five second commands and C2 three; all eight have complete pre-solve
+command witnesses and accepted receipt imports. Four/one C1 commands and two/one
+C2 commands match/mismatch the declared request. The celebrate-for-comfort case
+reaches the second renderer in both arms. Five/seven other trajectories are
+refused before dispatch, not scored as semantically correct. Selected denominators
+therefore differ; these are not population rates or a C1/C2 semantic superiority
+comparison. All twenty dispositions are retained. Exact command agreement does
+not establish pixels, conversation/answer quality, naturalness or user benefit.
+
+The single fixed 120-second admission succeeds, then the only actual attempt
+completes with zero swap growth. The implementation is built from a clean
+committed source with its exact SHA embedded in the assembly. Eight helper
+controls, nine coherent disposable corruptions, full raw reconstruction, resource
+limits and all twenty owned database cleanups pass. The
+[acceptance record](round2-render-20261112.json) binds all 64 archive files.
+Historical packets and their earlier NOT_MEASURED scopes remain unchanged.
+No new held-out case, model judgment, human review or formal hardware approval is
+inferred; the formal held-out proposal remains unapproved and unrun.
+
 The [prospective development plan](../plans/2026-11-12-ch7-adapter-qualification.md)
 was committed and pushed separately before implementation. Its ten cases qualify
 only the C2 path. They do not supply held-out observations, a C1/C2 effect, human
@@ -105,7 +135,8 @@ There are seven scheduled invalid-promotion and eight integrity-invalid reuse
 windows per arm. I3's initial legal actions and I7's pre-revocation promotion are
 allowed; absent downstream memory does not shrink a denominator. I8's transient
 service success is separate from durable rows. S1 remains a semantic limitation;
-round-2 semantic act correctness is **NOT_MEASURED**, since it renders no act.
+in that comparator, round-2 semantic act correctness is **NOT_MEASURED**, since
+that batch renders no second act.
 
 The [new acceptance record](comparison-20261112.json) pins the complete packet,
 including the first local regression timeout and the post-measurement diagnostic
@@ -129,8 +160,9 @@ The source freeze binds 331 actual source/input/dependency files.
 This is instrument preparation on existing observations, with zero new empirical
 or held-out data. At that stage the live driver was still bound to the development labels.
 The [40-pair proposal](heldout-protocol-proposal-v1.json) has no generated cases,
-seed, author/supervisor approval or execution. A reviewed manifest-driven live
-driver and genuinely new case construction remain necessary before Table 7.3 can
+seed, author/supervisor approval or execution. At that preparation stage, a
+reviewed manifest-driven live driver and genuinely new case construction were
+still necessary before Table 7.3 could
 be populated. The [preparation acceptance record](manifest-preparation-acceptance-20261112.json)
 and CI check bind the complete derivation and controls.
 
@@ -162,8 +194,8 @@ completes twenty case/arm records on the original databases, and reproduces the
 earlier finite window counts. Five parser controls, five scoring controls and
 seven disposable raw corruptions pass; all forty database leases are cleaned.
 The complete [acceptance record](live-manifest-qualification-20261112.json) pins
-both attempts and the single admission. No first prefix was reused, no second
-render/answer semantics were measured, and no held-out result or formal hardware
+both attempts and the single admission. No first prefix was reused; that packet
+measured no second render/answer semantics, and no held-out result or formal hardware
 qualification is inferred. The 40-pair formal proposal remains unapproved/unrun.
 
 The [build-provenance record](live-manifest-build-provenance-20261112.json)

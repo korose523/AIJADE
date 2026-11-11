@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "rejectedCorruptions": 9,
+  "controls": [
+    {
+      "control": "wrong-persisted-act",
+      "rejected": true,
+      "reason": "ValueError: act was not sourced from persisted spec/verdict"
+    },
+    {
+      "control": "changed-database-source-row",
+      "rejected": true,
+      "reason": "ValueError: database source row substituted"
+    },
+    {
+      "control": "missing-observed-receipt",
+      "rejected": true,
+      "reason": "ValueError: observed second receipt hidden as missing"
+    },
+    {
+      "control": "foreign-receipt",
+      "rejected": true,
+      "reason": "ValueError: foreign or incomplete consumed commands"
+    },
+    {
+      "control": "changed-receipt-hash",
+      "rejected": true,
+      "reason": "ValueError: second independently rebuilt hashes"
+    },
+    {
+      "control": "second-time-reversal",
+      "rejected": true,
+      "reason": "ValueError: second time reversal"
+    },
+    {
+      "control": "dispatch-after-refusal",
+      "rejected": true,
+      "reason": "ValueError: dispatch after refused reuse"
+    },
+    {
+      "control": "omitted-condition",
+      "rejected": true,
+      "reason": "ValueError: missing/reordered second condition"
+    },
+    {
+      "control": "changed-request-reference",
+      "rejected": true,
+      "reason": "ValueError: request reference substituted"
+    }
+  ],
+  "primaryUnchanged": true,
+  "newHeldOutCases": 0
+}
