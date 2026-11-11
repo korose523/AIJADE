@@ -53,3 +53,5 @@ jobs:
         run: python3 experiments/ch7/paired-development-2026-11-12/verify_archive.py
       - name: Verify identifier-independent scoring, source freeze and unexecuted held-out proposal
         run: python3 experiments/ch7/manifest-preparation-2026-11-12/verify_archive.py
+      - name: Verify conditional live manifest dataflow, retained swap stop and fixed idle admission
+        run: python3 experiments/ch7/live-manifest-2026-11-12/verify_archive.py

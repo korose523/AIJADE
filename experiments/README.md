@@ -26,6 +26,7 @@ archived summaries stay comparable.
 - [Existing-results consistency audit](engineering/2026-11-09-research-audit/README.md): archived execution replay and metric-recomputation receipts; no new model generation.
 - [Product regression receipts](engineering/2026-11-10-github-validation/receipt.json): failed and repaired cases, controlled browser flows and monitor checks. These are engineering observations, not primary research results.
 - [Identifier-independent Chapter 7 scoring preparation](ch7/manifest-preparation-2026-11-12/README.md): exact re-encoding of existing paired observations, source freeze and adverse-result controls; zero new experimental observations. The linked 40-pair held-out protocol is proposed, unapproved and unrun.
+- [Conditional live-manifest dataflow qualification](ch7/live-manifest-2026-11-12/README.md): actual fresh execution of the known scenarios, original database continuity and input operations without case-label decisions; includes the first system-swap stop, one fixed idle admission and the complete conditional repeat. No new held-out cases.
 
 | Directory | Paper | Contents | Produced by |
 |---|---|---|---|

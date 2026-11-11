@@ -127,9 +127,41 @@ missing/mislinked records as incomplete; old observed normal results are unchang
 The source freeze binds 331 actual source/input/dependency files.
 
 This is instrument preparation on existing observations, with zero new empirical
-or held-out data. The live driver is still bound to the development labels.
+or held-out data. At that stage the live driver was still bound to the development labels.
 The [40-pair proposal](heldout-protocol-proposal-v1.json) has no generated cases,
 seed, author/supervisor approval or execution. A reviewed manifest-driven live
 driver and genuinely new case construction remain necessary before Table 7.3 can
 be populated. The [preparation acceptance record](manifest-preparation-acceptance-20261112.json)
 and CI check bind the complete derivation and controls.
+
+## Conditional live manifest qualification
+
+The later [live-manifest packet](live-manifest-2026-11-12/README.md) now implements
+the operational driver. Closed runtime inputs specify task/code/act and explicit
+interventions; case classes, windows and expected results stay outside it. The
+driver actually observes both arms and does not require a favorable C2 result.
+
+```mermaid
+flowchart TD
+    runtime["Closed runtime manifest: identities and input operations"] --> parser["Parse and bind actual task/code/act"]
+    parser --> read["Actual memory write and returned cue"]
+    read --> execution["Fresh sandbox execution and allowed mapping"]
+    execution --> renderer["One shared later renderer; close and seal"]
+    renderer --> adapter["Same C1/C2 adapter, state and delivery"]
+    adapter --> reuse["Actual next-round retrieval and guarded reuse"]
+    reuse --> raw["Complete raw observations and database continuity"]
+    windows["Separate frozen window definitions"] --> audit["Independent raw audit and numerical scoring"]
+    raw --> audit
+```
+
+The first attempt stopped on sustained global swap growth after twenty prefixes,
+with no completed suffix; unknown promotion/reuse is not zero. A separately
+recorded amendment allowed one fixed 120-second idle admission and one fresh
+repeat under unchanged ceilings, binaries and inputs. That conditional repeat
+completes twenty case/arm records on the original databases, and reproduces the
+earlier finite window counts. Five parser controls, five scoring controls and
+seven disposable raw corruptions pass; all forty database leases are cleaned.
+The complete [acceptance record](live-manifest-qualification-20261112.json) pins
+both attempts and the single admission. No first prefix was reused, no second
+render/answer semantics were measured, and no held-out result or formal hardware
+qualification is inferred. The 40-pair formal proposal remains unapproved/unrun.

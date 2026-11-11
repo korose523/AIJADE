@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/ch7/live-manifest-2026-11-12/verify_archive.py", line 91, in <module>
+    if __name__=='__main__':print(json.dumps(audit(),indent=2))
+                                             ^^^^^^^
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/ch7/live-manifest-2026-11-12/verify_archive.py", line 29, in audit
+    require(seen=={str(p.relative_to(ROOT)) for p in ROOT.rglob('*') if p.is_file() and p!=ROOT/'manifest.json'},'unlisted archive file')
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/ch7/audit_retrieval_suffix.py", line 12, in require
+    if not condition: raise ValueError(reason)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: unlisted archive file

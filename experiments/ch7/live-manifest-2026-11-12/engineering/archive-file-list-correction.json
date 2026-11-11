@@ -1,0 +1,8 @@
+{
+  "stage": "Archive packaging after successful primary raw audit",
+  "issue": "The new file-list builder excluded a nested render-session manifest by basename; strict unlisted-file check rejected it.",
+  "correction": "Exclude only the root archive manifest and retain the actual nested render-session manifest.",
+  "rawMeasurementsChanged": false,
+  "scoringChanged": false,
+  "experimentRerun": false
+}

@@ -1,0 +1,55 @@
+{
+  "status": "LIVE_MANIFEST_DATAFLOW_AUDIT_PASS",
+  "knownScenarioPairs": 10,
+  "measuredConditionRows": 20,
+  "retainedOriginalDatabases": 20,
+  "sharedRenderedIntents": 10,
+  "heldOutCases": 0,
+  "modelRequests": 0,
+  "conditionCounts": {
+    "C1": {
+      "scheduledInvalidPromotionOpportunities": 7,
+      "invalidDurablePromotions": 3,
+      "scheduledInvalidReuseOpportunities": 8,
+      "integrityInvalidReuse": 2,
+      "persistedSpecs": 7,
+      "persistedReports": 7,
+      "successfulServiceReturns": 7,
+      "promotionServiceEntries": 7,
+      "serviceEntriesAtInvalidPromotionWindow": 3,
+      "actualRound2Queries": 11,
+      "retrievedRound2Queries": 10,
+      "queriedAtInvalidReuseWindow": 8,
+      "retrievedAtInvalidReuseWindow": 7,
+      "round2SandboxExecutions": 5,
+      "outcomeMemories": 9,
+      "normalOutcomeCounts": {
+        "accepted": 1
+      },
+      "normalOutcome": "accepted"
+    },
+    "C2": {
+      "scheduledInvalidPromotionOpportunities": 7,
+      "invalidDurablePromotions": 0,
+      "scheduledInvalidReuseOpportunities": 8,
+      "integrityInvalidReuse": 0,
+      "persistedSpecs": 4,
+      "persistedReports": 4,
+      "successfulServiceReturns": 5,
+      "promotionServiceEntries": 5,
+      "serviceEntriesAtInvalidPromotionWindow": 1,
+      "actualRound2Queries": 11,
+      "retrievedRound2Queries": 10,
+      "queriedAtInvalidReuseWindow": 8,
+      "retrievedAtInvalidReuseWindow": 7,
+      "round2SandboxExecutions": 3,
+      "outcomeMemories": 9,
+      "normalOutcomeCounts": {
+        "accepted": 1
+      },
+      "normalOutcome": "accepted"
+    }
+  },
+  "round2SemanticActCorrectness": "NOT_MEASURED",
+  "interpretation": "Known-scenario live-driver/dataflow qualification. No new held-out cases, fault-population inference, investigator blinding, independent human review or formal hardware qualification."
+}

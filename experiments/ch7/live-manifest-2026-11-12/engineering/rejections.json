@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "rejectedCorruptions": 7,
+  "controls": [
+    {
+      "control": "missing-arm",
+      "rejected": true,
+      "reason": "ValueError: missing/reordered live case or arm"
+    },
+    {
+      "control": "retrieved-code",
+      "rejected": true,
+      "reason": "ValueError: retrieved programme binding"
+    },
+    {
+      "control": "database-token",
+      "rejected": true,
+      "reason": "ValueError: database continuity"
+    },
+    {
+      "control": "time-reversal",
+      "rejected": true,
+      "reason": "ValueError: journal time reversal"
+    },
+    {
+      "control": "render-seal",
+      "rejected": true,
+      "reason": "ValueError: renderer closure seal"
+    },
+    {
+      "control": "hidden-partial-promotion",
+      "rejected": true,
+      "reason": "ValueError: durable promotion rows hidden after commit observation"
+    },
+    {
+      "control": "changed-window",
+      "rejected": true,
+      "reason": "ValueError: window template identity"
+    }
+  ],
+  "primaryUnchanged": true,
+  "newHeldOutCases": 0
+}
