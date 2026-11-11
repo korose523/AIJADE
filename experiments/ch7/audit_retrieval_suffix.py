@@ -3,11 +3,29 @@
 No .NET qualification flags are used as the evidence for state or reuse checks.
 """
 import hashlib
+import json
+from decimal import Decimal
 PROMOTED = {'H','I3','I7','S1'}
 REUSED = {'H','I3','S1'}
 def sha(data): return hashlib.sha256(data).hexdigest()
 def require(condition, reason):
     if not condition: raise ValueError(reason)
+
+def applied_hashes(record):
+    applied = {'morph.'+k:v for k,v in record['expressions_applied'].items()}
+    applied.update({'bone.'+k:v for k,v in record['avatar_state']['bones'].items()})
+    keys = sorted(applied, key=lambda k:k.encode('utf-16-be'))
+    renderer = '\n'.join(k+'='+format(applied[k], '.6f') for k in keys)
+    def number(v):
+        # These archived overlay values have at most six fractional digits and
+        # are in JSON.stringify's fixed-notation range; refuse an unhandled case.
+        require(v == 0 or 1e-6 <= abs(v) < 1e21, 'unhandled canonical numeric range')
+        text = format(Decimal(str(v)), 'f')
+        if '.' in text: text = text.rstrip('0').rstrip('.')
+        return '0' if v == 0 else text
+    canonical = '{'+','.join(json.dumps(k,ensure_ascii=False)+':'+number(applied[k]) for k in keys)+'}'
+    return sha(renderer.encode()), sha(canonical.encode())
+
 def verify_suffix(rows, selection, pre, header):
     for r in rows:
         case = r['caseId']; final=r['final']; evidence=r['evidence']; prepared=r['prepared']; selected=r['selectedReceipt']
@@ -21,7 +39,8 @@ def verify_suffix(rows, selection, pre, header):
         posts=r['importPosts']
         require(len(posts)==20 and all(p['status']==201 for p in posts), 'receipt import did not exercise all request/receipt HTTP writes')
         record=pre[selected['renderRef']]
-        require(selected['appliedParamsHash'] == record['applied_params_hash'] and record['stage'] == 'behavior_overlay_pre_solve', 'receipt applied hash/stage not supported by renderer file')
+        renderer_hash, server_hash = applied_hashes(record)
+        require(renderer_hash == record['applied_params_hash'] and server_hash == selected['appliedParamsHash'] and record['stage'] == 'behavior_overlay_pre_solve', 'receipt applied hash/stage not supported by independently canonicalized renderer parameters')
         traces={c['trace_id'] for c in record.get('consumed',[]) if c.get('trace_id')}
         require(selected['intentId'] in traces and selected['assetVersionHash']==header['pmx_sha256'], 'receipt not supported by actual renderer file')
         require(any(p['request']==selected['request'] for p in posts) and any(p['request']==selected['receipt'] for p in posts), 'selected receipt was not imported')
