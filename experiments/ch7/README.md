@@ -47,6 +47,7 @@ the requested allowed act; failed or unknown execution maps an Inform fallback
 but never qualifies promotion. The mapper cannot establish that a valid act fits
 the user: the declared S1 counterexample deliberately retains that limitation.
 
-Implementation and batch status at the implementation commit: **development
-qualification NOT_RUN**. Results are archived separately after the clean-code
-execution. The held-out batch remains **NOT_RUN** regardless of qualification.
+At the implementation commit the development qualification was NOT_RUN. The
+[separately archived complete measurement](2026-11-12/README.md) now qualifies
+the ten declared C2 development cases and retains the original failed observer
+attempt. The held-out C1/C2 batch remains **NOT_RUN**.

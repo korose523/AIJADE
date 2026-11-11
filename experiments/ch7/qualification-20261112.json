@@ -1,0 +1,57 @@
+{
+  "schema": "aijade.ch7.mechanical-acceptance.v1",
+  "status": "MECHANICAL_EVIDENCE_AUDIT_PASS",
+  "checkedAt": "2026-11-11T16:24:44.472971+00:00",
+  "manifestSha256": "62351f733145847b4b65aefe223bba69fcc7bbef9eec6b65bf996918251e1078",
+  "manifestFiles": 73,
+  "planCommit": "aed0795",
+  "observerAmendment": "c4b384b",
+  "executionCommit": "3223a114651e38ea29748c659deb6d961541e279",
+  "primaryAttempt": "development-02",
+  "numbers": {
+    "cases": 10,
+    "qualified": 10,
+    "attempts": 2,
+    "observerFailures": 1,
+    "promotions": 4,
+    "reuses": 3,
+    "semanticAccepted": 1,
+    "semanticReused": 1,
+    "unknownStates": 4,
+    "failedStates": 1,
+    "revokedStates": 1,
+    "absentStates": 1,
+    "verifiedStates": 3,
+    "memoryWrites": 9,
+    "initialWrites": 10,
+    "renderEvents": 200,
+    "providerAttempts": 0,
+    "heldOut": 0,
+    "localPassed": 649,
+    "localSkipped": 20,
+    "browserSkipped": 38
+  },
+  "qualification": "Finite C2 development path only; no C1/C2 held-out comparison, human validation, hardware qualification or publication acceptance.",
+  "rejections": {
+    "status": "PASS",
+    "rejected": 3,
+    "originalUnchanged": true,
+    "cases": [
+      {
+        "case": "missing-case",
+        "rejected": true,
+        "reason": "ValueError: incomplete/changed development cases"
+      },
+      {
+        "case": "changed-raw-hash",
+        "rejected": true,
+        "reason": "ValueError: manifest bytes/hash: attempts/development-02/client/aijade-render-state.jsonl.gz"
+      },
+      {
+        "case": "revoked-positive-reuse",
+        "rejected": true,
+        "reason": "ValueError: impossible or missing positive reuse"
+      }
+    ]
+  }
+}

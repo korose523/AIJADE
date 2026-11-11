@@ -1,0 +1,43 @@
+{
+  "schema": "aijade.ch7.development-receipt.v1",
+  "status": "STOPPED",
+  "reason": "RuntimeError: qualify_nonzero_exit",
+  "codeCommit": "080409a9f6d50ef1c860ed35fb0c8ba1474ed2ea",
+  "finishedAt": "2026-11-11T16:03:51.625125+00:00",
+  "wallSeconds": 87.93569163698703,
+  "ownedCpuSeconds": 103.30683521600001,
+  "peak": {
+    "rssBytes": 1085878272,
+    "swapIncreaseBytes": 0,
+    "minAvailableBytes": 6573740032
+  },
+  "phases": {
+    "renderer": {
+      "startedAt": "2026-11-11T16:02:23.693465+00:00",
+      "pid": 7064,
+      "exitCode": 0,
+      "endedAt": "2026-11-11T16:03:32.241076+00:00"
+    },
+    "prepare": {
+      "startedAt": "2026-11-11T16:02:51.246803+00:00",
+      "pid": 7079,
+      "exitCode": 0,
+      "endedAt": "2026-11-11T16:03:04.664967+00:00"
+    },
+    "qualify": {
+      "startedAt": "2026-11-11T16:03:32.245455+00:00",
+      "pid": 7089,
+      "exitCode": 1,
+      "endedAt": "2026-11-11T16:03:51.624644+00:00"
+    }
+  },
+  "plannedCases": 10,
+  "completedCases": 10,
+  "heldOutCases": 0,
+  "conditionsMeasured": [
+    "C2"
+  ],
+  "semanticJudgments": "AI-assisted; no independent human review",
+  "formalHardwareQualification": false,
+  "modelRequests": 0
+}

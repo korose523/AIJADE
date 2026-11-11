@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "rejected": 3,
+  "originalUnchanged": true,
+  "cases": [
+    {
+      "case": "missing-case",
+      "rejected": true,
+      "reason": "ValueError: incomplete/changed development cases"
+    },
+    {
+      "case": "changed-raw-hash",
+      "rejected": true,
+      "reason": "ValueError: manifest bytes/hash: attempts/development-02/client/aijade-render-state.jsonl.gz"
+    },
+    {
+      "case": "revoked-positive-reuse",
+      "rejected": true,
+      "reason": "ValueError: impossible or missing positive reuse"
+    }
+  ]
+}
