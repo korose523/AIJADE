@@ -24,4 +24,12 @@ Prompt lengths and SHA-256 values come from the actual generation and A/B verifi
 
 Balanced allocation gives floor(ST/N) or ceil(ST/N) exposures for every task per condition per round and distinct tasks inside each trial when S <= N. Counts include tasks with zero exposure. The model-study development/selection split, seed, N/T/q, precision target, device qualification and final author decisions remain future study inputs. The engineering seed 42 does not settle them.
 
-Final measurements, independent checks and the concise results discussion will be added after the frozen execution. Earlier reference failures, exclusions and candidate decisions remain under candidate-review and javascript-port; this stage does not overwrite them.
+The complete corrected replay at 6e6d0c8a023f0d20067b5eeb433d64d0823947c1 agrees on all 422 tasks and 115,185 retained cases. All 422 expected-output noninterference checks pass. The reference-backed normal CLI completes all 48 steps. Continuation from 32 recorded steps gives identical decision records, with execution durations retained separately. Changed-manifest, changed-design and public-to-legacy prefixes are all refused before the CLI creates its run output. No model is called.
+
+Generation prompts span 556–1,597 UTF-8 bytes. Verifier A spans 24,547–185,030, and verifier B 24,279–152,715 with the reference candidate. Empty-candidate maxima are 160,898 and 128,583. These lengths are engineering capacity observations; token counts and model context fit remain unmeasured. Fix the model-specific tokenization, chat-template and any prompt-budget rule before a model pilot.
+
+The allocation check includes N=258/q=8/T=172 and N=422/q=8/T=282 with twelve slots. The latter gives 414 tasks eight exposures and eight tasks nine exposures per condition per round. These are design examples; no development split or primary-study N/T/q is selected.
+
+The first 188-task attempt is INVALIDATED_WHOLE_ATTEMPT. Its checkout-working-directory failures and the eight rows completed after a driver rebuild before termination are kept under results/rejected-replay/. None of its 90,331 recorded case rows enters the fresh complete replay. Earlier reference failures, exclusions and candidate decisions remain under candidate-review and javascript-port.
+
+Run `python3 experiments/p2-a/executable-bank/2026-11-11/verify_archive.py` to check the complete outcome-to-source joins, input/reference identities, recorded process outputs, normal CLI continuation and identity refusals. Results are under results/replay/, results/engineering/ and results/summary.json. Source and release licences are kept in results/bank/. The executable 195 MB bank is locally reconstructed rather than duplicated in Git.

@@ -1,0 +1,12 @@
+{
+  "status": "INVALIDATED_WHOLE_ATTEMPT",
+  "acceptedRows": 0,
+  "reason": "The CLI required a checkout working directory; isolated workers exited before loading tasks. The driver assembly was rebuilt before the parent was terminated, so the last eight rows used a different binary. The entire attempt is rejected.",
+  "observedTasks": 188,
+  "observedCaseCounts": {
+    "UNKNOWN": 89450,
+    "PASS": 881
+  },
+  "partialRowsAreNotResearchTaskFailures": true,
+  "replacement": "Fresh complete replay under the corrected frozen commit; no rows merged."
+}

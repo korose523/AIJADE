@@ -1,0 +1,30 @@
+{
+  "wrongExpected": {
+    "rejected": true,
+    "exitCode": 1,
+    "artifactChecksumUpdated": true,
+    "semanticOrRecordInvariantRejection": true,
+    "stderr": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 203, in <module>\n    print(json.dumps(audit(args.directory.resolve()),ensure_ascii=False,indent=2))\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 109, in audit\n    assert row['expectedSha256'] == original['candidateExpectedSha256']\nAssertionError\n"
+  },
+  "missingProcess": {
+    "rejected": true,
+    "exitCode": 1,
+    "artifactChecksumUpdated": true,
+    "semanticOrRecordInvariantRejection": true,
+    "stderr": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 203, in <module>\n    print(json.dumps(audit(args.directory.resolve()),ensure_ascii=False,indent=2))\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 65, in audit\n    assert len(process) == 422 and set(process) == set(tasks)\nAssertionError\n"
+  },
+  "wrongRunIdentity": {
+    "rejected": true,
+    "exitCode": 1,
+    "artifactChecksumUpdated": true,
+    "semanticOrRecordInvariantRejection": true,
+    "stderr": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 203, in <module>\n    print(json.dumps(audit(args.directory.resolve()),ensure_ascii=False,indent=2))\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 142, in audit\n    assert all(x['publicBankManifestSha256'] == lock['manifestSha256'] and\nAssertionError\n"
+  },
+  "wrongPromptMaximum": {
+    "rejected": true,
+    "exitCode": 1,
+    "artifactChecksumUpdated": true,
+    "semanticOrRecordInvariantRejection": true,
+    "stderr": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 203, in <module>\n    print(json.dumps(audit(args.directory.resolve()),ensure_ascii=False,indent=2))\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/executable-bank/2026-11-11/verify_archive.py\", line 182, in audit\n    assert item == {\nAssertionError\n"
+  }
+}

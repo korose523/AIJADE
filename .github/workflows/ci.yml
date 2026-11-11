@@ -35,3 +35,5 @@ jobs:
         run: python3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v
       - name: Verify P2-A recovered references and candidate decisions
         run: python3 experiments/p2-a/candidate-review/2026-11-11/verify_archive.py
+      - name: Verify complete P2-A executable-bank records and prompt measurements
+        run: python3 experiments/p2-a/executable-bank/2026-11-11/verify_archive.py

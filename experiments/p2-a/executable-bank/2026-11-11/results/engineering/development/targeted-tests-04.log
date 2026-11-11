@@ -1,0 +1,36 @@
+  正在确定要还原的项目…
+  所有项目均是最新的，无法还原。
+  Aijade.Core -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Core/release/Aijade.Core.dll
+  Aijade.ComputerUse -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.ComputerUse/release/Aijade.ComputerUse.dll
+  Aijade.Providers -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Providers/release/Aijade.Providers.dll
+  Aijade.P1 -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.P1/release/Aijade.P1.dll
+  Aijade.Memory -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Memory/release/Aijade.Memory.dll
+  Aijade.Learning -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Learning/release/Aijade.Learning.dll
+  Aijade.Growth -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Growth/release/Aijade.Growth.dll
+  Aijade.Telemetry -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Telemetry/release/Aijade.Telemetry.dll
+  Aijade.Research -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Research/release/Aijade.Research.dll
+  Aijade.Client -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Client/release/Aijade.Client.dll
+  Aijade.Integrations -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Integrations/release/Aijade.Integrations.dll
+  Aijade.Bots -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Bots/release/Aijade.Bots.dll
+  Aijade.UI -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.UI/release/Aijade.UI.dll
+  Aijade.Web -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Web/release/Aijade.Web.dll
+  Aijade.Web (Blazor output) -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Web/release/wwwroot
+  Aijade.Server -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Server/release/Aijade.Server.dll
+  Aijade.Tests -> /Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Tests/release/Aijade.Tests.dll
+/Users/mac/.cache/aijade-p2a-executable-20261111/dotnet/bin/Aijade.Tests/release/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)的测试运行
+总共 1 个测试文件与指定模式相匹配。
+[xUnit.net 00:00:03.59]     Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [SKIP]
+  已跳过 Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [1 ms]
+[xUnit.net 00:00:03.91]     Aijade.Tests.PublicBenchBankTests.Normal_runner_uses_the_public_bank_and_checks_resume_identity [FAIL]
+  失败 Aijade.Tests.PublicBenchBankTests.Normal_runner_uses_the_public_bank_and_checks_resume_identity [344 ms]
+  错误消息:
+   Assert.Equal() Failure: Strings differ
+                                       ↓ (pos 281)
+Expected: ···":"c91d27de","durationMs":4,"publicBankManifestSha2"···
+Actual:   ···":"c91d27de","durationMs":2,"publicBankManifestSha2"···
+                                       ↑ (pos 281)
+  堆栈跟踪:
+     at Aijade.Tests.PublicBenchBankTests.Normal_runner_uses_the_public_bank_and_checks_resume_identity() in /Volumes/Untitled/AIJADE/AIJADE-next/tests/Aijade.Tests/PublicBenchBankTests.cs:line 100
+--- End of stack trace from previous location ---
+
+失败!  - 失败:     1，通过:    48，已跳过:     1，总计:    50，持续时间: 50 s - Aijade.Tests.dll (net10.0)

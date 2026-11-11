@@ -1,0 +1,107 @@
+{
+  "schema": "aijade.p2a.public-bank.control.v1",
+  "newModelCalls": 0,
+  "normalCli": {
+    "mode": "simulation",
+    "steps": 48,
+    "executionsPassed": 48,
+    "manifestSha256": "5592614a78d6e9ca0ecd19ab3684cbd455880aba7a0ecafe4689a73a19dab2bf",
+    "runFingerprint": "fcf2150c",
+    "selectedTaskIds": [
+      "Mbpp/394",
+      "Mbpp/167",
+      "Mbpp/643",
+      "Mbpp/451",
+      "HumanEval/113",
+      "Mbpp/271",
+      "Mbpp/8",
+      "Mbpp/424",
+      "Mbpp/725",
+      "Mbpp/240",
+      "HumanEval/158",
+      "Mbpp/736"
+    ],
+    "poolTasks": 422,
+    "zeroExposureTasks": 410,
+    "minExposure": 0,
+    "maxExposure": 1,
+    "process": {
+      "startedAt": "2026-11-11T03:03:36.016044+00:00",
+      "wallSeconds": 15.044,
+      "exitCode": 0,
+      "stop": null,
+      "sampledPeakRssBytes": 1046237184,
+      "stdoutSha256": "c987bfa4b3d851a694b06b606354b8ed376b47f33196951b21df97b565126da9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    }
+  },
+  "resume": {
+    "replayedSteps": 32,
+    "decisionsIdentical": true,
+    "timingComparison": "timings preserved separately and excluded only from decision equality",
+    "process": {
+      "startedAt": "2026-11-11T03:03:51.094138+00:00",
+      "wallSeconds": 15.143,
+      "exitCode": 0,
+      "stop": null,
+      "sampledPeakRssBytes": 1081167872,
+      "stdoutSha256": "cf4791b4e59e820cd6767136b2bd1664822f1f992f474893708d6bbee46bc26a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    }
+  },
+  "negativeChecks": {
+    "changedManifest": {
+      "rejected": true,
+      "process": {
+        "startedAt": "2026-11-11T03:04:06.274398+00:00",
+        "wallSeconds": 0.346,
+        "exitCode": -6,
+        "stop": null,
+        "sampledPeakRssBytes": 48132096,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "77808de69107b0b09c97024ff0bc7863ba79bdc4d1f434646a2accdb9d200d41",
+        "stderr": "Unhandled exception. System.IO.InvalidDataException: The resume record has a different public bank or run fingerprint.\n   at Aijade.Research.RqC.RqcRunner.ValidateResumeBank(RqcCliConfig cfg) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 331\n   at Aijade.Research.RqC.RqcRunner.RunAsync(RqcCliConfig cfg, HttpClient http, TextWriter log, String gitHash, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 340\n   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Rqc/Program.cs:line 12\n   at Program.<Main>(String[] args)\n"
+      },
+      "outputCreated": false
+    },
+    "changedDesign": {
+      "rejected": true,
+      "process": {
+        "startedAt": "2026-11-11T03:04:06.622338+00:00",
+        "wallSeconds": 0.343,
+        "exitCode": -6,
+        "stop": null,
+        "sampledPeakRssBytes": 51286016,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "77808de69107b0b09c97024ff0bc7863ba79bdc4d1f434646a2accdb9d200d41",
+        "stderr": "Unhandled exception. System.IO.InvalidDataException: The resume record has a different public bank or run fingerprint.\n   at Aijade.Research.RqC.RqcRunner.ValidateResumeBank(RqcCliConfig cfg) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 331\n   at Aijade.Research.RqC.RqcRunner.RunAsync(RqcCliConfig cfg, HttpClient http, TextWriter log, String gitHash, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 340\n   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Rqc/Program.cs:line 12\n   at Program.<Main>(String[] args)\n"
+      },
+      "outputCreated": false
+    },
+    "publicToLegacy": {
+      "rejected": true,
+      "process": {
+        "startedAt": "2026-11-11T03:04:06.966982+00:00",
+        "wallSeconds": 0.346,
+        "exitCode": -6,
+        "stop": null,
+        "sampledPeakRssBytes": 44793856,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "77808de69107b0b09c97024ff0bc7863ba79bdc4d1f434646a2accdb9d200d41",
+        "stderr": "Unhandled exception. System.IO.InvalidDataException: The resume record has a different public bank or run fingerprint.\n   at Aijade.Research.RqC.RqcRunner.ValidateResumeBank(RqcCliConfig cfg) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 331\n   at Aijade.Research.RqC.RqcRunner.RunAsync(RqcCliConfig cfg, HttpClient http, TextWriter log, String gitHash, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 340\n   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Rqc/Program.cs:line 12\n   at Program.<Main>(String[] args)\n"
+      },
+      "outputCreated": false
+    }
+  },
+  "limits": {
+    "wallSeconds": 300,
+    "cpuSeconds": 240,
+    "sampledRssBytes": 4294967296,
+    "processOutputBytes": 67108864
+  },
+  "binarySha256": "5727197a1ca80b437a8895475c82b9660d8d3efdd10e22783d084db289524ae8",
+  "driverSha256": "4aac4a1dcc5b2be53c9ddf51c21b3135748ac20b3bd3acaa295fe5746e011baa",
+  "executionCodeCommit": "6e6d0c8a023f0d20067b5eeb433d64d0823947c1"
+}

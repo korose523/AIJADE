@@ -1,0 +1,260 @@
+{
+  "schema": "aijade.p2a.execution-bank.aggregate.v1",
+  "planCommit": "eae8aca58dc4a283457248281189d50dc4469b3a",
+  "executionCodeCommit": "6e6d0c8a023f0d20067b5eeb433d64d0823947c1",
+  "manifestSha256": "5592614a78d6e9ca0ecd19ab3684cbd455880aba7a0ecafe4689a73a19dab2bf",
+  "tasks": 422,
+  "cases": 115185,
+  "authorReview": "PENDING",
+  "newModelCalls": 0,
+  "replay": {
+    "completeAgreementTasks": 422,
+    "passedCases": 115185,
+    "mismatchedCases": 0,
+    "errorCases": 0,
+    "unknownCases": 0,
+    "promptNoninterferenceTasks": 422,
+    "maximumSampledRssBytes": 1250045952,
+    "maximumWorkerWallSeconds": 13.542
+  },
+  "promptSizes": {
+    "generation": {
+      "minimumUtf8Bytes": 556,
+      "minimumTask": "HumanEval/23",
+      "medianUtf8Bytes": 636.0,
+      "maximumUtf8Bytes": 1597,
+      "maximumTask": "HumanEval/129",
+      "tokenizerStatus": "NOT_MEASURED"
+    },
+    "verifierA": {
+      "minimumUtf8Bytes": 24547,
+      "minimumTask": "Mbpp/793",
+      "medianUtf8Bytes": 33837.5,
+      "maximumUtf8Bytes": 185030,
+      "maximumTask": "HumanEval/142",
+      "tokenizerStatus": "NOT_MEASURED"
+    },
+    "verifierB": {
+      "minimumUtf8Bytes": 24279,
+      "minimumTask": "Mbpp/583",
+      "medianUtf8Bytes": 30133.0,
+      "maximumUtf8Bytes": 152715,
+      "maximumTask": "HumanEval/142",
+      "tokenizerStatus": "NOT_MEASURED"
+    },
+    "verifierAWithStub": {
+      "minimumUtf8Bytes": 884,
+      "minimumTask": "Mbpp/793",
+      "medianUtf8Bytes": 10108.0,
+      "maximumUtf8Bytes": 160898,
+      "maximumTask": "HumanEval/142",
+      "tokenizerStatus": "NOT_MEASURED"
+    },
+    "verifierBWithStub": {
+      "minimumUtf8Bytes": 726,
+      "minimumTask": "Mbpp/793",
+      "medianUtf8Bytes": 6451.0,
+      "maximumUtf8Bytes": 128583,
+      "maximumTask": "HumanEval/142",
+      "tokenizerStatus": "NOT_MEASURED"
+    }
+  },
+  "control": {
+    "mode": "simulation",
+    "steps": 48,
+    "executionsPassed": 48,
+    "manifestSha256": "5592614a78d6e9ca0ecd19ab3684cbd455880aba7a0ecafe4689a73a19dab2bf",
+    "runFingerprint": "fcf2150c",
+    "selectedTaskIds": [
+      "Mbpp/394",
+      "Mbpp/167",
+      "Mbpp/643",
+      "Mbpp/451",
+      "HumanEval/113",
+      "Mbpp/271",
+      "Mbpp/8",
+      "Mbpp/424",
+      "Mbpp/725",
+      "Mbpp/240",
+      "HumanEval/158",
+      "Mbpp/736"
+    ],
+    "poolTasks": 422,
+    "zeroExposureTasks": 410,
+    "minExposure": 0,
+    "maxExposure": 1,
+    "process": {
+      "startedAt": "2026-11-11T03:03:36.016044+00:00",
+      "wallSeconds": 15.044,
+      "exitCode": 0,
+      "stop": null,
+      "sampledPeakRssBytes": 1046237184,
+      "stdoutSha256": "c987bfa4b3d851a694b06b606354b8ed376b47f33196951b21df97b565126da9",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    }
+  },
+  "resume": {
+    "replayedSteps": 32,
+    "decisionsIdentical": true,
+    "timingComparison": "timings preserved separately and excluded only from decision equality",
+    "process": {
+      "startedAt": "2026-11-11T03:03:51.094138+00:00",
+      "wallSeconds": 15.143,
+      "exitCode": 0,
+      "stop": null,
+      "sampledPeakRssBytes": 1081167872,
+      "stdoutSha256": "cf4791b4e59e820cd6767136b2bd1664822f1f992f474893708d6bbee46bc26a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr": ""
+    }
+  },
+  "negativeChecks": {
+    "changedManifest": {
+      "rejected": true,
+      "process": {
+        "startedAt": "2026-11-11T03:04:06.274398+00:00",
+        "wallSeconds": 0.346,
+        "exitCode": -6,
+        "stop": null,
+        "sampledPeakRssBytes": 48132096,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "77808de69107b0b09c97024ff0bc7863ba79bdc4d1f434646a2accdb9d200d41",
+        "stderr": "Unhandled exception. System.IO.InvalidDataException: The resume record has a different public bank or run fingerprint.\n   at Aijade.Research.RqC.RqcRunner.ValidateResumeBank(RqcCliConfig cfg) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 331\n   at Aijade.Research.RqC.RqcRunner.RunAsync(RqcCliConfig cfg, HttpClient http, TextWriter log, String gitHash, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 340\n   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Rqc/Program.cs:line 12\n   at Program.<Main>(String[] args)\n"
+      },
+      "outputCreated": false
+    },
+    "changedDesign": {
+      "rejected": true,
+      "process": {
+        "startedAt": "2026-11-11T03:04:06.622338+00:00",
+        "wallSeconds": 0.343,
+        "exitCode": -6,
+        "stop": null,
+        "sampledPeakRssBytes": 51286016,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "77808de69107b0b09c97024ff0bc7863ba79bdc4d1f434646a2accdb9d200d41",
+        "stderr": "Unhandled exception. System.IO.InvalidDataException: The resume record has a different public bank or run fingerprint.\n   at Aijade.Research.RqC.RqcRunner.ValidateResumeBank(RqcCliConfig cfg) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 331\n   at Aijade.Research.RqC.RqcRunner.RunAsync(RqcCliConfig cfg, HttpClient http, TextWriter log, String gitHash, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 340\n   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Rqc/Program.cs:line 12\n   at Program.<Main>(String[] args)\n"
+      },
+      "outputCreated": false
+    },
+    "publicToLegacy": {
+      "rejected": true,
+      "process": {
+        "startedAt": "2026-11-11T03:04:06.966982+00:00",
+        "wallSeconds": 0.346,
+        "exitCode": -6,
+        "stop": null,
+        "sampledPeakRssBytes": 44793856,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "77808de69107b0b09c97024ff0bc7863ba79bdc4d1f434646a2accdb9d200d41",
+        "stderr": "Unhandled exception. System.IO.InvalidDataException: The resume record has a different public bank or run fingerprint.\n   at Aijade.Research.RqC.RqcRunner.ValidateResumeBank(RqcCliConfig cfg) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 331\n   at Aijade.Research.RqC.RqcRunner.RunAsync(RqcCliConfig cfg, HttpClient http, TextWriter log, String gitHash, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RqcRunner.cs:line 340\n   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Rqc/Program.cs:line 12\n   at Program.<Main>(String[] args)\n"
+      },
+      "outputCreated": false
+    }
+  },
+  "allocation": {
+    "N": 422,
+    "q": 8,
+    "S": 12,
+    "T": 282,
+    "slotsPerConditionPerRound": 3384,
+    "minExposure": 8,
+    "maxExposure": 9,
+    "exposureHistogram": {
+      "8": 414,
+      "9": 8
+    },
+    "scheduleSha256": "1b245c66e3300b3ca1adcd037e9adc2a09c4444413155bee3cf7c83125c08ada"
+  },
+  "sourceAllocationScenarios": [
+    {
+      "N": 12,
+      "q": 8,
+      "S": 12,
+      "T": 8,
+      "slotsPerConditionPerRound": 96,
+      "minExposure": 8,
+      "maxExposure": 8,
+      "exposureHistogram": {
+        "8": 12
+      },
+      "scheduleSha256": "9a3c98fa769a265993f22a46a2fab05c72f82aff878b9bf54eae8ee63f202bb9"
+    },
+    {
+      "N": 44,
+      "q": 8,
+      "S": 12,
+      "T": 30,
+      "slotsPerConditionPerRound": 360,
+      "minExposure": 8,
+      "maxExposure": 9,
+      "exposureHistogram": {
+        "8": 36,
+        "9": 8
+      },
+      "scheduleSha256": "1545d2c13c3da911dec599a44ffc69af73fea93c8c91008344911c27825952b4"
+    },
+    {
+      "N": 258,
+      "q": 8,
+      "S": 12,
+      "T": 172,
+      "slotsPerConditionPerRound": 2064,
+      "minExposure": 8,
+      "maxExposure": 8,
+      "exposureHistogram": {
+        "8": 258
+      },
+      "scheduleSha256": "4a14bc352c6c77b0b555817b53913484e58c4c7f26eb47ee9143440cc596416b"
+    },
+    {
+      "N": 338,
+      "q": 8,
+      "S": 12,
+      "T": 226,
+      "slotsPerConditionPerRound": 2712,
+      "minExposure": 8,
+      "maxExposure": 9,
+      "exposureHistogram": {
+        "8": 330,
+        "9": 8
+      },
+      "scheduleSha256": "98a92ff7c34f95e41be250fbec88bf036510d2fe0718aa879f683c5e61b77754"
+    },
+    {
+      "N": 422,
+      "q": 8,
+      "S": 12,
+      "T": 282,
+      "slotsPerConditionPerRound": 3384,
+      "minExposure": 8,
+      "maxExposure": 9,
+      "exposureHistogram": {
+        "8": 414,
+        "9": 8
+      },
+      "scheduleSha256": "1b245c66e3300b3ca1adcd037e9adc2a09c4444413155bee3cf7c83125c08ada"
+    }
+  ],
+  "primaryStudyState": {
+    "split": "NOT_SELECTED",
+    "seed": "NOT_SELECTED",
+    "NqT": "NOT_SELECTED",
+    "tokenizationAndContext": "NOT_MEASURED",
+    "deviceQualification": "INCOMPLETE",
+    "modelObservations": "NOT_RUN"
+  },
+  "rejectedAttempt": {
+    "status": "INVALIDATED_WHOLE_ATTEMPT",
+    "acceptedRows": 0,
+    "reason": "The CLI required a checkout working directory; isolated workers exited before loading tasks. The driver assembly was rebuilt before the parent was terminated, so the last eight rows used a different binary. The entire attempt is rejected.",
+    "observedTasks": 188,
+    "observedCaseCounts": {
+      "UNKNOWN": 89450,
+      "PASS": 881
+    },
+    "partialRowsAreNotResearchTaskFailures": true,
+    "replacement": "Fresh complete replay under the corrected frozen commit; no rows merged."
+  }
+}
