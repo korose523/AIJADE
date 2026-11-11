@@ -68,3 +68,9 @@ The later [retrieval-led Chapter 7 packet](ch7/retrieval-led-2026-11-12/README.m
 retains both attempts, same-database prefix/render/suffix records, three real-API
 routing controls and five rejected corruptions. Its ten known development cases
 supply no held-out or C1/C2 contrast; the earlier replay packet remains unchanged.
+
+The [paired known-case development comparator](ch7/paired-development-2026-11-12/README.md)
+adds a strong C1 baseline, twenty original case/arm database paths and fixed
+stage-specific scoring. It preserves input parity, both transaction modes,
+all intermediate/durable rows and the disclosed audit-schema correction.
+No held-out, statistical-superiority or semantic round-2 action result is claimed.
