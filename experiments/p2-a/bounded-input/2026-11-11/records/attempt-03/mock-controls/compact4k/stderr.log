@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/bounded-input/2026-11-11/run_mock_control.py", line 64, in <module>
+    a=p.parse_args();run(a.dotnet.resolve(),a.dll.resolve(),a.bank.resolve(),a.policy.resolve(),a.other_policy.resolve(),a.out.resolve())
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/bounded-input/2026-11-11/run_mock_control.py", line 41, in run
+    reject(other_policy,'resume-other-policy',True)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/bounded-input/2026-11-11/run_mock_control.py", line 38, in reject
+    invoke(command+['--out',str(output)],'reject-'+label,1)
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/bounded-input/2026-11-11/run_mock_control.py", line 14, in invoke
+    assert result.returncode==expected,(target,result.returncode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ('reject-resume-other-policy', -6)

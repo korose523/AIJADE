@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/bounded-input/2026-11-11/run_mock_control.py", line 64, in <module>
+    a=p.parse_args();run(a.dotnet.resolve(),a.dll.resolve(),a.bank.resolve(),a.policy.resolve(),a.other_policy.resolve(),a.out.resolve())
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/bounded-input/2026-11-11/run_mock_control.py", line 19, in run
+    actual=rows(full/'trials.jsonl');assert len(actual)==48 and all(row['execOk'] for row in actual)
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

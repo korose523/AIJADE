@@ -1,0 +1,10 @@
+Unhandled exception. System.IO.InvalidDataException: The local tokenizer identity does not match the request policy.
+   at Aijade.Research.RqC.ExternalPromptCounter.StartAsync(CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RequestBudget.cs:line 131
+   at Aijade.Research.RqC.ExternalPromptCounter.CountAsync(String prompt, CancellationToken cancellationToken) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RequestBudget.cs:line 143
+   at Aijade.Research.RqC.RequestBudget.CheckAsync(String prompt, String stage, String taskId, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/RequestBudget.cs:line 246
+   at Aijade.Research.RqC.OllamaBackend.ChatOnceAsync(String prompt, String stage, String taskId, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/Backends.cs:line 350
+   at Aijade.Research.RqC.OllamaBackend.ChatAsync(String prompt, String stage, String taskId, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/Backends.cs:line 324
+   at Aijade.Research.RqC.OllamaBackend.VerifyAsync(BenchTask task, String candidate, CancellationToken cancellationToken) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/RqC/Backends.cs:line 437
+   at Aijade.Research.SkillBench.RequestPolicyProbe.RunAsync(String bankPath, String policyPath, String output, CancellationToken ct) in /Volumes/Untitled/AIJADE/AIJADE-next/src/Aijade.Research/SkillBench/RequestPolicyProbe.cs:line 103
+   at Program.<Main>$(String[] args) in /Volumes/Untitled/AIJADE/AIJADE-next/tools/Aijade.Experiments/Program.cs:line 42
+   at Program.<Main>(String[] args)
