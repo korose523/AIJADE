@@ -113,3 +113,23 @@ DTO conversion correction. Both failures and their chronology are retained;
 primary data, binaries and frozen scores are unchanged, with no measurement rerun.
 The finite designed counts qualify mechanisms/scoring, not population effects,
 statistical superiority, independent human judgment or formal hardware approval.
+
+## Preparation for genuinely new comparison cases
+
+The [identifier-independent scoring preparation](manifest-preparation-2026-11-12/README.md)
+removes the ten development names as required scorer inputs. All twenty original
+per-case scores and both condition summaries agree with the frozen scorer after
+explicitly labelled aliasing/reordering. Eighteen instrument controls include
+adverse C2 results and a reversed contrast; these outcomes are scored, not censored.
+Missing observations are unscorable rather than safe zeros. Separate diagnostics
+report orphan specs/reports, and the new interface classifies a normal trace with
+missing/mislinked records as incomplete; old observed normal results are unchanged.
+The source freeze binds 331 actual source/input/dependency files.
+
+This is instrument preparation on existing observations, with zero new empirical
+or held-out data. The live driver is still bound to the development labels.
+The [40-pair proposal](heldout-protocol-proposal-v1.json) has no generated cases,
+seed, author/supervisor approval or execution. A reviewed manifest-driven live
+driver and genuinely new case construction remain necessary before Table 7.3 can
+be populated. The [preparation acceptance record](manifest-preparation-acceptance-20261112.json)
+and CI check bind the complete derivation and controls.

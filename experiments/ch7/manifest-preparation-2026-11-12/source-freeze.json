@@ -1,0 +1,1995 @@
+{
+  "schema": "aijade.ch7.comparison-source-freeze.v1",
+  "basePublicCode": "8de976772e7635af7719fba8b76716f8cdb7a482",
+  "selection": "All tracked src files plus the actual adapter, legacy drivers, frozen scoring/layout, selected programs and dependency configuration.",
+  "files": [
+    {
+      "path": "Directory.Build.props",
+      "bytes": 1163,
+      "sha256": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af",
+      "gitBlobSha1": "dd959fe608c4d96bb76569bb6a9bd744d42c0438"
+    },
+    {
+      "path": "Directory.Packages.props",
+      "bytes": 1530,
+      "sha256": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d",
+      "gitBlobSha1": "eb041d7579d1acbae3f3b6e199d509733c9f1ee5"
+    },
+    {
+      "path": "experiments/ch7/2026-11-12/selection.json",
+      "bytes": 3124,
+      "sha256": "f94d05cbb452250e4f861a5e13d233815a88221fbd18b4e3e92a28b4bf90210b",
+      "gitBlobSha1": "a2144a325f1aac0b40a56e0761b2aaa47b714258"
+    },
+    {
+      "path": "experiments/ch7/paired-development-layout-v1.json",
+      "bytes": 1035,
+      "sha256": "6445f4ec57df37f5081be5142236b54193e4ef5694daa38e0d5a0219fb3b0f1b",
+      "gitBlobSha1": "039ef86d50206025a737c21af702aa7124c3e562"
+    },
+    {
+      "path": "experiments/ch7/paired-development-scoring-v1.json",
+      "bytes": 1872,
+      "sha256": "edaadb5fb69a2e00ca202136273546a79aeece346dfd4caa6096579ccb7f0681",
+      "gitBlobSha1": "c5e3e2f33110df52657a115c46314bc7383a26b7"
+    },
+    {
+      "path": "experiments/ch7/score_paired_development.py",
+      "bytes": 6467,
+      "sha256": "ee8eee6ea6095ea0a422b15da9556bb925c0aa4e8d969a13bce9abc95b4f7c7d",
+      "gitBlobSha1": "3bc31149857186030c4451b2ed3eca65cb7b4133"
+    },
+    {
+      "path": "global.json",
+      "bytes": 81,
+      "sha256": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40",
+      "gitBlobSha1": "95abdfbdf7c31b548061fa594542a903e0c36d26"
+    },
+    {
+      "path": "src/Aijade.Bots/Aijade.Bots.csproj",
+      "bytes": 830,
+      "sha256": "55f4b50f30048e24d9f886d8122c2311bab15e6a35e869ac5004a439d334d006",
+      "gitBlobSha1": "e8811816346007fa6bc9a8117caf0742f11253da"
+    },
+    {
+      "path": "src/Aijade.Bots/CompanionConfiguration.cs",
+      "bytes": 4431,
+      "sha256": "ba24ae8244e1a8912d934ce2dc089abfc36eb2d54c4ba880a5868336eefc09d3",
+      "gitBlobSha1": "645370c36c2b2871ca113bda4745189b9f9484f1"
+    },
+    {
+      "path": "src/Aijade.Bots/ConnectorHost.cs",
+      "bytes": 8280,
+      "sha256": "ebd5359a24ea38ea7f91b70ed629d920505123fe926eab3a84dcf09d14ed449b",
+      "gitBlobSha1": "9db2cf96d2b4c8100755e3ed4597ec70484e7034"
+    },
+    {
+      "path": "src/Aijade.Bots/DiscordConnector.cs",
+      "bytes": 4346,
+      "sha256": "47518fb59637bb31a78d30887641b04244d758026930ba8e2573dee27b8d2075",
+      "gitBlobSha1": "6b646fb202c63e143b310f803eabd5a4c191f074"
+    },
+    {
+      "path": "src/Aijade.Bots/Program.cs",
+      "bytes": 6461,
+      "sha256": "a9711bbb234a7b22004f981cfdb7e31977e1369e3b4f2b428e607d7be25bdc58",
+      "gitBlobSha1": "9286cac4ba19a9fb095c0b5ad0b8a37f252cbea9"
+    },
+    {
+      "path": "src/Aijade.Bots/TelegramConnector.cs",
+      "bytes": 3957,
+      "sha256": "d7191be36425dfca4f9b90af280f9f458c5b49c7752105035fa95f7a752894a4",
+      "gitBlobSha1": "3af8fced2e90c3df06b79e103bbf315ae05e532a"
+    },
+    {
+      "path": "src/Aijade.Client/Agent/AgentCapabilities.cs",
+      "bytes": 6702,
+      "sha256": "4d20cfa6091e3deeccde0527049a6a185594b5bcfcacc3c19bfce96a413e0b39",
+      "gitBlobSha1": "ab17e9ea41181d79e5bdb635bd3a6516c88f34ca"
+    },
+    {
+      "path": "src/Aijade.Client/Aijade.Client.csproj",
+      "bytes": 505,
+      "sha256": "a5a6b07a01fe1a07fa424461fa0fe78755c10a4b99766582fac32200a4a01c61",
+      "gitBlobSha1": "6eb1806e69afcd1544c460dfa3f859d84fe66ab2"
+    },
+    {
+      "path": "src/Aijade.Client/Api/AijadeApi.cs",
+      "bytes": 26240,
+      "sha256": "5948d161b43212fb012cfb8a02f9836d4960f8edd36815ca48f645e61f3b6834",
+      "gitBlobSha1": "aa7a1dd3b7caeb3079fa020d7e4f6b23fd85b658"
+    },
+    {
+      "path": "src/Aijade.Client/Api/ClientHost.cs",
+      "bytes": 2636,
+      "sha256": "70884ed3b74ecb894bb8ffc7847c83dbfa21a31289cd244074b00119baea5d3a",
+      "gitBlobSha1": "e60d74d8a8060e355c416442d2e02200e0a8a636"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/BeatSync.cs",
+      "bytes": 4172,
+      "sha256": "033c4fbf73616746c132660ee76fb76c821e8cb3d69a2785e2c2ee21d2b43351",
+      "gitBlobSha1": "8acd5e0eb68aedfdba481af87a3fb1d75350b583"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/ChatContracts.cs",
+      "bytes": 3951,
+      "sha256": "be12bd04187afbe44ee3c448aaaefe0f6dc83bc6c66de043fd65332ecc31e3cb",
+      "gitBlobSha1": "cb490b8822f37010bd2e257ea6da587013c98c48"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/ChatPresentation.cs",
+      "bytes": 7471,
+      "sha256": "d5dab500486c2f481c331b3fd0934ff53811e160819573af378309a71f6774d0",
+      "gitBlobSha1": "a44f4f112551a3e346403707d2f93bf1d5ed4aba"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/CompanionRuntime.cs",
+      "bytes": 6471,
+      "sha256": "33daab50e1d2d9822e5414dd90c93e40656a98b0b785dc8b027a181f8187cd82",
+      "gitBlobSha1": "8b4121371c2da36b4c3b265a13af8d3be1c98787"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/LiveContext.cs",
+      "bytes": 1954,
+      "sha256": "fbbbf63ee9202332b49d770a8831dc74ce371e68cbd70d62baea0a935fd02b1c",
+      "gitBlobSha1": "5652fb9c212ce3b2c210952530276de3bcf6273e"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+      "bytes": 3807,
+      "sha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "gitBlobSha1": "11adc66558e8213662661cc7bf33b2cf2c227365"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/Orchestrator.cs",
+      "bytes": 17154,
+      "sha256": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+      "gitBlobSha1": "1202489382bb61fe40c76eaa7f5136f5409ce429"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/PromptBudget.cs",
+      "bytes": 2076,
+      "sha256": "ef651491460eddf23394265cb180ae400a2b115b4dc1efaf18ca4b1698a69cd8",
+      "gitBlobSha1": "4d52097c224cadb0be2c42626d7b8b9972efd3d3"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/RenderReporter.cs",
+      "bytes": 2847,
+      "sha256": "08f4996604f922d5186e702efaf782cd3199a14deeadd0792484d7d6ab61108f",
+      "gitBlobSha1": "1d45fec00ecb1a9df928c299e5520b7f1ce0c994"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/ToolConversation.cs",
+      "bytes": 6769,
+      "sha256": "fb4585eda664670f4f60c8adfd1a2c57b72e5e677bec0c14bf498765cdf18c27",
+      "gitBlobSha1": "eab08ebf6884c070e5e9a3e2c3eb59e942aeb879"
+    },
+    {
+      "path": "src/Aijade.Client/Chat/Vision.cs",
+      "bytes": 4962,
+      "sha256": "7d35fc612bcadd825839791a092d46b73187a5107d1a7563a7ff75a19e62ed1b",
+      "gitBlobSha1": "ad22d475492e7a2ddb51ff8a92c0b0c5b9db35e5"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionDelivery.cs",
+      "bytes": 1706,
+      "sha256": "42fd04b8303c3e57fd931b27a033d353332aef8d63cf5b48f7c546e6464df908",
+      "gitBlobSha1": "a0c2c0dde5d9bf5525d0ee03468e42821ee94df6"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionDiary.cs",
+      "bytes": 2501,
+      "sha256": "8c222b39d8a3899736d4564a928a2256c2fdae684a4022fb1cef4f5f1c65562f",
+      "gitBlobSha1": "7dcb971bf78b4b4038732d330fa1f2839b89476f"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionExperience.cs",
+      "bytes": 14591,
+      "sha256": "7a5e44c80964f7f1e069e6096c1447262f055fe036dedbac12566a24331d0974",
+      "gitBlobSha1": "16cad134cf974c28aafe63f9e7319090ac7c93fe"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionLife.cs",
+      "bytes": 5428,
+      "sha256": "98e71e006cd5942e87dc542fb6fc715a5b38adcbb55c20dfa927d676eac8432b",
+      "gitBlobSha1": "0acda3ab08d86f9e7d79515f91e7c250d29d9a75"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionMedia.cs",
+      "bytes": 5537,
+      "sha256": "d6893a642312e719057775b774ed1ed5659714eaa9d4f63c295ac94c9e059547",
+      "gitBlobSha1": "eb318b94f98c77c24a15f69161f5cae58c27345e"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionMediaTurn.cs",
+      "bytes": 7249,
+      "sha256": "6cc608e8865838adcc05d9a0042d72c0fcef1fb863b32b503157f9bea8be3138",
+      "gitBlobSha1": "0a62a5452f4574ae45597885b7de74da45cc826c"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionSync.cs",
+      "bytes": 10811,
+      "sha256": "6f85f85d141c4243f207601f969be82b0bdead6f3806e79f3beefdb5658261b9",
+      "gitBlobSha1": "b6289d68270588d9967edb479b91dd317967cee8"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/CompanionWeather.cs",
+      "bytes": 3635,
+      "sha256": "baacfe2cd742be469ae1112aa6ffee071d48aeffe1642786cdb610eccc3c6ccc",
+      "gitBlobSha1": "a18c60595ba1717d6df1413ac8337f92bd771846"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/Initiative.cs",
+      "bytes": 10724,
+      "sha256": "9fffb040e8ece7f48c95c678bdb2048f98fcada427b8c98d08ade30df3a1034a",
+      "gitBlobSha1": "833c24e69525da2fce7288e1be05cd5bebf90436"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/LipSync.cs",
+      "bytes": 7008,
+      "sha256": "23f44975da37f779bd62f89f230719be5a6fa88862a65b4b16fb9c1bc9854658",
+      "gitBlobSha1": "f9a6c69484796bd81ba9d613ae5ed40328cdca31"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/MosaicStage.cs",
+      "bytes": 5170,
+      "sha256": "11e438ad136fbef1d597ee51d392e222244585e5e64c6178dece78262461be4b",
+      "gitBlobSha1": "8cd5c97b8d8372563ae14205ffb2d9a1316286cf"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/ReminderStore.cs",
+      "bytes": 1428,
+      "sha256": "88c8d8da10e255861fc5486a7a2cec60aded3fd8821d0d40f5ca00244f8f8a7b",
+      "gitBlobSha1": "05fc7e5dbcb88376477f539535c1eb50a097c9e5"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/Reminders.cs",
+      "bytes": 17124,
+      "sha256": "70904444e40f57f103a849afa5bc1a9fd822a527f3aa9e1d5804b02fc6b6fc31",
+      "gitBlobSha1": "d3b04bec6f5ad12683a540b2daa56cc60b340aff"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/Selfies.cs",
+      "bytes": 6233,
+      "sha256": "e0700cda66e98595e7a8f04989c3595ecf4d92e621331a0fde300439f511c18a",
+      "gitBlobSha1": "81fa083f4537ced52029c4d93127846108d65f6c"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/Stage.cs",
+      "bytes": 22241,
+      "sha256": "4980752def8b5bff32c742a51bc836e3a96641ef83667d08e53fcda3290435c7",
+      "gitBlobSha1": "3dbacc8c20f65eba5af66d8dca93a160e534ab6b"
+    },
+    {
+      "path": "src/Aijade.Client/Companion/TextChannel.cs",
+      "bytes": 4368,
+      "sha256": "62b25c0a8ee6d47148ebb0e402348fd35ba390d05a05e2320a9c9ae57268545e",
+      "gitBlobSha1": "3b611070f609495d6bc22a397d6814465c1653ad"
+    },
+    {
+      "path": "src/Aijade.Client/Games/Chess.cs",
+      "bytes": 21411,
+      "sha256": "2d0fa66b4704725d1de9a2ae982b8d5caf3c951cd00d96139fff6fe0638a7810",
+      "gitBlobSha1": "d4939d586293c2572d9ecb19eca216743e1664e0"
+    },
+    {
+      "path": "src/Aijade.Client/Games/ChessCompanion.cs",
+      "bytes": 4533,
+      "sha256": "44332b9c6ec07d00e3a9b2952f70936acf915726d09481a7a54bcec4de122113",
+      "gitBlobSha1": "b9bee6c2fa56b63961ddb7e9b7097d94c0040bfb"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/Strings.cs",
+      "bytes": 2490,
+      "sha256": "b72cbb08ce470ffb4c489d6f5bc81e0c8e4619869f58a0062ff56e0342d5ed9a",
+      "gitBlobSha1": "e59ed6ed6ad59de412bc9b488c89c8dfe6a22708"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/en.json",
+      "bytes": 16342,
+      "sha256": "c2b142d0f92ce7e85252fcbab387c3c386dd4799a8b24e37de70aa538576a9f5",
+      "gitBlobSha1": "e102bbe548a9c45dafce437c7371d1626d1aa95a"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/es.json",
+      "bytes": 17224,
+      "sha256": "b74376d8729134be45f45467eb54be2d76ff24415e08c76b2dd547da94878932",
+      "gitBlobSha1": "a582134a0498d46c306070eec1b56999a8b03527"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/fr.json",
+      "bytes": 17732,
+      "sha256": "cda70193b93c17ee25cac4e3e9070c6a078b054aeecc6c05ff72dfa57afc172a",
+      "gitBlobSha1": "d68a4c7f18d80aa473e9327ecc6802cd20d2d016"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/ja.json",
+      "bytes": 18817,
+      "sha256": "529b73785fb6dd442aac701b3061056d52c9cf83bc65f76720b8623807740e2a",
+      "gitBlobSha1": "66bd96b37e0ae7752c33e5998754f82cd481294a"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/ko.json",
+      "bytes": 17649,
+      "sha256": "de4c65966aafd382a62a45f9fc84c06c56956dffa199bdc51b92faf2ec1063e4",
+      "gitBlobSha1": "60c9aaa283f3e217c0d11a13ab5bf265ab8ac17d"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/ru.json",
+      "bytes": 21648,
+      "sha256": "5ca75fd105cec983b8a9ce2b1c998ead61453669099b6ccf8b2fe3104d913e9d",
+      "gitBlobSha1": "9563fc56f2c6c9722e21fb47f942b0f1e9ab6843"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/vi.json",
+      "bytes": 18213,
+      "sha256": "bfd9d8a39b5bc7f15fd6502693190b6cbb2ae1c0869b1c56f129dc1de2e6f965",
+      "gitBlobSha1": "975aab494d47171f07af64c57c84c45906fb71b4"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/zh-Hans.json",
+      "bytes": 15984,
+      "sha256": "5500d6f8655909cadaf6a833b8603804e22d329919cb4f5bf697603e78fc2f58",
+      "gitBlobSha1": "4eef26b4887fc566293d94672368ad4938cc7ea2"
+    },
+    {
+      "path": "src/Aijade.Client/I18n/zh-Hant.json",
+      "bytes": 16000,
+      "sha256": "ca62b4e24c4dee98346f1bab7b557442e04991a5e60512544b3f4ea410eaf520",
+      "gitBlobSha1": "84a723f79f8e444a6f3a0efaec16f2fecc9090d1"
+    },
+    {
+      "path": "src/Aijade.Client/Settings/AppSettings.cs",
+      "bytes": 9837,
+      "sha256": "15b94b52eef8f25b5a13f1394f7cdcba540c5b4b2947fae58aa6284aaad6c3e7",
+      "gitBlobSha1": "cec039e551d9c3bc8fb207c8fad9267566764618"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/Aijade.ComputerUse.csproj",
+      "bytes": 756,
+      "sha256": "836a54358a11619b9eb879fc56ef3a4c6392b5a52c87f3d4b82fff5e921f9824",
+      "gitBlobSha1": "92b2a60d9af73d7f6b4d6aee7045d7bbf1790161"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/ComputerUse.cs",
+      "bytes": 15085,
+      "sha256": "ef41f708b7791f60bb16a1b10bc3fa256589e74b4ad820fb5858d9338aa40825",
+      "gitBlobSha1": "845c99d642b09d21fc7b9bb61f8bddac98b283cb"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/MacAccessibility.cs",
+      "bytes": 17692,
+      "sha256": "529285fb1a1aa63b0d89a0b665c62d9411f722a94bd5b47ed71fd21de95bc246",
+      "gitBlobSha1": "91b368afab3516f0ad662e26397ebb043eeb722a"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/MacDesktop.cs",
+      "bytes": 9513,
+      "sha256": "e5829960d0ae3f45878237310c82fb8a778b77bf53253befaaa44e59bcfcf348",
+      "gitBlobSha1": "e9fc18f03729a9e6faeabbea8b867f1a811f53ad"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/Program.cs",
+      "bytes": 2284,
+      "sha256": "9ced5a8a3856b46ec9fa78eb05408c9895df671c36bbda1ceb15bc6271381565",
+      "gitBlobSha1": "6835a09dbffcc3ffff96f2fc6ec485514ebd1ba3"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/WindowsDesktop.cs",
+      "bytes": 10818,
+      "sha256": "1aebd8542b0e8964de29bdfa1a202fe221b0b185ac8f534db97b6d61fab08bd8",
+      "gitBlobSha1": "744870a3207c7ca436af7066de13ea8055f7540c"
+    },
+    {
+      "path": "src/Aijade.ComputerUse/WindowsUiAutomation.cs",
+      "bytes": 8728,
+      "sha256": "eaa66a9fe1b96f1d01c78788f27880cd5a56c69c1c19fd14396f58d09219adae",
+      "gitBlobSha1": "a4b8ecc1847818a52497780454d1b4219edeb244"
+    },
+    {
+      "path": "src/Aijade.Core/Aijade.Core.csproj",
+      "bytes": 45,
+      "sha256": "3702bcd64b09004893c0afdb530b6b91249de567d2b8708f8ac16dab0c9dd561",
+      "gitBlobSha1": "35e3d8428b7cfcc172d63391c605ca228f0e4703"
+    },
+    {
+      "path": "src/Aijade.Core/Js/JsFormat.cs",
+      "bytes": 10782,
+      "sha256": "13273ac27715569c671620b65fc9cd39828f679737e439eb7904385e5d3e5a39",
+      "gitBlobSha1": "992220ab6bb75bbcbbc802d13bcaaadf7d816a7e"
+    },
+    {
+      "path": "src/Aijade.Core/Js/JsNumberJsonConverter.cs",
+      "bytes": 771,
+      "sha256": "daca04ac2c1f3a649db9030b48105b088e9503b9839a2ca1c65e0f765ad8483a",
+      "gitBlobSha1": "9daac07f850946cfab3757ed7f7c226476791c20"
+    },
+    {
+      "path": "src/Aijade.Core/Js/JsText.cs",
+      "bytes": 2737,
+      "sha256": "b5403931044139d8b34b192564c5c160027418b3f632afc4cfc9034e1fa8d43b",
+      "gitBlobSha1": "880afd31555e7dbc5bdbcefffc1d67ff476d11f4"
+    },
+    {
+      "path": "src/Aijade.Core/Js/WireName.cs",
+      "bytes": 1101,
+      "sha256": "e17c236a7435a6004ba40e7f31e43fb5619ba438f3d4cf490155fe9e86167528",
+      "gitBlobSha1": "7589ea7ea609b254be3715ab2da87be4bda3b6b6"
+    },
+    {
+      "path": "src/Aijade.Core/Random/Mulberry32.cs",
+      "bytes": 763,
+      "sha256": "08ad6b4d406aa5ba50fc0238dcda6f6b831ff732e336530057a64b38b61b4911",
+      "gitBlobSha1": "501a72e9b2e09bfd9863ddf86460ef76d5404297"
+    },
+    {
+      "path": "src/Aijade.Core/Schema/WireSchema.cs",
+      "bytes": 10312,
+      "sha256": "b793cbec22899508ee0eb359529901cfaf2d5bda58b781e9c86fe11d0f183f17",
+      "gitBlobSha1": "06a4333473566af34367fd33964127c3f20c3e0d"
+    },
+    {
+      "path": "src/Aijade.Growth/Adapters/ChatLlmAdapter.cs",
+      "bytes": 1932,
+      "sha256": "f01f988bea2c52956c82cc412051331a087e9d8c27543aa7b96df35c19fea927",
+      "gitBlobSha1": "dd0c42f2910035ee09d390fc7ae43f418eeefad8"
+    },
+    {
+      "path": "src/Aijade.Growth/Adapters/CryptoSigningAdapter.cs",
+      "bytes": 1563,
+      "sha256": "7f69f84a58e646aee29cdd512e334287179d7ae4bea4044e1661fd752e7fcc54",
+      "gitBlobSha1": "e29af86d0c9f2fbfbcfa379e6ed1ad83e7355a1f"
+    },
+    {
+      "path": "src/Aijade.Growth/Adapters/FileStorageAdapter.cs",
+      "bytes": 2993,
+      "sha256": "a2e4091d60eb9fcb18e93fd9644014df181c9353560c967ff0f55975c7a131a0",
+      "gitBlobSha1": "c175e90e00b9739ed87bdd2827ac31a814f80505"
+    },
+    {
+      "path": "src/Aijade.Growth/Adapters/HashedVectorSearch.cs",
+      "bytes": 5676,
+      "sha256": "1455892970ce3a40c313ec63b94692fe5a3fb6d93737ac527306bb942af36c50",
+      "gitBlobSha1": "12463379ec6fb64b63abb6568b9064b681699cea"
+    },
+    {
+      "path": "src/Aijade.Growth/Adapters/RealPorts.cs",
+      "bytes": 2751,
+      "sha256": "d10b4c378948157b4fea10690aa75298460e6382b20d0b219610623a6ea04285",
+      "gitBlobSha1": "0ccc11fed69f4ee8d5ffd875e2f971b28ad78362"
+    },
+    {
+      "path": "src/Aijade.Growth/Adapters/SystemSchedulerAdapter.cs",
+      "bytes": 3698,
+      "sha256": "ede0e187638c9e041b5470435e2bb3efb46325a3cbc19edeaf71f10fcdfb9cad",
+      "gitBlobSha1": "b70a7f7d89c7e600fa83af8f2bfe6e9cff7ade47"
+    },
+    {
+      "path": "src/Aijade.Growth/Aijade.Growth.csproj",
+      "bytes": 295,
+      "sha256": "070f5577ab985fb3a9799e448197bee1fd4deceff39c42ae4bc858d38e37c633",
+      "gitBlobSha1": "f7de5c4d131752fa82efe4046b4867513e0e2319"
+    },
+    {
+      "path": "src/Aijade.Growth/Benchmark/SyntheticLongitudinal.cs",
+      "bytes": 11220,
+      "sha256": "3a85d10837cad0e693b40007204eed7ab6d7f14bb8729285b4b613f0e92ad749",
+      "gitBlobSha1": "d950b4eec06b43d65af53ee92993e0efacc59363"
+    },
+    {
+      "path": "src/Aijade.Growth/GrowthJson.cs",
+      "bytes": 593,
+      "sha256": "0ee65b3467d5ee7465344356e5b5771a4719bd1685cd23ddf3c9762861ca1e71",
+      "gitBlobSha1": "e793836b04eeb2b8bf008d03074c0170a550f3f6"
+    },
+    {
+      "path": "src/Aijade.Growth/GrowthLoop.cs",
+      "bytes": 7001,
+      "sha256": "66e7e9edf766e216d0217e62516589f95d2413861505da197e4a10143a301085",
+      "gitBlobSha1": "1ff51a26ba1cb7c947c51dd140787dc441260c2d"
+    },
+    {
+      "path": "src/Aijade.Growth/InMemory.cs",
+      "bytes": 6053,
+      "sha256": "5791b66a4bf9e9c5c7f8c74e07d0f25fe5b6bfaf24c29ab205a9412f3619abe9",
+      "gitBlobSha1": "022e2c6af367036637291d886158a308f8d15c81"
+    },
+    {
+      "path": "src/Aijade.Growth/Metrics/Formulas.cs",
+      "bytes": 3266,
+      "sha256": "1566e6d887e78759765dacd5526dee5473364f17fa75e54749807553002ba8fd",
+      "gitBlobSha1": "02807eec1cfe76ab1b07f88425d58b6958c84c91"
+    },
+    {
+      "path": "src/Aijade.Growth/Metrics/Identity.cs",
+      "bytes": 2215,
+      "sha256": "e74919ed98f6b364d12b4a28515679b0cdefc2f86d689d2061717b023a81fb59",
+      "gitBlobSha1": "3701e54bcb2f896a102cf6d998232a9f63072172"
+    },
+    {
+      "path": "src/Aijade.Growth/Metrics/Stats.cs",
+      "bytes": 2623,
+      "sha256": "1939b76c8cf0d0d1cce3f48eb02d3f1a82216dd531f30fc40f23ed0c6cf0304b",
+      "gitBlobSha1": "3e805200494caddaa954fee7c67186ac9a043502"
+    },
+    {
+      "path": "src/Aijade.Growth/Pilot/Configs.cs",
+      "bytes": 2545,
+      "sha256": "1009554cefda61dbe14cc79f163d5e4e7f811af55d2ce5f454db0feab8eeb21e",
+      "gitBlobSha1": "82381c49def4e231c66f8157cb9966d922974355"
+    },
+    {
+      "path": "src/Aijade.Growth/Pilot/MemoryPolicies.cs",
+      "bytes": 12904,
+      "sha256": "085fb760395abb8a59d83b3a2566daac49fa0d91ccbeeacc385c9e194d8cc499",
+      "gitBlobSha1": "3c09de59cb5cd7899a714589d703194ec6c89f9d"
+    },
+    {
+      "path": "src/Aijade.Growth/Pilot/RunPilot.cs",
+      "bytes": 16785,
+      "sha256": "5b3e95990b4f63e7d23de84348024610aefbc4b83305e4aedd9035b702698e8d",
+      "gitBlobSha1": "9965dfdeefb47cd8709aa43da28f8fa75e125498"
+    },
+    {
+      "path": "src/Aijade.Growth/Pilot/Simulator.cs",
+      "bytes": 9523,
+      "sha256": "d9d76ecaf222b6e2355e21abedba52e411591ace0771f543178fe55b5183c669",
+      "gitBlobSha1": "291bd38036f5eaf163e6c36f3170cebd557fd91a"
+    },
+    {
+      "path": "src/Aijade.Growth/Ports.cs",
+      "bytes": 6468,
+      "sha256": "e1742e24b55418f681e02a7839b690dc0eea565bae6379a83aea72f6c49f34b8",
+      "gitBlobSha1": "bf382220216b980995d44545b890902d0723c044"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/ArchitectureCritic.cs",
+      "bytes": 3160,
+      "sha256": "3f44b323990dbd0a551b9260048ff43766f7f1937a9883267f2d3f63a580a9a5",
+      "gitBlobSha1": "62d5f31aee3522f72645fbee4506c9bcf2b722ea"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/EpistemicVerifier.cs",
+      "bytes": 5665,
+      "sha256": "09c1cda26df36704f9c0dcbb30531a8ebbe38722cb5101ba32b988e30514f7b1",
+      "gitBlobSha1": "f4a035c401a591d7989d9b7db0312cf566dbebb4"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/EvolutionLab.cs",
+      "bytes": 4208,
+      "sha256": "af7c924f09ef660f61a20cbf19f575bba616166d31caf49d30ae6f81b53e54cd",
+      "gitBlobSha1": "67de500a425ced885944af9e1b067c28ce99acf1"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/InterestService.cs",
+      "bytes": 4018,
+      "sha256": "62de674814ca4768dce8fa5bb4cb7d7bfe6c127293942f3814b2832b69e94578",
+      "gitBlobSha1": "e8dfa11f69ed10df52b404f853cd34dbcb0913e9"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/KnowledgeAcquirer.cs",
+      "bytes": 4606,
+      "sha256": "d5e0e3a2db2dec15c6bf4504b6f66b3993f6e650dde7a7814d2745a605e1e760",
+      "gitBlobSha1": "098ed3ef5847edef153c3dacb84d345c57cdcc2d"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/LifeJournal.cs",
+      "bytes": 2010,
+      "sha256": "d033a154feb07c56b698c1101df7f184afa6e4c2cfbd9f515531e55b28f55d01",
+      "gitBlobSha1": "b128d833f8c3f38c3722a5a690d6d8c35c001186"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/PerformanceDirector.cs",
+      "bytes": 3358,
+      "sha256": "abaf09ac657543e57b711f334fc5f19aa4fbb9644dbdfd8d3eed6d0b7b063eb7",
+      "gitBlobSha1": "8e57f80f4c68ab91876cbaf7ed80702de3fa0744"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/QuestPlanner.cs",
+      "bytes": 4804,
+      "sha256": "5e24fb117b1fa810643d4e49f9e3865312cb621dee07ae110130c651196c6479",
+      "gitBlobSha1": "06cca826ad7f7792cd6101387fa5c5c39d729c05"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/ReleaseExecutor.cs",
+      "bytes": 4548,
+      "sha256": "2e1a70ce5bd28a53acf73f5a68dea9699a91559783be34d5cb2f936a56bc2b0e",
+      "gitBlobSha1": "0d4382740bd9bf3c571f620a94c63355f7b927dc"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/SharingPolicy.cs",
+      "bytes": 2425,
+      "sha256": "d00b4d6a7512ecfcbcd33c9bfc42ecf16e85bb0cf7c43d63f2bdc01865285f3c",
+      "gitBlobSha1": "64426c48ecca4c431015d3b8b3845a6dc8b0309b"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/SynthesisWorkbench.cs",
+      "bytes": 2380,
+      "sha256": "be434adc340f6e5b1ab26104a15939313c48e113532dc1933a66efef71487fee",
+      "gitBlobSha1": "57fafca8bb7ca1658a95ae066b3568ac6c31e94d"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/TransferLab.cs",
+      "bytes": 2732,
+      "sha256": "66491b25fcef3e835124f5a43c38893dbf24de382e5839c1f4d9e1b63e6c0f47",
+      "gitBlobSha1": "376300feecb411c3ffa5442621f931d29e2d3ff5"
+    },
+    {
+      "path": "src/Aijade.Growth/Services/TrustedReleaseController.cs",
+      "bytes": 2890,
+      "sha256": "522cd9183a1ce19e2a490b2b24f742c006c0b6233a8819d28c04120cf367a808",
+      "gitBlobSha1": "0ba0ae2008483bdeb837059a09f8260add05dee9"
+    },
+    {
+      "path": "src/Aijade.Integrations/Aijade.Integrations.csproj",
+      "bytes": 449,
+      "sha256": "a1946985135b75177ce366e321822409a749ab178980b651b91cd2a7872bcb3c",
+      "gitBlobSha1": "505157db483619914d78fb5c4b813eee258ba6c5"
+    },
+    {
+      "path": "src/Aijade.Integrations/BilibiliLiveConnector.cs",
+      "bytes": 9305,
+      "sha256": "771a9ac57eed8832052c43d8a389a0d638761b29423163416cc019b6df937b77",
+      "gitBlobSha1": "4d12635828ee33dceab882378761d348d09d73fc"
+    },
+    {
+      "path": "src/Aijade.Integrations/CompanionBridge.cs",
+      "bytes": 30100,
+      "sha256": "684258cf1458e8c6778aec1736c01699e676b3cd236ceeab8682e074e264aef1",
+      "gitBlobSha1": "10303e1b33d0a829db1e2252b93e32ed582531f8"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McBlocks.g.cs",
+      "bytes": 37066,
+      "sha256": "842bb18f9e05716505f41f8a01784bb9b6cd345f895ff8279fcf0b494f6541d7",
+      "gitBlobSha1": "89e39fe22a3049fb68248b5e8bf8fb1edf6c1b43"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McClient.cs",
+      "bytes": 13690,
+      "sha256": "1d27b5ef32628136a3630e3b2d888ba393522c92c7572ecc8f1afa97bf4abc27",
+      "gitBlobSha1": "48c68c5147b1915363ed18cd226dd753984e3a36"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McClientWorld.cs",
+      "bytes": 25531,
+      "sha256": "21a8b3ec4d9ff1800b6d0952fbc145b6b08cfb36195d6084ab5ed5763428938e",
+      "gitBlobSha1": "b357e0e94c7b807515a31160029548aeedb466e1"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McCrafting.cs",
+      "bytes": 21480,
+      "sha256": "4a39039ea4c029ac345d082e4d7189e796846978b06f7d112a14f20ac37a98ef",
+      "gitBlobSha1": "b8f5394fc228177093035908ec85e8480abf6545"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McEquipment.cs",
+      "bytes": 9948,
+      "sha256": "70ae8332b2996ef2be1284e78926f6e595607c3ce35b758263ea68f73358e393",
+      "gitBlobSha1": "39f1b5a0bab1f43c647bed1c767a0cf9579afecb"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McItems.g.cs",
+      "bytes": 34687,
+      "sha256": "669d58100da6833ca32f1f398eef06b4974c16ba80c67b80d22ba91baa8c736f",
+      "gitBlobSha1": "b31c952ad5860e455c2a97a8c29990cd0ee6eb36"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McProtocol.cs",
+      "bytes": 11685,
+      "sha256": "d4169fe3611c9400f82433fc4a9d1427dd4a2d08e81b98af320d64c243574ac7",
+      "gitBlobSha1": "2f88cc547d4fcfd8dfcf5accdc61b148bade2948"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/McWorld.cs",
+      "bytes": 15845,
+      "sha256": "baede4ae65ea67dcd8dac02c717d880a153ca14ab674126fe786406a25e0176e",
+      "gitBlobSha1": "193ea87ae887acc19557dd0006b24adfb959be83"
+    },
+    {
+      "path": "src/Aijade.Integrations/Minecraft/MinecraftBehaviour.cs",
+      "bytes": 18833,
+      "sha256": "882cb7359a11a962387de710fb5ff595e9937f232baac1b4967f1d25d1905d10",
+      "gitBlobSha1": "eb088670d08a417f45ac7ecb139b8f5018e04bce"
+    },
+    {
+      "path": "src/Aijade.Integrations/OneBotConnector.cs",
+      "bytes": 24761,
+      "sha256": "f1a324ef2d04674c8ba43be3af1d411de6faddab30ba6ec9fe5694acc9ef6475",
+      "gitBlobSha1": "bc34a797cb4ecbe0e41d7b441247adb9766e38b1"
+    },
+    {
+      "path": "src/Aijade.Integrations/OneBotDelivery.cs",
+      "bytes": 5845,
+      "sha256": "45025f8a208e6fe7803660e55fb8a82a398fe3260f73de0cec78196b26c68df2",
+      "gitBlobSha1": "134dd595a20687bc78f1d8d8ff5efb0917bdd38c"
+    },
+    {
+      "path": "src/Aijade.Integrations/Renderer/MosaicRendererLink.cs",
+      "bytes": 10615,
+      "sha256": "f52ff8e77d1ec0e78edf8e80a8bd075501caa35fb5ab9bbdcb413abe5a1685ec",
+      "gitBlobSha1": "a4e730091fd87fbd11346286a7b16f544d855da4"
+    },
+    {
+      "path": "src/Aijade.Integrations/Renderer/RenderEvidence.cs",
+      "bytes": 16034,
+      "sha256": "199ab1d32aa6216a56a65eca380d6f4dd5fb44e75f346c041f11a9c7de7094ad",
+      "gitBlobSha1": "e6b45c935105025eda2d660469c717e696a8ce75"
+    },
+    {
+      "path": "src/Aijade.Integrations/SatoriConnector.cs",
+      "bytes": 6798,
+      "sha256": "fa684a423b695a67320441c6787f812e3747a0c33b63d0c0811a2ef8db273f60",
+      "gitBlobSha1": "a1690dcbc5262dfa9eb2193b80dfad3a065c4d70"
+    },
+    {
+      "path": "src/Aijade.Integrations/XConnector.cs",
+      "bytes": 4804,
+      "sha256": "51d909723ebf03bb1f97eb88b2c82b9768a3003f0665a94769d3e7358eae834c",
+      "gitBlobSha1": "eb7576ddc2c3f08fa67f348f56e86583f9804699"
+    },
+    {
+      "path": "src/Aijade.Learning/Aijade.Learning.csproj",
+      "bytes": 222,
+      "sha256": "c2062f3cd53ea0bbc41071b3d5cd8bebb55b3c1fe65656711c2ed47e14afa2c2",
+      "gitBlobSha1": "cfc41faffbf9bb1d3b5c77d708a76aa4cc6a9795"
+    },
+    {
+      "path": "src/Aijade.Learning/Continuous/Learning.cs",
+      "bytes": 16420,
+      "sha256": "17b4b05f2b56aefea7a92e770f0021786fae2d58f0b92e4cca35e75d2b3fbb4d",
+      "gitBlobSha1": "8bc0db736ae92ea8ad9be54e2afdbe02a3d97856"
+    },
+    {
+      "path": "src/Aijade.Learning/Continuous/Persona.cs",
+      "bytes": 17682,
+      "sha256": "31c5da175bedc831253904238e1c023fd3dfef87746220d9ff90d8be9d29480e",
+      "gitBlobSha1": "332d9289fc0350fad83c2b5873a8a62eb6b933b4"
+    },
+    {
+      "path": "src/Aijade.Learning/Forge/Forge.cs",
+      "bytes": 19564,
+      "sha256": "72331bcdecd58f85b6fbec553bb20524e2264381892cea919c954e09b481d914",
+      "gitBlobSha1": "1b8dd299abea308d3f31c85f5efea7838052af35"
+    },
+    {
+      "path": "src/Aijade.Learning/Forge/SkillPackage.cs",
+      "bytes": 17676,
+      "sha256": "90211e880b9082cb66529b3c1dd9c71d6b0088dc016976c2a025582faf62977e",
+      "gitBlobSha1": "0fa24b6beb6113c55fadf7da48b6929ded9c0935"
+    },
+    {
+      "path": "src/Aijade.Learning/Skills/SkillRecord.cs",
+      "bytes": 8834,
+      "sha256": "012d4b01f5ea4e275893b7caee380b10d58ea55f3f36fae0354ef745ed8396a5",
+      "gitBlobSha1": "e94d2732431e40e2e3f8031f3bca329c1a5e5165"
+    },
+    {
+      "path": "src/Aijade.Learning/Skills/SkillRegistry.cs",
+      "bytes": 12131,
+      "sha256": "3feff02d6a5fd011a3407a5c280a52caa7c511ead0be054842892dd56f8d4afe",
+      "gitBlobSha1": "3f2bc9bd0a905d9f1010e7282219e51f3557520b"
+    },
+    {
+      "path": "src/Aijade.Maui/Aijade.Maui.csproj",
+      "bytes": 2586,
+      "sha256": "a105da6f910a025d362031e6c20f47f8c7bff8e823eaaf10cd74bd72d9230c44",
+      "gitBlobSha1": "98ad39ac3b9e9f8aaa192ec937e85a318006ba1a"
+    },
+    {
+      "path": "src/Aijade.Maui/App.xaml",
+      "bytes": 318,
+      "sha256": "c15f98f57b5140f253fb3f242a9bf6bd857107051cdbec60fc1ec331ad73270d",
+      "gitBlobSha1": "28266134dc38d8ff39017b2a84a862a9079416b8"
+    },
+    {
+      "path": "src/Aijade.Maui/App.xaml.cs",
+      "bytes": 251,
+      "sha256": "a8fac4583728e7cc624b9c86c10317bd5436f992bdb4061305abc0f2b9303fba",
+      "gitBlobSha1": "7c286a51042ef22662faab5b1664ef14505f2f6d"
+    },
+    {
+      "path": "src/Aijade.Maui/MainPage.xaml",
+      "bytes": 595,
+      "sha256": "b4a03ec121a676fd0ac10e94bdd43abd1e60fe52d6a703b26b498eb9ae3e63b2",
+      "gitBlobSha1": "e9761c3a49844493053b3afece1124007226cc4f"
+    },
+    {
+      "path": "src/Aijade.Maui/MainPage.xaml.cs",
+      "bytes": 532,
+      "sha256": "c19db618f4576011cbc7b8b7bfa2163187030e5764ab2c308f9e4e012cc78391",
+      "gitBlobSha1": "77bd16683b01e2fbddafd30e708ec2a19fa0a259"
+    },
+    {
+      "path": "src/Aijade.Maui/MauiProgram.cs",
+      "bytes": 1135,
+      "sha256": "80ef7c5891d866d3ccc40948906ac0945894a33512fdb07797844e9416ccfc18",
+      "gitBlobSha1": "2d2866bb6147e4227cd0f62d44b35e4c288b1624"
+    },
+    {
+      "path": "src/Aijade.Maui/Platforms/Android/AndroidManifest.xml",
+      "bytes": 1169,
+      "sha256": "8e0d4ad2e3483625d3a310a8f9392d6b3be1dde28c0468cf31c83b6e28c7338f",
+      "gitBlobSha1": "9400bc0e2f41a8fc5982e0e2f0ce32a5d434f841"
+    },
+    {
+      "path": "src/Aijade.Maui/Platforms/Android/MainActivity.cs",
+      "bytes": 418,
+      "sha256": "fe8ddb12c1bc18f6962aa463e567aa335a676cabc648aac3fb01ea7bce408976",
+      "gitBlobSha1": "2b9e545ee56961709988bc6f31126ed5d34665b4"
+    },
+    {
+      "path": "src/Aijade.Maui/Platforms/Android/MainApplication.cs",
+      "bytes": 275,
+      "sha256": "9267b133f48384ccde98fbe0e7c1af496c9e64abb57ffb538e8637366a82c10f",
+      "gitBlobSha1": "848f113a005dd5f03e1b994446557b5225587ddc"
+    },
+    {
+      "path": "src/Aijade.Maui/Platforms/Android/PermissionGrantingChromeClient.cs",
+      "bytes": 2882,
+      "sha256": "8dbe5e3758d783939e830e86e9795b8aeac60dfca495ba42f75fbb9b8f14c056",
+      "gitBlobSha1": "4d5d3c67bade0739c967edc1fe6e33662b9b1db1"
+    },
+    {
+      "path": "src/Aijade.Maui/Resources/AppIcon/appicon.png",
+      "bytes": 319606,
+      "sha256": "0621965e13296cfa71fb40f04526c37112ecf189886cbdfd6150a939178832cb",
+      "gitBlobSha1": "70ce4cfc71f8eab795bc7a84a952796fda23b4c3"
+    },
+    {
+      "path": "src/Aijade.Maui/Resources/Splash/splash.png",
+      "bytes": 381603,
+      "sha256": "aa9775afea38a2ef6ce87b57f25e5f9d08e0a640bb752882822f7fc8047374f8",
+      "gitBlobSha1": "ca8aa0fb2df96baa709528c37513cf73aa8db0ca"
+    },
+    {
+      "path": "src/Aijade.Maui/Services/MauiServices.cs",
+      "bytes": 1627,
+      "sha256": "2511a29abc707c531071ed36514a5b0cd39a1e0d5594541139aaed43adbb005b",
+      "gitBlobSha1": "b820663a47abd6a1b067a091bdce85f04958c849"
+    },
+    {
+      "path": "src/Aijade.Maui/wwwroot/index.html",
+      "bytes": 644,
+      "sha256": "56d279bf2e28d3665d601a0512f133afe0d14c7975c192a58a4f3e7622512143",
+      "gitBlobSha1": "d8984a003af84bd391b27324aeb1b3a8912a7167"
+    },
+    {
+      "path": "src/Aijade.Memory/Aijade.Memory.csproj",
+      "bytes": 143,
+      "sha256": "ff8f9c5f1b22054d785c046b628d8c1542a2502bfb5bd8329e3816c9e0417c71",
+      "gitBlobSha1": "bd61645c1c2aa6bf68d56b866c3c42114e48c83a"
+    },
+    {
+      "path": "src/Aijade.Memory/Beliefs/BeliefGraph.cs",
+      "bytes": 7516,
+      "sha256": "fa2d0de2fc0c7094e0662de227b213abb927920cf7a21fe47004199cbb1cc87f",
+      "gitBlobSha1": "f05e7936a0b8ca40cb72177a6cab77906bfc00da"
+    },
+    {
+      "path": "src/Aijade.Memory/BioticMemory.Subsystems.cs",
+      "bytes": 14179,
+      "sha256": "94f2414a5d74cb3073845d509965d717585083532be93da623e872795ef8a864",
+      "gitBlobSha1": "6a29564c069b3c728101b0eb339e0bf4b52cfad4"
+    },
+    {
+      "path": "src/Aijade.Memory/BioticMemory.cs",
+      "bytes": 19061,
+      "sha256": "9bae6dd1f72f9a8bc2f483fe1a1eee1d241869357d335c1058f641e3f1e8bfed",
+      "gitBlobSha1": "c7de4d437e78d19b40065df3ba2d8a651e268e05"
+    },
+    {
+      "path": "src/Aijade.Memory/Contracts/Contracts.cs",
+      "bytes": 18488,
+      "sha256": "6deec618800dbe9f25b620542d5bed851154f06e878c1d2d3b9249f4b75646d4",
+      "gitBlobSha1": "cad12592cdd8bfafaea16f87729800d7dbc55829"
+    },
+    {
+      "path": "src/Aijade.Memory/Contracts/ContractsV8.cs",
+      "bytes": 21492,
+      "sha256": "dc9706f8fbd54bee8e54e2ed394658b2e2c14f93e6648d3ca0d04a56c6c4c32b",
+      "gitBlobSha1": "2ffede0bcc1c4b78216da0ebdeb2e354bcc6be65"
+    },
+    {
+      "path": "src/Aijade.Memory/Development/Ael.cs",
+      "bytes": 11500,
+      "sha256": "107b668e7d151ab4221960108e959a3a2d42f4d28efd76927348d0051958ab22",
+      "gitBlobSha1": "14e7546d56f8d9f4bd635fbb32f16fbb078bfa75"
+    },
+    {
+      "path": "src/Aijade.Memory/Development/Dive.cs",
+      "bytes": 7154,
+      "sha256": "f86df75bb78f96ec4f17577efc836f721baf8f16bcc7cc65debdc418df2db344",
+      "gitBlobSha1": "f6117c754ee1867d342f12fe359c28ab67eda617"
+    },
+    {
+      "path": "src/Aijade.Memory/Development/Pef.cs",
+      "bytes": 17342,
+      "sha256": "5128b7dc9e4adda1d67785eb652657d737601ded3e53f135cd736af72bf6d0b0",
+      "gitBlobSha1": "f8320aeca2ea822b5ea0113a136da63fef511596"
+    },
+    {
+      "path": "src/Aijade.Memory/Development/Vse.cs",
+      "bytes": 7550,
+      "sha256": "9ba829e552e9c4f25ff3b0cfda335c487b5f22e0468aa2401cb96ea5e0610869",
+      "gitBlobSha1": "bee6ca8220de3ffb22b866a1a50135bb8cf8492c"
+    },
+    {
+      "path": "src/Aijade.Memory/Dynamics/Dynamics.cs",
+      "bytes": 7141,
+      "sha256": "f5c2a829682b436dd5845d8ce80374dfc7a306e1a0c2b14d843e5fde80aad5fe",
+      "gitBlobSha1": "34fd85f61f8e55f57b259309dad97dac9d161399"
+    },
+    {
+      "path": "src/Aijade.Memory/Dynamics/Reconsolidation.cs",
+      "bytes": 4639,
+      "sha256": "6855b010452d1600c739ad14389e92ff5a68f622c91c986e3f6635056d8ba796",
+      "gitBlobSha1": "3e2f3418658e995042c61210a787a22403d83f12"
+    },
+    {
+      "path": "src/Aijade.Memory/Episodic/EpisodicGraph.cs",
+      "bytes": 8069,
+      "sha256": "372f5d24620aba39e9a20fcc334d9107fe2ccd44779ebf1502e9c8c0a8e4e28c",
+      "gitBlobSha1": "34ad8117f806f10c7ce0c38d1a3e447bb394577f"
+    },
+    {
+      "path": "src/Aijade.Memory/Experiments/ExperimentRegistry.cs",
+      "bytes": 5124,
+      "sha256": "4f1039ff68ba1d4b4da7e1ef779e292cb5354589a91a0e4e112304481d6ca4d5",
+      "gitBlobSha1": "669b844449f4f988990103997a8fff48a9cc3a17"
+    },
+    {
+      "path": "src/Aijade.Memory/Hac/Hac.cs",
+      "bytes": 11253,
+      "sha256": "f4e5f2b3c8aa830f7cec581db50b07f22f9b6c0dd3e1ff9b77a13cac11ac41a7",
+      "gitBlobSha1": "cd57c1d3b9dad454f78805922f64deeaa2e990fe"
+    },
+    {
+      "path": "src/Aijade.Memory/Identity/Cdi.cs",
+      "bytes": 14132,
+      "sha256": "6c5aec2f009c8d0ff9718db41b2a0bd7b852ae7981e4201cfaa667d839ae66ab",
+      "gitBlobSha1": "e92c0715278768501688549383314151b4e6dda8"
+    },
+    {
+      "path": "src/Aijade.Memory/Interventions/FaultInjection.cs",
+      "bytes": 8599,
+      "sha256": "a5909d210c2d7f975c1d47294a31a44a28db9b1f9519b0fb0def35526c095739",
+      "gitBlobSha1": "0f5c6cae286950dd4842e584414f05914fd57e3b"
+    },
+    {
+      "path": "src/Aijade.Memory/Interventions/Intervention.cs",
+      "bytes": 13150,
+      "sha256": "01a1998c072687b8f915f8227f297a1d4db27f50549460ac1b762c844b245d96",
+      "gitBlobSha1": "f0e34214fd7401cd6a4621f8e2454d461eedf64c"
+    },
+    {
+      "path": "src/Aijade.Memory/Kernel/CapabilityToken.cs",
+      "bytes": 2690,
+      "sha256": "782c90e57f0943554738380bfd16e706322ca14a7e4207e1c89dc0230e68a084",
+      "gitBlobSha1": "995ca2b420e91121640fcdce166597803ae1f678"
+    },
+    {
+      "path": "src/Aijade.Memory/Kernel/CoreStateNode.cs",
+      "bytes": 1485,
+      "sha256": "f0aa8dc63ab5fddc641f459523d4f127087c0df378193a9cf0df56d8bcd92525",
+      "gitBlobSha1": "ca1e02842bc6bcabb7e50f4441343d3973bb4d96"
+    },
+    {
+      "path": "src/Aijade.Memory/Kernel/Events.cs",
+      "bytes": 8600,
+      "sha256": "818072ce477cda73bad647d07683d65598c9f4dcedba42d0c6753cc3f741ffc0",
+      "gitBlobSha1": "0ea593dc63b2c1075d9dadc8055e4d55cf733303"
+    },
+    {
+      "path": "src/Aijade.Memory/Lexical/LexicalIndex.cs",
+      "bytes": 7241,
+      "sha256": "0548fa5924deef5fd314f5c0707525a8e696f8906b88f312c22e68ed7659860c",
+      "gitBlobSha1": "f52744f57279c5ce20a2ee9cb004b199d72e6289"
+    },
+    {
+      "path": "src/Aijade.Memory/Lifecycle/Lifecycle.cs",
+      "bytes": 5568,
+      "sha256": "18db42d15e8238ed3a99abf0b98e11408d1b13aaa25d4249ae28a98b9e1b330f",
+      "gitBlobSha1": "499e90938718e199c7df9d5c0ef620f0fb861763"
+    },
+    {
+      "path": "src/Aijade.Memory/LlmDistiller.cs",
+      "bytes": 2965,
+      "sha256": "132af644a3f75ac50fb73eff119427e103c2fdd4ad71a8f79ce52e3593be3dbc",
+      "gitBlobSha1": "525c8ebb47618eea80540a4b77e36dd1bacaa8de"
+    },
+    {
+      "path": "src/Aijade.Memory/Locomo/Locomo.cs",
+      "bytes": 8139,
+      "sha256": "df16cbd61f86c64bcbe8d305e3c60e758629398909c2966c05eba2b528b5c689",
+      "gitBlobSha1": "eba78850489735691fd68dae1887ec8e8897aaa0"
+    },
+    {
+      "path": "src/Aijade.Memory/Locomo/LongMemEval.cs",
+      "bytes": 5980,
+      "sha256": "6739789827f25484d46668f9a7e1dc52a8e2f3866bab672e7ee96e4635b43454",
+      "gitBlobSha1": "a21844752a3c2ce639bf9ebdc766a75d3b301c90"
+    },
+    {
+      "path": "src/Aijade.Memory/Model/MemoryModel.cs",
+      "bytes": 10483,
+      "sha256": "d6150ca9a304e6845d606b5d9e81469be839cf5ec2c1fa0f2ce3a7f34c572270",
+      "gitBlobSha1": "7b9fe4a2ceaaf735bf217a5acbca79c00221c0be"
+    },
+    {
+      "path": "src/Aijade.Memory/Pgc/PgcGate.cs",
+      "bytes": 22018,
+      "sha256": "60db080c5495e101c8850b16283a6531fc996638aaec14e90b065991534986f5",
+      "gitBlobSha1": "0804349277d0446127364f5a77c94f58c68abae3"
+    },
+    {
+      "path": "src/Aijade.Memory/Pgc/PgcJson.cs",
+      "bytes": 3221,
+      "sha256": "5f2f1ce0afda3ab41f310965d4163ccecd4d951d53647ad14a41553839eb2c70",
+      "gitBlobSha1": "88d7361a2ca798817b514e52fc71f7a5dd3c1dab"
+    },
+    {
+      "path": "src/Aijade.Memory/Pgc/PgcRetrieval.cs",
+      "bytes": 3357,
+      "sha256": "eb42e4face2af5da53969ee9106ce0146598356c81fc18be261c3490ac130603",
+      "gitBlobSha1": "e51a71419fd7da921f9fef095e92bdbfceb293b8"
+    },
+    {
+      "path": "src/Aijade.Memory/Pgc/PgcState.cs",
+      "bytes": 5255,
+      "sha256": "8d38bbd74c2726ea61bf6bff2b22c99ec58c4e997b4d2744674463e64ac67df2",
+      "gitBlobSha1": "ddaca9f9bdc9fdb211129f6f0923c7427ccb002d"
+    },
+    {
+      "path": "src/Aijade.Memory/Provenance.cs",
+      "bytes": 7462,
+      "sha256": "47e24d6e0447272a3effdf4bc4d81c4c401553771fff9cd3d56870181c0a2ff2",
+      "gitBlobSha1": "4dbb4e900e86c57367bb0076c2544a542558debc"
+    },
+    {
+      "path": "src/Aijade.Memory/Replay/Cbr.cs",
+      "bytes": 8761,
+      "sha256": "a24a33a863e361df55730aec52ab4890ce7f0ed6ffd6eab37bd18df8cc33329c",
+      "gitBlobSha1": "70fef037185a5b4f5ace8600f384d4561c89cf23"
+    },
+    {
+      "path": "src/Aijade.Memory/Retrieval/Scoring.cs",
+      "bytes": 9413,
+      "sha256": "a176118d8b960953606e5b2cd67b376f1f82c3731fc5f267f88f29c0cd523d17",
+      "gitBlobSha1": "07cd499aa127b18e2c1b3b0fd678e1c40689cc11"
+    },
+    {
+      "path": "src/Aijade.Memory/Salience/SaliencePredictor.cs",
+      "bytes": 13257,
+      "sha256": "7d31a47076526aac91a130144b4b102deabd5a3e03f964ff58820e2b85c1aef6",
+      "gitBlobSha1": "2ee69f48c8952466bb226385b3851e12b720470e"
+    },
+    {
+      "path": "src/Aijade.Memory/Storage/Storage.cs",
+      "bytes": 3513,
+      "sha256": "91a036f50d3f2b01835f55ff0ba3a4a3c85f80fe28f095bfce852a05bddc452d",
+      "gitBlobSha1": "68827dd9fe7e31d4ece7ddfd56613cc49f4c28d2"
+    },
+    {
+      "path": "src/Aijade.Memory/V9/MemoryTx.cs",
+      "bytes": 13867,
+      "sha256": "23bc52410475317eb78493b4268f89f7076c67b547c64ed095c9201f4b310f24",
+      "gitBlobSha1": "e3d7cd926eaf1a26ae032a625b89b51e7f54dc18"
+    },
+    {
+      "path": "src/Aijade.Memory/V9/ShadowParams.cs",
+      "bytes": 12325,
+      "sha256": "c6253620633f413fdcb1d9a78a17a347b9a381e25f019131997c6ae5c60b807a",
+      "gitBlobSha1": "4bf8d3a198780921fcfdc68890cc0ca5b947f868"
+    },
+    {
+      "path": "src/Aijade.Memory/V9/V9Runtime.cs",
+      "bytes": 17693,
+      "sha256": "b9aacba280e3cd0bef5bde6b28b7d2ebe7484cf40dfb04c585e68d46e1e058ef",
+      "gitBlobSha1": "6154e1f748983eb8594ab4c3f8be1a841d3f768c"
+    },
+    {
+      "path": "src/Aijade.Memory/V9/V9Schema.cs",
+      "bytes": 4749,
+      "sha256": "b9c0245e21d647cc85e7c94b8ee0d95c2f3edde5d0acfee2199a5a5cdca26f69",
+      "gitBlobSha1": "ad5f53294c988dd6d2bad638c40e9082cf795d41"
+    },
+    {
+      "path": "src/Aijade.Memory/V9/Weave.cs",
+      "bytes": 3428,
+      "sha256": "72435e65826705c44426629e22ae06af57339c68081368a69e0008e4e0b45d89",
+      "gitBlobSha1": "618373f37cff5475442d1295f4707d6f13c2f9f2"
+    },
+    {
+      "path": "src/Aijade.Providers/Aijade.Providers.csproj",
+      "bytes": 244,
+      "sha256": "eafcdd61d780fa0d3b4f452496e2f720ebb1465ab0c05eeffefc09b2b34ad192",
+      "gitBlobSha1": "5cf183b54a50ab1e1e5422a9e91f1b9705e4801e"
+    },
+    {
+      "path": "src/Aijade.Providers/Llm/LlmClient.cs",
+      "bytes": 8059,
+      "sha256": "aa50951d909c0d21949087d7e4f042dd3e3bafc72adab447084dabc1e046489b",
+      "gitBlobSha1": "5daf81e195319b99d5f06ecfe296cd8c0778968d"
+    },
+    {
+      "path": "src/Aijade.Providers/Llm/MeaiAdapters.cs",
+      "bytes": 6415,
+      "sha256": "982dda235285075449dbae4569ca7cfe4b767a993f2293438ab25edb1aaf0789",
+      "gitBlobSha1": "76add4dfe34d466a746e8f55aa88bd91ecef1fab"
+    },
+    {
+      "path": "src/Aijade.Providers/Substrate/Determinism.cs",
+      "bytes": 10867,
+      "sha256": "111c5bbc2a15eda385c149cad3bd172d6fd0c8f8b80b29499abfc61ceccceb22",
+      "gitBlobSha1": "4978c51c257107da2db1646589b4f64899d69888"
+    },
+    {
+      "path": "src/Aijade.Providers/Substrate/Substrate.cs",
+      "bytes": 12930,
+      "sha256": "5fbef7d68557d95ea6ad708aad64268b10d2d458493a662f08cff0ff45b40233",
+      "gitBlobSha1": "77459ffbfe1181ff5d3c9a78af50b969ded0d48d"
+    },
+    {
+      "path": "src/Aijade.Research/Aijade.Research.csproj",
+      "bytes": 589,
+      "sha256": "06c9e14f24db0706e3bedcf31503560c6180264b475bbd58a3b51c795aed0a52",
+      "gitBlobSha1": "4cf5bb3197c2eb43d5a204412c2a34fc8072ba0b"
+    },
+    {
+      "path": "src/Aijade.Research/Integration/ResearchRetrievedRoute.cs",
+      "bytes": 2415,
+      "sha256": "98087f2306fb5111b169094c4ab565efad5ba216c7d8b0e1dd75f1eb2ac36ed0",
+      "gitBlobSha1": "fbe8ebb15cb2afea9c94fe2a371f014cf6cb8571"
+    },
+    {
+      "path": "src/Aijade.Research/Integration/SkillEvidence.cs",
+      "bytes": 3493,
+      "sha256": "f188ed53108b93fc59e71b93e8f89a0e2c00ba5e957c2ad636f6f79c794f3162",
+      "gitBlobSha1": "ded3c005c7598b96cd815e952d45776b4c398399"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/AnswerableReanalysis.cs",
+      "bytes": 16229,
+      "sha256": "1631e9f9ff11b89af0d5cf2b943f57457eff56ae1abb7a1d887f84bcafa9a870",
+      "gitBlobSha1": "a2cd14904a084860233b93fcee7d71ff392c2e48"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/LongMemEvalReanalysis.cs",
+      "bytes": 13250,
+      "sha256": "45309aeeff6c49d356b8667c3abe54bac5fed111d0dabdf3181c83770688c837",
+      "gitBlobSha1": "486150bbd8450a912fdbf8c2de84efb35c46f417"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/MemoryUncertainty.cs",
+      "bytes": 7557,
+      "sha256": "02f98de762f4b3a77653470bd31ec8c6fd9c060d5e818eb1c0c61cf353e983eb",
+      "gitBlobSha1": "f9db332bfe043214b77bdd97444dd82d7cd6bb7b"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/MetricDefinitions.cs",
+      "bytes": 5062,
+      "sha256": "bd87ff408d4507420f823f03b527e134fcbaedaadda156bd48ad12654f4d878d",
+      "gitBlobSha1": "a3aace6b28b12b99718f7ab5e149928f026fa6f4"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/Parallel.cs",
+      "bytes": 628,
+      "sha256": "88834082d0f30c51f832a962da5a20d53b461794fc9e435cfa5601fd6cdd4f40",
+      "gitBlobSha1": "862d78e012b0cf829eaeab7e7bcb88ff27158fbb"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/RetrievalAblation.cs",
+      "bytes": 21822,
+      "sha256": "f79280ac1bbaf81839d1bcd309903195cdc87bc95b55fb0e574f8e7eb2c351a4",
+      "gitBlobSha1": "2b5a5fd4768028cdff1a406b4c1a1a72a8826a6f"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/SalienceDiagnostics.cs",
+      "bytes": 7868,
+      "sha256": "4d8bc2dec7b8f028a6f30528ff6dfbcee67b7d747704fd608a1aa0f5955a3005",
+      "gitBlobSha1": "69537b202edcff37979339fe99dbe08fdb68c8cd"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/SalienceLeakageAudit.cs",
+      "bytes": 8403,
+      "sha256": "f64b9456c9831ab11e991479dd6611e9509c437f88b0d8f22e1b44a53c6482bc",
+      "gitBlobSha1": "bdb1040bbeb3267d068a6c609e66aa57778a150d"
+    },
+    {
+      "path": "src/Aijade.Research/MemoryEval/WeightAblation.cs",
+      "bytes": 10171,
+      "sha256": "e7c1dd0af9235d8dd68f42b16bbfc736a1ff02075b378dbe9f6db82ba58f46b0",
+      "gitBlobSha1": "f45e3ac2fd7805a992530399d55f55b576315f26"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/Backends.cs",
+      "bytes": 30194,
+      "sha256": "12ce61afd3e9f7d8fe3011b3cca5a94382f368057eb962fdd848040a83f9c71e",
+      "gitBlobSha1": "3031f92353f5bcf290c8e79c99745740ed6f3e76"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/FormatPrecheck.cs",
+      "bytes": 4832,
+      "sha256": "eeda9f3e695be38e63f4e11233b5e5e8360d4457ce313f99f4dbd4e0c54bb9da",
+      "gitBlobSha1": "0740cd0be745f8ce22eb233d08152bdd20dd282e"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/Harness.cs",
+      "bytes": 21440,
+      "sha256": "8ae4541a4bfeb3ce04aeecfe6798b06a29d1bdccbefa4b90c1b7b0f07ecacf86",
+      "gitBlobSha1": "57022b961aca16140c832c83b615b62e882be10b"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/RequestBudget.cs",
+      "bytes": 16899,
+      "sha256": "a783ee602ca31d727c795efe2667ad7e7d70403e3045fff58969efd3932a9ed9",
+      "gitBlobSha1": "6cc1ca05b69bc118cd7932171bc1287910ce500f"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/RqcAnalysis.cs",
+      "bytes": 22131,
+      "sha256": "6b1a9ce2d9282da5b2071c73704cff3487eb6131d51e8ee7456dcdcb576446c6",
+      "gitBlobSha1": "d410a6e6b25d8bc160dc6fff61c82b71a1be449a"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/RqcModels.cs",
+      "bytes": 35957,
+      "sha256": "95ccc9faf4b874306e8e1cb82a13b72033aa00aba911cfa009416d117289d193",
+      "gitBlobSha1": "89738f09ece6742c9f8f1d9365e01b3ae3d60bb3"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/RqcRunner.cs",
+      "bytes": 37572,
+      "sha256": "4b677adb5025dad57a920b17936e12182ab00c133e79ab11a48109c447c303e7",
+      "gitBlobSha1": "0a90e7d50d8e02b485e35af0afbde86f8fe96297"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/VerifierFeedback.cs",
+      "bytes": 17972,
+      "sha256": "5f11aa0fd96d050f3d2a43651292256a410b58a5ef7a0f91ec33932940d80b39",
+      "gitBlobSha1": "ce86a87742431b872ebc97fc1e037e874e4dc312"
+    },
+    {
+      "path": "src/Aijade.Research/RqC/VerifierInstructions.cs",
+      "bytes": 760,
+      "sha256": "fdf16cba1264731080a756c63e6340e367acc1dcf10aafc42b77a284458a8f45",
+      "gitBlobSha1": "93547a775ad2110c04ca8b6feb2170034962f7b7"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/Bench.cs",
+      "bytes": 4796,
+      "sha256": "607e43b485e0d11bb9bdbf0517048d30028ea4b194e0935fb4c3df5d79ace76e",
+      "gitBlobSha1": "3ef0bbb96bd21efd23a1d4499b15c7b20606bf1e"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/DifferentialTesting.cs",
+      "bytes": 7348,
+      "sha256": "1066f2b13e3342d7b1030f19b9f4ceda3886d37a3801faaa12bc6400211852e6",
+      "gitBlobSha1": "f0d7b8cc22a3b650d3d307df698bfa4bb4bad3b5"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/JudgmentCalibrationCall.cs",
+      "bytes": 4727,
+      "sha256": "c5a41abd0735668a14dec2d924e252e7b0f2435de4d3ba2f184721fe88da7f43",
+      "gitBlobSha1": "f0904ce967cb674f4c2d4858c4fe07e855fe9640"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/JudgmentPreparation.cs",
+      "bytes": 9729,
+      "sha256": "df0a02e8a2113f99b8712c743c1c0d2ba9752c3cd1a708ddee0499ec78c24eb8",
+      "gitBlobSha1": "4ea7eb72141083f185fb4df2df8d42ce2146817d"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/PromptExposure.cs",
+      "bytes": 6630,
+      "sha256": "7a8634215390c36f48d02fa36ed137514f5ccb079fb7a01d0a35b0ed4d81c038",
+      "gitBlobSha1": "93e4491dd58045588296a8e17b81e2a57ee999e3"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/PublicBankCheck.cs",
+      "bytes": 4180,
+      "sha256": "631d16a1256d277b1bf512e3a29c7aa30dd53bacab430798512e7a795349f3d4",
+      "gitBlobSha1": "f4796aebe016f895c0d7e4a75d4687aac30a52f1"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/PublicBenchBank.cs",
+      "bytes": 5399,
+      "sha256": "d6af506a3a1c238d52e77fb075994560c0b1ef5f01d98616dc30deb2bcba45e5",
+      "gitBlobSha1": "653a5e0daaf2e38cd760a39993bd86ec098e0d93"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/RequestPolicyProbe.cs",
+      "bytes": 12324,
+      "sha256": "c0b91db049daf9ef1fbc4532f604f8c3e5605b18c7933e8e865bdb8d21c07a0c",
+      "gitBlobSha1": "2cb09dcd7d7a6c3258ed66f67f0e1d226b89593c"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/Sandbox.cs",
+      "bytes": 19567,
+      "sha256": "56f904a02f4f0b2f045de4fa9be06f51f9d11c282876424ba4a5aa0c5ccad75a",
+      "gitBlobSha1": "a9940a54f7fdf3d91f9999e9ade381efe2875157"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/TaskAllocation.cs",
+      "bytes": 1494,
+      "sha256": "39998bf22ccb10b542969a54b4519bf0d483b41db0354f8a7fd59666196e2799",
+      "gitBlobSha1": "77ba304bb2794b88ad84bc79384d4d72a203e84a"
+    },
+    {
+      "path": "src/Aijade.Research/SkillBench/bench-data.json",
+      "bytes": 36049,
+      "sha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+      "gitBlobSha1": "6fbae1114e73f4a3d2280af209bcc7c74cddbdcf"
+    },
+    {
+      "path": "src/Aijade.Research/Statistics/Stats.cs",
+      "bytes": 20946,
+      "sha256": "813543428fe67135570ede61d113899bedceb24ae11de9df0d24a3ff665830a0",
+      "gitBlobSha1": "3627289ca0361854e5aacc6676f531bfe5e7619c"
+    },
+    {
+      "path": "src/Aijade.Research/Steering/Steering.cs",
+      "bytes": 6025,
+      "sha256": "1f59cebdcd0d3f6484cda9fe68b0ea697dc53a02e3e02c67bb9abb5421b7da90",
+      "gitBlobSha1": "dc167f428f96fc64af367a699904089d6bd3c16d"
+    },
+    {
+      "path": "src/Aijade.Server/Aijade.Server.csproj",
+      "bytes": 1363,
+      "sha256": "63879a08e253e59fe87fb0a5878ec45be5682a7f858ee9984dddf445aeaa815b",
+      "gitBlobSha1": "dfc3140a3848eb15fd3ff82901f56e98fd807c8f"
+    },
+    {
+      "path": "src/Aijade.Server/AijadeServer.cs",
+      "bytes": 10367,
+      "sha256": "21223aa4e33e683557486bd1fd253bc61b1e00e9a38d386264ff8e6eb6eff84c",
+      "gitBlobSha1": "45f680641d0e0a1cead73f14c602964921816339"
+    },
+    {
+      "path": "src/Aijade.Server/Auth/Accounts.cs",
+      "bytes": 11497,
+      "sha256": "a5998a744cd67d41d904ffc9b8f5ad1124fc494e68f129ff62c9c4f1ab7c5ca9",
+      "gitBlobSha1": "80aa49e0ee965a7b6414caeaacce25b901f16066"
+    },
+    {
+      "path": "src/Aijade.Server/Auth/AuthEndpoints.cs",
+      "bytes": 2724,
+      "sha256": "9456d7d669d5e17968bdf2a1376421acb24cc5853ed8d6a7133c5e9ae200d04f",
+      "gitBlobSha1": "1ade214bc73c1ba17768a5f975ed953ae6f0a03c"
+    },
+    {
+      "path": "src/Aijade.Server/Auth/Oidc.cs",
+      "bytes": 7078,
+      "sha256": "52889d032a6ed7151d9488313f493abf7f628c00bc6b979857cf8e585f171549",
+      "gitBlobSha1": "bcfb8a82f3fbbe8a725a36b9c6a5448d8696781f"
+    },
+    {
+      "path": "src/Aijade.Server/Infrastructure/ApiError.cs",
+      "bytes": 2689,
+      "sha256": "e2ae5e7afd107bb89f96d3b28fbd10673f9601c07bb93a4c1e6b9b8dcc867e63",
+      "gitBlobSha1": "7dae87d1e689de2349837045e1dc814f4a1862d0"
+    },
+    {
+      "path": "src/Aijade.Server/Infrastructure/Database.cs",
+      "bytes": 6202,
+      "sha256": "7be18ab2e91175c1d6ecb898821309fad55d1b66fd9e3ae86ea1dea3d9c53083",
+      "gitBlobSha1": "53026cbc0d6a72e54dad9a67962b9590a226d5ce"
+    },
+    {
+      "path": "src/Aijade.Server/Infrastructure/Ids.cs",
+      "bytes": 645,
+      "sha256": "1e9032ab1a56fc072cc085b53c62e5a52a761f2491f21999ddca6217941fafb1",
+      "gitBlobSha1": "71091ec65884f3661bbc30a80a43a770d39e8257"
+    },
+    {
+      "path": "src/Aijade.Server/Infrastructure/JobBroker.cs",
+      "bytes": 4395,
+      "sha256": "402ffe978cb62a8999b5569c59f53ec0f32192f691a49b05eaaa5523e6460bdd",
+      "gitBlobSha1": "d905d12cfb83c086d605ec1ec961ca5a75920939"
+    },
+    {
+      "path": "src/Aijade.Server/Mcp/AijadeMcpServer.cs",
+      "bytes": 6225,
+      "sha256": "7070e48bd6e895e663652366991d8dc47d9d37500f6eac1d4cd466325df7ca0f",
+      "gitBlobSha1": "eb9a0cf6118b0a456a89d36eb0c93c8962bfa858"
+    },
+    {
+      "path": "src/Aijade.Server/Memory/LongTermMemoryService.cs",
+      "bytes": 12290,
+      "sha256": "79e280966ad5a49d1397b117c7c1debaccb17866b1d22bc7fcb4795213d79c26",
+      "gitBlobSha1": "d89225b42e067d5d97d1be5a9f3fe5d7e68c05e1"
+    },
+    {
+      "path": "src/Aijade.Server/Memory/MemoryEndpoints.cs",
+      "bytes": 4748,
+      "sha256": "5956f7b250c9de9fe6c44518ff9a63be51a7bbef2b8000be8d8033c9a714399a",
+      "gitBlobSha1": "9711179c3d3ff14153f22114a7ebed600eb244b0"
+    },
+    {
+      "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+      "bytes": 10743,
+      "sha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "gitBlobSha1": "a5c010b6381d5798ab6168232085b6f2038ba600"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0001_v9_pipeline.sql",
+      "bytes": 8663,
+      "sha256": "15d8e1e121620e602c7f0d4a240f46fbbfcfb2a9381e868f0b07a3319b0777df",
+      "gitBlobSha1": "e4d0bc7a8f23fdc73d9730302ed5c10c0c184295"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0002_accounts.sql",
+      "bytes": 1372,
+      "sha256": "945e5fc0fcd37d120496dfb7e261e11d2344ace1d7d6821c2fb92ba1797d2b3a",
+      "gitBlobSha1": "6cc9b4f398c00d20dc633c305ae7b0c50bc79e51"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0003_product.sql",
+      "bytes": 4083,
+      "sha256": "248f1bc02dc876cf85f34779b81a911db0c5f4f6773182a17ac8fa371c5f051f",
+      "gitBlobSha1": "01bafcc32057b5664fe61032a4d5bb89393efc02"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0004_memory_ownership.sql",
+      "bytes": 498,
+      "sha256": "a4a388f30dd859196ccfd1e01f0380a3fe8437d2cebb61ccf8d987048f77ff6d",
+      "gitBlobSha1": "59b88c6ce25dbea2e9b53d3e46c80bf09ce936b0"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0005_images.sql",
+      "bytes": 494,
+      "sha256": "2a47e090b79e1e3476e6110f124ead13d5313a9af874cf7010766042e3bce972",
+      "gitBlobSha1": "6504534aaf9641fe062a9d01ee050cafe554b50c"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0006_live_context.sql",
+      "bytes": 459,
+      "sha256": "56e47bcd7931539b0454468c246d8776b93562ab8cd3408cd84fbff827d891cb",
+      "gitBlobSha1": "10386adc1cb303b155b2a3d44b78f03ca0037436"
+    },
+    {
+      "path": "src/Aijade.Server/Migrations/0007_memory_embeddings.sql",
+      "bytes": 344,
+      "sha256": "022eba46087c05eb93a349476caf1700e373a84e06e8ce7059c10988a9de3159",
+      "gitBlobSha1": "0a108c23792e18868f43530f3eeacf05e602da4c"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Admin.cs",
+      "bytes": 8029,
+      "sha256": "bb5591c93eee8974360c11f6e408c60f6599dd76964400ad6117917e2ba51f30",
+      "gitBlobSha1": "ee8bf03e7e3f9f39c50daf56dcfe91b4abf02e0b"
+    },
+    {
+      "path": "src/Aijade.Server/Product/AliyunSpeech.cs",
+      "bytes": 12818,
+      "sha256": "2c3924476b3f9890cd58d6e5eb7454a9f6a298b2eb7dcc18d35af377829f90c2",
+      "gitBlobSha1": "9414ab617beed0d4490cc95c8355f98b5303aa8b"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Billing.cs",
+      "bytes": 8556,
+      "sha256": "f82bed25f91e18df2fc0e4e5bbe5356e5dfb23b8d8c69acab8902919b9abffde",
+      "gitBlobSha1": "a9a9c3e69a24261c90a43f8f6033df0a06c999ef"
+    },
+    {
+      "path": "src/Aijade.Server/Product/CompanionDelivery.cs",
+      "bytes": 14136,
+      "sha256": "ea98adf149da1a74bc50654e3aa69bf93ca3c95f40f6c5d1c0d8d29bed673efc",
+      "gitBlobSha1": "63c371230469858aef1a88a56d95a2e91fcc586b"
+    },
+    {
+      "path": "src/Aijade.Server/Product/CompanionDiary.cs",
+      "bytes": 8472,
+      "sha256": "9e8d2145169d40f8138002c28ff6c651bba4ef7472aa24f8e05e12dcd2809a3a",
+      "gitBlobSha1": "53392c40d1ade00848f8d9455ee20122cd6badee"
+    },
+    {
+      "path": "src/Aijade.Server/Product/CompanionLocalServices.cs",
+      "bytes": 9626,
+      "sha256": "4a48ae1b5e43fbc1bc13bbc9b600c004ae218f94b119cd75d70a538ed85d6aa3",
+      "gitBlobSha1": "a638004e163416c62e657ad608d93ecadecae3d9"
+    },
+    {
+      "path": "src/Aijade.Server/Product/CompanionSync.cs",
+      "bytes": 23761,
+      "sha256": "8e5f99584c6d7cfc84d4df82242baa857302299935d5c3a1c2c8a5e05c80dae0",
+      "gitBlobSha1": "a50979de1ad8a9c3b6b01a4f5698a716444e0c91"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Flux.cs",
+      "bytes": 6339,
+      "sha256": "016e74565abef758f6053bd71f3c340ccd902b271db7cff9ed7720d3c1a0cc7b",
+      "gitBlobSha1": "33aec04a360fab333ee88480f36dbdabcb5e2dd1"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Gateway.cs",
+      "bytes": 24894,
+      "sha256": "488e3399e24b72bcfa9cd4b78b7ac915597a06aabb3aa5a76836ab47d490579f",
+      "gitBlobSha1": "4fa207fa369713c9b6e30fa6ecf41fef54d33940"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Images.cs",
+      "bytes": 27699,
+      "sha256": "997aa7b9d1cc5952ebf024a827bc154f76c3239f987a1e74aa53a58f85a9994c",
+      "gitBlobSha1": "45f84ab1d8f8a793882b5597ea6aadd30ba2e0f0"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Library.cs",
+      "bytes": 16860,
+      "sha256": "020a35e2385a6e83829af4af4909684c899b4b4659e331e2ab2b1e0310c15ce7",
+      "gitBlobSha1": "4d88ebd97db05c2f3cab769d4d3ff02f4eb46971"
+    },
+    {
+      "path": "src/Aijade.Server/Product/LiveContext.cs",
+      "bytes": 3363,
+      "sha256": "d17e5ef4018303e12fad28fa36d80910fb36367404747a8a42a12d4d73abf751",
+      "gitBlobSha1": "8e6549317c2719f59b48023c7053a092b5b231ee"
+    },
+    {
+      "path": "src/Aijade.Server/Product/LocalVoice.cs",
+      "bytes": 9734,
+      "sha256": "6af50918ef05696123f973c52b31d5a41b4a60079587f4c7a02d3867ed5cbe07",
+      "gitBlobSha1": "de85cf143c92fdc3aec2e7642de9e7f0152cc559"
+    },
+    {
+      "path": "src/Aijade.Server/Product/ModelServices.cs",
+      "bytes": 13688,
+      "sha256": "53c16e0266b007d75dcf11f376c356225e11112ef914c74ed2a350a376b6453a",
+      "gitBlobSha1": "3e976ecaca2cefd7935daa76f18987131dfe16f6"
+    },
+    {
+      "path": "src/Aijade.Server/Product/Stage.cs",
+      "bytes": 8609,
+      "sha256": "519b64d4e740d300d65a2589f6cc6b7f24ff16b1994afbccf8677e3abc82e406",
+      "gitBlobSha1": "b76ebeb98001792cdf9286a2f0568f045307c104"
+    },
+    {
+      "path": "src/Aijade.Server/Program.cs",
+      "bytes": 263,
+      "sha256": "610037dbe1a1b5e5876b39713a69c00eb6c7d2c4e13d86d07a7b2ddb2cb5add6",
+      "gitBlobSha1": "e35aba193c870763745caf2d3397edaa357255fa"
+    },
+    {
+      "path": "src/Aijade.Server/ServerModules.cs",
+      "bytes": 5012,
+      "sha256": "f2896a464c44f2e92db9fbadc4e6695d5385c23660ac4da2c00155f8af4a7a70",
+      "gitBlobSha1": "226955194da37fe53a2c774e19300f68516fd732"
+    },
+    {
+      "path": "src/Aijade.Server/Tools/Factorio.cs",
+      "bytes": 6302,
+      "sha256": "ea56495d885e8fe74afe55ba2a726d81bf42b37ccb3d7179326311b9aa84da2d",
+      "gitBlobSha1": "6d04500bceca440bf284f777908b21507473553a"
+    },
+    {
+      "path": "src/Aijade.Server/Tools/HomeAssistantTools.cs",
+      "bytes": 5264,
+      "sha256": "1a849615dcd96f279b2cb4d13938bf19f2598a8c95584b239b31fb3ec9601b49",
+      "gitBlobSha1": "ee94650524e4bda13d350c6c71f23966fa007ef0"
+    },
+    {
+      "path": "src/Aijade.Server/Tools/McpToolProvider.cs",
+      "bytes": 4015,
+      "sha256": "46f22ccc79b423e2db0bfba008122b6c1a0ec583b77bb9b0acab3f2495e1e2a8",
+      "gitBlobSha1": "9e24401f164b2f8289a8bd7dc5d1fbe4ab94c2a4"
+    },
+    {
+      "path": "src/Aijade.Server/Tools/ToolHub.cs",
+      "bytes": 16980,
+      "sha256": "688a4862460faed3013bc3ce245f7a44c21f80e334e8010392ea3fd18724b223",
+      "gitBlobSha1": "053fc6baa5f2dde41365a7ad6d315636e9cb562d"
+    },
+    {
+      "path": "src/Aijade.Server/Tools/Xiaomi.cs",
+      "bytes": 16634,
+      "sha256": "e5fb74f5a53959d3b02e73169f20d40477d4a4a8d01db376405c2062c93f98d6",
+      "gitBlobSha1": "0c5cf620b459ae4e54aef7b0f3cf85ef2c4a381b"
+    },
+    {
+      "path": "src/Aijade.Server/V9/Boundary.cs",
+      "bytes": 16586,
+      "sha256": "7d873cdcbfd1014ba3b97b829302db0ef53170ce322a5a4702fae44047d0ec89",
+      "gitBlobSha1": "2e2aa03ce8297c6c89c6ef494ebef8d89df95cf8"
+    },
+    {
+      "path": "src/Aijade.Server/V9/EvidenceDomain.cs",
+      "bytes": 2867,
+      "sha256": "ed91fbdbb8596b89666c59c599e087209dc8910446164eb37002d32562a3ca90",
+      "gitBlobSha1": "e5f1aba5a9d5786653ed9fb3c78c27b308135166"
+    },
+    {
+      "path": "src/Aijade.Server/V9/PromotionService.cs",
+      "bytes": 9899,
+      "sha256": "82496450fb880dc944790bbfc455e813566f774461b8f16588e7ee75201d06aa",
+      "gitBlobSha1": "1ab2e80188bb11c8df29fd01e0542f7f8c7c7201"
+    },
+    {
+      "path": "src/Aijade.Server/V9/RenderTraceBackfill.cs",
+      "bytes": 6305,
+      "sha256": "d6d31d88ce04a53900a798a46a90abd40b558cb4efa5ac786daef47f511d1cb6",
+      "gitBlobSha1": "d9b553ab363c206748a85dbe9548dd5c4f14f701"
+    },
+    {
+      "path": "src/Aijade.Server/V9/ServerRuntime.cs",
+      "bytes": 7573,
+      "sha256": "b4072a1f6b52930de5ac4990f90c0f2b655113e828cbcffa0ec9f548810ecb0f",
+      "gitBlobSha1": "382c5e5bf01b74241184b76e73dc96d4b0ff6c8d"
+    },
+    {
+      "path": "src/Aijade.Server/V9/V9Alternative.cs",
+      "bytes": 6286,
+      "sha256": "88347cb857312f0d5fd5cf0dd56130b5fbf08ec731c29febc44668d992f4c8a0",
+      "gitBlobSha1": "d631d7653899f63481e42eef8096f106bd7c068a"
+    },
+    {
+      "path": "src/Aijade.Server/V9/V9Endpoints.cs",
+      "bytes": 17545,
+      "sha256": "9bfc3cfdc1e41dde11da96cb4acd2031c3e1628fdb2b6c2d5cbc1e97dc818363",
+      "gitBlobSha1": "48610bc41da694561d95db510b8a47922d294f9d"
+    },
+    {
+      "path": "src/Aijade.Server/V9/V9EventService.cs",
+      "bytes": 18874,
+      "sha256": "05c7d85e2e7ec8008d6b9bdbe35f5f6d1db6e8a051d94705321bd55ecc0a15a0",
+      "gitBlobSha1": "8b0c3091468e86fd26c44838d599cd2f537f25df"
+    },
+    {
+      "path": "src/Aijade.Server/V9/V9RuntimeStore.cs",
+      "bytes": 10045,
+      "sha256": "96ead5a89f1d4212811903dffcdc103248288aadf718021687af0302b4fb1362",
+      "gitBlobSha1": "dd2dd70c99fd5ebeece1c8fd276e6ce5a32c48e0"
+    },
+    {
+      "path": "src/Aijade.Telemetry/Aijade.Telemetry.csproj",
+      "bytes": 456,
+      "sha256": "5d070f6576f4448c2ed839875877bde72e5aa04d865049f01bdfd0e4d721eace",
+      "gitBlobSha1": "672bd2f5f3e8f08a3702a4ccba142103a5e1460c"
+    },
+    {
+      "path": "src/Aijade.Telemetry/PersonaTelemetry.cs",
+      "bytes": 4430,
+      "sha256": "e5fc7de9d06ad1cdbd70f713eaf80502d523c1b2d30965ca357b68f1f28bc662",
+      "gitBlobSha1": "2e89fb380a43da117aa6a612b2dc711aaa0b12eb"
+    },
+    {
+      "path": "src/Aijade.Telemetry/Session.cs",
+      "bytes": 15146,
+      "sha256": "e9fe8d052e87edbc961187d836dbb5e2602d631906c8da9de698d630b34f1518",
+      "gitBlobSha1": "d343e8bb2b199686ae03400eb5e829f65cef7e97"
+    },
+    {
+      "path": "src/Aijade.Telemetry/Telemetry.cs",
+      "bytes": 13657,
+      "sha256": "1e740c271591c5af233a6ee944b14c07cb2a94c8ac7e5c7cd1105b0a394e1ef1",
+      "gitBlobSha1": "260ff74461c2d2bd2e8deb335e3ef884a4651b7c"
+    },
+    {
+      "path": "src/Aijade.UI/Aijade.UI.csproj",
+      "bytes": 326,
+      "sha256": "eae4b6c649404a457454e2dd316ee29f87c1dff6df0b5a3aa92e134c5995f98c",
+      "gitBlobSha1": "a162e1a7b32193fb570594b07a19bc3281a2cffd"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/Admin.razor",
+      "bytes": 13024,
+      "sha256": "1bfe1a734c9d1a1b6cff9cf33a2d2f80de285924937841fc9ae8f0a7de27293d",
+      "gitBlobSha1": "a5bce2b85f923e36c9077f842eb54a8d3fcd9226"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/Characters.razor",
+      "bytes": 2975,
+      "sha256": "b20f4507169aeaf6f8d2fa3ef5643d5c7a784d7b2f59e7b3440c71d7a8dd3179",
+      "gitBlobSha1": "3e2a2addaea48d1d33c56ef957f064e6e4f1dd92"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/Chat.razor",
+      "bytes": 32196,
+      "sha256": "aa297d707360f2509a66fe11942028c8f19fce6f77abfc21cd8b311bad87233e",
+      "gitBlobSha1": "c1136afe3d39c83ae06e257287c336fd4a8c39f9"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/ChessGame.razor",
+      "bytes": 5289,
+      "sha256": "c2a95dc7c8d174b75319b180aba509a1c94b143df07cedcf75a43ffb6cf42ba7",
+      "gitBlobSha1": "561f2e005d2cf8d868a4ee1c74a3666d0fc84e62"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/Companion.razor",
+      "bytes": 18461,
+      "sha256": "c4df0f1d96ab0b691d5efe68b0264064588af925afce3b1a395f31ec16b78a5d",
+      "gitBlobSha1": "dfad0812cc039ae9515ed89e00484ea4cd6a37dd"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/CompanionServices.razor",
+      "bytes": 5475,
+      "sha256": "3f6dacf7ddfb4bf4ca4e140748d4056a3f5ff25c4395d2607cf472bb2adbbb88",
+      "gitBlobSha1": "871a7d3ed031e963ba8e86c528be408c22411c56"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/Memory.razor",
+      "bytes": 3843,
+      "sha256": "12a9e4aeeff1241ce11bf16d4c0cb931a08182c80b3870edcfa85f8005a7f0bc",
+      "gitBlobSha1": "cb69d8075ced562463aa2bd88d87752ba97817b9"
+    },
+    {
+      "path": "src/Aijade.UI/Pages/Settings.razor",
+      "bytes": 18409,
+      "sha256": "d31c4c4e9dc66c1414e949ebde66580e66d27443de0912c6191706451a7ac448",
+      "gitBlobSha1": "55260da350f3b15f3724c11a78dd6500c8513176"
+    },
+    {
+      "path": "src/Aijade.UI/Routes.razor",
+      "bytes": 389,
+      "sha256": "854239926f8bc5e5a99435f6eb1d98e5df22f7127cd64a118c8f3a38380c5255",
+      "gitBlobSha1": "6428d280f68430eaa477c37261579ef28f236c21"
+    },
+    {
+      "path": "src/Aijade.UI/Services/AgentCapabilitiesHost.cs",
+      "bytes": 1858,
+      "sha256": "4a68e9bdc7e269f95e8bd6c33d7e287b114da2dc7b712a635037bb9e3b0f9131",
+      "gitBlobSha1": "79217b6a366a8bc6abafd1fcec2642ebd51b1de3"
+    },
+    {
+      "path": "src/Aijade.UI/Services/AppState.cs",
+      "bytes": 7114,
+      "sha256": "95ccb4bbf9daa0ea53097212d091549c33f2a3ad50ba4451ede24d3472bee6d2",
+      "gitBlobSha1": "24862078359ddfa0fa1357743dcb1bbb0308029a"
+    },
+    {
+      "path": "src/Aijade.UI/Services/BeatSyncSession.cs",
+      "bytes": 2940,
+      "sha256": "ee6f5ca667b733eec01cdfb049d2244a2f81cb89bd958521873700a4d0a51ee8",
+      "gitBlobSha1": "799b17feafcf30c3f07b5184e1ecf7c8fcd67e37"
+    },
+    {
+      "path": "src/Aijade.UI/Services/BrowserCompanionStore.cs",
+      "bytes": 1156,
+      "sha256": "73af0dd045366f7bb0c2b7ab2db00df80051649d857347a70183ada3c3990c30",
+      "gitBlobSha1": "d7f19b18f6814254206188e386b68291a61b63ae"
+    },
+    {
+      "path": "src/Aijade.UI/Services/BrowserServices.cs",
+      "bytes": 11000,
+      "sha256": "3ca3eddf3fd6d0debfa63c1dc9b516a57e8d04bd63224b4880b3fbf3f633ef7a",
+      "gitBlobSha1": "6eaa4a05274c109211d85c01e4f0c1bb6ae35960"
+    },
+    {
+      "path": "src/Aijade.UI/Services/BrowserTelemetryStorage.cs",
+      "bytes": 2546,
+      "sha256": "6d4092ca469985ecaa101ecbc6d6583b4ca4bb882c686d14f0272a6cc81686d5",
+      "gitBlobSha1": "eda0ddc43395721e6b36bf7cd67a96deb38c0de6"
+    },
+    {
+      "path": "src/Aijade.UI/Services/ServiceRegistration.cs",
+      "bytes": 1488,
+      "sha256": "a287a3560c7065d22cded7850798f611edcb4ebd5558c3744b1af868eecefae8",
+      "gitBlobSha1": "d7e183d00122c2126d764c155bf413da2f197695"
+    },
+    {
+      "path": "src/Aijade.UI/Services/VisionSession.cs",
+      "bytes": 4734,
+      "sha256": "0398760f776e7026447647da98e5685f774633860f2c5f541c1af6fe84540f9b",
+      "gitBlobSha1": "5f825aea0c7360ce8f88487621ef2ae76cda422c"
+    },
+    {
+      "path": "src/Aijade.UI/Shared/ChatImage.razor",
+      "bytes": 1317,
+      "sha256": "7f524f60b6cf29cafe777d0431a11df682ead0078b469049d224f1c478e5a9d2",
+      "gitBlobSha1": "4979e6465f1db139a64759203a2ea540cedaecdd"
+    },
+    {
+      "path": "src/Aijade.UI/Shared/Login.razor",
+      "bytes": 2958,
+      "sha256": "534f3330ce07ad0b7056d6452610ea9e31b2873b1c27f3773689bef2dc46b8f0",
+      "gitBlobSha1": "36d7392c11ee1748bdee0bc7a75364a15340aa80"
+    },
+    {
+      "path": "src/Aijade.UI/Shared/MainLayout.razor",
+      "bytes": 1826,
+      "sha256": "f059e07991ab9d4c3f3a3eb67d4b793de95091078618efb59a3db9a72e1520ce",
+      "gitBlobSha1": "f4b67f20deafcf6f9412229d56238d889a304349"
+    },
+    {
+      "path": "src/Aijade.UI/Shared/StagePanel.razor",
+      "bytes": 3027,
+      "sha256": "cbbc8337a136ce2ed694f2c24bd2d095b577633bd584e6979ef98727104ea205",
+      "gitBlobSha1": "75c39c04686ac47192782ee3e5e0c47eaaa729c8"
+    },
+    {
+      "path": "src/Aijade.UI/Shared/Toggle.razor",
+      "bytes": 345,
+      "sha256": "a5542f69493481b505f246a8eafb402ec0aff65aacf437f3d2fd446b0e4b350b",
+      "gitBlobSha1": "caf7bb3dfe9e5b66bdcbe44a7f29f9aab1e9afcc"
+    },
+    {
+      "path": "src/Aijade.UI/_Imports.razor",
+      "bytes": 415,
+      "sha256": "49448a175976ba0f99fb777d9c8196df62af9ae15948ada14baa2c2827909615",
+      "gitBlobSha1": "3be39b46d9ad385a9f341ff972ab25bf6ef3e99b"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/aijade.css",
+      "bytes": 9160,
+      "sha256": "3dc1fdd3e9d3cfa34bbd3c1dc3c9d7882e5f33ec8a807ba14e3f3f63e05b2cc3",
+      "gitBlobSha1": "85ddc5fb44974dc65e56fa1245033dbdbf71444d"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/aijade.js",
+      "bytes": 640,
+      "sha256": "76be2dec5af40b3a2680c608eaca9b7e09d741e1d5cdb73fa0ef14e7f575a5aa",
+      "gitBlobSha1": "756a77612396bc643e977d6972ee47e5ecb7637e"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/audio.js",
+      "bytes": 3204,
+      "sha256": "597734e1b150ac2f8ab90e64fea0bccf397ea50fb8210e99ff62a667f6c8f31c",
+      "gitBlobSha1": "4e977bb5473b0336b66222b7fb186891877bae50"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/beat.js",
+      "bytes": 2055,
+      "sha256": "462ddbb31d3f804a1eadcddfeb844391de9f588ee2b380f565ea5121254a30b2",
+      "gitBlobSha1": "f38f42187e9fc080287e4e430532be684eafecc8"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/companion-store.js",
+      "bytes": 1714,
+      "sha256": "0c7d8baefb4c0f0615287cff88918ba6090acce3cddf9b993d939cc0a6d093d0",
+      "gitBlobSha1": "1d49aec6be07265bb8ad9e2729f2d27b409a88fe"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/fonts/xiaolai/OFL.txt",
+      "bytes": 4432,
+      "sha256": "0df7e09be4c2c850a48bd8beb9cd64b343aad49cd5d3f6cfb2ad2e3d28a56ca4",
+      "gitBlobSha1": "2fea47d54ff4649dd34cb528d28b974c3aceb966"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/fonts/xiaolai/Xiaolai-Regular.ttf",
+      "bytes": 22220806,
+      "sha256": "e2f68daf0e72777a8cf58bc83de1b98634b251e537ddbfca24b0ae50d1802da2",
+      "gitBlobSha1": "c6aa339271d544428396f9dcadf6ad81046c3705"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/lib/THIRD-PARTY-LICENSES.txt",
+      "bytes": 11546,
+      "sha256": "0fe8c3ba372723b3b3b36d014f38b84d3e55513c075bf44d8e9e8e18a8c41410",
+      "gitBlobSha1": "abd5877e4734dde958eece17abd47a9cbfb061b5"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/lib/index_bg.wasm",
+      "bytes": 546166,
+      "sha256": "0536d26bdd4816497a4c6659603f7181c316197cd26e1a4ad7ad9999f242fde3",
+      "gitBlobSha1": "3755934185f00a7e548c5c2c042d3d4c44dc4dc8"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/lib/mmd-backend.js",
+      "bytes": 2006696,
+      "sha256": "a4ce9ee87ebaeaab32dee364d6e2cc92c1424ba7e19c5039d5e2c6d8d094bb04",
+      "gitBlobSha1": "9787a2fe5c11c459adbdf983df05c30bd1a4c0df"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/mmd-renderer.js",
+      "bytes": 534,
+      "sha256": "3a595e317c4112ba5511b99f132f77094d5b61f92cd8c01ee9f49a1c4d9a6896",
+      "gitBlobSha1": "da0700dc82babfd1cf535ffc0011ef55552ae757"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/stage.js",
+      "bytes": 15093,
+      "sha256": "5496676092d807307ee4031f84379fab8e8ad98575be8011015fab914968bee5",
+      "gitBlobSha1": "eea2ad4daba7f0f91bd98a6d12d6fc494140ada0"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/telemetry-db.js",
+      "bytes": 2041,
+      "sha256": "f02c7565633973efc2dc0c088b53c7ff9fbef555b0dcc13fce85edff975da42f",
+      "gitBlobSha1": "b37d6f4a49b54745f84fbef4263bfb88465031b4"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/vision.js",
+      "bytes": 2477,
+      "sha256": "1c97eb1c6ed037f0bcd3352a7885af1f7c1f294939b5b7ca197085bc4b0a5a93",
+      "gitBlobSha1": "8de947154dac72e0e81611ad45e190969c1fbca4"
+    },
+    {
+      "path": "src/Aijade.UI/wwwroot/voice.js",
+      "bytes": 8172,
+      "sha256": "277a7e95d88f85d6309367afd7432c76e1606d4c3e5fab71f386e9e3b30b8ab6",
+      "gitBlobSha1": "2d25013d8f9387256dcd0c92f2c0ffeb5e880408"
+    },
+    {
+      "path": "src/Aijade.Web/Aijade.Web.csproj",
+      "bytes": 766,
+      "sha256": "e83b86b54b8d78248c739d60fcebbafd417c82eca0e19526195bc63db29737fb",
+      "gitBlobSha1": "05e6c2124da431d119db4d2a4d192de42b6f3b90"
+    },
+    {
+      "path": "src/Aijade.Web/Program.cs",
+      "bytes": 868,
+      "sha256": "ace1c0ca8c44a75cf0298e65e09d0abd8ebd22d6a36def64908d0f7d4eafac12",
+      "gitBlobSha1": "55d1eed04cfa07e27f3a4c4b1cac2adcaaff1115"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/favicon.ico",
+      "bytes": 9854,
+      "sha256": "5c01ef4cc384022a99049459d0448dd460dd834b90b307141007f0f4ddd39519",
+      "gitBlobSha1": "cb6b10f0bd228d18397b8ed91aa2828518167a8b"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/icons/apple-touch-icon.png",
+      "bytes": 61012,
+      "sha256": "6303541b4d942c731c9dbc4abf4f97e41e4a368e30af03aa822de9150337cdd9",
+      "gitBlobSha1": "24c33ae670271641644dbd27552c2e5124fe7357"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/icons/maskable_icon_x512.png",
+      "bytes": 319606,
+      "sha256": "0621965e13296cfa71fb40f04526c37112ecf189886cbdfd6150a939178832cb",
+      "gitBlobSha1": "70ce4cfc71f8eab795bc7a84a952796fda23b4c3"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/icons/web-app-manifest-192x192.png",
+      "bytes": 69068,
+      "sha256": "a63903faf3d8a083ba403b4687ad28e48802a0412a71312d8a297f577ed87da4",
+      "gitBlobSha1": "6bfdbf435db87fe85f6c1abe94a37cf0da42498a"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/icons/web-app-manifest-512x512.png",
+      "bytes": 381603,
+      "sha256": "aa9775afea38a2ef6ce87b57f25e5f9d08e0a640bb752882822f7fc8047374f8",
+      "gitBlobSha1": "ca8aa0fb2df96baa709528c37513cf73aa8db0ca"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/index.html",
+      "bytes": 889,
+      "sha256": "99a6db1f53069a4b2e3b1ff8f4a58bdc06d1a770457125508fdb59d04cedaf20",
+      "gitBlobSha1": "5e5d2d07509425f4f684e839acb7d63c8088eb2f"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/manifest.webmanifest",
+      "bytes": 488,
+      "sha256": "99a4d1ccc4cf162218c37f64b1ae70b7817f223983d8e128f109e2623e67d80e",
+      "gitBlobSha1": "1fb38072962eb6d372da1081fa99a35e6883fddc"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/service-worker.js",
+      "bytes": 109,
+      "sha256": "4bf5b0d04f0fa1369a478710935bcc214dbeee74ae41d2c94b98c95525f29937",
+      "gitBlobSha1": "39590e5abbde4c4710c56b0c03a41562cfdbbbc2"
+    },
+    {
+      "path": "src/Aijade.Web/wwwroot/service-worker.published.js",
+      "bytes": 1223,
+      "sha256": "80593e0cb10018ae55f36e86bfbe979cbfbd6ee7a695bd22cd5e7733fc27cfcc",
+      "gitBlobSha1": "b76515236b21a7e19a15c7e32b78949818b5bf97"
+    },
+    {
+      "path": "tests/Aijade.Tests/ResearchLoopAdapter.cs",
+      "bytes": 16412,
+      "sha256": "fd1438550e21aba2f350cd71ab6dc2c207e706b47cba90a35e608bb0241b5bc1",
+      "gitBlobSha1": "e213f0253566fdedf035d8c68740faf43f17722a"
+    },
+    {
+      "path": "tests/Aijade.Tests/ResearchLoopQualificationTests.cs",
+      "bytes": 18587,
+      "sha256": "18f6b53e94b8da582883a8e36a5a6aa114fde1bbeec2cc0b623686e969f7d9da",
+      "gitBlobSha1": "faa4fc41dff99ebe6a0dd975dbfe60ee4f6c20e0"
+    },
+    {
+      "path": "tests/Aijade.Tests/ResearchPairedDevelopmentTests.cs",
+      "bytes": 13223,
+      "sha256": "423cb1168d312de6ff2ad95cebc8576e07cb70eeb7572c908622a7d7a2622319",
+      "gitBlobSha1": "c0e9b1cc826c3cbeebf984820722729f268f4d1e"
+    },
+    {
+      "path": "tests/Aijade.Tests/ResearchRetrievalLedTests.cs",
+      "bytes": 17363,
+      "sha256": "d108fbbd61a8e8b5efd043efee1550f50985635e32848f5f1bf13464de17f44a",
+      "gitBlobSha1": "1abbd37ec4aeb2733b7c2b5c2a404099d4fc1199"
+    }
+  ],
+  "researchApproval": false,
+  "newHeldoutCases": 0
+}
