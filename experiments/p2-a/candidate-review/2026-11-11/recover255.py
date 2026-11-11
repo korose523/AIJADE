@@ -101,7 +101,8 @@ def run_reference(mode, catalog_path):
     with catalog_path.open('w', encoding='utf-8') as catalog:
         for identity, raw, args in case_inputs(problem):
             pool, arity = args
-            assert type(pool) is list and type(arity) is int and arity >= 0
+            assert type(pool) is list and type(arity) in (int, bool) and arity >= 0
+            arity = int(arity)  # CPython accepts boolean lengths through the integer index protocol.
             alphabet, object_tokens, position_tokens = value_alphabet(pool)
             offset = output.tell()
             count = 0
