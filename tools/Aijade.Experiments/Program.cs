@@ -32,11 +32,70 @@ using Aijade.Research.SkillBench;
 
 string? Arg(string name) => args.SkipWhile(a => a != name).Skip(1).FirstOrDefault();
 var command = args.FirstOrDefault() ?? "";
-var root = command is "p2-bank-check" or "p2-bank-prompts" ? "" : FindRoot();
+var root = command is "p2-bank-check" or "p2-bank-prompts" or "p2-bank-inputs" or "p2-bank-prompt-server" or "p2-budget-check" ? "" : FindRoot();
 var webJson = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 switch (command)
 {
+    case "p2-budget-check":
+    {
+        var result = await RequestPolicyProbe.RunAsync(Arg("--bank") ?? throw new ArgumentException("--bank is required"),
+            Arg("--policy") ?? throw new ArgumentException("--policy is required"),
+            Arg("--out") ?? throw new ArgumentException("--out is required"));
+        Console.WriteLine(result.ToJsonString(webJson));
+        return 0;
+    }
+    case "p2-bank-inputs":
+    {
+        var inputBank = PublicBenchBank.Load(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
+        foreach (var entry in inputBank.Entries)
+            Console.WriteLine(JsonSerializer.Serialize(new
+            {
+                manifestSha256 = inputBank.ManifestSha256,
+                task = PromptExposure.Describe(inputBank.ReadTask(entry.TaskId)),
+            }, webJson));
+        return 0;
+    }
+    case "p2-bank-prompt-server":
+    {
+        var serverBank = PublicBenchBank.Load(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
+        var cachedTasks = new Dictionary<string, BenchTask>(StringComparer.Ordinal);
+        string? input;
+        while ((input = Console.ReadLine()) is not null)
+        {
+            var request = JsonNode.Parse(input)?.AsObject() ?? throw new InvalidDataException("A prompt request must be a JSON object.");
+            var id = request["taskId"]?.GetValue<string>() ?? throw new InvalidDataException("taskId is required.");
+            if (!cachedTasks.TryGetValue(id, out var task))
+                cachedTasks[id] = task = serverBank.ReadTask(id);
+            var indices = request["indices"]?.AsArray().Select(value => value!.GetValue<int>()).ToArray()
+                ?? throw new InvalidDataException("indices are required.");
+            PromptExposure.ValidateIndices(task, indices);
+            var kind = request["command"]?.GetValue<string>();
+            object response = kind switch
+            {
+                "empty" => new
+                {
+                    taskId = id, manifestSha256 = serverBank.ManifestSha256,
+                    prompts = new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["verifierAWithStub"] = Backends.BuildVerifyPrompt(task, "function solve() {}", indices),
+                        ["verifierBWithStub"] = Backends.BuildVerifyPromptB(task, "function solve() {}", indices),
+                    },
+                },
+                "all" => new
+                {
+                    taskId = id, manifestSha256 = serverBank.ManifestSha256,
+                    inputSha256 = PromptExposure.Describe(task).InputSha256,
+                    fullOracleCases = task.Tests.Count, selectedCaseIndices = indices,
+                    prompts = PublicBankCheck.BuildPrompts(task, serverBank.ReadReference(id), indices),
+                    expectedOutputNoninterference = PublicBankCheck.CheckExpectedNoninterference(task, serverBank.ReadReference(id), indices),
+                },
+                _ => throw new InvalidDataException("command must be empty or all."),
+            };
+            Console.WriteLine(JsonSerializer.Serialize(response, webJson));
+        }
+        return 0;
+    }
     case "p2-bank-check":
         var bank = PublicBenchBank.Load(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
         var checkedTask = PublicBankCheck.RunReference(bank, Arg("--task") ?? throw new ArgumentException("--task is required"));

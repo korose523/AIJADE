@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text;
 using System.Text.Json.Nodes;
 
@@ -159,33 +160,66 @@ public static class Backends
         task.PublicContract is null ? JsJson.Stringify(test.Args) : test.Args;
 
     /// <summary>The verification prompt includes the case inputs and keeps expected outputs in the execution path.</summary>
-    public static string BuildVerifyPrompt(BenchTask task, string code) => string.Join("\n",
+    public static string BuildVerifyPrompt(BenchTask task, string code) => BuildVerifyPrompt(task, code, null);
+
+    public static string BuildVerifyPrompt(BenchTask task, string code, IReadOnlyList<int>? visibleCases)
+    {
+        var lines = new List<string>
+        {
         "You are verifying a JavaScript solution against a task.",
         $"Task: {task.ModelInstruction}",
         "Candidate code:",
         "```js",
         code,
         "```",
+        };
+        if (visibleCases is not null)
+            lines.Add(ExposureNotice(task, visibleCases));
+        lines.AddRange([
         "You are given ONLY the inputs of the test cases, never the expected outputs:",
-        string.Join("\n", task.Tests.Select((t, i) => $"  case {i}: args = {PromptArgs(task, t)} (expected WITHHELD)")),
+        string.Join("\n", VisibleIndices(task, visibleCases).Select(i => $"  case {i}: args = {PromptArgs(task, task.Tests[i])} (expected WITHHELD)")),
         "For each case, decide whether the code returns the correct result, then give an overall verdict.",
-        "Respond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason.");
+        "Respond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason."]);
+        return string.Join("\n", lines);
+    }
 
     /// <summary>
     /// Template B of the verifier prompt (P2 prompt-template control, wording registered 2026-10-18 before any run): the same
-    /// information and the same requested output format as <see cref="BuildVerifyPrompt"/>, in a different order and
+    /// information and the same requested output format as <see cref="BuildVerifyPrompt(BenchTask, string)"/>, in a different order and
     /// phrasing, saying what PASS and FAIL mean.
     /// </summary>
-    public static string BuildVerifyPromptB(BenchTask task, string code) => string.Join("\n",
+    public static string BuildVerifyPromptB(BenchTask task, string code) => BuildVerifyPromptB(task, code, null);
+
+    public static string BuildVerifyPromptB(BenchTask task, string code, IReadOnlyList<int>? visibleCases)
+    {
+        var lines = new List<string>
+        {
         $"Task: {task.ModelInstruction}",
         "A candidate solution:",
         "```js",
         code,
         "```",
+        };
+        if (visibleCases is not null)
+            lines.Add(ExposureNotice(task, visibleCases));
+        lines.AddRange([
         "Test inputs (the expected outputs are not shown):",
-        string.Join("\n", task.Tests.Select((t, i) => $"  {i + 1}. {PromptArgs(task, t)}")),
+        string.Join("\n", VisibleIndices(task, visibleCases).Select(i => $"  {i + 1}. {PromptArgs(task, task.Tests[i])}")),
         "Question: does the candidate return the correct output for every one of these inputs?",
-        "Answer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification.");
+        "Answer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification."]);
+        return string.Join("\n", lines);
+    }
+
+    private static IEnumerable<int> VisibleIndices(BenchTask task, IReadOnlyList<int>? indices) =>
+        indices is null ? Enumerable.Range(0, task.Tests.Count) : indices;
+
+    private static string ExposureNotice(BenchTask task, IReadOnlyList<int> indices)
+    {
+        PromptExposure.ValidateIndices(task, indices);
+        return indices.Count == 0
+            ? $"No test inputs are displayed (0 of {task.Tests.Count}). The complete oracle is withheld. Judge the full specification from the code."
+            : $"Only {indices.Count} of {task.Tests.Count} oracle inputs are displayed. The complete oracle is withheld. Judge the full specification, not only these examples.";
+    }
 
     /// <summary>FNV-1a over the first UTF-16 unit of each code point of "model|baseUrl" — the default locked seed.</summary>
     public static uint DeriveOllamaSeed(string model, string baseUrl)
@@ -250,7 +284,7 @@ public sealed class MockBackend(uint seed, Sandbox sandbox, double pCorrect = 0.
 }
 
 /// <summary>Ollama chat backend with locked sampling (temperature 0 + seed) so generations and verdicts are reproducible.</summary>
-public sealed class OllamaBackend(HttpClient http, string model, string baseUrl = "http://localhost:11434", double temperature = 0, uint? seed = null, TimeSpan? timeout = null, int? maxReplyTokens = null, bool verdictFallback = false, int? numCtx = null, string verifyTemplate = "A") : ILlmBackend
+public sealed class OllamaBackend(HttpClient http, string model, string baseUrl = "http://localhost:11434", double temperature = 0, uint? seed = null, TimeSpan? timeout = null, int? maxReplyTokens = null, bool verdictFallback = false, int? numCtx = null, string verifyTemplate = "A", RequestBudget? requestBudget = null) : ILlmBackend
 {
     public string Name => "ollama";
 
@@ -284,9 +318,19 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
     /// <summary>The text recorded for an aborted generation (it contains no code, so execution fails).</summary>
     public const string AbortedGeneration = "[no answer: the server aborted a repetitive generation]";
 
-    private async Task<(string Content, bool Aborted)> ChatAsync(string prompt, CancellationToken ct)
+    private async Task<(string Content, bool Aborted)> ChatAsync(string prompt, string stage, string? taskId, CancellationToken ct)
     {
-        var (content, stop) = await ChatOnceAsync(prompt, ct).ConfigureAwait(false);
+        (string Content, Stop Stop) response;
+        try { response = await ChatOnceAsync(prompt, stage, taskId, ct).ConfigureAwait(false); }
+        catch (Exception error) when (requestBudget is not null && error is not RequestBudgetFailure
+            && error is HttpRequestException or IOException or JsonException or InvalidOperationException or OperationCanceledException)
+        {
+            throw requestBudget.Fail("RESPONSE_OR_TRANSPORT_ERROR", stage, taskId, error.Message, error);
+        }
+        var (content, stop) = response;
+        if (requestBudget is not null && stop != Stop.None)
+            throw requestBudget.Fail(stop == Stop.Length ? "REPLY_LENGTH_LIMIT" : "REPETITION_ABORT", stage, taskId,
+                "The policy-enabled attempt stopped without assigning a model verdict.");
         return stop switch
         {
             Stop.Repetition => (AbortedGeneration, true),
@@ -297,10 +341,13 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
 
     private enum Stop { None, Repetition, Length }
 
-    private async Task<(string Content, Stop Stop)> ChatOnceAsync(string prompt, CancellationToken ct)
+    private async Task<(string Content, Stop Stop)> ChatOnceAsync(string prompt, string stage, string? taskId, CancellationToken ct)
     {
+        if (requestBudget is not null && model != requestBudget.Policy.Model)
+            throw requestBudget.Fail("MODEL_IDENTITY_MISMATCH", stage, taskId, "The backend model differs from its exact-token policy.");
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         cts.CancelAfter(timeout ?? TimeSpan.FromMilliseconds(120_000));
+        var budgeted = requestBudget is null ? null : await requestBudget.CheckAsync(prompt, stage, taskId, cts.Token).ConfigureAwait(false);
         var body = new JsonObject
         {
             ["model"] = model,
@@ -308,9 +355,11 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
             ["stream"] = false,
             ["options"] = new JsonObject { ["temperature"] = temperature, ["seed"] = seed ?? Backends.DeriveOllamaSeed(model, baseUrl) },
         };
-        if (maxReplyTokens is { } cap)
+        var replyCap = budgeted?.ReplyTokens ?? maxReplyTokens;
+        if (replyCap is { } cap)
             body["options"]!["num_predict"] = cap;
-        if (numCtx is { } ctxTokens)
+        var context = requestBudget?.Policy.Exposure.Scenario.ContextTokens ?? numCtx;
+        if (context is { } ctxTokens)
             body["options"]!["num_ctx"] = ctxTokens;   // newer Ollama servers otherwise load the model's full native context
         HttpResponseMessage res;
         try
@@ -319,6 +368,8 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
         }
         catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
         {
+            if (requestBudget is not null)
+                throw requestBudget.Fail("HTTP_ERROR", stage, taskId, e.Message, e);
             throw new InvalidOperationException($"Ollama backend unreachable at {baseUrl}/api/chat — is the model server running? ({e.Message})", e);
         }
         using (res)
@@ -326,15 +377,29 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
             if (!res.IsSuccessStatusCode)
             {
                 var error = await res.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
+                if (requestBudget is not null && budgeted is not null)
+                    requestBudget.RecordResponse(budgeted, error);
                 if (error.Contains("token repeat limit", StringComparison.OrdinalIgnoreCase))
                 {
                     Interlocked.Increment(ref aborted);
                     return ("", Stop.Repetition);
                 }
+                if (requestBudget is not null)
+                    throw requestBudget.Fail("HTTP_ERROR", stage, taskId, $"Ollama returned HTTP {(int)res.StatusCode}.");
                 throw new InvalidOperationException($"Ollama backend returned HTTP {(int)res.StatusCode} {res.ReasonPhrase}");
             }
-            var data = await res.Content.ReadFromJsonAsync<JsonObject>(cts.Token).ConfigureAwait(false);
-            if (maxReplyTokens is not null && data?["done_reason"]?.GetValue<string>() == "length")
+            var raw = await res.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
+            if (requestBudget is not null && budgeted is not null)
+                requestBudget.RecordResponse(budgeted, raw);
+            JsonObject? data;
+            try { data = JsonNode.Parse(raw)?.AsObject(); }
+            catch (JsonException error)
+            {
+                if (requestBudget is not null)
+                    throw requestBudget.Fail("RESPONSE_FORMAT_ERROR", stage, taskId, error.Message, error);
+                throw;
+            }
+            if (replyCap is not null && data?["done_reason"]?.GetValue<string>() == "length")
             {
                 Interlocked.Increment(ref lengthLimited);
                 return ("", Stop.Length);
@@ -351,31 +416,53 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
     /// request can differ from all later ones (observed with qwen2.5-coder:1.5b on Ollama 0.35.1); warming up first makes
     /// every recorded request a "warm" one.
     /// </summary>
-    public Task WarmUpAsync(CancellationToken cancellationToken = default) => ChatAsync(WarmUpPrompt, cancellationToken);   // output (or an abort) discarded
+    public Task WarmUpAsync(CancellationToken cancellationToken = default) => ChatAsync(WarmUpPrompt, "warmup", null, cancellationToken);   // output (or an abort) discarded
 
     public async Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
     {
-        var (content, wasAborted) = await ChatAsync(Backends.BuildGeneratePrompt(task, ctx), cancellationToken).ConfigureAwait(false);
+        VisibleCases(task, "generation");
+        var (content, wasAborted) = await ChatAsync(Backends.BuildGeneratePrompt(task, ctx), "generation", task.Id, cancellationToken).ConfigureAwait(false);
         if (wasAborted)
             return content;   // AbortedGeneration or LengthLimitedGeneration
+        if (content.Length == 0 && requestBudget is not null)
+            throw requestBudget.Fail("EMPTY_RESPONSE", "generation", task.Id, "No generation was returned.");
         return content.Length > 0 ? content : throw new InvalidOperationException("Ollama generate() returned an empty response");
     }
 
     public async Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default)
     {
         var code = Bench.ExtractCodeBlock(candidate) ?? candidate;
-        var prompt = verifyTemplate == "B" ? Backends.BuildVerifyPromptB(task, code) : Backends.BuildVerifyPrompt(task, code);
-        var (content, wasAborted) = await ChatAsync(prompt, cancellationToken).ConfigureAwait(false);
+        var visible = VisibleCases(task, "verification");
+        var prompt = verifyTemplate == "B" ? Backends.BuildVerifyPromptB(task, code, visible) : Backends.BuildVerifyPrompt(task, code, visible);
+        var (content, wasAborted) = await ChatAsync(prompt, "verification", task.Id, cancellationToken).ConfigureAwait(false);
         if (wasAborted)
             return new SelfVerifierVerdict(false, 0.2, content == LengthLimitedGeneration ? "FAIL [the reply reached the token limit]" : "FAIL [the server aborted a repetitive reply]");
         if (content.Length == 0)
+        {
+            if (requestBudget is not null)
+                throw requestBudget.Fail("EMPTY_RESPONSE", "verification", task.Id, "No verifier reply was returned.");
             throw new InvalidOperationException("Ollama verify() returned an empty response");
+        }
         var pass = ReadVerdict(content, verdictFallback, out var conforming, out var fallback);
         if (!conforming)
+        {
             Interlocked.Increment(ref nonConforming);
+            if (requestBudget is not null)
+                throw requestBudget.Fail("VERDICT_FORMAT_ERROR", "verification", task.Id, "The reply did not begin with PASS or FAIL; no verdict assigned.");
+        }
         if (fallback)
             Interlocked.Increment(ref fallbackRead);
         return new SelfVerifierVerdict(pass, pass ? 0.8 : 0.2, content.Length > 280 ? content[..280] : content, content.Length > 280 ? content : null);
+    }
+
+    private IReadOnlyList<int>? VisibleCases(BenchTask task, string stage)
+    {
+        if (requestBudget is null)return null;
+        try { return requestBudget.Policy.Exposure.ForTask(task); }
+        catch (InvalidDataException error)
+        {
+            throw requestBudget.Fail("EXPOSURE_IDENTITY_MISMATCH", stage, task.Id, error.Message, error);
+        }
     }
 
     /// <summary>

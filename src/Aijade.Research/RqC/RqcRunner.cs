@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using Aijade.Core.Js;
@@ -87,6 +88,8 @@ public sealed record RqcCliConfig
 
     public string? PublicBankPath { get; init; }
     public string? PublicBankManifestSha256 { get; init; }
+    public string? RequestPolicyPath { get; init; }
+    public string? RequestPolicySha256 { get; init; }
 
     /// <summary>
     /// Negative control: the generator never sees the feedback (each task's first generation is returned for every later
@@ -96,16 +99,25 @@ public sealed record RqcCliConfig
     public bool Inert { get; init; }
 
     public string RunId => $"rq-c-s{Seed}-{WireName.Of(Backend)}-t{Trials}-r{Rounds}" + (Temperature != 0 ? $"-T{JsFormat.Number(Temperature)}" : "") + (Inert ? "-INERT" : "")
-        + (PublicBankPath is null ? "" : $"-bank-{(PublicBankManifestSha256 ?? PublicBenchBank.FileSha256(PublicBankPath))[..12]}");
+        + (PublicBankPath is null ? "" : $"-bank-{(PublicBankManifestSha256 ?? PublicBenchBank.FileSha256(PublicBankPath))[..12]}")
+        + (RequestPolicyPath is null ? "" : $"-policy-{(RequestPolicySha256 ?? PublicBenchBank.FileSha256(RequestPolicyPath))[..12]}");
 
     internal RqcCliConfig PinPublicBank()
     {
         if (PublicBankPath is null)
+        {
+            if (RequestPolicyPath is not null)
+                throw new ArgumentException("--request-policy requires --public-bank");
             return this;
+        }
         var digest = PublicBenchBank.FileSha256(PublicBankPath);
         if (PublicBankManifestSha256 is not null && PublicBankManifestSha256 != digest)
             throw new InvalidDataException("The public-bank manifest changed after configuration.");
-        return this with { PublicBankPath = Path.GetFullPath(PublicBankPath), PublicBankManifestSha256 = digest };
+        var policy = RequestPolicyPath is null ? null : PublicBenchBank.FileSha256(RequestPolicyPath);
+        if (RequestPolicySha256 is not null && RequestPolicySha256 != policy)
+            throw new InvalidDataException("The request policy changed after configuration.");
+        return this with { PublicBankPath = Path.GetFullPath(PublicBankPath), PublicBankManifestSha256 = digest,
+            RequestPolicyPath = RequestPolicyPath is null ? null : Path.GetFullPath(RequestPolicyPath), RequestPolicySha256 = policy };
     }
 
     /// <summary>Parse the CLI flags; unknown flags and missing values are errors.</summary>
@@ -143,6 +155,7 @@ public sealed record RqcCliConfig
                 "--num-ctx" => cfg with { NumCtx = Int() },
                 "--verify-template" => cfg with { VerifyTemplate = Next() },
                 "--public-bank" => cfg with { PublicBankPath = Next() },
+                "--request-policy" => cfg with { RequestPolicyPath = Next() },
                 _ => throw new ArgumentException($"Unknown argument: {a}"),
             };
         }
@@ -204,6 +217,8 @@ public sealed record RqcCliConfig
             c["publicBankManifestSha256"] = PublicBankManifestSha256 ?? PublicBenchBank.FileSha256(PublicBankPath);
             c["taskAllocation"] = "balanced-permutation-v1";
         }
+        if (RequestPolicyPath is not null)
+            c["requestPolicySha256"] = RequestPolicySha256 ?? PublicBenchBank.FileSha256(RequestPolicyPath);
         return c;
     }
 
@@ -248,10 +263,11 @@ public static class RqcRunner
           --num-ctx N            context window sent to Ollama (default: the server's)
           --verify-template A|B  verifier prompt (default A, the pre-registered one)
           --public-bank FILE    public task manifest; use a balanced seeded task order
+          --request-policy FILE opt-in bounded input exposure and exact local request budgets
 
         """;
 
-    private static readonly string[] ArtifactNames = ["trials.jsonl", "summary.json"];
+    private static readonly string[] ArtifactNames = ["trials.jsonl", "summary.json", "candidates.jsonl", "requests.jsonl", "incomplete-run.json", "token-counter.stderr.log", "token-counter.identity.json"];
 
     /// <summary>
     /// The JSON lines of an interrupted run's record. A killed run can leave its last line half written; that line is
@@ -324,6 +340,8 @@ public static class RqcRunner
         var fingerprint = cfg.Fingerprint();
         foreach (var row in candidates.Concat(trials))
         {
+            if (row["requestPolicySha256"]?.GetValue<string>() != cfg.RequestPolicySha256)
+                throw new InvalidDataException("The resume record has a different request policy.");
             var digest = row["publicBankManifestSha256"]?.GetValue<string>();
             if (cfg.PublicBankPath is not null || digest is not null)
             {
@@ -339,11 +357,19 @@ public static class RqcRunner
         cfg = cfg.PinPublicBank();
         ValidateResumeBank(cfg);
         var publicBank = cfg.PublicBankPath is null ? null : PublicBenchBank.Load(cfg.PublicBankPath, cfg.PublicBankManifestSha256);
+        var requestPolicy = cfg.RequestPolicyPath is null ? null : PublicRequestPolicy.Load(cfg.RequestPolicyPath, publicBank!, cfg.RequestPolicySha256);
+        if (requestPolicy is not null && (cfg.MaxReplyTokens is not null || cfg.VerdictFallback
+            || cfg.NumCtx is { } context && context != requestPolicy.Exposure.Scenario.ContextTokens
+            || cfg.Backend == RqcBackendKind.Ollama && cfg.Model != requestPolicy.Model))
+            throw new ArgumentException("The request policy supplies stage-specific caps, strict verdict parsing and its exact model/context; conflicting flags are not allowed.");
+        Dictionary<string, IReadOnlyList<int>>? visibleByTask = null;
         IReadOnlyList<IReadOnlyList<BenchTask>>? allocatedTasks = null;
         if (publicBank is not null)
         {
             var tasks = publicBank.Entries.Select(entry => publicBank.ReadTask(entry.TaskId)).ToArray();
             allocatedTasks = TaskAllocation.Balanced(tasks, cfg.Trials, cfg.Tasks, cfg.Seed);
+            if (requestPolicy is not null)
+                visibleByTask = tasks.ToDictionary(task => task.Id, task => requestPolicy.Exposure.ForTask(task), StringComparer.Ordinal);
         }
         var runFingerprint = cfg.Fingerprint();
         var outDir = Path.GetFullPath(Path.Combine(cfg.Out, cfg.RunId));
@@ -351,19 +377,41 @@ public static class RqcRunner
         if (existing.Count > 0 && !cfg.Overwrite)
             throw new IOException($"{outDir} already holds {string.Join(", ", existing)}; choose another --out, or pass --overwrite to replace them");
         Directory.CreateDirectory(outDir);
+        if (cfg.Overwrite)
+            foreach (var name in ArtifactNames)
+                File.Delete(Path.Combine(outDir, name));
         var trialsPath = Path.Combine(outDir, "trials.jsonl");
 
         var sandbox = new Sandbox();
         // No client-wide timeout: the per-request --timeout-ms governs (HttpClient's default of 100 s used to cut it short).
         using var ownedHttp = http is null && cfg.Backend == RqcBackendKind.Ollama ? new HttpClient { Timeout = Timeout.InfiniteTimeSpan } : null;
         var client = http ?? ownedHttp;
+        using var requestBudget = requestPolicy is not null && cfg.Backend == RqcBackendKind.Ollama
+            ? new RequestBudget(requestPolicy, new ExternalPromptCounter(requestPolicy, Path.Combine(outDir, "token-counter.stderr.log")),
+                outDir, 4L * cfg.Trials * cfg.Rounds * cfg.Tasks) : null;
         ILlmBackend backend = cfg.Backend == RqcBackendKind.Ollama
-            ? new OllamaBackend(client!, cfg.Model!, cfg.OllamaBaseUrl, cfg.Temperature, cfg.SamplingSeed, TimeSpan.FromMilliseconds(cfg.TimeoutMs ?? 120_000), cfg.MaxReplyTokens, cfg.VerdictFallback, cfg.NumCtx, cfg.VerifyTemplate)
+            ? new OllamaBackend(client!, cfg.Model!, cfg.OllamaBaseUrl, cfg.Temperature, cfg.SamplingSeed, TimeSpan.FromMilliseconds(cfg.TimeoutMs ?? 120_000), cfg.MaxReplyTokens, cfg.VerdictFallback, cfg.NumCtx, cfg.VerifyTemplate, requestBudget)
             : new MockBackend(cfg.Seed, sandbox, cfg.PCorrect, referenceSolutions: publicBank?.Entries.ToDictionary(
                 entry => entry.TaskId, entry => publicBank.ReadReference(entry.TaskId), StringComparer.Ordinal));
         var liveOllama = backend as OllamaBackend;   // kept for the summary; the inert and resuming wrappers hide it
-        var version = cfg.Backend == RqcBackendKind.Ollama ? await OllamaBackend.VersionAsync(client!, cfg.OllamaBaseUrl, ct).ConfigureAwait(false) : null;
-        var digest = cfg.Backend == RqcBackendKind.Ollama && cfg.Model is { } model ? await OllamaBackend.DigestAsync(client!, cfg.OllamaBaseUrl, model, ct).ConfigureAwait(false) : null;
+        string? version = null, digest = null;
+        using var metadataTimeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        if (requestBudget is not null)
+            metadataTimeout.CancelAfter(TimeSpan.FromMilliseconds(cfg.TimeoutMs ?? 120_000));
+        try
+        {
+            if (cfg.Backend == RqcBackendKind.Ollama)
+            {
+                version = await OllamaBackend.VersionAsync(client!, cfg.OllamaBaseUrl, metadataTimeout.Token).ConfigureAwait(false);
+                digest = await OllamaBackend.DigestAsync(client!, cfg.OllamaBaseUrl, cfg.Model!, metadataTimeout.Token).ConfigureAwait(false);
+            }
+        }
+        catch (Exception error) when (requestBudget is not null && error is HttpRequestException or IOException or InvalidOperationException or JsonException or OperationCanceledException)
+        {
+            throw requestBudget.Fail("MODEL_METADATA_ERROR", "metadata", null, error.Message, error);
+        }
+        if (requestBudget is not null && digest != requestPolicy!.ModelManifestSha256)
+            throw requestBudget.Fail("MODEL_IDENTITY_MISMATCH", "metadata", null, "The server model digest differs from the fixed policy.");
         var warmedUp = false;
         if (backend is OllamaBackend ollama && cfg.WarmUp)
         {
@@ -417,6 +465,12 @@ public static class RqcRunner
                     trial["publicBankManifestSha256"] = publicBank.ManifestSha256;
                     trial["runFingerprint"] = runFingerprint;
                 }
+                if (requestPolicy is not null)
+                {
+                    trial["requestPolicySha256"] = requestPolicy.Sha256;
+                    trial["promptExposureSha256"] = requestPolicy.Exposure.Sha256;
+                    trial["plannedVisibleCaseIndices"] = JsonSerializer.SerializeToNode(visibleByTask![step.TaskId]);
+                }
                 var line = JsFormat.Stringify(trial);
                 writer.Write(line + "\n");
                 if (recorded is not null && steps.Count < recorded.Count)
@@ -441,6 +495,12 @@ public static class RqcRunner
                     candidate["publicBankManifestSha256"] = publicBank.ManifestSha256;
                     candidate["runFingerprint"] = runFingerprint;
                 }
+                if (requestPolicy is not null)
+                {
+                    candidate["requestPolicySha256"] = requestPolicy.Sha256;
+                    candidate["promptExposureSha256"] = requestPolicy.Exposure.Sha256;
+                    candidate["plannedVisibleCaseIndices"] = JsonSerializer.SerializeToNode(visibleByTask![step.TaskId]);
+                }
                 if (step.SelfReply is not null)
                     candidate["selfReply"] = step.SelfReply;   // the whole verifier reply when the rationale is truncated
                 candidates?.Write(candidate.ToJsonString() + "\n");
@@ -448,6 +508,8 @@ public static class RqcRunner
                 writer.Flush();
                 candidates?.Flush();
                 steps.Add(StepRecord.Parse(line));
+                if (requestBudget is not null)
+                    requestBudget.CompletedSteps = steps.Count;
                 if (steps.Count % 200 == 0)
                 {
                     var secs = clock.Elapsed.TotalSeconds;
@@ -462,6 +524,14 @@ public static class RqcRunner
         if (mock)
             summary["simulationNote"] = "Mock backend: injected hallucination=0.30, miss=0.10. These validate the estimator, not the phenomenon. Do not cite as empirical.";
         summary["config"] = cfg.ConfigJson();
+        if (requestPolicy is not null)
+            summary["requestPolicy"] = JsonSerializer.SerializeToNode(new
+            {
+                sha256 = requestPolicy.Sha256, exposureSha256 = requestPolicy.Exposure.Sha256,
+                scenario = requestPolicy.Exposure.Scenario, requestsChecked = requestBudget?.RequestsChecked ?? 0,
+                note = mock ? "Simulation only; no external tokenizer or model is run by this mock backend."
+                    : "Each actual request was checked before dispatch; the original full oracle task was retained.",
+            });
         if (publicBank is not null && allocatedTasks is not null)
         {
             var exposure = publicBank.Entries.ToDictionary(entry => entry.TaskId, _ => 0, StringComparer.Ordinal);

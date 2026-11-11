@@ -16,19 +16,34 @@ public sealed record PublicTaskCheck(
 
 public static class PublicBankCheck
 {
-    public static IReadOnlyDictionary<string, string> BuildPrompts(PublicBenchBank bank, string taskId)
+    public static IReadOnlyDictionary<string, string> BuildPrompts(PublicBenchBank bank, string taskId, IReadOnlyList<int>? visibleCases = null)
     {
         ArgumentNullException.ThrowIfNull(bank);
         var task = bank.ReadTask(taskId);
         var reference = bank.ReadReference(taskId);
+        return BuildPrompts(task, reference, visibleCases);
+    }
+
+    public static IReadOnlyDictionary<string, string> BuildPrompts(BenchTask task, string reference, IReadOnlyList<int>? visibleCases)
+    {
+        ArgumentNullException.ThrowIfNull(task);
         return new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["generation"] = Backends.BuildGeneratePrompt(task, new GenerateContext(0)),
-            ["verifierA"] = Backends.BuildVerifyPrompt(task, reference),
-            ["verifierB"] = Backends.BuildVerifyPromptB(task, reference),
-            ["verifierAWithStub"] = Backends.BuildVerifyPrompt(task, "function solve() {}"),
-            ["verifierBWithStub"] = Backends.BuildVerifyPromptB(task, "function solve() {}"),
+            ["verifierA"] = Backends.BuildVerifyPrompt(task, reference, visibleCases),
+            ["verifierB"] = Backends.BuildVerifyPromptB(task, reference, visibleCases),
+            ["verifierAWithStub"] = Backends.BuildVerifyPrompt(task, "function solve() {}", visibleCases),
+            ["verifierBWithStub"] = Backends.BuildVerifyPromptB(task, "function solve() {}", visibleCases),
         };
+    }
+
+    public static bool CheckExpectedNoninterference(BenchTask task, string reference, IReadOnlyList<int> visibleCases)
+    {
+        var original = BuildPrompts(task, reference, visibleCases);
+        var changed = task with { Tests = task.Tests.Select(test => test with { Expected = "'EXPECTED_SENTINEL_4f75'" }).ToArray() };
+        var replaced = BuildPrompts(changed, reference, visibleCases);
+        return original.All(pair => replaced[pair.Key] == pair.Value)
+            && PromptExposure.Describe(task).InputSha256 == PromptExposure.Describe(changed).InputSha256;
     }
 
     public static PublicTaskCheck RunReference(PublicBenchBank bank, string taskId)
