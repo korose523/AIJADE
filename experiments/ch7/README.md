@@ -11,6 +11,17 @@ was committed and pushed separately before implementation. Its ten cases qualify
 only the C2 path. They do not supply held-out observations, a C1/C2 effect, human
 emotion-quality labels, independent replication or hardware qualification.
 
+## Measured chronology
+
+The [chronology audit](CHRONOLOGY-BOUNDARY.md) narrows the accepted batch to
+artifact-replay qualification from receipt import/admission through state,
+write-back and second-round reuse. Code execution/rendering was prepared before
+the per-case initial retrieval; that retrieval did not drive the earlier prefix.
+The graph below is the intended later causal order. Its initial retrieval-to-
+execution edge still needs same-round implementation and qualification before
+the held-out comparison. Original measurements, failed attempts and counters are
+unchanged.
+
 ```mermaid
 flowchart TD
     initial["Authenticated synthetic perception"] --> read["Product memory retrieval"]
@@ -49,5 +60,5 @@ the user: the declared S1 counterexample deliberately retains that limitation.
 
 At the implementation commit the development qualification was NOT_RUN. The
 [separately archived complete measurement](2026-11-12/README.md) now qualifies
-the ten declared C2 development cases and retains the original failed observer
+the ten declared C2 development cases on that artifact-replay path and retains the original failed observer
 attempt. The held-out C1/C2 batch remains **NOT_RUN**.
