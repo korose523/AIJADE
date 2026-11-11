@@ -166,7 +166,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 论文 | 证据目录 | 状态 |
 |---|---|---|
 | P1（附中文对照译稿） | `experiments/p1/`、`experiments/growth-pilot/` | 全部在本实现上运行完成，稿件已由稿件源生成 |
-| P3（附中文译稿；10-19 前编号为 P4） | `experiments/memory/`、`experiments/memory-longmemeval/` | 全部在本实现上运行完成（含对话聚类区间与 LongMemEval_s 复现），稿件已由稿件源生成 |
+| P3（附中文译稿；10-19 前编号为 P4） | `experiments/memory/`、`experiments/memory-longmemeval/`、`experiments/p3-longmemeval/2026-11-11/` | LoCoMo 已有完整记录；LongMemEval 的历史 479 个标注题含 9 个官方拒答题，470 个可回答题口径须复算验收，不能沿用旧表冒作已完成。 |
 | P2（附中文译稿） | `experiments/rq-c/` | 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检及其重复、差分测试、第二模型族对照（llama3.1:8b，`rq-c/family-gpu/`；llava-phi3 的第一次尝试已放弃，见 `rq-c/family/ABANDONED.md`）已完成，稿件已由稿件源生成 |
 
 ## 6. 未完成与需作者处理的事项
@@ -212,7 +212,7 @@ configs/               项目范围：各模块归属研究线、共同基础或
 | 全量回归 | ✓ 当时的本地全量（11-04，这次提交的工作树，在内置盘副本中完全重新编译；外置盘是经 macFUSE 挂载的 NTFS，在上面构建会卡住）：解决方案构建 0 警告；单元与集成 447 项中 440 通过、0 失败、7 跳过（真实 Minecraft 服务端 5 项、完整预注册回放 1 项、MOSAIC 真实渲染器 1 项；数据库用本机 PostgreSQL）；浏览器端到端 29/29 通过，含作者本机 PMX 模型上的 MMD 舞台用例。同日早先两次全量里一条提醒用例失败，查明是副本的增量构建留下了旧二进制（做过“去掉修复就失败”的检查后，`rsync -a` 恢复的文件时间较旧，不触发重新编译），不是产品问题：同一份源码完全重新编译后通过；此后本地回归按内容同步、用 `--no-incremental` 构建。`D_an_idle_vmd_motion_loops_and_moves_the_model` 在一次只跑舞台用例时未检测到动作播放，单独重跑与全量都通过，按满载下的偶发记录。启动子进程的测试要用 .NET 10 的 `dotnet`：系统默认的 6/7 会使 `ComputerUseTests` 的一项失败。MOSAIC 真实解析器一致性测试最近一次在 10-31 用 MOSAIC 当日的构建通过（只读加载其 `Mosaic.Scene.Core.dll` 的临时副本）。GitHub CI（含 PostgreSQL 与 VectorChord）在 `f9dd421` 之后的各次提交上都通过，最近一次为 `9586074` |
 | P1 | ✓ 端到端用例、漂移矩阵与闸门矩阵、两组变异实验（在当前代码上重跑与存档逐项一致）、时延与校验开销、身份层阳性对照与机制级试点；时延测于 .NET 10.0.12 |
 | P2 | ✓ 7B 主运行、惰性对照、模拟阳性对照、1.5B 与温度扫描、确定性预检、差分测试；自评目标量定义于 10-15 更正（见 `experiments/README.md`）；第二模型族对照（llama3.1:8b，Windows 显卡主机；llava-phi3 的第一次尝试因不遵守判定格式按事先规则放弃，记录保留）；提示模板对照（模板 B 下验证器放行全部技能） |
-| P3 | ✓ 打分诊断与权重消融、交付轨道、门控与显著性来源、指标定义缺陷、泄漏审计、对话聚类区间、LongMemEval_s 复现；冲突惩罚定性为第二个新近偏置（关闭后标准化交付召回 0.199→0.548），门控不主张有效 |
+| P3 | 已有打分、权重、交付、门控、指标、泄漏和 LoCoMo 对话聚类结果；LongMemEval 旧 479 标注题口径发现混入拒答题，保留历史结果，470 题复算及第二语料完整产品文本路径待执行/验收，详见新归档。旧召回数不改写为新口径结论；门控不主张普遍有效。 |
 | 研究装置 | ✓ RQ-C 运行器可恢复（丢弃半行、只重放共有步骤、逐步落盘），可选单次回复 token 上限、`--num-ctx`、`--verify-template`；`format-precheck` 格式预检；记忆实验的 `pool-check`、`delivery-check`、`gating-check`、`component-scales`。11-03 在 `b6296a1` 上把归档的 RQ-C 模拟运行（30 个 trial、种子 42、`--save-candidates`）重跑到临时目录（不入库，不调用模型）：`candidates.jsonl` 与 `experiments/rq-c/rq-c-s42-mock-t30-r5` 的逐字节相同；`trials.jsonl` 的 7,200 条记录除计时 `durationMs` 与后来加入的 `codeHash` 外相同；`summary.json` 只差提交号、退化说明与 10-15 更正后的诊断命名 |
 | 公开仓库 | ✓ https://github.com/korose523/AIJADE（10-18 以本实现完整覆盖，旧历史不保留；推送前检查无密钥、无第三方数据集与模型）；语料用 `tools/data/fetch-corpora.sh` 下载并校验 |
 | 论文仓库 | ✓ 私有仓库 https://github.com/korose523/AIJADE-papers：三篇英文投稿件、中文阅读译稿、稿件源与构建工具；论文中的代码地址与提交号由构建工具从本仓库读取 |

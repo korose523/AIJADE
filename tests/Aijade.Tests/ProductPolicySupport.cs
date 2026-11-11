@@ -36,11 +36,15 @@ internal sealed record PolicySearch(string Query, int Limit, int Status, string 
 internal sealed class PolicyTap(HttpMessageHandler inner) : DelegatingHandler(inner)
 {
     public string? SystemMessage { get; private set; }
+    public string? CompletionBody { get; private set; }
+    public int CompletionCaptures { get; private set; }
     public List<PolicySearch> Searches { get; } = [];
     public void Reset()
     {
         Searches.Clear();
         SystemMessage = null;
+        CompletionBody = null;
+        CompletionCaptures = 0;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
@@ -48,7 +52,9 @@ internal sealed class PolicyTap(HttpMessageHandler inner) : DelegatingHandler(in
         var path = request.RequestUri!.AbsolutePath;
         if (path.EndsWith("/openai/v1/chat/completions", StringComparison.Ordinal))
         {
-            var body = JsonNode.Parse(await request.Content!.ReadAsStringAsync(ct).ConfigureAwait(false))!;
+            CompletionBody = await request.Content!.ReadAsStringAsync(ct).ConfigureAwait(false);
+            CompletionCaptures++;
+            var body = JsonNode.Parse(CompletionBody)!;
             SystemMessage = body["messages"]!.AsArray().First(m => m!["role"]!.GetValue<string>() == "system")!["content"]!.GetValue<string>();
             return new HttpResponseMessage(HttpStatusCode.OK)
             {

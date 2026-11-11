@@ -6,6 +6,14 @@ using Aijade.Memory.Model;
 
 namespace Aijade.Memory.Locomo;
 
+/// <summary>Versioned eligibility frames; source annotations are preserved in every retained history.</summary>
+public enum LongMemEvalFrame
+{
+    AnswerableV2,
+    LegacyMarkedV1,
+    AllQuestionsV1,
+}
+
 /// <summary>
 /// LongMemEval (Wu et al., ICLR 2025), the cleaned "_s" release, read into the LoCoMo shapes so that the memory experiments
 /// run on it unchanged. Every question comes with its own haystack of sessions, so each question becomes one conversation
@@ -29,9 +37,27 @@ public static class LongMemEvalCorpus
         return (new DateTime(I(1), I(2), I(3), I(4), I(5), 0, DateTimeKind.Utc) - DateTime.UnixEpoch).TotalMilliseconds;
     }
 
-    /// <summary>One question and its haystack as a conversation; null when the release marks no evidence turn (abstention questions).</summary>
-    public static LocomoConversation? ParseQuestion(JsonElement q)
+    public static string FrameName(LongMemEvalFrame frame) => frame switch
     {
+        LongMemEvalFrame.AnswerableV2 => "answerable-v2",
+        LongMemEvalFrame.LegacyMarkedV1 => "legacy-marked-v1",
+        LongMemEvalFrame.AllQuestionsV1 => "all-questions-v1",
+        _ => throw new ArgumentOutOfRangeException(nameof(frame)),
+    };
+
+    /// <summary>The pinned official retrieval evaluator excludes IDs containing this marker.</summary>
+    public static bool IsAbstention(string questionId) => questionId.Contains("_abs", StringComparison.Ordinal);
+
+    /// <summary>One official-compatible answerable question; abstentions are excluded independently of turn flags.</summary>
+    public static LocomoConversation? ParseQuestion(JsonElement q) => ParseQuestion(q, LongMemEvalFrame.AnswerableV2);
+
+    public static LocomoConversation? ParseQuestion(JsonElement q, LongMemEvalFrame frame)
+    {
+        _ = FrameName(frame); // reject unknown enum values before parsing
+        var questionId = q.GetProperty("question_id").GetString() ?? throw new InvalidDataException("Missing question ID.");
+        var abstention = IsAbstention(questionId);
+        if (frame == LongMemEvalFrame.AnswerableV2 && abstention)
+            return null;
         var dates = q.GetProperty("haystack_dates").EnumerateArray().Select(d => d.GetString() ?? "").ToList();
         var sessionIds = q.GetProperty("haystack_session_ids").EnumerateArray().Select(d => d.GetString() ?? "").ToList();
         var episodes = new List<Episode>();
@@ -60,19 +86,24 @@ public static class LongMemEvalCorpus
             }
             s++;
         }
-        if (evidence.Count == 0)
+        if (frame == LongMemEvalFrame.LegacyMarkedV1 && evidence.Count == 0)
             return null;
+        if (frame != LongMemEvalFrame.LegacyMarkedV1 && !abstention && evidence.Count == 0)
+            throw new InvalidDataException($"Non-abstention question {questionId} has no marked evidence.");
         var question = new LocomoQuestion(q.GetProperty("question").GetString() ?? "",
-            q.TryGetProperty("answer", out var a) ? a.ValueKind == JsonValueKind.String ? a.GetString()! : a.GetRawText() : "", [.. evidence], 0);
+            q.TryGetProperty("answer", out var a) ? a.ValueKind == JsonValueKind.String ? a.GetString()! : a.GetRawText() : "", [.. evidence],
+            frame == LongMemEvalFrame.AllQuestionsV1 && abstention ? 5 : 0);
         var now = q.TryGetProperty("question_date", out var qd) ? ParseDate(qd.GetString() ?? "") : null;
-        return new LocomoConversation(q.GetProperty("question_id").GetString()!, episodes, [question], evidence,
+        return new LocomoConversation(questionId, episodes, [question], evidence,
             now ?? (episodes.Count > 0 ? episodes.Max(e => e.CreatedAt) : 0));
     }
 
-    /// <summary>All questions with marked evidence, in file order.</summary>
-    public static IReadOnlyList<LocomoConversation> Load(string path)
+    /// <summary>Eligible questions in file order. The default excludes every official abstention ID.</summary>
+    public static IReadOnlyList<LocomoConversation> Load(string path) => Load(path, LongMemEvalFrame.AnswerableV2);
+
+    public static IReadOnlyList<LocomoConversation> Load(string path, LongMemEvalFrame frame)
     {
         using var doc = JsonDocument.Parse(File.ReadAllBytes(path));
-        return [.. doc.RootElement.EnumerateArray().Select(ParseQuestion).Where(c => c is not null).Select(c => c!)];
+        return [.. doc.RootElement.EnumerateArray().Select(q => ParseQuestion(q, frame)).Where(c => c is not null).Select(c => c!)];
     }
 }

@@ -38,6 +38,10 @@ var webJson = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 switch (command)
 {
+    case "longmemeval-journal":
+        LongMemEvalStudy.Run(Arg("--data") ?? throw new ArgumentException("--data is required"),
+            Arg("--out") ?? throw new ArgumentException("--out is required"), root);
+        return 0;
     case "p2-judgment-export":
         JudgmentPreparation.Export(Arg("--bank") ?? throw new ArgumentException("--bank is required"),
             Arg("--out") ?? throw new ArgumentException("--out is required"));
@@ -154,7 +158,7 @@ switch (command)
         return WriteJson(Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "rq-c", "p2-models.json")), P2Models(root));
     case "gating-check" when Arg("--corpus") == "longmemeval":
         return WithLongMemEval(Arg("--data"), c => GatingCheckReport(c),
-            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "gating-penalty-off.json")));
+            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval-answerable-v2"), "gating-penalty-off.json")));
     case "gating-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "gating-penalty-off.json", c => GatingCheckReport(c));
     case "format-precheck":
@@ -162,12 +166,12 @@ switch (command)
             Arg("--out"), root);
     case "delivery-check" when Arg("--corpus") == "longmemeval":
         return WithLongMemEval(Arg("--data"), c => DeliveryCheckReport(c),
-            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "delivery-check.json")));
+            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval-answerable-v2"), "delivery-check.json")));
     case "delivery-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "delivery-check.json", c => DeliveryCheckReport(c));
     case "component-scales" when Arg("--corpus") == "longmemeval":
         return WithLongMemEval(Arg("--data"), c => ComponentScalesReport(c),
-            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "component-scales.json")));
+            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval-answerable-v2"), "component-scales.json")));
     case "component-scales":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "component-scales.json", c => ComponentScalesReport(c));
     case "metric-definitions":
@@ -179,10 +183,10 @@ switch (command)
     case "longmemeval":
         return LongMemEvalReplication(Arg("--data") ?? Environment.GetEnvironmentVariable("AIJADE_LONGMEMEVAL")
             ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "aijade-data", "longmemeval", "longmemeval_s_cleaned.json"),
-            Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval")));
+            Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval-answerable-v2")));
     case "pool-check" when Arg("--corpus") == "longmemeval":
         return WithLongMemEval(Arg("--data"), corpus => PoolCheckReport(corpus, "LongMemEval_s (cleaned)", LongMemEvalCorpus.Sha256),
-            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval"), "pool-check.json")));
+            Path.GetFullPath(Path.Combine(Arg("--out") ?? Path.Combine(root, "experiments", "memory-longmemeval-answerable-v2"), "pool-check.json")));
     case "pool-check":
         return MemoryPart(Arg("--locomo") ?? DefaultLocomo(), Path.GetFullPath(Arg("--out") ?? Path.Combine(root, "experiments", "memory")), "pool-check.json",
             corpus => PoolCheckReport(corpus, null, null));
@@ -501,6 +505,7 @@ static int LongMemEvalReplication(string data, string outDir)
         ["provenance"] = new JsonObject
         {
             ["corpus"] = "LongMemEval_s (cleaned)", ["corpusSha256"] = sha, ["questions"] = corpus.Count,
+            ["frame"] = LongMemEvalCorpus.FrameName(LongMemEvalFrame.AnswerableV2),
             ["episodes"] = corpus.Sum(c => c.Episodes.Count), ["runtimeSeconds"] = Math.Round(clock.Elapsed.TotalSeconds),
             ["generatedAt"] = DateTimeOffset.UtcNow.ToString("o", CultureInfo.InvariantCulture),
         },
@@ -625,8 +630,10 @@ static int WithLongMemEval(string? dataArg, Func<IReadOnlyList<LocomoConversatio
     report["provenance"] ??= new JsonObject
     {
         ["corpus"] = "LongMemEval_s (cleaned)", ["corpusSha256"] = LongMemEvalCorpus.Sha256, ["questions"] = corpus.Count,
+        ["frame"] = LongMemEvalCorpus.FrameName(LongMemEvalFrame.AnswerableV2),
         ["runtime"] = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, ["generatedAt"] = DateTimeOffset.UtcNow.ToString("o", CultureInfo.InvariantCulture),
     };
+    report["provenance"]!["frame"] = LongMemEvalCorpus.FrameName(LongMemEvalFrame.AnswerableV2);
     Directory.CreateDirectory(Path.GetDirectoryName(outFile)!);
     File.WriteAllText(outFile, JsFormat.Stringify(report, 2) + "\n");
     Console.WriteLine($"wrote {outFile}");

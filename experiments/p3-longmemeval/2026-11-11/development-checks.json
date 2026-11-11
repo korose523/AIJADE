@@ -1,0 +1,87 @@
+{
+  "stage": "development, before execution source freeze",
+  "runs": [
+    {
+      "file": "all-development-fixed.trx",
+      "sha256": "e605a4c55fe218d97341ff17b24a78373635eb7bf121208f35f09dc5dc2cdc08",
+      "counters": {
+        "total": "664",
+        "executed": "646",
+        "passed": "646",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "failures": []
+    },
+    {
+      "file": "all-development.trx",
+      "sha256": "ac6842efb81927535bc7e34aefd88b0b9676155a48cb2de058e093b258ed28b2",
+      "counters": {
+        "total": "664",
+        "executed": "646",
+        "passed": "644",
+        "failed": "2",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "failures": [
+        "Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions",
+        "Aijade.Tests.ProjectScopeTests.Every_module_directory_is_declared"
+      ]
+    },
+    {
+      "file": "lme-development.trx",
+      "sha256": "8a6b979187d3e54638d1fdcf5d61b17f88e4a7060915a373a16add6452235383",
+      "counters": {
+        "total": "19",
+        "executed": "18",
+        "passed": "18",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "failures": []
+    }
+  ],
+  "fixes": [
+    "research-only tool module registered",
+    "child dotnet resolves user-local .NET 10 via PATH and DOTNET_ROOT"
+  ],
+  "pythonConstructedAttributionTests": {
+    "passed": 2,
+    "failed": 0
+  },
+  "fullCorpusOutcomes": "NOT_RUN",
+  "rawTrxRetainedLocally": true
+}
