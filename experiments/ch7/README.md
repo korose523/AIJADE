@@ -165,3 +165,10 @@ The complete [acceptance record](live-manifest-qualification-20261112.json) pins
 both attempts and the single admission. No first prefix was reused, no second
 render/answer semantics were measured, and no held-out result or formal hardware
 qualification is inferred. The 40-pair formal proposal remains unapproved/unrun.
+
+The [build-provenance record](live-manifest-build-provenance-20261112.json)
+separates the authored source snapshot frozen as `7a162ec` from the SDK's embedded
+input-freeze build revision `6b6e157`. It retains the generated assembly metadata
+and exact used binary hash: the build preceded committing the identical authored
+files. No clean-checkout or bitwise rebuild equivalence is claimed. Both actual
+runs use the same frozen binaries; CI checks this distinction separately.
