@@ -1,0 +1,81 @@
+{
+  "schema": "aijade.p2.constructed-calibration-attempt.v1",
+  "status": "STOPPED",
+  "reason": "RuntimeError: REQUEST_WALL_TIMEOUT",
+  "executionCodeCommit": "8da0939ef21609175badc703c9ae39ccf2f108e7",
+  "completedSlots": [],
+  "inFlightSlot": 0,
+  "unattemptedSlots": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "plannedObservations": 32,
+  "completedObservations": 0,
+  "inFlightObservations": 1,
+  "notCompletedObservations": 32,
+  "admissions": [
+    {
+      "model": "qwen",
+      "seconds": 60.47836650512181,
+      "minAvailableBytes": 8300089344,
+      "baselineSwapUsedBytes": 10129506304,
+      "maxSwapUsedBytes": 10129506304,
+      "swapIncrementBytes": 0,
+      "ownedServiceEmptyThroughout": true,
+      "status": "PASS"
+    }
+  ],
+  "wallSeconds": 241.86110062198713,
+  "endedAt": "2026-11-11T08:34:51.639053+00:00",
+  "initialUnloadedBaseline": {
+    "at": "2026-11-11T08:30:50.546877+00:00",
+    "elapsedSeconds": 0.815731932874769,
+    "phase": "admission/qwen",
+    "slot": null,
+    "availableBytes": 8309325824,
+    "swapUsedBytes": 10129506304,
+    "ownedFamilyRssBytes": 18780160,
+    "processes": [
+      {
+        "pid": 92858,
+        "name": "ollama",
+        "rssBytes": 18780160
+      }
+    ]
+  },
+  "minAvailableBytes": 6464020480,
+  "maxSwapUsedBytes": 10976493568,
+  "maxOwnedFamilyRssBytes": 4556189696,
+  "acceptedCompleteCalibration": false,
+  "newGenerationCalls": 0,
+  "primaryExperiment": false
+}

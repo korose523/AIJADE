@@ -1,0 +1,458 @@
+{
+  "schema": "aijade.p2a.prompt-exposure.v1",
+  "bankManifestSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+  "scenario": {
+    "id": "compact8k",
+    "contextTokens": 8192,
+    "generationReplyTokens": 4096,
+    "verificationReplyTokens": 256,
+    "maxVisibleCases": 3,
+    "maxInputTokens": 512
+  },
+  "modelManifestSha256ByName": {
+    "qwen2.5-coder:7b-instruct": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+    "llama3.1:8b": "3fc95d284915704cf140b825abf5150af0d32fde95f55c081c9602d49d4547c0"
+  },
+  "tasks": [
+    {
+      "taskId": "str-slugify",
+      "caseCount": 5,
+      "inputSha256": "c07059815d9b24c92411301871bf7ba063252203f10906e50d494746d1c8379b",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-reverse",
+      "caseCount": 5,
+      "inputSha256": "bef156c414fdb0fe4147e7e2a39917680eb1ac9fb5ec0ee27e36d279950d3e01",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-is-palindrome",
+      "caseCount": 6,
+      "inputSha256": "ad88c1650a6377f9f7b5544db54bfdaf1f7b5108f01b3d0464fbfc96b9fe356a",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-capitalize-words",
+      "caseCount": 5,
+      "inputSha256": "23ef9a48ecb88db912268bfde621410d07be44aa73c7ba4d339c6ce9db2b4546",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-count-vowels",
+      "caseCount": 6,
+      "inputSha256": "04ccbe9798a57c4de8419f1b176cd01eb58630bc95f6f1057c338f2bb4506f95",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-truncate",
+      "caseCount": 6,
+      "inputSha256": "c9eb78a46e9619ca82ee72bcbad0b97a6230060d5b5eec7b0223c8be4c32c50d",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-unique-chars",
+      "caseCount": 6,
+      "inputSha256": "ea6e744cce781d3f212d1ff6cfa50e6bca8efbef514a992f5bb198333e4795cc",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-to-camel",
+      "caseCount": 5,
+      "inputSha256": "9c9fe21f639dfabbd6b2523ba5fde3213cf757f1e2d026eab3139c531404a089",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "str-rot13",
+      "caseCount": 5,
+      "inputSha256": "9d058347fdb6d5a6a472fa2f761630a4cbce8de669679c1bf99288fd4bf0f595",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-sum",
+      "caseCount": 5,
+      "inputSha256": "1aab0ced395937f9d7069bb7a1b8c5c7a1a9f22ee481e26c7dea8eb668833750",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-max",
+      "caseCount": 5,
+      "inputSha256": "b8e70092b0649132ce93bc5c91e0853314c71c0bb0b1b7618fed70051fe9eb4b",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-unique",
+      "caseCount": 5,
+      "inputSha256": "8a3e22546b69259b54d4887d793f01108e3bca0443fa95ed1b28c062c9940762",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-flatten",
+      "caseCount": 5,
+      "inputSha256": "0023b7e1a11fa7f6415bb569f3543098409c58889f4c65d04328d4911de8e9c3",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-chunk",
+      "caseCount": 5,
+      "inputSha256": "b29d5ce18bb02d37f08fb818216f4ba7cdc6d9fc526a8ca47d4809c7d4f346c7",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-intersection",
+      "caseCount": 5,
+      "inputSha256": "244c7d9b1184ae3fa84029b2ecc8b9c5cb8704ec2980275f335ad2dae0af9c45",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-remove-falsy",
+      "caseCount": 4,
+      "inputSha256": "f7e6b1bb22cb30bc5510d3d94f5a3cb920b5c9b061bf900c3b6869b1045f0d0f",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-second-largest",
+      "caseCount": 5,
+      "inputSha256": "9207f6ca5d4eec071d82fa6927a0f510be8f66b0d95d1fb1e85463edf910d1bb",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "arr-sum-evens",
+      "caseCount": 5,
+      "inputSha256": "1520e7c6c9ef18ea65d6e170b37a8e82c5f6d1d6aed5dc8d7331313d559c5c67",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "obj-pick",
+      "caseCount": 5,
+      "inputSha256": "4ee24329a365d74142832596829923b2c51d3a37857d78b90517251aa71e7cfb",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "obj-merge",
+      "caseCount": 5,
+      "inputSha256": "40b5db3bd42b04b9a7955c1407ea46894edc72e1a0f9bb9b09d86940ade246f9",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "obj-count-keys",
+      "caseCount": 4,
+      "inputSha256": "53fbbc243af15de567e5fed45b55175f71fb100a8f9da555a5a086ff52813fba",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "obj-group-by",
+      "caseCount": 3,
+      "inputSha256": "dd714148daedc3c9bdba41f0daef71fc817ada4e64ee3a179b68fd47be0c64b8",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "obj-get-nested",
+      "caseCount": 4,
+      "inputSha256": "0565538db796101713728c3165fa3a4dd7ee17dd657575c74422e45dc92e7974",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-clamp",
+      "caseCount": 5,
+      "inputSha256": "d5e4fdace203701ed0782cfbb1bc4e4ecb267d395f95f1a0a9d93a904c109303",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-factorial",
+      "caseCount": 5,
+      "inputSha256": "c6e27c60efd8f530644738b35f45b6f2cab15bcfe9f55003318dc624878e66ee",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-is-prime",
+      "caseCount": 7,
+      "inputSha256": "f33e4ef1bcd6f161b5e149380d5003851c6469057dea745945577ee8282cb079",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-gcd",
+      "caseCount": 6,
+      "inputSha256": "bc79290c39dc47a8ecad5c79f9b8184129b64d8913a9d49988c0e0c30f40cbe3",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-fib",
+      "caseCount": 6,
+      "inputSha256": "e2080aec4cd9a92a7821006e3e469965bd4abd02007fd93f437c50865b2a3cd5",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-average",
+      "caseCount": 5,
+      "inputSha256": "35f4070c6bad1c25766fbc2956bc25255de3b0fd3e3fe22d442e1bea862f5869",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "math-round-to",
+      "caseCount": 6,
+      "inputSha256": "cc59cd978d4143a7cca0568da619296ee4dbbfb867b3193d87df4d461e58532c",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "date-format-iso",
+      "caseCount": 5,
+      "inputSha256": "b4eea1757d556e8ff3142087c98fb1eafa5c4d71c1b6f065f1f18baaede5b852",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "date-day-of-week",
+      "caseCount": 5,
+      "inputSha256": "b8cc5c703d8819d3ecf5b349861153c7a1e1dce2042d651c6cec7452ea52e4f5",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "date-is-leap-year",
+      "caseCount": 5,
+      "inputSha256": "1d48295860c7c78454ac3e2d8d144e013ca41691a37379e9565d64e6b1ac829e",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "date-add-days",
+      "caseCount": 4,
+      "inputSha256": "713767efcd4915f064949d2f282a2fe082242bcd913928b81886e91db5c293e9",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "date-seconds-since",
+      "caseCount": 4,
+      "inputSha256": "3ed5265db4cb413ea3c56253bee08542f9c493ca9128da4bc0a1b82b3f42180c",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "parse-query-string",
+      "caseCount": 6,
+      "inputSha256": "2a8bbce88ea44792639ea011573d12e86d07ffc9a3c6ee46535a869553946328",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "parse-json-safe",
+      "caseCount": 6,
+      "inputSha256": "4650d3a55822c5b92942cc3ecef71da86fa06d9c47b0478f10c55c1e1b85d176",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "parse-csv-line",
+      "caseCount": 5,
+      "inputSha256": "f603b724c23c79bef43f56b1de40ed2335ff207412590c04d5e362ea56807939",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "parse-version",
+      "caseCount": 5,
+      "inputSha256": "2f329d6bb9c4bcbc390f1a7137d6ec0509082df38bfc043f4c659a5a05b6d1c1",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "logic-xor",
+      "caseCount": 4,
+      "inputSha256": "c603bd5efd6c0d74f7991cbee13407286731447d21de760d0ddbeef6ffe3878c",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "logic-valid-parentheses",
+      "caseCount": 7,
+      "inputSha256": "a7f8a90f9d2a5aaefdfe44f09fcafa27d7997e4fe94d22b3852323dfe78a0b78",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "logic-fizzbuzz",
+      "caseCount": 7,
+      "inputSha256": "7cfdd29004d173d94098bcf7c76accffaa50869f233916d08a54c4ffe017d9f0",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "logic-roman-to-int",
+      "caseCount": 6,
+      "inputSha256": "5c7654f30c03b685d840e0a48144f39d644426fded8c5fc4dfa2ce2c16601809",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "taskId": "logic-pangram",
+      "caseCount": 5,
+      "inputSha256": "01b9a2dcf8303d351d6fbd0ef7d10f25ac124eb4f3b45fe191f329d895b8e5aa",
+      "selectedCaseIndices": [
+        0,
+        1,
+        2
+      ]
+    }
+  ]
+}

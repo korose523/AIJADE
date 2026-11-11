@@ -1,0 +1,422 @@
+{
+  "mode": "simulation",
+  "simulationNote": "Mock backend: injected hallucination=0.30, miss=0.10. These validate the estimator, not the phenomenon. Do not cite as empirical.",
+  "config": {
+    "trials": 1,
+    "seed": 42,
+    "backend": "mock",
+    "model": null,
+    "rounds": 1,
+    "pCorrect": 1,
+    "tasks": 3,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "requestPolicySha256": "34c1d45215bd712ae73b7ae759aecda6825b66447b14d9c9c817b2141942b541",
+    "builtinBankManifestSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "taskAllocation": "balanced-permutation-v1"
+  },
+  "requestPolicy": {
+    "sha256": "34c1d45215bd712ae73b7ae759aecda6825b66447b14d9c9c817b2141942b541",
+    "exposureSha256": "512a9d4a0e9bdca2677ec3112703ee5732555fea6b225c8cca064a2727bfbed3",
+    "scenario": {
+      "Id": "compact8k",
+      "ContextTokens": 8192,
+      "GenerationReplyTokens": 4096,
+      "VerificationReplyTokens": 256,
+      "MaxVisibleCases": 3,
+      "MaxInputTokens": 512
+    },
+    "requestsChecked": 0,
+    "verifierInstructionVersion": "listed-v1",
+    "keepAliveSeconds": 0,
+    "taskBankManifestSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "note": "Simulation only; no external tokenizer or model is run by this mock backend."
+  },
+  "builtinBank": {
+    "manifestSha256": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6",
+    "poolTasks": 44,
+    "taskAllocation": "balanced-permutation-v1",
+    "callingConvention": "unchanged original JavaScript-literal bench",
+    "plannedSlotsPerConditionPerRound": 3,
+    "plannedExposurePerTask": {
+      "str-slugify": 0,
+      "str-reverse": 0,
+      "str-is-palindrome": 0,
+      "str-capitalize-words": 0,
+      "str-count-vowels": 0,
+      "str-truncate": 0,
+      "str-unique-chars": 0,
+      "str-to-camel": 0,
+      "str-rot13": 0,
+      "arr-sum": 0,
+      "arr-max": 0,
+      "arr-unique": 0,
+      "arr-flatten": 0,
+      "arr-chunk": 0,
+      "arr-intersection": 0,
+      "arr-remove-falsy": 0,
+      "arr-second-largest": 0,
+      "arr-sum-evens": 0,
+      "obj-pick": 0,
+      "obj-merge": 0,
+      "obj-count-keys": 1,
+      "obj-group-by": 0,
+      "obj-get-nested": 0,
+      "math-clamp": 0,
+      "math-factorial": 0,
+      "math-is-prime": 0,
+      "math-gcd": 1,
+      "math-fib": 0,
+      "math-average": 0,
+      "math-round-to": 0,
+      "date-format-iso": 0,
+      "date-day-of-week": 0,
+      "date-is-leap-year": 0,
+      "date-add-days": 0,
+      "date-seconds-since": 0,
+      "parse-query-string": 0,
+      "parse-json-safe": 0,
+      "parse-csv-line": 1,
+      "parse-version": 0,
+      "logic-xor": 0,
+      "logic-valid-parentheses": 0,
+      "logic-fizzbuzz": 0,
+      "logic-roman-to-int": 0,
+      "logic-pangram": 0
+    }
+  },
+  "sampling": {
+    "mode": "simulation",
+    "model": null,
+    "temperature": null,
+    "seed": 42,
+    "ollamaVersion": null
+  },
+  "analysisUnit": "skill",
+  "nSkills": 12,
+  "nExecutions": 12,
+  "fingerprint": "b720c0dd",
+  "gitHash": "8da0939ef21609175badc703c9ae39ccf2f108e7",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 1
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 1
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 1
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 3,
+      "precision": 1,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 1
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 1,
+        "lo": 1,
+        "hi": 1
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 6,
+    "hallucinationRate": null,
+    "missRate": 0,
+    "agreement": 1,
+    "falseDiscoveryRate": 0,
+    "falseOmissionRate": null
+  },
+  "diffInDiff": {
+    "estimate": 0,
+    "ci": {
+      "mean": 0,
+      "lo": 0,
+      "hi": 0
+    },
+    "cellMeans": {
+      "a": 1,
+      "b": 1,
+      "c": 1,
+      "d": 1
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 1,
+    "riskDifference": 0,
+    "cramersV": 0,
+    "cohensH": 0,
+    "interactionLogOdds": {
+      "estimate": 0,
+      "se": 1.1547005383792515,
+      "z": 0,
+      "p": 1
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": 0,
+    "se": 1.1547005383792515,
+    "z": 0,
+    "p": 1
+  },
+  "chiSquare": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        0
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareSelfVerification": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        0
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 0,
+    "p": 1,
+    "table": [
+      [
+        6,
+        0
+      ],
+      [
+        6,
+        0
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 0,
+    "b": 0,
+    "c": 0,
+    "d": 6,
+    "nPairs": 6,
+    "chiSquare": 0,
+    "pChiSquare": 1,
+    "pExact": null,
+    "p": 1,
+    "usedExact": false
+  },
+  "power": {
+    "minDetectableEffectAt80": 75.28293034999646,
+    "nSkillsPerCell": 3,
+    "powerAtDelta10pp": 0.04339965744440444,
+    "powerAtDelta5pp": 0.03309144566363986
+  },
+  "powerReference": [
+    {
+      "nPerCell": 240,
+      "minDetectableEffectAt80pp": 12.68,
+      "powerAtDelta10pp": 0.5999,
+      "powerAtDelta5pp": 0.1944
+    },
+    {
+      "nPerCell": 360,
+      "minDetectableEffectAt80pp": 10.38,
+      "powerAtDelta10pp": 0.7735,
+      "powerAtDelta5pp": 0.2693
+    }
+  ],
+  "preregistrationDeviation": [
+    "trials: run=1 preregistered=30",
+    "rounds: run=1 preregistered=5",
+    "nTasks: run=3 preregistered=12",
+    "taskAllocation: supplied trial tasks replace the archived per-trial sample",
+    "resumed: steps 0–7 replayed from the interrupted run after an infrastructure timeout"
+  ],
+  "resumed": {
+    "replayedSteps": 8,
+    "replayedGenerations": 8,
+    "replayedVerifications": 2,
+    "note": "the run was interrupted by an infrastructure timeout; the recorded generations and self-verification replies of the interrupted run were replayed (and checked step by step) before the live backend took over"
+  },
+  "degeneracy": {
+    "allCellsIdenticalPrecision": true,
+    "totalRegenerations": 0,
+    "totalRecoveries": 0,
+    "recoveredRate": null,
+    "manipulationReachable": false,
+    "note": "NULL BY CONSTRUCTION: all four cells share an identical precision — neither factor has a causal path to the outcome. Do NOT report as \"no effect\".",
+    "totalRecoveriesWithChangedCode": 0
+  },
+  "loopDiagnostics": [
+    {
+      "condition": "sv0-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv0-ef1",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv1-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv1-ef1",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    }
+  ]
+}

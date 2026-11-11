@@ -41,3 +41,5 @@ jobs:
         run: python3 experiments/p2-a/tokenizer-capacity/2026-11-11/verify_archive.py
       - name: Verify P2-A bounded input choices, complete streams and actual request-guard controls
         run: python3 experiments/p2-a/bounded-input/2026-11-11/verify_archive.py
+      - name: Verify matched P2 input exposure and both stopped whole-task calibration attempts
+        run: python3 experiments/p2-a/judgment-alignment/2026-11-11/verify_archive.py

@@ -1,0 +1,1 @@
+function solve(...args){ return (s=>s.trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""))(...args) }
