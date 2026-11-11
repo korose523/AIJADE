@@ -1,0 +1,90 @@
+{
+  "schema": "aijade.p2a.mbpp260-statement.v1",
+  "taskId": "Mbpp/260",
+  "planCommit": "cc1ff398a424b02648bb66559813db74fa58527b",
+  "priorArchiveCommit": "fc01b9dbf2b38ea724b8006169f059007145c192",
+  "executionCodeCommit": "cfcd82bd661e134e47c31a30b68f29d8a40bb272",
+  "verifiedAt": "2026-11-11T01:18:13.005816+00:00",
+  "newModelCalls": 0,
+  "originalSource": {
+    "url": "https://github.com/google-research/google-research/blob/f82046ba5aabbbb427dbfd38a254d26bff08b533/mbpp/mbpp.jsonl",
+    "commit": "f82046ba5aabbbb427dbfd38a254d26bff08b533",
+    "wholeFileSha256": "ccf64ceae9c5403bf50a044cb6d505bfd2a2963ee58338ba268fd65beab92a9f",
+    "taskRecordSha256": "207ab0597588e05797c089a26cdc187678afe005db2f6e01463392c3cb583e96"
+  },
+  "releaseCodeSha256": "91e1bae1fd111b312fab943ee0a2db4754f7c163d4664fa5beb226927c28e16f",
+  "mathematicalSource": {
+    "url": "https://www.impan.pl/en/publishing-house/journals-and-series/acta-arithmetica/all/38/2/102667/simple-groups-of-square-order-and-interesting-sequence-of-primes",
+    "doi": "10.4064/aa-38-2-129-140",
+    "authors": [
+      "Morris Newman",
+      "Daniel Shanks",
+      "H. C. Williams"
+    ],
+    "title": "Simple groups of square order and an interesting sequence of primes",
+    "year": 1980,
+    "journal": "Acta Arithmetica",
+    "volume": 38,
+    "pages": "129-140",
+    "pdfSha256": "c8ae371e92177431b501960bf4b33bbf430f4a6c283026f4921c85ef3975cc5e",
+    "visuallyCheckedPrintPages": [
+      129,
+      131
+    ],
+    "definition": "The special numbers are s_(2m+1), m >= 0, with s_n = ((1+sqrt(2))^n+(1-sqrt(2))^n)/2. The first prime indices are 3, 5, 7."
+  },
+  "caseCount": 107,
+  "recurrenceAgreements": 107,
+  "semanticCounts": {
+    "STATEMENT_CONFLICT": 104,
+    "OUTSIDE_DOMAIN": 3
+  },
+  "counterexamples": [
+    {
+      "n": 6,
+      "releasedValue": 99,
+      "factors": [
+        9,
+        11
+      ],
+      "releasedCases": [
+        [
+          "plus",
+          25
+        ]
+      ]
+    },
+    {
+      "n": 9,
+      "releasedValue": 1393,
+      "factors": [
+        7,
+        199
+      ],
+      "releasedCases": [
+        [
+          "plus",
+          51
+        ]
+      ]
+    }
+  ],
+  "baseExamples": [
+    {
+      "n": 3,
+      "releasedValue": 7
+    },
+    {
+      "n": 4,
+      "releasedValue": 17
+    },
+    {
+      "n": 5,
+      "releasedValue": 41
+    }
+  ],
+  "decision": "EXCLUDE_STATEMENT_CONFLICT",
+  "authorReview": "PENDING",
+  "optionalFutureContract": "For a nonnegative integer n, return s_n for s_0=s_1=1 and s_n=2*s_(n-1)+s_(n-2). Use a separately named task and exact BigInt output.",
+  "sourceAuditMethod": "AI-assisted source reading, visual primary-paper check and exact integer recomputation."
+}

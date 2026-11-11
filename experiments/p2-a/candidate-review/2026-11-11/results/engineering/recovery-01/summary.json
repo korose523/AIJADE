@@ -1,0 +1,34 @@
+{
+  "schema": "aijade.p2a.mbpp255-reference.v1",
+  "planCommit": "cc1ff398a424b02648bb66559813db74fa58527b",
+  "priorArchiveCommit": "fc01b9dbf2b38ea724b8006169f059007145c192",
+  "executionCodeCommit": "93a331aaa961d5c46003054c3193a3dba4745883",
+  "newModelCalls": 0,
+  "limits": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "sampledRssBytes": 2147483648,
+    "compressedFileBytes": 67108864
+  },
+  "pythonSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+  "pythonVersion": "Python 3.12.14",
+  "inputSha256": "68796b91c61f35f6b9d239f9194ad3c25ab78685c034d775ae0d2a11aaaa7e78",
+  "sourceSha256": "613bb2d4b8842407054514085376946aad1969997da7c2790d0d556ad858ba8a",
+  "releaseSha256": "af43697e8791c4c149bdfd6b489d8b5412507551ac20e28a439f650b8225db63",
+  "nativeCodeSha256": "fb1a59d56c344ddbc7f5f79f2c76d53c06b7f1377dbebc3fffedf8bf785a67ec",
+  "deserializerFunctionSha256": "dcb1129af72740937cd2e6528d73ec6908a990ce020caa3c955f256820e84954",
+  "passes": {
+    "native": {
+      "startedAt": "2026-11-11T01:11:33.215023+00:00",
+      "wallSeconds": 0.224,
+      "exitCode": 1,
+      "stop": null,
+      "sampledPeakRssBytes": 18030592,
+      "stdoutSha256": "be85e487c4936efce9bdc300e57703029ed07fbafca97dfad28c5123e77d797d",
+      "stderrSha256": "4fb3ee86ce9967f6099029409c15b5057609a1929f2ea222e6a701742c4ce43a",
+      "stderr": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/candidate-review/2026-11-11/recover255.py\", line 351, in <module>\n    main()\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/candidate-review/2026-11-11/recover255.py\", line 338, in main\n    run_reference(args.mode, args.catalog)\n  File \"/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/candidate-review/2026-11-11/recover255.py\", line 104, in run_reference\n    assert type(pool) is list and type(arity) is int and arity >= 0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+      "profileSha256": "3650ad4829117a58f3b3d07a05c4897280708c9cdc37009017123f91fd18e586"
+    }
+  },
+  "status": "INCOMPLETE"
+}

@@ -1,0 +1,93 @@
+{
+  "schema": "aijade.p2a.candidate-review.v1",
+  "planCommit": "cc1ff398a424b02648bb66559813db74fa58527b",
+  "priorArchiveCommit": "fc01b9dbf2b38ea724b8006169f059007145c192",
+  "preparationCodeCommit": "5648b539338b8edd49d423182b7ccb58cbb24222",
+  "createdAt": "2026-11-11T01:35:01.430979+00:00",
+  "newModelCalls": 0,
+  "sourceTasks": 542,
+  "directTasks": 425,
+  "outsidePortPopulation": 117,
+  "candidateTasks": 422,
+  "candidateCases": 115185,
+  "excludedTasks": 120,
+  "directTaskExclusions": [
+    "HumanEval/132",
+    "Mbpp/255",
+    "Mbpp/260"
+  ],
+  "taskDispositions": {
+    "REVIEW_RELEASED": 397,
+    "EXCLUDE_OUTSIDE_PORT_POPULATION": 117,
+    "REVIEW_DOMAIN_FILTERED": 21,
+    "REVIEW_EXACT_VARIANT": 4,
+    "EXCLUDE_STATEMENT_AMBIGUITY": 1,
+    "EXCLUDE_BOUNDED_JINT_COVERAGE": 1,
+    "EXCLUDE_STATEMENT_CONFLICT": 1
+  },
+  "caseDispositions": {
+    "REVIEW_RELEASED": 106626,
+    "RELEASED_IN_DOMAIN": 7511,
+    "OUTSIDE_DOMAIN": 335,
+    "EXACT_VARIANT": 1048,
+    "EXCLUDE_STATEMENT_AMBIGUITY": 1014,
+    "EXCLUDE_BOUNDED_JINT_COVERAGE": 112,
+    "EXCLUDE_STATEMENT_CONFLICT": 107
+  },
+  "sourceTasksPerDataset": {
+    "HumanEval+": 164,
+    "MBPP+": 378
+  },
+  "candidateTasksPerDataset": {
+    "HumanEval+": 116,
+    "MBPP+": 306
+  },
+  "previouslyBlockedTasks": 52,
+  "previouslyBlockedProposed": 50,
+  "updatedBlockedSemanticCounts": {
+    "AGREES": 8528,
+    "OUTSIDE_DOMAIN": 343,
+    "STATEMENT_CONFLICT": 242
+  },
+  "updatedBlockedSemanticCases": 9113,
+  "referenceRecovery": {
+    "status": "PASS",
+    "cases": 112,
+    "recoveredPlusCases": 109,
+    "totalTuples": 2015960,
+    "totalTupleElements": 153040920,
+    "compressedBytes": 6778031,
+    "nativeWallSeconds": 17.8,
+    "nativePeakRssBytes": 1159798784,
+    "executionCodeCommit": "6f1e4fec8832c1da88afe18133883d23b28f5910"
+  },
+  "mbpp255Jint": {
+    "caseOutcomes": {
+      "PASS": 107,
+      "TRANSPORT_LIMIT": 2,
+      "SANDBOX_LIMIT": 1,
+      "ERROR": 2
+    },
+    "completeAgreement": false,
+    "executionCodeCommit": "36ab069553cffcc1014479139e1ee65fc9b0fa93"
+  },
+  "mbpp260": {
+    "semanticCounts": {
+      "STATEMENT_CONFLICT": 104,
+      "OUTSIDE_DOMAIN": 3
+    },
+    "recurrenceAgreements": 107,
+    "executionCodeCommit": "cfcd82bd661e134e47c31a30b68f29d8a40bb272"
+  },
+  "formalAuthorReview": "PENDING",
+  "difficultyPilot": "NOT_RUN",
+  "precisionDesign": "NOT_RUN",
+  "scope": "AI-assisted inclusion proposals and finite preparation checks. Author decisions are pending for every task.",
+  "sourceSha256": {
+    "candidate_pool.py": "3780195c6e868e56b2abe67e6477ba345b7bf3e275a0ba5b028891f3e4b97d05",
+    "jint255.py": "4b632558558efe88caad771f03531c9276a96970e065b0d7622579ae1e9ac210",
+    "nsw260.py": "c6551fb193f487cdb5eac6e638e4d0078baa389eb85ba255d30f26f75aed2009",
+    "recover255.py": "1c9d4063b671af20ff22d54de5474b758713cc192970aea6f546f125bfd7351b",
+    "verify_archive.py": "3ee117a116922bd15c445981fac07da1765a76c360d1be27fb05216a6b814b0e"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "schema": "aijade.p2a.mbpp255-reference.v1",
+  "planCommit": "cc1ff398a424b02648bb66559813db74fa58527b",
+  "priorArchiveCommit": "fc01b9dbf2b38ea724b8006169f059007145c192",
+  "executionCodeCommit": "6f1e4fec8832c1da88afe18133883d23b28f5910",
+  "newModelCalls": 0,
+  "limits": {
+    "cpuSeconds": 120,
+    "wallSeconds": 180,
+    "sampledRssBytes": 2147483648,
+    "compressedFileBytes": 67108864
+  },
+  "pythonSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+  "pythonVersion": "Python 3.12.14",
+  "inputSha256": "68796b91c61f35f6b9d239f9194ad3c25ab78685c034d775ae0d2a11aaaa7e78",
+  "sourceSha256": "1c9d4063b671af20ff22d54de5474b758713cc192970aea6f546f125bfd7351b",
+  "releaseSha256": "af43697e8791c4c149bdfd6b489d8b5412507551ac20e28a439f650b8225db63",
+  "nativeCodeSha256": "fb1a59d56c344ddbc7f5f79f2c76d53c06b7f1377dbebc3fffedf8bf785a67ec",
+  "deserializerFunctionSha256": "dcb1129af72740937cd2e6528d73ec6908a990ce020caa3c955f256820e84954",
+  "passes": {
+    "native": {
+      "startedAt": "2026-11-11T01:12:37.524425+00:00",
+      "wallSeconds": 17.8,
+      "exitCode": 0,
+      "stop": null,
+      "sampledPeakRssBytes": 1159798784,
+      "stdoutSha256": "a46116afee0746485bef4398b9d3437ecb7147ac43851167de2033885f8fbaea",
+      "stderrSha256": "ac2acd99e0889e98e29506c7451cce34a0bb4b6a656c4a9546e27d38a2e5ef9a",
+      "stderr": "{\"mode\":\"native\",\"nativeAssertions\":\"PASS\"}\n",
+      "profileSha256": "d4407f7f5741d9248ed510613fb04e08358e4d70b1336d9d3202fe92e6bdcb04",
+      "caseRows": 112,
+      "catalogSha256": "eae3377662e9ea3083112bbd596db416e64e16acd3a7b87249eeff357cd84473",
+      "compressedBytes": 6778031
+    },
+    "successor": {
+      "startedAt": "2026-11-11T01:12:59.053307+00:00",
+      "wallSeconds": 10.824,
+      "exitCode": 0,
+      "stop": null,
+      "sampledPeakRssBytes": 33652736,
+      "stdoutSha256": "a46116afee0746485bef4398b9d3437ecb7147ac43851167de2033885f8fbaea",
+      "stderrSha256": "a7a2d2ada391dc5f72bed12398aba09983dde664d85261f297a3bf6d188cec3b",
+      "stderr": "{\"mode\":\"successor\",\"nativeAssertions\":null}\n",
+      "profileSha256": "6cc3360d71645b47a7535edd2004dce1b73e5a9090e1e20792e95e916fcc2065",
+      "caseRows": 112,
+      "catalogSha256": "eae3377662e9ea3083112bbd596db416e64e16acd3a7b87249eeff357cd84473",
+      "compressedBytes": 6778031
+    }
+  },
+  "status": "PASS",
+  "caseRows": 112,
+  "baseCases": 3,
+  "recoveredPlusCases": 109,
+  "missingPlusCases": 0,
+  "previousBaseRowsMatch": 3,
+  "totalTuples": 2015960,
+  "totalTupleElements": 153040920,
+  "largestCase": {
+    "alphabet": [
+      {
+        "t": "str",
+        "v": "Dog"
+      },
+      {
+        "t": "str",
+        "v": "Cat"
+      },
+      {
+        "t": "str",
+        "v": "CatBird"
+      },
+      {
+        "t": "str",
+        "v": "Bird"
+      },
+      {
+        "t": "str",
+        "v": "Fish"
+      }
+    ],
+    "case": [
+      "plus",
+      85
+    ],
+    "compressedBytes": 5646002,
+    "offset": 46043,
+    "rawInputSha256": "2ab5073d941a16bf64e2317233de95d2b178de63ff2483f7d4cd6c73067cd568",
+    "shape": [
+      "list",
+      "tuple"
+    ],
+    "taskId": "Mbpp/255",
+    "tupleArity": 77,
+    "tupleCount": 1663740,
+    "typedArguments": {
+      "items": [
+        {
+          "items": [
+            {
+              "t": "str",
+              "v": "Dog"
+            },
+            {
+              "t": "str",
+              "v": "Cat"
+            },
+            {
+              "t": "str",
+              "v": "CatBird"
+            },
+            {
+              "t": "str",
+              "v": "Bird"
+            },
+            {
+              "t": "str",
+              "v": "Fish"
+            }
+          ],
+          "t": "list"
+        },
+        {
+          "t": "int",
+          "v": "77"
+        }
+      ],
+      "t": "list"
+    },
+    "valueStreamSha256": "4994214f45dd395a4abc26d6e63d0d25a1b4ebaddf787584c6aa799e99bb77ef",
+    "compressedSha256": "c396c46b71e7c7dd3a5d0f8897f5f2b9fbf77a3094ca86afeb4c878547751ee3"
+  },
+  "repeatedStreamsByteIdentical": true
+}
