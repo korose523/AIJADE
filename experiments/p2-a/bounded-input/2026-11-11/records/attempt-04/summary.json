@@ -1,0 +1,540 @@
+{
+  "schema": "aijade.p2a.bounded-input.stage.v1",
+  "executionCodeCommit": "2bcb47f65baee6779ad62c536f2167448213a2c8",
+  "status": "PASS",
+  "results": {
+    "legacy-export": {
+      "status": "PASS",
+      "process": {
+        "pid": 80214,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 7.7156280691269785,
+        "sampledFamilyPeakRssBytes": 1096404992,
+        "sampledFamilyCpuSeconds": 6.82,
+        "samples": 39,
+        "remainingAfterParent": [],
+        "stdoutSha256": "77cd671180a6b1a1289e2a97447eb5895109edd175157b041e14bb3730a63125",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "controls/qwen": {
+      "status": "PASS",
+      "plannedRows": 15,
+      "process": {
+        "pid": 80257,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 2.3210571960080415,
+        "sampledFamilyPeakRssBytes": 163926016,
+        "sampledFamilyCpuSeconds": 1.5799999999999998,
+        "samples": 14,
+        "remainingAfterParent": [],
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      },
+      "summary": {
+        "schema": "aijade.p2a.token-capacity.worker.v1",
+        "model": "qwen2.5-coder:7b-instruct",
+        "rows": 15,
+        "counts": {
+          "PASS": 15
+        },
+        "newCompletionCalls": 0,
+        "modelBlobSha256": "60e05f2100071479f596b964f89f510f057ce397ea22f2833a0cfe029bfc2463",
+        "ggufMetadataSha256": "d14130bc1f61980da9888547db50af128ed4ac555c13f604218442ac0bb4a3c6",
+        "corpusSha256": "053a9bda3799f9bd077f407ad7a27e683c91be0c051433d0559cee78a6eedb7d",
+        "driverSha256": "4f53804523d10ea4fc59c1840aa970150adff5ecc6798222ad9cac7bcf07751c",
+        "nativeExecutableSha256": "8cced2142edc3a8cb58eb4eece3fc482fb5fc376c5eb89290a5400b53cfdf135",
+        "tokenizersVersion": "0.22.1",
+        "tokenizersExtensionSha256": {
+          "tokenizers.abi3.so": "7d83214f76404cfb8f51cd23a22cc06fcb276d73769dfa88428a8890b3029b4a"
+        },
+        "pythonVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+        "pythonPrefix": "/Users/mac/.codex/skill-envs/p2-tokenizer",
+        "pythonBasePrefix": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none",
+        "nativeInfo": {
+          "vocabSize": 152064,
+          "bosId": 151643,
+          "eosId": 151645,
+          "addBos": false,
+          "addEos": false,
+          "libraryVersion": "0.7.0-dev"
+        },
+        "modelFileStateBefore": {
+          "inode": 257208,
+          "size": 4683074048,
+          "mtimeNs": 1788816598518140500
+        },
+        "nativeDecodeMethod": "uncleaned-token-to-piece-lstrip-0-special-true",
+        "losslessStreams": {
+          "codec": "gzip",
+          "nativeLogicalSha256": "a1923bc7920f84a73159c2f9948a3b177bc609e4979bbc014175698f83ac93ad",
+          "nativeLogicalBytes": 13273,
+          "independentLogicalSha256": "737a7cff762e9c16643636c36c482b66fa2119c17e1b08e2ccb8e0f5f44d1000",
+          "independentLogicalBytes": 6704
+        },
+        "modelFileStateAfter": {
+          "inode": 257208,
+          "size": 4683074048,
+          "mtimeNs": 1788816598518140500
+        },
+        "wallSeconds": 0.6027131460141391,
+        "pythonCpuSeconds": 0.06713600000000008,
+        "childCpuSeconds": 0.473054,
+        "status": "PASS"
+      }
+    },
+    "controls/llama": {
+      "status": "PASS",
+      "plannedRows": 15,
+      "process": {
+        "pid": 80274,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 3.1653165090829134,
+        "sampledFamilyPeakRssBytes": 197423104,
+        "sampledFamilyCpuSeconds": 1.9,
+        "samples": 19,
+        "remainingAfterParent": [],
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      },
+      "summary": {
+        "schema": "aijade.p2a.token-capacity.worker.v1",
+        "model": "llama3.1:8b",
+        "rows": 15,
+        "counts": {
+          "PASS": 15
+        },
+        "newCompletionCalls": 0,
+        "modelBlobSha256": "667b0c1932bc6ffc593ed1d03f895bf2dc8dc6df21db3042284a6f4416b06a29",
+        "ggufMetadataSha256": "56a4d6e33a44e46615304ca8d81e895a17f70f85269378ad3ae4376402c7816f",
+        "corpusSha256": "95a1e750c0a60263b580382062e6e0baef9c0391b7051f68f2fdb44c439d2219",
+        "driverSha256": "4f53804523d10ea4fc59c1840aa970150adff5ecc6798222ad9cac7bcf07751c",
+        "nativeExecutableSha256": "8cced2142edc3a8cb58eb4eece3fc482fb5fc376c5eb89290a5400b53cfdf135",
+        "tokenizersVersion": "0.22.1",
+        "tokenizersExtensionSha256": {
+          "tokenizers.abi3.so": "7d83214f76404cfb8f51cd23a22cc06fcb276d73769dfa88428a8890b3029b4a"
+        },
+        "pythonVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+        "pythonPrefix": "/Users/mac/.codex/skill-envs/p2-tokenizer",
+        "pythonBasePrefix": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none",
+        "nativeInfo": {
+          "vocabSize": 128256,
+          "bosId": 128000,
+          "eosId": 128009,
+          "addBos": true,
+          "addEos": false,
+          "libraryVersion": "0.7.0-dev"
+        },
+        "modelFileStateBefore": {
+          "inode": 293803,
+          "size": 4920738944,
+          "mtimeNs": 1794231312516260000
+        },
+        "nativeDecodeMethod": "uncleaned-token-to-piece-lstrip-0-special-true",
+        "losslessStreams": {
+          "codec": "gzip",
+          "nativeLogicalSha256": "502d1c80bd0c65c69b2ace02b059ed199ba5c560d4dd69ef41a823234c74bd8c",
+          "nativeLogicalBytes": 9657,
+          "independentLogicalSha256": "1a905da942a65a4d365d13dbdb49185ab159a0c5d642f7e4eb57dec01a69d75c",
+          "independentLogicalBytes": 4048
+        },
+        "modelFileStateAfter": {
+          "inode": 293803,
+          "size": 4920738944,
+          "mtimeNs": 1794231312516260000
+        },
+        "wallSeconds": 0.7841507950797677,
+        "pythonCpuSeconds": 0.06011199999999994,
+        "childCpuSeconds": 0.64543,
+        "status": "PASS"
+      }
+    },
+    "selection": {
+      "status": "PASS",
+      "process": {
+        "pid": 80296,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 51.14367948891595,
+        "sampledFamilyPeakRssBytes": 1291837440,
+        "sampledFamilyCpuSeconds": 45.83,
+        "samples": 273,
+        "remainingAfterParent": [],
+        "stdoutSha256": "f404f6df8fde33406de02162309bcd64bc3d86dbfc6a624edbee8a988c105b99",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "complete/qwen": {
+      "status": "PASS",
+      "plannedRows": 8581,
+      "process": {
+        "pid": 80661,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 479.02393166697584,
+        "sampledFamilyPeakRssBytes": 266526720,
+        "sampledFamilyCpuSeconds": 450.98,
+        "samples": 2976,
+        "remainingAfterParent": [],
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      },
+      "summary": {
+        "schema": "aijade.p2a.token-capacity.worker.v1",
+        "model": "qwen2.5-coder:7b-instruct",
+        "rows": 8581,
+        "counts": {
+          "PASS": 8581
+        },
+        "newCompletionCalls": 0,
+        "modelBlobSha256": "60e05f2100071479f596b964f89f510f057ce397ea22f2833a0cfe029bfc2463",
+        "ggufMetadataSha256": "d14130bc1f61980da9888547db50af128ed4ac555c13f604218442ac0bb4a3c6",
+        "corpusSha256": "d3c19efe697070e30fef1142acb3f2b03826b82abe7a2671ca468945db63f766",
+        "driverSha256": "4f53804523d10ea4fc59c1840aa970150adff5ecc6798222ad9cac7bcf07751c",
+        "nativeExecutableSha256": "8cced2142edc3a8cb58eb4eece3fc482fb5fc376c5eb89290a5400b53cfdf135",
+        "tokenizersVersion": "0.22.1",
+        "tokenizersExtensionSha256": {
+          "tokenizers.abi3.so": "7d83214f76404cfb8f51cd23a22cc06fcb276d73769dfa88428a8890b3029b4a"
+        },
+        "pythonVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+        "pythonPrefix": "/Users/mac/.codex/skill-envs/p2-tokenizer",
+        "pythonBasePrefix": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none",
+        "nativeInfo": {
+          "vocabSize": 152064,
+          "bosId": 151643,
+          "eosId": 151645,
+          "addBos": false,
+          "addEos": false,
+          "libraryVersion": "0.7.0-dev"
+        },
+        "modelFileStateBefore": {
+          "inode": 257208,
+          "size": 4683074048,
+          "mtimeNs": 1788816598518140500
+        },
+        "nativeDecodeMethod": "uncleaned-token-to-piece-lstrip-0-special-true",
+        "losslessStreams": {
+          "codec": "gzip",
+          "nativeLogicalSha256": "bf8e6792f0e30224de0d2a4f7188beae5bf58e571591c6ff1cc3ea6f74223de8",
+          "nativeLogicalBytes": 405087089,
+          "independentLogicalSha256": "d0eaa882aa141f97fe3ff7b4b7647e8c514b565f675b01424d022ae15b85506a",
+          "independentLogicalBytes": 211902296
+        },
+        "modelFileStateAfter": {
+          "inode": 257208,
+          "size": 4683074048,
+          "mtimeNs": 1788816598518140500
+        },
+        "wallSeconds": 476.5431152021047,
+        "pythonCpuSeconds": 224.494218,
+        "childCpuSeconds": 224.89899499999999,
+        "status": "PASS"
+      }
+    },
+    "complete/llama": {
+      "status": "PASS",
+      "plannedRows": 8581,
+      "process": {
+        "pid": 84137,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 245.0983096200507,
+        "sampledFamilyPeakRssBytes": 299896832,
+        "sampledFamilyCpuSeconds": 240.34,
+        "samples": 1682,
+        "remainingAfterParent": [],
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      },
+      "summary": {
+        "schema": "aijade.p2a.token-capacity.worker.v1",
+        "model": "llama3.1:8b",
+        "rows": 8581,
+        "counts": {
+          "PASS": 8581
+        },
+        "newCompletionCalls": 0,
+        "modelBlobSha256": "667b0c1932bc6ffc593ed1d03f895bf2dc8dc6df21db3042284a6f4416b06a29",
+        "ggufMetadataSha256": "56a4d6e33a44e46615304ca8d81e895a17f70f85269378ad3ae4376402c7816f",
+        "corpusSha256": "837ee079d2b4da7ef4c9002bab060cdff35883501be3816a1428b1aef88e0b5a",
+        "driverSha256": "4f53804523d10ea4fc59c1840aa970150adff5ecc6798222ad9cac7bcf07751c",
+        "nativeExecutableSha256": "8cced2142edc3a8cb58eb4eece3fc482fb5fc376c5eb89290a5400b53cfdf135",
+        "tokenizersVersion": "0.22.1",
+        "tokenizersExtensionSha256": {
+          "tokenizers.abi3.so": "7d83214f76404cfb8f51cd23a22cc06fcb276d73769dfa88428a8890b3029b4a"
+        },
+        "pythonVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+        "pythonPrefix": "/Users/mac/.codex/skill-envs/p2-tokenizer",
+        "pythonBasePrefix": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none",
+        "nativeInfo": {
+          "vocabSize": 128256,
+          "bosId": 128000,
+          "eosId": 128009,
+          "addBos": true,
+          "addEos": false,
+          "libraryVersion": "0.7.0-dev"
+        },
+        "modelFileStateBefore": {
+          "inode": 293803,
+          "size": 4920738944,
+          "mtimeNs": 1794231312516260000
+        },
+        "nativeDecodeMethod": "uncleaned-token-to-piece-lstrip-0-special-true",
+        "losslessStreams": {
+          "codec": "gzip",
+          "nativeLogicalSha256": "db1937c7a6c1e9ae65f59a18e406a2b595cf9692f183cbc7337f5f2d9faf6a1d",
+          "nativeLogicalBytes": 401679801,
+          "independentLogicalSha256": "e6be15ec161e07a0c59536a7672dfdb11278ea2464ff34e1e78747c2ad0284c8",
+          "independentLogicalBytes": 209044192
+        },
+        "modelFileStateAfter": {
+          "inode": 293803,
+          "size": 4920738944,
+          "mtimeNs": 1794231312516260000
+        },
+        "wallSeconds": 243.3785595120862,
+        "pythonCpuSeconds": 169.758249,
+        "childCpuSeconds": 69.671307,
+        "status": "PASS"
+      }
+    },
+    "policy-probe/compact4k/qwen": {
+      "status": "PASS",
+      "process": {
+        "pid": 85875,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 40.79013065388426,
+        "sampledFamilyPeakRssBytes": 1408913408,
+        "sampledFamilyCpuSeconds": 39.35,
+        "samples": 279,
+        "remainingAfterParent": [],
+        "stdoutSha256": "c9f0f3c7400fa496556c57653b973a2645af522e77f8ae0f50489318f4754d6a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "policy-probe/compact4k/llama": {
+      "status": "PASS",
+      "process": {
+        "pid": 86215,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 43.03170036384836,
+        "sampledFamilyPeakRssBytes": 1434415104,
+        "sampledFamilyCpuSeconds": 41.769999999999996,
+        "samples": 294,
+        "remainingAfterParent": [],
+        "stdoutSha256": "9c9a40f3532d2bbaa31dba1b3acd12ffc00d95e498cd0961245035c0d41e2688",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "mock/compact4k": {
+      "status": "PASS",
+      "process": {
+        "pid": 86568,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 43.769319378072396,
+        "sampledFamilyPeakRssBytes": 1844006912,
+        "sampledFamilyCpuSeconds": 50.46,
+        "samples": 291,
+        "remainingAfterParent": [],
+        "stdoutSha256": "80064a42e6d5db61854c150262aef1d22401b733c34ff40db4a3bf506390d9d1",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "policy-probe/compact8k/qwen": {
+      "status": "PASS",
+      "process": {
+        "pid": 86889,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 51.52394618582912,
+        "sampledFamilyPeakRssBytes": 1402105856,
+        "sampledFamilyCpuSeconds": 50.04,
+        "samples": 352,
+        "remainingAfterParent": [],
+        "stdoutSha256": "1f3d3bedd7b5bcec4f3523eb45ab723a7b735828c2f11e95f853dfcb353eb3bf",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "policy-probe/compact8k/llama": {
+      "status": "PASS",
+      "process": {
+        "pid": 87311,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 55.61641313601285,
+        "sampledFamilyPeakRssBytes": 1433604096,
+        "sampledFamilyCpuSeconds": 53.4,
+        "samples": 379,
+        "remainingAfterParent": [],
+        "stdoutSha256": "4b262db9d88fb841806b5182f256d1cee5f24903f84b7688aad7a5c1067f28cd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    },
+    "mock/compact8k": {
+      "status": "PASS",
+      "process": {
+        "pid": 87762,
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 41.73689330695197,
+        "sampledFamilyPeakRssBytes": 1864429568,
+        "sampledFamilyCpuSeconds": 47.89,
+        "samples": 285,
+        "remainingAfterParent": [],
+        "stdoutSha256": "6b2035a1d8271567a3ea1d8b9d7081d7680d9d3af454dbf3bfb3cc1554f82fa8",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "environment": {
+          "PATH": "/usr/bin:/bin:/usr/local/bin",
+          "LC_ALL": "C",
+          "TZ": "UTC",
+          "TOKENIZERS_PARALLELISM": "false"
+        },
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "physicalFileBytes": 536870912
+        }
+      }
+    }
+  },
+  "newModelCompletionCalls": 0
+}

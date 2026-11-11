@@ -1,0 +1,35 @@
+{
+  "schema": "aijade.p2a.bounded-input.mock-control.v1",
+  "status": "PASS",
+  "steps": 48,
+  "executionsPassed": 48,
+  "replayedSteps": 32,
+  "completeDecisionEqualityWithoutDurations": true,
+  "negativeChecks": [
+    {
+      "id": "resume-other-policy",
+      "exitCode": 1,
+      "outputCreated": false
+    },
+    {
+      "id": "invalid-index",
+      "exitCode": 1,
+      "outputCreated": false
+    },
+    {
+      "id": "wrong-bank",
+      "exitCode": 1,
+      "outputCreated": false
+    },
+    {
+      "id": "changed-counter",
+      "exitCode": 1,
+      "outputCreated": false
+    }
+  ],
+  "policySha256": "9896ecf5a9dce17730913d88dd4520f1cb013c6478630699b1e6db9860bd308e",
+  "pCorrect": 1,
+  "modelCompletionCalls": 0,
+  "externalTokenCounterCalls": 0,
+  "scope": "Normal CLI simulation and resume control; no model reliability observations."
+}

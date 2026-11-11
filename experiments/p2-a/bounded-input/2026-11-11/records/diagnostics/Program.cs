@@ -1,0 +1,1 @@
+System.Console.WriteLine(System.GC.GetGCMemoryInfo().TotalAvailableMemoryBytes); System.Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(System.GC.GetConfigurationVariables()));
