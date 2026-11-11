@@ -66,7 +66,24 @@ public sealed class PromotionService(NpgsqlDataSource db, TimeProvider? time = n
         ["adversarialEval"] = p.AdversarialEval?.Passed,
     };
 
-    public async Task<PromotionResult> ProcessAsync(PromotionJob job, CancellationToken ct = default)
+    public Task<PromotionResult> ProcessAsync(PromotionJob job, CancellationToken ct = default) =>
+        ProcessCoreAsync(job, null, null, ct);
+
+    /// <summary>
+    /// Runs the same three gates and writes within the caller's transaction. The caller owns commit/rollback. Used by the
+    /// staged Chapter 7 research adapter to join the existing promotion writes to its evidence state and outcome outbox;
+    /// the product's normal entry point above keeps its own transaction and does not register that adapter.
+    /// </summary>
+    public Task<PromotionResult> ProcessAsync(PromotionJob job, NpgsqlConnection connection, NpgsqlTransaction transaction, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(connection);
+        ArgumentNullException.ThrowIfNull(transaction);
+        if (transaction.Connection != connection)
+            throw new ArgumentException("Transaction does not belong to the supplied connection", nameof(transaction));
+        return ProcessCoreAsync(job, connection, transaction, ct);
+    }
+
+    private async Task<PromotionResult> ProcessCoreAsync(PromotionJob job, NpgsqlConnection? connection, NpgsqlTransaction? transaction, CancellationToken ct)
     {
         var anchor = ShadowParams.VerifyAnchor(job.Proposal);
         if (!anchor.Ok)
@@ -107,15 +124,24 @@ public sealed class PromotionService(NpgsqlDataSource db, TimeProvider? time = n
             ["gates"] = gates,
             ["pgc"] = pgc,
         };
+        if (connection is not null)
+            return await WriteAsync(job, specId, reportId, spec, gates, pgc, connection, transaction!, ct).ConfigureAwait(false);
         await using var conn = await db.OpenConnectionAsync(ct).ConfigureAwait(false);
         await using var tx = await conn.BeginTransactionAsync(ct).ConfigureAwait(false);
+        var result = await WriteAsync(job, specId, reportId, spec, gates, pgc, conn, tx, ct).ConfigureAwait(false);
+        await tx.CommitAsync(ct).ConfigureAwait(false);
+        return result;
+    }
+
+    private async Task<PromotionResult> WriteAsync(PromotionJob job, string specId, string reportId, JsonObject spec, JsonObject gates, JsonObject pgc,
+        NpgsqlConnection conn, NpgsqlTransaction tx, CancellationToken ct)
+    {
         var now = clock.GetUtcNow();
         await Sql.ExecAsync(conn, tx, "INSERT INTO evolution_specs (id, name, spec, created_at) VALUES ($1,$2,$3,$4)", ct,
             Sql.Text(specId), Sql.Text($"shadow-promotion:{job.ProposalId}"), Sql.Jsonb(spec), Sql.Time(now)).ConfigureAwait(false);
         await Sql.ExecAsync(conn, tx, "INSERT INTO eval_reports (id, name, metric, result, created_at) VALUES ($1,$2,$3,$4,$5)", ct,
             Sql.Text(reportId), Sql.Text($"shadow-eval:{job.ProposalId}"), Sql.Jsonb(new JsonObject { ["gates"] = gates.DeepClone(), ["pgc"] = pgc.DeepClone() }),
             Sql.Jsonb(new JsonObject { ["promoted"] = true, ["evolutionSpecId"] = specId, ["evalReportId"] = reportId }), Sql.Time(now)).ConfigureAwait(false);
-        await tx.CommitAsync(ct).ConfigureAwait(false);
         return new PromotionResult(true, "promoted", "promoted", specId, reportId);
     }
 }
