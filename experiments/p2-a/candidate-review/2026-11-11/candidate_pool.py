@@ -275,7 +275,7 @@ def build(pack, recovery, jint, nsw, out):
     with (out / 'task-review.csv').open('w', newline='', encoding='utf-8-sig') as stream:
         fields = ['sourceTaskId', 'dataset', 'entryPoint', 'staticClass', 'disposition', 'proposedCandidateId',
                   'releasedCases', 'retainedCases', 'excludedCases', 'focusedCaseSemantics', 'explanation', 'authorDecision']
-        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction='ignore')
+        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction='ignore', lineterminator='\n')
         writer.writeheader()
         writer.writerows(decisions)
     lines = [
