@@ -32,6 +32,13 @@ continues into state/write-back/reuse. Ten known C2 cases are retained with the
 failed initialization attempt and a semantic counterexample. This supplies no
 C1/C2 effect, held-out result or product automatic-learning claim.
 
+A later [paired development comparator](experiments/ch7/paired-development-2026-11-12/README.md)
+qualifies the strong module-local baseline and fixed scoring on the same known
+cases. C1 preserves admission, execution, promotion gates, idempotency and
+revocation; C2 adds the cross-record joins and shared transaction. All twenty
+case/arm records, fixed denominators and both audit/regression corrections are
+retained. These are designed development contrasts, without held-out inference.
+
 ## Runtime composition
 
 The [architecture guide](docs/ARCHITECTURE.md) records the checked DeepSeek Harness, superagent, Comma and companion-plugin

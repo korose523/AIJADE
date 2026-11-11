@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "rejectedControls": 7,
+  "results": [
+    {
+      "control": "missing-arm",
+      "rejected": true,
+      "reason": "missing/reordered arm or case"
+    },
+    {
+      "control": "route-code",
+      "rejected": true,
+      "reason": "route/code binding"
+    },
+    {
+      "control": "unequal-inputs",
+      "rejected": true,
+      "reason": "unequal actual memory inputs"
+    },
+    {
+      "control": "database-continuity",
+      "rejected": true,
+      "reason": "database continuity changed"
+    },
+    {
+      "control": "render-seal",
+      "rejected": true,
+      "reason": "renderer seal"
+    },
+    {
+      "control": "hidden-partial-promotion",
+      "rejected": true,
+      "reason": "persisted raw rows"
+    },
+    {
+      "control": "changed-denominator",
+      "rejected": true,
+      "reason": "archived score/denominator differs from raw reconstruction"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "aijade.engineering.regression-diagnostic.v1",
+  "sourceCommit": "82f223b1bc7f5de6585d9416049895823bce383a",
+  "firstLocalDefaultRun": {"failed": 1, "passed": 654, "skipped": 22, "log": "full-tests.log"},
+  "failure": "ProactiveDeliveryTests due-reminder ok case: cancellation while reading/storing a platform-delivery observation",
+  "rootCauseEstablished": false,
+  "observations": ["A transient advisory-lock wait was observed while other default tests were live; attribution to the failed case was not established", "A later read-only database snapshot showed no blocked test backend", "The same proactive-delivery class passed all five isolated checks without source or timeout changes", "Default GitHub CI at the same source passed"],
+  "isolatedRun": {"passed": 5, "failed": 0, "log": "proactive-isolated.log"},
+  "repeat": "One unchanged-default local regression repeat; no build, no timeout relaxation, no renderer or model experiment started",
+  "scientificInterpretation": "Engineering diagnostic only; no hardware fault, research effect or measured-case exclusion is inferred"
+}

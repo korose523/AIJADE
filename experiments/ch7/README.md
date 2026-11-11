@@ -73,5 +73,43 @@ and a fresh complete ten-case run. Its [acceptance record](retrieval-led-2026111
 pins all 65 public files, including the manifest. The raw audit reconstructs
 chronology, database continuity and both applied-parameter hash conventions.
 S1 still admits a semantically wrong allowed act; round-2 reuse executes only the
-skill, without another render or generated answer. C1, comparative scoring and
-a newly frozen held-out batch remain to be implemented.
+skill, without another render or generated answer. The later
+[paired known-case comparator](paired-development-2026-11-12/README.md) now
+qualifies C1 and fixed scoring. A genuinely new held-out batch and its formal
+protocol/count approval remain open.
+
+## Strong local baseline and paired development scoring
+
+The [protocol/layout/scoring freeze](../plans/2026-11-12-ch7-paired-development-and-scoring.md)
+precedes implementation. C1 preserves admission, execution, all three promotion
+gates, idempotency and current revocation; C2 adds cross-module joins and the
+shared transaction. Both arms actually retrieve/execute on twenty retained
+original databases and share the same ten later-rendered intents/receipt events.
+The five C1-first/five C2-first pairs remain known development cases.
+
+```mermaid
+flowchart TD
+    common["Same cues, program/tests and actual retrieval/execution"] --> render["Ten shared Godot intents; close and seal"]
+    render --> admission["Same real HTTP receipt/proposal admission"]
+    admission --> c1["C1: common local checks and three promotion gates"]
+    admission --> c2["C2: same checks plus execution/receipt joins"]
+    c1 --> own["Service-owned spec/report commit"]
+    own --> local["Then local authority/outcome/outbox transaction"]
+    c2 --> joined["One spec/report + authority/outcome/outbox transaction"]
+    local --> delivery["Observed memory delivery and guarded sandbox reuse"]
+    joined --> delivery
+    delivery --> audit["Score durable rows and actual reuse in fixed windows"]
+```
+
+There are seven scheduled invalid-promotion and eight integrity-invalid reuse
+windows per arm. I3's initial legal actions and I7's pre-revocation promotion are
+allowed; absent downstream memory does not shrink a denominator. I8's transient
+service success is separate from durable rows. S1 remains a semantic limitation;
+round-2 semantic act correctness is **NOT_MEASURED**, since it renders no act.
+
+The [new acceptance record](comparison-20261112.json) pins the complete packet,
+including the first local regression timeout and the post-measurement diagnostic
+DTO conversion correction. Both failures and their chronology are retained;
+primary data, binaries and frozen scores are unchanged, with no measurement rerun.
+The finite designed counts qualify mechanisms/scoring, not population effects,
+statistical superiority, independent human judgment or formal hardware approval.

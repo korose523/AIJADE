@@ -42,3 +42,9 @@ Later update (same date): the separately frozen
 actual retrieval-led execution/rendering on retained case databases. That new
 qualification does not change this chronology finding or its original replay
 records. C1, comparative scoring and the new held-out batch remain open.
+
+Further same-date update: the [paired development packet](paired-development-2026-11-12/README.md)
+qualifies a strong C1 baseline and fixed scoring on those same known cases,
+with actual paired prefixes and retained case databases. Its later audit-only
+DTO conversion correction is disclosed separately. This does not revise any
+earlier chronology or supply the still-unrun held-out comparison.
