@@ -19,7 +19,7 @@ using Npgsql;
 namespace Aijade.Tests;
 
 /// <summary>Chapter 7 development qualification. Opt-in renderer/database measurement; never a held-out comparison.</summary>
-public class ResearchLoopQualificationTests
+public partial class ResearchLoopQualificationTests
 {
     private static readonly string[] CaseIds = ["H", "I1", "I2", "I3", "I4", "I5", "I6", "I7", "I8", "S1"];
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
@@ -136,7 +136,6 @@ public class ResearchLoopQualificationTests
         await using var host = await ServerTestHost.StartAsync(worker: false, services: services =>
             services.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => gateway));
         await ResearchLoopAdapter.InitializeAsync(host);
-        var adapter = new ResearchLoopAdapter(host);
         var initial = ResearchLoopAdapter.Perception("initial-" + id, registry.SessionId, "ch7_initial " + id + " requested_act comfort");
         var (initialStatus, initialResponse) = await host.PostAsync("/api/v1/v9/perception", initial);
         Assert.Equal(201, initialStatus);
@@ -144,6 +143,16 @@ public class ResearchLoopQualificationTests
         var (initialReadStatus, initialRead) = await host.SendAsync(HttpMethod.Get, initialPath);
         Assert.Equal(200, initialReadStatus);
         Assert.Single(initialRead!["items"]!.AsArray());
+        return await RunCaseOnHostAsync(id, source, import, registry, host, gateway,
+            new JsonObject { ["request"] = initial, ["status"] = initialStatus, ["response"] = initialResponse },
+            new JsonObject { ["path"] = initialPath, ["status"] = initialReadStatus, ["response"] = initialRead }, ct);
+    }
+
+    private static async Task<JsonObject> RunCaseOnHostAsync(string id, JsonObject source, ReceiptImportPlan import, IntentRegistry registry,
+        ServerTestHost host, NoGateway gateway, JsonObject initialWrite, JsonObject initialRead, CancellationToken ct, Action<string>? phase = null)
+    {
+        var adapter = new ResearchLoopAdapter(host);
+        phase?.Invoke("import.begin");
         var importPosts = new JsonArray();
         await RenderReceiptImporter.ImportAsync(import, async e =>
         {
@@ -151,6 +160,7 @@ public class ResearchLoopQualificationTests
             importPosts.Add(new JsonObject { ["request"] = e.DeepClone(), ["status"] = status, ["response"] = response });
             return status;
         });
+        phase?.Invoke("import.end");
         var ownIntent = source["intentId"]!.GetValue<string>();
         var receipt = import.Receipts.Single(r => r.IntentId == ownIntent);
         if (id == "I1")
@@ -175,6 +185,7 @@ public class ResearchLoopQualificationTests
             ["candidate_params"] = parameters.DeepClone(), ["confidence"] = 0.9,
         };
         var envelope = Envelope("evt-" + proposalId, registry.SessionId, payload);
+        phase?.Invoke("admission.begin");
         var (admissionStatus, admissionBody) = await host.PostAsync("/api/v1/v9/events", envelope);
         string? admissionCoreReason = null;
         long? diagnosticEventCount = null;
@@ -190,6 +201,7 @@ public class ResearchLoopQualificationTests
             }
             diagnosticEventCount = await host.CountAsync("SELECT count(*) FROM events WHERE event_id=$1", "evt-" + proposalId);
         }
+        phase?.Invoke("admission.end");
         if (id == "I8")
             await host.ExecAsync("""
                 CREATE FUNCTION reject_authority() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN
@@ -204,6 +216,7 @@ public class ResearchLoopQualificationTests
         ResearchLoopAdapter.CommitResult? commit = null;
         ResearchLoopAdapter.CommitResult? duplicate = null;
         string? databaseError = null;
+        phase?.Invoke("commit.begin");
         try
         {
             commit = await adapter.CommitAsync(outcomeId, evidence, proposal, "evt-" + proposalId, ct);
@@ -214,17 +227,22 @@ public class ResearchLoopQualificationTests
         {
             databaseError = ex.SqlState;
         }
+        phase?.Invoke("commit.end");
         var beforeDelivery = await adapter.SnapshotAsync();
+        phase?.Invoke("delivery.begin");
         var delivery = await adapter.DeliverAsync(outcomeId);
         JsonObject? duplicateDelivery = null;
         if (id == "I3")
             duplicateDelivery = await adapter.DeliverAsync(outcomeId);
         if (id == "I7")
             await adapter.RevokeAsync(evidence.SkillId, ct);
+        phase?.Invoke("delivery.end");
+        phase?.Invoke("round2.begin");
         var round2 = await adapter.Round2Async(outcomeId, evidence.SkillId, code, task, ct);
         JsonObject? duplicateReuse = null;
         if (id == "I3")
             duplicateReuse = await adapter.Round2Async(outcomeId, evidence.SkillId, code, task, ct);
+        phase?.Invoke("round2.end");
         var final = await adapter.SnapshotAsync();
         var expectedPromoted = id is "H" or "I3" or "I7" or "S1";
         var expectedReuse = id is "H" or "I3" or "S1";
@@ -250,8 +268,7 @@ public class ResearchLoopQualificationTests
             ["caseId"] = id, ["batch"] = "development_qualification_only", ["condition"] = "C2", ["qualified"] = qualified,
             ["gatewayAttempts"] = gateway.Attempts,
             ["expected"] = new JsonObject { ["promotions"] = expectedPromoted ? 1 : 0, ["state"] = expectedState, ["round2Execution"] = expectedReuse },
-            ["initialWrite"] = new JsonObject { ["request"] = initial, ["status"] = initialStatus, ["response"] = initialResponse },
-            ["initialRead"] = new JsonObject { ["path"] = initialPath, ["status"] = initialReadStatus, ["response"] = initialRead },
+            ["initialWrite"] = initialWrite.DeepClone(), ["initialRead"] = initialRead.DeepClone(),
             ["prepared"] = source.DeepClone(), ["importPosts"] = importPosts, ["selectedReceipt"] = JsonSerializer.SerializeToNode(receipt, Json),
             ["evidence"] = JsonSerializer.SerializeToNode(evidence, Json), ["proposal"] = proposal.ToJson(),
             ["admission"] = new JsonObject { ["request"] = envelope, ["status"] = admissionStatus, ["response"] = admissionBody,
