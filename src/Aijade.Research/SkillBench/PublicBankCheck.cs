@@ -16,6 +16,21 @@ public sealed record PublicTaskCheck(
 
 public static class PublicBankCheck
 {
+    public static IReadOnlyDictionary<string, string> BuildPrompts(PublicBenchBank bank, string taskId)
+    {
+        ArgumentNullException.ThrowIfNull(bank);
+        var task = bank.ReadTask(taskId);
+        var reference = bank.ReadReference(taskId);
+        return new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["generation"] = Backends.BuildGeneratePrompt(task, new GenerateContext(0)),
+            ["verifierA"] = Backends.BuildVerifyPrompt(task, reference),
+            ["verifierB"] = Backends.BuildVerifyPromptB(task, reference),
+            ["verifierAWithStub"] = Backends.BuildVerifyPrompt(task, "function solve() {}"),
+            ["verifierBWithStub"] = Backends.BuildVerifyPromptB(task, "function solve() {}"),
+        };
+    }
+
     public static PublicTaskCheck RunReference(PublicBenchBank bank, string taskId)
     {
         ArgumentNullException.ThrowIfNull(bank);

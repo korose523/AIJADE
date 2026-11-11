@@ -1,0 +1,11 @@
+# P2-A exact tokenizer and chat-capacity preparation
+
+Plan aaf5a3c precedes this implementation. The fixed bank is the 422-task, 115,185-case proposal archived at 2ea5e01. Its actual C# builders supply 2,110 prompts, including reference and empty-candidate controls. No model inference context, completion or training is created here.
+
+Use Python 3.12 with tokenizers 0.22.1, the repository-pinned .NET SDK, Go 1.26.0 for the exact local Go templates, and the installed Ollama 0.40.6 libllama. The source tag pins llama.cpp b11669. The installed Ollama build reports that revision with vcs.modified=true; source equivalence is not proved. Record actual binary/library hashes, the effective metadata, and finite cross-implementation checks. These offline counts do not establish live prefill or device qualification.
+
+The native C helper loads only the GGUF vocabulary and never creates an inference context. Its framed little-endian output stores token IDs and decoded text with add_special false/true, always parsing literal special-token strings. The independent engine constructs BPE directly from the same local vocabulary, merges and pre-tokenizer using a separate implementation. Vocabulary files/weights are not redistributed. The effective local templates are evaluated by Go's text/template and compared with a second explicit formatter for these two frozen single-user request forms.
+
+`prepare_inputs.py` exports the complete prompt corpus, verifies all raw byte hashes against the preceding replay and creates the model-specific request corpora. `run_stage.py` runs the 13 fixed tokenizer controls for both models, followed by the complete 2,110-prompt passes only if the controls agree. Freeze the source before execution. Reuse a completed, identity-matched control pass with `--controls-from`; never combine failed full attempts.
+
+Per-model process-family limits are 1,200 CPU seconds, 1,800 wall seconds, 2 GiB sampled RSS and 512 MiB per output file. The controller retains exit/stop state and missing prefixes. Raw and chat-formatted prompts, both token-ID streams, roundtrip checks, identities and budget scenarios are research evidence. Context scenarios of 4,096/8,192/16,384/32,768 and output reserves 256/1,024/2,048/4,096 are prospective ledgers. They do not silently truncate prompts or fix the primary design.

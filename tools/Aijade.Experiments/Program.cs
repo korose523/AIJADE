@@ -32,14 +32,27 @@ using Aijade.Research.SkillBench;
 
 string? Arg(string name) => args.SkipWhile(a => a != name).Skip(1).FirstOrDefault();
 var command = args.FirstOrDefault() ?? "";
-var root = command == "p2-bank-check" ? "" : FindRoot();
+var root = command is "p2-bank-check" or "p2-bank-prompts" ? "" : FindRoot();
+var webJson = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 switch (command)
 {
     case "p2-bank-check":
         var bank = PublicBenchBank.Load(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
         var checkedTask = PublicBankCheck.RunReference(bank, Arg("--task") ?? throw new ArgumentException("--task is required"));
-        Console.WriteLine(JsonSerializer.Serialize(checkedTask, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+        Console.WriteLine(JsonSerializer.Serialize(checkedTask, webJson));
+        return 0;
+    case "p2-bank-prompts":
+        var promptBank = PublicBenchBank.Load(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
+        var selectedTask = Arg("--task");
+        var taskIds = selectedTask is null ? promptBank.Entries.Select(entry => entry.TaskId) : [selectedTask];
+        foreach (var taskId in taskIds)
+            Console.WriteLine(JsonSerializer.Serialize(new
+            {
+                taskId,
+                manifestSha256 = promptBank.ManifestSha256,
+                prompts = PublicBankCheck.BuildPrompts(promptBank, taskId),
+            }, webJson));
         return 0;
     case "sandbox-isolation":
         return SandboxIsolation(Path.GetFullPath(Arg("--run") ?? Path.Combine(root, "experiments", "rq-c", "rq-c-s42-ollama-t30-r5")));
