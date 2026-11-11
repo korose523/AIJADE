@@ -32,7 +32,7 @@ using Aijade.Research.SkillBench;
 
 string? Arg(string name) => args.SkipWhile(a => a != name).Skip(1).FirstOrDefault();
 var command = args.FirstOrDefault() ?? "";
-var root = FindRoot();
+var root = command == "p2-bank-check" ? "" : FindRoot();
 
 switch (command)
 {
