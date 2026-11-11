@@ -85,6 +85,9 @@ public sealed record RqcCliConfig
     /// </summary>
     public string? ResumeFrom { get; init; }
 
+    public string? PublicBankPath { get; init; }
+    public string? PublicBankManifestSha256 { get; init; }
+
     /// <summary>
     /// Negative control: the generator never sees the feedback (each task's first generation is returned for every later
     /// attempt), so neither factor has a causal path to the outcome and the degeneracy guard must call the run a
@@ -92,7 +95,18 @@ public sealed record RqcCliConfig
     /// </summary>
     public bool Inert { get; init; }
 
-    public string RunId => $"rq-c-s{Seed}-{WireName.Of(Backend)}-t{Trials}-r{Rounds}" + (Temperature != 0 ? $"-T{JsFormat.Number(Temperature)}" : "") + (Inert ? "-INERT" : "");
+    public string RunId => $"rq-c-s{Seed}-{WireName.Of(Backend)}-t{Trials}-r{Rounds}" + (Temperature != 0 ? $"-T{JsFormat.Number(Temperature)}" : "") + (Inert ? "-INERT" : "")
+        + (PublicBankPath is null ? "" : $"-bank-{(PublicBankManifestSha256 ?? PublicBenchBank.FileSha256(PublicBankPath))[..12]}");
+
+    internal RqcCliConfig PinPublicBank()
+    {
+        if (PublicBankPath is null)
+            return this;
+        var digest = PublicBenchBank.FileSha256(PublicBankPath);
+        if (PublicBankManifestSha256 is not null && PublicBankManifestSha256 != digest)
+            throw new InvalidDataException("The public-bank manifest changed after configuration.");
+        return this with { PublicBankPath = Path.GetFullPath(PublicBankPath), PublicBankManifestSha256 = digest };
+    }
 
     /// <summary>Parse the CLI flags; unknown flags and missing values are errors.</summary>
     public static RqcCliConfig Parse(IReadOnlyList<string> argv)
@@ -128,6 +142,7 @@ public sealed record RqcCliConfig
                 "--verdict-fallback" => cfg with { VerdictFallback = true },
                 "--num-ctx" => cfg with { NumCtx = Int() },
                 "--verify-template" => cfg with { VerifyTemplate = Next() },
+                "--public-bank" => cfg with { PublicBankPath = Next() },
                 _ => throw new ArgumentException($"Unknown argument: {a}"),
             };
         }
@@ -153,7 +168,7 @@ public sealed record RqcCliConfig
             throw new ArgumentException("--temperature must be between 0 and 2");
         if (cfg.Temperature != 0 && cfg.Backend != RqcBackendKind.Ollama)
             throw new ArgumentException("--temperature applies to the ollama backend only");
-        return cfg;
+        return cfg.PinPublicBank();
     }
 
     internal JsonObject ConfigJson()
@@ -184,6 +199,11 @@ public sealed record RqcCliConfig
             c["numCtx"] = ctx;
         if (VerifyTemplate != "A")
             c["verifyTemplate"] = VerifyTemplate;
+        if (PublicBankPath is not null)
+        {
+            c["publicBankManifestSha256"] = PublicBankManifestSha256 ?? PublicBenchBank.FileSha256(PublicBankPath);
+            c["taskAllocation"] = "balanced-permutation-v1";
+        }
         return c;
     }
 
@@ -227,6 +247,7 @@ public static class RqcRunner
           --verdict-fallback     read the last "verdict: PASS|FAIL" of a verifier reply that does not begin with PASS or FAIL
           --num-ctx N            context window sent to Ollama (default: the server's)
           --verify-template A|B  verifier prompt (default A, the pre-registered one)
+          --public-bank FILE    public task manifest; use a balanced seeded task order
 
         """;
 
@@ -294,9 +315,37 @@ public static class RqcRunner
         ["durationMs"] = s.DurationMs,
     };
 
+    private static void ValidateResumeBank(RqcCliConfig cfg)
+    {
+        if (cfg.ResumeFrom is not { } source)
+            return;
+        var candidates = ReadRecord(source);
+        var trials = ReadRecord(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(source))!, "trials.jsonl"));
+        var fingerprint = cfg.Fingerprint();
+        foreach (var row in candidates.Concat(trials))
+        {
+            var digest = row["publicBankManifestSha256"]?.GetValue<string>();
+            if (cfg.PublicBankPath is not null || digest is not null)
+            {
+                if (digest != cfg.PublicBankManifestSha256 || row["runFingerprint"]?.GetValue<string>() != fingerprint)
+                    throw new InvalidDataException("The resume record has a different public bank or run fingerprint.");
+            }
+        }
+    }
+
     /// <summary>Run one experiment and write its artifacts; refuses to overwrite existing results unless asked.</summary>
     public static async Task<(string OutDir, JsonObject Summary)> RunAsync(RqcCliConfig cfg, HttpClient? http = null, TextWriter? log = null, string? gitHash = null, CancellationToken ct = default)
     {
+        cfg = cfg.PinPublicBank();
+        ValidateResumeBank(cfg);
+        var publicBank = cfg.PublicBankPath is null ? null : PublicBenchBank.Load(cfg.PublicBankPath, cfg.PublicBankManifestSha256);
+        IReadOnlyList<IReadOnlyList<BenchTask>>? allocatedTasks = null;
+        if (publicBank is not null)
+        {
+            var tasks = publicBank.Entries.Select(entry => publicBank.ReadTask(entry.TaskId)).ToArray();
+            allocatedTasks = TaskAllocation.Balanced(tasks, cfg.Trials, cfg.Tasks, cfg.Seed);
+        }
+        var runFingerprint = cfg.Fingerprint();
         var outDir = Path.GetFullPath(Path.Combine(cfg.Out, cfg.RunId));
         var existing = ArtifactNames.Where(n => new FileInfo(Path.Combine(outDir, n)) is { Exists: true, Length: > 0 }).ToList();
         if (existing.Count > 0 && !cfg.Overwrite)
@@ -310,7 +359,8 @@ public static class RqcRunner
         var client = http ?? ownedHttp;
         ILlmBackend backend = cfg.Backend == RqcBackendKind.Ollama
             ? new OllamaBackend(client!, cfg.Model!, cfg.OllamaBaseUrl, cfg.Temperature, cfg.SamplingSeed, TimeSpan.FromMilliseconds(cfg.TimeoutMs ?? 120_000), cfg.MaxReplyTokens, cfg.VerdictFallback, cfg.NumCtx, cfg.VerifyTemplate)
-            : new MockBackend(cfg.Seed, sandbox, cfg.PCorrect);
+            : new MockBackend(cfg.Seed, sandbox, cfg.PCorrect, referenceSolutions: publicBank?.Entries.ToDictionary(
+                entry => entry.TaskId, entry => publicBank.ReadReference(entry.TaskId), StringComparer.Ordinal));
         var liveOllama = backend as OllamaBackend;   // kept for the summary; the inert and resuming wrappers hide it
         var version = cfg.Backend == RqcBackendKind.Ollama ? await OllamaBackend.VersionAsync(client!, cfg.OllamaBaseUrl, ct).ConfigureAwait(false) : null;
         var digest = cfg.Backend == RqcBackendKind.Ollama && cfg.Model is { } model ? await OllamaBackend.DigestAsync(client!, cfg.OllamaBaseUrl, model, ct).ConfigureAwait(false) : null;
@@ -343,8 +393,14 @@ public static class RqcRunner
             }
             var generations = recorded.Where(c => c["reused"]?.GetValue<bool>() == false).Select(c => c["generation"]!.GetValue<string>()).ToList();
             var verdicts = recorded.Select((c, i) => (c, i)).Where(x => x.c["selfRationale"] is not null)
-                .Select(x => (logged[x.i]!.GetValue<bool>(), x.c["selfRationale"]!.GetValue<string>())).ToList();
-            backend = resuming = new ResumingBackend(backend, generations, verdicts);
+                .Select(x => (logged[x.i]?.GetValue<string>() switch
+                {
+                    "pass" => true,
+                    "fail" => false,
+                    _ => throw new InvalidDataException("A recorded self-verifier reply needs a pass/fail verdict."),
+                }, x.c["selfRationale"]!.GetValue<string>())).ToList();
+            backend = resuming = new ResumingBackend(backend, generations, verdicts,
+                advanceReplayBackend: publicBank is not null && cfg.Backend == RqcBackendKind.Mock);
             log?.WriteLine($"[resume] replaying {recorded.Count} steps ({generations.Count} generations, {verdicts.Count} verdicts) from {resumeFrom}");
         }
 
@@ -355,7 +411,13 @@ public static class RqcRunner
         {
             await Harness.RunAsync(new RunOptions(backend, cfg.Trials, cfg.Rounds, cfg.Seed, cfg.Tasks, sandbox, cfg.PruneThreshold, cfg.PruneMinCalls, () => 0, step =>
             {
-                var line = JsFormat.Stringify(StepJson(step));
+                var trial = StepJson(step);
+                if (publicBank is not null)
+                {
+                    trial["publicBankManifestSha256"] = publicBank.ManifestSha256;
+                    trial["runFingerprint"] = runFingerprint;
+                }
+                var line = JsFormat.Stringify(trial);
                 writer.Write(line + "\n");
                 if (recorded is not null && steps.Count < recorded.Count)
                 {
@@ -374,6 +436,11 @@ public static class RqcRunner
                     ["generation"] = step.Generation,
                     ["selfRationale"] = step.SelfRationale,
                 };
+                if (publicBank is not null)
+                {
+                    candidate["publicBankManifestSha256"] = publicBank.ManifestSha256;
+                    candidate["runFingerprint"] = runFingerprint;
+                }
                 if (step.SelfReply is not null)
                     candidate["selfReply"] = step.SelfReply;   // the whole verifier reply when the rationale is truncated
                 candidates?.Write(candidate.ToJsonString() + "\n");
@@ -386,7 +453,7 @@ public static class RqcRunner
                     var secs = clock.Elapsed.TotalSeconds;
                     log?.WriteLine($"[progress] {steps.Count} steps  {JsFormat.ToFixed(secs, 0)}s  {JsFormat.ToFixed(steps.Count / secs, 2)} steps/s");
                 }
-            }), ct).ConfigureAwait(false);
+            }) { TrialTasks = allocatedTasks }, ct).ConfigureAwait(false);
         }
 
         var analysis = RqcAnalysis.Analyze(steps, new RqcConfig(cfg.Seed, cfg.PruneThreshold, cfg.PruneMinCalls));
@@ -395,6 +462,24 @@ public static class RqcRunner
         if (mock)
             summary["simulationNote"] = "Mock backend: injected hallucination=0.30, miss=0.10. These validate the estimator, not the phenomenon. Do not cite as empirical.";
         summary["config"] = cfg.ConfigJson();
+        if (publicBank is not null && allocatedTasks is not null)
+        {
+            var exposure = publicBank.Entries.ToDictionary(entry => entry.TaskId, _ => 0, StringComparer.Ordinal);
+            foreach (var task in allocatedTasks.SelectMany(row => row))
+                exposure[task.Id]++;
+            summary["publicBank"] = new JsonObject
+            {
+                ["manifestSha256"] = publicBank.ManifestSha256,
+                ["authorReview"] = publicBank.AuthorReview,
+                ["poolTasks"] = publicBank.Entries.Count,
+                ["taskAllocation"] = "balanced-permutation-v1",
+                ["plannedSlotsPerConditionPerRound"] = (long)cfg.Trials * cfg.Tasks,
+                ["minimumPlannedExposure"] = exposure.Values.Min(),
+                ["maximumPlannedExposure"] = exposure.Values.Max(),
+                ["plannedExposurePerTask"] = new JsonObject(exposure.Select(pair =>
+                    new KeyValuePair<string, JsonNode?>(pair.Key, JsonValue.Create(pair.Value)))),
+            };
+        }
         summary["sampling"] = new JsonObject
         {
             ["mode"] = mock ? "simulation" : "live",
@@ -427,7 +512,7 @@ public static class RqcRunner
                      "chiSquareSelfVerification", "chiSquareExecutionLevel", "mcnemarEnvFeedback", "power", "powerReference" })
             summary[key] = analysis[key]?.DeepClone();
         summary["preregistrationDeviation"] = new JsonArray(Harness.ValidatePreregistration(new RunOptions(backend, cfg.Trials, cfg.Rounds, cfg.Seed, cfg.Tasks, sandbox,
-            cfg.PruneThreshold, cfg.PruneMinCalls)).Select(d => (JsonNode?)d)
+            cfg.PruneThreshold, cfg.PruneMinCalls) { TrialTasks = allocatedTasks }).Select(d => (JsonNode?)d)
             .Concat(cfg.Temperature != 0 ? [(JsonNode?)$"temperature: run={JsFormat.Number(cfg.Temperature)} preregistered=0"] : [])
             .Concat(cfg.Inert ? [(JsonNode?)"negative control: inert generator (feedback never reaches generate)"] : []).ToArray());
         if (resuming is not null)
@@ -437,7 +522,9 @@ public static class RqcRunner
                 ["replayedSteps"] = recorded!.Count,
                 ["replayedGenerations"] = resuming.ReplayedGenerations,
                 ["replayedVerifications"] = resuming.ReplayedVerifications,
-                ["note"] = "the run was interrupted by an infrastructure timeout; the recorded generations and self-verification replies of the interrupted run were replayed (and checked step by step) before the live backend took over",
+                ["note"] = publicBank is not null && mock
+                    ? "recorded simulation calls were checked while advancing the seeded backend; the remaining simulation continues from the same random state"
+                    : "the run was interrupted by an infrastructure timeout; the recorded generations and self-verification replies of the interrupted run were replayed (and checked step by step) before the live backend took over",
             };
             summary["preregistrationDeviation"]!.AsArray().Add($"resumed: steps 0–{recorded.Count - 1} replayed from the interrupted run after an infrastructure timeout");
         }

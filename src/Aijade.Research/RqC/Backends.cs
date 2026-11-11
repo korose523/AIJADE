@@ -27,7 +27,8 @@ public sealed record SelfVerifierVerdict(bool Pass, double Score, string Rationa
 /// recorded (candidates.jsonl, in call order), then hand over to the live backend. Every other part of the harness is
 /// deterministic, so the replayed prefix reproduces the interrupted run's state exactly; the runner checks that it does.
 /// </summary>
-public sealed class ResumingBackend(ILlmBackend live, IReadOnlyList<string> generations, IReadOnlyList<(bool Pass, string Rationale)> verdicts) : ILlmBackend
+public sealed class ResumingBackend(ILlmBackend live, IReadOnlyList<string> generations, IReadOnlyList<(bool Pass, string Rationale)> verdicts,
+    bool advanceReplayBackend = false) : ILlmBackend
 {
     private int nextGeneration;
     private int nextRationale;
@@ -40,17 +41,31 @@ public sealed class ResumingBackend(ILlmBackend live, IReadOnlyList<string> gene
 
     public bool Exhausted => nextGeneration >= generations.Count && nextRationale >= verdicts.Count;
 
-    public Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default) =>
-        nextGeneration < generations.Count ? Task.FromResult(generations[nextGeneration++]) : live.GenerateAsync(task, ctx, cancellationToken);
+    public async Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
+    {
+        if (nextGeneration >= generations.Count)
+            return await live.GenerateAsync(task, ctx, cancellationToken).ConfigureAwait(false);
+        var recorded = generations[nextGeneration++];
+        // A seeded simulation must consume the replayed draws before continuing its random stream.
+        if (advanceReplayBackend && await live.GenerateAsync(task, ctx, cancellationToken).ConfigureAwait(false) != recorded)
+            throw new InvalidDataException("The simulation generation differs from its recorded prefix.");
+        return recorded;
+    }
 
-    public Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default)
+    public async Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default)
     {
         if (nextRationale >= verdicts.Count)
-            return live.VerifyAsync(task, candidate, cancellationToken);
+            return await live.VerifyAsync(task, candidate, cancellationToken).ConfigureAwait(false);
         // the rationale is what the live backend kept (the Ollama reply cut to 280 characters), the verdict the one it logged;
         // the score is the Ollama backend's function of the verdict
         var (pass, rationale) = verdicts[nextRationale++];
-        return Task.FromResult(new SelfVerifierVerdict(pass, pass ? 0.8 : 0.2, rationale));
+        if (advanceReplayBackend)
+        {
+            var actual = await live.VerifyAsync(task, candidate, cancellationToken).ConfigureAwait(false);
+            if (actual.Pass != pass || actual.Rationale != rationale)
+                throw new InvalidDataException("The simulation verdict differs from its recorded prefix.");
+        }
+        return new SelfVerifierVerdict(pass, pass ? 0.8 : 0.2, rationale);
     }
 }
 
@@ -203,9 +218,11 @@ internal static class Text
 /// evidence is the null design. The self-verdict is sampled from the injected hallucination / miss rates around the true
 /// sandbox verdict, which is what lets the estimator's unbiasedness be tested.
 /// </summary>
-public sealed class MockBackend(uint seed, Sandbox sandbox, double pCorrect = 0.5, double hallucination = 0.3, double miss = 0.1, double pRetrySuccess = 0.7) : ILlmBackend
+public sealed class MockBackend(uint seed, Sandbox sandbox, double pCorrect = 0.5, double hallucination = 0.3, double miss = 0.1, double pRetrySuccess = 0.7,
+    IReadOnlyDictionary<string, string>? referenceSolutions = null) : ILlmBackend
 {
     private readonly Mulberry32 _rng = new(seed);
+    private readonly IReadOnlyDictionary<string, string> _references = referenceSolutions ?? Bench.ReferenceSolutions;
 
     public string Name => "mock";
 
@@ -214,9 +231,9 @@ public sealed class MockBackend(uint seed, Sandbox sandbox, double pCorrect = 0.
     public Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
     {
         if (ctx.Attempt > 0 && HasSignal(ctx) && _rng.Next() < pRetrySuccess)
-            return Task.FromResult(Backends.WrapCode(Bench.ReferenceSolutions[task.Id]));
+            return Task.FromResult(Backends.WrapCode(_references[task.Id]));
         var code = _rng.Next() < pCorrect
-            ? Bench.ReferenceSolutions[task.Id]
+            ? _references[task.Id]
             : Bench.WrongCandidates[(int)Math.Floor(_rng.Next() * Bench.WrongCandidates.Count)];
         return Task.FromResult(Backends.WrapCode(code));
     }

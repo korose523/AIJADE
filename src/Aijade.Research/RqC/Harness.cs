@@ -53,7 +53,10 @@ public sealed record HarnessStep(
 
 public sealed record RunOptions(
     ILlmBackend Backend, int Trials, int Rounds, uint Seed, int NTasks, Sandbox Sandbox, double? PruneThreshold = null, int? PruneMinCalls = null,
-    Func<double>? Now = null, Action<HarnessStep>? OnStep = null);
+    Func<double>? Now = null, Action<HarnessStep>? OnStep = null)
+{
+    public IReadOnlyList<IReadOnlyList<BenchTask>>? TrialTasks { get; init; }
+}
 
 /// <summary>
 /// Regenerations of a failed task, how many carried a signal, how many recovered, and how many recovered with code that differs
@@ -104,6 +107,8 @@ public static class Harness
         Check("pruneThreshold", o.PruneThreshold ?? Preregistration.PruneThreshold, Preregistration.PruneThreshold);
         Check("pruneMinCalls", o.PruneMinCalls ?? Preregistration.PruneMinCalls, Preregistration.PruneMinCalls);
         Check("seed", o.Seed, Preregistration.Seed);
+        if (o.TrialTasks is not null)
+            d.Add("taskAllocation: supplied trial tasks replace the archived per-trial sample");
         return d;
     }
 
@@ -124,7 +129,12 @@ public static class Harness
         var now = o.Now ?? (() => 0);
         var deviation = ValidatePreregistration(o);
 
-        var trialTasks = Enumerable.Range(0, o.Trials).Select(t => Bench.SampleTasks(o.NTasks, RqcAnalysis.DeriveSeed(o.Seed, BlockLabel, t))).ToList();
+        var trialTasks = o.TrialTasks is null
+            ? Enumerable.Range(0, o.Trials).Select(t => Bench.SampleTasks(o.NTasks, RqcAnalysis.DeriveSeed(o.Seed, BlockLabel, t))).ToList()
+            : o.TrialTasks.Select(row => (IReadOnlyList<BenchTask>)row.ToArray()).ToList();
+        if (o.TrialTasks is not null && (trialTasks.Count != o.Trials
+                || trialTasks.Any(row => row.Count != o.NTasks || row.Select(task => task.Id).Distinct(StringComparer.Ordinal).Count() != row.Count)))
+            throw new ArgumentException("The supplied task allocation must match the trial and slot counts.", nameof(o));
         var conditions = new List<ConditionResult>();
         foreach (var cond in Condition.All)
             conditions.Add(await RunConditionAsync(cond, o, pruneThreshold, pruneMinCalls, now, trialTasks, cancellationToken).ConfigureAwait(false));

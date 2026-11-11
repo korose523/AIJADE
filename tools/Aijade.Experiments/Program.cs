@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using Aijade.Core.Js;
@@ -7,6 +8,7 @@ using Aijade.Memory.Locomo;
 using Aijade.Memory.Model;
 using Aijade.Research.MemoryEval;
 using Aijade.Research.RqC;
+using Aijade.Research.SkillBench;
 
 // Runs the experiments of the papers on this implementation and writes their artefacts.
 //   aijade-experiments memory [--locomo <locomo10.json>] [--out experiments/memory]
@@ -34,6 +36,11 @@ var root = FindRoot();
 
 switch (command)
 {
+    case "p2-bank-check":
+        var bank = PublicBenchBank.Load(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
+        var checkedTask = PublicBankCheck.RunReference(bank, Arg("--task") ?? throw new ArgumentException("--task is required"));
+        Console.WriteLine(JsonSerializer.Serialize(checkedTask, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+        return 0;
     case "sandbox-isolation":
         return SandboxIsolation(Path.GetFullPath(Arg("--run") ?? Path.Combine(root, "experiments", "rq-c", "rq-c-s42-ollama-t30-r5")));
     case "differential":
