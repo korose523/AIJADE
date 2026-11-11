@@ -1,7 +1,7 @@
 """Tokenize one fixed model's complete prompt corpus in two independent engines."""
 import argparse
 from collections import Counter
-import hashlib,json,os,resource,struct,subprocess,time
+import hashlib,json,os,resource,struct,subprocess,sys,time
 from pathlib import Path
 
 from gguf_metadata import read_metadata
@@ -55,10 +55,13 @@ def run(config,corpus,executable,out):
     independent=IndependentBpe(metadata)
     out.mkdir(parents=True,exist_ok=False)
     native=None;started=time.monotonic();cpu=time.process_time()
+    extensions=list(Path(__import__('tokenizers').__file__).parent.glob('*.so'))
     summary={'schema':'aijade.p2a.token-capacity.worker.v1','model':cfg['model'],'rows':0,'counts':{},'newCompletionCalls':0,
              'modelBlobSha256':cfg['modelBlobSha256'],'ggufMetadataSha256':metadata['metadataSha256'],
              'corpusSha256':sha(corpus.read_bytes()),'driverSha256':sha(Path(__file__).read_bytes()),
              'nativeExecutableSha256':sha(executable.read_bytes()),'tokenizersVersion':__import__('tokenizers').__version__,
+             'tokenizersExtensionSha256':{path.name:sha(path.read_bytes()) for path in extensions},
+             'pythonVersion':sys.version,'pythonPrefix':sys.prefix,'pythonBasePrefix':sys.base_prefix,
              'nativeInfo':None,'modelFileStateBefore':file_state(model)}
     try:
         native=Native(executable,model,out);summary['nativeInfo']=native.info

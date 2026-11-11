@@ -58,7 +58,7 @@ def run(inputs,python,native,out,controls_only,controls_from):
     source=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     script=HERE/'tokenize_worker.py'
     receipt={'schema':'aijade.p2a.token-capacity.execution.v1','executionCodeCommit':source,'exportInputs':load(inputs/'summary.json'),
-             'nativeSha256':digest(native),'workerSha256':digest(script),'pythonSha256':digest(python),'newCompletionCalls':0,
+             'nativeSha256':digest(native),'workerSha256':digest(script),'pythonSha256':digest(python),'pythonExecutable':str(python),'newCompletionCalls':0,
              'modelCorpusSha256':{model:{name:digest(inputs/model/(name+'.jsonl')) for name in ['controls','complete']} for model in ['qwen','llama']}}
     write(out/'execution.json',receipt);results={}
     if controls_from:
@@ -87,4 +87,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(__doc__)
     for name in ['inputs','python','native','out']:p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--controls-only',action='store_true');p.add_argument('--controls-from',type=Path)
-    a=p.parse_args();run(a.inputs.resolve(),a.python.resolve(),a.native.resolve(),a.out.resolve(),a.controls_only,a.controls_from.resolve() if a.controls_from else None)
+    # Resolving a venv's interpreter symlink selects the base installation and loses its packages.
+    a=p.parse_args();run(a.inputs.resolve(),a.python.absolute(),a.native.resolve(),a.out.resolve(),a.controls_only,a.controls_from.resolve() if a.controls_from else None)
