@@ -1,0 +1,133 @@
+{
+  "schema": "aijade.p2a.javascript-port.summary.v1",
+  "executionCodeCommit": "fe6df9150c11c4f24db73487472ab40d7cdbf3a0",
+  "planCommit": "612e909d6c3ef72f73d786455d4bbaf9fc3ad18e",
+  "transportCommit": "225b7f9432bfbf7a682109aa371a51131ae3fc7d",
+  "variantPlanCommit": "03a329ecdbd5262904eb7b77e863da9819b5c400",
+  "newModelCalls": 0,
+  "released": {
+    "tasks": 425,
+    "completeAgreement": 422,
+    "plannedCases": 116753,
+    "caseCounts": {
+      "PASS": 115629,
+      "UNKNOWN": 1014,
+      "MISSING_REFERENCE": 109,
+      "MISMATCH": 1
+    },
+    "outsidePopulation": 117,
+    "datasets": {
+      "HumanEval+": {
+        "tasks": 117,
+        "completeAgreement": 116,
+        "plannedCases": 83474,
+        "caseCounts": {
+          "PASS": 82460,
+          "UNKNOWN": 1014
+        }
+      },
+      "MBPP+": {
+        "tasks": 308,
+        "completeAgreement": 306,
+        "plannedCases": 33279,
+        "caseCounts": {
+          "PASS": 33169,
+          "MISSING_REFERENCE": 109,
+          "MISMATCH": 1
+        }
+      }
+    },
+    "exactCases": 114575,
+    "floatCases": 2069,
+    "bigintTasks": 36,
+    "entriesTasks": 21,
+    "tupleTasks": 4,
+    "decimalStringTasks": 1,
+    "projectionCollisionTasks": 0,
+    "remaining": [
+      {
+        "taskId": "HumanEval/132",
+        "counts": {
+          "UNKNOWN": 1014
+        },
+        "error": "PROCESS_EXIT_-24",
+        "examples": []
+      },
+      {
+        "taskId": "Mbpp/255",
+        "counts": {
+          "PASS": 3,
+          "MISSING_REFERENCE": 109
+        },
+        "error": null,
+        "examples": []
+      },
+      {
+        "taskId": "Mbpp/739",
+        "counts": {
+          "PASS": 105,
+          "MISMATCH": 1
+        },
+        "error": null,
+        "examples": [
+          {
+            "index": 100,
+            "error": null,
+            "actual": "14142135623730952n"
+          }
+        ]
+      }
+    ]
+  },
+  "previouslyBlocked": {
+    "tasks": 52,
+    "completeReleasedAgreement": 50,
+    "dispositions": {
+      "RELEASE_PORT_FOR_AUTHOR_REVIEW": 46,
+      "EXACT_VARIANT_FOR_AUTHOR_REVIEW": 4,
+      "HOLD_MISSING_REFERENCE": 1,
+      "HOLD_STATEMENT_CONFLICT": 1
+    },
+    "semanticCases": {
+      "AGREES": 8424,
+      "OUTSIDE_DOMAIN": 338,
+      "STATEMENT_CONFLICT": 193,
+      "MISSING_REFERENCE": 109,
+      "UNRESOLVED": 49
+    }
+  },
+  "exactVariants": {
+    "tasks": 4,
+    "completeAgreement": 4,
+    "cases": 1048,
+    "caseCounts": {
+      "PASS": 1048
+    },
+    "releasedConflictsCovered": 138,
+    "outsideDomainCases": 4
+  },
+  "referenceRecovery": {
+    "attemptedTasks": 3,
+    "completeTasks": 2
+  },
+  "statementExamples": {
+    "literalExamples": 432,
+    "unsupportedExamples": 11,
+    "arityMismatches": 0,
+    "unmatchedExamples": 39,
+    "exampleCaseAgreements": 456,
+    "exampleCaseConflicts": 0,
+    "matchedExamples": 393
+  },
+  "additionalStatementCheck": {
+    "taskId": "HumanEval/132",
+    "targetedAgreement": 1014,
+    "subsequenceConflicts": 30,
+    "originalReplay": {
+      "UNKNOWN": 1014
+    },
+    "portSha256": "4b11d1d8c4ef8a7d58df53a873102c1e8632e9eb7e9524bb1e4bcc9b747c208c"
+  },
+  "formalAuthorReview": "PENDING",
+  "scope": "Fixed public development conformance, AI-assisted statement checks and exact arithmetic variants."
+}

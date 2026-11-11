@@ -1,0 +1,1522 @@
+{
+  "review": "AI-assisted statement interpretation and independent numeric or structural checks",
+  "tasks": [
+    {
+      "taskId": "HumanEval/8",
+      "statementSha256": "15f9d3f16a79e8a26ebb42c92d3ef4f2258f8c7ead639c72de6436e4d144819b",
+      "rule": "Sum and product of integer values, including empty identities.",
+      "counts": {
+        "AGREES": 1002,
+        "OUTSIDE_DOMAIN": 3
+      },
+      "examples": [
+        {
+          "taskId": "HumanEval/8",
+          "case": [
+            "plus",
+            83
+          ],
+          "typedRowSha256": "3a95490697b07215079a8bd91c93ef4e74e4d57af1986588110cd36858163427",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[[False, False, False, False, False, True, True, True, True]]"
+        },
+        {
+          "taskId": "HumanEval/8",
+          "case": [
+            "plus",
+            90
+          ],
+          "typedRowSha256": "7d3ffe213dd985c9bbac964951de675966dd9c78dd5d6c5e2e33ba2235b73635",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[[False, False, False, False, False, True, True, True, True, False]]"
+        },
+        {
+          "taskId": "HumanEval/8",
+          "case": [
+            "plus",
+            729
+          ],
+          "typedRowSha256": "31c68378b77846ea2d76f9447236d33b607ad711c3196afa83787fe03bc17e68",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[[True]]"
+        }
+      ]
+    },
+    {
+      "taskId": "HumanEval/15",
+      "statementSha256": "1faf08e0d98630de9c34f11b0c3b2a5ca2f4e6d10e91eb143a9be26113632edb",
+      "rule": "Decimal sequence 0 through n with one space between terms.",
+      "counts": {
+        "AGREES": 137
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/35",
+      "statementSha256": "e6732630f2acdf7ad4bed248fff4a336aa64d42e85c4d48f4939beb7e1831168",
+      "rule": "Greatest member of a nonempty numeric sequence.",
+      "counts": {
+        "AGREES": 940
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/39",
+      "statementSha256": "cbc2e8c0d8c6d9380e93d3445b77fd0887b15b87f07f3c25777e17a2619b2141",
+      "rule": "Positive Fibonacci-prime rank, checked by fast doubling and independent small-prime witnesses.",
+      "counts": {
+        "AGREES": 12
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/41",
+      "statementSha256": "c6fffb60bb905188e851448f6ee77dd7afdb89381de199c52eb095cc1e8baac7",
+      "rule": "Every car in one group meets each car in the other group once.",
+      "counts": {
+        "AGREES": 83
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/46",
+      "statementSha256": "345b87a90076275e4fa2118cc47905eab3cad343d6b50c7a37ff6063ea93af6a",
+      "rule": "Four-term recurrence with initial values 0, 0, 2, 0.",
+      "counts": {
+        "AGREES": 136
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/55",
+      "statementSha256": "1c6b0cf5ae116710157cf35d3843500b566171c58952005af9bd42d7cfe2878a",
+      "rule": "Fibonacci value with F(0)=0 and F(1)=1, checked by fast doubling.",
+      "counts": {
+        "AGREES": 48,
+        "OUTSIDE_DOMAIN": 2
+      },
+      "examples": [
+        {
+          "taskId": "HumanEval/55",
+          "case": [
+            "plus",
+            2
+          ],
+          "typedRowSha256": "3fbb12c9fcdec5c25009ec4444aab1096574bad904d1618c5895e6df899bd543",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[False]"
+        },
+        {
+          "taskId": "HumanEval/55",
+          "case": [
+            "plus",
+            3
+          ],
+          "typedRowSha256": "437dca243a94167f763b36ef5764a622bb08766473022e05e984efdbfc783735",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "HumanEval/63",
+      "statementSha256": "f82fad4918dcbf0055690f91c349cab2412897fa7fbbafc86001b8c1efbd2904",
+      "rule": "Three-term recurrence with initial values 0, 0, 1.",
+      "counts": {
+        "AGREES": 68,
+        "OUTSIDE_DOMAIN": 2
+      },
+      "examples": [
+        {
+          "taskId": "HumanEval/63",
+          "case": [
+            "plus",
+            15
+          ],
+          "typedRowSha256": "0669809a6b489c5b84a5a37ba22c08e10efe49d34bd0e2bafccae01eabc21e9d",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[False]"
+        },
+        {
+          "taskId": "HumanEval/63",
+          "case": [
+            "plus",
+            16
+          ],
+          "typedRowSha256": "405f5fafe37e9c800a63c17e661fd270cb7cd58a8e81ac18304f6dbba0b9de93",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "HumanEval/83",
+      "statementSha256": "4fcb528cdb9572b599e021a619bc1e04dfb1d3d3a31a66549529d6072b0246d5",
+      "rule": "Inclusion-exclusion for n-digit integers starting or ending in 1.",
+      "counts": {
+        "AGREES": 109
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/99",
+      "statementSha256": "4a758f4ab535200a4bdf59667186bb16bd32d3825d66d7ce34aa2c89274b394b",
+      "rule": "Nearest integer to exact decimal text, with half ties away from zero.",
+      "counts": {
+        "AGREES": 700,
+        "STATEMENT_CONFLICT": 15
+      },
+      "examples": [
+        {
+          "taskId": "HumanEval/99",
+          "case": [
+            "plus",
+            169
+          ],
+          "typedRowSha256": "69d05e0806a45f2bb3d8f5fc1e29e19b44e064ca84b56158e8e3b34424bca36c",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "['-578000000007654321.12345']",
+          "referencePreview": "-578000000007654272",
+          "statementResultPreview": "-578000000007654321"
+        },
+        {
+          "taskId": "HumanEval/99",
+          "case": [
+            "plus",
+            171
+          ],
+          "typedRowSha256": "01230bc6350a0d44bfa291e4361e13a4cd62f9cc7720410251b2557115b49665",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "['-5780000000076254321.162345']",
+          "referencePreview": "-5780000000076254208",
+          "statementResultPreview": "-5780000000076254321"
+        },
+        {
+          "taskId": "HumanEval/99",
+          "case": [
+            "plus",
+            243
+          ],
+          "typedRowSha256": "e4f55d633207bec5eeb1296a26c870d2bb726ff18ccd251e1733cfed0876d89a",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "['-57008000000007654321.12345']",
+          "referencePreview": "-57008000000007651328",
+          "statementResultPreview": "-57008000000007654321"
+        },
+        {
+          "taskId": "HumanEval/99",
+          "case": [
+            "plus",
+            244
+          ],
+          "typedRowSha256": "b77978dc9550a079143f7cdb2014312d59cce50e99bd01d9a39abb19cc087917",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "['-5780000000076254654321.123452345']",
+          "referencePreview": "-5780000000076254543872",
+          "statementResultPreview": "-5780000000076254654321"
+        },
+        {
+          "taskId": "HumanEval/99",
+          "case": [
+            "plus",
+            250
+          ],
+          "typedRowSha256": "6655fcb6bfe00ae5315b4a93bebb6a37212240b45572de74df9fccd92ec35669",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "['-570080000000076543221.12345']",
+          "referencePreview": "-570080000000076546048",
+          "statementResultPreview": "-570080000000076543221"
+        },
+        {
+          "taskId": "HumanEval/99",
+          "case": [
+            "plus",
+            426
+          ],
+          "typedRowSha256": "170a3b60fd9c114a71707145ed28f190739486dbfdb836153368d07e9e9af415",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "['1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000']",
+          "referencePreview": "1000000000000000049861653971908893017010268485438462151574892930611988399099305815384459015356416",
+          "statementResultPreview": "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ]
+    },
+    {
+      "taskId": "HumanEval/106",
+      "statementSha256": "ccbef349bf00556654fe9441e8a54626741856e50c71a83047fa307879b325b9",
+      "rule": "One-based positions alternate triangular sums and factorials.",
+      "counts": {
+        "AGREES": 108
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/139",
+      "statementSha256": "427ecb5fc4b59a748c0159b65d080f2087f4f4c007884e6f4a382e0360626d58",
+      "rule": "Product of factorials from 1 through positive n.",
+      "counts": {
+        "AGREES": 131
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/142",
+      "statementSha256": "1b695b731c4a307bb8b316ce49cf6551af8fe19281979bb52741b78e5e87a33f",
+      "rule": "Zero-based index test gives the square rule precedence over cubing.",
+      "counts": {
+        "AGREES": 1008
+      },
+      "examples": []
+    },
+    {
+      "taskId": "HumanEval/160",
+      "statementSha256": "9a6c797ff20a43c55aee5e304085709d40f88b1753d217876fdd75d8b7086a33",
+      "rule": "Allowed arithmetic and precedence on the stated nonnegative integer operands.",
+      "counts": {
+        "AGREES": 452
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/14",
+      "statementSha256": "354049e27322eb6718993948eaa720c4eace9e0b454c022847ca4cc236391306",
+      "rule": "Triangular prism volume from nonnegative length, base and height.",
+      "counts": {
+        "AGREES": 111
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/17",
+      "statementSha256": "22db447de61f9b73e8c484a712121b1f1f4228342f7e77228ecf2e65f870a7c0",
+      "rule": "Square perimeter equals four times its nonnegative side.",
+      "counts": {
+        "AGREES": 103,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/17",
+          "case": [
+            "plus",
+            12
+          ],
+          "typedRowSha256": "e73c78abdaa2b2c5e142d7931551dda2f777cef4dd8d2426b00c42e8557e448f",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/62",
+      "statementSha256": "d3ce225a5805c169b3df26841314e125d323a491e94c5112db926d4925e98338",
+      "rule": "Minimum member of the nonempty numeric list.",
+      "counts": {
+        "AGREES": 104
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/65",
+      "statementSha256": "86ca27e0a3315c76b825f05ea1f9b4fc556e43dc4aa266e4cfbada1528f86e71",
+      "rule": "Sum after recursively flattening numeric lists.",
+      "counts": {
+        "AGREES": 115
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/80",
+      "statementSha256": "ee2a7cbee03123d7b73a730682cc3fe6927bcec49168e5d8db6b2ce7a5a3ab91",
+      "rule": "Nonnegative ordinal tetrahedral number from a binomial coefficient.",
+      "counts": {
+        "AGREES": 102,
+        "OUTSIDE_DOMAIN": 2
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/80",
+          "case": [
+            "plus",
+            2
+          ],
+          "typedRowSha256": "729805c084739279558d1dd9dfbca53a6b10bf0ea2fb88aca0371417ebc33209",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        },
+        {
+          "taskId": "Mbpp/80",
+          "case": [
+            "plus",
+            3
+          ],
+          "typedRowSha256": "9404f5db459fdcafffaac431ef303eb4eb93a39e1a9f998955696001d0742327",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[False]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/93",
+      "statementSha256": "151522a441b568777080e65130a845a3e7394de5690d3ce4bf565d34fba942cd",
+      "rule": "Real scalar exponentiation over the released finite inputs.",
+      "counts": {
+        "AGREES": 113
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/126",
+      "statementSha256": "15450a50f18536832e6e9836e830378dce69cdddc49ec18d6394d03ff061c39d",
+      "rule": "Exact sum of the divisors of the greatest common divisor.",
+      "counts": {
+        "AGREES": 110
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/133",
+      "statementSha256": "4031fb66cc1dc37a533ea9c9fd3f15cc2a551c3d7d5e2059b7dcad3b637d95b7",
+      "rule": "Sum of strictly negative elements.",
+      "counts": {
+        "AGREES": 111
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/145",
+      "statementSha256": "06d0ea9cf539e897ca13d34e8a10ec05e2c4e66c9aa0345fb3ba8023735fb65d",
+      "rule": "Maximum absolute difference equals max minus min.",
+      "counts": {
+        "AGREES": 108,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/145",
+          "case": [
+            "plus",
+            100
+          ],
+          "typedRowSha256": "677741564b3132e683bb8dc1aacea96147e2e8116a552f9412febc5a32a78368",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[True, True, False]]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/171",
+      "statementSha256": "e4bb2bd6ce09d1dc007a7b1cd6c1b6beabbc1fb368650a035d33f76a61a488da",
+      "rule": "Regular pentagon perimeter equals five times the nonnegative side.",
+      "counts": {
+        "AGREES": 78,
+        "OUTSIDE_DOMAIN": 30
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/171",
+          "case": [
+            "plus",
+            1
+          ],
+          "typedRowSha256": "4b545b5ea7c961584074bbe937dbe99c021ce7ef7836f52233ba3872385c2063",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-10]"
+        },
+        {
+          "taskId": "Mbpp/171",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "f8956382fb50f3fc4d8bac17d8c17ddee345efc4642e41eaae30d528a4008cdd",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-11]"
+        },
+        {
+          "taskId": "Mbpp/171",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "097ec38d8d4b9b0b1befbe3bae8b2c07006d74df531f37e775e53097014bcc06",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-1]"
+        },
+        {
+          "taskId": "Mbpp/171",
+          "case": [
+            "plus",
+            11
+          ],
+          "typedRowSha256": "ccde62a717e02b3f221ba0cda724177bd21a74dfe62884b4e297961f3e9e7b89",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[False]"
+        },
+        {
+          "taskId": "Mbpp/171",
+          "case": [
+            "plus",
+            13
+          ],
+          "typedRowSha256": "1770c1ff294f3b91378f3c99b4f5aabc31388612e2a9df4f36b0ddf8f2bf90f9",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-2]"
+        },
+        {
+          "taskId": "Mbpp/171",
+          "case": [
+            "plus",
+            15
+          ],
+          "typedRowSha256": "579bed9390b96480463ffa96fa2e0877b38e473685f73a90bcf24d4dd8e0970a",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/227",
+      "statementSha256": "03764241d3e4365a317856f364190db8dfdee476ade7b805be0742530feb90ea",
+      "rule": "Minimum of the three supplied numeric values.",
+      "counts": {
+        "AGREES": 108
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/234",
+      "statementSha256": "08b2abf2ab8f8c667180b1dc3018ef84e3ed46559f4bdceb350181a4b11bb614",
+      "rule": "Cube volume from a nonnegative side.",
+      "counts": {
+        "AGREES": 103,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/234",
+          "case": [
+            "plus",
+            61
+          ],
+          "typedRowSha256": "f58be4846e80f2fa1fdf5aee364d3d26fda4f57858f7461b757961e74144321c",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/255",
+      "statementSha256": "5a02035975ad27c0d28fe9b1a936a8e553f60d4a0cf6b78758af217839e354d5",
+      "rule": "Combinations with repetition of input positions, in input order.",
+      "counts": {
+        "AGREES": 3,
+        "MISSING_REFERENCE": 109
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/260",
+      "statementSha256": "8b78f35e94628ada2e6f2503d43010b426d16d1985e379516e6b7203332a0705",
+      "rule": "Check the published prime requirement against released sequence values.",
+      "counts": {
+        "UNRESOLVED": 49,
+        "STATEMENT_CONFLICT": 55,
+        "OUTSIDE_DOMAIN": 3
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/260",
+          "case": [
+            "base",
+            0
+          ],
+          "typedRowSha256": "7340bc39d5de256fe9571897feb08f85c838604fc83c5e2cefa06c4793a605a4",
+          "status": "UNRESOLVED",
+          "detail": "The release computes a sequence value. Its rank among the primes is unspecified by the examples."
+        },
+        {
+          "taskId": "Mbpp/260",
+          "case": [
+            "base",
+            1
+          ],
+          "typedRowSha256": "de7f078ce088db1e5a130dd1782585ab95e64161507407b9ec38c1e77d8c4c1a",
+          "status": "UNRESOLVED",
+          "detail": "The release computes a sequence value. Its rank among the primes is unspecified by the examples."
+        },
+        {
+          "taskId": "Mbpp/260",
+          "case": [
+            "base",
+            2
+          ],
+          "typedRowSha256": "023bad7d0241934501728761cb3caccc2f3417ba94b48f0e34b2f02e3dd554eb",
+          "status": "UNRESOLVED",
+          "detail": "The release computes a sequence value. Its rank among the primes is unspecified by the examples."
+        },
+        {
+          "taskId": "Mbpp/260",
+          "case": [
+            "plus",
+            0
+          ],
+          "typedRowSha256": "af3c7339d96f8de00070d7b52c6edf0cc1f79156f975840bba1d813d81b3ecbe",
+          "status": "STATEMENT_CONFLICT",
+          "detail": "The released result is composite or below 2 although the statement asks for a prime."
+        },
+        {
+          "taskId": "Mbpp/260",
+          "case": [
+            "plus",
+            1
+          ],
+          "typedRowSha256": "e3e4aa44245b990c14c91d552624cf64cb2ab185131e0f59e5623249ec54f707",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "ordinal or count below 1",
+          "inputPreview": "[0]"
+        },
+        {
+          "taskId": "Mbpp/260",
+          "case": [
+            "plus",
+            2
+          ],
+          "typedRowSha256": "f3246ac11605d201d40e06a73705a491925ef900dbfc8e9983b495ff71cb730b",
+          "status": "STATEMENT_CONFLICT",
+          "detail": "The released result is composite or below 2 although the statement asks for a prime."
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/264",
+      "statementSha256": "a1f0450267b8a4f7fe3d06d58a27495cf455628c9e7677914fc4c22bf36a1b45",
+      "rule": "Proposed explicit convention uses 10.5 per year for the first two years and 4 thereafter.",
+      "counts": {
+        "AGREES": 104,
+        "OUTSIDE_DOMAIN": 2
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/264",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "16a6454fa6f684c71e9ae5b4c5bc4ff3d2a334ce332a6ba8fe17a0c25bbdc032",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[True]"
+        },
+        {
+          "taskId": "Mbpp/264",
+          "case": [
+            "plus",
+            11
+          ],
+          "typedRowSha256": "4917b4c63d5a4ea6f049069f3d4014a18d7532bb8afe7d9673ef97106492347c",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[False]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/266",
+      "statementSha256": "9646c9d6c0e33ecc6e1f82b3754de4f91c2c2722a7967a5e77c1a22cb5e444af",
+      "rule": "Lateral surface covers four square faces of a cube.",
+      "counts": {
+        "AGREES": 106,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/266",
+          "case": [
+            "plus",
+            30
+          ],
+          "typedRowSha256": "c6a7da8d4d8d22320ecbbb71255b91a54cfd11da549129e151806109251e5a0a",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/267",
+      "statementSha256": "4a6dccb5787aa73dfcbfc846a070fe89f0e7728cfcd9437c29c8aba750bb3f08",
+      "rule": "Exact sum of squares of the first n positive odd integers.",
+      "counts": {
+        "AGREES": 85,
+        "STATEMENT_CONFLICT": 36,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/267",
+          "case": [
+            "plus",
+            0
+          ],
+          "typedRowSha256": "5beb7a3687fb6ebe9ce8a42763c71f0d754a62b949dcc3c866f568cc3d0fbb44",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[1000000.0]",
+          "referencePreview": "1.333333333333e+18",
+          "statementResultPreview": "1333333333333000000"
+        },
+        {
+          "taskId": "Mbpp/267",
+          "case": [
+            "plus",
+            1
+          ],
+          "typedRowSha256": "322277ae7672a3d29490efc1437928a703d43e061e93b1b5435c4b6e146e6106",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[10000000.0]",
+          "referencePreview": "1.33333333333333e+21",
+          "statementResultPreview": "1333333333333330000000"
+        },
+        {
+          "taskId": "Mbpp/267",
+          "case": [
+            "plus",
+            2
+          ],
+          "typedRowSha256": "a9a5e0ee5304cce5631a8d2fc1eec3e8f6c2849467dc4d91870a9b688b3c223f",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[100000000.0]",
+          "referencePreview": "1.3333333333333333e+24",
+          "statementResultPreview": "1333333333333333300000000"
+        },
+        {
+          "taskId": "Mbpp/267",
+          "case": [
+            "plus",
+            6
+          ],
+          "typedRowSha256": "3a2eef31ddbabf84655b79bed57c84633eefbb4f7d0e616badb368bb65be3f6a",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[123456789]",
+          "referencePreview": "2.5089018290522064e+24",
+          "statementResultPreview": "2508901829052206440043829"
+        },
+        {
+          "taskId": "Mbpp/267",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "a1399c08abe6b6d6bea955e4f660b414b74be305f2bff1c4502323d3d792af1e",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[999999999]",
+          "referencePreview": "1.3333333293333333e+27",
+          "statementResultPreview": "1333333329333333336999999999"
+        },
+        {
+          "taskId": "Mbpp/267",
+          "case": [
+            "plus",
+            12
+          ],
+          "typedRowSha256": "4af23eaacee5d40898e30438a8b53cf15a62718a50da1a5dbc0212a5c0dd995a",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[999999]",
+          "referencePreview": "1.333329333337e+18",
+          "statementResultPreview": "1333329333336999999"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/268",
+      "statementSha256": "a228a9a7efd4ebb529978ee024d66afbf95123bb8b4dcf3d1fb47200f068b0be",
+      "rule": "Centered hexagram number at positive ordinal n.",
+      "counts": {
+        "AGREES": 105,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/268",
+          "case": [
+            "plus",
+            8
+          ],
+          "typedRowSha256": "f24949ce9fe9ba608db3a101c457a0229384ca855dcdb0876bef8761b2bc5014",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/271",
+      "statementSha256": "eaa65bd71ca2ee3fb122f09669989395ee8326c2e84b171413af12f3fffe63b0",
+      "rule": "Exact sum of fifth powers of the first n positive even integers.",
+      "counts": {
+        "AGREES": 109,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/271",
+          "case": [
+            "plus",
+            28
+          ],
+          "typedRowSha256": "fbc056f9bee3e089cb51c752ed987fadea8a6d44aa3b7f38de34b92cf6478444",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/274",
+      "statementSha256": "0079e8cb59bbaeab8702a25486e265eb4ce7f08594ba80807236e36a40e109f6",
+      "rule": "Even-index binomial sum for the specified positive exponent.",
+      "counts": {
+        "AGREES": 105,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/274",
+          "case": [
+            "plus",
+            8
+          ],
+          "typedRowSha256": "aad40c651bbb6f39e10dbc8e15f10096f7a226b795400f30277b2d513e7c37a7",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/287",
+      "statementSha256": "cacaf2d58791c5f26167c3f69efaa0eae4f2a2316ccfa7f7fdec0ed282ee97e9",
+      "rule": "Exact sum of squares of the first n positive even integers.",
+      "counts": {
+        "AGREES": 90,
+        "STATEMENT_CONFLICT": 17,
+        "OUTSIDE_DOMAIN": 2
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/287",
+          "case": [
+            "plus",
+            3
+          ],
+          "typedRowSha256": "4815bc5fdefa0bc724893320112c64e1ab6ff329b3050b15da0351f51dda56c3",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[1000000]",
+          "referencePreview": "1.333335333334e+18",
+          "statementResultPreview": "1333335333334000000"
+        },
+        {
+          "taskId": "Mbpp/287",
+          "case": [
+            "plus",
+            8
+          ],
+          "typedRowSha256": "6f32bdf427439785bca28b4f7d01168dc91312b3397a69a93fa723deacfbbf05",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[1000002]",
+          "referencePreview": "1.333343333358e+18",
+          "statementResultPreview": "1333343333358000020"
+        },
+        {
+          "taskId": "Mbpp/287",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "a259e7aacf8ee5f6dc2c74198127612639d262c11da0a273058b378810c8a5d5",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[1000001]",
+          "referencePreview": "1.333339333342e+18",
+          "statementResultPreview": "1333339333342000004"
+        },
+        {
+          "taskId": "Mbpp/287",
+          "case": [
+            "plus",
+            11
+          ],
+          "typedRowSha256": "07081c761e04f1636083a06a8c77d6083f25e0a3ca65e4d6abd4a72b5154050e",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[False]"
+        },
+        {
+          "taskId": "Mbpp/287",
+          "case": [
+            "plus",
+            12
+          ],
+          "typedRowSha256": "e3f4076f812aee7c87d4f92baed1ed867c03cb5ba1f5fd8dbf8ea31a45de9d9b",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        },
+        {
+          "taskId": "Mbpp/287",
+          "case": [
+            "plus",
+            13
+          ],
+          "typedRowSha256": "6e3151b913ebaef218c227146327171722e56f22ffa59c8b62693337f5825119",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[1000003]",
+          "referencePreview": "1.333347333382e+18",
+          "statementResultPreview": "1333347333382000056"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/391",
+      "statementSha256": "c8c2dc89ba48bfdfc6d8ee4554e1f9e6171209f20f9ead05d5042f9cf0c26175",
+      "rule": "Three lists form a list of nested mappings. The proposed contract specifies truncation to the shortest list.",
+      "counts": {
+        "AGREES": 107
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/409",
+      "statementSha256": "6b5dd940b8320faa27eb01b85bc31b431a0bf8e216ee5cfbb00cb977dde7996b",
+      "rule": "Minimum product across the given pairs.",
+      "counts": {
+        "AGREES": 114
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/441",
+      "statementSha256": "76d49f678a1fc8240111485b094cefa3462d37c20694de98f983bf5911d4b28a",
+      "rule": "Cube surface covers six square faces.",
+      "counts": {
+        "AGREES": 51,
+        "OUTSIDE_DOMAIN": 73
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/441",
+          "case": [
+            "plus",
+            0
+          ],
+          "typedRowSha256": "1faea2290ef8296119d2ccec02f3a5d381662730ce238fa9411fff339be373b7",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-3]"
+        },
+        {
+          "taskId": "Mbpp/441",
+          "case": [
+            "plus",
+            1
+          ],
+          "typedRowSha256": "1584596ee778b4e6c8c9ec6530300b801005a9e1ee075383380726c59a71101a",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-2.5]"
+        },
+        {
+          "taskId": "Mbpp/441",
+          "case": [
+            "plus",
+            4
+          ],
+          "typedRowSha256": "0328abd1b1c8db71f6295cd4798b039692164b0d40885bd3a1e129aa977c16e4",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-1.5]"
+        },
+        {
+          "taskId": "Mbpp/441",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "b838f705c1f9bb668dc6a4492a6e5ddbe366a963ec2c07d187715bce26b04bc6",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-3.14159]"
+        },
+        {
+          "taskId": "Mbpp/441",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "78ca3f1b9f72d954c93b9b63a940e46f8efb834c08c5d13a65652d3f48cd2aca",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-10.75]"
+        },
+        {
+          "taskId": "Mbpp/441",
+          "case": [
+            "plus",
+            13
+          ],
+          "typedRowSha256": "60664f0a97a3389111e4e324adbc545e4bcc83495bf068574487f2e2226609de",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "a geometric length is negative",
+          "inputPreview": "[-0.5]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/447",
+      "statementSha256": "e81efc52670f3f38654838d2e55aa18f350017501de1d2052f6b93a381fa4e28",
+      "rule": "Cube every numeric element in list order.",
+      "counts": {
+        "AGREES": 108
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/458",
+      "statementSha256": "a0127df186f10c1c63ab2b95ac96301ddc856d96ca067716eb870810d5d3afa5",
+      "rule": "Area from the two nonnegative rectangle dimensions.",
+      "counts": {
+        "AGREES": 106
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/573",
+      "statementSha256": "392f575e12c3440f145a69325221d2d4033ebd37f158cff99ab053b97e21ec7d",
+      "rule": "Multiply each distinct numeric value once.",
+      "counts": {
+        "AGREES": 104
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/577",
+      "statementSha256": "7fe694c789b5d6ef8929637b3163c1cac1d6f20cdd181c0e1bf938b420c3d7a5",
+      "rule": "Last decimal digit of a nonnegative integer factorial.",
+      "counts": {
+        "AGREES": 18,
+        "OUTSIDE_DOMAIN": 90
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/577",
+          "case": [
+            "plus",
+            3
+          ],
+          "typedRowSha256": "c505cca40201ca95b58a9936c105e5d6b817d2bc9b413a6b4a2fcb3850b5f6fe",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[2.5]"
+        },
+        {
+          "taskId": "Mbpp/577",
+          "case": [
+            "plus",
+            4
+          ],
+          "typedRowSha256": "5051b3c4479ddd7597c9a2f9905e368147c457f7234656221e8f6baa4d91a757",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[3.8]"
+        },
+        {
+          "taskId": "Mbpp/577",
+          "case": [
+            "plus",
+            5
+          ],
+          "typedRowSha256": "a0033830f1c6c289e71430b19b7c43b0af1ba8b2619d94ecbbcced4dcee93f90",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[23.074387180674933]"
+        },
+        {
+          "taskId": "Mbpp/577",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "610e2ba6cffff80327e9189708547a65fd6d8c0d60c608e190f22546f016b559",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[3.6549340293875163]"
+        },
+        {
+          "taskId": "Mbpp/577",
+          "case": [
+            "plus",
+            12
+          ],
+          "typedRowSha256": "96620bdcdca34e4e8a5146de222dd932c0e7fea3490edcfc59a12338f3cb9d68",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[2.7450543076525977]"
+        },
+        {
+          "taskId": "Mbpp/577",
+          "case": [
+            "plus",
+            13
+          ],
+          "typedRowSha256": "37666968bcc2d38d0589b266a8daae4aebf6e9e4665d120797d1d28c356931f5",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[2.984088088976573]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/592",
+      "statementSha256": "1ca3061b6a67d5b631c24f7604c00cb092dd4e45bd9c4f9c42dd96c684e39a37",
+      "rule": "Vandermonde identity for products of adjacent binomial coefficients.",
+      "counts": {
+        "AGREES": 105,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/592",
+          "case": [
+            "plus",
+            3
+          ],
+          "typedRowSha256": "80666577e9db55c242d0989956cb2c09a737dbdedb6e850d8aee74acaa9d366b",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/597",
+      "statementSha256": "371824aceb1478c36eaad77180c22e1d62228aa5baa84cd5ed7711efb0fa60d7",
+      "rule": "One-based rank in the union by concatenation of two sorted arrays.",
+      "counts": {
+        "AGREES": 19,
+        "OUTSIDE_DOMAIN": 88
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/597",
+          "case": [
+            "plus",
+            6
+          ],
+          "typedRowSha256": "4b971750b161f86ac8f483517bdb1a24c988ce2a0cc87de136bdcce18c612b6b",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[1, 2, 3], [True, True, False], 3]"
+        },
+        {
+          "taskId": "Mbpp/597",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "91e48b1c3bafce55cc93f1debed0e518a844c0f3af832b0a88b2604dd8ee7184",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "the statement specifies two sorted arrays",
+          "inputPreview": "[[1, 2, 3, 1], [], 3]"
+        },
+        {
+          "taskId": "Mbpp/597",
+          "case": [
+            "plus",
+            8
+          ],
+          "typedRowSha256": "a4aecd25387ed4d1163fd7ffad6de90c95463d8642383abcd0305c75d986d6a5",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[False, -64, 27, -83, 3, -39], [1], 1]"
+        },
+        {
+          "taskId": "Mbpp/597",
+          "case": [
+            "plus",
+            9
+          ],
+          "typedRowSha256": "cf841ee4d02de430ff1b0776ca0a36aea529506e67850d883f8d57b629735e7e",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[False, -64, 27, -83, 3, -39], [1, 1], 1]"
+        },
+        {
+          "taskId": "Mbpp/597",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "2aa550f4fb3d02bdcf8d9d9136707986ee946f3e5f0edba5e71fdf84a59f77be",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[96, False, 3, 50], [1, 2, 3, 3], 2]"
+        },
+        {
+          "taskId": "Mbpp/597",
+          "case": [
+            "plus",
+            11
+          ],
+          "typedRowSha256": "2f05289ddd0d0b505396b553253f9f53b9d25b59d52a5ee6d71addbe844b746f",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "the statement specifies two sorted arrays",
+          "inputPreview": "[[1, 2, 3, 2], [], 3]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/608",
+      "statementSha256": "b1e69b0898676ac49ecb8fc4b1713e6642e8daecc85718e17493cbea0cc9af82",
+      "rule": "Bell number from the independent binomial recurrence.",
+      "counts": {
+        "AGREES": 106,
+        "OUTSIDE_DOMAIN": 2
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/608",
+          "case": [
+            "plus",
+            19
+          ],
+          "typedRowSha256": "cb85a5a29c5247ea8cfc28992d87eda7b49d68a0811d46ca734549084116f7b1",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        },
+        {
+          "taskId": "Mbpp/608",
+          "case": [
+            "plus",
+            23
+          ],
+          "typedRowSha256": "1214fb0edae26cd32ff334b119cc85c820d591c574ec24aa1131738937ee078c",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[False]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/623",
+      "statementSha256": "f3ff96434ce4b1b1c2cc441c078e652745de450934fed830d11200768b053c1a",
+      "rule": "Apply the supplied exponent to every element in order.",
+      "counts": {
+        "AGREES": 110
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/630",
+      "statementSha256": "5087cc70830932a14fd4af0d2cd81f9d2069d177a06147d76a9c30cafbc7a64e",
+      "rule": "Cartesian product of each coordinate and its neighbors, including the center shown in the release example.",
+      "counts": {
+        "AGREES": 123
+      },
+      "examples": []
+    },
+    {
+      "taskId": "Mbpp/739",
+      "statementSha256": "ea8ed1f3b8dde54579640cf666d048f8f4b2f54bd85097b44dc45298aa0bee1b",
+      "rule": "Smallest triangular index reaching the exact n-digit threshold.",
+      "counts": {
+        "AGREES": 35,
+        "STATEMENT_CONFLICT": 70,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/739",
+          "case": [
+            "plus",
+            2
+          ],
+          "typedRowSha256": "1d2b5cf5537c099f41b9b82d940da89960c58c653b1540186b81689c62216955",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[100]",
+          "referencePreview": "44721359549995794750898931231328928455603737591808",
+          "statementResultPreview": "44721359549995793928183473374625524708812367192231"
+        },
+        {
+          "taskId": "Mbpp/739",
+          "case": [
+            "plus",
+            6
+          ],
+          "typedRowSha256": "62eec13ca3ac2cfbff9f72df478f2bf51a41dc59be8d52a0a5cf02f9c382141e",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[99]",
+          "referencePreview": "14142135623730949710864047394571269433889644347392",
+          "statementResultPreview": "14142135623730950488016887242096980785696718753769"
+        },
+        {
+          "taskId": "Mbpp/739",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "ed566cf20a0e3207fdbb646e372dec6d1532e4e60d666d00d7fd0714decae275",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[101]",
+          "referencePreview": "141421356237309502300937332480540322869392772694016",
+          "statementResultPreview": "141421356237309504880168872420969807856967187537695"
+        },
+        {
+          "taskId": "Mbpp/739",
+          "case": [
+            "plus",
+            8
+          ],
+          "typedRowSha256": "cd07d18f7e7a3c5c8e1f0a93bfc1d95a80c03ddc1eeb48a9e17df0e0300ae21a",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        },
+        {
+          "taskId": "Mbpp/739",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "6c350d1dbd44a93139dc18b32a599010110cfe342d99bbd670477e66b5567609",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[98]",
+          "referencePreview": "4472135954999579864512157513244964985347598450688",
+          "statementResultPreview": "4472135954999579392818347337462552470881236719223"
+        },
+        {
+          "taskId": "Mbpp/739",
+          "case": [
+            "plus",
+            15
+          ],
+          "typedRowSha256": "e0952cb23ecbe24210c3e594f41a8c84a044606acc6bf075636cd0bc5fd485f6",
+          "status": "STATEMENT_CONFLICT",
+          "inputPreview": "[57]",
+          "referencePreview": "14142135623730951272462811136",
+          "statementResultPreview": "14142135623730950488016887242"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/752",
+      "statementSha256": "9f88b108c3a4a4678ac590b8867bfec80b7e6d51787b0dc2a459b66bf9e89ffb",
+      "rule": "Exact Jacobsthal closed form with zero-based ordinal.",
+      "counts": {
+        "AGREES": 105,
+        "OUTSIDE_DOMAIN": 1
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/752",
+          "case": [
+            "plus",
+            2
+          ],
+          "typedRowSha256": "bbd15d3c9ceccaacbd5ec61a75c0806be636e2041871869ad2b7bf20b4c86d1f",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "integer required by the task",
+          "inputPreview": "[True]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/767",
+      "statementSha256": "534603e1584afda0a65b85ca69fbd82b2f3cbfea12ece0b69bf8398830c98811",
+      "rule": "Count unordered pairs of distinct indices whose values sum to the target.",
+      "counts": {
+        "AGREES": 100,
+        "OUTSIDE_DOMAIN": 7
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/767",
+          "case": [
+            "plus",
+            20
+          ],
+          "typedRowSha256": "a8873375e21a559956baf91f1bf553829c263116b566d5c1f547747d1828710b",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[True, False, False, True, True, False, True, True, True], 1]"
+        },
+        {
+          "taskId": "Mbpp/767",
+          "case": [
+            "plus",
+            22
+          ],
+          "typedRowSha256": "e6a7318cf077a5f550e03b1e9990dfd2aa1d2818946c748a7022a1732f6cfc09",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[True, False, False, True, True, False, True, True, True], 2]"
+        },
+        {
+          "taskId": "Mbpp/767",
+          "case": [
+            "plus",
+            31
+          ],
+          "typedRowSha256": "fdf484a8120ee6c30db25cd0f71d509f7c52c2714af694a5d11e34d617243f5c",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[True, False, True, True, False, True, True, True, True, True], 3]"
+        },
+        {
+          "taskId": "Mbpp/767",
+          "case": [
+            "plus",
+            56
+          ],
+          "typedRowSha256": "40a7e7971430e6327e58bbe0558737f70b9c0253e870a4dddbb625c190374945",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[True, False, False, True, True, False, True, True, False, True], 2]"
+        },
+        {
+          "taskId": "Mbpp/767",
+          "case": [
+            "plus",
+            58
+          ],
+          "typedRowSha256": "8b2f596176b976a4f06df05370411edb7e44a74130e69b1256ecc40dd30d1b81",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[True, False, True, True, False, False, True, True, True, True, True], 3]"
+        },
+        {
+          "taskId": "Mbpp/767",
+          "case": [
+            "plus",
+            91
+          ],
+          "typedRowSha256": "8cfe17045926c78ccd9cb28d028fdf570969d8384a4464f5380afee01a7c6f5a",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "finite numeric value required",
+          "inputPreview": "[[False, True, True, False], 1]"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/785",
+      "statementSha256": "e99be8074af0a6e3967c3331325d64ea2cd5792d29285ddb1e46870fd2372d33",
+      "rule": "Parse a literal tuple of integers and keep the element order.",
+      "counts": {
+        "AGREES": 100,
+        "OUTSIDE_DOMAIN": 21
+      },
+      "examples": [
+        {
+          "taskId": "Mbpp/785",
+          "case": [
+            "plus",
+            6
+          ],
+          "typedRowSha256": "11541d7bd68cb2775b0305178b27cc0e486fb49d6651e2b63694cdf741e9d4e6",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "not a literal tuple of integers",
+          "inputPreview": "['((7, 8, 9)']"
+        },
+        {
+          "taskId": "Mbpp/785",
+          "case": [
+            "plus",
+            7
+          ],
+          "typedRowSha256": "f27362b6a2b2779561fa1f11a49cd1627de2f5cf46dfeef1ade8e594fa8ec2d6",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "not a literal tuple of integers",
+          "inputPreview": "['(7, 8, 9))']"
+        },
+        {
+          "taskId": "Mbpp/785",
+          "case": [
+            "plus",
+            10
+          ],
+          "typedRowSha256": "d552158885c8d26d51cbe51cab49023e4bd4938f34381051d550ef313ce5f635",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "not a literal tuple of integers",
+          "inputPreview": "['(100)']"
+        },
+        {
+          "taskId": "Mbpp/785",
+          "case": [
+            "plus",
+            25
+          ],
+          "typedRowSha256": "9feefef646aad227f6fd6ec979cd663264563e8c02aea5a76c5de6b9fecde66d",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "not a literal tuple of integers",
+          "inputPreview": "['(1000)']"
+        },
+        {
+          "taskId": "Mbpp/785",
+          "case": [
+            "plus",
+            29
+          ],
+          "typedRowSha256": "dac30be167586f2bc4bbfd2bd8cd18a8cc70996fa768b5451251b83590d9bf82",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "not a literal tuple of integers",
+          "inputPreview": "['((10, 600)']"
+        },
+        {
+          "taskId": "Mbpp/785",
+          "case": [
+            "plus",
+            33
+          ],
+          "typedRowSha256": "3b75370a154434b76cb143048a1e7ad85bf1ad7461380eba36bb5669e0b93d6e",
+          "status": "OUTSIDE_DOMAIN",
+          "detail": "not a literal tuple of integers",
+          "inputPreview": "['(7, 8, 9 ))']"
+        }
+      ]
+    },
+    {
+      "taskId": "Mbpp/796",
+      "statementSha256": "ef801c1ef765973b4ce6315f5e1378a14c5e019733d08c7217871fb51b8189a3",
+      "rule": "Sum the numeric values in the dictionary.",
+      "counts": {
+        "AGREES": 106
+      },
+      "examples": []
+    }
+  ],
+  "counts": {
+    "AGREES": 8424,
+    "OUTSIDE_DOMAIN": 338,
+    "STATEMENT_CONFLICT": 193,
+    "MISSING_REFERENCE": 109,
+    "UNRESOLVED": 49
+  },
+  "caseLedgerSha256": "6e3b272d8ff57e8f16f63849d10cb65e179ffece009bddf4a6951e9d78ff5b3e"
+}

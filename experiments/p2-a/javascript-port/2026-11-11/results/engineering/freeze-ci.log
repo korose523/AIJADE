@@ -1,0 +1,778 @@
+﻿2026-11-10T23:57:54.4271466Z Current runner version: '2.338.2'
+2026-11-10T23:57:54.4293016Z ##[group]Runner Image Provisioner
+2026-11-10T23:57:54.4293999Z Hosted Compute Agent
+2026-11-10T23:57:54.4294586Z Version: 20261028.624
+2026-11-10T23:57:54.4295099Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-10T23:57:54.4295758Z Build Date: 2026-10-28T21:51:42Z
+2026-11-10T23:57:54.4296317Z Worker ID: {3c985933-dfc8-4d6f-bb3e-14097197f274}
+2026-11-10T23:57:54.4296958Z Region: southcentralus
+2026-11-10T23:57:54.4297434Z Cloud: Azure
+2026-11-10T23:57:54.4297878Z ##[endgroup]
+2026-11-10T23:57:54.4299095Z ##[group]Operating System
+2026-11-10T23:57:54.4299623Z Ubuntu
+2026-11-10T23:57:54.4300073Z 26.04.1
+2026-11-10T23:57:54.4300607Z LTS
+2026-11-10T23:57:54.4301031Z ##[endgroup]
+2026-11-10T23:57:54.4301513Z ##[group]Runner Image
+2026-11-10T23:57:54.4302017Z Image: ubuntu-26.04
+2026-11-10T23:57:54.4302480Z Version: 20261101.186.1
+2026-11-10T23:57:54.4304140Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-10T23:57:54.4305474Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+2026-11-10T23:57:54.4306297Z ##[endgroup]
+2026-11-10T23:57:54.4307314Z ##[group]GITHUB_TOKEN Permissions
+2026-11-10T23:57:54.4309070Z Contents: read
+2026-11-10T23:57:54.4309561Z Metadata: read
+2026-11-10T23:57:54.4310095Z Packages: read
+2026-11-10T23:57:54.4310584Z ##[endgroup]
+2026-11-10T23:57:54.4312306Z Secret source: Actions
+2026-11-10T23:57:54.4313083Z Cache mode: write
+2026-11-10T23:57:54.4314042Z Prepare workflow directory
+2026-11-10T23:57:54.4672628Z Prepare all required actions
+2026-11-10T23:57:54.4711206Z Getting action download info
+2026-11-10T23:57:54.7091598Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-10T23:57:54.8082887Z Download action repository 'actions/setup-dotnet@v6' (SHA:0f4a354dd5547a28c70b7853dbd95d5b67886e73)
+2026-11-10T23:57:55.3621720Z Complete job name: build-test
+2026-11-10T23:57:55.4128757Z ##[group]Checking docker version
+2026-11-10T23:57:55.4139060Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+2026-11-10T23:57:55.5090734Z '1.54'
+2026-11-10T23:57:55.5098410Z Docker daemon API version: '1.54'
+2026-11-10T23:57:55.5099095Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+2026-11-10T23:57:55.5264398Z '1.54'
+2026-11-10T23:57:55.5279489Z Docker client API version: '1.54'
+2026-11-10T23:57:55.5284669Z ##[endgroup]
+2026-11-10T23:57:55.5286755Z ##[group]Clean up resources from previous jobs
+2026-11-10T23:57:55.5292248Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=c71df6"
+2026-11-10T23:57:55.5435328Z ##[command]/usr/bin/docker network prune --force --filter "label=c71df6"
+2026-11-10T23:57:55.5568993Z ##[endgroup]
+2026-11-10T23:57:55.5569474Z ##[group]Create local container network
+2026-11-10T23:57:55.5577863Z ##[command]/usr/bin/docker network create --label c71df6 github_network_5ec4e9e04314450186d2ddd6d33d3ff4
+2026-11-10T23:57:55.6042482Z 5e84feed4a9831e287dd91201836fed9dd8f78984f9895a7029febbb59d02960
+2026-11-10T23:57:55.6064037Z ##[endgroup]
+2026-11-10T23:57:55.6085572Z ##[group]Starting postgres service container
+2026-11-10T23:57:55.6105019Z ##[command]/usr/bin/docker --config /home/runner/work/_temp/.docker_c426e600-cf8f-4071-88a8-58f2d5289858 login ghcr.io -u korose523 --password-stdin
+2026-11-10T23:57:55.9789559Z ##[command]/usr/bin/docker --config /home/runner/work/_temp/.docker_c426e600-cf8f-4071-88a8-58f2d5289858 pull ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+2026-11-10T23:57:56.5676445Z pg18-v1.0.0: Pulling from tensorchord/vchord-postgres
+2026-11-10T23:57:56.8112519Z 5604c3b93920: Pulling fs layer
+2026-11-10T23:57:56.8115938Z 1adabd6b0d6b: Pulling fs layer
+2026-11-10T23:57:56.8119089Z ce5a92a4b912: Pulling fs layer
+2026-11-10T23:57:56.8122911Z 5e83761a8bfc: Pulling fs layer
+2026-11-10T23:57:56.8124432Z 874755ceb1f0: Pulling fs layer
+2026-11-10T23:57:56.8125488Z 799548af46de: Pulling fs layer
+2026-11-10T23:57:56.8127251Z 4cf7c086165e: Pulling fs layer
+2026-11-10T23:57:56.8128600Z bd01fa164bdc: Pulling fs layer
+2026-11-10T23:57:56.8129587Z 7b697787d5d2: Pulling fs layer
+2026-11-10T23:57:56.8130642Z 1fa512a5b6f3: Pulling fs layer
+2026-11-10T23:57:56.8131866Z 861643ce2817: Pulling fs layer
+2026-11-10T23:57:56.8133121Z 974175074a8f: Pulling fs layer
+2026-11-10T23:57:56.8134930Z 0dac5f77c330: Pulling fs layer
+2026-11-10T23:57:56.8136245Z cdfd017c753d: Pulling fs layer
+2026-11-10T23:57:56.9977364Z 5e83761a8bfc: Download complete
+2026-11-10T23:57:57.0953394Z 799548af46de: Download complete
+2026-11-10T23:57:57.0955955Z 4cf7c086165e: Download complete
+2026-11-10T23:57:57.0957438Z bd01fa164bdc: Download complete
+2026-11-10T23:57:57.0958899Z 1fa512a5b6f3: Download complete
+2026-11-10T23:57:57.0960350Z 0dac5f77c330: Download complete
+2026-11-10T23:57:57.0975050Z 874755ceb1f0: Download complete
+2026-11-10T23:57:57.1968805Z 861643ce2817: Download complete
+2026-11-10T23:57:57.1970455Z 974175074a8f: Download complete
+2026-11-10T23:57:57.3947049Z 7b697787d5d2: Download complete
+2026-11-10T23:57:57.3949061Z cdfd017c753d: Download complete
+2026-11-10T23:57:57.3949409Z 5604c3b93920: Download complete
+2026-11-10T23:57:57.3974568Z 1adabd6b0d6b: Download complete
+2026-11-10T23:57:58.0041653Z 1adabd6b0d6b: Pull complete
+2026-11-10T23:57:58.0966613Z 799548af46de: Pull complete
+2026-11-10T23:57:58.1035597Z 7b697787d5d2: Pull complete
+2026-11-10T23:57:58.2019928Z 861643ce2817: Pull complete
+2026-11-10T23:57:58.3046831Z cdfd017c753d: Pull complete
+2026-11-10T23:57:58.3960536Z 5e83761a8bfc: Pull complete
+2026-11-10T23:57:58.3984199Z 0dac5f77c330: Pull complete
+2026-11-10T23:57:58.4005526Z 974175074a8f: Pull complete
+2026-11-10T23:58:00.1947003Z ce5a92a4b912: Download complete
+2026-11-10T23:58:01.5996479Z 874755ceb1f0: Pull complete
+2026-11-10T23:58:01.6010651Z ce5a92a4b912: Pull complete
+2026-11-10T23:58:01.6736809Z 4cf7c086165e: Pull complete
+2026-11-10T23:58:01.6744423Z bd01fa164bdc: Pull complete
+2026-11-10T23:58:01.6755103Z 1fa512a5b6f3: Pull complete
+2026-11-10T23:58:01.6761520Z 5604c3b93920: Pull complete
+2026-11-10T23:58:01.6762340Z Digest: sha256:24a51a291b2f7c30214be566a7ad8474ee02de8947482084297d263520a97e16
+2026-11-10T23:58:01.6763496Z Status: Downloaded newer image for ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+2026-11-10T23:58:01.6768784Z ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+2026-11-10T23:58:01.6867757Z ##[command]/usr/bin/docker create --name d8d6fa914f9f4a9ba4f38b7465c15cea_ghcriotensorchordvchordpostgrespg18v100_4534e8 --label c71df6 --network github_network_5ec4e9e04314450186d2ddd6d33d3ff4 --network-alias postgres -p 55432:5432 --health-cmd "pg_isready -U aijade" --health-interval 5s --health-timeout 5s --health-retries 30 -e "POSTGRES_USER=aijade" -e "POSTGRES_PASSWORD=aijade" -e "POSTGRES_DB=aijade" -e GITHUB_ACTIONS=true -e CI=true ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+2026-11-10T23:58:05.7429968Z 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:05.7464827Z ##[command]/usr/bin/docker start 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:05.9515166Z 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:05.9551231Z ##[command]/usr/bin/docker ps --all --filter id=6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6 --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+2026-11-10T23:58:05.9765500Z 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6 Up Less than a second (health: starting)
+2026-11-10T23:58:05.9804946Z ##[command]/usr/bin/docker port 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:05.9932681Z 5432/tcp -> 0.0.0.0:55432
+2026-11-10T23:58:05.9934445Z 5432/tcp -> [::]:55432
+2026-11-10T23:58:05.9975454Z ##[endgroup]
+2026-11-10T23:58:05.9982255Z ##[group]Waiting for all services to be ready
+2026-11-10T23:58:05.9993070Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:06.0127533Z starting
+2026-11-10T23:58:06.0148757Z postgres service is starting, waiting 2 seconds before checking again.
+2026-11-10T23:58:08.0146108Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:08.0269608Z starting
+2026-11-10T23:58:08.0283412Z postgres service is starting, waiting 3 seconds before checking again.
+2026-11-10T23:58:11.9598291Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-10T23:58:11.9723420Z healthy
+2026-11-10T23:58:11.9742063Z postgres service is healthy.
+2026-11-10T23:58:11.9742927Z ##[endgroup]
+2026-11-10T23:58:11.9967048Z ##[group]Run actions/checkout@v7
+2026-11-10T23:58:11.9967463Z with:
+2026-11-10T23:58:11.9967645Z   repository: korose523/AIJADE
+2026-11-10T23:58:11.9969491Z   token: ***
+2026-11-10T23:58:11.9969676Z   ssh-strict: true
+2026-11-10T23:58:11.9969848Z   ssh-user: git
+2026-11-10T23:58:11.9970019Z   persist-credentials: true
+2026-11-10T23:58:11.9970207Z   clean: true
+2026-11-10T23:58:11.9970386Z   sparse-checkout-cone-mode: true
+2026-11-10T23:58:11.9970595Z   fetch-depth: 1
+2026-11-10T23:58:11.9970757Z   fetch-tags: false
+2026-11-10T23:58:11.9970923Z   show-progress: true
+2026-11-10T23:58:11.9971090Z   lfs: false
+2026-11-10T23:58:11.9971247Z   submodules: false
+2026-11-10T23:58:11.9971417Z   set-safe-directory: true
+2026-11-10T23:58:11.9971623Z   allow-unsafe-pr-checkout: false
+2026-11-10T23:58:11.9971938Z env:
+2026-11-10T23:58:11.9972265Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+2026-11-10T23:58:11.9972500Z ##[endgroup]
+2026-11-10T23:58:12.2524243Z Syncing repository: korose523/AIJADE
+2026-11-10T23:58:12.2525853Z ##[group]Getting Git version info
+2026-11-10T23:58:12.2526293Z Working directory is '/home/runner/work/AIJADE/AIJADE'
+2026-11-10T23:58:12.2526971Z [command]/usr/bin/git version
+2026-11-10T23:58:12.2539132Z git version 2.56.0
+2026-11-10T23:58:12.2554794Z ##[endgroup]
+2026-11-10T23:58:12.2564349Z Temporarily overriding HOME='/home/runner/work/_temp/fa75a66d-560a-423c-96c0-c1edc0eae291' before making global git config changes
+2026-11-10T23:58:12.2565489Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-10T23:58:12.2574264Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AIJADE/AIJADE
+2026-11-10T23:58:12.2625620Z Deleting the contents of '/home/runner/work/AIJADE/AIJADE'
+2026-11-10T23:58:12.2628027Z ##[group]Determining repository object format
+2026-11-10T23:58:12.2629158Z ##[endgroup]
+2026-11-10T23:58:12.2629598Z ##[group]Initializing the repository
+2026-11-10T23:58:12.2632158Z [command]/usr/bin/git init /home/runner/work/AIJADE/AIJADE
+2026-11-10T23:58:12.2731985Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-10T23:58:12.2732894Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-10T23:58:12.2734709Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-10T23:58:12.2735355Z hint: call:
+2026-11-10T23:58:12.2735772Z hint:
+2026-11-10T23:58:12.2736083Z hint: 	git config --global init.defaultBranch <name>
+2026-11-10T23:58:12.2736555Z hint:
+2026-11-10T23:58:12.2736830Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-10T23:58:12.2737233Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-10T23:58:12.2737536Z hint:
+2026-11-10T23:58:12.2737704Z hint: 	git branch -m <name>
+2026-11-10T23:58:12.2737972Z hint:
+2026-11-10T23:58:12.2738283Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-10T23:58:12.2742351Z Initialized empty Git repository in /home/runner/work/AIJADE/AIJADE/.git/
+2026-11-10T23:58:12.2753219Z [command]/usr/bin/git remote add origin https://github.com/korose523/AIJADE
+2026-11-10T23:58:12.2798769Z ##[endgroup]
+2026-11-10T23:58:12.2799513Z ##[group]Disabling automatic garbage collection
+2026-11-10T23:58:12.2800517Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-10T23:58:12.2830142Z ##[endgroup]
+2026-11-10T23:58:12.2830964Z ##[group]Setting up auth
+2026-11-10T23:58:12.2831313Z Removing SSH command configuration
+2026-11-10T23:58:12.2835669Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-10T23:58:12.2872716Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-10T23:58:12.3272860Z Removing HTTP extra header
+2026-11-10T23:58:12.3278426Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-10T23:58:12.3305958Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-10T23:58:12.3535310Z Removing includeIf entries pointing to credentials config files
+2026-11-10T23:58:12.3540198Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-10T23:58:12.3569479Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-10T23:58:12.3804511Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-10T23:58:12.3837583Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path /home/runner/work/_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-10T23:58:12.3865727Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-10T23:58:12.3961073Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-10T23:58:12.3990810Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-10T23:58:12.4017137Z ##[endgroup]
+2026-11-10T23:58:12.4017455Z ##[group]Fetching the repository
+2026-11-10T23:58:12.4022714Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +fe6df9150c11c4f24db73487472ab40d7cdbf3a0:refs/remotes/origin/main
+2026-11-10T23:58:23.5140192Z From https://github.com/korose523/AIJADE
+2026-11-10T23:58:23.5140820Z  * [new ref]         fe6df9150c11c4f24db73487472ab40d7cdbf3a0 -> origin/main
+2026-11-10T23:58:23.5149512Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-10T23:58:23.5173051Z   origin/main
+2026-11-10T23:58:23.5179436Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-11-10T23:58:23.5200101Z fe6df9150c11c4f24db73487472ab40d7cdbf3a0
+2026-11-10T23:58:23.5203199Z ##[endgroup]
+2026-11-10T23:58:23.5203546Z ##[group]Determining the checkout info
+2026-11-10T23:58:23.5207049Z ##[endgroup]
+2026-11-10T23:58:23.5208020Z [command]/usr/bin/git sparse-checkout disable
+2026-11-10T23:58:23.5254604Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-10T23:58:23.5281100Z ##[group]Checking out the ref
+2026-11-10T23:58:23.5284412Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-10T23:58:24.9922322Z Updating files:  65% (1236/1895)
+2026-11-10T23:58:25.0673180Z Updating files:  66% (1251/1895)
+2026-11-10T23:58:25.6020760Z Updating files:  67% (1270/1895)
+2026-11-10T23:58:25.6022124Z Updating files:  67% (1283/1895)
+2026-11-10T23:58:25.6046160Z Updating files:  68% (1289/1895)
+2026-11-10T23:58:25.6058797Z Updating files:  69% (1308/1895)
+2026-11-10T23:58:25.6247463Z Updating files:  70% (1327/1895)
+2026-11-10T23:58:25.6381807Z Updating files:  71% (1346/1895)
+2026-11-10T23:58:25.6536035Z Updating files:  72% (1365/1895)
+2026-11-10T23:58:25.6644751Z Updating files:  73% (1384/1895)
+2026-11-10T23:58:25.6651276Z Updating files:  74% (1403/1895)
+2026-11-10T23:58:25.6661487Z Updating files:  75% (1422/1895)
+2026-11-10T23:58:25.6684419Z Updating files:  76% (1441/1895)
+2026-11-10T23:58:25.6696977Z Updating files:  77% (1460/1895)
+2026-11-10T23:58:25.6706384Z Updating files:  78% (1479/1895)
+2026-11-10T23:58:25.6715189Z Updating files:  79% (1498/1895)
+2026-11-10T23:58:25.6731310Z Updating files:  80% (1516/1895)
+2026-11-10T23:58:25.6748787Z Updating files:  81% (1535/1895)
+2026-11-10T23:58:25.6763475Z Updating files:  82% (1554/1895)
+2026-11-10T23:58:25.6777235Z Updating files:  83% (1573/1895)
+2026-11-10T23:58:25.6789454Z Updating files:  84% (1592/1895)
+2026-11-10T23:58:25.6803550Z Updating files:  85% (1611/1895)
+2026-11-10T23:58:25.6813642Z Updating files:  86% (1630/1895)
+2026-11-10T23:58:25.6825269Z Updating files:  87% (1649/1895)
+2026-11-10T23:58:25.6837507Z Updating files:  88% (1668/1895)
+2026-11-10T23:58:25.6845125Z Updating files:  89% (1687/1895)
+2026-11-10T23:58:25.8092007Z Updating files:  90% (1706/1895)
+2026-11-10T23:58:25.8104337Z Updating files:  91% (1725/1895)
+2026-11-10T23:58:25.8116006Z Updating files:  92% (1744/1895)
+2026-11-10T23:58:25.8134035Z Updating files:  93% (1763/1895)
+2026-11-10T23:58:25.8153705Z Updating files:  94% (1782/1895)
+2026-11-10T23:58:25.8166096Z Updating files:  95% (1801/1895)
+2026-11-10T23:58:25.8178446Z Updating files:  96% (1820/1895)
+2026-11-10T23:58:25.8189600Z Updating files:  97% (1839/1895)
+2026-11-10T23:58:25.8201829Z Updating files:  98% (1858/1895)
+2026-11-10T23:58:25.8211415Z Updating files:  99% (1877/1895)
+2026-11-10T23:58:25.8211793Z Updating files: 100% (1895/1895)
+2026-11-10T23:58:25.8212123Z Updating files: 100% (1895/1895), done.
+2026-11-10T23:58:25.8252729Z Switched to a new branch 'main'
+2026-11-10T23:58:25.8258194Z branch 'main' set up to track 'origin/main'.
+2026-11-10T23:58:25.8399394Z ##[endgroup]
+2026-11-10T23:58:25.8444657Z [command]/usr/bin/git log -1 --format=%H
+2026-11-10T23:58:25.8469231Z fe6df9150c11c4f24db73487472ab40d7cdbf3a0
+2026-11-10T23:58:25.8686281Z ##[group]Run actions/setup-dotnet@v6
+2026-11-10T23:58:25.8686511Z with:
+2026-11-10T23:58:25.8686683Z   global-json-file: global.json
+2026-11-10T23:58:25.8686893Z   skip-lts-prepass: false
+2026-11-10T23:58:25.8687079Z   cache: false
+2026-11-10T23:58:25.8687235Z env:
+2026-11-10T23:58:25.8687670Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+2026-11-10T23:58:25.8687917Z ##[endgroup]
+2026-11-10T23:58:25.9761204Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --runtime dotnet --channel LTS
+2026-11-10T23:58:26.3024049Z dotnet-install: Attempting to download using aka.ms link https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.15/dotnet-runtime-10.0.15-linux-x64.tar.gz
+2026-11-10T23:58:26.9578192Z dotnet-install: Remote file https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.15/dotnet-runtime-10.0.15-linux-x64.tar.gz size is 36659264 bytes.
+2026-11-10T23:58:26.9581650Z dotnet-install: Extracting archive from https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.15/dotnet-runtime-10.0.15-linux-x64.tar.gz
+2026-11-10T23:58:27.3490490Z dotnet-install: Downloaded file size is 36659264 bytes.
+2026-11-10T23:58:27.3491146Z dotnet-install: The remote and local file sizes are equal.
+2026-11-10T23:58:27.3732990Z dotnet-install: Installed version is 10.0.15
+2026-11-10T23:58:27.3812396Z dotnet-install: Adding to current process PATH: `/usr/share/dotnet`. Note: This change will be visible only when sourcing script.
+2026-11-10T23:58:27.3813408Z dotnet-install: Note that the script does not resolve dependencies during installation.
+2026-11-10T23:58:27.3826207Z dotnet-install: To check the list of dependencies, go to https://learn.microsoft.com/dotnet/core/install, select your operating system and check the "Dependencies" section.
+2026-11-10T23:58:27.3827307Z dotnet-install: Installation finished successfully.
+2026-11-10T23:58:27.3836214Z [command]/home/runner/work/_actions/actions/setup-dotnet/v6/externals/install-dotnet.sh --skip-non-versioned-files --channel 10.0
+2026-11-10T23:58:27.6678753Z dotnet-install: Attempting to download using aka.ms link https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.404/dotnet-sdk-10.0.404-linux-x64.tar.gz
+2026-11-10T23:58:31.2342336Z dotnet-install: Remote file https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.404/dotnet-sdk-10.0.404-linux-x64.tar.gz size is 243138887 bytes.
+2026-11-10T23:58:31.2346974Z dotnet-install: Extracting archive from https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.404/dotnet-sdk-10.0.404-linux-x64.tar.gz
+2026-11-10T23:58:33.9460438Z dotnet-install: Downloaded file size is 243138887 bytes.
+2026-11-10T23:58:33.9461277Z dotnet-install: The remote and local file sizes are equal.
+2026-11-10T23:58:34.1579915Z dotnet-install: Installed version is 10.0.404
+2026-11-10T23:58:34.1665237Z dotnet-install: Adding to current process PATH: `/usr/share/dotnet`. Note: This change will be visible only when sourcing script.
+2026-11-10T23:58:34.1666358Z dotnet-install: Note that the script does not resolve dependencies during installation.
+2026-11-10T23:58:34.1667403Z dotnet-install: To check the list of dependencies, go to https://learn.microsoft.com/dotnet/core/install, select your operating system and check the "Dependencies" section.
+2026-11-10T23:58:34.1668302Z dotnet-install: Installation finished successfully.
+2026-11-10T23:58:34.2862675Z ##[group]Run dotnet test --configuration Release
+2026-11-10T23:58:34.2863056Z [36;1mdotnet test --configuration Release[0m
+2026-11-10T23:58:34.2914458Z shell: /usr/bin/bash -e {0}
+2026-11-10T23:58:34.2914755Z env:
+2026-11-10T23:58:34.2915328Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+2026-11-10T23:58:34.2915618Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-10T23:58:34.2915819Z ##[endgroup]
+2026-11-10T23:58:35.7133016Z   Determining projects to restore...
+2026-11-10T23:58:37.2085509Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Rqc/Aijade.Rqc.csproj (in 873 ms).
+2026-11-10T23:58:37.2117329Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.P1/Aijade.P1.csproj (in 873 ms).
+2026-11-10T23:58:37.3041146Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Mutation/Aijade.Mutation.csproj (in 2 ms).
+2026-11-10T23:58:37.3365824Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Experiments/Aijade.Experiments.csproj (in 5 ms).
+2026-11-10T23:58:37.3506109Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Research/Aijade.Research.csproj (in 3 ms).
+2026-11-10T23:58:37.3516011Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Providers/Aijade.Providers.csproj (in 11 ms).
+2026-11-10T23:58:37.3553424Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Memory/Aijade.Memory.csproj (in 1 ms).
+2026-11-10T23:58:37.3570652Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Learning/Aijade.Learning.csproj (in 2 ms).
+2026-11-10T23:58:37.3628255Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Growth/Aijade.Growth.csproj (in 2 ms).
+2026-11-10T23:58:37.3634963Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Integrations/Aijade.Integrations.csproj (in 4 ms).
+2026-11-10T23:58:37.3658049Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Core/Aijade.Core.csproj (in 1 ms).
+2026-11-10T23:58:37.3741336Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Client/Aijade.Client.csproj (in 3 ms).
+2026-11-10T23:58:37.3834728Z   Restored /home/runner/work/AIJADE/AIJADE/tools/Aijade.Substrate/Aijade.Substrate.csproj (in 2 ms).
+2026-11-10T23:58:37.4785983Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.ComputerUse/Aijade.ComputerUse.csproj (in 106 ms).
+2026-11-10T23:58:37.4938924Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Bots/Aijade.Bots.csproj (in 1.17 sec).
+2026-11-10T23:58:37.8547215Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.UI/Aijade.UI.csproj (in 14 ms).
+2026-11-10T23:58:37.8824084Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Telemetry/Aijade.Telemetry.csproj (in 3 ms).
+2026-11-10T23:58:37.9255856Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Server/Aijade.Server.csproj (in 36 ms).
+2026-11-10T23:58:38.0643233Z   Restored /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/Aijade.Tests.csproj (in 1.73 sec).
+2026-11-10T23:58:39.5183934Z   Restored /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/Aijade.Web.csproj (in 1.56 sec).
+2026-11-10T23:58:45.3647952Z   Restored /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/Aijade.E2E.csproj (in 7.97 sec).
+2026-11-10T23:58:50.0273970Z   Aijade.Core -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Core/bin/Release/net10.0/Aijade.Core.dll
+2026-11-10T23:58:50.2488564Z   Aijade.ComputerUse -> /home/runner/work/AIJADE/AIJADE/src/Aijade.ComputerUse/bin/Release/net10.0/Aijade.ComputerUse.dll
+2026-11-10T23:58:53.2425778Z   Aijade.P1 -> /home/runner/work/AIJADE/AIJADE/tools/Aijade.P1/bin/Release/net10.0/Aijade.P1.dll
+2026-11-10T23:58:55.0646901Z   Aijade.Providers -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Providers/bin/Release/net10.0/Aijade.Providers.dll
+2026-11-10T23:58:55.1946810Z   Aijade.Memory -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Memory/bin/Release/net10.0/Aijade.Memory.dll
+2026-11-10T23:58:57.3427051Z   Aijade.Growth -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Growth/bin/Release/net10.0/Aijade.Growth.dll
+2026-11-10T23:58:57.3884072Z   Aijade.Learning -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Learning/bin/Release/net10.0/Aijade.Learning.dll
+2026-11-10T23:58:57.8033019Z   Aijade.Telemetry -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Telemetry/bin/Release/net10.0/Aijade.Telemetry.dll
+2026-11-10T23:59:01.3399613Z   Aijade.Client -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Client/bin/Release/net10.0/Aijade.Client.dll
+2026-11-10T23:59:01.3421698Z   Aijade.Research -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Research/bin/Release/net10.0/Aijade.Research.dll
+2026-11-10T23:59:02.7655540Z   Aijade.Integrations -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Integrations/bin/Release/net10.0/Aijade.Integrations.dll
+2026-11-10T23:59:05.2377942Z   Aijade.UI -> /home/runner/work/AIJADE/AIJADE/src/Aijade.UI/bin/Release/net10.0/Aijade.UI.dll
+2026-11-10T23:59:05.4723334Z   Aijade.Bots -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Bots/bin/Release/net10.0/Aijade.Bots.dll
+2026-11-10T23:59:07.2995418Z   Aijade.Web -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/bin/Release/net10.0/Aijade.Web.dll
+2026-11-10T23:59:07.3213059Z   Aijade.Web (Blazor output) -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Web/bin/Release/net10.0/wwwroot
+2026-11-10T23:59:11.9621281Z   Aijade.Server -> /home/runner/work/AIJADE/AIJADE/src/Aijade.Server/bin/Release/net10.0/Aijade.Server.dll
+2026-11-10T23:59:14.5975241Z   Aijade.E2E -> /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/bin/Release/net10.0/Aijade.E2E.dll
+2026-11-10T23:59:14.6755465Z Test run for /home/runner/work/AIJADE/AIJADE/tests/Aijade.E2E/bin/Release/net10.0/Aijade.E2E.dll (.NETCoreApp,Version=v10.0)
+2026-11-10T23:59:15.0614972Z A total of 1 test files matched the specified pattern.
+2026-11-10T23:59:18.6845581Z [xUnit.net 00:00:02.28]     Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt [SKIP]
+2026-11-10T23:59:18.6935012Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model [SKIP]
+2026-11-10T23:59:18.6995003Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer [SKIP]
+2026-11-10T23:59:18.7055059Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking [SKIP]
+2026-11-10T23:59:18.7084893Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage [SKIP]
+2026-11-10T23:59:18.7205251Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats [SKIP]
+2026-11-10T23:59:18.7215199Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture [SKIP]
+2026-11-10T23:59:18.7274973Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise [SKIP]
+2026-11-10T23:59:18.7276112Z [xUnit.net 00:00:02.31]     Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly [SKIP]
+2026-11-10T23:59:18.7277260Z   Skipped Aijade.E2E.WebAppTests.A_sign_up_chat_streams_lifts_the_expression_marker_and_pairs_the_render_receipt [1 ms]
+2026-11-10T23:59:18.7278313Z   Skipped Aijade.E2E.WebAppTests.D_the_built_in_avatar_stage_mounts_without_a_model [1 ms]
+2026-11-10T23:59:18.7279405Z   Skipped Aijade.E2E.WebAppTests.D_with_camera_follow_the_view_keeps_her_in_frame_and_a_drag_hands_it_to_the_viewer [1 ms]
+2026-11-10T23:59:18.7280625Z   Skipped Aijade.E2E.WebAppTests.D_the_mmd_companion_shows_its_mood_nods_while_listening_and_glances_away_while_speaking [1 ms]
+2026-11-10T23:59:18.7281675Z   Skipped Aijade.E2E.WebAppTests.D_a_background_picture_and_saved_scenes_dress_the_stage [1 ms]
+2026-11-10T23:59:18.7282718Z   Skipped Aijade.E2E.WebAppTests.E_signing_out_returns_to_the_sign_in_form_and_signing_back_in_restores_the_chats [1 ms]
+2026-11-10T23:59:18.7283770Z   Skipped Aijade.E2E.WebAppTests.B_with_drawing_switched_on_the_companion_answers_with_a_picture [1 ms]
+2026-11-10T23:59:18.7285392Z   Skipped Aijade.E2E.WebAppTests.A_a_reminder_asked_for_in_chat_is_set_in_local_time_and_kept_with_her_promise [1 ms]
+2026-11-10T23:59:18.7286407Z   Skipped Aijade.E2E.WebAppTests.C_voice_input_that_cannot_start_says_so_clearly [1 ms]
+2026-11-10T23:59:18.7287615Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard [SKIP]
+2026-11-10T23:59:18.7288668Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting [SKIP]
+2026-11-10T23:59:18.7289585Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat [SKIP]
+2026-11-10T23:59:18.7290564Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists [SKIP]
+2026-11-10T23:59:18.7291557Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage [SKIP]
+2026-11-10T23:59:18.7292547Z [xUnit.net 00:00:02.33]     Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo [SKIP]
+2026-11-10T23:59:18.7293586Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent [SKIP]
+2026-11-10T23:59:18.7294721Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion [SKIP]
+2026-11-10T23:59:18.7295734Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going [SKIP]
+2026-11-10T23:59:18.7296998Z   Skipped Aijade.E2E.WebAppTests.C_a_reply_the_browser_will_not_let_be_heard_yet_leaves_the_chat_free_and_the_next_click_lets_her_be_heard [1 ms]
+2026-11-10T23:59:18.7298072Z   Skipped Aijade.E2E.WebAppTests.A_a_character_card_drives_the_persona_and_greeting [1 ms]
+2026-11-10T23:59:18.7299029Z   Skipped Aijade.E2E.WebAppTests.A_a_message_sent_while_the_server_cannot_be_reached_says_so_in_the_chat [1 ms]
+2026-11-10T23:59:18.7299977Z   Skipped Aijade.E2E.WebAppTests.E_language_choice_applies_immediately_and_persists [1 ms]
+2026-11-10T23:59:18.7300976Z   Skipped Aijade.E2E.WebAppTests.C_spoken_audio_carries_the_aligned_vowel_shape_and_lip_closure_to_the_stage [1 ms]
+2026-11-10T23:59:18.7301924Z   Skipped Aijade.E2E.WebAppTests.D_beat_sync_hears_the_music_and_finds_its_tempo [1 ms]
+2026-11-10T23:59:18.7303115Z   Skipped Aijade.E2E.WebAppTests.C_with_server_recognition_an_utterance_is_recorded_transcribed_and_sent [1 ms]
+2026-11-10T23:59:18.7334429Z   Skipped Aijade.E2E.WebAppTests.B_a_game_of_chess_with_the_companion [1 ms]
+2026-11-10T23:59:18.7335434Z   Skipped Aijade.E2E.WebAppTests.C_speech_the_browser_cannot_play_leaves_the_text_reply_and_the_chat_going [1 ms]
+2026-11-10T23:59:18.7336707Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal [SKIP]
+2026-11-10T23:59:18.7338002Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys [SKIP]
+2026-11-10T23:59:18.7339146Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn [SKIP]
+2026-11-10T23:59:18.7340227Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips [SKIP]
+2026-11-10T23:59:18.7341220Z [xUnit.net 00:00:02.34]     Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply [SKIP]
+2026-11-10T23:59:18.7342308Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server [SKIP]
+2026-11-10T23:59:18.7343410Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length [SKIP]
+2026-11-10T23:59:18.7344770Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages [SKIP]
+2026-11-10T23:59:18.7346129Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model [SKIP]
+2026-11-10T23:59:18.7347238Z   Skipped Aijade.E2E.WebAppTests.E_research_telemetry_needs_consent_stays_on_the_device_exports_and_is_deleted_on_withdrawal [1 ms]
+2026-11-10T23:59:18.7348453Z   Skipped Aijade.E2E.WebAppTests.F_the_admin_console_is_for_admins_and_its_gateway_edit_keeps_the_masked_keys [1 ms]
+2026-11-10T23:59:18.7349498Z   Skipped Aijade.E2E.WebAppTests.B_an_attached_image_is_scaled_described_and_given_to_the_next_turn [1 ms]
+2026-11-10T23:59:18.7350568Z   Skipped Aijade.E2E.WebAppTests.D_with_the_aligned_text_the_mmd_mouth_takes_the_vowel_shapes_and_closes_the_lips [1 ms]
+2026-11-10T23:59:18.7351545Z   Skipped Aijade.E2E.WebAppTests.D_an_mmd_model_loads_and_its_morphs_follow_the_reply [1 ms]
+2026-11-10T23:59:18.7352596Z   Skipped Aijade.E2E.WebAppTests.C_a_finished_reply_is_not_called_unfinished_when_its_receipt_and_speech_cannot_reach_the_server [1 ms]
+2026-11-10T23:59:18.7353598Z   Skipped Aijade.E2E.WebAppTests.D_the_mmd_stage_takes_her_selfie_from_arms_length [1 ms]
+2026-11-10T23:59:18.7354708Z   Skipped Aijade.E2E.WebAppTests.I_the_browser_extension_reads_titles_positions_and_subtitles_from_youtube_and_bilibili_pages [1 ms]
+2026-11-10T23:59:18.7355715Z   Skipped Aijade.E2E.WebAppTests.D_an_idle_vmd_motion_loops_and_moves_the_model [1 ms]
+2026-11-10T23:59:18.7356779Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten [SKIP]
+2026-11-10T23:59:18.7358055Z [xUnit.net 00:00:02.35]     Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached [SKIP]
+2026-11-10T23:59:18.7359388Z [xUnit.net 00:00:02.36]     Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo [SKIP]
+2026-11-10T23:59:18.7360906Z [xUnit.net 00:00:02.37]     Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat [SKIP]
+2026-11-10T23:59:18.7374978Z [xUnit.net 00:00:02.38]     Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections [SKIP]
+2026-11-10T23:59:18.7415151Z [xUnit.net 00:00:02.38]     Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model [SKIP]
+2026-11-10T23:59:18.7455107Z [xUnit.net 00:00:02.39]     Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined [SKIP]
+2026-11-10T23:59:18.7484981Z [xUnit.net 00:00:02.39]     Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt [SKIP]
+2026-11-10T23:59:18.7575455Z [xUnit.net 00:00:02.39]     Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload [SKIP]
+2026-11-10T23:59:18.7594743Z   Skipped Aijade.E2E.WebAppTests.A_what_the_user_says_reaches_long_term_memory_and_can_be_searched_and_forgotten [1 ms]
+2026-11-10T23:59:18.7634777Z   Skipped Aijade.E2E.WebAppTests.A_a_due_reminder_is_said_in_its_chat_even_after_a_minute_the_server_could_not_be_reached [1 ms]
+2026-11-10T23:59:18.7636319Z   Skipped Aijade.E2E.CompanionExperienceWebTests.An_outfit_reference_is_kept_and_its_description_reaches_a_generated_photo [1 ms]
+2026-11-10T23:59:18.7665075Z   Skipped Aijade.E2E.CompanionExperienceWebTests.A_saved_diary_exchange_can_be_read_on_signed_QQ_and_forgotten_on_the_Web_without_deleting_the_chat [1 ms]
+2026-11-10T23:59:18.7694898Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Web_and_signed_QQ_events_share_live_roles_location_relationship_and_collections [1 ms]
+2026-11-10T23:59:18.7707040Z   Skipped Aijade.E2E.CompanionExperienceWebTests.An_administrator_can_keep_change_disable_and_check_local_services_without_loading_a_model [1 ms]
+2026-11-10T23:59:18.7725378Z   Skipped Aijade.E2E.CompanionExperienceWebTests.A_song_added_on_the_page_is_playable_in_chat_and_an_unknown_song_is_declined [1 ms]
+2026-11-10T23:59:18.7755046Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Companion_life_is_editable_persistent_and_reaches_the_real_chat_prompt [1 ms]
+2026-11-10T23:59:18.7784980Z   Skipped Aijade.E2E.CompanionExperienceWebTests.QQ_first_lines_and_due_reminders_share_typed_delivery_records_visible_after_Web_reload [1 ms]
+2026-11-10T23:59:18.7814828Z [xUnit.net 00:00:02.40]     Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared [SKIP]
+2026-11-10T23:59:18.7817056Z [xUnit.net 00:00:02.41]     Aijade.E2E.CompanionExperienceWebTests.Signed_QQ_delivery_rejection_unknown_and_acknowledgement_survive_a_Web_reload_without_claiming_read_receipts [SKIP]
+2026-11-10T23:59:18.9019229Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Location_and_timezone_can_be_saved_offline_changed_and_cleared [1 ms]
+2026-11-10T23:59:18.9025091Z   Skipped Aijade.E2E.CompanionExperienceWebTests.Signed_QQ_delivery_rejection_unknown_and_acknowledgement_survive_a_Web_reload_without_claiming_read_receipts [1 ms]
+2026-11-10T23:59:18.9074484Z 
+2026-11-10T23:59:18.9094552Z Skipped! - Failed:     0, Passed:     0, Skipped:    38, Total:    38, Duration: 216 ms - Aijade.E2E.dll (net10.0)
+2026-11-10T23:59:22.9828252Z   Aijade.Tests -> /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll
+2026-11-10T23:59:23.1445425Z Test run for /home/runner/work/AIJADE/AIJADE/tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll (.NETCoreApp,Version=v10.0)
+2026-11-10T23:59:23.2757369Z A total of 1 test files matched the specified pattern.
+2026-11-10T23:59:26.6406356Z [xUnit.net 00:00:03.01]     Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [SKIP]
+2026-11-10T23:59:26.6434908Z   Skipped Aijade.Tests.ComputerUseTests.The_server_process_speaks_mcp_on_stdio_and_refuses_unallowed_actions [1 ms]
+2026-11-10T23:59:26.6436183Z [xUnit.net 00:00:03.01]     Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size [SKIP]
+2026-11-10T23:59:26.6865712Z   Skipped Aijade.Tests.ComputerUseTests.On_macos_the_overlay_marks_the_screenshot_and_keeps_its_size [1 ms]
+2026-11-10T23:59:38.5324317Z [xUnit.net 00:00:14.90]     Aijade.Tests.ExternalPolicyPromptTests.Every_external_policy_result_reaches_an_observed_request [SKIP]
+2026-11-10T23:59:38.5379712Z   Skipped Aijade.Tests.ExternalPolicyPromptTests.Every_external_policy_result_reaches_an_observed_request [1 ms]
+2026-11-10T23:59:44.6823281Z [xUnit.net 00:00:21.05]     Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact [SKIP]
+2026-11-10T23:59:44.6854047Z [xUnit.net 00:00:21.05]     Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much [SKIP]
+2026-11-10T23:59:44.6907946Z   Skipped Aijade.Tests.WeightAblationTests.Weight_ablation_reproduces_the_recorded_artifact [1 ms]
+2026-11-10T23:59:44.6997446Z   Skipped Aijade.Tests.WeightAblationTests.Pools_of_several_sizes_come_from_one_ranking_and_a_larger_pool_covers_at_least_as_much [1 ms]
+2026-11-10T23:59:44.7003111Z [xUnit.net 00:00:21.05]     Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall [SKIP]
+2026-11-10T23:59:44.7305627Z   Skipped Aijade.Tests.WeightAblationTests.The_delivery_check_at_the_default_penalty_reproduces_the_archived_delivered_recall [1 ms]
+2026-11-10T23:59:44.9625647Z [xUnit.net 00:00:21.33]     Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [SKIP]
+2026-11-10T23:59:44.9635888Z   Skipped Aijade.Tests.CompanionLiveTests.A_local_model_turn_can_be_saved_quoted_and_forgotten_through_the_product_runtime [1 ms]
+2026-11-10T23:59:46.1228380Z [xUnit.net 00:00:22.49]     Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [SKIP]
+2026-11-10T23:59:46.1398624Z   Skipped Aijade.Tests.ProductDeliveryExperimentTests.Evidence_is_followed_from_the_store_to_the_prompt [1 ms]
+2026-11-10T23:59:46.3088578Z [xUnit.net 00:00:22.68]     Aijade.Tests.ExternalRendererStudyTests.Seal_session [SKIP]
+2026-11-10T23:59:46.3119785Z [xUnit.net 00:00:22.68]     Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [SKIP]
+2026-11-10T23:59:46.3196241Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Seal_session [1 ms]
+2026-11-10T23:59:46.3197022Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Cases_on_client_receipts [1 ms]
+2026-11-10T23:59:46.3197745Z [xUnit.net 00:00:22.69]     Aijade.Tests.ExternalRendererStudyTests.Send_intents [SKIP]
+2026-11-10T23:59:46.4117944Z   Skipped Aijade.Tests.ExternalRendererStudyTests.Send_intents [1 ms]
+2026-11-10T23:59:46.5909311Z [xUnit.net 00:00:22.96]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [SKIP]
+2026-11-10T23:59:46.5935842Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_crafts_from_its_recipe_book [1 ms]
+2026-11-10T23:59:46.6036971Z [xUnit.net 00:00:22.97]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [SKIP]
+2026-11-10T23:59:46.6101146Z [xUnit.net 00:00:22.98]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [SKIP]
+2026-11-10T23:59:46.6855522Z [xUnit.net 00:00:23.05]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [SKIP]
+2026-11-10T23:59:46.6894901Z [xUnit.net 00:00:23.06]     Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [SKIP]
+2026-11-10T23:59:46.8170069Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_swims_across_water_and_climbs_a_ladder [1 ms]
+2026-11-10T23:59:46.8171461Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_comes_digs_places_and_follows [1 ms]
+2026-11-10T23:59:46.8178552Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_hears_a_player_and_answers_in_game [1 ms]
+2026-11-10T23:59:46.8179686Z   Skipped Aijade.Tests.MinecraftTests.On_a_real_server_the_companion_puts_on_armour_and_digs_with_the_right_tool [1 ms]
+2026-11-10T23:59:52.4248349Z [xUnit.net 00:00:28.80]     Aijade.Tests.ProductPolicyExperimentTests.All_configured_policies_deliver_captured_prompts [SKIP]
+2026-11-10T23:59:52.4387261Z   Skipped Aijade.Tests.ProductPolicyExperimentTests.All_configured_policies_deliver_captured_prompts [1 ms]
+2026-11-10T23:59:56.2150258Z [xUnit.net 00:00:32.59]     Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [SKIP]
+2026-11-10T23:59:56.2472413Z   Skipped Aijade.Tests.RendererLinkTests.The_mosaic_renderer_accepts_every_packet_and_maps_every_field [1 ms]
+2026-11-11T00:00:06.6822724Z [xUnit.net 00:00:43.05]     Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [SKIP]
+2026-11-11T00:00:06.6854669Z   Skipped Aijade.Tests.HarnessTests.Full_preregistered_mock_run_replays_the_original [1 ms]
+2026-11-11T00:00:13.3418934Z [xUnit.net 00:00:49.71]     Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [SKIP]
+2026-11-11T00:00:14.8416947Z   Skipped Aijade.Tests.AlternativeDesignsExperimentTests.Every_input_fault_and_valid_input_against_every_configuration [1 ms]
+2026-11-11T00:00:19.2067403Z [xUnit.net 00:00:55.58]     Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [SKIP]
+2026-11-11T00:00:19.2068872Z [xUnit.net 00:00:55.58]     Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [SKIP]
+2026-11-11T00:00:20.0292755Z   Skipped Aijade.Tests.CodeFaultChecksTests.Workload_posts_the_chain_to_one_configuration [1 ms]
+2026-11-11T00:00:20.0297719Z   Skipped Aijade.Tests.CodeFaultChecksTests.Liberal_matrix_writes_its_log [1 ms]
+2026-11-11T00:01:08.3873399Z 
+2026-11-11T00:01:08.3912222Z Passed!  - Failed:     0, Passed:   593, Skipped:    22, Total:   615, Duration: 1 m 43 s - Aijade.Tests.dll (net10.0)
+2026-11-11T00:01:08.5434374Z ##[group]Run python3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v
+2026-11-11T00:01:08.5435040Z [36;1mpython3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v[0m
+2026-11-11T00:01:08.5481390Z shell: /usr/bin/bash -e {0}
+2026-11-11T00:01:08.5481708Z env:
+2026-11-11T00:01:08.5482256Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+2026-11-11T00:01:08.5482602Z   DOTNET_ROOT: /usr/share/dotnet
+2026-11-11T00:01:08.5482857Z ##[endgroup]
+2026-11-11T00:01:08.6082493Z test_base_assertion_failure_does_not_relabel_reference_calls (test_reference.ReferenceChecks.test_base_assertion_failure_does_not_relabel_reference_calls) ... ok
+2026-11-11T00:01:08.6083715Z test_dictionary_order_survives_transport_types_and_bank_projection (test_reference.ReferenceChecks.test_dictionary_order_survives_transport_types_and_bank_projection) ... ok
+2026-11-11T00:01:08.6137831Z test_duplicate_case_and_changed_input_reject (test_reference.ReferenceChecks.test_duplicate_case_and_changed_input_reject) ... ok
+2026-11-11T00:01:08.6144946Z test_extreme_integer_preserved_and_not_projected (test_reference.ReferenceChecks.test_extreme_integer_preserved_and_not_projected) ... ok
+2026-11-11T00:01:08.6197861Z test_missing_complete_case_rejects_but_interrupted_prefix_stays_missing (test_reference.ReferenceChecks.test_missing_complete_case_rejects_but_interrupted_prefix_stays_missing) ... ok
+2026-11-11T00:01:08.6199555Z test_nonfinite_never_becomes_successful_null (test_reference.ReferenceChecks.test_nonfinite_never_becomes_successful_null) ... ok
+2026-11-11T00:01:08.6200919Z test_null_boolean_and_number_never_collapse (test_reference.ReferenceChecks.test_null_boolean_and_number_never_collapse) ... ok
+2026-11-11T00:01:08.6215084Z test_official_type_restoration_not_raw_json_calling (test_reference.ReferenceChecks.test_official_type_restoration_not_raw_json_calling) ... ok
+2026-11-11T00:01:08.6216821Z test_release_infinity_survives_source_transport_but_not_record_coercion (test_reference.ReferenceChecks.test_release_infinity_survives_source_transport_but_not_record_coercion) ... ok
+2026-11-11T00:01:08.6218734Z test_tuple_projection_is_declared_but_set_and_object_keys_are_blocked (test_reference.ReferenceChecks.test_tuple_projection_is_declared_but_set_and_object_keys_are_blocked) ... ok
+2026-11-11T00:01:08.6252267Z test_unsupported_equal_type_labels_are_not_value_agreement (test_reference.ReferenceChecks.test_unsupported_equal_type_labels_are_not_value_agreement) ... ok
+2026-11-11T00:01:08.6253362Z 
+2026-11-11T00:01:08.6253723Z ----------------------------------------------------------------------
+2026-11-11T00:01:08.6254426Z Ran 11 tests in 0.021s
+2026-11-11T00:01:08.6254715Z 
+2026-11-11T00:01:08.6254915Z OK
+2026-11-11T00:01:08.6386364Z Post job cleanup.
+2026-11-11T00:01:08.7457077Z Post job cleanup.
+2026-11-11T00:01:08.8267357Z [command]/usr/bin/git version
+2026-11-11T00:01:08.8306068Z git version 2.56.0
+2026-11-11T00:01:08.8335837Z Temporarily overriding HOME='/home/runner/work/_temp/69d5d822-421b-4eae-9560-820888a347a2' before making global git config changes
+2026-11-11T00:01:08.8336927Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-11T00:01:08.8339672Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/AIJADE/AIJADE
+2026-11-11T00:01:08.8370897Z Removing SSH command configuration
+2026-11-11T00:01:08.8376597Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-11T00:01:08.8431901Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-11T00:01:08.9007602Z Removing HTTP extra header
+2026-11-11T00:01:08.9008630Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-11T00:01:08.9056621Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-11T00:01:08.9342064Z Removing includeIf entries pointing to credentials config files
+2026-11-11T00:01:08.9349598Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-11T00:01:08.9376207Z includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path
+2026-11-11T00:01:08.9376882Z includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path
+2026-11-11T00:01:08.9377383Z includeif.gitdir:/github/workspace/.git.path
+2026-11-11T00:01:08.9377809Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-11T00:01:08.9385267Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path
+2026-11-11T00:01:08.9407779Z /home/runner/work/_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-11T00:01:08.9417670Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-da3184da\-df57\-4a6c\-8580\-68aca8d0d79c\.config
+2026-11-11T00:01:08.9453012Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path
+2026-11-11T00:01:08.9478859Z /home/runner/work/_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-11T00:01:08.9488248Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/AIJADE/AIJADE/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-da3184da\-df57\-4a6c\-8580\-68aca8d0d79c\.config
+2026-11-11T00:01:08.9520589Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-11T00:01:08.9542853Z /github/runner_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-11T00:01:08.9550809Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-da3184da\-df57\-4a6c\-8580\-68aca8d0d79c\.config
+2026-11-11T00:01:08.9582894Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-11T00:01:08.9604446Z /github/runner_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config
+2026-11-11T00:01:08.9611643Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-da3184da\-df57\-4a6c\-8580\-68aca8d0d79c\.config
+2026-11-11T00:01:08.9644937Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-11T00:01:08.9889247Z Removing credentials config '/home/runner/work/_temp/git-credentials-da3184da-df57-4a6c-8580-68aca8d0d79c.config'
+2026-11-11T00:01:09.0033276Z Print service container logs: d8d6fa914f9f4a9ba4f38b7465c15cea_ghcriotensorchordvchordpostgrespg18v100_4534e8
+2026-11-11T00:01:09.0038137Z ##[command]/usr/bin/docker logs --details 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-11T00:01:09.0176565Z  initdb: warning: enabling "trust" authentication for local connections
+2026-11-11T00:01:09.0177058Z  The files belonging to this database system will be owned by user "postgres".
+2026-11-11T00:01:09.0178024Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+2026-11-11T00:01:09.0178861Z  2026-11-10 23:58:07.081 UTC [1] LOG:  starting PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-11-11T00:01:09.0179372Z  This user must also own the server process.
+2026-11-11T00:01:09.0179602Z  
+2026-11-11T00:01:09.0179882Z  The database cluster will be initialized with locale "en_US.utf8".
+2026-11-11T00:01:09.0180235Z  The default database encoding has accordingly been set to "UTF8".
+2026-11-11T00:01:09.0180561Z  The default text search configuration will be set to "english".
+2026-11-11T00:01:09.0180821Z  
+2026-11-11T00:01:09.0180979Z  Data page checksums are enabled.
+2026-11-11T00:01:09.0181168Z  
+2026-11-11T00:01:09.0181413Z  fixing permissions on existing directory /var/lib/postgresql/18/docker ... ok
+2026-11-11T00:01:09.0181731Z  creating subdirectories ... ok
+2026-11-11T00:01:09.0181990Z  selecting dynamic shared memory implementation ... posix
+2026-11-11T00:01:09.0182268Z  selecting default "max_connections" ... 100
+2026-11-11T00:01:09.0182515Z  selecting default "shared_buffers" ... 128MB
+2026-11-11T00:01:09.0182769Z  selecting default time zone ... Etc/UTC
+2026-11-11T00:01:09.0182994Z  creating configuration files ... ok
+2026-11-11T00:01:09.0183205Z  running bootstrap script ... ok
+2026-11-11T00:01:09.0183449Z  performing post-bootstrap initialization ... ok
+2026-11-11T00:01:09.0183692Z  syncing data to disk ... ok
+2026-11-11T00:01:09.0184082Z  
+2026-11-11T00:01:09.0184253Z  
+2026-11-11T00:01:09.0184435Z  Success. You can now start the database server using:
+2026-11-11T00:01:09.0184668Z  
+2026-11-11T00:01:09.0184869Z      pg_ctl -D /var/lib/postgresql/18/docker -l logfile start
+2026-11-11T00:01:09.0185120Z  
+2026-11-11T00:01:09.0185646Z  waiting for server to start....2026-11-10 23:58:06.774 UTC [52] LOG:  starting PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit
+2026-11-11T00:01:09.0186378Z  2026-11-10 23:58:06.776 UTC [52] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-11-11T00:01:09.0186805Z  2026-11-10 23:58:06.780 UTC [58] LOG:  database system was shut down at 2026-11-10 23:58:06 UTC
+2026-11-11T00:01:09.0187197Z  2026-11-10 23:58:06.783 UTC [52] LOG:  database system is ready to accept connections
+2026-11-11T00:01:09.0187489Z   done
+2026-11-11T00:01:09.0187646Z  server started
+2026-11-11T00:01:09.0187809Z  CREATE DATABASE
+2026-11-11T00:01:09.0187963Z  
+2026-11-11T00:01:09.0188099Z  
+2026-11-11T00:01:09.0188348Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+2026-11-11T00:01:09.0188653Z  
+2026-11-11T00:01:09.0188938Z  waiting for server to shut down...2026-11-10 23:58:06.959 UTC [52] LOG:  received fast shutdown request
+2026-11-11T00:01:09.0189343Z  .2026-11-10 23:58:06.960 UTC [52] LOG:  aborting any active transactions
+2026-11-11T00:01:09.0190168Z  2026-11-10 23:58:06.962 UTC [52] LOG:  background worker "logical replication launcher" (PID 61) exited with exit code 1
+2026-11-11T00:01:09.0190576Z  2026-11-10 23:58:06.963 UTC [56] LOG:  shutting down
+2026-11-11T00:01:09.0190920Z  2026-11-10 23:58:06.963 UTC [56] LOG:  checkpoint starting: shutdown immediate
+2026-11-11T00:01:09.0192589Z  2026-11-10 23:58:07.044 UTC [56] LOG:  checkpoint complete: wrote 941 buffers (5.7%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.074 s, sync=0.006 s, total=0.082 s; sync files=303, longest=0.005 s, average=0.001 s; distance=4334 kB, estimate=4334 kB; lsn=0/1B92F28, redo lsn=0/1B92F28
+2026-11-11T00:01:09.0193564Z  2026-11-10 23:58:07.054 UTC [52] LOG:  database system is shut down
+2026-11-11T00:01:09.0193972Z   done
+2026-11-11T00:01:09.0194139Z  server stopped
+2026-11-11T00:01:09.0194298Z  
+2026-11-11T00:01:09.0194496Z  PostgreSQL init process complete; ready for start up.
+2026-11-11T00:01:09.0194740Z  
+2026-11-11T00:01:09.0195014Z  2026-11-10 23:58:07.082 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-11-11T00:01:09.0195567Z  2026-11-10 23:58:07.082 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-11-11T00:01:09.0196189Z  2026-11-10 23:58:07.082 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-11-11T00:01:09.0196736Z  2026-11-10 23:58:07.086 UTC [74] LOG:  database system was shut down at 2026-11-10 23:58:07 UTC
+2026-11-11T00:01:09.0197138Z  2026-11-10 23:58:07.090 UTC [1] LOG:  database system is ready to accept connections
+2026-11-11T00:01:09.0197505Z  2026-11-10 23:59:26.402 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0198365Z  2026-11-10 23:59:26.584 UTC [72] LOG:  checkpoint complete: wrote 1032 buffers (6.3%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.077 s, sync=0.101 s, total=0.182 s; sync files=480, longest=0.020 s, average=0.001 s; distance=10857 kB, estimate=10857 kB; lsn=0/262D4C8, redo lsn=0/262D470
+2026-11-11T00:01:09.0199203Z  2026-11-10 23:59:27.332 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0200038Z  2026-11-10 23:59:27.641 UTC [72] LOG:  checkpoint complete: wrote 2812 buffers (17.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.272 s, sync=0.035 s, total=0.309 s; sync files=314, longest=0.004 s, average=0.001 s; distance=17080 kB, estimate=17080 kB; lsn=0/3715018, redo lsn=0/36DB550
+2026-11-11T00:01:09.0200869Z  2026-11-10 23:59:27.642 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0201689Z  2026-11-10 23:59:27.645 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=230 kB, estimate=15395 kB; lsn=0/37150F8, redo lsn=0/3715090
+2026-11-11T00:01:09.0202557Z  2026-11-10 23:59:29.659 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0203404Z  2026-11-10 23:59:29.848 UTC [72] LOG:  checkpoint complete: wrote 2529 buffers (15.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.145 s, sync=0.040 s, total=0.189 s; sync files=425, longest=0.004 s, average=0.001 s; distance=21699 kB, estimate=21699 kB; lsn=0/4C9C720, redo lsn=0/4C45D58
+2026-11-11T00:01:09.0204433Z  2026-11-10 23:59:29.849 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0205250Z  2026-11-10 23:59:29.851 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=346 kB, estimate=19563 kB; lsn=0/4C9C800, redo lsn=0/4C9C798
+2026-11-11T00:01:09.0206065Z  2026-11-10 23:59:30.661 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0206889Z  2026-11-10 23:59:30.944 UTC [72] LOG:  checkpoint complete: wrote 2952 buffers (18.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 2 recycled; write=0.238 s, sync=0.042 s, total=0.283 s; sync files=440, longest=0.004 s, average=0.001 s; distance=21705 kB, estimate=21705 kB; lsn=0/6233788, redo lsn=0/61CEE58
+2026-11-11T00:01:09.0207869Z  2026-11-10 23:59:30.945 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0208776Z  2026-11-10 23:59:30.946 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=402 kB, estimate=19575 kB; lsn=0/6233868, redo lsn=0/6233800
+2026-11-11T00:01:09.0209630Z  2026-11-10 23:59:31.867 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0210475Z  2026-11-10 23:59:32.018 UTC [72] LOG:  checkpoint complete: wrote 2218 buffers (13.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.105 s, sync=0.042 s, total=0.152 s; sync files=479, longest=0.014 s, average=0.001 s; distance=21724 kB, estimate=21724 kB; lsn=0/77729B8, redo lsn=0/776A840
+2026-11-11T00:01:09.0211319Z  2026-11-10 23:59:32.019 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0212119Z  2026-11-10 23:59:32.021 UTC [72] LOG:  checkpoint complete: wrote 6 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=5, longest=0.001 s, average=0.001 s; distance=32 kB, estimate=19554 kB; lsn=0/7772A90, redo lsn=0/7772A30
+2026-11-11T00:01:09.0212917Z  2026-11-10 23:59:32.692 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0213737Z  2026-11-10 23:59:32.799 UTC [72] LOG:  checkpoint complete: wrote 1454 buffers (8.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.042 s, sync=0.062 s, total=0.107 s; sync files=479, longest=0.013 s, average=0.001 s; distance=16288 kB, estimate=19228 kB; lsn=0/8796CA8, redo lsn=0/875ADC0
+2026-11-11T00:01:09.0214856Z  2026-11-10 23:59:32.799 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0215669Z  2026-11-10 23:59:32.810 UTC [72] LOG:  checkpoint complete: wrote 83 buffers (0.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.002 s, total=0.011 s; sync files=45, longest=0.001 s, average=0.001 s; distance=240 kB, estimate=17329 kB; lsn=0/8799858, redo lsn=0/8796ED0
+2026-11-11T00:01:09.0216500Z  2026-11-10 23:59:32.979 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0217314Z  2026-11-10 23:59:33.260 UTC [72] LOG:  checkpoint complete: wrote 1965 buffers (12.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.136 s, sync=0.143 s, total=0.282 s; sync files=954, longest=0.050 s, average=0.001 s; distance=9756 kB, estimate=16572 kB; lsn=0/92FEF20, redo lsn=0/911DFA0
+2026-11-11T00:01:09.0218123Z  2026-11-10 23:59:33.261 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0218939Z  2026-11-10 23:59:33.265 UTC [72] LOG:  checkpoint complete: wrote 179 buffers (1.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.001 s, total=0.005 s; sync files=70, longest=0.001 s, average=0.001 s; distance=1923 kB, estimate=15107 kB; lsn=0/92FEFF8, redo lsn=0/92FEF98
+2026-11-11T00:01:09.0219917Z  2026-11-10 23:59:33.940 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0220833Z  2026-11-10 23:59:34.050 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.059 s, sync=0.050 s, total=0.111 s; sync files=485, longest=0.013 s, average=0.001 s; distance=5559 kB, estimate=14152 kB; lsn=0/989C0E0, redo lsn=0/986CEC8
+2026-11-11T00:01:09.0221662Z  2026-11-10 23:59:34.053 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0222473Z  2026-11-10 23:59:34.058 UTC [72] LOG:  checkpoint complete: wrote 9 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.007 s; sync files=9, longest=0.001 s, average=0.001 s; distance=228 kB, estimate=12760 kB; lsn=0/98A6990, redo lsn=0/98A6278
+2026-11-11T00:01:09.0223417Z  2026-11-10 23:59:34.092 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0224462Z  2026-11-10 23:59:34.126 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.023 s, sync=0.010 s, total=0.034 s; sync files=2, longest=0.009 s, average=0.005 s; distance=12 kB, estimate=11485 kB; lsn=0/98A94F8, redo lsn=0/98A9498
+2026-11-11T00:01:09.0225283Z  2026-11-10 23:59:35.358 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0226126Z  2026-11-10 23:59:35.560 UTC [72] LOG:  checkpoint complete: wrote 2483 buffers (15.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.075 s, sync=0.121 s, total=0.202 s; sync files=954, longest=0.011 s, average=0.001 s; distance=21714 kB, estimate=21714 kB; lsn=0/AE00CE8, redo lsn=0/ADDDFC0
+2026-11-11T00:01:09.0226957Z  2026-11-10 23:59:35.560 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0227772Z  2026-11-10 23:59:35.565 UTC [72] LOG:  checkpoint complete: wrote 40 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=23, longest=0.001 s, average=0.001 s; distance=139 kB, estimate=19557 kB; lsn=0/AE00DC0, redo lsn=0/AE00D60
+2026-11-11T00:01:09.0228578Z  2026-11-10 23:59:35.581 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0229369Z  2026-11-10 23:59:35.596 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.015 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=17602 kB; lsn=0/AE04618, redo lsn=0/AE023D0
+2026-11-11T00:01:09.0230236Z  2026-11-10 23:59:35.889 UTC [297] FATAL:  terminating autovacuum process due to administrator command
+2026-11-11T00:01:09.0230665Z  2026-11-10 23:59:35.989 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0231502Z  2026-11-10 23:59:36.395 UTC [72] LOG:  checkpoint complete: wrote 3084 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.205 s, sync=0.196 s, total=0.406 s; sync files=1429, longest=0.020 s, average=0.001 s; distance=17044 kB, estimate=17546 kB; lsn=0/BEA7808, redo lsn=0/BEA77B0
+2026-11-11T00:01:09.0232325Z  2026-11-10 23:59:36.782 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0233142Z  2026-11-10 23:59:36.904 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.065 s, sync=0.057 s, total=0.123 s; sync files=494, longest=0.004 s, average=0.001 s; distance=5493 kB, estimate=16341 kB; lsn=0/C44BE70, redo lsn=0/C404BD0
+2026-11-11T00:01:09.0234116Z  2026-11-10 23:59:36.905 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0234922Z  2026-11-10 23:59:36.907 UTC [72] LOG:  checkpoint complete: wrote 42 buffers (0.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.003 s; sync files=27, longest=0.001 s, average=0.001 s; distance=284 kB, estimate=14735 kB; lsn=0/C44F600, redo lsn=0/C44BEE8
+2026-11-11T00:01:09.0235730Z  2026-11-10 23:59:36.915 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0236529Z  2026-11-10 23:59:36.917 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=1, longest=0.001 s, average=0.001 s; distance=19 kB, estimate=13263 kB; lsn=0/C450E70, redo lsn=0/C450E10
+2026-11-11T00:01:09.0237334Z  2026-11-10 23:59:37.865 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0238294Z  2026-11-10 23:59:38.141 UTC [72] LOG:  checkpoint complete: wrote 3084 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.136 s, sync=0.132 s, total=0.276 s; sync files=1429, longest=0.009 s, average=0.001 s; distance=16445 kB, estimate=16445 kB; lsn=0/D4605F8, redo lsn=0/D4605A0
+2026-11-11T00:01:09.0239247Z  2026-11-10 23:59:38.336 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0240052Z  2026-11-10 23:59:38.341 UTC [72] LOG:  checkpoint complete: wrote 80 buffers (0.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.005 s; sync files=48, longest=0.001 s, average=0.001 s; distance=432 kB, estimate=14844 kB; lsn=0/D4D3230, redo lsn=0/D4CC818
+2026-11-11T00:01:09.0240865Z  2026-11-10 23:59:38.378 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0241669Z  2026-11-10 23:59:38.393 UTC [72] LOG:  checkpoint complete: wrote 14 buffers (0.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.015 s; sync files=15, longest=0.001 s, average=0.001 s; distance=42 kB, estimate=13364 kB; lsn=0/D4D83E0, redo lsn=0/D4D71A8
+2026-11-11T00:01:09.0242532Z  2026-11-10 23:59:38.437 UTC [319] FATAL:  terminating connection due to administrator command
+2026-11-11T00:01:09.0242914Z  2026-11-10 23:59:38.540 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0243735Z  2026-11-10 23:59:39.824 UTC [72] LOG:  checkpoint complete: wrote 1599 buffers (9.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.358 s, sync=0.899 s, total=1.284 s; sync files=1301, longest=0.272 s, average=0.001 s; distance=4354 kB, estimate=12463 kB; lsn=0/E521410, redo lsn=0/D9179E8
+2026-11-11T00:01:09.0244734Z  2026-11-10 23:59:39.872 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0245561Z  2026-11-10 23:59:39.898 UTC [72] LOG:  checkpoint complete: wrote 677 buffers (4.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.017 s, sync=0.007 s, total=0.027 s; sync files=54, longest=0.007 s, average=0.001 s; distance=12338 kB, estimate=12450 kB; lsn=0/E526178, redo lsn=0/E5245A8
+2026-11-11T00:01:09.0246386Z  2026-11-10 23:59:39.898 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0247182Z  2026-11-10 23:59:39.902 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=1, longest=0.001 s, average=0.001 s; distance=7 kB, estimate=11206 kB; lsn=0/E526250, redo lsn=0/E5261F0
+2026-11-11T00:01:09.0247972Z  2026-11-10 23:59:40.005 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0248786Z  2026-11-10 23:59:40.378 UTC [72] LOG:  checkpoint complete: wrote 972 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.065 s, sync=0.305 s, total=0.374 s; sync files=955, longest=0.025 s, average=0.001 s; distance=4713 kB, estimate=10557 kB; lsn=0/F55FB08, redo lsn=0/E9C0618
+2026-11-11T00:01:09.0249605Z  2026-11-10 23:59:41.168 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0250422Z  2026-11-10 23:59:41.255 UTC [72] LOG:  checkpoint complete: wrote 1664 buffers (10.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.045 s, sync=0.041 s, total=0.088 s; sync files=498, longest=0.007 s, average=0.001 s; distance=17349 kB, estimate=17349 kB; lsn=0/FAB5F58, redo lsn=0/FAB1CF0
+2026-11-11T00:01:09.0251242Z  2026-11-10 23:59:41.256 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0252027Z  2026-11-10 23:59:41.258 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=16 kB, estimate=15616 kB; lsn=0/FAB6048, redo lsn=0/FAB5FD0
+2026-11-11T00:01:09.0252990Z  2026-11-10 23:59:41.534 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0254011Z  2026-11-10 23:59:41.850 UTC [72] LOG:  checkpoint complete: wrote 3025 buffers (18.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.090 s, sync=0.213 s, total=0.317 s; sync files=1429, longest=0.023 s, average=0.001 s; distance=15153 kB, estimate=15570 kB; lsn=0/10B28348, redo lsn=0/109823D8
+2026-11-11T00:01:09.0254854Z  2026-11-10 23:59:42.390 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0255678Z  2026-11-10 23:59:42.461 UTC [72] LOG:  checkpoint complete: wrote 1119 buffers (6.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.032 s, sync=0.038 s, total=0.071 s; sync files=513, longest=0.004 s, average=0.001 s; distance=7311 kB, estimate=14744 kB; lsn=0/110BF240, redo lsn=0/110A6188
+2026-11-11T00:01:09.0256494Z  2026-11-10 23:59:42.462 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0257308Z  2026-11-10 23:59:42.464 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=100 kB, estimate=13279 kB; lsn=0/110BFCE8, redo lsn=0/110BF388
+2026-11-11T00:01:09.0258131Z  2026-11-10 23:59:42.464 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0258923Z  2026-11-10 23:59:42.467 UTC [72] LOG:  checkpoint complete: wrote 0 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.003 s; sync files=0, longest=0.000 s, average=0.000 s; distance=2 kB, estimate=11952 kB; lsn=0/110BFDC0, redo lsn=0/110BFD60
+2026-11-11T00:01:09.0259727Z  2026-11-10 23:59:43.190 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0260563Z  2026-11-10 23:59:43.404 UTC [72] LOG:  checkpoint complete: wrote 3084 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.089 s, sync=0.123 s, total=0.215 s; sync files=1429, longest=0.016 s, average=0.001 s; distance=16280 kB, estimate=16280 kB; lsn=0/120A6110, redo lsn=0/120A60B8
+2026-11-11T00:01:09.0261405Z  2026-11-10 23:59:43.539 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0262212Z  2026-11-10 23:59:43.581 UTC [72] LOG:  checkpoint complete: wrote 945 buffers (5.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.017 s, total=0.043 s; sync files=371, longest=0.002 s, average=0.001 s; distance=4516 kB, estimate=15104 kB; lsn=0/125F9660, redo lsn=0/1250F3E8
+2026-11-11T00:01:09.0263033Z  2026-11-10 23:59:43.707 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0263956Z  2026-11-10 23:59:43.823 UTC [72] LOG:  checkpoint complete: wrote 1091 buffers (6.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.051 s, sync=0.056 s, total=0.117 s; sync files=546, longest=0.003 s, average=0.001 s; distance=5842 kB, estimate=14178 kB; lsn=0/12C5A228, redo lsn=0/12AC3D58
+2026-11-11T00:01:09.0264804Z  2026-11-10 23:59:43.824 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0265628Z  2026-11-10 23:59:43.842 UTC [72] LOG:  checkpoint complete: wrote 178 buffers (1.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.015 s, total=0.019 s; sync files=129, longest=0.001 s, average=0.001 s; distance=1625 kB, estimate=12922 kB; lsn=0/12C5A300, redo lsn=0/12C5A2A0
+2026-11-11T00:01:09.0266465Z  2026-11-10 23:59:44.415 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0267280Z  2026-11-10 23:59:44.577 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.087 s, sync=0.073 s, total=0.162 s; sync files=954, longest=0.006 s, average=0.001 s; distance=10893 kB, estimate=12719 kB; lsn=0/13727D80, redo lsn=0/136FD860
+2026-11-11T00:01:09.0268223Z  2026-11-10 23:59:44.693 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0269126Z  2026-11-10 23:59:44.699 UTC [72] LOG:  checkpoint complete: wrote 5 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.006 s; sync files=4, longest=0.001 s, average=0.001 s; distance=358 kB, estimate=11483 kB; lsn=0/13757150, redo lsn=0/137570F8
+2026-11-11T00:01:09.0269948Z  2026-11-10 23:59:45.022 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0270765Z  2026-11-10 23:59:45.155 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 2 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.056 s, sync=0.073 s, total=0.133 s; sync files=605, longest=0.008 s, average=0.001 s; distance=5578 kB, estimate=10893 kB; lsn=0/14148870, redo lsn=0/13CC9C58
+2026-11-11T00:01:09.0271578Z  2026-11-10 23:59:45.155 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0272383Z  2026-11-10 23:59:45.226 UTC [72] LOG:  checkpoint complete: wrote 961 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.027 s, sync=0.041 s, total=0.071 s; sync files=375, longest=0.004 s, average=0.001 s; distance=4622 kB, estimate=10266 kB; lsn=0/14271BA8, redo lsn=0/1414D700
+2026-11-11T00:01:09.0273220Z  2026-11-10 23:59:45.809 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0274193Z  2026-11-10 23:59:46.012 UTC [72] LOG:  checkpoint complete: wrote 2193 buffers (13.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.143 s, sync=0.058 s, total=0.203 s; sync files=1073, longest=0.001 s, average=0.001 s; distance=12138 kB, estimate=12138 kB; lsn=0/14D28118, redo lsn=0/14D280C0
+2026-11-11T00:01:09.0275067Z  2026-11-10 23:59:46.221 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0275893Z  2026-11-10 23:59:46.223 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=192 kB, estimate=10943 kB; lsn=0/14D58390, redo lsn=0/14D58338
+2026-11-11T00:01:09.0276718Z  2026-11-10 23:59:46.356 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0277528Z  2026-11-10 23:59:46.359 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=150 kB, estimate=9864 kB; lsn=0/14D7DEB8, redo lsn=0/14D7DBA8
+2026-11-11T00:01:09.0278334Z  2026-11-10 23:59:46.437 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0279139Z  2026-11-10 23:59:46.441 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=209 kB, estimate=8899 kB; lsn=0/14DB2398, redo lsn=0/14DB2340
+2026-11-11T00:01:09.0279945Z  2026-11-10 23:59:47.708 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0280776Z  2026-11-10 23:59:47.799 UTC [72] LOG:  checkpoint complete: wrote 1918 buffers (11.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 2 recycled; write=0.049 s, sync=0.030 s, total=0.091 s; sync files=479, longest=0.007 s, average=0.001 s; distance=21790 kB, estimate=21790 kB; lsn=0/162FFE40, redo lsn=0/162F9D70
+2026-11-11T00:01:09.0281614Z  2026-11-10 23:59:47.800 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0282446Z  2026-11-10 23:59:47.802 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=24 kB, estimate=19613 kB; lsn=0/162FFF18, redo lsn=0/162FFEB8
+2026-11-11T00:01:09.0283354Z  2026-11-10 23:59:48.181 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0284458Z  2026-11-10 23:59:48.493 UTC [72] LOG:  checkpoint complete: wrote 3084 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.107 s, sync=0.204 s, total=0.313 s; sync files=1429, longest=0.017 s, average=0.001 s; distance=16382 kB, estimate=19290 kB; lsn=0/172FFA58, redo lsn=0/172FFA00
+2026-11-11T00:01:09.0285332Z  2026-11-10 23:59:49.080 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0286170Z  2026-11-10 23:59:49.179 UTC [72] LOG:  checkpoint complete: wrote 1080 buffers (6.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.027 s, sync=0.060 s, total=0.099 s; sync files=506, longest=0.009 s, average=0.001 s; distance=6045 kB, estimate=17966 kB; lsn=0/178EC918, redo lsn=0/178E6F00
+2026-11-11T00:01:09.0287007Z  2026-11-10 23:59:49.212 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0287818Z  2026-11-10 23:59:49.217 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=33 kB, estimate=16173 kB; lsn=0/178EF678, redo lsn=0/178EF618
+2026-11-11T00:01:09.0288636Z  2026-11-10 23:59:49.707 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0289462Z  2026-11-10 23:59:49.968 UTC [72] LOG:  checkpoint complete: wrote 3084 buffers (18.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.117 s, sync=0.142 s, total=0.262 s; sync files=1429, longest=0.005 s, average=0.001 s; distance=16437 kB, estimate=16437 kB; lsn=0/188FCB78, redo lsn=0/188FCB20
+2026-11-11T00:01:09.0290288Z  2026-11-10 23:59:50.439 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0291108Z  2026-11-10 23:59:50.774 UTC [72] LOG:  checkpoint complete: wrote 1094 buffers (6.7%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.208 s, sync=0.126 s, total=0.335 s; sync files=468, longest=0.078 s, average=0.001 s; distance=5382 kB, estimate=15331 kB; lsn=0/18F57068, redo lsn=0/18E3E500
+2026-11-11T00:01:09.0291933Z  2026-11-10 23:59:50.775 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0292928Z  2026-11-10 23:59:50.795 UTC [72] LOG:  checkpoint complete: wrote 136 buffers (0.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.017 s, total=0.021 s; sync files=114, longest=0.004 s, average=0.001 s; distance=1122 kB, estimate=13910 kB; lsn=0/18F63E48, redo lsn=0/18F570E0
+2026-11-11T00:01:09.0293932Z  2026-11-10 23:59:51.552 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0294982Z  2026-11-10 23:59:51.778 UTC [72] LOG:  checkpoint complete: wrote 2150 buffers (13.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.102 s, sync=0.121 s, total=0.227 s; sync files=974, longest=0.008 s, average=0.001 s; distance=11690 kB, estimate=13688 kB; lsn=0/19B155A8, redo lsn=0/19AC1A18
+2026-11-11T00:01:09.0295954Z  2026-11-10 23:59:52.151 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0296846Z  2026-11-10 23:59:52.291 UTC [72] LOG:  checkpoint complete: wrote 1068 buffers (6.5%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.083 s, sync=0.056 s, total=0.141 s; sync files=519, longest=0.011 s, average=0.001 s; distance=6647 kB, estimate=12984 kB; lsn=0/1A1B3600, redo lsn=0/1A13F880
+2026-11-11T00:01:09.0297869Z  2026-11-10 23:59:52.292 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0298779Z  2026-11-10 23:59:52.294 UTC [72] LOG:  checkpoint complete: wrote 28 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=22, longest=0.001 s, average=0.001 s; distance=463 kB, estimate=11732 kB; lsn=0/1A1B36D8, redo lsn=0/1A1B3678
+2026-11-11T00:01:09.0299899Z  2026-11-10 23:59:52.303 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0300909Z  2026-11-10 23:59:52.306 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 0 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.004 s; sync files=1, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=10559 kB; lsn=0/1A1B4A98, redo lsn=0/1A1B4A38
+2026-11-11T00:01:09.0301909Z  2026-11-10 23:59:52.950 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0302959Z  2026-11-10 23:59:53.064 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.059 s, sync=0.051 s, total=0.114 s; sync files=954, longest=0.005 s, average=0.001 s; distance=10886 kB, estimate=10886 kB; lsn=0/1AC564D0, redo lsn=0/1AC56478
+2026-11-11T00:01:09.0303978Z  2026-11-10 23:59:53.590 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0304937Z  2026-11-10 23:59:53.640 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.021 s, sync=0.028 s, total=0.051 s; sync files=479, longest=0.007 s, average=0.001 s; distance=5771 kB, estimate=10375 kB; lsn=0/1B1F9450, redo lsn=0/1B1F93F8
+2026-11-11T00:01:09.0316389Z  2026-11-10 23:59:53.884 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0317338Z  2026-11-10 23:59:53.937 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.028 s, total=0.054 s; sync files=479, longest=0.004 s, average=0.001 s; distance=5553 kB, estimate=9892 kB; lsn=0/1B765998, redo lsn=0/1B765940
+2026-11-11T00:01:09.0318236Z  2026-11-10 23:59:54.214 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0319094Z  2026-11-10 23:59:54.288 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.048 s, total=0.074 s; sync files=479, longest=0.009 s, average=0.001 s; distance=5462 kB, estimate=9449 kB; lsn=0/1BCBB270, redo lsn=0/1BCBB218
+2026-11-11T00:01:09.0319946Z  2026-11-10 23:59:54.846 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0320809Z  2026-11-10 23:59:54.908 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.027 s, sync=0.033 s, total=0.062 s; sync files=479, longest=0.003 s, average=0.001 s; distance=5795 kB, estimate=9084 kB; lsn=0/1C264038, redo lsn=0/1C263F90
+2026-11-11T00:01:09.0321649Z  2026-11-10 23:59:55.191 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0322464Z  2026-11-10 23:59:55.280 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.023 s, sync=0.064 s, total=0.090 s; sync files=479, longest=0.008 s, average=0.001 s; distance=5687 kB, estimate=8744 kB; lsn=0/1C7F1F78, redo lsn=0/1C7F1F20
+2026-11-11T00:01:09.0323331Z  2026-11-10 23:59:55.445 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0324378Z  2026-11-10 23:59:55.513 UTC [72] LOG:  checkpoint complete: wrote 977 buffers (6.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.038 s, sync=0.026 s, total=0.068 s; sync files=437, longest=0.004 s, average=0.001 s; distance=4787 kB, estimate=8349 kB; lsn=0/1CD856D8, redo lsn=0/1CC9ECE0
+2026-11-11T00:01:09.0325228Z  2026-11-10 23:59:56.090 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0326060Z  2026-11-10 23:59:56.153 UTC [72] LOG:  checkpoint complete: wrote 1144 buffers (7.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.033 s, sync=0.028 s, total=0.063 s; sync files=564, longest=0.003 s, average=0.001 s; distance=6756 kB, estimate=8189 kB; lsn=0/1D337E20, redo lsn=0/1D337DC8
+2026-11-11T00:01:09.0327095Z  2026-11-10 23:59:56.599 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0328025Z  2026-11-10 23:59:56.663 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.027 s, sync=0.035 s, total=0.065 s; sync files=479, longest=0.007 s, average=0.001 s; distance=5588 kB, estimate=7929 kB; lsn=0/1D8ACEC0, redo lsn=0/1D8ACE68
+2026-11-11T00:01:09.0328877Z  2026-11-10 23:59:56.805 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0329718Z  2026-11-10 23:59:56.863 UTC [72] LOG:  checkpoint complete: wrote 961 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.031 s, sync=0.021 s, total=0.058 s; sync files=397, longest=0.004 s, average=0.001 s; distance=4525 kB, estimate=7589 kB; lsn=0/1DE1A5B8, redo lsn=0/1DD18558
+2026-11-11T00:01:09.0330555Z  2026-11-10 23:59:57.560 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0331376Z  2026-11-10 23:59:57.661 UTC [72] LOG:  checkpoint complete: wrote 1168 buffers (7.1%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.028 s, sync=0.071 s, total=0.101 s; sync files=600, longest=0.019 s, average=0.001 s; distance=6946 kB, estimate=7524 kB; lsn=0/1E3E1088, redo lsn=0/1E3E1030
+2026-11-11T00:01:09.0332190Z  2026-11-10 23:59:57.970 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0333009Z  2026-11-10 23:59:58.073 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.073 s, total=0.103 s; sync files=479, longest=0.013 s, average=0.001 s; distance=5508 kB, estimate=7323 kB; lsn=0/1E961210, redo lsn=0/1E942260
+2026-11-11T00:01:09.0333990Z  2026-11-10 23:59:58.085 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0334807Z  2026-11-10 23:59:58.090 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.005 s; sync files=2, longest=0.001 s, average=0.001 s; distance=131 kB, estimate=6604 kB; lsn=0/1E962ED0, redo lsn=0/1E962E70
+2026-11-11T00:01:09.0335636Z  2026-11-10 23:59:59.013 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0336477Z  2026-11-10 23:59:59.249 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.052 s, sync=0.182 s, total=0.236 s; sync files=954, longest=0.025 s, average=0.001 s; distance=10988 kB, estimate=10988 kB; lsn=0/1F41E220, redo lsn=0/1F41E1C8
+2026-11-11T00:01:09.0337319Z  2026-11-10 23:59:59.392 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0338143Z  2026-11-10 23:59:59.451 UTC [72] LOG:  checkpoint complete: wrote 980 buffers (6.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.030 s, sync=0.025 s, total=0.060 s; sync files=400, longest=0.006 s, average=0.001 s; distance=4575 kB, estimate=10347 kB; lsn=0/1F9B5BA8, redo lsn=0/1F895DE0
+2026-11-11T00:01:09.0338968Z  2026-11-10 23:59:59.451 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0339784Z  2026-11-10 23:59:59.468 UTC [72] LOG:  checkpoint complete: wrote 106 buffers (0.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.012 s, total=0.017 s; sync files=86, longest=0.001 s, average=0.001 s; distance=1162 kB, estimate=9428 kB; lsn=0/1FA16730, redo lsn=0/1F9B88F0
+2026-11-11T00:01:09.0340619Z  2026-11-11 00:00:00.524 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0341448Z  2026-11-11 00:00:00.636 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.056 s, sync=0.053 s, total=0.113 s; sync files=954, longest=0.006 s, average=0.001 s; distance=11642 kB, estimate=11642 kB; lsn=0/205174B0, redo lsn=0/20517458
+2026-11-11T00:01:09.0342434Z  2026-11-11 00:00:00.720 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0343382Z  2026-11-11 00:00:00.805 UTC [72] LOG:  checkpoint complete: wrote 455 buffers (2.8%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.024 s, sync=0.061 s, total=0.086 s; sync files=314, longest=0.016 s, average=0.001 s; distance=1522 kB, estimate=10630 kB; lsn=0/209D4C28, redo lsn=0/20693E98
+2026-11-11T00:01:09.0344307Z  2026-11-11 00:00:00.806 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0345138Z  2026-11-11 00:00:00.842 UTC [72] LOG:  checkpoint complete: wrote 562 buffers (3.4%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.013 s, sync=0.022 s, total=0.036 s; sync files=230, longest=0.005 s, average=0.001 s; distance=3346 kB, estimate=9902 kB; lsn=0/20A90E28, redo lsn=0/209D8820
+2026-11-11T00:01:09.0345980Z  2026-11-11 00:00:01.375 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0346805Z  2026-11-11 00:00:01.520 UTC [72] LOG:  checkpoint complete: wrote 2057 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.086 s, sync=0.058 s, total=0.145 s; sync files=954, longest=0.006 s, average=0.001 s; distance=12018 kB, estimate=12018 kB; lsn=0/215951E8, redo lsn=0/21595190
+2026-11-11T00:01:09.0347636Z  2026-11-11 00:00:02.068 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0348451Z  2026-11-11 00:00:02.143 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.045 s, total=0.076 s; sync files=481, longest=0.014 s, average=0.001 s; distance=5483 kB, estimate=11364 kB; lsn=0/21AFA2D0, redo lsn=0/21AF0108
+2026-11-11T00:01:09.0349280Z  2026-11-11 00:00:02.144 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0350079Z  2026-11-11 00:00:02.145 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=40 kB, estimate=10232 kB; lsn=0/21AFA3A8, redo lsn=0/21AFA348
+2026-11-11T00:01:09.0350886Z  2026-11-11 00:00:03.611 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0351696Z  2026-11-11 00:00:03.640 UTC [72] LOG:  checkpoint complete: wrote 970 buffers (5.9%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.021 s, sync=0.007 s, total=0.030 s; sync files=39, longest=0.007 s, average=0.001 s; distance=11055 kB, estimate=11055 kB; lsn=0/225C7738, redo lsn=0/225C5F70
+2026-11-11T00:01:09.0352511Z  2026-11-11 00:00:03.641 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0353315Z  2026-11-11 00:00:03.642 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=2, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=9950 kB; lsn=0/225C7810, redo lsn=0/225C77B0
+2026-11-11T00:01:09.0354206Z  2026-11-11 00:00:04.107 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0355022Z  2026-11-11 00:00:04.324 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.188 s, total=0.217 s; sync files=479, longest=0.085 s, average=0.001 s; distance=5437 kB, estimate=9498 kB; lsn=0/22B16EB8, redo lsn=0/22B16E60
+2026-11-11T00:01:09.0355845Z  2026-11-11 00:00:04.755 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0356646Z  2026-11-11 00:00:04.859 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.026 s, sync=0.077 s, total=0.104 s; sync files=479, longest=0.016 s, average=0.001 s; distance=5673 kB, estimate=9116 kB; lsn=0/230A1390, redo lsn=0/230A1338
+2026-11-11T00:01:09.0357630Z  2026-11-11 00:00:05.539 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0358531Z  2026-11-11 00:00:05.616 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.050 s, total=0.078 s; sync files=479, longest=0.004 s, average=0.001 s; distance=5652 kB, estimate=8769 kB; lsn=0/236264C0, redo lsn=0/23626468
+2026-11-11T00:01:09.0359370Z  2026-11-11 00:00:06.113 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0360192Z  2026-11-11 00:00:06.177 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.026 s, sync=0.036 s, total=0.064 s; sync files=479, longest=0.005 s, average=0.001 s; distance=5492 kB, estimate=8442 kB; lsn=0/23B834F0, redo lsn=0/23B83498
+2026-11-11T00:01:09.0361013Z  2026-11-11 00:00:06.765 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0361817Z  2026-11-11 00:00:06.821 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.025 s, sync=0.029 s, total=0.056 s; sync files=479, longest=0.006 s, average=0.001 s; distance=5672 kB, estimate=8165 kB; lsn=0/2410D560, redo lsn=0/2410D508
+2026-11-11T00:01:09.0362625Z  2026-11-11 00:00:07.391 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0363445Z  2026-11-11 00:00:07.505 UTC [72] LOG:  checkpoint complete: wrote 2058 buffers (12.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.056 s, sync=0.056 s, total=0.114 s; sync files=954, longest=0.004 s, average=0.001 s; distance=11108 kB, estimate=11108 kB; lsn=0/24BE68A0, redo lsn=0/24BE6848
+2026-11-11T00:01:09.0364457Z  2026-11-11 00:00:07.586 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0365272Z  2026-11-11 00:00:07.589 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=64 kB, estimate=10004 kB; lsn=0/24BF6B90, redo lsn=0/24BF6B38
+2026-11-11T00:01:09.0366106Z  2026-11-11 00:00:08.083 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0366929Z  2026-11-11 00:00:08.141 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.032 s, sync=0.024 s, total=0.059 s; sync files=479, longest=0.002 s, average=0.001 s; distance=5434 kB, estimate=9547 kB; lsn=0/251454E0, redo lsn=0/25145488
+2026-11-11T00:01:09.0367748Z  2026-11-11 00:00:08.898 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0368556Z  2026-11-11 00:00:08.951 UTC [72] LOG:  checkpoint complete: wrote 1030 buffers (6.3%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.027 s, total=0.054 s; sync files=479, longest=0.002 s, average=0.001 s; distance=5757 kB, estimate=9168 kB; lsn=0/256E4BB0, redo lsn=0/256E4B58
+2026-11-11T00:01:09.0369376Z  2026-11-11 00:00:09.248 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0370165Z  2026-11-11 00:00:09.250 UTC [72] LOG:  checkpoint complete: wrote 1 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=2, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=8252 kB; lsn=0/256E5F88, redo lsn=0/256E5F30
+2026-11-11T00:01:09.0370958Z  2026-11-11 00:00:14.220 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0371893Z  2026-11-11 00:00:14.245 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.023 s, total=0.026 s; sync files=4, longest=0.022 s, average=0.006 s; distance=5435 kB, estimate=7970 kB; lsn=0/25C34D30, redo lsn=0/25C34CD8
+2026-11-11T00:01:09.0372706Z  2026-11-11 00:00:15.199 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0373604Z  2026-11-11 00:00:15.209 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.003 s, total=0.011 s; sync files=4, longest=0.003 s, average=0.001 s; distance=5435 kB, estimate=7716 kB; lsn=0/26183BB8, redo lsn=0/26183B60
+2026-11-11T00:01:09.0374510Z  2026-11-11 00:00:16.335 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0375327Z  2026-11-11 00:00:16.338 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5468 kB, estimate=7492 kB; lsn=0/266DADB0, redo lsn=0/266DAD58
+2026-11-11T00:01:09.0376150Z  2026-11-11 00:00:17.326 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0376953Z  2026-11-11 00:00:17.328 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5468 kB, estimate=7289 kB; lsn=0/26C32078, redo lsn=0/26C32020
+2026-11-11T00:01:09.0377749Z  2026-11-11 00:00:18.434 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0378559Z  2026-11-11 00:00:18.437 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5468 kB, estimate=7107 kB; lsn=0/27189438, redo lsn=0/271893E0
+2026-11-11T00:01:09.0379373Z  2026-11-11 00:00:19.390 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0380172Z  2026-11-11 00:00:19.394 UTC [72] LOG:  checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.003 s, total=0.005 s; sync files=4, longest=0.002 s, average=0.001 s; distance=5470 kB, estimate=6943 kB; lsn=0/276E0E18, redo lsn=0/276E0DC0
+2026-11-11T00:01:09.0380983Z  2026-11-11 00:00:20.196 UTC [72] LOG:  checkpoint starting: immediate force wait
+2026-11-11T00:01:09.0381791Z  2026-11-11 00:00:20.198 UTC [72] LOG:  checkpoint complete: wrote 7 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=6, longest=0.001 s, average=0.001 s; distance=5503 kB, estimate=6799 kB; lsn=0/27C40B50, redo lsn=0/27C40AF8
+2026-11-11T00:01:09.0387600Z Stop and remove container: d8d6fa914f9f4a9ba4f38b7465c15cea_ghcriotensorchordvchordpostgrespg18v100_4534e8
+2026-11-11T00:01:09.0391723Z ##[command]/usr/bin/docker rm --force 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-11T00:01:09.4851490Z 6dcf26353df4da3cab43c952a061fe78e9550bc0e4709d9639e0aaf6d44020e6
+2026-11-11T00:01:09.4883425Z Remove container network: github_network_5ec4e9e04314450186d2ddd6d33d3ff4
+2026-11-11T00:01:09.4888129Z ##[command]/usr/bin/docker network rm github_network_5ec4e9e04314450186d2ddd6d33d3ff4
+2026-11-11T00:01:09.5445272Z github_network_5ec4e9e04314450186d2ddd6d33d3ff4
+2026-11-11T00:01:09.5515269Z Cleaning up orphan processes
+2026-11-11T00:01:09.5826883Z Terminate orphan process: pid (3321) (VBCSCompiler)
+
