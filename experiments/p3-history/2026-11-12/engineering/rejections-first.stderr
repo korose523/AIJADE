@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/p3-history/2026-11-12/test_rejections.py", line 62, in <module>
+    main(p.parse_args())
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/p3-history/2026-11-12/test_rejections.py", line 36, in main
+    row_case('edited_native_candidate_pool','static',lambda x:x[0]['searches'][0].update(candidateIds=[]))
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/p3-history/2026-11-12/test_rejections.py", line 24, in row_case
+    ctx=context(arm,q);mutator(ctx);reject(name,lambda:audit_row(*ctx))
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.cache/aijade-ch7-qualification-20261112/worktree/experiments/p3-history/2026-11-12/test_rejections.py", line 22, in reject
+    raise AssertionError('Corruption was accepted: '+name)
+AssertionError: Corruption was accepted: edited_native_candidate_pool

@@ -1,0 +1,45 @@
+{
+  "status": "STRUCTURAL_DISPOSABLE_CORRUPTIONS_REJECTED",
+  "controls": [
+    {
+      "name": "whole_trajectory_omitted",
+      "rejected": true,
+      "reason": "trajectory-coverage"
+    },
+    {
+      "name": "complete_question_row_omitted",
+      "rejected": true,
+      "reason": "question-coverage"
+    },
+    {
+      "name": "complete_question_row_duplicated",
+      "rejected": true,
+      "reason": "question-coverage"
+    },
+    {
+      "name": "query_changed_with_matching_copies_and_hashes",
+      "rejected": true,
+      "reason": "whole-query-fallback-schedule",
+      "provenanceCopiesAndHashesRebound": true
+    },
+    {
+      "name": "native_pool_changed_with_matching_copies_and_hashes",
+      "rejected": true,
+      "reason": "native-candidate-eligibility",
+      "provenanceCopiesAndHashesRebound": true
+    },
+    {
+      "name": "response_changed_with_matching_copies_and_hashes",
+      "rejected": true,
+      "reason": "response-content-origin",
+      "provenanceCopiesAndHashesRebound": true
+    },
+    {
+      "name": "selection_changed_with_matching_row_hash",
+      "rejected": true,
+      "reason": "selected-newest-five",
+      "provenanceCopiesAndHashesRebound": true
+    }
+  ],
+  "timing": "Additional post-measurement audit controls; original runtime, audit/scorer sources and primary bytes unchanged."
+}

@@ -1,0 +1,92 @@
+{
+  "status": "DISPOSABLE_CORRUPTIONS_REJECTED",
+  "controls": [
+    {
+      "name": "omitted_first_turn",
+      "rejected": true,
+      "reason": "scheduled-key"
+    },
+    {
+      "name": "duplicate_question_index",
+      "rejected": true,
+      "reason": "scheduled-key"
+    },
+    {
+      "name": "omitted_question_write",
+      "rejected": true,
+      "reason": "question-write-count"
+    },
+    {
+      "name": "duplicate_question_write",
+      "rejected": true,
+      "reason": "question-write-count"
+    },
+    {
+      "name": "swapped_record_timing",
+      "rejected": true,
+      "reason": "before-schedule"
+    },
+    {
+      "name": "edited_supplied_history",
+      "rejected": true,
+      "reason": "supplied-history"
+    },
+    {
+      "name": "changed_query",
+      "rejected": true,
+      "reason": "search-call-copy"
+    },
+    {
+      "name": "edited_native_candidate_pool",
+      "rejected": true,
+      "reason": "search-call-copy"
+    },
+    {
+      "name": "changed_raw_response",
+      "rejected": true,
+      "reason": "search-call-copy"
+    },
+    {
+      "name": "changed_client_selection",
+      "rejected": true,
+      "reason": "selected-newest-five"
+    },
+    {
+      "name": "hidden_prompt_uncertainty",
+      "rejected": true,
+      "reason": "prompt-observation"
+    },
+    {
+      "name": "edited_completion_history",
+      "rejected": true,
+      "reason": "completion-raw"
+    },
+    {
+      "name": "duplicate_text_remains_source_ambiguous",
+      "rejected": true,
+      "reason": "observer retains ambiguity"
+    },
+    {
+      "name": "edited_source_hash",
+      "rejected": true,
+      "reason": "archive-byte-hash: source.py"
+    },
+    {
+      "name": "unlisted_archive_member",
+      "rejected": true,
+      "reason": "archive-membership"
+    },
+    {
+      "name": "changed_corpus_bytes",
+      "rejected": true,
+      "reason": "archive-byte-hash: raw.json"
+    },
+    {
+      "name": "omitted_archive_file",
+      "rejected": true,
+      "reason": "archive-membership"
+    }
+  ],
+  "primaryBytesUnchanged": true,
+  "scope": "Checks engineering rejection behavior. Some mutations are rejected by an earlier provenance gate; no implication of independent scientific review."
+}

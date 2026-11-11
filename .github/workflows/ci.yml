@@ -59,3 +59,5 @@ jobs:
         run: python3 experiments/ch7/verify_live_build_provenance.py
       - name: Verify known-case persisted acts, separate second rendering and complete dispositions
         run: python3 experiments/ch7/round2-render-2026-11-12/verify_archive.py
+      - name: Verify full controlled history, recorder timing and candidate-to-prompt evidence
+        run: python3 experiments/p3-history/2026-11-12/verify_archive.py
