@@ -21,6 +21,7 @@ def verify_suffix(rows, selection, pre, header):
         posts=r['importPosts']
         require(len(posts)==20 and all(p['status']==201 for p in posts), 'receipt import did not exercise all request/receipt HTTP writes')
         record=pre[selected['renderRef']]
+        require(selected['appliedParamsHash'] == record['applied_params_hash'] and record['stage'] == 'behavior_overlay_pre_solve', 'receipt applied hash/stage not supported by renderer file')
         traces={c['trace_id'] for c in record.get('consumed',[]) if c.get('trace_id')}
         require(selected['intentId'] in traces and selected['assetVersionHash']==header['pmx_sha256'], 'receipt not supported by actual renderer file')
         require(any(p['request']==selected['request'] for p in posts) and any(p['request']==selected['receipt'] for p in posts), 'selected receipt was not imported')
