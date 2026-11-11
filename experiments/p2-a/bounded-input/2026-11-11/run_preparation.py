@@ -16,7 +16,7 @@ def family(pgid):
     return result
 def bounded(command,folder):
     folder.mkdir(parents=True,exist_ok=False);started=time.monotonic();peak=0;cpu={};stop=None;samples=0
-    env={'PATH':'/usr/bin:/bin:/usr/local/bin','LC_ALL':'C','TZ':'UTC','TOKENIZERS_PARALLELISM':'false','DOTNET_GCHeapHardLimit':'0x30000000'}
+    env={'PATH':'/usr/bin:/bin:/usr/local/bin','LC_ALL':'C','TZ':'UTC','TOKENIZERS_PARALLELISM':'false'}
     with (folder/'stdout.log').open('wb') as out,(folder/'stderr.log').open('wb') as err:
         child=subprocess.Popen([str(value) for value in command],cwd=ROOT,env=env,stdout=out,stderr=err,start_new_session=True,preexec_fn=limits)
         while child.poll() is None:
@@ -83,6 +83,7 @@ def main(bank,configs,dotnet,dll,rqc_dll,python,native,out):
     execution={'schema':'aijade.p2a.bounded-input.execution.v1','executionCodeCommit':head,'startedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),
                'planCommit':subprocess.check_output(['git','log','--diff-filter=A','--format=%H','--','experiments/plans/2026-11-11-p2-a-bounded-input-exposure.md'],cwd=ROOT,text=True).strip(),
                'amendmentCommit':subprocess.check_output(['git','log','--diff-filter=A','--format=%H','--','experiments/plans/2026-11-11-p2-a-request-guard-receipts.md'],cwd=ROOT,text=True).strip(),
+               'memoryLifecycleAmendmentCommit':subprocess.check_output(['git','log','--diff-filter=A','--format=%H','--','experiments/plans/2026-11-11-p2-a-probe-memory-lifecycle.md'],cwd=ROOT,text=True).strip(),
                'bankBefore':before,'dllSha256':file_sha(dll),'rqcDllSha256':file_sha(rqc_dll),'nativeSha256':file_sha(native),'pythonExecutable':str(python),'pythonSha256':file_sha(python),
                'driverSha256':file_sha(__file__),'selectionCodeSha256':file_sha(HERE/'select_exposure.py'),
                'oldWorkerSha256':file_sha(TOKENIZER/'tokenize_worker.py'),'newModelCompletionCalls':0}

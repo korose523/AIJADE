@@ -79,6 +79,10 @@ public static class RequestPolicyProbe
         var results = new JsonArray();
         foreach (var probe in probes)
         {
+            // Each artificial fixture may validate the whole bank again. Do not retain its
+            // unreachable JSON/prompt allocations until a host-wide GC pressure threshold.
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: true);
+            GC.WaitForPendingFinalizers();
             var folder = Path.Combine(output, probe.Id);Directory.CreateDirectory(folder);
             var selectedPolicy = policy;
             if (probe.CounterKind != "normal")
@@ -123,6 +127,7 @@ public static class RequestPolicyProbe
             ["managedHeapHardLimitEnvironment"] = Environment.GetEnvironmentVariable("DOTNET_GCHeapHardLimit"),
             ["gcTotalAvailableMemoryBytes"] = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes,
             ["gcConfiguration"] = JsonSerializer.SerializeToNode(GC.GetConfigurationVariables()),
+            ["betweenFixtureCollection"] = "Forced blocking compacting full-generation collection, then pending finalizers; control command only.",
         };
         File.WriteAllText(Path.Combine(output, "summary.json"), summary.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
         return summary;
