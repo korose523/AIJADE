@@ -87,6 +87,8 @@ public partial class ResearchLoopQualificationTests
         using var gateway = new NoGateway();
         await using var host = await ServerTestHost.StartAsync(worker: false, services: services =>
             services.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => gateway));
+        await InitializeFlowIdentityAsync(host);
+        var initialDatabase = await DatabaseIdentityAsync(host);
         var rows = new JsonArray();
         string? oldId = null;
         var conditions = new[] { (catalogue[0], "comfort"), (catalogue[0], "celebrate"), (catalogue[1], "comfort") };
@@ -117,6 +119,7 @@ public partial class ResearchLoopQualificationTests
             });
         }
         Assert.Equal(0, gateway.Attempts);
+        Assert.Equal(initialDatabase.ToJsonString(), (await DatabaseIdentityAsync(host)).ToJsonString());
         if (Env("AIJADE_CH7_ROUTE_CONTROL") is { } output)
             await File.WriteAllTextAsync(output, rows.ToJsonString(new JsonSerializerOptions(Json) { WriteIndented = true }) + "\n", TestContext.Current.CancellationToken);
     }
@@ -142,6 +145,12 @@ public partial class ResearchLoopQualificationTests
         ["database"] = await host.ScalarAsync("SELECT current_database()"),
         ["token"] = await host.ScalarAsync("SELECT token FROM research_flow_identity"),
     };
+
+    private static async Task InitializeFlowIdentityAsync(ServerTestHost host)
+    {
+        await host.ExecAsync("CREATE TABLE research_flow_identity(token text PRIMARY KEY)");
+        await host.ExecAsync("INSERT INTO research_flow_identity VALUES($1)", Guid.NewGuid().ToString("N"));
+    }
 
     private static Task WriteFlowAsync(string path, JsonNode body, CancellationToken ct) =>
         File.WriteAllTextAsync(path, body.ToJsonString(new JsonSerializerOptions(Json) { WriteIndented = true }) + "\n", ct);
@@ -183,7 +192,7 @@ public partial class ResearchLoopQualificationTests
                 var context = new LiveCase(id, host, gateway, new JsonObject(), new JsonObject(), new JsonObject(), database);
                 live.Add(context);
                 await ResearchLoopAdapter.InitializeAsync(host);
-                await host.ExecAsync("CREATE TABLE research_flow_identity(token text PRIMARY KEY); INSERT INTO research_flow_identity VALUES($1)", Guid.NewGuid().ToString("N"));
+                await InitializeFlowIdentityAsync(host);
                 database = await DatabaseIdentityAsync(host);
                 journal.Add(id, "database.open", database);
                 var chosen = id == "I5" ? catalogue[1] : catalogue[0];

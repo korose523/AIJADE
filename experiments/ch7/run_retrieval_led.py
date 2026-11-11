@@ -65,6 +65,7 @@ def main(args):
     write(output / 'input-identities.json', dict(
         codeCommit=commit, planCommit=subprocess.check_output(['git', 'rev-parse', PLAN], cwd=repo, text=True).strip(),
         planSha256=sha(repo / 'experiments/plans/2026-11-12-ch7-retrieval-led-development.md'),
+        initializationAmendment='73c2c09', initializationAmendmentSha256=sha(repo / 'experiments/plans/2026-11-12-ch7-retrieval-led-initialization-amendment.md'),
         binaries=binaries, rendererSources=sources, modelSha256=model_sha,
         selectionSha256=sha(output / 'selection.json'),
         benchSha256=sha(repo / 'src/Aijade.Research/SkillBench/bench-data.json')))
@@ -150,6 +151,7 @@ def main(args):
         request = output / 'renderer-request.json'
         while not request.is_file():
             if flow.poll() is not None:
+                phases['flow'].update(exitCode=flow.returncode, endedAt=utc())
                 raise RuntimeError('flow_ended_before_renderer_request')
             tick()
         request_body = json.loads(request.read_text())
