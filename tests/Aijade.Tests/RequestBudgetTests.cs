@@ -103,6 +103,7 @@ public sealed class RequestBudgetTests
     [InlineData("negative-count", "COUNTER_ERROR", 0)]
     [InlineData("disagree", "COUNTER_ERROR", 0)]
     [InlineData("bad-counter-json", "COUNTER_ERROR", 0)]
+    [InlineData("invalid-counter-identity", "COUNTER_ERROR", 0)]
     [InlineData("reply-length", "REPLY_LENGTH_LIMIT", 1)]
     [InlineData("empty", "EMPTY_RESPONSE", 1)]
     [InlineData("nonconforming", "VERDICT_FORMAT_ERROR", 1)]
@@ -166,6 +167,7 @@ public sealed class RequestBudgetTests
         public Task<ExactPromptCount> CountAsync(string prompt, CancellationToken cancellationToken = default)
         {
             if (kind == "bad-counter-json")return Task.FromException<ExactPromptCount>(new JsonException("synthetic malformed counter reply"));
+            if (kind == "invalid-counter-identity")return Task.FromException<ExactPromptCount>(new InvalidDataException("synthetic changed counter identity"));
             return Task.FromResult(new ExactPromptCount(kind == "negative-count" ? -1 : count,
                 kind == "wrong-raw-hash" ? new string('0', 64) : PromptExposure.Hash(prompt), new string('a', 64), new string('b', 64), kind != "disagree"));
         }

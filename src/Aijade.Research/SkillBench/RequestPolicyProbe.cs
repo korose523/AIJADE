@@ -120,6 +120,9 @@ public static class RequestPolicyProbe
             ["fixtureRule"] = "First bank task; exact lengths built with literal special-token markers, not realistic skill candidates.",
             ["construction"] = preparation, ["probes"] = results, ["status"] = "PASS",
             ["newModelCompletionCalls"] = 0, ["httpHandler"] = "Synthetic in-process handler; no network/model service.",
+            ["managedHeapHardLimitEnvironment"] = Environment.GetEnvironmentVariable("DOTNET_GCHeapHardLimit"),
+            ["gcTotalAvailableMemoryBytes"] = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes,
+            ["gcConfiguration"] = JsonSerializer.SerializeToNode(GC.GetConfigurationVariables()),
         };
         File.WriteAllText(Path.Combine(output, "summary.json"), summary.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
         return summary;

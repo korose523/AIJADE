@@ -7,7 +7,7 @@ def rows(path):
     with path.open() as f:return [json.loads(line) for line in f]
 def run(dotnet,dll,bank,policy,other_policy,out):
     out.mkdir(parents=True,exist_ok=False)
-    common=[str(dotnet),str(dll),'--public-bank',str(bank),'--request-policy',str(policy),'--trials','1','--rounds','1','--tasks','12','--save-candidates']
+    common=[str(dotnet),str(dll),'--public-bank',str(bank),'--request-policy',str(policy),'--trials','1','--rounds','1','--tasks','12','--p-correct','1','--save-candidates']
     def invoke(command,target,expected=0):
         with (out/(target+'.stdout.log')).open('wb') as stdout,(out/(target+'.stderr.log')).open('wb') as stderr:
             result=subprocess.run(command,cwd=ROOT,stdout=stdout,stderr=stderr)
@@ -54,7 +54,7 @@ def run(dotnet,dll,bank,policy,other_policy,out):
             altered.update(exposureFile=str(path),exposureSha256=file_sha(path))
         path=mutations/(label+'-policy.json');write(path,altered);reject(path,label)
     report={'schema':'aijade.p2a.bounded-input.mock-control.v1','status':'PASS','steps':48,'executionsPassed':48,'replayedSteps':32,
-            'completeDecisionEqualityWithoutDurations':True,'negativeChecks':negative,'policySha256':file_sha(policy),
+            'completeDecisionEqualityWithoutDurations':True,'negativeChecks':negative,'policySha256':file_sha(policy),'pCorrect':1,
             'modelCompletionCalls':0,'externalTokenCounterCalls':0,'scope':'Normal CLI simulation and resume control; no model reliability observations.'}
     write(out/'summary.json',report);print(json.dumps(report,indent=2))
 

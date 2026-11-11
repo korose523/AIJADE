@@ -244,7 +244,7 @@ public sealed class RequestBudget : IDisposable
         var id = ++_requests;
         ExactPromptCount count;
         try { count = await _counter.CountAsync(prompt, ct).ConfigureAwait(false); }
-        catch (Exception error) when (error is IOException or InvalidOperationException or JsonException or OperationCanceledException or FormatException or OverflowException or DecoderFallbackException)
+        catch (Exception error) when (error is IOException or InvalidDataException or InvalidOperationException or JsonException or OperationCanceledException or FormatException or OverflowException or DecoderFallbackException)
         {
             Write(new { kind = "request", id, stage, taskId, stepSlot = stage == "warmup" ? (int?)null : CompletedSteps,
                 rawPrompt = prompt, rawSha256 = PromptExposure.Hash(prompt), status = "COUNTER_ERROR", verdict = (bool?)null });
