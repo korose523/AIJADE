@@ -149,9 +149,10 @@ public partial class ResearchLoopQualificationTests
     }
 
     private static async Task<JsonObject> RunCaseOnHostAsync(string id, JsonObject source, ReceiptImportPlan import, IntentRegistry registry,
-        ServerTestHost host, NoGateway gateway, JsonObject initialWrite, JsonObject initialRead, CancellationToken ct, Action<string>? phase = null)
+        ServerTestHost host, NoGateway gateway, JsonObject initialWrite, JsonObject initialRead, CancellationToken ct, Action<string>? phase = null,
+        ResearchConstraintCondition condition = ResearchConstraintCondition.CrossModule)
     {
-        var adapter = new ResearchLoopAdapter(host);
+        var adapter = new ResearchLoopAdapter(host, condition);
         phase?.Invoke("import.begin");
         var importPosts = new JsonArray();
         await RenderReceiptImporter.ImportAsync(import, async e =>
@@ -244,8 +245,9 @@ public partial class ResearchLoopQualificationTests
             duplicateReuse = await adapter.Round2Async(outcomeId, evidence.SkillId, code, task, ct);
         phase?.Invoke("round2.end");
         var final = await adapter.SnapshotAsync();
-        var expectedPromoted = id is "H" or "I3" or "I7" or "S1";
-        var expectedReuse = id is "H" or "I3" or "S1";
+        var local = condition == ResearchConstraintCondition.ModuleLocal;
+        var expectedPromoted = id is "H" or "I3" or "I7" or "S1" || local && (id is "I1" or "I6" or "I8");
+        var expectedReuse = id is "H" or "I3" or "S1" || local && (id is "I1" or "I6");
         var promoted = final["specs"]!.GetValue<long>();
         var reports = final["reports"]!.GetValue<long>();
         var authority = final["authority"]!.AsArray();
@@ -254,18 +256,18 @@ public partial class ResearchLoopQualificationTests
         var qualified = gateway.Attempts == 0 && promoted == (expectedPromoted ? 1 : 0) && reports == promoted && state == expectedState &&
             round2["executed"]!.GetValue<bool>() == expectedReuse && final["reuseCount"]!.GetValue<long>() == (expectedReuse ? 1 : 0) &&
             final["outcomeMemoryCount"]!.GetValue<long>() == (id == "I8" ? 0 : 1) &&
-            (id != "I1" || commit?.Outcome.Reason == "execution_intent_mismatch") &&
+            (id != "I1" || commit?.Outcome.Reason == (local ? "qualified" : "execution_intent_mismatch")) &&
             (id != "I2" || admissionStatus == 400 && admissionBody?["error"]?.GetValue<string>() == "INVALID_RENDER_TRACE_REFERENCE" &&
                 admissionCoreReason == "asset_version_hash_mismatch" && diagnosticEventCount == 0) &&
             (id != "I4" || commit?.Outcome.Reason == "execution_unknown") &&
             (id != "I5" || commit?.Outcome.Reason == "execution_failed") &&
-            (id != "I6" || commit?.Outcome.Reason == "receipt_stage_insufficient") &&
+            (id != "I6" || commit?.Outcome.Reason == (local ? "qualified" : "receipt_stage_insufficient")) &&
             (id != "I7" || round2["retrieved"]!.GetValue<bool>() && round2["memoryOutcome"]!["state"]!.GetValue<string>() == "verified") &&
             (id != "I3" || duplicate?.Duplicate == true && duplicateDelivery?["duplicate"]?.GetValue<bool>() == true && duplicateReuse?["executed"]?.GetValue<bool>() == false) &&
             (id != "I8" || databaseError == "P0001" && final["outboxCount"]!.GetValue<long>() == 0 && authority.Count == 0);
         return new JsonObject
         {
-            ["caseId"] = id, ["batch"] = "development_qualification_only", ["condition"] = "C2", ["qualified"] = qualified,
+            ["caseId"] = id, ["batch"] = "development_qualification_only", ["condition"] = local ? "C1" : "C2", ["qualified"] = qualified,
             ["gatewayAttempts"] = gateway.Attempts,
             ["expected"] = new JsonObject { ["promotions"] = expectedPromoted ? 1 : 0, ["state"] = expectedState, ["round2Execution"] = expectedReuse },
             ["initialWrite"] = initialWrite.DeepClone(), ["initialRead"] = initialRead.DeepClone(),
@@ -274,6 +276,7 @@ public partial class ResearchLoopQualificationTests
             ["admission"] = new JsonObject { ["request"] = envelope, ["status"] = admissionStatus, ["response"] = admissionBody,
                 ["diagnosticDirectAppendAttempts"] = id == "I2" ? 1 : 0, ["diagnosticCoreReason"] = admissionCoreReason, ["diagnosticEventCount"] = diagnosticEventCount },
             ["commit"] = JsonSerializer.SerializeToNode(commit, Json), ["duplicateCommit"] = JsonSerializer.SerializeToNode(duplicate, Json),
+            ["promotionAttempts"] = new JsonArray(adapter.PromotionAttempts.Select(p => (JsonNode)p.DeepClone()).ToArray()),
             ["databaseErrorCode"] = databaseError, ["beforeDelivery"] = beforeDelivery, ["delivery"] = delivery,
             ["duplicateDelivery"] = duplicateDelivery, ["round2"] = round2, ["duplicateReuse"] = duplicateReuse,
             ["final"] = final, ["semanticMismatchConstructed"] = id == "S1",

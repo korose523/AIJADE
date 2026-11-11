@@ -17,7 +17,13 @@ namespace Aijade.Tests;
 
 // Chapter 7 research-only adapter, deliberately not a server registration or a product automatic-learning path.
 // The authority and outbox belong to an isolated test database. Outcome HTTP delivery is after the atomic DB transaction.
-internal sealed class ResearchLoopAdapter(ServerTestHost host)
+internal enum ResearchConstraintCondition
+{
+    ModuleLocal,
+    CrossModule,
+}
+
+internal sealed class ResearchLoopAdapter(ServerTestHost host, ResearchConstraintCondition condition = ResearchConstraintCondition.CrossModule)
 {
     internal sealed record Outcome(string OutcomeId, string SkillId, int Revision, string State, string Reason, string CodeSha256, string Scope,
         string IntentId, string ExecutionId, bool Promoted, string? SpecId, string? ReportId);
@@ -25,6 +31,26 @@ internal sealed class ResearchLoopAdapter(ServerTestHost host)
     internal sealed record CommitResult(Outcome Outcome, bool Duplicate, PromotionResult? Promotion, PromotionJob? Job);
 
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
+    private int invocation;
+
+    internal List<JsonObject> PromotionAttempts { get; } = [];
+
+    // Both arms fail closed on the execution module's own evidence. C1 omits
+    // only the joins to a different module's intent/asset/stage claim.
+    private static string? LocalExecutionRefusal(SkillEvidence evidence)
+    {
+        if (string.IsNullOrWhiteSpace(evidence.SkillId) || string.IsNullOrWhiteSpace(evidence.TaskId) ||
+            string.IsNullOrWhiteSpace(evidence.IntentId) || string.IsNullOrWhiteSpace(evidence.SessionId) ||
+            string.IsNullOrWhiteSpace(evidence.AssetVersion) || string.IsNullOrWhiteSpace(evidence.ExecutionId) ||
+            evidence.CodeSha256.Length != 64 || !evidence.CodeSha256.All(Uri.IsHexDigit) ||
+            evidence.BenchSha256.Length != 64 || !evidence.BenchSha256.All(Uri.IsHexDigit))
+            return "evidence_identity_missing";
+        if (evidence.ExecutionOk is null)
+            return "execution_unknown";
+        if (evidence.ExecutionOk != true || evidence.Passed != evidence.Total || evidence.Total <= 0)
+            return "execution_failed";
+        return null;
+    }
 
     internal static async Task InitializeAsync(ServerTestHost host) => await host.ExecAsync("""
         CREATE TABLE research_skill_authority (
@@ -58,6 +84,7 @@ internal sealed class ResearchLoopAdapter(ServerTestHost host)
     internal async Task<CommitResult> CommitAsync(string outcomeId, SkillEvidence evidence, ShadowParamsProposal proposal,
         string admissionEventId, CancellationToken ct)
     {
+        var call = Interlocked.Increment(ref invocation);
         var evidenceHash = JsFormat.ContentHash(new JsonObject
         {
             ["evidence"] = JsonSerializer.SerializeToNode(evidence, Json), ["proposal"] = proposal.ToJson(), ["admissionEventId"] = admissionEventId,
@@ -84,7 +111,8 @@ internal sealed class ResearchLoopAdapter(ServerTestHost host)
             admitted?["asset_version_hash"]?.GetValue<string>() == proposal.AssetVersionHash &&
             admitted?["proposal_id"]?.GetValue<string>() == proposal.ProposalId && admitted?["input_hash"]?.GetValue<string>() == proposal.InputHash &&
             admitted?["candidate_params"] is JsonObject admittedParams && JsFormat.ContentHash(admittedParams) == JsFormat.ContentHash(proposal.CandidateParams);
-        var reason = admitted is null ? "admission_refused" : !proposalBound ? "admission_proposal_mismatch" : evidence.Refusal();
+        var reason = admitted is null ? "admission_refused" : !proposalBound ? "admission_proposal_mismatch" :
+            condition == ResearchConstraintCondition.CrossModule ? evidence.Refusal() : LocalExecutionRefusal(evidence);
         if (prior?.State == "revoked")
             reason = "skill_revoked";
         else if (prior is not null && prior.CodeSha256 != evidence.CodeSha256)
@@ -99,7 +127,17 @@ internal sealed class ResearchLoopAdapter(ServerTestHost host)
                 new CoreTestGate(true, evidence.Total, 0), 0, TraceId: evidence.ExecutionId);
             job = new PromotionJob("job-" + outcomeId, proposal.ProposalId, evidence.SessionId, evidence.ExecutionId, 1,
                 proposal.InputHash, pack, proposal, PgcV6State: new PgcState4(0, 0, 0, 0));
-            promoted = await host.App.Services.GetRequiredService<PromotionService>().ProcessAsync(job, conn, tx, ct);
+            var observation = new JsonObject
+            {
+                ["invocation"] = call, ["job"] = JsonSerializer.SerializeToNode(job, Json),
+                ["transactionMode"] = condition == ResearchConstraintCondition.CrossModule ? "caller_owned" : "service_owned",
+            };
+            PromotionAttempts.Add(observation);
+            var service = host.App.Services.GetRequiredService<PromotionService>();
+            promoted = condition == ResearchConstraintCondition.CrossModule
+                ? await service.ProcessAsync(job, conn, tx, ct)
+                : await service.ProcessAsync(job, ct);
+            observation["serviceResult"] = JsonSerializer.SerializeToNode(promoted, Json);
             if (!promoted.Ok)
             {
                 state = "unknown";

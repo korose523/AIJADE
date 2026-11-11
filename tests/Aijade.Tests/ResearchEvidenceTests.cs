@@ -8,7 +8,7 @@ using Aijade.Research.SkillBench;
 namespace Aijade.Tests;
 
 /// <summary>Admission provenance and concurrent/revoked authority controls, separate from the declared renderer batch.</summary>
-public class ResearchEvidenceTests
+public partial class ResearchEvidenceTests
 {
     private const string Code = "function solve(xs) { return xs.reduce((a,b)=>a+b,0); }";
 
