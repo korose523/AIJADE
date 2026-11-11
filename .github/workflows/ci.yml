@@ -37,3 +37,5 @@ jobs:
         run: python3 experiments/p2-a/candidate-review/2026-11-11/verify_archive.py
       - name: Verify complete P2-A executable-bank records and prompt measurements
         run: python3 experiments/p2-a/executable-bank/2026-11-11/verify_archive.py
+      - name: Verify complete P2-A tokenizer streams and capacity ledger without model inference
+        run: python3 experiments/p2-a/tokenizer-capacity/2026-11-11/verify_archive.py

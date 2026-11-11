@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 116, in <module>
+    run(a.model_config.resolve(),a.corpus.resolve(),a.native.resolve(),a.out.resolve())
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 78, in run
+    received=native.encode(text)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 40, in encode
+    decoded=self.read(self.u32()).decode('utf-8')
+                      ^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 32, in u32
+    def u32(self):return struct.unpack('<I',self.read(4))[0]
+                                            ^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 29, in read
+    if not block:raise ValueError('Native tokenizer ended before the complete record')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: Native tokenizer ended before the complete record

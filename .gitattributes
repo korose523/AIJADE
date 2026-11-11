@@ -1,3 +1,6 @@
 
 # Keep archived server-log bytes, including their original trailing spaces.
 experiments/mac-preflight/**/engineering-receipts/ollama-load-excerpts.log -whitespace
+# Preserve original tokenizer diagnostics, metadata licenses and Go build output byte-for-byte.
+experiments/p2-a/tokenizer-capacity/**/records/** -whitespace
+experiments/p2-a/tokenizer-capacity/**/results/ollama-build-info.txt -whitespace

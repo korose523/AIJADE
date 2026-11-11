@@ -1,0 +1,135 @@
+{
+  "schema": "aijade.p2a.token-capacity.stage.v1",
+  "executionCodeCommit": "21660c265fbeb73555403cf7c55f08fa2a92d642",
+  "controlsOnly": true,
+  "results": {
+    "controls/qwen": {
+      "status": "PASS",
+      "process": {
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 1.5932402620092034,
+        "sampledFamilyPeakRssBytes": 162672640,
+        "sampledFamilyCpuSeconds": 1.06,
+        "samples": 11,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "perFileOutputBytes": 536870912
+        }
+      },
+      "summary": {
+        "schema": "aijade.p2a.token-capacity.worker.v1",
+        "model": "qwen2.5-coder:7b-instruct",
+        "rows": 13,
+        "counts": {
+          "PASS": 13
+        },
+        "newCompletionCalls": 0,
+        "modelBlobSha256": "60e05f2100071479f596b964f89f510f057ce397ea22f2833a0cfe029bfc2463",
+        "ggufMetadataSha256": "d14130bc1f61980da9888547db50af128ed4ac555c13f604218442ac0bb4a3c6",
+        "corpusSha256": "3fbeeb34a7fd29e4b0f0028d1e729f9ce6d41e97ca0c5219de29a3825e6085f3",
+        "driverSha256": "e0878d64c863c9af5ed9a02f8edd7e76c0339a144f8b2dd197a98b6dd89d9157",
+        "nativeExecutableSha256": "04fa48daba5ec67b03d478f49fdd8b75386b938289f0f4969318989fcad71c94",
+        "tokenizersVersion": "0.22.1",
+        "tokenizersExtensionSha256": {
+          "tokenizers.abi3.so": "7d83214f76404cfb8f51cd23a22cc06fcb276d73769dfa88428a8890b3029b4a"
+        },
+        "pythonVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+        "pythonPrefix": "/Users/mac/.codex/skill-envs/p2-tokenizer",
+        "pythonBasePrefix": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none",
+        "nativeInfo": {
+          "vocabSize": 152064,
+          "bosId": 151643,
+          "eosId": 151645,
+          "addBos": false,
+          "addEos": false,
+          "libraryVersion": "0.7.0-dev"
+        },
+        "modelFileStateBefore": {
+          "inode": 257208,
+          "size": 4683074048,
+          "mtimeNs": 1788816598518140500
+        },
+        "modelFileStateAfter": {
+          "inode": 257208,
+          "size": 4683074048,
+          "mtimeNs": 1788816598518140500
+        },
+        "wallSeconds": 0.6540183129254729,
+        "pythonCpuSeconds": 0.04295400000000005,
+        "childCpuSeconds": 0.32086699999999996,
+        "status": "PASS"
+      },
+      "plannedRows": 13
+    },
+    "controls/llama": {
+      "status": "PASS",
+      "process": {
+        "exitCode": 0,
+        "stop": null,
+        "wallSeconds": 1.8149071740917861,
+        "sampledFamilyPeakRssBytes": 192262144,
+        "sampledFamilyCpuSeconds": 1.44,
+        "samples": 12,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "limits": {
+          "cpuSeconds": 1200,
+          "wallSeconds": 1800,
+          "sampledFamilyRssBytes": 2147483648,
+          "perFileOutputBytes": 536870912
+        }
+      },
+      "summary": {
+        "schema": "aijade.p2a.token-capacity.worker.v1",
+        "model": "llama3.1:8b",
+        "rows": 13,
+        "counts": {
+          "PASS": 13
+        },
+        "newCompletionCalls": 0,
+        "modelBlobSha256": "667b0c1932bc6ffc593ed1d03f895bf2dc8dc6df21db3042284a6f4416b06a29",
+        "ggufMetadataSha256": "56a4d6e33a44e46615304ca8d81e895a17f70f85269378ad3ae4376402c7816f",
+        "corpusSha256": "46881293e6f9c1e7ef5df97f8134e86cf8de964fe3626d71a25fb22495175c42",
+        "driverSha256": "e0878d64c863c9af5ed9a02f8edd7e76c0339a144f8b2dd197a98b6dd89d9157",
+        "nativeExecutableSha256": "04fa48daba5ec67b03d478f49fdd8b75386b938289f0f4969318989fcad71c94",
+        "tokenizersVersion": "0.22.1",
+        "tokenizersExtensionSha256": {
+          "tokenizers.abi3.so": "7d83214f76404cfb8f51cd23a22cc06fcb276d73769dfa88428a8890b3029b4a"
+        },
+        "pythonVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+        "pythonPrefix": "/Users/mac/.codex/skill-envs/p2-tokenizer",
+        "pythonBasePrefix": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none",
+        "nativeInfo": {
+          "vocabSize": 128256,
+          "bosId": 128000,
+          "eosId": 128009,
+          "addBos": true,
+          "addEos": false,
+          "libraryVersion": "0.7.0-dev"
+        },
+        "modelFileStateBefore": {
+          "inode": 293803,
+          "size": 4920738944,
+          "mtimeNs": 1794231312516260000
+        },
+        "modelFileStateAfter": {
+          "inode": 293803,
+          "size": 4920738944,
+          "mtimeNs": 1794231312516260000
+        },
+        "wallSeconds": 0.5016198118682951,
+        "pythonCpuSeconds": 0.03696999999999995,
+        "childCpuSeconds": 0.445892,
+        "status": "PASS"
+      },
+      "plannedRows": 13
+    }
+  },
+  "status": "PASS",
+  "newCompletionCalls": 0
+}

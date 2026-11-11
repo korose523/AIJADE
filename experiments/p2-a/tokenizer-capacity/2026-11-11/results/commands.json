@@ -1,0 +1,39 @@
+{
+  "compilerVersion": "Apple clang version 14.0.0 (clang-1400.0.29.202)\nTarget: x86_64-apple-darwin24.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "nativeCompileCommand": [
+    "/usr/bin/clang",
+    "-std=c11",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-mmacosx-version-min=14.0",
+    "-I<matching-headers>",
+    "native_tokenizer.c",
+    "/Applications/Ollama.app/Contents/Resources/libllama.0.7.0.dylib",
+    "-Wl,-rpath,/Applications/Ollama.app/Contents/Resources",
+    "-o",
+    "<native-helper>"
+  ],
+  "goDistribution": {
+    "file": "go1.26.0.darwin-amd64.tar.gz",
+    "sha256": "1ca28b7703cbea05a65b2a1d92d6b308610ef92f8824578a0874f2e60c9d5a22",
+    "source": "https://go.dev/dl/?mode=json&include=all"
+  },
+  "executionCommand": [
+    "<python-venv>",
+    "run_stage.py",
+    "--inputs",
+    "<inputs-02>",
+    "--python",
+    "<python-venv>",
+    "--native",
+    "<native-tokenizer-03>",
+    "--out",
+    "<complete-03>"
+  ],
+  "exporterBuildCommit": "ea27f27c0a5ffbc6a1c98b7dca65da62c99ddeef",
+  "exportInputWorktreeCommit": "feaeb0435397156ec0780253fe3623f91685c42b",
+  "driverExecutionCommit": "feaeb0435397156ec0780253fe3623f91685c42b",
+  "note": "Exporter C# files are unchanged across these commits; assembly identity is recorded separately. All paths in original execution receipts remain literal evidence."
+}

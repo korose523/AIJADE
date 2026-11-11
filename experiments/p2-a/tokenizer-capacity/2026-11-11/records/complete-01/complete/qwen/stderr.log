@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 78, in run
+    received=native.encode(text)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 40, in encode
+    decoded=self.read(self.u32()).decode('utf-8')
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 31, in read
+    result=bytes(value);self.archive.write(result);return result
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 27] File too large
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 116, in <module>
+    run(a.model_config.resolve(),a.corpus.resolve(),a.native.resolve(),a.out.resolve())
+  File "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/p2-a/tokenizer-capacity/2026-11-11/tokenize_worker.py", line 110, in run
+    native.archive.close();native.stderr.close()
+    ^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 27] File too large

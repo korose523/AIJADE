@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "full": {
+    "qwen": {
+      "rows": 2110,
+      "views": 8440,
+      "maximumTokens": 100044,
+      "tokenIdAgreement": true,
+      "rawByteRoundtrip": true,
+      "logicalStreamHashes": true
+    },
+    "llama": {
+      "rows": 2110,
+      "views": 8440,
+      "maximumTokens": 90315,
+      "tokenIdAgreement": true,
+      "rawByteRoundtrip": true,
+      "logicalStreamHashes": true
+    }
+  },
+  "controls": {
+    "qwen": {
+      "rows": 15,
+      "views": 60,
+      "maximumTokens": 76,
+      "tokenIdAgreement": true,
+      "rawByteRoundtrip": true,
+      "logicalStreamHashes": true
+    },
+    "llama": {
+      "rows": 15,
+      "views": 60,
+      "maximumTokens": 34,
+      "tokenIdAgreement": true,
+      "rawByteRoundtrip": true,
+      "logicalStreamHashes": true
+    }
+  },
+  "unchangedTokenViewsFromRejectedDecoderPass": 16880,
+  "rawPromptJoins": 2110,
+  "negativeChecks": [
+    "changed-token",
+    "changed-count",
+    "changed-hash",
+    "missing-row",
+    "changed-template",
+    "changed-system"
+  ],
+  "completePopulationAndCapacityLedgerRecomputed": true,
+  "newCompletionCalls": 0,
+  "scope": "Recorded-byte/ID and context arithmetic audit; no model inference, device qualification, task eligibility or scientific approval."
+}
