@@ -21,7 +21,7 @@ class Native:
         self.logical_hash=hashlib.sha256()
         self.logical_bytes=0
         self.child=subprocess.Popen([str(executable),str(model)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=self.stderr)
-        assert self.read(8)==b'P2TOK01\0'
+        assert self.read(8)==b'P2TOK02\0'
         fields=struct.unpack('<5I',self.read(20));version=self.read(self.u32()).decode()
         self.info={'vocabSize':fields[0],'bosId':fields[1],'eosId':fields[2],'addBos':bool(fields[3]),'addEos':bool(fields[4]),'libraryVersion':version}
     def read(self,size):
@@ -64,7 +64,7 @@ def run(config,corpus,executable,out):
              'nativeExecutableSha256':sha(executable.read_bytes()),'tokenizersVersion':__import__('tokenizers').__version__,
              'tokenizersExtensionSha256':{path.name:sha(path.read_bytes()) for path in extensions},
              'pythonVersion':sys.version,'pythonPrefix':sys.prefix,'pythonBasePrefix':sys.base_prefix,
-             'nativeInfo':None,'modelFileStateBefore':file_state(model)}
+             'nativeInfo':None,'modelFileStateBefore':file_state(model),'nativeDecodeMethod':'uncleaned-token-to-piece-lstrip-0-special-true'}
     try:
         native=Native(executable,model,out);summary['nativeInfo']=native.info
         assert native.info['vocabSize']==len(independent.pieces)

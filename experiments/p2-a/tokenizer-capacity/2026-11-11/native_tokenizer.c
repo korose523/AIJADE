@@ -19,21 +19,25 @@ static void encode(const struct llama_vocab *vocab, const char *input, int32_t l
     if (count != needed) fail("token count changed");
     write_u32((uint32_t)count);
     write_bytes(tokens, (size_t)count * sizeof(*tokens));
-    int32_t text_needed = llama_detokenize(vocab, tokens, count, NULL, 0, false, true);
-    if (text_needed > 0) fail("unexpected successful zero-buffer detokenize");
-    text_needed = -text_needed;
-    if (text_needed > 4194304) fail("decoded-text limit");
-    int32_t capacity = text_needed + 256;
+    // The whole-sequence convenience decoder can clean punctuation whitespace.
+    // Concatenate uncleaned byte pieces for a reversible code-text check.
+    int32_t capacity = length + 256;
     char *decoded = malloc((size_t)capacity);
     if (!decoded) fail("allocate decoded text");
-    int32_t actual = llama_detokenize(vocab, tokens, count, decoded, capacity, false, true);
-    if (actual < 0) {
-        capacity = -actual + 256;
-        if (capacity > 4194304) fail("decoded-text retry limit");
-        char *larger = realloc(decoded, (size_t)capacity);
-        if (!larger) fail("allocate decoded retry");
-        decoded = larger;
-        actual = llama_detokenize(vocab, tokens, count, decoded, capacity, false, true);
+    int32_t actual = 0;
+    for (int32_t i = 0; i < count; ++i) {
+        int32_t piece = llama_token_to_piece(vocab, tokens[i], decoded + actual, capacity - actual, 0, true);
+        if (piece < 0) {
+            int32_t next_capacity = actual - piece + 256;
+            if (next_capacity > 4194304) fail("decoded-text retry limit");
+            char *larger = realloc(decoded, (size_t)next_capacity);
+            if (!larger) fail("allocate decoded retry");
+            decoded = larger;
+            capacity = next_capacity;
+            piece = llama_token_to_piece(vocab, tokens[i], decoded + actual, capacity - actual, 0, true);
+        }
+        if (piece < 0 || piece > capacity - actual) fail("byte piece exceeds buffer");
+        actual += piece;
     }
     if (actual < 0 || actual > capacity) fail("detokenized size exceeds buffer");
     write_u32((uint32_t)actual); write_bytes(decoded, (size_t)actual);
@@ -51,7 +55,7 @@ int main(int argc, char **argv) {
     struct llama_model *model = llama_model_load_from_file(argv[1], params);
     if (!model) fail("vocabulary-only model load failed");
     const struct llama_vocab *vocab = llama_model_get_vocab(model);
-    write_bytes("P2TOK01\0", 8);
+    write_bytes("P2TOK02\0", 8);
     write_u32((uint32_t)llama_vocab_n_tokens(vocab));
     write_u32((uint32_t)llama_vocab_bos(vocab));
     write_u32((uint32_t)llama_vocab_eos(vocab));

@@ -73,7 +73,7 @@ def run(inputs,python,native,out,controls_only,controls_from):
             process=bounded([str(python),str(script),'--model-config',str(inputs/model/'model-config.json'),'--corpus',str(inputs/model/(name+'.jsonl')),
                              '--native',str(native),'--out',str(folder/'data')],folder)
             summary_path=folder/'data/summary.json';summary=load(summary_path) if summary_path.exists() else None
-            expected=13 if name=='controls' else 2110
+            expected=15 if name=='controls' else 2110
             passed=process['exitCode']==0 and process['stop'] is None and summary and summary.get('status')=='PASS' and summary['rows']==expected
             results[name+'/'+model]={'status':'PASS' if passed else 'FAIL','process':process,'summary':summary,'plannedRows':expected}
             write(out/'summary.json',{'schema':'aijade.p2a.token-capacity.stage.v1','executionCodeCommit':source,'controlsOnly':controls_only,'results':results,'newCompletionCalls':0})
