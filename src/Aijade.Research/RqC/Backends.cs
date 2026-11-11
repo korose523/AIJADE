@@ -159,11 +159,18 @@ public static class Backends
     private static string PromptArgs(BenchTask task, BenchCase test) =>
         task.PublicContract is null ? JsJson.Stringify(test.Args) : test.Args;
 
+    /// <summary>The exact input representation shown to the verifier, without an expected output.</summary>
+    public static string FormatCaseInput(BenchTask task, int index) => PromptArgs(task, task.Tests[index]);
+
     /// <summary>The verification prompt includes the case inputs and keeps expected outputs in the execution path.</summary>
     public static string BuildVerifyPrompt(BenchTask task, string code) => BuildVerifyPrompt(task, code, null);
 
-    public static string BuildVerifyPrompt(BenchTask task, string code, IReadOnlyList<int>? visibleCases)
+    public static string BuildVerifyPrompt(BenchTask task, string code, IReadOnlyList<int>? visibleCases) =>
+        BuildVerifyPrompt(task, code, visibleCases, VerifierInstructions.Legacy);
+
+    public static string BuildVerifyPrompt(BenchTask task, string code, IReadOnlyList<int>? visibleCases, string instructionVersion)
     {
+        VerifierInstructions.Validate(instructionVersion);
         var lines = new List<string>
         {
         "You are verifying a JavaScript solution against a task.",
@@ -178,7 +185,8 @@ public static class Backends
         lines.AddRange([
         "You are given ONLY the inputs of the test cases, never the expected outputs:",
         string.Join("\n", VisibleIndices(task, visibleCases).Select(i => $"  case {i}: args = {PromptArgs(task, task.Tests[i])} (expected WITHHELD)")),
-        "For each case, decide whether the code returns the correct result, then give an overall verdict.",
+        instructionVersion == VerifierInstructions.WholeTask ? VerifierInstructions.WholeTaskCriterion
+            : "For each case, decide whether the code returns the correct result, then give an overall verdict.",
         "Respond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason."]);
         return string.Join("\n", lines);
     }
@@ -190,8 +198,12 @@ public static class Backends
     /// </summary>
     public static string BuildVerifyPromptB(BenchTask task, string code) => BuildVerifyPromptB(task, code, null);
 
-    public static string BuildVerifyPromptB(BenchTask task, string code, IReadOnlyList<int>? visibleCases)
+    public static string BuildVerifyPromptB(BenchTask task, string code, IReadOnlyList<int>? visibleCases) =>
+        BuildVerifyPromptB(task, code, visibleCases, VerifierInstructions.Legacy);
+
+    public static string BuildVerifyPromptB(BenchTask task, string code, IReadOnlyList<int>? visibleCases, string instructionVersion)
     {
+        VerifierInstructions.Validate(instructionVersion);
         var lines = new List<string>
         {
         $"Task: {task.ModelInstruction}",
@@ -205,7 +217,8 @@ public static class Backends
         lines.AddRange([
         "Test inputs (the expected outputs are not shown):",
         string.Join("\n", VisibleIndices(task, visibleCases).Select(i => $"  {i + 1}. {PromptArgs(task, task.Tests[i])}")),
-        "Question: does the candidate return the correct output for every one of these inputs?",
+        instructionVersion == VerifierInstructions.WholeTask ? VerifierInstructions.WholeTaskCriterion
+            : "Question: does the candidate return the correct output for every one of these inputs?",
         "Answer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification."]);
         return string.Join("\n", lines);
     }
@@ -355,6 +368,8 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
             ["stream"] = false,
             ["options"] = new JsonObject { ["temperature"] = temperature, ["seed"] = seed ?? Backends.DeriveOllamaSeed(model, baseUrl) },
         };
+        if (requestBudget?.Policy.KeepAliveSeconds is { } retention)
+            body["keep_alive"] = retention;
         var replyCap = budgeted?.ReplyTokens ?? maxReplyTokens;
         if (replyCap is { } cap)
             body["options"]!["num_predict"] = cap;
@@ -362,9 +377,11 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
         if (context is { } ctxTokens)
             body["options"]!["num_ctx"] = ctxTokens;   // newer Ollama servers otherwise load the model's full native context
         HttpResponseMessage res;
+        var rawBody = body.ToJsonString();
+        if (budgeted is not null)requestBudget!.RecordHttpRequest(budgeted, rawBody);
         try
         {
-            res = await http.PostAsync(new Uri($"{baseUrl}/api/chat"), new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json"), cts.Token).ConfigureAwait(false);
+            res = await http.PostAsync(new Uri($"{baseUrl}/api/chat"), new StringContent(rawBody, Encoding.UTF8, "application/json"), cts.Token).ConfigureAwait(false);
         }
         catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
         {
@@ -433,7 +450,9 @@ public sealed class OllamaBackend(HttpClient http, string model, string baseUrl 
     {
         var code = Bench.ExtractCodeBlock(candidate) ?? candidate;
         var visible = VisibleCases(task, "verification");
-        var prompt = verifyTemplate == "B" ? Backends.BuildVerifyPromptB(task, code, visible) : Backends.BuildVerifyPrompt(task, code, visible);
+        var instructionVersion = requestBudget?.Policy.Exposure.VerifierInstructionVersion ?? VerifierInstructions.Legacy;
+        var prompt = verifyTemplate == "B" ? Backends.BuildVerifyPromptB(task, code, visible, instructionVersion)
+            : Backends.BuildVerifyPrompt(task, code, visible, instructionVersion);
         var (content, wasAborted) = await ChatAsync(prompt, "verification", task.Id, cancellationToken).ConfigureAwait(false);
         if (wasAborted)
             return new SelfVerifierVerdict(false, 0.2, content == LengthLimitedGeneration ? "FAIL [the reply reached the token limit]" : "FAIL [the server aborted a repetitive reply]");

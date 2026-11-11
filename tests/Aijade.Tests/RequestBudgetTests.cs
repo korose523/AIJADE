@@ -11,6 +11,86 @@ namespace Aijade.Tests;
 public sealed class RequestBudgetTests
 {
     [Fact]
+    public void Whole_task_templates_share_the_fixed_criterion_without_the_listed_example_questions()
+    {
+        using var fixture = new Fixture();var task = fixture.Bank.ReadTask("identity");
+        foreach (var indices in new int[][] { [0], [] })
+        {
+            var a = Backends.BuildVerifyPrompt(task, "function solve(x){return x;}", indices, VerifierInstructions.WholeTask);
+            var b = Backends.BuildVerifyPromptB(task, "function solve(x){return x;}", indices, VerifierInstructions.WholeTask);
+            Assert.Contains(VerifierInstructions.WholeTaskCriterion, a, StringComparison.Ordinal);
+            Assert.Contains(VerifierInstructions.WholeTaskCriterion, b, StringComparison.Ordinal);
+            Assert.DoesNotContain("For each case, decide", a, StringComparison.Ordinal);
+            Assert.DoesNotContain("correct output for every one of these inputs", b, StringComparison.Ordinal);
+        }
+        Assert.Contains("For each case, decide", Backends.BuildVerifyPrompt(task, "", [0]), StringComparison.Ordinal);
+        Assert.Contains("correct output for every one of these inputs", Backends.BuildVerifyPromptB(task, "", [0]), StringComparison.Ordinal);
+        Assert.Throws<ArgumentException>(() => Backends.BuildVerifyPrompt(task, "", [0], "unregistered-winner"));
+    }
+
+    [Theory]
+    [InlineData("v1-with-version")]
+    [InlineData("v2-without-version")]
+    [InlineData("unknown-version")]
+    [InlineData("unknown-schema")]
+    public void Instruction_schema_rejects_ambiguous_or_unknown_intent(string change)
+    {
+        using var fixture = new Fixture();var data = JsonNode.Parse(File.ReadAllText(fixture.ExposureFile))!;
+        data["schema"] = PromptExposure.WholeTaskSchema;data["verifierInstructionVersion"] = VerifierInstructions.WholeTask;
+        switch (change)
+        {
+            case "v1-with-version": data["schema"] = PromptExposure.Schema;break;
+            case "v2-without-version": data.AsObject().Remove("verifierInstructionVersion");break;
+            case "unknown-version": data["verifierInstructionVersion"] = "best-after-results";break;
+            case "unknown-schema": data["schema"] = "unknown";break;
+        }
+        File.WriteAllText(fixture.ExposureFile, data.ToJsonString());
+        Assert.Throws<InvalidDataException>(() => PromptExposure.Load(fixture.ExposureFile, fixture.Bank));
+    }
+
+    [Fact]
+    public async Task Actual_backend_uses_the_versioned_target_and_explicit_retention()
+    {
+        using var fixture = new Fixture();fixture.WholeTaskPolicy();
+        var policy = PublicRequestPolicy.Load(fixture.PolicyFile, fixture.Bank);
+        var handler = new RecordingHandler();using var http = new HttpClient(handler);
+        var folder = fixture.Output("whole-target");
+        using var budget = new RequestBudget(policy, new Counter(100), folder, 4);
+        var backend = new OllamaBackend(http, policy.Model, verifyTemplate: "B", requestBudget: budget);
+        await backend.VerifyAsync(fixture.Bank.ReadTask("identity"), "function solve(x){return x;}", TestContext.Current.CancellationToken);
+        Assert.Equal(0, handler.Last!["keep_alive"]!.GetValue<int>());
+        Assert.Contains(VerifierInstructions.WholeTaskCriterion, handler.Last["messages"]![0]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Contains("http-request", File.ReadAllText(Path.Combine(folder, "requests.jsonl")), StringComparison.Ordinal);
+        Assert.DoesNotContain("case 1:", handler.Last["messages"]![0]!["content"]!.GetValue<string>(), StringComparison.Ordinal);
+        Assert.Equal(3, fixture.Bank.ReadTask("identity").Tests.Count);
+    }
+
+    [Fact]
+    public async Task Original_bank_accepts_the_same_policy_and_checks_resume_settings_before_output()
+    {
+        using var fixture = new Fixture();fixture.WholeTaskPolicy(originalBank: true);
+        var ct = TestContext.Current.CancellationToken;
+        var cfg = RqcCliConfig.Parse(["--request-policy", fixture.PolicyFile, "--trials", "1", "--rounds", "1",
+            "--tasks", "3", "--p-correct", "1", "--save-candidates", "--out", fixture.Output("original")]);
+        var (full, summary) = await RqcRunner.RunAsync(cfg, gitHash: "test", ct: ct);
+        Assert.Equal(Bench.ManifestSha256, summary["builtinBank"]!["manifestSha256"]!.GetValue<string>());
+        Assert.Equal(44, summary["builtinBank"]!["poolTasks"]!.GetValue<int>());
+        var cut = fixture.Output("original-prefix");
+        foreach (var name in new[] { "trials.jsonl", "candidates.jsonl" })
+            await File.WriteAllLinesAsync(Path.Combine(cut, name), (await File.ReadAllLinesAsync(Path.Combine(full, name), ct)).Take(8), ct);
+        var (continued, resumed) = await RqcRunner.RunAsync(cfg with { ResumeFrom = Path.Combine(cut, "candidates.jsonl"), Out = fixture.Output("original-resume") }, gitHash: "test", ct: ct);
+        Assert.Equal(8, resumed["resumed"]!["replayedSteps"]!.GetValue<int>());
+        static IEnumerable<string> Decisions(string path) => File.ReadLines(path).Select(line =>
+        {
+            var row = JsonNode.Parse(line)!.AsObject();row.Remove("durationMs");return row.ToJsonString();
+        });
+        Assert.Equal(Decisions(Path.Combine(full, "trials.jsonl")), Decisions(Path.Combine(continued, "trials.jsonl")));
+        var different = cfg with { Seed = 43, ResumeFrom = Path.Combine(cut, "candidates.jsonl"), Out = Path.Combine(fixture.Root, "rejected-seed") };
+        await Assert.ThrowsAsync<InvalidDataException>(() => RqcRunner.RunAsync(different, gitHash: "test", ct: ct));
+        Assert.False(Directory.Exists(different.Out));
+    }
+
+    [Fact]
     public void Visible_examples_keep_original_indices_and_never_replace_the_oracle()
     {
         using var fixture = new Fixture();
@@ -248,6 +328,22 @@ public sealed class RequestBudgetTests
                 model = "fixture-qwen", modelManifestSha256 = new string('a', 64), templateSha256 = new string('c', 64), systemSha256 = new string('d', 64),
                 counter = new TokenCounterSpec(executable, PublicBenchBank.FileSha256(executable), script, PublicBenchBank.FileSha256(script), config, PublicBenchBank.FileSha256(config)),
             }, Json));
+        }
+        public void WholeTaskPolicy(bool originalBank = false)
+        {
+            var exposure = JsonNode.Parse(File.ReadAllText(ExposureFile))!.AsObject();
+            exposure["schema"] = PromptExposure.WholeTaskSchema;
+            exposure["verifierInstructionVersion"] = VerifierInstructions.WholeTask;
+            if (originalBank)
+            {
+                exposure["bankManifestSha256"] = Bench.ManifestSha256;
+                exposure["tasks"] = JsonSerializer.SerializeToNode(Bench.Tasks.Select(task =>
+                    new ExposureTask(task.Id, task.Tests.Count, PromptExposure.Describe(task).InputSha256, [0])), Json);
+            }
+            File.WriteAllText(ExposureFile, exposure.ToJsonString());WritePolicy();
+            var policy = JsonNode.Parse(File.ReadAllText(PolicyFile))!;
+            policy["schema"] = PublicRequestPolicy.VersionedSchema;policy["keepAliveSeconds"] = 0;
+            File.WriteAllText(PolicyFile, policy.ToJsonString());
         }
         public string Output(string name) { var path = Path.Combine(Root, name);Directory.CreateDirectory(path);return path; }
         public void Dispose() => Directory.Delete(Root, true);

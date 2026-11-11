@@ -104,19 +104,14 @@ public sealed record RqcCliConfig
 
     internal RqcCliConfig PinPublicBank()
     {
-        if (PublicBankPath is null)
-        {
-            if (RequestPolicyPath is not null)
-                throw new ArgumentException("--request-policy requires --public-bank");
-            return this;
-        }
-        var digest = PublicBenchBank.FileSha256(PublicBankPath);
+        if (PublicBankPath is null && RequestPolicyPath is null)return this;
+        var digest = PublicBankPath is null ? null : PublicBenchBank.FileSha256(PublicBankPath);
         if (PublicBankManifestSha256 is not null && PublicBankManifestSha256 != digest)
             throw new InvalidDataException("The public-bank manifest changed after configuration.");
         var policy = RequestPolicyPath is null ? null : PublicBenchBank.FileSha256(RequestPolicyPath);
         if (RequestPolicySha256 is not null && RequestPolicySha256 != policy)
             throw new InvalidDataException("The request policy changed after configuration.");
-        return this with { PublicBankPath = Path.GetFullPath(PublicBankPath), PublicBankManifestSha256 = digest,
+        return this with { PublicBankPath = PublicBankPath is null ? null : Path.GetFullPath(PublicBankPath), PublicBankManifestSha256 = digest,
             RequestPolicyPath = RequestPolicyPath is null ? null : Path.GetFullPath(RequestPolicyPath), RequestPolicySha256 = policy };
     }
 
@@ -218,7 +213,14 @@ public sealed record RqcCliConfig
             c["taskAllocation"] = "balanced-permutation-v1";
         }
         if (RequestPolicyPath is not null)
+        {
             c["requestPolicySha256"] = RequestPolicySha256 ?? PublicBenchBank.FileSha256(RequestPolicyPath);
+            if (PublicBankPath is null)
+            {
+                c["builtinBankManifestSha256"] = Bench.ManifestSha256;
+                c["taskAllocation"] = "balanced-permutation-v1";
+            }
+        }
         return c;
     }
 
@@ -263,7 +265,7 @@ public static class RqcRunner
           --num-ctx N            context window sent to Ollama (default: the server's)
           --verify-template A|B  verifier prompt (default A, the pre-registered one)
           --public-bank FILE    public task manifest; use a balanced seeded task order
-          --request-policy FILE opt-in bounded input exposure and exact local request budgets
+          --request-policy FILE opt-in exposure and exact request budgets for either task bank
 
         """;
 
@@ -342,6 +344,11 @@ public static class RqcRunner
         {
             if (row["requestPolicySha256"]?.GetValue<string>() != cfg.RequestPolicySha256)
                 throw new InvalidDataException("The resume record has a different request policy.");
+            if (cfg.RequestPolicyPath is not null && row["runFingerprint"]?.GetValue<string>() != fingerprint)
+                throw new InvalidDataException("The resume record has a different policy run fingerprint.");
+            if (cfg.PublicBankPath is null && cfg.RequestPolicyPath is not null
+                && row["taskBankManifestSha256"]?.GetValue<string>() != Bench.ManifestSha256)
+                throw new InvalidDataException("The resume record has a different original task bank.");
             var digest = row["publicBankManifestSha256"]?.GetValue<string>();
             if (cfg.PublicBankPath is not null || digest is not null)
             {
@@ -357,16 +364,18 @@ public static class RqcRunner
         cfg = cfg.PinPublicBank();
         ValidateResumeBank(cfg);
         var publicBank = cfg.PublicBankPath is null ? null : PublicBenchBank.Load(cfg.PublicBankPath, cfg.PublicBankManifestSha256);
-        var requestPolicy = cfg.RequestPolicyPath is null ? null : PublicRequestPolicy.Load(cfg.RequestPolicyPath, publicBank!, cfg.RequestPolicySha256);
+        var requestPolicy = cfg.RequestPolicyPath is null ? null : publicBank is not null
+            ? PublicRequestPolicy.Load(cfg.RequestPolicyPath, publicBank, cfg.RequestPolicySha256)
+            : PublicRequestPolicy.Load(cfg.RequestPolicyPath, Bench.ManifestSha256, Bench.Tasks, cfg.RequestPolicySha256);
         if (requestPolicy is not null && (cfg.MaxReplyTokens is not null || cfg.VerdictFallback
             || cfg.NumCtx is { } context && context != requestPolicy.Exposure.Scenario.ContextTokens
             || cfg.Backend == RqcBackendKind.Ollama && cfg.Model != requestPolicy.Model))
             throw new ArgumentException("The request policy supplies stage-specific caps, strict verdict parsing and its exact model/context; conflicting flags are not allowed.");
         Dictionary<string, IReadOnlyList<int>>? visibleByTask = null;
         IReadOnlyList<IReadOnlyList<BenchTask>>? allocatedTasks = null;
-        if (publicBank is not null)
+        if (publicBank is not null || requestPolicy is not null)
         {
-            var tasks = publicBank.Entries.Select(entry => publicBank.ReadTask(entry.TaskId)).ToArray();
+            var tasks = publicBank is not null ? publicBank.Entries.Select(entry => publicBank.ReadTask(entry.TaskId)).ToArray() : Bench.Tasks;
             allocatedTasks = TaskAllocation.Balanced(tasks, cfg.Trials, cfg.Tasks, cfg.Seed);
             if (requestPolicy is not null)
                 visibleByTask = tasks.ToDictionary(task => task.Id, task => requestPolicy.Exposure.ForTask(task), StringComparer.Ordinal);
@@ -448,7 +457,7 @@ public static class RqcRunner
                     _ => throw new InvalidDataException("A recorded self-verifier reply needs a pass/fail verdict."),
                 }, x.c["selfRationale"]!.GetValue<string>())).ToList();
             backend = resuming = new ResumingBackend(backend, generations, verdicts,
-                advanceReplayBackend: publicBank is not null && cfg.Backend == RqcBackendKind.Mock);
+                advanceReplayBackend: (publicBank is not null || requestPolicy is not null) && cfg.Backend == RqcBackendKind.Mock);
             log?.WriteLine($"[resume] replaying {recorded.Count} steps ({generations.Count} generations, {verdicts.Count} verdicts) from {resumeFrom}");
         }
 
@@ -467,8 +476,11 @@ public static class RqcRunner
                 }
                 if (requestPolicy is not null)
                 {
+                    trial["runFingerprint"] = runFingerprint;
+                    trial["taskBankManifestSha256"] = requestPolicy.Exposure.BankManifestSha256;
                     trial["requestPolicySha256"] = requestPolicy.Sha256;
                     trial["promptExposureSha256"] = requestPolicy.Exposure.Sha256;
+                    trial["verifierInstructionVersion"] = requestPolicy.Exposure.VerifierInstructionVersion;
                     trial["plannedVisibleCaseIndices"] = JsonSerializer.SerializeToNode(visibleByTask![step.TaskId]);
                 }
                 var line = JsFormat.Stringify(trial);
@@ -497,8 +509,11 @@ public static class RqcRunner
                 }
                 if (requestPolicy is not null)
                 {
+                    candidate["runFingerprint"] = runFingerprint;
+                    candidate["taskBankManifestSha256"] = requestPolicy.Exposure.BankManifestSha256;
                     candidate["requestPolicySha256"] = requestPolicy.Sha256;
                     candidate["promptExposureSha256"] = requestPolicy.Exposure.Sha256;
+                    candidate["verifierInstructionVersion"] = requestPolicy.Exposure.VerifierInstructionVersion;
                     candidate["plannedVisibleCaseIndices"] = JsonSerializer.SerializeToNode(visibleByTask![step.TaskId]);
                 }
                 if (step.SelfReply is not null)
@@ -529,8 +544,19 @@ public static class RqcRunner
             {
                 sha256 = requestPolicy.Sha256, exposureSha256 = requestPolicy.Exposure.Sha256,
                 scenario = requestPolicy.Exposure.Scenario, requestsChecked = requestBudget?.RequestsChecked ?? 0,
+                verifierInstructionVersion = requestPolicy.Exposure.VerifierInstructionVersion, keepAliveSeconds = requestPolicy.KeepAliveSeconds,
+                taskBankManifestSha256 = requestPolicy.Exposure.BankManifestSha256,
                 note = mock ? "Simulation only; no external tokenizer or model is run by this mock backend."
                     : "Each actual request was checked before dispatch; the original full oracle task was retained.",
+            });
+        if (publicBank is null && requestPolicy is not null && allocatedTasks is not null)
+            summary["builtinBank"] = JsonSerializer.SerializeToNode(new
+            {
+                manifestSha256 = Bench.ManifestSha256, poolTasks = Bench.Tasks.Count,
+                taskAllocation = "balanced-permutation-v1", callingConvention = "unchanged original JavaScript-literal bench",
+                plannedSlotsPerConditionPerRound = (long)cfg.Trials * cfg.Tasks,
+                plannedExposurePerTask = Bench.Tasks.ToDictionary(task => task.Id,
+                    task => allocatedTasks.Sum(trial => trial.Count(t => t.Id == task.Id)), StringComparer.Ordinal),
             });
         if (publicBank is not null && allocatedTasks is not null)
         {

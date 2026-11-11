@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -53,6 +54,16 @@ public sealed record BenchTask(string Id, string Instruction, BenchCategory Cate
 
 public static class Bench
 {
+    /// <summary>The complete embedded source bank, including original tasks, references and wrong candidates.</summary>
+    public static string ManifestSha256
+    {
+        get
+        {
+            using var source = typeof(Bench).Assembly.GetManifestResourceStream("Aijade.Research.SkillBench.bench-data.json")
+                ?? throw new InvalidOperationException("bench-data.json resource missing");
+            return Convert.ToHexStringLower(SHA256.HashData(source));
+        }
+    }
     private sealed record Raw(List<RawTask> Tasks, Dictionary<string, string> References, List<string> Wrong);
 
     private sealed record RawTask(string Id, string Instruction, string Category, string Tier, int? TimeoutMs, List<BenchCase> Tests);

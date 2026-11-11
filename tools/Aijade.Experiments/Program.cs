@@ -32,11 +32,36 @@ using Aijade.Research.SkillBench;
 
 string? Arg(string name) => args.SkipWhile(a => a != name).Skip(1).FirstOrDefault();
 var command = args.FirstOrDefault() ?? "";
-var root = command is "p2-bank-check" or "p2-bank-prompts" or "p2-bank-inputs" or "p2-bank-prompt-server" or "p2-budget-check" ? "" : FindRoot();
+var root = command is "p2-bank-check" or "p2-bank-prompts" or "p2-bank-inputs" or "p2-bank-prompt-server" or "p2-budget-check"
+    or "p2-judgment-export" or "p2-judgment-server" or "p2-judgment-controls" or "p2-judgment-call" ? "" : FindRoot();
 var webJson = new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
 switch (command)
 {
+    case "p2-judgment-export":
+        JudgmentPreparation.Export(Arg("--bank") ?? throw new ArgumentException("--bank is required"),
+            Arg("--out") ?? throw new ArgumentException("--out is required"));
+        return 0;
+    case "p2-judgment-server":
+        JudgmentPreparation.Serve(Arg("--bank") ?? throw new ArgumentException("--bank is required"));
+        return 0;
+    case "p2-judgment-controls":
+        JudgmentPreparation.Controls(Arg("--bank") ?? throw new ArgumentException("--bank is required"),
+            Arg("--builtin-exposure") ?? throw new ArgumentException("--builtin-exposure is required"),
+            Arg("--public-exposure") ?? throw new ArgumentException("--public-exposure is required"),
+            Arg("--out") ?? throw new ArgumentException("--out is required"));
+        return 0;
+    case "p2-judgment-call":
+        return await JudgmentCalibrationCall.RunAsync(Arg("--bank") ?? throw new ArgumentException("--bank is required"),
+            Arg("--source") ?? throw new ArgumentException("--source is required"),
+            Arg("--task-id") ?? throw new ArgumentException("--task-id is required"),
+            Arg("--candidate") ?? throw new ArgumentException("--candidate is required"),
+            Arg("--candidate-sha256") ?? throw new ArgumentException("--candidate-sha256 is required"),
+            Arg("--policy") ?? throw new ArgumentException("--policy is required"),
+            Arg("--template") ?? throw new ArgumentException("--template is required"),
+            Arg("--base") ?? throw new ArgumentException("--base is required"),
+            Arg("--out") ?? throw new ArgumentException("--out is required"),
+            int.Parse(Arg("--completed") ?? throw new ArgumentException("--completed is required"), CultureInfo.InvariantCulture));
     case "p2-budget-check":
     {
         var result = await RequestPolicyProbe.RunAsync(Arg("--bank") ?? throw new ArgumentException("--bank is required"),

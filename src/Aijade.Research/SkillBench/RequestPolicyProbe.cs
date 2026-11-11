@@ -36,7 +36,8 @@ public static class RequestPolicyProbe
         {
             foreach (var template in new[] { "A", "B" })
             {
-                var prompt = template == "A" ? Backends.BuildVerifyPrompt(task, reference, indices) : Backends.BuildVerifyPromptB(task, reference, indices);
+                var prompt = template == "A" ? Backends.BuildVerifyPrompt(task, reference, indices, policy.Exposure.VerifierInstructionVersion)
+                    : Backends.BuildVerifyPromptB(task, reference, indices, policy.Exposure.VerifierInstructionVersion);
                 var count = await counter.CountAsync(prompt, ct).ConfigureAwait(false);
                 probes.Add(new Probe("reference-" + template, "verification", template, reference, new GenerateContext(0),
                     count.InputTokens + scenario.VerificationReplyTokens > scenario.ContextTokens ? "CONTEXT_OVERFLOW" : null));
@@ -50,7 +51,8 @@ public static class RequestPolicyProbe
                 string Code(int n) => "function solve() {}\n/*" + string.Concat(Enumerable.Repeat(marker, n)) + "*/";
                 GenerateContext Context(int n) => new(1, SelfCritique: "Controlled request-budget fixture.", PreviousCode: Code(n));
                 string Prompt(int n) => !verification ? Backends.BuildGeneratePrompt(task, Context(n))
-                    : template == "A" ? Backends.BuildVerifyPrompt(task, Code(n), indices) : Backends.BuildVerifyPromptB(task, Code(n), indices);
+                    : template == "A" ? Backends.BuildVerifyPrompt(task, Code(n), indices, policy.Exposure.VerifierInstructionVersion)
+                    : Backends.BuildVerifyPromptB(task, Code(n), indices, policy.Exposure.VerifierInstructionVersion);
                 var cap = verification ? scenario.VerificationReplyTokens : scenario.GenerationReplyTokens;
                 var baseline = await counter.CountAsync(Prompt(0), ct).ConfigureAwait(false);
                 var n = scenario.ContextTokens - cap - baseline.InputTokens;

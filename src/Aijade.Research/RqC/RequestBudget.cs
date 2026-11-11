@@ -16,8 +16,9 @@ public sealed record TokenCounterSpec(string Executable, string ExecutableSha256
 public sealed class PublicRequestPolicy
 {
     public const string Schema = "aijade.p2a.request-policy.v1";
+    public const string VersionedSchema = "aijade.p2a.request-policy.v2";
     private sealed record Payload(string Schema, string ExposureFile, string ExposureSha256, string Model,
-        string ModelManifestSha256, string TemplateSha256, string SystemSha256, TokenCounterSpec Counter);
+        string ModelManifestSha256, string TemplateSha256, string SystemSha256, TokenCounterSpec Counter, int? KeepAliveSeconds = null);
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow };
 
     public string Sha256 { get; }
@@ -27,6 +28,7 @@ public sealed class PublicRequestPolicy
     public string TemplateSha256 { get; }
     public string SystemSha256 { get; }
     public TokenCounterSpec Counter { get; }
+    public int? KeepAliveSeconds { get; }
 
     private PublicRequestPolicy(string sha, PromptExposure exposure, Payload data, string folder)
     {
@@ -36,6 +38,7 @@ public sealed class PublicRequestPolicy
         ModelManifestSha256 = data.ModelManifestSha256;
         TemplateSha256 = data.TemplateSha256;
         SystemSha256 = data.SystemSha256;
+        KeepAliveSeconds = data.KeepAliveSeconds;
         Counter = data.Counter with
         {
             Executable = Path.GetFullPath(data.Counter.Executable, folder),
@@ -46,19 +49,29 @@ public sealed class PublicRequestPolicy
 
     public static PublicRequestPolicy Load(string path, PublicBenchBank bank, string? expectedSha256 = null)
     {
+        ArgumentNullException.ThrowIfNull(bank);
+        return Load(path, bank.ManifestSha256, bank.Entries.Select(entry => bank.ReadTask(entry.TaskId)).ToArray(), expectedSha256);
+    }
+
+    public static PublicRequestPolicy Load(string path, string bankManifestSha256, IReadOnlyList<BenchTask> tasks, string? expectedSha256 = null)
+    {
         var sha = PublicBenchBank.FileSha256(path);
         if (expectedSha256 is not null && expectedSha256 != sha)
             throw new InvalidDataException("The request policy has changed.");
         Payload data;
         try { data = JsonSerializer.Deserialize<Payload>(File.ReadAllBytes(path), Json) ?? throw new InvalidDataException("Empty request policy."); }
         catch (JsonException error) { throw new InvalidDataException("Invalid request-policy JSON.", error); }
-        if (data.Schema != Schema || data.Counter is null || string.IsNullOrWhiteSpace(data.Model)
+        var versionValid = data.Schema == Schema && data.KeepAliveSeconds is null
+            || data.Schema == VersionedSchema && data.KeepAliveSeconds is >= 0 and <= 600;
+        if (!versionValid || data.Counter is null || string.IsNullOrWhiteSpace(data.Model)
             || !new[] { data.ExposureSha256, data.ModelManifestSha256, data.TemplateSha256, data.SystemSha256,
                 data.Counter.ExecutableSha256, data.Counter.ScriptSha256, data.Counter.ConfigSha256 }.All(PromptExposure.IsHash)
             || new[] { data.ExposureFile, data.Counter.Executable, data.Counter.Script, data.Counter.Config }.Any(string.IsNullOrWhiteSpace))
             throw new InvalidDataException("Invalid request-policy identities or paths.");
         var folder = Path.GetDirectoryName(Path.GetFullPath(path))!;
-        var exposure = PromptExposure.Load(Path.GetFullPath(data.ExposureFile, folder), bank, data.ExposureSha256);
+        var exposure = PromptExposure.Load(Path.GetFullPath(data.ExposureFile, folder), bankManifestSha256, tasks, data.ExposureSha256);
+        if (data.Schema == Schema && exposure.VerifierInstructionVersion != VerifierInstructions.Legacy)
+            throw new InvalidDataException("A versioned instruction requires a versioned request policy.");
         if (!exposure.ModelManifestSha256ByName.TryGetValue(data.Model, out var model) || model != data.ModelManifestSha256)
             throw new InvalidDataException("The policy model does not belong to its exposure profile.");
         var result = new PublicRequestPolicy(sha, exposure, data, folder);
@@ -218,7 +231,9 @@ public sealed class RequestBudget : IDisposable
         _incompletePath = Path.Combine(folder, "incomplete-run.json");
         _ledger = new StreamWriter(Path.Combine(folder, "requests.jsonl"), false, new UTF8Encoding(false));
         Write(new { kind = "start", policySha256 = policy.Sha256, exposureSha256 = policy.Exposure.Sha256,
-            scenario = policy.Exposure.Scenario, plannedSteps, model = policy.Model });
+            scenario = policy.Exposure.Scenario, plannedSteps, model = policy.Model,
+            verifierInstructionVersion = policy.Exposure.VerifierInstructionVersion, keepAliveSeconds = policy.KeepAliveSeconds,
+            taskBankManifestSha256 = policy.Exposure.BankManifestSha256 });
     }
 
     private void Write(object value)
@@ -271,6 +286,9 @@ public sealed class RequestBudget : IDisposable
 
     public void RecordResponse(BudgetedRequest request, string rawResponse) =>
         Write(new { kind = "response", id = request.Id, rawResponse, sha256 = PromptExposure.Hash(rawResponse) });
+
+    public void RecordHttpRequest(BudgetedRequest request, string rawBody) =>
+        Write(new { kind = "http-request", id = request.Id, rawBody, sha256 = PromptExposure.Hash(rawBody) });
 
     public void Dispose()
     {
