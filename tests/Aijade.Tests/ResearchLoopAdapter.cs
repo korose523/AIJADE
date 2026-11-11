@@ -200,6 +200,8 @@ internal sealed class ResearchLoopAdapter(ServerTestHost host)
     {
         ["specs"] = await host.CountAsync("SELECT count(*) FROM evolution_specs"),
         ["reports"] = await host.CountAsync("SELECT count(*) FROM eval_reports"),
+        ["specRows"] = JsonNode.Parse(await host.ScalarAsync("SELECT coalesce(jsonb_agg(jsonb_build_object('id',id,'spec',spec)),'[]'::jsonb)::text FROM evolution_specs") ?? "[]"),
+        ["reportRows"] = JsonNode.Parse(await host.ScalarAsync("SELECT coalesce(jsonb_agg(jsonb_build_object('id',id,'metric',metric,'result',result)),'[]'::jsonb)::text FROM eval_reports") ?? "[]"),
         ["authority"] = JsonNode.Parse(await host.ScalarAsync("SELECT coalesce(jsonb_agg(body),'[]'::jsonb)::text FROM research_skill_authority") ?? "[]"),
         ["outcomes"] = JsonNode.Parse(await host.ScalarAsync("SELECT coalesce(jsonb_agg(body),'[]'::jsonb)::text FROM research_outcomes") ?? "[]"),
         ["outboxCount"] = await host.CountAsync("SELECT count(*) FROM research_outbox"),

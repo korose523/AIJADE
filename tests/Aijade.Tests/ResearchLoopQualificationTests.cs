@@ -10,6 +10,7 @@ using Aijade.Memory.V9;
 using Aijade.Research.Integration;
 using Aijade.Research.SkillBench;
 using Aijade.Server.Product;
+using Aijade.Server.V9;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -175,6 +176,20 @@ public class ResearchLoopQualificationTests
         };
         var envelope = Envelope("evt-" + proposalId, registry.SessionId, payload);
         var (admissionStatus, admissionBody) = await host.PostAsync("/api/v1/v9/events", envelope);
+        string? admissionCoreReason = null;
+        long? diagnosticEventCount = null;
+        if (id == "I2")
+        {
+            try
+            {
+                await host.App.Services.GetRequiredService<V9EventService>().AppendEventAsync(V9EventInput.FromEnvelope(envelope, payload), ct);
+            }
+            catch (RenderTraceContractException ex)
+            {
+                admissionCoreReason = WireName.Of(ex.Reason);
+            }
+            diagnosticEventCount = await host.CountAsync("SELECT count(*) FROM events WHERE event_id=$1", "evt-" + proposalId);
+        }
         if (id == "I8")
             await host.ExecAsync("""
                 CREATE FUNCTION reject_authority() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN
@@ -222,7 +237,8 @@ public class ResearchLoopQualificationTests
             round2["executed"]!.GetValue<bool>() == expectedReuse && final["reuseCount"]!.GetValue<long>() == (expectedReuse ? 1 : 0) &&
             final["outcomeMemoryCount"]!.GetValue<long>() == (id == "I8" ? 0 : 1) &&
             (id != "I1" || commit?.Outcome.Reason == "execution_intent_mismatch") &&
-            (id != "I2" || admissionStatus == 400 && admissionBody!.ToJsonString().Contains("asset_version_hash_mismatch", StringComparison.Ordinal)) &&
+            (id != "I2" || admissionStatus == 400 && admissionBody?["error"]?.GetValue<string>() == "INVALID_RENDER_TRACE_REFERENCE" &&
+                admissionCoreReason == "asset_version_hash_mismatch" && diagnosticEventCount == 0) &&
             (id != "I4" || commit?.Outcome.Reason == "execution_unknown") &&
             (id != "I5" || commit?.Outcome.Reason == "execution_failed") &&
             (id != "I6" || commit?.Outcome.Reason == "receipt_stage_insufficient") &&
@@ -238,7 +254,8 @@ public class ResearchLoopQualificationTests
             ["initialRead"] = new JsonObject { ["path"] = initialPath, ["status"] = initialReadStatus, ["response"] = initialRead },
             ["prepared"] = source.DeepClone(), ["importPosts"] = importPosts, ["selectedReceipt"] = JsonSerializer.SerializeToNode(receipt, Json),
             ["evidence"] = JsonSerializer.SerializeToNode(evidence, Json), ["proposal"] = proposal.ToJson(),
-            ["admission"] = new JsonObject { ["request"] = envelope, ["status"] = admissionStatus, ["response"] = admissionBody },
+            ["admission"] = new JsonObject { ["request"] = envelope, ["status"] = admissionStatus, ["response"] = admissionBody,
+                ["diagnosticDirectAppendAttempts"] = id == "I2" ? 1 : 0, ["diagnosticCoreReason"] = admissionCoreReason, ["diagnosticEventCount"] = diagnosticEventCount },
             ["commit"] = JsonSerializer.SerializeToNode(commit, Json), ["duplicateCommit"] = JsonSerializer.SerializeToNode(duplicate, Json),
             ["databaseErrorCode"] = databaseError, ["beforeDelivery"] = beforeDelivery, ["delivery"] = delivery,
             ["duplicateDelivery"] = duplicateDelivery, ["round2"] = round2, ["duplicateReuse"] = duplicateReuse,

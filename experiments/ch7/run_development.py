@@ -65,6 +65,7 @@ def main(args):
     write(output / 'input-identities.json', dict(
         codeCommit=commit, planCommit=subprocess.check_output(['git', 'rev-parse', PLAN], cwd=repo, text=True).strip(),
         planSha256=sha(repo / 'experiments/plans/2026-11-12-ch7-adapter-qualification.md'),
+        observerAmendment='c4b384b', observerAmendmentSha256=sha(repo / 'experiments/plans/2026-11-12-ch7-qualification-observer-amendment.md'),
         binaries=binaries, rendererSources=sources, modelSha256=model_sha,
         selectionSha256=sha(output / 'selection.json'),
         benchSha256=sha(repo / 'src/Aijade.Research/SkillBench/bench-data.json')))
