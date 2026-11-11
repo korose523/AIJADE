@@ -1,0 +1,61 @@
+{
+  "schema": "aijade.p3.longmemeval.bounded-phase.v1",
+  "phase": "figure-text-audit",
+  "planCommit": "a7961cf8cde1de659c2272a664d4c936a50484c4",
+  "codeCommit": "9d17f8235508afa1cfba9e6da758f1738adfe8ea",
+  "codeTree": "73a576400db33ff957b3db0f43b804b24da39400",
+  "startedAt": "2026-11-11T14:33:59.592686+00:00",
+  "command": [
+    "/Users/mac/.codex/skill-envs/nature-figure/bin/python",
+    "/Users/mac/.codex/skills/nature-figure/scripts/audit_pdf_text.py",
+    "/Users/mac/.cache/aijade-p3-longmem-20261111/measurements/figures/longmem_delivery.pdf",
+    "--min-pt",
+    "5",
+    "--json"
+  ],
+  "python": "/Users/mac/.codex/skill-envs/p2-tokenizer/bin/python",
+  "psutil": "7.2.2",
+  "initial": {
+    "availableBytes": 7336783872,
+    "swapUsedBytes": 9321054208
+  },
+  "limits": {
+    "cpuSeconds": 28800,
+    "wallSeconds": 43200,
+    "wholeFollowupWallSeconds": 86400,
+    "ownedFamilyRssBytes": 3221225472,
+    "physicalOutputBytes": 536870912,
+    "minAvailableBytes": 805306368,
+    "sustainedSeconds": 30,
+    "maxSwapIncreaseBytes": 2147483648
+  },
+  "memoryScope": "Sampled process family, sum of RSS including shared mappings. Existing Docker DB is a shared service, not an owned descendant; host available/swap limits still apply.",
+  "finishedAt": "2026-11-11T14:34:02.720096+00:00",
+  "status": "PASS",
+  "stopReason": null,
+  "exitCode": 0,
+  "sourceUnchanged": true,
+  "elapsedSeconds": 3.166590929031372,
+  "observedCpuSeconds": 0.013275389,
+  "maxOwnedFamilyRssBytes": 5648384,
+  "minAvailableBytes": 7336783872,
+  "maxSwapIncreaseBytes": 0,
+  "logs": [
+    {
+      "path": "stdout.log",
+      "sha256": "7e7f1bd16192cf9c37bb85e66bd5ceb475133f3dbc00f32dc4e96e3b6454afbf",
+      "bytes": 273
+    },
+    {
+      "path": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "telemetry.jsonl",
+      "sha256": "576954e502053961e6a93b2a8d76b2962d3320d1ff49b8919a641f074abedcf2",
+      "bytes": 241
+    }
+  ],
+  "scientificAcceptance": "A successful controller is a bounded execution receipt, not a statistical or manuscript acceptance decision."
+}

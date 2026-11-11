@@ -1,0 +1,62 @@
+{
+  "schema": "aijade.p3.longmemeval.bounded-phase.v1",
+  "phase": "figure-collision-audit",
+  "planCommit": "a7961cf8cde1de659c2272a664d4c936a50484c4",
+  "codeCommit": "9d17f8235508afa1cfba9e6da758f1738adfe8ea",
+  "codeTree": "73a576400db33ff957b3db0f43b804b24da39400",
+  "startedAt": "2026-11-11T14:34:04.946841+00:00",
+  "command": [
+    "/Users/mac/.codex/skill-envs/nature-figure/bin/python",
+    "/Users/mac/.codex/skills/nature-figure/scripts/audit_figure_collisions.py",
+    "/Users/mac/.cache/aijade-p3-longmem-20261111/measurements/figures/longmem_delivery.pdf",
+    "--json-out",
+    "/Users/mac/.cache/aijade-p3-longmem-20261111/measurements/figures/longmem_delivery.collision.json",
+    "--overlay-pdf",
+    "/Users/mac/.cache/aijade-p3-longmem-20261111/measurements/figures/longmem_delivery.collision-overlay.pdf"
+  ],
+  "python": "/Users/mac/.codex/skill-envs/p2-tokenizer/bin/python",
+  "psutil": "7.2.2",
+  "initial": {
+    "availableBytes": 7338233856,
+    "swapUsedBytes": 9321054208
+  },
+  "limits": {
+    "cpuSeconds": 28800,
+    "wallSeconds": 43200,
+    "wholeFollowupWallSeconds": 86400,
+    "ownedFamilyRssBytes": 3221225472,
+    "physicalOutputBytes": 536870912,
+    "minAvailableBytes": 805306368,
+    "sustainedSeconds": 30,
+    "maxSwapIncreaseBytes": 2147483648
+  },
+  "memoryScope": "Sampled process family, sum of RSS including shared mappings. Existing Docker DB is a shared service, not an owned descendant; host available/swap limits still apply.",
+  "finishedAt": "2026-11-11T14:34:08.065076+00:00",
+  "status": "PASS",
+  "stopReason": null,
+  "exitCode": 0,
+  "sourceUnchanged": true,
+  "elapsedSeconds": 3.155380964279175,
+  "observedCpuSeconds": 0.013730549000000002,
+  "maxOwnedFamilyRssBytes": 6352896,
+  "minAvailableBytes": 7333466112,
+  "maxSwapIncreaseBytes": 0,
+  "logs": [
+    {
+      "path": "stdout.log",
+      "sha256": "e6a046c9365694ff4f602ca3a07fbbfbacf13c0d629f6c4902662efc72a31c0e",
+      "bytes": 364
+    },
+    {
+      "path": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "telemetry.jsonl",
+      "sha256": "d1207fd5bf37c0d34f75054c55dd265459907ee39acf7a06fd178b27003bb53d",
+      "bytes": 250
+    }
+  ],
+  "scientificAcceptance": "A successful controller is a bounded execution receipt, not a statistical or manuscript acceptance decision."
+}

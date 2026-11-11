@@ -1,0 +1,87 @@
+{
+  "predictedGatingHolmFamily": [
+    {
+      "key": "gating (predicted, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.4127659574468085,
+      "b": 0.46382978723404256,
+      "difference": -0.05106382978723404,
+      "bootstrap95": [
+        -0.07659574468085106,
+        -0.02553191489361702
+      ],
+      "signFlipP": 0.0004999500049995,
+      "unitsPositive": 8,
+      "unitsNegative": 32,
+      "units": 470,
+      "penaltyOff": false,
+      "holmP": 0.001999800019998,
+      "familySize": 4
+    },
+    {
+      "key": "gating (predicted, additive): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.6382978723404256,
+      "b": 0.6468085106382979,
+      "difference": -0.00851063829787234,
+      "bootstrap95": [
+        -0.02127659574468085,
+        0.002127659574468085
+      ],
+      "signFlipP": 0.28577142285771423,
+      "unitsPositive": 2,
+      "unitsNegative": 6,
+      "units": 470,
+      "penaltyOff": true,
+      "holmP": 0.8573142685731427,
+      "familySize": 4
+    },
+    {
+      "key": "gating (predicted, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.8702127659574468,
+      "b": 0.8659574468085106,
+      "difference": 0.00425531914893617,
+      "bootstrap95": [
+        0,
+        0.010638297872340425
+      ],
+      "signFlipP": 0.4921507849215078,
+      "unitsPositive": 2,
+      "unitsNegative": 0,
+      "units": 470,
+      "penaltyOff": true,
+      "holmP": 0.9843015698430156,
+      "familySize": 4
+    },
+    {
+      "key": "gating (predicted, standardized): ON vs OFF",
+      "caliber": "macro",
+      "a": 0.1851063829787234,
+      "b": 0.1851063829787234,
+      "difference": 0,
+      "bootstrap95": [
+        -0.01276595744680851,
+        0.01276595744680851
+      ],
+      "signFlipP": 1,
+      "unitsPositive": 4,
+      "unitsNegative": 4,
+      "units": 470,
+      "penaltyOff": false,
+      "holmP": 1,
+      "familySize": 4
+    }
+  ],
+  "pooledComponentSd": {
+    "similarity": 0.028692333641802025,
+    "strength": 0.09773174841044324,
+    "recency": 0.3078316981421332,
+    "context": 0
+  },
+  "historicalPoolSdEstimand": "Mean over questions of within-question population SD; distinct from pooledComponentSd.",
+  "resamplingUnit": "question case conditional on compiled history; shared sessions do not establish independent users",
+  "frame": "answerable-v2",
+  "planCommit": "a7961cf8cde1de659c2272a664d4c936a50484c4",
+  "codeCommit": "9d17f8235508afa1cfba9e6da758f1738adfe8ea"
+}

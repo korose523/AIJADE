@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "positiveArchiveCheck": {
+    "status": "PASS",
+    "manifestFiles": 2145,
+    "rawQuestions": 500,
+    "primaryQuestions": 470,
+    "markedQuestions": 479,
+    "productWrites": 246738,
+    "requestCaptures": 2000,
+    "pointEstimatesRecomputed": 36,
+    "scope": "Archive identity, complete population/source/request records and point estimates; no model answer, dependence-robust population result, Mac qualification or CAS partition certification."
+  },
+  "rejectionCases": [
+    {
+      "case": "primary-denominator",
+      "rejected": true,
+      "errorType": "AssertionError",
+      "manifestRegenerated": true
+    },
+    {
+      "case": "unknown-attribution-flag",
+      "rejected": true,
+      "errorType": "AssertionError",
+      "manifestRegenerated": true
+    },
+    {
+      "case": "missing-final-request",
+      "rejected": true,
+      "errorType": "AssertionError",
+      "manifestRegenerated": false
+    }
+  ],
+  "testedStageManifestSha256": "479a51b296982b1e66b138f99890e9a676e654094496ffb33e347ecd4f08e939",
+  "originalFilesUnchanged": true,
+  "newServiceCalls": 0,
+  "newModelCalls": 0,
+  "scope": "Missing capture, wrong primary denominator and contradictory unknown flag; not an adversarial-forgery proof or scientific approval."
+}

@@ -1,0 +1,109 @@
+{
+  "status": "PASS",
+  "actualRequests": 8,
+  "writes": 140,
+  "rows": [
+    {
+      "fixture": "ordinary",
+      "policy": "6-newest",
+      "state": "truncated",
+      "fullItems": 0,
+      "searches": 1
+    },
+    {
+      "fixture": "ordinary",
+      "policy": "6-server",
+      "state": "truncated",
+      "fullItems": 0,
+      "searches": 1
+    },
+    {
+      "fixture": "ordinary",
+      "policy": "60-newest",
+      "state": "truncated",
+      "fullItems": 0,
+      "searches": 1
+    },
+    {
+      "fixture": "ordinary",
+      "policy": "60-server",
+      "state": "truncated",
+      "fullItems": 0,
+      "searches": 1
+    },
+    {
+      "fixture": "fallback",
+      "policy": "6-newest",
+      "state": "ambiguous-source",
+      "fullItems": null,
+      "searches": 3
+    },
+    {
+      "fixture": "fallback",
+      "policy": "6-server",
+      "state": "ambiguous-source",
+      "fullItems": null,
+      "searches": 3
+    },
+    {
+      "fixture": "fallback",
+      "policy": "60-newest",
+      "state": "ambiguous-source",
+      "fullItems": null,
+      "searches": 3
+    },
+    {
+      "fixture": "fallback",
+      "policy": "60-server",
+      "state": "ambiguous-source",
+      "fullItems": null,
+      "searches": 3
+    }
+  ],
+  "inputFiles": [
+    {
+      "path": "ordinary/question-000-store.json.gz",
+      "sha256": "f3dcd72754546e4a1ca3e4391d97fdaeaf5cdbac5950e08a70ed476eceece13b",
+      "bytes": 3887
+    },
+    {
+      "path": "ordinary/question-000-writes.jsonl.gz",
+      "sha256": "1be65d3f4a76feec7ce2f6907e287700e3242f5bf851e923c041ecd362c854a0",
+      "bytes": 6011
+    },
+    {
+      "path": "ordinary/question-000-captures.json.gz",
+      "sha256": "25147b7c6ecb06d5208fa783066d057b28e94f2cc40ed12c7cf9c71a6c5865d2",
+      "bytes": 26579
+    },
+    {
+      "path": "ordinary/question-000-raw-boundaries.jsonl.gz",
+      "sha256": "85584a07f28a81b0a507df6d945a384bf9829a7e1ab14f3141b1833f03c584ec",
+      "bytes": 15096
+    },
+    {
+      "path": "fallback/question-000-store.json.gz",
+      "sha256": "6b5f29023c2e4e4129b53250abd353fb070ff4a8810e5fad1fc08b8c07149e0e",
+      "bytes": 3881
+    },
+    {
+      "path": "fallback/question-000-writes.jsonl.gz",
+      "sha256": "332150399cae60303035c78e07f6ab4188b71d680f3e68be13bd4c33408f1c73",
+      "bytes": 6004
+    },
+    {
+      "path": "fallback/question-000-captures.json.gz",
+      "sha256": "2b603db0d4c8609a642e5f620eda28d80fa73c2722007bd50f2e9874287bc794",
+      "bytes": 26920
+    },
+    {
+      "path": "fallback/question-000-raw-boundaries.jsonl.gz",
+      "sha256": "63fd50e0f44de2a30d7f0a35516afba41bb646de6a1452723683bd9f51f50dac",
+      "bytes": 15227
+    }
+  ],
+  "independentHumanReview": false,
+  "newServiceCalls": 0,
+  "newModelCalls": 0,
+  "scope": "Independent observation of persisted actual synthetic C# qualification requests. No corpus outcome or answer-quality claim."
+}

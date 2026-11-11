@@ -1,0 +1,18 @@
+{
+  "status": "PREPARED_NOT_RENDERED",
+  "question": "At which actual delivery stage is marked-turn evidence lost under each of the four fixed text policies?",
+  "claimBoundary": "Show measured stage retention and unidentified complete-turn visibility; do not infer answer loss or independent-user replication.",
+  "archetype": "quantitative grid, one quantitative panel",
+  "backend": "python, inherited project plotting workflow and saved preference",
+  "adaptation": "New stage-curve implementation; style conventions only inherited from the existing project figure workflow.",
+  "mapping": {
+    "policies": "four predeclared text policy categories in fixed order",
+    "stages": "stored, candidate pool, response union, echo-kept, planned five, observed complete prompt",
+    "values": "per-question evidence fractions, then mean over all 470 eligible cases",
+    "promptEndpoints": "lower/upper identification means; no invented midpoint",
+    "missingness": "all 500 cases remain in execution ledger; 30 official abstentions excluded from primary fractions; unknown attribution remains bounded"
+  },
+  "export": {"dimensionsMm": [174, 100], "formats": ["pdf", "svg", "png", "tiff"], "rasterDpi": 600, "editableVectorText": true, "glyphFloorPt": 5},
+  "qa": ["source preflight", "single-panel alignment not-applicable record", "PDF text glyph audit", "PDF collision audit", "final-size visual inspection", "all marks checked against source CSV"],
+  "renderGate": "Full kernel and product acceptance PASS, complete audited summary, 500 executed cases and 2,000 captures; no partial or synthetic result rendering."
+}

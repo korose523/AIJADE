@@ -1,0 +1,620 @@
+{
+  "schema": "aijade.p3.longmemeval.product.analysis.v2",
+  "status": "complete-audited",
+  "planCommit": "a7961cf8cde1de659c2272a664d4c936a50484c4",
+  "primaryFrame": "answerable-v2",
+  "rawQuestions": 500,
+  "primaryQuestions": 470,
+  "captures": 2000,
+  "writes": 246738,
+  "policies": {
+    "6-newest": {
+      "questions": 470,
+      "stages": {
+        "stored": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "pool": {
+          "mean": 0.7494326241134752,
+          "ci95": [
+            0.7151755319148936,
+            0.7828723404255319
+          ]
+        },
+        "response": {
+          "mean": 0.5441843971631206,
+          "ci95": [
+            0.5064539007092199,
+            0.5816320921985816
+          ]
+        },
+        "kept": {
+          "mean": 0.5441843971631206,
+          "ci95": [
+            0.5064539007092199,
+            0.5816320921985816
+          ]
+        },
+        "planned": {
+          "mean": 0.12407801418439715,
+          "ci95": [
+            0.1000709219858156,
+            0.149468085106383
+          ]
+        }
+      },
+      "promptLower": {
+        "mean": 0.05407801418439716,
+        "ci95": [
+          0.037588652482269495,
+          0.07163120567375886
+        ]
+      },
+      "promptUpper": {
+        "mean": 0.05407801418439716,
+        "ci95": [
+          0.037588652482269495,
+          0.07163120567375886
+        ]
+      },
+      "candidateToPromptLossLower": {
+        "mean": 0.695354609929078,
+        "ci95": [
+          0.6581560283687944,
+          0.7309228723404254
+        ]
+      },
+      "candidateToPromptLossUpper": {
+        "mean": 0.695354609929078,
+        "ci95": [
+          0.6581560283687944,
+          0.7309228723404254
+        ]
+      },
+      "unknown": 3,
+      "truncated": 439,
+      "consecutiveLosses": {
+        "stored-pool": {
+          "mean": 0.25056737588652483,
+          "ci95": [
+            0.2171276595744681,
+            0.28482446808510636
+          ]
+        },
+        "pool-response": {
+          "mean": 0.2052482269503546,
+          "ci95": [
+            0.17652393617021278,
+            0.23464627659574466
+          ]
+        },
+        "response-kept": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "kept-planned": {
+          "mean": 0.4201063829787234,
+          "ci95": [
+            0.38304964539007097,
+            0.45766223404255313
+          ]
+        }
+      },
+      "assemblyLossLower": {
+        "mean": 0.06999999999999999,
+        "ci95": [
+          0.05198581560283688,
+          0.08907801418439715
+        ]
+      },
+      "assemblyLossUpper": {
+        "mean": 0.06999999999999999,
+        "ci95": [
+          0.05198581560283688,
+          0.08907801418439715
+        ]
+      }
+    },
+    "6-server": {
+      "questions": 470,
+      "stages": {
+        "stored": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "pool": {
+          "mean": 0.7494326241134752,
+          "ci95": [
+            0.7151755319148936,
+            0.7828723404255319
+          ]
+        },
+        "response": {
+          "mean": 0.5441843971631206,
+          "ci95": [
+            0.5064539007092199,
+            0.5816320921985816
+          ]
+        },
+        "kept": {
+          "mean": 0.5441843971631206,
+          "ci95": [
+            0.5064539007092199,
+            0.5816320921985816
+          ]
+        },
+        "planned": {
+          "mean": 0.28219858156028366,
+          "ci95": [
+            0.2483679078014184,
+            0.31755407801418434
+          ]
+        }
+      },
+      "promptLower": {
+        "mean": 0.1749645390070922,
+        "ci95": [
+          0.14624113475177306,
+          0.2052482269503546
+        ]
+      },
+      "promptUpper": {
+        "mean": 0.17709219858156028,
+        "ci95": [
+          0.1480141843971631,
+          0.2075531914893617
+        ]
+      },
+      "candidateToPromptLossLower": {
+        "mean": 0.5723404255319149,
+        "ci95": [
+          0.5340070921985816,
+          0.6106028368794326
+        ]
+      },
+      "candidateToPromptLossUpper": {
+        "mean": 0.574468085106383,
+        "ci95": [
+          0.5360274822695036,
+          0.6128014184397163
+        ]
+      },
+      "unknown": 1,
+      "truncated": 432,
+      "consecutiveLosses": {
+        "stored-pool": {
+          "mean": 0.25056737588652483,
+          "ci95": [
+            0.2171276595744681,
+            0.28482446808510636
+          ]
+        },
+        "pool-response": {
+          "mean": 0.2052482269503546,
+          "ci95": [
+            0.17652393617021278,
+            0.23464627659574466
+          ]
+        },
+        "response-kept": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "kept-planned": {
+          "mean": 0.26198581560283685,
+          "ci95": [
+            0.2275177304964539,
+            0.2973058510638298
+          ]
+        }
+      },
+      "assemblyLossLower": {
+        "mean": 0.1051063829787234,
+        "ci95": [
+          0.08212765957446808,
+          0.12943262411347517
+        ]
+      },
+      "assemblyLossUpper": {
+        "mean": 0.10723404255319148,
+        "ci95": [
+          0.08390070921985815,
+          0.13198581560283687
+        ]
+      }
+    },
+    "60-newest": {
+      "questions": 470,
+      "stages": {
+        "stored": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "pool": {
+          "mean": 0.7494326241134752,
+          "ci95": [
+            0.7151755319148936,
+            0.7828723404255319
+          ]
+        },
+        "response": {
+          "mean": 0.7473049645390071,
+          "ci95": [
+            0.7134379432624113,
+            0.7807810283687944
+          ]
+        },
+        "kept": {
+          "mean": 0.7473049645390071,
+          "ci95": [
+            0.7134379432624113,
+            0.7807810283687944
+          ]
+        },
+        "planned": {
+          "mean": 0.12407801418439715,
+          "ci95": [
+            0.1000709219858156,
+            0.149468085106383
+          ]
+        }
+      },
+      "promptLower": {
+        "mean": 0.05407801418439716,
+        "ci95": [
+          0.037588652482269495,
+          0.07163120567375886
+        ]
+      },
+      "promptUpper": {
+        "mean": 0.05407801418439716,
+        "ci95": [
+          0.037588652482269495,
+          0.07163120567375886
+        ]
+      },
+      "candidateToPromptLossLower": {
+        "mean": 0.695354609929078,
+        "ci95": [
+          0.6581560283687944,
+          0.7309228723404254
+        ]
+      },
+      "candidateToPromptLossUpper": {
+        "mean": 0.695354609929078,
+        "ci95": [
+          0.6581560283687944,
+          0.7309228723404254
+        ]
+      },
+      "unknown": 3,
+      "truncated": 439,
+      "consecutiveLosses": {
+        "stored-pool": {
+          "mean": 0.25056737588652483,
+          "ci95": [
+            0.2171276595744681,
+            0.28482446808510636
+          ]
+        },
+        "pool-response": {
+          "mean": 0.002127659574468085,
+          "ci95": [
+            0.0,
+            0.005319148936170213
+          ]
+        },
+        "response-kept": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "kept-planned": {
+          "mean": 0.6232269503546098,
+          "ci95": [
+            0.5853156028368794,
+            0.6602482269503545
+          ]
+        }
+      },
+      "assemblyLossLower": {
+        "mean": 0.06999999999999999,
+        "ci95": [
+          0.05198581560283688,
+          0.08907801418439715
+        ]
+      },
+      "assemblyLossUpper": {
+        "mean": 0.06999999999999999,
+        "ci95": [
+          0.05198581560283688,
+          0.08907801418439715
+        ]
+      }
+    },
+    "60-server": {
+      "questions": 470,
+      "stages": {
+        "stored": {
+          "mean": 1.0,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "pool": {
+          "mean": 0.7494326241134752,
+          "ci95": [
+            0.7151755319148936,
+            0.7828723404255319
+          ]
+        },
+        "response": {
+          "mean": 0.7473049645390071,
+          "ci95": [
+            0.7134379432624113,
+            0.7807810283687944
+          ]
+        },
+        "kept": {
+          "mean": 0.7473049645390071,
+          "ci95": [
+            0.7134379432624113,
+            0.7807810283687944
+          ]
+        },
+        "planned": {
+          "mean": 0.28219858156028366,
+          "ci95": [
+            0.2483679078014184,
+            0.31755407801418434
+          ]
+        }
+      },
+      "promptLower": {
+        "mean": 0.1749645390070922,
+        "ci95": [
+          0.14624113475177306,
+          0.2052482269503546
+        ]
+      },
+      "promptUpper": {
+        "mean": 0.17709219858156028,
+        "ci95": [
+          0.1480141843971631,
+          0.2075531914893617
+        ]
+      },
+      "candidateToPromptLossLower": {
+        "mean": 0.5723404255319149,
+        "ci95": [
+          0.5340070921985816,
+          0.6106028368794326
+        ]
+      },
+      "candidateToPromptLossUpper": {
+        "mean": 0.574468085106383,
+        "ci95": [
+          0.5360274822695036,
+          0.6128014184397163
+        ]
+      },
+      "unknown": 1,
+      "truncated": 432,
+      "consecutiveLosses": {
+        "stored-pool": {
+          "mean": 0.25056737588652483,
+          "ci95": [
+            0.2171276595744681,
+            0.28482446808510636
+          ]
+        },
+        "pool-response": {
+          "mean": 0.002127659574468085,
+          "ci95": [
+            0.0,
+            0.005319148936170213
+          ]
+        },
+        "response-kept": {
+          "mean": 0.0,
+          "ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "kept-planned": {
+          "mean": 0.46510638297872336,
+          "ci95": [
+            0.4259565602836879,
+            0.5030531914893617
+          ]
+        }
+      },
+      "assemblyLossLower": {
+        "mean": 0.1051063829787234,
+        "ci95": [
+          0.08212765957446808,
+          0.12943262411347517
+        ]
+      },
+      "assemblyLossUpper": {
+        "mean": 0.10723404255319148,
+        "ci95": [
+          0.08390070921985815,
+          0.13198581560283687
+        ]
+      }
+    }
+  },
+  "contrasts": [
+    {
+      "key": "server-order-at-6",
+      "coefficients": {
+        "6-server": 1,
+        "6-newest": -1
+      },
+      "lower": {
+        "mean": 0.12088652482269503,
+        "ci95": [
+          0.09191312056737588,
+          0.15070921985815605
+        ]
+      },
+      "upper": {
+        "mean": 0.1230141843971631,
+        "ci95": [
+          0.09326241134751773,
+          0.15319148936170213
+        ]
+      },
+      "pointIdentified": false,
+      "signFlipP": null,
+      "holmP": null
+    },
+    {
+      "key": "widen-server-response",
+      "coefficients": {
+        "60-server": 1,
+        "6-server": -1
+      },
+      "lower": {
+        "mean": -0.002127659574468085,
+        "ci95": [
+          -0.006382978723404255,
+          0.0
+        ]
+      },
+      "upper": {
+        "mean": 0.002127659574468085,
+        "ci95": [
+          0.0,
+          0.006382978723404255
+        ]
+      },
+      "pointIdentified": false,
+      "signFlipP": null,
+      "holmP": null
+    },
+    {
+      "key": "limit-by-order-interaction",
+      "coefficients": {
+        "60-server": 1,
+        "60-newest": -1,
+        "6-server": -1,
+        "6-newest": 1
+      },
+      "lower": {
+        "mean": -0.002127659574468085,
+        "ci95": [
+          -0.006382978723404255,
+          3.543264972207946e-19
+        ]
+      },
+      "upper": {
+        "mean": 0.002127659574468085,
+        "ci95": [
+          0.0,
+          0.006382978723404255
+        ]
+      },
+      "pointIdentified": false,
+      "signFlipP": null,
+      "holmP": null
+    }
+  ],
+  "sensitivities": {
+    "legacy-marked-v1": {
+      "6-newest": {
+        "questions": 479,
+        "nonnullDenominators": 479,
+        "nullDenominators": 0,
+        "promptLowerMean": 0.05306193458594293,
+        "promptUpperMean": 0.05306193458594293
+      },
+      "6-server": {
+        "questions": 479,
+        "nonnullDenominators": 479,
+        "nullDenominators": 0,
+        "promptLowerMean": 0.17376478775226165,
+        "promptUpperMean": 0.17585247042449548
+      },
+      "60-newest": {
+        "questions": 479,
+        "nonnullDenominators": 479,
+        "nullDenominators": 0,
+        "promptLowerMean": 0.05306193458594293,
+        "promptUpperMean": 0.05306193458594293
+      },
+      "60-server": {
+        "questions": 479,
+        "nonnullDenominators": 479,
+        "nullDenominators": 0,
+        "promptLowerMean": 0.17376478775226165,
+        "promptUpperMean": 0.17585247042449548
+      }
+    },
+    "all-questions-v1": {
+      "6-newest": {
+        "questions": 500,
+        "nonnullDenominators": 479,
+        "nullDenominators": 21,
+        "promptLowerMean": 0.05306193458594293,
+        "promptUpperMean": 0.05306193458594293
+      },
+      "6-server": {
+        "questions": 500,
+        "nonnullDenominators": 479,
+        "nullDenominators": 21,
+        "promptLowerMean": 0.17376478775226165,
+        "promptUpperMean": 0.17585247042449548
+      },
+      "60-newest": {
+        "questions": 500,
+        "nonnullDenominators": 479,
+        "nullDenominators": 21,
+        "promptLowerMean": 0.05306193458594293,
+        "promptUpperMean": 0.05306193458594293
+      },
+      "60-server": {
+        "questions": 500,
+        "nonnullDenominators": 479,
+        "nullDenominators": 21,
+        "promptLowerMean": 0.17376478775226165,
+        "promptUpperMean": 0.17585247042449548
+      }
+    }
+  },
+  "states": {
+    "truncated": 1846,
+    "complete": 146,
+    "ambiguous-source": 8
+  },
+  "nativeTiedCutoffSearches": 22,
+  "resampling": {
+    "unit": "question case conditional on compiled history",
+    "algorithm": "NumPy PCG64; bootstrap indices then sign assignments; linear percentile",
+    "seed": 20261111,
+    "draws": 10000,
+    "numpy": "2.5.4"
+  },
+  "limitations": "Source sessions overlap between histories. No independent-user population, dense/external second-corpus result, model answer or semantic answer-loss claim."
+}
