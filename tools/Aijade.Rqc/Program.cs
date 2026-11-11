@@ -15,7 +15,7 @@ try
     Console.Out.WriteLine($"artifacts: {outDir}/{{trials.jsonl,summary.json}}");
     return 0;
 }
-catch (Exception e) when (e is ArgumentException or IOException or InvalidOperationException)
+catch (Exception e) when (e is ArgumentException or IOException or InvalidDataException or InvalidOperationException or System.Text.Json.JsonException)
 {
     Console.Error.WriteLine($"FATAL: {e.Message}");
     return 1;
