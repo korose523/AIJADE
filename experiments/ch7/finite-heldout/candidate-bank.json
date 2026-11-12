@@ -1,0 +1,262 @@
+{
+  "schema": "aijade.ch7.archived-candidate-bank.v1",
+  "programs": [
+    {
+      "taskId": "arr-chunk",
+      "line": 3787,
+      "candidate": {
+        "step": 3786,
+        "skillId": "sv1-ef0-t3-r0-arr-chunk",
+        "reused": false,
+        "execOk": true,
+        "code": "function solve(arr, size) {\n  if (size <= 0) return [];\n  const result = [];\n  for (let i = 0; i < arr.length; i += size) {\n    result.push(arr.slice(i, i + size));\n  }\n  return result;\n}",
+        "generation": "```js\nfunction solve(arr, size) {\n  if (size <= 0) return [];\n  const result = [];\n  for (let i = 0; i < arr.length; i += size) {\n    result.push(arr.slice(i, i + size));\n  }\n  return result;\n}\n```",
+        "selfRationale": "PASS"
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 3,
+        "round": 0,
+        "taskId": "arr-chunk",
+        "skillId": "sv1-ef0-t3-r0-arr-chunk",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "pass",
+        "execOk": true,
+        "durationMs": 4
+      },
+      "code": "function solve(arr, size) {\n  if (size <= 0) return [];\n  const result = [];\n  for (let i = 0; i < arr.length; i += size) {\n    result.push(arr.slice(i, i + size));\n  }\n  return result;\n}",
+      "codeSha256": "7e2584804b9e6c00be9ec1f5d734d846241aa11f09c2cae368ae377147d5e36a"
+    },
+    {
+      "taskId": "arr-flatten",
+      "line": 3669,
+      "candidate": {
+        "step": 3668,
+        "skillId": "sv1-ef0-t1-r0-arr-flatten",
+        "reused": false,
+        "execOk": true,
+        "code": "function solve(arr) {\n  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? val : [val]), []);\n}",
+        "generation": "```js\nfunction solve(arr) {\n  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? val : [val]), []);\n}\n```",
+        "selfRationale": "FAIL: The function `solve` does not flatten the array one level deep as required. It recursively flattens arrays, which is not the intended behavior for this task."
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 1,
+        "round": 0,
+        "taskId": "arr-flatten",
+        "skillId": "sv1-ef0-t1-r0-arr-flatten",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "fail",
+        "execOk": true,
+        "durationMs": 8
+      },
+      "code": "function solve(arr) {\n  return arr.reduce((acc, val) => acc.concat(Array.isArray(val) ? val : [val]), []);\n}",
+      "codeSha256": "bea4e1d200bb1abcb4e5da9997a1f91eb6eeec3f624ea0179f5b59e8ffd06483"
+    },
+    {
+      "taskId": "arr-max",
+      "line": 4085,
+      "candidate": {
+        "step": 4084,
+        "skillId": "sv1-ef0-t8-r0-arr-max",
+        "reused": false,
+        "execOk": true,
+        "code": "function solve(nums) {\n  return nums.length > 0 ? Math.max(...nums) : -Infinity;\n}",
+        "generation": "```js\nfunction solve(nums) {\n  return nums.length > 0 ? Math.max(...nums) : -Infinity;\n}\n```",
+        "selfRationale": "PASS"
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 8,
+        "round": 0,
+        "taskId": "arr-max",
+        "skillId": "sv1-ef0-t8-r0-arr-max",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "pass",
+        "execOk": true,
+        "durationMs": 2
+      },
+      "code": "function solve(nums) {\n  return nums.length > 0 ? Math.max(...nums) : -Infinity;\n}",
+      "codeSha256": "e893bec61008d17f542fb7504727475ba80e2953e8786afd7de9f1ada5478a7d"
+    },
+    {
+      "taskId": "arr-second-largest",
+      "line": 3612,
+      "candidate": {
+        "step": 3611,
+        "skillId": "sv1-ef0-t0-r0-arr-second-largest",
+        "reused": false,
+        "execOk": true,
+        "code": "function secondLargest(nums) {\n  const uniqueNums = Array.from(new Set(nums)).sort((a, b) => b - a);\n  return uniqueNums.length > 1 ? uniqueNums[1] : null;\n}",
+        "generation": "```js\nfunction secondLargest(nums) {\n  const uniqueNums = Array.from(new Set(nums)).sort((a, b) => b - a);\n  return uniqueNums.length > 1 ? uniqueNums[1] : null;\n}\n```",
+        "selfRationale": "PASS"
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 0,
+        "round": 0,
+        "taskId": "arr-second-largest",
+        "skillId": "sv1-ef0-t0-r0-arr-second-largest",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "pass",
+        "execOk": true,
+        "durationMs": 2
+      },
+      "code": "function secondLargest(nums) {\n  const uniqueNums = Array.from(new Set(nums)).sort((a, b) => b - a);\n  return uniqueNums.length > 1 ? uniqueNums[1] : null;\n}",
+      "codeSha256": "8cde43da896ab60c233af7050843813b931fef43774279dd6afbb75418254fb3"
+    },
+    {
+      "taskId": "arr-intersection",
+      "line": 4022,
+      "candidate": {
+        "step": 4021,
+        "skillId": "sv1-ef0-t7-r0-arr-intersection",
+        "reused": false,
+        "execOk": false,
+        "code": "function solve(a, b) {\n  const setB = new Set(b);\n  return a.filter(item => setB.has(item));\n}",
+        "generation": "```js\nfunction solve(a, b) {\n  const setB = new Set(b);\n  return a.filter(item => setB.has(item));\n}\n```",
+        "selfRationale": "FAIL: The code does not remove duplicates from the result, and it does not preserve the order of elements as they appear in `a`."
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 7,
+        "round": 0,
+        "taskId": "arr-intersection",
+        "skillId": "sv1-ef0-t7-r0-arr-intersection",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "fail",
+        "execOk": false,
+        "durationMs": 1
+      },
+      "code": "function solve(a, b) {\n  const setB = new Set(b);\n  return a.filter(item => setB.has(item));\n}",
+      "codeSha256": "d5441aeb34b55ee668eb6b1661097caefae1f6917191d15539b656ad2aa72c70"
+    },
+    {
+      "taskId": "arr-remove-falsy",
+      "line": 3606,
+      "candidate": {
+        "step": 3605,
+        "skillId": "sv1-ef0-t0-r0-arr-remove-falsy",
+        "reused": false,
+        "execOk": false,
+        "code": "const removeFalsy = arr => arr.filter(Boolean);",
+        "generation": "```js\nconst removeFalsy = arr => arr.filter(Boolean);\n```",
+        "selfRationale": "PASS"
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 0,
+        "round": 0,
+        "taskId": "arr-remove-falsy",
+        "skillId": "sv1-ef0-t0-r0-arr-remove-falsy",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "pass",
+        "execOk": false,
+        "durationMs": 1
+      },
+      "code": "const removeFalsy = arr => arr.filter(Boolean);",
+      "codeSha256": "d56019671160cf2857c746445c3139cb15ee918663c7c82f90d1fcf7552082f9"
+    },
+    {
+      "taskId": "obj-get-nested",
+      "line": 3661,
+      "candidate": {
+        "step": 3660,
+        "skillId": "sv1-ef0-t1-r0-obj-get-nested",
+        "reused": false,
+        "execOk": false,
+        "code": "const solve = (obj, path) => path.length === 0 ? obj : path.reduce((acc, key) => acc && acc[key], obj);",
+        "generation": "```js\nconst solve = (obj, path) => path.length === 0 ? obj : path.reduce((acc, key) => acc && acc[key], obj);\n```",
+        "selfRationale": "PASS"
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 1,
+        "round": 0,
+        "taskId": "obj-get-nested",
+        "skillId": "sv1-ef0-t1-r0-obj-get-nested",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "pass",
+        "execOk": false,
+        "durationMs": 1
+      },
+      "code": "const solve = (obj, path) => path.length === 0 ? obj : path.reduce((acc, key) => acc && acc[key], obj);",
+      "codeSha256": "03adb82bb9acc5deb0d4666d8c9c608a8b9b1a6a30dab76b46f0e35897372115"
+    },
+    {
+      "taskId": "parse-version",
+      "line": 4031,
+      "candidate": {
+        "step": 4030,
+        "skillId": "sv1-ef0-t7-r0-parse-version",
+        "reused": false,
+        "execOk": false,
+        "code": "function solve(v) {\n  return v.split('.').map(segment => {\n    const num = parseInt(segment, 10);\n    return isNaN(num) || num < 0 || !Number.isInteger(num) ? null : num;\n  }).filter(segment => segment !== null);\n}",
+        "generation": "```js\nfunction solve(v) {\n  return v.split('.').map(segment => {\n    const num = parseInt(segment, 10);\n    return isNaN(num) || num < 0 || !Number.isInteger(num) ? null : num;\n  }).filter(segment => segment !== null);\n}\n```",
+        "selfRationale": "PASS"
+      },
+      "trial": {
+        "condition": "sv1-ef0",
+        "trial": 7,
+        "round": 0,
+        "taskId": "parse-version",
+        "skillId": "sv1-ef0-t7-r0-parse-version",
+        "reused": false,
+        "attempt": 0,
+        "hadEnvFeedback": false,
+        "hadSelfCritique": false,
+        "regeneratedFromFailure": false,
+        "selfVerdict": "pass",
+        "execOk": false,
+        "durationMs": 18
+      },
+      "code": "function solve(v) {\n  return v.split('.').map(segment => {\n    const num = parseInt(segment, 10);\n    return isNaN(num) || num < 0 || !Number.isInteger(num) ? null : num;\n  }).filter(segment => segment !== null);\n}",
+      "codeSha256": "921af9039c76c91843d8035cb289be0d9f658c28fb7bb9587409f4ea0f5f5e7a"
+    }
+  ],
+  "sources": {
+    "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5/candidates.jsonl": "bbd6e0b8f95976fff16bc7c35302d10d97854c94b564c504e2f498e2e02371a0",
+    "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5/trials.jsonl": "d7532c6f81dc3435f752e5a60f360e97a6d12fd29ade5eb2fcbd55a9bd8b6dae",
+    "experiments/rq-c/oracle-audit.json": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+    "src/Aijade.Research/SkillBench/bench-data.json": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6"
+  },
+  "selectionRule": "First eligible archived line for each of the lexicographically first four distinct tasks per original execution-label stratum; original sv1-ef0/nonreused/round0/attempt0 only; exclusions fixed in prior plan.",
+  "excludedTasks": [
+    "arr-sum",
+    "math-round-to",
+    "parse-csv-line",
+    "parse-query-string",
+    "str-to-camel"
+  ],
+  "newModelJudgments": 0,
+  "newHeldoutCases": 0,
+  "interpretation": "Original labels unchanged; suitability/replay is AI-assisted, not independent human semantic review."
+}
