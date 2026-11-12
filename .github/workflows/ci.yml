@@ -31,6 +31,8 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet test --configuration Release
+      - name: Check finite-comparison adverse scoring and independent raw aggregation
+        run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions
         run: python3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v
       - name: Verify P2-A recovered references and candidate decisions

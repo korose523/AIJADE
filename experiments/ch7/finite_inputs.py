@@ -90,12 +90,9 @@ def scoring(runtime, rules, runtime_sha):
                 round2SemanticActCorrectness='NOT_MEASURED')
 
 
-def construct(repo, freeze, model_sha, output):
-    require(not output.exists(), 'case construction is single use')
-    require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='', 'dirty construction checkout')
-    require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==freeze, 'construction freeze is not current source')
-    receipt = json.loads((repo/'experiments/ch7/finite-heldout/qualification-acceptance.json').read_text())
-    require(receipt['status']=='QUALIFIED_BEFORE_FRESH_CASE_CONSTRUCTION', 'qualification not accepted')
+def derive_suite(repo, freeze, model_sha):
+    """Pure rule derivation; invoked for fresh inputs only after the public qualification freeze."""
+    files = {}
     pool = json.loads((repo/BANK).read_text()); require(pool == bank(repo), 'candidate selection changed')
     require(len(model_sha)==64 and all(c in '0123456789abcdef' for c in model_sha), 'actual model SHA-256')
     seed = sha(('aijade-ch7-confirmed-40-v1:'+freeze).encode())
@@ -127,17 +124,27 @@ def construct(repo, freeze, model_sha, output):
         runtime=dict(schema='aijade.ch7.live-case-manifest.v2',purpose='confirmed_finite_heldout',
                      protocolPlanSha256=sha((repo/PLAN).read_bytes()),constructionFreezeCommit=freeze,
                      selectionSha256=sha((repo/BANK).read_bytes()),blockIndex=b,cases=cases)
-        directory=output/('block-'+str(b+1));write_new(directory/'runtime-manifest.json',runtime)
-        score_manifest=scoring(runtime,rules,sha(encoded(runtime)));write_new(directory/'scoring-manifest.json',score_manifest)
+        directory=Path('block-'+str(b+1));files[str(directory/'runtime-manifest.json')]=runtime
+        score_manifest=scoring(runtime,rules,sha(encoded(runtime)));files[str(directory/'scoring-manifest.json')]=score_manifest
         blocks.append(dict(blockIndex=b,directory=directory.name,runtimeManifestSha256=sha(encoded(runtime)),
                            scoringManifestSha256=sha(encoded(score_manifest))))
-    write_new(output/'construction.json',dict(schema='aijade.ch7.finite-construction.v1',constructionFreezeCommit=freeze,seed=seed,
+    files['construction.json']=dict(schema='aijade.ch7.finite-construction.v1',constructionFreezeCommit=freeze,seed=seed,
         seedDerivation='sha256(aijade-ch7-confirmed-40-v1: + full freeze commit)',planSha256=sha((repo/PLAN).read_bytes()),
         candidateBankSha256=sha((repo/BANK).read_bytes()),modelSha256=model_sha,blocks=blocks,casePairs=40,conditionRows=80,
         invalidPromotionOpportunitiesPerArm=28,invalidReuseOpportunitiesPerArm=32,
-        independentHumanReview=False,investigatorBlinding=False,newModelJudgments=0))
-    write_new(output/'suitability.json',dict(status='CONSTRUCTED_FOR_PREMEASUREMENT_SUITABILITY_CHECK',cases=suitability,
-        independentHumanReview=False,interpretation='Finite combinations of previously declared fault families; four variants are not independent fault families.'))
+        independentHumanReview=False,investigatorBlinding=False,newModelJudgments=0)
+    files['suitability.json']=dict(status='CONSTRUCTED_FOR_PREMEASUREMENT_SUITABILITY_CHECK',cases=suitability,
+        independentHumanReview=False,interpretation='Finite combinations of previously declared fault families; four variants are not independent fault families.')
+    return files
+
+
+def construct(repo, freeze, model_sha, output):
+    require(not output.exists(), 'case construction is single use')
+    require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='', 'dirty construction checkout')
+    require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==freeze, 'construction freeze is not current source')
+    receipt=json.loads((repo/'experiments/ch7/finite-heldout/qualification-acceptance.json').read_text())
+    require(receipt['status']=='QUALIFIED_BEFORE_FRESH_CASE_CONSTRUCTION', 'qualification not accepted')
+    for relative,value in derive_suite(repo,freeze,model_sha).items():write_new(output/relative,value)
 
 
 if __name__=='__main__':
