@@ -34,6 +34,25 @@ def execute(a):
     require([m['blockIndex'] for m in inputs]==([0] if qualification else [0,1,2,3]),'block order')
     require(all(len(m['cases'])==10 for m in inputs),'planned block size')
     output.mkdir(parents=True);(output/'admission').mkdir()
+    if a.settle_seconds:
+        require(a.settle_seconds==600 and qualification,'only the prospectively bounded known-qualification settling phase is enabled')
+        amendment=repo/'experiments/plans/2026-11-12-ch7-finite-qualification-settling.md'
+        require(amendment.is_file(),'missing prospective settling protocol')
+        (output/'settling').mkdir();settle_start=time.monotonic();settle_samples=[]
+        write(output/'receipt.json',dict(status='FIXED_UNLOADED_SETTLING_RUNNING',codeCommit=head,requestedSeconds=600,
+            prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),measurementStarted=False))
+        with (output/'settling/telemetry.jsonl').open('x') as log:
+            while True:
+                elapsed=time.monotonic()-settle_start
+                item=dict(utc=utc(),elapsedSeconds=elapsed,availableBytes=psutil.virtual_memory().available,
+                    swapUsedBytes=psutil.swap_memory().used,researchProcesses=[p.info for p in psutil.process_iter(['pid','name'])
+                    if (p.info['name'] or '').lower() in ['dotnet','ollama'] or 'godot' in (p.info['name'] or '').lower()])
+                settle_samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
+                if elapsed>=600:break
+                time.sleep(min(2,600-elapsed))
+        write(output/'settling/receipt.json',dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=head,
+            requestedSeconds=600,elapsedSeconds=settle_samples[-1]['elapsedSeconds'],samples=len(settle_samples),
+            intervalReset=False,measurementStarted=False,prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest()))
     sample_start=time.monotonic();samples=[]
     with (output/'admission/telemetry.jsonl').open('x') as log:
         while True:
@@ -49,7 +68,8 @@ def execute(a):
     admission=dict(status='ADMITTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',codeCommit=head,
         elapsedSeconds=samples[-1]['elapsedSeconds'],samples=len(samples),minimumAvailableBytes=min(s['availableBytes'] for s in samples),
         swapRangeBytes=max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples),
-        noResearchProcesses=not any(s['researchProcesses'] for s in samples),formalHardwareQualification=False,windowReset=False)
+        noResearchProcesses=not any(s['researchProcesses'] for s in samples),formalHardwareQualification=False,windowReset=False,
+        precedingFixedSettlingSeconds=a.settle_seconds)
     write(output/'admission/receipt.json',admission)
     planned=[m['cases'][i]['input']['caseId']+'/'+arm for m in inputs for i in range(10) for arm in m['cases'][i]['input']['conditions']]
     sequence=dict(schema='aijade.ch7.finite-sequence-receipt.v1',status='ADMITTED_NOT_STARTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',
@@ -106,4 +126,5 @@ def execute(a):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     for key in ['repo','client','model','selection','inputs','output','dotnet']:p.add_argument('--'+key,type=Path,required=True)
+    p.add_argument('--settle-seconds',type=int,default=0)
     raise SystemExit(execute(p.parse_args()))

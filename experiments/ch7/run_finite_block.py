@@ -106,6 +106,7 @@ def main(args):
         earlierSourceFreezeSha256=sha(repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json')))
     env = dict(os.environ)
     env.update(DOTNET_ROOT=str(args.dotnet.parent), DOTNET_CLI_TELEMETRY_OPTOUT='1',
+               UseSharedCompilation='false', MSBUILDDISABLENODEREUSE='1', DOTNET_CLI_USE_MSBUILD_SERVER='0',
                PATH=str(args.dotnet.parent) + os.pathsep + env.get('PATH', ''))
     session = 'ch7-finite-' + output.parent.name + '-' + output.name
     env['MOSAIC_SESSION_ID'] = session
