@@ -1,0 +1,114 @@
+{
+  "schema": "aijade.ch7.comparison-manifest.v1",
+  "purpose": "development_reencoding_only",
+  "conditions": [
+    {
+      "id": "C1",
+      "policy": "strong-local-v1"
+    },
+    {
+      "id": "C2",
+      "policy": "cross-module-v1"
+    }
+  ],
+  "casePairs": 10,
+  "conditionRows": 20,
+  "cases": [
+    {
+      "caseId": "u_6f517fd12e4ada03",
+      "class": "integrity",
+      "window": "asset_admission",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_3262407f7b06f468",
+      "class": "integrity",
+      "window": "execution_unknown",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_b655e4fdcca80f86",
+      "class": "integrity",
+      "window": "claimed_receipt_stage",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_1b81d876de1008b4",
+      "class": "normal",
+      "window": "none",
+      "promotionOpportunity": 0,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 0,
+      "allowedReuses": 1
+    },
+    {
+      "caseId": "u_7c1fde769e93f69b",
+      "class": "integrity",
+      "window": "execution_receipt_intent",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_b731af9ded39a494",
+      "class": "integrity",
+      "window": "execution_failed",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_51f0799d11b47ca8",
+      "class": "integrity",
+      "window": "revocation_before_round2",
+      "promotionOpportunity": 0,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_2d69e7fd46cf9c05",
+      "class": "semantic_control",
+      "window": "wrong_allowed_act_in_round1",
+      "promotionOpportunity": 0,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 0,
+      "allowedReuses": 1
+    },
+    {
+      "caseId": "u_d13d4ca584242835",
+      "class": "integrity",
+      "window": "post_promotion_authority_write",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "u_5b459708324f5e70",
+      "class": "integrity",
+      "window": "duplicate_invocation_2",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 1,
+      "allowedReuses": 1
+    }
+  ],
+  "scheduledInvalidPromotionOpportunitiesPerCondition": 7,
+  "scheduledInvalidReuseOpportunitiesPerCondition": 8,
+  "windowRegistrySha256": "edaadb5fb69a2e00ca202136273546a79aeece346dfd4caa6096579ccb7f0681",
+  "sourcePacketManifestSha256": "ea0285d60ade24313ee201eb2223fd63f0fb71461e9c9a7a2633deb33da62fb2",
+  "sourceRowsSha256": "b9c2aecde9eb89add2fa0281ac035d3fbe423b1775a46a1c4d9636690ed2dde9",
+  "round2SemanticActCorrectness": "NOT_MEASURED"
+}

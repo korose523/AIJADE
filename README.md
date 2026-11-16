@@ -76,11 +76,17 @@ Requires the .NET 10 SDK (pinned in `global.json`).
 dotnet test
 ```
 
-If the checkout lives on a filesystem that rejects extended attributes (e.g. exFAT), put build output elsewhere:
+Use the workspace launcher to keep build outputs, corpora, temporary files and tool caches in this checkout:
 
 ```bash
-AIJADE_ARTIFACTS=$HOME/.cache/aijade-next-artifacts dotnet test
+tools/with-workspace-env.sh dotnet test
 ```
+
+When code, manuscripts and research files share a parent workspace, set `AIJADE_WORKSPACE_ROOT` to that absolute directory.
+The default working directories are under its `.runtime/`; `AIJADE_ARTIFACTS` and `AIJADE_DATA_DIR` may select other
+directories inside the workspace. Parent traversal and existing symlinks that resolve outside it are refused.
+`tools/run-companion.sh` and `tools/data/fetch-corpora.sh` use this environment automatically. This controls their local
+file locations and does not sandbox arbitrary commands. Database services and browser tests still need their own checks.
 
 Database-backed tests need PostgreSQL (with VectorChord) and Redis; `tools/dev-services.sh` starts both in Docker. Without
 `AIJADE_TEST_DATABASE_URL` they are skipped, never reported as passing.

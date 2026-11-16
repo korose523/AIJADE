@@ -31,6 +31,8 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet test --configuration Release
+      - name: Verify project-local paths and companion launch arguments
+        run: python3 tests/shell/verify_workspace_env.py
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions
@@ -63,3 +65,5 @@ jobs:
         run: python3 experiments/ch7/round2-render-2026-11-12/verify_archive.py
       - name: Verify full controlled history, recorder timing and candidate-to-prompt evidence
         run: python3 experiments/p3-history/2026-11-12/verify_archive.py
+      - name: Verify finite-driver instrument checks and both refused admission windows
+        run: python3 experiments/ch7/finite-readiness-2026-11-16/verify_archive.py --controls

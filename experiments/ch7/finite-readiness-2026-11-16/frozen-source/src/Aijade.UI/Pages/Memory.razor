@@ -1,0 +1,99 @@
+@page "/memory"
+@inject AppState State
+@inject IJSRuntime JS
+
+<h1>@State.Text["memory.title"]</h1>
+<div class="row">
+    <input class="grow" placeholder="@State.Text["memory.search"]" @bind="query" @bind:event="oninput" @bind:after="SearchAsync" />
+    <label class="check"><input type="checkbox" checked="@State.Settings.Current.RecordConversations" @onchange="ToggleRecordingAsync" /> @State.Text["memory.recording"]</label>
+    <button @onclick="ExportAsync">@State.Text["memory.export"]</button>
+    <label class="button">@State.Text["memory.import"]<InputFile OnChange="ImportAsync" accept=".json" hidden /></label>
+</div>
+@if (items.Count == 0)
+{
+    <p class="empty">@State.Text["memory.empty"]</p>
+}
+@if (days.Count > 0)
+{
+    <details class="companion-days">
+        <summary>@State.Text["memory.day.title"]</summary>
+        <ul>
+            @foreach (var day in days)
+            {
+                <li>@string.Format(System.Globalization.CultureInfo.CurrentCulture, State.Text["memory.day.line"], day.Day.ToString("d", System.Globalization.CultureInfo.CurrentCulture), day.OwnerTurns, day.FirstLines, day.FirstLinesAnswered, day.Selfies, day.Reminders, State.Text[day.MoodTrend switch { > 0 => "memory.day.up", < 0 => "memory.day.down", _ => "memory.day.same" }])</li>
+            }
+        </ul>
+    </details>
+}
+<ul class="memory-list">
+    @foreach (var item in items)
+    {
+        <li>
+            <span class="content">@item.Content</span>
+            <span class="meta">@item.Source · @item.CreatedAt.ToLocalTime().ToString("g")</span>
+            <button class="icon" title="@State.Text["memory.forget"]" @onclick="() => ForgetAsync(item.Id)">✕</button>
+        </li>
+    }
+</ul>
+@if (status is not null)
+{
+    <p class="status">@status</p>
+}
+
+@code {
+    private string query = "";
+    private List<MemoryItem> items = [];
+    private string? status;
+    private IReadOnlyList<Aijade.Client.Companion.CompanionDay> days = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SearchAsync();
+        await LoadDaysAsync();
+    }
+
+    /// <summary>Her last week, read from the stored lines of the chats touched in it; the page works the same without it.</summary>
+    private async Task LoadDaysAsync()
+    {
+        try
+        {
+            var since = DateTimeOffset.UtcNow.AddDays(-8);
+            var lines = new List<StoredMessage>();
+            foreach (var chat in (await State.Api.ChatsAsync()).Where(c => c.UpdatedAt >= since))
+                lines.AddRange((await State.Api.MessagesAsync(chat.Id)).Where(m => m.CreatedAt >= since));
+            days = Aijade.Client.Companion.CompanionLife.Days(lines);
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or OperationCanceledException)
+        {
+            days = [];
+        }
+    }
+
+    private async Task SearchAsync() => items = [.. await State.Api.MemoryItemsAsync(query)];
+
+    private async Task ForgetAsync(string id)
+    {
+        await State.Api.ForgetMemoryAsync(id);
+        await SearchAsync();
+    }
+
+    private Task ToggleRecordingAsync(ChangeEventArgs e) =>
+        State.Settings.UpdateAsync(s => s with { RecordConversations = e.Value is true });
+
+    private async Task ExportAsync()
+    {
+        var json = (await State.Api.ExportMemoryAsync()).ToJsonString();
+        await JS.InvokeVoidAsync("aijadeDownload", "aijade-memory.json", json);
+    }
+
+    private async Task ImportAsync(InputFileChangeEventArgs e)
+    {
+        using var reader = new StreamReader(e.File.OpenReadStream(20_000_000));
+        var doc = JsonNode.Parse(await reader.ReadToEndAsync()) as JsonObject;
+        if (doc is null)
+            return;
+        var n = await State.Api.ImportMemoryAsync(doc);
+        status = $"{State.Text["memory.import"]}: {n}";
+        await SearchAsync();
+    }
+}

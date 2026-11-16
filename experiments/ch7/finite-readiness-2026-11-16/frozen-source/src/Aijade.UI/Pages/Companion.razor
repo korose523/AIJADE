@@ -1,0 +1,308 @@
+@page "/companion"
+@implements IAsyncDisposable
+@using Aijade.Client.Companion
+@inject AppState State
+
+<h1>@State.Text["nav.companion"]</h1>
+<p>@State.Text["companion.intro"]</p>
+<p>@State.Text["companion.activeCharacter"]：<strong>@(State.SharedCompanion?.Character?.Name ?? "Aijade-9")</strong></p>
+@if (State.Account?.IsAdmin == true)
+{
+    <p><a href="companion/services">@State.Text["companion.services"]</a></p>
+}
+@if (error is not null) { <p class="error" role="alert">@error</p> }
+@if (status is not null) { <p role="status">@status</p> }
+@if (remoteChanged) { <p role="status">@State.Text["companion.sync.changed"]</p> }
+@if (State.CompanionImportWarning is { } importWarning) { <p role="alert">@State.Text["companion.sync.legacy"] @importWarning</p> }
+
+<fieldset disabled="@(!initialized || busy)" aria-busy="@(!initialized || busy)" style="border:0;padding:0;min-width:0">
+<section>
+    <h2>@State.Text["companion.sync.title"]</h2>
+    <p>@State.Text["companion.sync.hint"]</p>
+    <button @onclick="PairingCodeAsync" disabled="@busy">@State.Text["companion.sync.code"]</button>
+    @if (pairingCode is not null)
+    {
+        <p><code>/bind @pairingCode</code> · @pairingExpires</p>
+    }
+    @foreach (var link in links)
+    {
+        <p>QQ @link.Subject <button @onclick="() => UnlinkAsync(link.Id)">@State.Text["companion.sync.unlink"]</button></p>
+    }
+</section>
+
+<section>
+    <h2>@State.Text["companion.setting"]</h2>
+    <Toggle Label="@State.Text["companion.enabled"]" Value="p.Enabled" Changed="v => SaveAsync(p with { Enabled = v })" />
+    <Toggle Label="@State.Text["companion.pacing"]" Value="p.NaturalPacing" Changed="v => SaveAsync(p with { NaturalPacing = v })" />
+    <Toggle Label="@State.Text["module.speakFirst"]" Value="State.Settings.Current.Modules.SpeakFirst" Changed="v => State.Settings.UpdateAsync(s => s with { Modules = s.Modules with { SpeakFirst = v } })" />
+    <label>@State.Text["companion.home"] <input @bind="home" @bind:event="oninput" /></label>
+    <label>@State.Text["companion.appearance"] <textarea @bind="appearance" @bind:event="oninput"></textarea></label>
+    <label>@State.Text["companion.interests"] <input @bind="interests" @bind:event="oninput" /></label>
+    <label>@State.Text["companion.music"] <input @bind="music" @bind:event="oninput" /></label>
+    <label>@State.Text["companion.friends"] <input @bind="friends" @bind:event="oninput" /></label>
+    <label>@State.Text["companion.hair"] <input @bind="hair" @bind:event="oninput" /></label>
+    <button @onclick="SaveFieldsAsync" disabled="@busy">@State.Text["companion.save"]</button>
+</section>
+
+<section>
+    <h2>@State.Text["companion.weather"]</h2>
+    <p>@p.City · @State.SharedCompanion?.EffectiveTimeZone</p>
+    <div class="row"><input @bind="city" @bind:event="oninput" placeholder="@State.Text["companion.city"]" /><button @onclick="FindAsync" disabled="@busy">@State.Text["companion.find"]</button></div>
+    @foreach (var place in places)
+    {
+        <button @onclick="() => ChooseAsync(place)">@place.Name (@place.TimeZone)</button>
+    }
+    <Toggle Label="@State.Text["companion.weather.enabled"]" Value="p.Weather" Changed="v => SaveAsync(p with { Weather = v })" />
+    <label>@State.Text["companion.location.label"] <input @bind="locationLabel" @bind:event="oninput" /></label>
+    <label>@State.Text["companion.timezone"] <input @bind="timeZone" @bind:event="oninput" placeholder="Asia/Seoul" /></label>
+    <label>@State.Text["companion.latitude"] <input type="number" step="any" @bind="latitude" /></label>
+    <label>@State.Text["companion.longitude"] <input type="number" step="any" @bind="longitude" /></label>
+    <p class="hint">@State.Text["companion.location.hint"]</p>
+    <button @onclick="SaveLocationAsync" disabled="@busy">@State.Text["companion.location.save"]</button>
+    <button @onclick="ClearLocationAsync" disabled="@busy">@State.Text["companion.location.clear"]</button>
+    <p class="hint">@State.Text["companion.weather.hint"] <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></p>
+</section>
+
+<section>
+    <h2>@State.Text["companion.now"]</h2>
+    <button @onclick="RefreshAsync" disabled="@busy">@State.Text["companion.refresh"]</button>
+    @if (moment is not null)
+    {
+        <p>@moment.Describe()</p>
+        <p>@(weather?.Describe() ?? State.Text["companion.weather.unknown"])</p>
+        <p>@State.Text["companion.relationship"]：@data.Relationship.Stage · @data.Relationship.Affection.ToString("F1")/100 · @data.Relationship.Reason</p>
+    }
+    <p class="hint">@State.Text["companion.relationship.hint"]</p>
+</section>
+
+<section aria-label="@State.Text["companion.delivery.title"]">
+    <h2>@State.Text["companion.delivery.title"]</h2>
+    <p>@State.Text["companion.delivery.hint"]</p>
+    <button @onclick="ReadDeliveriesAsync" disabled="@busy">@State.Text["companion.delivery.refresh"]</button>
+    @if (deliveries is { } log)
+    {
+        @if (log.Entries.Count == 0) { <p>@State.Text["companion.delivery.empty"]</p> }
+        @if (log.Pruned > 0) { <p>@State.Text.Format("companion.delivery.pruned", log.Pruned)</p> }
+        @foreach (var attempt in log.Entries.Take(20))
+        {
+            var parts = attempt.Parts ?? [];
+            <article class="companion-delivery-entry" style="overflow-wrap:anywhere">
+                <p><strong>@State.Text["companion.delivery." + attempt.State]</strong> · QQ …@Tail(attempt.Destination) · @attempt.StartedAt.ToLocalTime().ToString("g")</p>
+                <p>@State.Text["companion.delivery.kind." + attempt.Kind]</p>
+                <p>@State.Text.Format("companion.delivery.parts", parts.Count(p => p.Outcome == "acknowledged"), parts.Count)</p>
+                <details><summary>@State.Text["companion.delivery.source"]</summary>
+                    <p><code>@attempt.MessageId</code> · <code>@attempt.SourceSha256</code></p>
+                    @if (attempt.TriggerId is not null) { <p>@State.Text["companion.delivery.trigger"]: <code>@attempt.TriggerId</code></p> }
+                    @foreach (var part in parts)
+                    {
+                        <p>@(part.Index + 1) · @part.Kind · @State.Text["companion.delivery." + part.Outcome] · @part.PlatformMessageId</p>
+                        <p><code>@part.PayloadSha256</code></p>
+                    }
+                </details>
+            </article>
+        }
+    }
+</section>
+
+<section aria-label="@State.Text["companion.diary.title"]">
+    <h2>@State.Text["companion.diary.title"]</h2>
+    <p>@State.Text["companion.diary.hint"]</p>
+    <label>@State.Text["companion.diary.date"] <input type="date" @bind="diaryDate" /></label>
+    <button @onclick="ReadDiaryAsync" disabled="@busy">@State.Text["companion.diary.refresh"]</button>
+    @if (diary is { } book)
+    {
+        @if (book.Entries.Count == 0) { <p>@State.Text["companion.diary.empty"]</p> }
+        @foreach (var entry in book.Entries)
+        {
+            <article class="companion-diary-entry">
+                <p><strong>@State.Text["companion.diary.user"]</strong>: @entry.User.Text @(entry.User.Truncated ? "…" : "")</p>
+                <p><strong>@State.Text["companion.diary.assistant"]</strong>: @entry.Assistant.Text @(entry.Assistant.Truncated ? "…" : "")</p>
+                <details style="overflow-wrap:anywhere"><summary>@State.Text["companion.diary.sources"]</summary>
+                    <p>@entry.User.At.ToString("u") · @entry.TimeZone</p>
+                    <p><code>@entry.User.MessageId</code> · <code>@entry.User.Sha256</code></p>
+                    <p><code>@entry.Assistant.MessageId</code> · <code>@entry.Assistant.Sha256</code></p>
+                </details>
+                <button @onclick="() => RemoveDiaryAsync(entry.Id)" disabled="@busy">@State.Text["companion.diary.remove"]</button>
+            </article>
+        }
+    }
+</section>
+
+<section>
+    <h2>@State.Text["companion.collection"]</h2>
+    <p>@State.Text["companion.collection.hint"]</p>
+    <select @bind="kind"><option value="sticker">@State.Text["companion.sticker"]</option><option value="outfit">@State.Text["companion.outfit"]</option><option value="song">@State.Text["companion.song"]</option></select>
+    <input @bind="name" @bind:event="oninput" placeholder="@State.Text["companion.name"]" />
+    <input @bind="description" @bind:event="oninput" placeholder="@State.Text["companion.description"]" />
+    @if (kind == "outfit")
+    {
+        <select @bind="season"><option value="all">All</option><option value="spring">Spring</option><option value="summer">Summer</option><option value="autumn">Autumn</option><option value="winter">Winter</option></select>
+    }
+    @if (kind == "sticker")
+    {
+        <select @bind="emotion"><option value="neutral">Neutral</option>@foreach (var expression in Expressions.Table.Keys) { <option value="@expression">@expression</option> }</select>
+    }
+    @if (kind == "song")
+    {
+        <input @bind="attribution" @bind:event="oninput" placeholder="@State.Text["companion.permission"]" />
+    }
+    <InputFile OnChange="ImportAsync" accept="@(kind == "song" ? "audio/*" : "image/png,image/jpeg,image/webp,image/gif")" />
+    @foreach (var asset in data.Assets)
+    {
+        <div class="companion-asset">
+            <strong>@asset.Name</strong> · @asset.Kind · @asset.Season · @asset.Emotion
+            @if (asset.Kind == "song") { <audio controls preload="none" src="@asset.Data"></audio><small>@asset.Attribution</small> }
+            else { <img src="@asset.Data" alt="@asset.Description" style="max-width:120px;max-height:120px" /> }
+            <button @onclick="() => RemoveAsync(asset.Id)">@State.Text["companion.remove"]</button>
+        </div>
+    }
+</section>
+</fieldset>
+
+@code {
+    private CompanionProfile p = new();
+    private CompanionNotebookData data = new();
+    private CompanionDiaryDay? diary;
+    private DeliveryLog? deliveries;
+    private DateOnly diaryDate = DateOnly.FromDateTime(DateTime.Today);
+    private LifeMoment? moment;
+    private WeatherReading? weather;
+    private IReadOnlyList<CompanionPlace> places = [];
+    private string home = "", appearance = "", interests = "", music = "", friends = "", hair = "", city = "";
+    private string locationLabel = "", timeZone = "";
+    private double? latitude, longitude;
+    private string kind = "sticker", name = "", description = "", season = "all", emotion = "joy", attribution = "";
+    private string? error, status;
+    private bool busy;
+    private bool initialized;
+    private long profileRevision;
+    private bool remoteChanged;
+    private string? pairingCode;
+    private DateTimeOffset? pairingExpires;
+    private IReadOnlyList<CompanionLink> links = [];
+    private readonly CancellationTokenSource syncStop = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var shared = await State.ReloadCompanionAsync();
+        p = shared.Profile; profileRevision = shared.ProfileRevision;
+        (home, appearance, interests, friends, hair) = (p.Home, p.Appearance, p.Interests, p.Friends, p.Hairstyles);
+        music = p.MusicPreferences;
+        LocationFields();
+        await RefreshAsync();
+        initialized = true;
+        _ = PollAsync();
+    }
+    private async Task SaveAsync(CompanionProfile next)
+    {
+        await GuardAsync(async () =>
+        {
+            next.ValidateLocation();
+            await State.SaveCompanionProfileAsync(next, profileRevision);
+            profileRevision = State.SharedCompanion!.ProfileRevision;
+            if (next.City != p.City || next.TimeZone != p.TimeZone || next.Latitude != p.Latitude || next.Longitude != p.Longitude)
+                (locationLabel, timeZone, latitude, longitude) = (next.City, next.TimeZone, next.Latitude, next.Longitude);
+            p = next;
+            var snapshot = await State.Companion.SnapshotAsync(); moment = snapshot.Moment; weather = snapshot.Weather;
+            status = State.Text["companion.saved"];
+        });
+    }
+    private void LocationFields() { locationLabel = p.City; timeZone = p.TimeZone; latitude = p.Latitude; longitude = p.Longitude; }
+    private Task SaveLocationAsync() => SaveAsync(p with { City = locationLabel.Trim(), TimeZone = timeZone.Trim(), Latitude = latitude, Longitude = longitude });
+    private Task ClearLocationAsync() => SaveAsync(p with { City = "", TimeZone = "", Latitude = null, Longitude = null, Weather = false });
+    private Task SaveFieldsAsync() => SaveAsync(p with { Home = home.Trim(), Appearance = appearance.Trim(), Interests = interests.Trim(), MusicPreferences = music.Trim(), Friends = friends.Trim(), Hairstyles = hair.Trim() });
+    private Task FindAsync() => GuardAsync(async () => { places = await State.Weather.FindAsync(city); if (places.Count == 0) status = State.Text["companion.noPlaces"]; });
+    private async Task ChooseAsync(CompanionPlace place)
+    {
+        await SaveAsync(p with { City = place.Name, Latitude = place.Latitude, Longitude = place.Longitude, TimeZone = place.TimeZone, Weather = true });
+        await RefreshAsync();
+    }
+    private Task RefreshAsync() => GuardAsync(async () =>
+    {
+        var shared = await State.ReloadCompanionAsync(); p = shared.Profile; profileRevision = shared.ProfileRevision; LocationFields();
+        (home, appearance, interests, music, friends, hair) = (p.Home, p.Appearance, p.Interests, p.MusicPreferences, p.Friends, p.Hairstyles);
+        var snapshot = await State.Companion.SnapshotAsync(); moment = snapshot.Moment; weather = snapshot.Weather;
+        data = await State.Companion.Notebook.ReadAsync(includeMedia: true); links = await State.Sync.LinksAsync(); remoteChanged = false;
+        await LoadDiaryAsync(diary is null ? null : diaryDate);
+        deliveries = await State.Sync.DeliveriesAsync(State.SharedCompanion?.CharacterId);
+    });
+    private async Task LoadDiaryAsync(DateOnly? day)
+    {
+        diary = await State.Sync.ReadDiaryAsync(State.SharedCompanion?.CharacterId, day);
+        diaryDate = diary.Day;
+    }
+    private Task ReadDiaryAsync() => GuardAsync(() => LoadDiaryAsync(diaryDate));
+    private Task ReadDeliveriesAsync() => GuardAsync(async () => deliveries = await State.Sync.DeliveriesAsync(State.SharedCompanion?.CharacterId));
+    private static string Tail(string value) => value.Length <= 4 ? value : value[^4..];
+    private Task RemoveDiaryAsync(string id) => GuardAsync(async () =>
+    {
+        try { await State.Sync.RemoveDiaryEntryAsync(State.SharedCompanion?.CharacterId, id, diary!.Revision); }
+        catch (AijadeApiException e) when (e.Status == 409) { await LoadDiaryAsync(diaryDate); throw; }
+        await LoadDiaryAsync(diaryDate);
+    });
+    private bool DraftChanged() => home != p.Home || appearance != p.Appearance || interests != p.Interests || music != p.MusicPreferences || friends != p.Friends || hair != p.Hairstyles ||
+        locationLabel != p.City || timeZone != p.TimeZone || latitude != p.Latitude || longitude != p.Longitude;
+    private Task PairingCodeAsync() => GuardAsync(async () =>
+    {
+        var result = await State.Sync.PairingCodeAsync(); pairingCode = result!["code"]!.GetValue<string>(); pairingExpires = result["expiresAt"]!.GetValue<DateTimeOffset>();
+    });
+    private Task UnlinkAsync(string id) => GuardAsync(async () => { await State.Sync.UnlinkAsync(id); links = await State.Sync.LinksAsync(); });
+    private async Task PollAsync()
+    {
+        try
+        {
+            while (!syncStop.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(3), syncStop.Token);
+                try { await InvokeAsync(async () =>
+                {
+                    if (busy) return;
+                    var latest = await State.Sync.CurrentAsync(syncStop.Token);
+                    if (latest.ProfileRevision != profileRevision || latest.CharacterId != State.SharedCompanion?.CharacterId)
+                    {
+                        if (DraftChanged()) remoteChanged = true;
+                        else await RefreshAsync();
+                    }
+                    else
+                    {
+                        var media = latest.AssetRevision != State.SharedCompanion?.AssetRevision;
+                        if (media) data = await State.Companion.Notebook.ReadAsync(includeMedia: true);
+                        else data = data with { Relationship = latest.Notebook.Relationship };
+                        await State.ReloadCompanionAsync();
+                        links = await State.Sync.LinksAsync(syncStop.Token);
+                    }
+                    if (pairingExpires < DateTimeOffset.UtcNow) pairingCode = null;
+                    StateHasChanged();
+                }); }
+                catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+                {
+                    await InvokeAsync(() => { error = e.Message; StateHasChanged(); });
+                    // A temporary disconnect must not permanently stop synchronization.
+                }
+            }
+        }
+        catch (OperationCanceledException) when (syncStop.IsCancellationRequested) { }
+    }
+    public async ValueTask DisposeAsync() { await syncStop.CancelAsync(); syncStop.Dispose(); }
+    private Task RemoveAsync(string id) => GuardAsync(async () => { await State.Companion.Notebook.RemoveAsync(id); data = await State.Companion.Notebook.ReadAsync(includeMedia: true); });
+    private Task ImportAsync(InputFileChangeEventArgs e) => GuardAsync(async () =>
+    {
+        var f = e.File;
+        await using var stream = f.OpenReadStream(CompanionMedia.MaxBytes);
+        using var buffer = new MemoryStream();
+        await stream.CopyToAsync(buffer);
+        var asset = new CompanionAsset(Guid.NewGuid().ToString("N"), kind, string.IsNullOrWhiteSpace(name) ? f.Name : name.Trim(),
+            $"data:{f.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}", description, season, emotion, attribution);
+        await State.Companion.Notebook.AddAsync(asset);
+        data = await State.Companion.Notebook.ReadAsync(includeMedia: true);
+        status = State.Text["companion.saved"];
+    });
+    private async Task GuardAsync(Func<Task> run)
+    {
+        if (busy) return;
+        busy = true; error = null; status = null;
+        try { await run(); }
+        catch (Exception e) when (e is not OperationCanceledException) { error = e.Message; }
+        finally { busy = false; }
+    }
+}

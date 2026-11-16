@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "checks": [
+    "old complete finite numerical projection unchanged",
+    "independent original-row aggregates agree",
+    "complete adverse C2 remains scoreable",
+    "reversed finite contrast remains scoreable"
+  ],
+  "rejectedCorruptions": [
+    {
+      "control": "missing-arm",
+      "rejected": true,
+      "reason": "finite row population"
+    },
+    {
+      "control": "duplicate-arm",
+      "rejected": true,
+      "reason": "duplicate case/condition"
+    },
+    {
+      "control": "changed-window",
+      "rejected": true,
+      "reason": "changed stage window/allowance"
+    },
+    {
+      "control": "changed-denominator",
+      "rejected": true,
+      "reason": "changed scheduled denominator"
+    },
+    {
+      "control": "unknown-field",
+      "rejected": true,
+      "reason": "finite scoring fields"
+    },
+    {
+      "control": "unbound-rule",
+      "rejected": true,
+      "reason": "finite scoring case population"
+    },
+    {
+      "control": "wrong-origin",
+      "rejected": true,
+      "reason": "scoring/runtime identity constructionFreezeCommit"
+    },
+    {
+      "control": "wrong-scope",
+      "rejected": true,
+      "reason": "finite scope"
+    }
+  ],
+  "newHeldoutCases": 0,
+  "newEmpiricalObservations": 0,
+  "interpretation": "Existing observations and explicit synthetic modifications only; not a new comparison result."
+}

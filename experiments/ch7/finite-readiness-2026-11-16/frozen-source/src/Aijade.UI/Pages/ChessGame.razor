@@ -1,0 +1,144 @@
+@page "/chess"
+@using Aijade.Client.Games
+@inject AppState State
+
+<h1>@State.Text["chess.title"]</h1>
+<div class="row">
+    <label>@State.Text["chess.side"]
+        <select @bind="userSide">
+            <option value="White">@State.Text["chess.white"]</option>
+            <option value="Black">@State.Text["chess.black"]</option>
+        </select>
+    </label>
+    <label>@State.Text["chess.opening"]
+        <select @bind="opening">
+            @foreach (var name in ChessCompanion.Openings.Keys)
+            {
+                <option value="@name">@name</option>
+            }
+        </select>
+    </label>
+    <button class="primary" @onclick="NewGameAsync" disabled="@thinking">@State.Text["chess.new"]</button>
+</div>
+
+@if (game is not null)
+{
+    <div class="chess">
+        <div class="chess-board" role="grid" aria-label="@State.Text["chess.title"]">
+            @foreach (var rank in Ranks)
+            {
+                @foreach (var file in Files)
+                {
+                    var square = (rank * 8) + file;
+                    var piece = game.Board[square];
+                    var target = selected is { } from && targets.Contains(square);
+                    <button type="button" class="sq @((rank + file) % 2 == 0 ? "dark" : "light") @(selected == square ? "selected" : "") @(target ? "target" : "") @(LastMove(square) ? "last" : "")"
+                            aria-label="@($"{Chess.SquareName(square)} {Name(piece)}")" @onclick="() => ClickAsync(square)">@Glyph(piece)</button>
+                }
+            }
+        </div>
+        <aside class="chess-side">
+            <p class="status" role="status">@StatusText()</p>
+            <ol class="chess-log">
+                @foreach (var line in log)
+                {
+                    <li>@line</li>
+                }
+            </ol>
+            @if (game.Board.SanHistory.Count > 0)
+            {
+                <p class="meta">@string.Join(" ", game.Board.SanHistory.Select((m, i) => i % 2 == 0 ? $"{(i / 2) + 1}. {m}" : m))</p>
+            }
+        </aside>
+    </div>
+}
+
+@code {
+    private Game? game;
+    private Side userSide = Side.White;
+    private string opening = "standard";
+    private int? selected;
+    private HashSet<int> targets = [];
+    private bool thinking;
+    private readonly List<string> log = [];
+    private (int From, int To)? last;
+
+    private int[] Ranks => userSide == Side.White ? [7, 6, 5, 4, 3, 2, 1, 0] : [0, 1, 2, 3, 4, 5, 6, 7];
+
+    private int[] Files => userSide == Side.White ? [0, 1, 2, 3, 4, 5, 6, 7] : [7, 6, 5, 4, 3, 2, 1, 0];
+
+    private static string Glyph(char p) => p switch
+    {
+        'K' => "♔", 'Q' => "♕", 'R' => "♖", 'B' => "♗", 'N' => "♘", 'P' => "♙",
+        'k' => "♚", 'q' => "♛", 'r' => "♜", 'b' => "♝", 'n' => "♞", 'p' => "♟", _ => "",
+    };
+
+    private string Name(char p) => p == '\0' ? "" : $"{State.Text[char.IsUpper(p) ? "chess.white" : "chess.black"]} {Glyph(p)}";
+
+    private bool LastMove(int square) => last is { } l && (l.From == square || l.To == square);
+
+    private ChessCompanion Companion() => new(State.Api, () => State.Settings.Current.Model);
+
+    private async Task NewGameAsync()
+    {
+        game = new Game(userSide == Side.White ? Side.Black : Side.White, opening);
+        log.Clear();
+        selected = null;
+        last = null;
+        await CompanionTurnAsync();
+    }
+
+    private async Task ClickAsync(int square)
+    {
+        if (game is null || thinking || game.CompanionToMove || game.Board.Status != GameStatus.Playing)
+            return;
+        if (selected is { } from && targets.Contains(square))
+        {
+            var move = game.Board.LegalMoves().First(m => m.From == from && m.To == square && (m.Promotion is '\0' or 'Q'));
+            game.Board.Play(move.Uci);
+            last = (from, square);
+            selected = null;
+            targets = [];
+            await CompanionTurnAsync();
+            return;
+        }
+        var piece = game.Board[square];
+        if (piece != '\0' && (char.IsUpper(piece) ? Side.White : Side.Black) == userSide)
+        {
+            selected = square;
+            targets = [.. game.Board.LegalMoves().Where(m => m.From == square).Select(m => m.To)];
+        }
+        else
+        {
+            selected = null;
+            targets = [];
+        }
+    }
+
+    private async Task CompanionTurnAsync()
+    {
+        if (game is not { CompanionToMove: true })
+            return;
+        thinking = true;
+        StateHasChanged();
+        try
+        {
+            var reply = await Companion().MoveAsync(game, null);
+            log.Insert(0, reply.ByEngine ? State.Text.Format("chess.engine", reply.San) : $"{reply.San} — {reply.Comment}");
+            if (game.Board.LastMove is { } move)
+                last = (move.From, move.To);
+        }
+        finally
+        {
+            thinking = false;
+        }
+    }
+
+    private string StatusText() => game!.Board.Status switch
+    {
+        GameStatus.Playing when thinking => State.Text["chess.thinking"],
+        GameStatus.Playing => State.Text[game.CompanionToMove ? "chess.waiting" : "chess.yourMove"],
+        GameStatus.Checkmate => State.Text[game.Board.Turn == userSide ? "chess.lost" : "chess.won"],
+        _ => State.Text["chess.draw"],
+    };
+}

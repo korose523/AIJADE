@@ -14,5 +14,4 @@ if ! "$AIJADE_DOTNET_BIN" --version >/dev/null 2>&1; then
   exit 1
 fi
 export PATH="$(dirname -- "$AIJADE_DOTNET_BIN"):$PATH"
-export AIJADE_ARTIFACTS="${AIJADE_ARTIFACTS:-$HOME/.cache/aijade-next-artifacts}"
-exec "$AIJADE_DOTNET_BIN" run --project src/Aijade.Server -c "${AIJADE_CONFIGURATION:-Release}" --no-launch-profile -- --Aijade:Profile=companion "$@"
+exec "$AIJADE_SOURCE_ROOT/tools/with-workspace-env.sh" "$AIJADE_DOTNET_BIN" run --project src/Aijade.Server -c "${AIJADE_CONFIGURATION:-Release}" --no-launch-profile -- --Aijade:Profile=companion "$@"

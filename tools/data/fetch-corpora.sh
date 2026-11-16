@@ -2,15 +2,19 @@
 # Fetch the third-party corpora into the paths the drivers read by default, and check each against the SHA-256 the code
 # pins (P3: src/Aijade.Memory/Locomo/Locomo.cs, LongMemEval.cs; P2-A stage 0: tools/data/evalplus_compat.py). None is part
 # of this repository; all are downloaded from their authors' release locations:
-#   LoCoMo (snap-research/locomo, data/locomo10.json)                    -> ~/.local/share/aijade-data/locomo10.json
+#   LoCoMo (snap-research/locomo, data/locomo10.json)                    -> $AIJADE_DATA_DIR/locomo10.json
 #   LongMemEval_s, cleaned (huggingface.co/datasets/xiaowu0162/longmemeval-cleaned, MIT)
-#                                                                         -> ~/.local/share/aijade-data/longmemeval/longmemeval_s_cleaned.json
+#                                                                         -> $AIJADE_DATA_DIR/longmemeval/longmemeval_s_cleaned.json
 #   EvalPlus HumanEval+ v0.1.10 and MBPP+ v0.2.0 (github.com/evalplus, Apache-2.0)
-#                                                                         -> ~/.local/share/aijade-data/evalplus/*.jsonl.gz
+#                                                                         -> $AIJADE_DATA_DIR/evalplus/*.jsonl.gz
 # A file that is already present and matches is left alone; a download that does not match is discarded, never installed.
 #   usage: tools/data/fetch-corpora.sh [locomo|longmemeval|evalplus]     (default: both P3 corpora)
 set -eu
-dir="${AIJADE_DATA_DIR:-$HOME/.local/share/aijade-data}"
+source_root="$(cd -- "$(dirname -- "$0")/../.." && pwd -P)"
+if [ "${AIJADE_LOCAL_ENV_READY:-}" != 1 ]; then
+  exec "$source_root/tools/with-workspace-env.sh" "$source_root/tools/data/fetch-corpora.sh" "$@"
+fi
+dir="${AIJADE_DATA_DIR:?Run with tools/with-workspace-env.sh}"
 
 sha256() { if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | cut -d' ' -f1; else shasum -a 256 "$1" | cut -d' ' -f1; fi; }
 

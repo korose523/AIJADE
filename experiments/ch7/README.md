@@ -6,7 +6,34 @@ proposal admission and promotion. It is hosted by `tests/Aijade.Tests`, not
 registered in the companion server. It does not make the product an automatic
 learning system.
 
-## Current extension: second-round persisted-act command delivery
+## Current status: confirmed scope, instrument controls, refused admission
+
+The author has [confirmed the proposed scope](heldout-scope-confirmation-20261112.json):
+40 pairs, 80 condition rows, four blocks of ten and Godot. This user report resolves
+protocol/count/backend scope, while independent review and actual measurement remain separate.
+
+The [closed v2 instruments and construction rules](../plans/2026-11-12-ch7-confirmed-finite-heldout.md)
+are implemented. The [readiness archive](finite-readiness-2026-11-16/README.md) and
+[binding record](finite-readiness-20261116.json) preserve 687 passed/26 skipped
+default tests, eight original-label programme replays, twelve known-evidence
+suffix placements in both conditions, and both complete refused admission windows.
+The first swap-used range was 160 MiB; after a fixed ten-minute settling phase,
+the second was 96 MiB, both above the unchanged 64 MiB admission limit. No new
+live-driver batch, renderer session, database lease, model request or fresh case
+started. There is no third attempt under that settling amendment.
+
+The settling plan and implementation were published together before observation,
+which did not meet the plan's separate-before-implementation instruction. The
+archive retains raw parent/current Git proofs and discloses that ordering
+deviation; neither refusal is relabelled or rerun to repair it.
+
+The complete finite driver is therefore **not yet qualified**. Keep Table 7.3
+`NOT_RUN`; do not use the passed instrument controls as the construction freeze.
+After the November 16 workspace relocation, a separately prospective bounded
+qualification and current runtime/service checks must precede new case generation.
+All interpretation is AI-assisted; no independent human review is inferred.
+
+## Earlier measured extension: second-round persisted-act command delivery
 
 The [prospective plan](../plans/2026-11-12-ch7-round2-persisted-act.md) was
 pushed alone before implementation `d78ccf8`. The [new complete packet](round2-render-2026-11-12/README.md)
@@ -34,7 +61,8 @@ limits and all twenty owned database cleanups pass. The
 [acceptance record](round2-render-20261112.json) binds all 64 archive files.
 Historical packets and their earlier NOT_MEASURED scopes remain unchanged.
 No new held-out case, model judgment, human review or formal hardware approval is
-inferred; the formal held-out proposal remains unapproved and unrun.
+inferred. At that measurement's date the formal proposal was unapproved and unrun;
+the later scope confirmation and current unrun status are distinguished above.
 
 The [prospective development plan](../plans/2026-11-12-ch7-adapter-qualification.md)
 was committed and pushed separately before implementation. Its ten cases qualify
@@ -196,7 +224,9 @@ seven disposable raw corruptions pass; all forty database leases are cleaned.
 The complete [acceptance record](live-manifest-qualification-20261112.json) pins
 both attempts and the single admission. No first prefix was reused; that packet
 measured no second render/answer semantics, and no held-out result or formal hardware
-qualification is inferred. The 40-pair formal proposal remains unapproved/unrun.
+qualification is inferred. At that earlier stage the 40-pair proposal was
+unapproved/unrun; the later scope confirmation and current unrun status are
+distinguished above.
 
 The [build-provenance record](live-manifest-build-provenance-20261112.json)
 separates the authored source snapshot frozen as `7a162ec` from the SDK's embedded
