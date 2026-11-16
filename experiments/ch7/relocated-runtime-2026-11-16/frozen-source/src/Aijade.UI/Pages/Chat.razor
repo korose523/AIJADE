@@ -1,0 +1,738 @@
+@page "/"
+@page "/chat/{ChatId}"
+@implements IAsyncDisposable
+@using Aijade.Client.Companion
+@inject AppState State
+@inject NavigationManager Nav
+@inject VoiceInput Voice
+@inject AudioOutput Audio
+@inject AgentCapabilitiesHost Capabilities
+@inject VisionSession Vision
+
+<div class="chat-page">
+    <aside class="chat-list">
+        <button class="primary" @onclick="NewChatAsync">＋ @State.Text["chat.new"]</button>
+        @foreach (var c in chats)
+        {
+            <div class="chat-item @(c.Id == ChatId ? "active" : "")">
+                <a href="chat/@c.Id">@(string.IsNullOrEmpty(c.Title) ? c.UpdatedAt.ToLocalTime().ToString("g") : c.Title)</a>
+                <button class="icon" title="@State.Text["chat.delete"]" @onclick="() => DeleteChatAsync(c.Id)">🗑</button>
+            </div>
+        }
+    </aside>
+    <section class="conversation">
+        <StagePanel @ref="stage" />
+        <div class="messages" aria-live="polite">
+            @if (messages.Count == 0 && streaming.Length == 0)
+            {
+                <p class="empty">@(character?.Greeting is { Length: > 0 } g ? g : State.Text["chat.empty"])</p>
+            }
+            @foreach (var m in messages.Where(m => m.Role is "user" or "assistant"))
+            {
+                if (m.Meta?["audio"] is System.Text.Json.Nodes.JsonObject audio)
+                {
+                    <div class="bubble assistant">@m.Content <audio controls preload="none" src="@audio["source"]"></audio></div>
+                }
+                else if (Artistry.ImageOf(m) is { } image)
+                {
+                    <ChatImage @key="m.Id" Image="image" />
+                }
+                else
+                {
+                    <div class="bubble @m.Role">@m.Content</div>
+                    @if (StickerFor(m) is { } sticker)
+                    {
+                        <img class="companion-sticker" src="@sticker.Data" alt="@sticker.Name" style="max-width:128px;max-height:128px" />
+                    }
+                }
+            }
+            @if (drawing)
+            {
+                <div class="bubble assistant streaming">@State.Text["chat.drawing"]</div>
+            }
+            @if (busy)
+            {
+                <div class="bubble assistant streaming">@(streaming.Length > 0 ? streaming : State.Text["chat.thinking"])</div>
+            }
+            @if (error is not null)
+            {
+                <p class="error" role="alert">@error</p>
+            }
+        </div>
+        @if (State.Settings.Current.Modules.Vision)
+        {
+            <div class="vision-bar" role="group" aria-label="@State.Text["module.vision"]">
+                @if (Vision.Sharing is null)
+                {
+                    <button type="button" @onclick="() => Vision.StartAsync(VisionSource.Screen)">🖥️ @State.Text["vision.shareScreen"]</button>
+                    <button type="button" @onclick="() => Vision.StartAsync(VisionSource.Camera)">📷 @State.Text["vision.camera"]</button>
+                }
+                else
+                {
+                    <span class="vision-live" role="status">● @State.Text[Vision.Sharing == VisionSource.Camera ? "vision.watchingCamera" : "vision.watchingScreen"]@(Vision.Looking ? " …" : "")</span>
+                    <button type="button" @onclick="Vision.StopAsync">@State.Text["vision.stop"]</button>
+                }
+                <label class="button">📎 @State.Text["vision.attach"]<InputFile OnChange="AttachAsync" accept="image/*" hidden /></label>
+                @if (attached)
+                {
+                    <span class="meta" role="status">@State.Text["vision.attached"]</span>
+                }
+                @if (Vision.LastError is { } visionError)
+                {
+                    <span class="error">@State.Text.Format("vision.failed", visionError)</span>
+                }
+            </div>
+        }
+        <form class="composer" @onsubmit="SendAsync">
+            <button type="button" class="icon mic @(listening ? "on" : "")" title="@State.Text["settings.voice"]" @onclick="ToggleVoiceAsync">🎙</button>
+            <div class="level" style="width:@(Math.Min(100, level * 800).ToString("F0", System.Globalization.CultureInfo.InvariantCulture))%"></div>
+            <input @bind="draft" @bind:event="oninput" placeholder="@State.Text["chat.placeholder"]" disabled="@busy" />
+            @if (busy)
+            {
+                <button type="button" @onclick="Stop">@State.Text["chat.stop"]</button>
+            }
+            else
+            {
+                <button type="submit" class="primary" disabled="@string.IsNullOrWhiteSpace(draft)">@State.Text["chat.send"]</button>
+            }
+        </form>
+    </section>
+</div>
+
+@code {
+    [Parameter] public string? ChatId { get; set; }
+
+    private StagePanel? stage;
+    private IReadOnlyList<ChatSummary> chats = [];
+    private List<StoredMessage> messages = [];
+    private Character? character;
+    private string draft = "";
+    private string streaming = "";
+    private string? error;
+    private bool busy;
+    private bool drawing;
+    private bool attached;
+    private IReadOnlyList<CompanionAsset> stickerAssets = [];
+    private CompanionAsset? StickerFor(StoredMessage m) => m.Role != "assistant" ? null : CompanionMedia.Sticker(stickerAssets,
+        (m.Meta?["expressions"] as JsonArray ?? []).Select(n => n?.GetValue<string>() ?? ""));
+    private double typingSpent;
+
+    private async Task AppendPacedAsync(string text)
+    {
+        if (streaming.Length == 0)
+            typingSpent = 0;
+        if (!State.Settings.Current.Companion.NaturalPacing || typingSpent >= 8000)
+        {
+            streaming += text;
+            StateHasChanged();
+            return;
+        }
+        var elements = System.Globalization.StringInfo.GetTextElementEnumerator(text);
+        var chunk = new System.Text.StringBuilder();
+        var count = 0;
+        while (elements.MoveNext())
+        {
+            chunk.Append(elements.GetTextElement());
+            if (++count < 3 && elements.ElementIndex + elements.GetTextElement().Length < text.Length)
+                continue;
+            var delay = Math.Min(8000 - typingSpent, count * 25);
+            typingSpent += delay;
+            await Task.Delay(TimeSpan.FromMilliseconds(delay), cts?.Token ?? CancellationToken.None);
+            streaming += chunk;
+            chunk.Clear(); count = 0;
+            StateHasChanged();
+        }
+    }
+
+    private async Task AttachAsync(InputFileChangeEventArgs e)
+    {
+        attached = false;
+        await using var stream = e.File.OpenReadStream(maxAllowedSize: 20 * 1024 * 1024);
+        using var buffer = new MemoryStream();
+        await stream.CopyToAsync(buffer);
+        attached = await Vision.AttachAsync(buffer.ToArray(), e.File.ContentType) is not null;
+    }
+
+    private void OnVisionChanged() => _ = InvokeAsync(StateHasChanged);
+    private bool canDraw;
+    private bool listening;
+    private double level;
+    private CancellationTokenSource? cts;
+    private CancellationTokenSource? stageWatch;
+    private StageAction? undone;
+    private readonly PeriodicTimer speakFirstTimer = new(TimeSpan.FromMinutes(1));
+
+    protected override async Task OnInitializedAsync()
+    {
+        Voice.Transcript += OnTranscript;
+        Voice.Level += OnLevel;
+        Voice.Failed += OnVoiceFailed;
+        Vision.Changed += OnVisionChanged;
+        _ = SpeakFirstLoopAsync();
+        await LoadChatsAsync();
+    }
+
+    /// <summary>Once a minute while this page is open, ask whether she should speak first (the setting is off by default).</summary>
+    private async Task SpeakFirstLoopAsync()
+    {
+        try
+        {
+            while (await speakFirstTimer.WaitForNextTickAsync())
+            {
+                await CompanionLife.MinuteStepAsync(() => InvokeAsync(RemindAsync), ReportMinuteStep);
+                await CompanionLife.MinuteStepAsync(() => InvokeAsync(SelfieAsync), ReportMinuteStep);
+                await CompanionLife.MinuteStepAsync(() => InvokeAsync(SpeakFirstAsync), ReportMinuteStep);
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private static void ReportMinuteStep(Exception e) => Console.Error.WriteLine($"minute check failed: {e.GetType().Name}: {e.Message}");
+
+    /// <summary>
+    /// Her first line, when the companion contract's rule says the moment has come (<see cref="ChatOrchestrator.SpeakFirstAsync"/>):
+    /// shown, performed and spoken like a reply. Nothing happens while a turn is running, while the user is speaking or typing,
+    /// or in a chat with no exchange yet.
+    /// </summary>
+    private async Task SpeakFirstAsync()
+    {
+        if (!State.Settings.Current.Modules.SpeakFirst || busy || drawing || listening || draft.Length > 0 || ChatId is null || messages.Count == 0)
+            return;
+        // On MOSAIC's stage she does not speak first while lying down, as there.
+        var home = State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
+        if (home is { Lying: true } || busy || drawing || listening || draft.Length > 0 || ChatId is null)
+            return;
+        var chatId = ChatId;
+        busy = true;
+        error = null;
+        streaming = "";
+        cts = new CancellationTokenSource();
+        try
+        {
+            var shared = await State.ReloadCompanionAsync();
+            if (shared.CharacterId != character?.Id) return;
+            character = shared.Character;
+            var localHour = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, shared.RuntimeProfile.Zone).Hour;
+            await foreach (var e in Orchestrator().SpeakFirstAsync(chatId, character, messages.ToList(), $"persona:{character?.Id ?? "default"}", localHour, cts.Token))
+            {
+                switch (e)
+                {
+                    case TextDelta d:
+                        await AppendPacedAsync(d.Text);
+                        break;
+                    case TurnFailed:
+                        messages = [.. await State.Api.MessagesAsync(chatId)]; // a first line that failed stays unsaid
+                        break;
+                    case TurnCompleted done:
+                        messages = [.. await State.Api.MessagesAsync(chatId)];
+                        await PerformAsync(done, home, null);
+                        break;
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        {
+            // Speaking first is optional: a server that cannot be reached now is tried again next minute.
+        }
+        finally
+        {
+            busy = false;
+            streaming = "";
+            StateHasChanged();
+        }
+    }
+
+    private static double Now() => DateTimeOffset.Now.ToUnixTimeMilliseconds() / 1000.0;
+
+    /// <summary>
+    /// A reminder she promised that is due now (ADR-003, as MOSAIC's live scene): her line goes into the chat where it was asked
+    /// for, shown and spoken if that chat is open. It is claimed first and released when the line fails, so it is said once.
+    /// Unlike speaking first, it does not depend on the speak-first setting: the user asked for it.
+    /// </summary>
+    private async Task RemindAsync()
+    {
+        if (busy || drawing || listening || draft.Length > 0)
+            return;
+        var reminders = State.Reminders;
+        var book = await reminders.LoadAsync();
+        var due = book.ClaimDue(Now());
+        await reminders.SaveAsync(book, Now());
+        if (due is null)
+            return;
+        var open = due.Conversation == ChatId;
+        bool said = false, gone = false;
+        busy = true;
+        error = null;
+        streaming = "";
+        cts = new CancellationTokenSource();
+        try
+        {
+            var history = open ? messages.ToList() : [.. await State.Api.MessagesAsync(due.Conversation)];
+            var chat = (await State.Api.ChatsAsync(cts.Token)).FirstOrDefault(c => c.Id == due.Conversation);
+            if (chat is null) { gone = true; return; }
+            var shared = await State.Sync.ReadAsync(chat.CharacterId, ct: cts.Token);
+            var home = open && State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
+            await foreach (var e in OrchestratorFor(shared.Character).RemindAsync(due.Conversation, shared.Character, history, $"persona:{shared.CharacterId ?? "default"}", due, shared.RuntimeProfile.Zone, cts.Token))
+            {
+                switch (e)
+                {
+                    case TextDelta d when open:
+                        await AppendPacedAsync(d.Text);
+                        break;
+                    case TurnCompleted done:
+                        said = true;
+                        if (open)
+                        {
+                            messages = [.. await State.Api.MessagesAsync(due.Conversation)];
+                            await PerformAsync(done, home, null);
+                        }
+                        break;
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (AijadeApiException e) when (e.Status == 404)
+        {
+            gone = true; // its chat was deleted: there is nowhere to say it
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        {
+            // The server cannot be reached now: the reminder is released below and tried again next minute.
+        }
+        finally
+        {
+            var latest = await reminders.LoadAsync();
+            if (said || gone)
+                latest.Done(due.Id);
+            else
+                latest.Release(due.Id);
+            await reminders.SaveAsync(latest, Now());
+            busy = false;
+            streaming = "";
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Now and then a selfie from her stage (ADR-003, MOSAIC's share rules; the setting is off by default): at most twice a
+    /// day between 10:00 and 21:30, three hours apart, once the user has left her alone half an hour, by chance each minute.
+    /// The picture goes into this chat as her line with a true caption; she has no doings on this stage to tell of.
+    /// </summary>
+    private async Task SelfieAsync()
+    {
+        if (!State.Settings.Current.Stage.Selfies || stage is null || ChatId is null || busy || drawing || listening || draft.Length > 0)
+            return;
+        var store = State.Selfies;
+        var now = Now();
+        var said = messages.LastOrDefault(m => m.Role == "user")?.CreatedAt;
+        double? ownerAgo = said is { } at ? now - at.ToUnixTimeMilliseconds() / 1000.0 : null;
+#pragma warning disable CA5394 // a chance each minute, as MOSAIC draws it; nothing secret depends on it
+        var draw = Random.Shared.NextDouble();
+#pragma warning restore CA5394
+        if (!Selfies.Due(SelfieRules.Default, Selfies.Today(await store.LoadAsync(), now), now, ownerAgo, draw).Due)
+            return;
+        (byte[] Picture, string Renderer)? taken;
+        try
+        {
+            taken = await stage.SelfieAsync();
+        }
+        catch (JSException)
+        {
+            return; // the stage could not take it: a later minute's chance may
+        }
+        if (taken is not { } shot)
+            return;
+        busy = true;
+        try
+        {
+            await Selfies.ShareAsync(State.Api, ChatId, shot.Picture, State.Text["chat.selfie"], shot.Renderer);
+            await store.RecordAsync(now);
+            messages = [.. await State.Api.MessagesAsync(ChatId)];
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or OperationCanceledException)
+        {
+            // Not kept (the server cannot be reached now, or answered too slowly): a later minute's chance may take another.
+        }
+        finally
+        {
+            busy = false;
+            StateHasChanged();
+        }
+    }
+
+    private string? loadedChatId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Reload only when the chat changes (a navigation after the first message must not clobber the turn in progress).
+        if (ChatId == loadedChatId && (busy || messages.Count > 0))
+            return;
+        loadedChatId = ChatId;
+        var shared = await State.ReloadCompanionAsync();
+        messages = ChatId is null ? [] : [.. await State.Api.MessagesAsync(ChatId)];
+        var selected = chats.FirstOrDefault(c => c.Id == ChatId);
+        if (selected is not null && selected.CharacterId != shared.CharacterId)
+        {
+            await State.SelectCompanionAsync(selected.CharacterId);
+            shared = State.SharedCompanion!;
+        }
+        character = shared.Character;
+        try { stickerAssets = (await State.CompanionFor(character?.Id).Notebook.ReadAsync(includeMedia: true)).Assets.Where(a => a.Kind == "sticker").ToList(); }
+        catch (Exception e) when (e is JSException or System.Text.Json.JsonException or InvalidOperationException)
+        {
+            stickerAssets = [];
+            Console.Error.WriteLine($"Companion collection unavailable: {e.GetType().Name}");
+        }
+    }
+
+    private async Task LoadChatsAsync() => chats = await State.Api.ChatsAsync();
+
+    private async Task NewChatAsync()
+    {
+        var chat = await State.Api.CreateChatAsync(State.Settings.Current.ActiveCharacterId, "");
+        await LoadChatsAsync();
+        Nav.NavigateTo($"chat/{chat.Id}");
+    }
+
+    private async Task DeleteChatAsync(string id)
+    {
+        await State.Api.DeleteChatAsync(id);
+        await LoadChatsAsync();
+        if (id == ChatId)
+            Nav.NavigateTo("");
+    }
+
+    private ChatOrchestrator Orchestrator() => OrchestratorFor(character);
+
+    private ChatOrchestrator OrchestratorFor(Character? who)
+    {
+        var s = State.Settings.Current;
+        var learning = Capabilities.For(State.Account?.Id ?? "anonymous");
+        var companion = State.CompanionFor(who?.Id);
+        return CompanionRuntime.Create(State.Api,
+            [new("life", companion, companion),
+             new("memory", new MemoryRecallProvider(State.Api, () => s.Modules.Memory)),
+             new("learning", learning, learning, () => s.Modules.Learning),
+             new("vision", Vision.Context, Enabled: () => s.Modules.Vision),
+             new("browser", new LiveContextProvider(State.Api, () => s.Modules.BrowserContext)),
+             new("ide", new LiveContextProvider(State.Api, () => s.Modules.IdeContext, "ide"))],
+            new OrchestratorOptions
+            {
+                Model = s.Model, Temperature = s.Temperature, AgentId = who?.Id ?? "aijade", UserScope = State.Account?.Id ?? "default",
+                Drawing = () => canDraw && s.Modules.Artistry,
+                Tools = () => s.Modules.Mcp,
+                PromptBudget = s.PromptBudget, ToolTimeoutSeconds = s.ToolTimeoutSeconds,
+            },
+            companion);
+    }
+
+    private async Task SendAsync()
+    {
+        var text = draft.Trim();
+        if (text.Length == 0 || busy)
+            return;
+        busy = true; // before any navigation, so the parameter reload leaves this turn alone
+        try
+        {
+            var shared = await State.ReloadCompanionAsync();
+            character = shared.Character;
+            if (chats.FirstOrDefault(c => c.Id == ChatId) is { } old && old.CharacterId != shared.CharacterId)
+            {
+                ChatId = null;
+                messages = [];
+                stickerAssets = [];
+            }
+        }
+        catch (AijadeApiException e)
+        {
+            error = e.Message; busy = false; return;
+        }
+        catch (HttpRequestException)
+        {
+            error = State.Text["chat.unreachable"]; busy = false; return;
+        }
+        if (ChatId is null)
+        {
+            try
+            {
+                var chat = await State.Api.CreateChatAsync(State.Settings.Current.ActiveCharacterId, text.Length > 40 ? text[..40] : text);
+                ChatId = chat.Id;
+                loadedChatId = chat.Id;
+                await LoadChatsAsync();
+                Nav.NavigateTo($"chat/{chat.Id}", replace: true);
+            }
+            catch (AijadeApiException e)
+            {
+                error = State.Text.Format("chat.error", e.Message);
+                busy = false;
+                return;
+            }
+            catch (HttpRequestException)
+            {
+                error = State.Text["chat.unreachable"]; // nothing was stored; what was typed stays in the box
+                busy = false;
+                return;
+            }
+        }
+        draft = "";
+        attached = false; // the attachment's description goes with this message
+        error = null;
+        streaming = "";
+        cts = new CancellationTokenSource();
+        var history = messages.ToList();
+        messages.Add(new StoredMessage("pending", 0, "user", text, DateTimeOffset.Now));
+        var settings = State.Settings.Current;
+        try
+        {
+            if (settings.RecordConversations && settings.Modules.Memory)
+                _ = new ConversationRecorder(State.Api, State.MemorySessionId, State.DeviceId).RecordAsync(text);
+            canDraw = (await State.CapabilitiesAsync()).Images;
+            var mediaRequest = State.CompanionFor(character?.Id).Profile.Enabled && CompanionMediaTurn.IsRequest(text);
+            var drawRequests = new List<string>();
+            // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
+            var home = !mediaRequest && settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
+            var action = home is null ? null : Stage.Decide(text, home.Seated);
+            // A reminder asked for, cancelled or asked about is decided by fixed words before the reply, and she is told so (ADR-003).
+            var reminders = State.Reminders;
+            IReadOnlyList<string> reminderNotes = [];
+            Reminder? promised = null;
+            if (!mediaRequest)
+            {
+                var book = await reminders.LoadAsync();
+                (reminderNotes, promised) = book.Read(ChatId, text, Now(), State.SharedCompanion?.RuntimeProfile.Zone);
+                if (promised is not null || reminderNotes.Count > 0)
+                    await reminders.SaveAsync(book, Now());
+            }
+            var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
+            if (home is not null)
+                undone = null; // told once
+            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
+            {
+                switch (e)
+                {
+                    case MediaCompleted:
+                        messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        break;
+                    case TextDelta d:
+                        await AppendPacedAsync(d.Text);
+                        break;
+                    case TurnFailed f:
+                        error = f.Code == "INSUFFICIENT_FLUX" ? State.Text["chat.noFlux"] : State.Text.Format("chat.error", f.Message);
+                        messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        break;
+                    case DrawRequest draw:
+                        drawRequests.Add(draw.Prompt);
+                        break;
+                    case TurnCompleted done:
+                        messages = [.. await State.Api.MessagesAsync(ChatId)];
+                        try { stickerAssets = (await State.CompanionFor(character?.Id).Notebook.ReadAsync(includeMedia: true)).Assets.Where(a => a.Kind == "sticker").ToList(); }
+                        catch (Exception collectionError) when (collectionError is JSException or System.Text.Json.JsonException or InvalidOperationException)
+                        {
+                            Console.Error.WriteLine($"Companion collection unavailable: {collectionError.GetType().Name}");
+                        }
+                        if (promised is not null)
+                        {
+                            // Her answer is kept, so that the due line does not repeat the promise (read afresh: the minute loop may have saved meanwhile).
+                            var latest = await reminders.LoadAsync();
+                            latest.Promise(promised.Id, done.Reply.Content);
+                            await reminders.SaveAsync(latest, Now());
+                        }
+                        await PerformAsync(done, home, action);
+                        break;
+                }
+            }
+            foreach (var prompt in drawRequests)
+                await DrawAsync(ChatId, prompt, cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (HttpRequestException)
+        {
+            // The server cannot be reached. The message stays shown as sent: it may already be stored, so it is not put back
+            // in the box to be sent twice; the next load of the chat shows what the server kept.
+            error = State.Text["chat.unreachable"];
+        }
+        finally
+        {
+            busy = false;
+            streaming = "";
+        }
+    }
+
+    private async Task DrawAsync(string chatId, string prompt, CancellationToken ct)
+    {
+        drawing = true;
+        streaming = "";
+        StateHasChanged();
+        try
+        {
+            await Artistry.DrawIntoChatAsync(State.Api, chatId, prompt, ct);
+            messages = [.. await State.Api.MessagesAsync(chatId)];
+        }
+        catch (AijadeApiException e)
+        {
+            error = e.Code == "INSUFFICIENT_FLUX" ? State.Text["chat.noFlux"] : State.Text.Format("chat.drawFailed", e.Message);
+        }
+        finally
+        {
+            drawing = false;
+        }
+    }
+
+    /// <summary>
+    /// The workbench accepts a line before her body acts. Follow it in the background: if it did not happen, the owner sees the
+    /// workbench's words now and the model is told on the next turn which action did not happen, without those words.
+    /// </summary>
+    private async Task FollowStageAsync(StageAction? action, string? noticeBefore, CancellationToken ct)
+    {
+        try
+        {
+            var report = await new MosaicStage(State.Api).FollowAsync(action, noticeBefore, ct: ct);
+            if (report.Outcome != StageOutcome.Failed)
+                return;
+            await InvokeAsync(() =>
+            {
+                undone = action ?? undone;
+                error = State.Text.Format("chat.stageFailed", report.Notice ?? "");
+                StateHasChanged();
+            });
+        }
+        catch (Exception e) when (e is OperationCanceledException or ObjectDisposedException)
+        {
+            // a newer line replaced it or the page closed
+        }
+    }
+
+    /// <summary>
+    /// Show the reply on the stage, report the render receipt, and speak it with lip sync. On MOSAIC's stage
+    /// (<paramref name="home"/>) the reply is said there, followed by the decided action, and not spoken here.
+    /// </summary>
+    private async Task PerformAsync(TurnCompleted done, StageState? home, StageAction? action)
+    {
+        var saidOnStage = false;
+        if (home is not null)
+        {
+            try
+            {
+                await new MosaicStage(State.Api).SendAsync(Stage.CommandLine(done.Intent.Expression, done.Reply.Content, action));
+                saidOnStage = true;
+                stageWatch?.Cancel(); // the workbench gave up the line before this one for this one
+                stageWatch?.Dispose();
+                stageWatch = new CancellationTokenSource();
+                _ = FollowStageAsync(action, home.Notice, stageWatch.Token);
+            }
+            catch (AijadeApiException e)
+            {
+                error = State.Text.Format("chat.error", e.Message); // the reply stands and is spoken here instead
+            }
+        }
+        if (stage is not null)
+        {
+            var applied = await stage.ApplyAsync(done.Intent);
+            if (applied.Count > 0)
+            {
+                try
+                {
+                    await new RenderReporter(State.Api, State.MemorySessionId, State.DeviceId).ReportAsync(done.Intent, applied, stage.AssetVersionHash);
+                }
+                catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+                {
+                    // A receipt that the server refuses or cannot be sent is a visible gap there; the turn is finished and the conversation goes on.
+                }
+            }
+        }
+        var voice = State.Settings.Current.Voice;
+        if (!saidOnStage && voice.SpeakReplies && State.Settings.Current.Modules.Speech && done.Reply.Content.Length > 0)
+        {
+            try
+            {
+                var audio = await State.Api.SpeechAsync(done.Reply.Content, voice.TtsVoice, done.Expressions.FirstOrDefault());
+                var sink = voice.LipSync && stage is not null ? DotNetObjectReference.Create(new LipSyncSink((v, vowels, lips) => stage.MouthAsync(v, vowels, lips))) : null;
+                await Audio.PlayAsync(audio, sink, sink is null ? null : await LipSyncPlanAsync(done.Reply.Content, audio));
+                sink?.Dispose();
+            }
+            catch (Exception e) when (e is AijadeApiException or HttpRequestException or JSException)
+            {
+                // Speech is optional (unconfigured, out of flux, a server that cannot be reached now, or audio the browser cannot play): the text reply stands.
+            }
+        }
+    }
+
+    /// <summary>
+    /// The mouth from the text (ADR-003): when the server can time the reply's characters in its WAV (the local aligner),
+    /// the plan of vowel shapes and lip closures; otherwise, or when timing fails or takes too long, none, and the mouth
+    /// follows the level of the audio alone.
+    /// </summary>
+    private async Task<Aijade.Client.Companion.LipSyncPlan?> LipSyncPlanAsync(string text, byte[] audio)
+    {
+        if (!Aijade.Client.Companion.LipSync.IsWav(audio) || !(await State.CapabilitiesAsync()).Alignment)
+            return null;
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        try
+        {
+            return Aijade.Client.Companion.LipSync.Plan(await State.Api.AlignAsync(text, audio, timeout.Token));
+        }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or OperationCanceledException)
+        {
+            return null;
+        }
+    }
+
+    private void Stop() => cts?.Cancel();
+
+    private async Task ToggleVoiceAsync()
+    {
+        if (listening)
+        {
+            await Voice.StopAsync();
+            listening = false;
+            return;
+        }
+        error = null;
+        listening = true;
+        await Voice.StartAsync(State.Settings.Current.Voice, State.Text.Locale);
+    }
+
+    private void OnTranscript(string text, bool final)
+    {
+        draft = text;
+        if (final && State.Settings.Current.Voice.AutoSend)
+            _ = InvokeAsync(SendAsync);
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void OnLevel(double v)
+    {
+        level = v;
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void OnVoiceFailed(string message)
+    {
+        listening = false;
+        error = State.Text.Format("settings.voice.unavailable", message);
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Voice.Transcript -= OnTranscript;
+        Voice.Level -= OnLevel;
+        Voice.Failed -= OnVoiceFailed;
+        Vision.Changed -= OnVisionChanged;
+        speakFirstTimer.Dispose();
+        cts?.Cancel();
+        cts?.Dispose();
+        stageWatch?.Cancel();
+        stageWatch?.Dispose();
+        await Voice.StopAsync();
+    }
+}

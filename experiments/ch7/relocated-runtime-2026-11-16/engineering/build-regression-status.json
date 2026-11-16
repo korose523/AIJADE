@@ -1,0 +1,34 @@
+{
+  "status": "CLEAN_COMMITTED_BUILD_AND_COMPLETE_DEFAULT_REGRESSION_PASS",
+  "commit": "3dc0644da43054ad879cfeb1d2b3a57313f57ff8",
+  "assemblyPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/worktree/.runtime/build-artifacts/bin/Aijade.Tests/release/Aijade.Tests.dll",
+  "dependencyFiles": 576,
+  "steps": [
+    {
+      "step": "clean-default-env-corrected-source",
+      "exitCode": 0,
+      "command": [
+        "/Users/mac/.dotnet/dotnet",
+        "clean",
+        "--configuration",
+        "Release",
+        "--disable-build-servers"
+      ]
+    },
+    {
+      "step": "complete-default-env-corrected-regression",
+      "exitCode": 0,
+      "command": [
+        "/Users/mac/.dotnet/dotnet",
+        "test",
+        "--configuration",
+        "Release",
+        "--logger",
+        "trx",
+        "--results-directory",
+        "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/default-env-corrected-regression",
+        "--disable-build-servers"
+      ]
+    }
+  ]
+}

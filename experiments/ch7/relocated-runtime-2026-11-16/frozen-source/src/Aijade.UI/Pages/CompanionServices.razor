@@ -1,0 +1,103 @@
+@page "/companion/services"
+@inject AppState State
+
+<h1>@State.Text["companion.services"]</h1>
+<p><a href="companion">← @State.Text["nav.companion"]</a></p>
+@if (State.Account?.IsAdmin != true)
+{
+    <p role="alert">@State.Text["companion.services.admin"]</p>
+}
+else
+{
+    <p>@State.Text["companion.services.hint"]</p>
+    @if (error is not null) { <p class="error" role="alert">@error</p> }
+    @if (status is not null) { <p role="status">@status</p> }
+    @foreach (var item in services)
+    {
+        <section aria-label="@State.Text["companion.services." + item.Key]">
+            <h2>@State.Text["companion.services." + item.Key]</h2>
+            <p>@State.Text[item.Local ? "companion.services.local" : "companion.services.other"]</p>
+            <Toggle Label="@State.Text["companion.services.enabled"]" Value="item.Enabled" Changed="v => { item.Enabled = v; item.Check = null; }" />
+            <label>@State.Text["companion.services.url"] <input @bind="item.Url" @bind:event="oninput" @bind:after="() => item.Check = null" placeholder="http://127.0.0.1:8791" /></label>
+            <label>@State.Text["companion.services.voice"] <input @bind="item.Voice" @bind:event="oninput" /></label>
+            <label>@State.Text["companion.services.model"] <input @bind="item.ModelPath" @bind:event="oninput" /></label>
+            <label>@State.Text["companion.services.dataset"] <input @bind="item.DatasetPath" @bind:event="oninput" /></label>
+            <label>@State.Text["companion.permission"] <input @bind="item.Permission" @bind:event="oninput" /></label>
+            <label>@State.Text["companion.services.health"] <input @bind="item.Health" @bind:event="oninput" @bind:after="() => item.Check = null" /></label>
+            <button @onclick="() => SaveAsync(item)" disabled="@busy">@State.Text["companion.save"]</button>
+            <button @onclick="() => CheckAsync(item)" disabled="@busy">@State.Text["companion.services.check"]</button>
+            @if (item.Check is { } check) { <p class="hint" role="status">@State.Text["companion.services." + check]</p> }
+            <p class="hint">@State.Text["companion.services.training"]</p>
+        </section>
+    }
+}
+
+@code {
+    private sealed class Service(string key)
+    {
+        public string Key { get; } = key;
+        public bool Enabled { get; set; }
+        public bool Local { get; set; }
+        public string Url { get; set; } = "";
+        public string Voice { get; set; } = "";
+        public string ModelPath { get; set; } = "";
+        public string DatasetPath { get; set; } = "";
+        public string Permission { get; set; } = "";
+        public string Health { get; set; } = "/health";
+        public string? Check { get; set; }
+    }
+    private readonly Service[] services = [new("speech"), new("transcription"), new("alignment"), new("singing")];
+    private bool busy;
+    private string? error, status;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (State.Account?.IsAdmin == true)
+            await GuardAsync(async () =>
+            {
+                var routes = await State.Api.AdminGatewayRoutesAsync();
+                foreach (var item in services)
+                {
+                    if (routes[item.Key] is not JsonObject section)
+                        continue;
+                    item.Local = section["kind"]?.GetValue<string>() == "local";
+                    item.Enabled = item.Local && (section["enabled"]?.GetValue<bool>() ?? true);
+                    if (item.Local)
+                    {
+                        item.Url = section["upstream"]?.GetValue<string>() ?? "";
+                        item.Voice = section["voice"]?.GetValue<string>() ?? "";
+                        item.ModelPath = section["modelPath"]?.GetValue<string>() ?? "";
+                        item.DatasetPath = section["datasetPath"]?.GetValue<string>() ?? "";
+                        item.Permission = section["permissionNote"]?.GetValue<string>() ?? "";
+                        item.Health = section["healthPath"]?.GetValue<string>() ?? "/health";
+                    }
+                }
+            });
+    }
+
+    private Task SaveAsync(Service item) => GuardAsync(async () =>
+    {
+        await State.Api.SendAsync(HttpMethod.Put, "/api/v1/admin/gateway/local-services", new JsonObject
+        {
+            [item.Key] = new JsonObject { ["enabled"] = item.Enabled, ["upstream"] = item.Url.Trim(), ["voice"] = item.Voice.Trim(), ["modelPath"] = item.ModelPath.Trim(),
+                ["datasetPath"] = item.DatasetPath.Trim(), ["permissionNote"] = item.Permission.Trim(), ["healthPath"] = item.Health.Trim() },
+        });
+        item.Local = true; item.Check = null;
+        State.InvalidateCapabilities();
+        status = State.Text["companion.services.saved"];
+    });
+
+    private Task CheckAsync(Service item) => GuardAsync(async () =>
+    {
+        var result = await State.Api.SendAsync(HttpMethod.Post, "/api/v1/admin/gateway/local-services/check", new JsonObject { ["upstream"] = item.Url.Trim(), ["healthPath"] = item.Health.Trim() });
+        item.Check = result?["status"]?.GetValue<string>() ?? "unreachable";
+    });
+
+    private async Task GuardAsync(Func<Task> action)
+    {
+        busy = true; error = null; status = null;
+        try { await action(); }
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException or System.Text.Json.JsonException) { error = e.Message; }
+        finally { busy = false; }
+    }
+}

@@ -1,0 +1,83 @@
+{
+  "status": "RUNTIME_PRECONDITION_STOP",
+  "planCommit": "0dd5b04e1fc77325c6f7e7aa97c21ac86c0d310c",
+  "startedAt": "2026-11-16T01:29:30.155721+00:00",
+  "checkedAt": "2026-11-16T01:32:09.651754+00:00",
+  "elapsedSeconds": 159.491375428,
+  "steps": [
+    {
+      "name": "runtime-image-create",
+      "command": [
+        "hdiutil",
+        "create",
+        "-size",
+        "20g",
+        "-type",
+        "SPARSE",
+        "-fs",
+        "APFS",
+        "-volname",
+        "AIJADE_Runtime",
+        "/Volumes/Untitled/AIJADE/.runtime/aijade-runtime-20261116.sparseimage"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/runtime-image-create.log",
+      "endedAt": "2026-11-16T01:29:31.216345+00:00"
+    },
+    {
+      "name": "runtime-image-attach",
+      "command": [
+        "hdiutil",
+        "attach",
+        "-nobrowse",
+        "-mountpoint",
+        "/Volumes/Untitled/AIJADE/.runtime/posix",
+        "/Volumes/Untitled/AIJADE/.runtime/aijade-runtime-20261116.sparseimage"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/runtime-image-attach.log",
+      "endedAt": "2026-11-16T01:29:31.571887+00:00"
+    },
+    {
+      "name": "colima-start-01",
+      "command": [
+        "/Users/mac/.local/bin/colima",
+        "start",
+        "--runtime",
+        "docker",
+        "--vm-type",
+        "vz",
+        "--cpus",
+        "2",
+        "--memory",
+        "2",
+        "--root-disk",
+        "8",
+        "--disk",
+        "8",
+        "--mount",
+        "none",
+        "--ssh-agent=false",
+        "--ssh-config=false",
+        "--kubernetes=false",
+        "--binfmt=false"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/colima-start-01.log",
+      "endedAt": "2026-11-16T01:32:09.557958+00:00"
+    },
+    {
+      "name": "docker-version",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "version"
+      ],
+      "exitCode": 1,
+      "log": ".research/runs/ch7-relocation-20261116/docker-version.log",
+      "endedAt": "2026-11-16T01:32:09.643892+00:00"
+    }
+  ],
+  "qualificationAdmissionStarted": false,
+  "error": "AssertionError: ('docker-version', 1)",
+  "traceback": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/restore_runtime.py\", line 31, in <module>\n    run('docker-version',['/Users/mac/.local/bin/docker','version'],30)\n  File \"/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/restore_runtime.py\", line 17, in run\n    write('RUNTIME_PREPARATION_RUNNING');assert r.returncode==0,(name,r.returncode)\nAssertionError: ('docker-version', 1)\n"
+}

@@ -78,6 +78,8 @@ jobs:
         run: python3 experiments/p3-history/2026-11-12/verify_archive.py
       - name: Verify finite-driver instrument checks and both refused admission windows
         run: python3 experiments/ch7/finite-readiness-2026-11-16/verify_archive.py --controls
+      - name: Verify unchanged restored historical relocated-runtime packet and controls
+        run: python3 -B experiments/ch7/relocated-runtime-2026-11-16/verify_archive.py --controls
       - name: Materialize exact Mac qualification implementation for offline refusal replay
         uses: actions/checkout@v7
         with:

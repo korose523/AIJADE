@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Aijade.Core/Aijade.Core.csproj" />
+    <ProjectReference Include="../Aijade.Memory/Aijade.Memory.csproj" />
+    <ProjectReference Include="../Aijade.Learning/Aijade.Learning.csproj" />
+    <ProjectReference Include="../Aijade.Telemetry/Aijade.Telemetry.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="I18n/*.json" LogicalName="Aijade.Client.I18n.%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

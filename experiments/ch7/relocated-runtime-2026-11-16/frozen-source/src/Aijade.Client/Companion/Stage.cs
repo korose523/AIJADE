@@ -1,0 +1,380 @@
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+
+using Aijade.Memory.Contracts;
+
+namespace Aijade.Client.Companion;
+
+/// <summary>What her body does after a reply on MOSAIC's home stage.</summary>
+public enum StageActionKind
+{
+    /// <summary>Walk to a spot in her home and sit, lie or stand there; the argument is the word that named it (沙发, 睡觉…).</summary>
+    Place,
+
+    /// <summary>Stand up from sitting or lying.</summary>
+    Stand,
+
+    /// <summary>Walk on the spot; the argument is MOSAIC's walk script or goal token (<c>@approach</c>, <c>原地左转 6.3 停 1</c>…).</summary>
+    Walk,
+
+    /// <summary>Dance one dance from MOSAIC's dance library.</summary>
+    Dance,
+
+    /// <summary>A gesture; the argument is MOSAIC's gesture id (bow, bye, byebye, guide, call, respond, groom).</summary>
+    Gesture,
+}
+
+/// <summary>The decided action, and in a few words what she will do, for the note before the reply.</summary>
+public sealed record StageAction(StageActionKind Kind, string? Argument, string Doing);
+
+/// <summary>How a command line sent to the workbench ended, as far as the workbench's last notice tells.</summary>
+public enum StageOutcome
+{
+    /// <summary>The notice is the one a finished action writes.</summary>
+    Done,
+
+    /// <summary>The line stopped, or the action did not finish.</summary>
+    Failed,
+
+    /// <summary>The notice does not say: nothing was claimed, or it is about something else.</summary>
+    Unknown,
+}
+
+/// <summary>The outcome and the workbench's words for it; the words are for the owner, not for a model.</summary>
+public sealed record StageReport(StageOutcome Outcome, string? Notice);
+
+/// <summary>A spot in her home (MOSAIC's mosaic-home-v1 layout): name, label, what she does there, room and other words for it.</summary>
+public sealed record StageSpot(string Name, string Label, string Activity, string Room, IReadOnlyList<string> Aliases);
+
+/// <summary>
+/// The stage rules of the companion contract (<c>configs/companion/contract.json</c>, 1.3.0, and 1.4.0 for what she has learned; docs/STAGE-MOSAIC.md, plan A
+/// step 1): as MOSAIC's live-scene workbench does it, fixed words in the user's message, not the model, decide what her body
+/// does after the reply (a spot in her home, else a walk, else a dance, else a gesture; a negation, or the speaker going
+/// themselves, means none), and the model is told before it replies. Held to the vectors from a compiled copy of MOSAIC's
+/// LiveSceneCommands. The chat page uses it when the setting "Stage: MOSAIC's home" is on (<see cref="MosaicStage"/>).
+/// </summary>
+public static class Stage
+{
+    /// <summary>The note before a reply after which the app moves her; <c>{doing}</c> says what (去沙发坐下, 鞠躬…).</summary>
+    public const string ActionNoteTemplate =
+        "Right after this reply the app will make your body do this, because they asked: {doing}. " +
+        "Agree in a few warm words and never say you cannot.";
+
+    /// <summary>The note before a reply after which the app does not move her.</summary>
+    public const string NoActionNote = "The app will not move your body after this reply, so do not promise to move.";
+
+    /// <summary>The note on where she is, when the app knows; <c>{where}</c> as MOSAIC says it (在客厅，沙发，坐着).</summary>
+    public const string WhereNoteTemplate =
+        "Where your body is in your home and what it is doing, from the app: {where}. " +
+        "Say it if they ask where you are or what you are doing, and never invent another place or activity.";
+
+    /// <summary>
+    /// The rule on what she has learned (contract 1.4.0 B), word for word the same in MOSAIC's system prompt
+    /// (<c>LEARNED_SHARED</c> in its companion module).
+    /// </summary>
+    public const string LearnedShared =
+        "learned_recently, when present, lists motions the app's video learner really captured for your body. Only these count " +
+        "as your learning: if the user asks what you did or learned, you may mention one or two of them naturally in your own " +
+        "words; never invent any other learning.";
+
+    /// <summary>
+    /// AIJADE's sentence on the fields it gives. The video's title and its uploader are third-party content shown only to the
+    /// owner on the owner's machine, and AIJADE's chat may use a remote model, so they are not given.
+    /// </summary>
+    public const string LearnedFields = "Here each item gives the skill, the day it was learned from a video on Bilibili, and how many seconds were learned.";
+
+    /// <summary>
+    /// The note on the next turn after an action did not happen (contract 1.4.1); <c>{doing}</c> says which. It never carries the
+    /// workbench's notice, which can name local paths, because AIJADE's chat may use a remote model.
+    /// </summary>
+    public const string UndoneNoteTemplate =
+        "After an earlier reply the app could not make your body do this, so it did not happen: {doing}. " +
+        "If it comes up, say so plainly and never claim that you did it.";
+
+    /// <summary>The workbench's notice when an exception stopped a command line.</summary>
+    public const string StoppedNotice = "指令序列中止：";
+
+    /// <summary>Workbench notices about her voice, her words or a reminder; they say nothing about her body.</summary>
+    public static IReadOnlyList<string> UnrelatedNotices { get; } = ["语音服务没开", "神经语音不可用", "口型同步失败", "按字口型不可用", "回复（", "她先开口", "提醒："];
+
+    /// <summary>
+    /// How a finished command line ended, from the notice the workbench is left with. MOSAIC gives no codes, so this reads the
+    /// wording of its <c>LiveSceneService.cs</c> (r683), a dependency recorded in the contract (<c>stage.outcome</c>). Each action
+    /// writes a known notice when it finishes, and anything else about the body means it did not: the errors of its planners are
+    /// free text, so they cannot be listed. Notices on other things, and the realtime controller's "accepted" (去 X, 起来), are Unknown.
+    /// With no action only a stopped line counts, and only if it is a new notice, since notices stay until overwritten.
+    /// </summary>
+    public static StageOutcome Outcome(StageAction? action, string? noticeBefore, string? notice)
+    {
+        if (string.IsNullOrWhiteSpace(notice))
+            return StageOutcome.Unknown;
+        var stopped = notice.StartsWith(StoppedNotice, StringComparison.Ordinal);
+        if (action is null)
+            return stopped && notice != noticeBefore ? StageOutcome.Failed : StageOutcome.Unknown;
+        if (stopped)
+            return StageOutcome.Failed;
+        if (UnrelatedNotices.Any(n => notice.StartsWith(n, StringComparison.Ordinal)))
+            return StageOutcome.Unknown;
+        return action.Kind switch
+        {
+            StageActionKind.Place when notice == "去" + action.Argument => StageOutcome.Unknown,
+            StageActionKind.Stand when notice == "起来" => StageOutcome.Unknown,
+            StageActionKind.Place => Judged((notice.StartsWith("她在", StringComparison.Ordinal) && (notice.EndsWith("坐下了", StringComparison.Ordinal) || notice.EndsWith("躺下了", StringComparison.Ordinal)))
+                || notice.StartsWith("她到了", StringComparison.Ordinal)),
+            StageActionKind.Stand => Judged(notice is "她站起来了" or "她起床了" or "她没有坐着或躺着。"), // already up: what was asked holds
+            StageActionKind.Walk => Judged(Played(notice, "走路")),
+            StageActionKind.Dance => Judged(Played(notice, "舞蹈「")),
+            _ => Judged(Played(notice, "手势「")),
+        };
+    }
+
+    private static StageOutcome Judged(bool done) => done ? StageOutcome.Done : StageOutcome.Failed;
+
+    /// <summary>A clip that played: it ended (…播完…, even if the way back was then refused) or the scene restarted to play it.</summary>
+    private static bool Played(string notice, string what) =>
+        notice.StartsWith(what, StringComparison.Ordinal) && (notice.Contains("播完", StringComparison.Ordinal) || notice.Contains("重启播放", StringComparison.Ordinal));
+
+    /// <summary>MOSAIC's token for standing up.</summary>
+    public const string StandUp = "@up";
+
+    /// <summary>The spots of MOSAIC's home layout (configs/scenes/home-v1.json, mosaic-home-v1).</summary>
+    public static IReadOnlyList<StageSpot> Spots { get; } =
+    [
+        new("sofa", "沙发", "sit", "living", ["沙发", "客厅"]),
+        new("tv", "沙发上看电视", "sit", "living", ["电视", "看电视"]),
+        new("piano", "钢琴前", "sit", "living", ["钢琴", "弹琴", "弹钢琴"]),
+        new("bed", "床上", "lie", "bedroom", ["床", "卧室", "睡觉", "躺"]),
+        new("desk", "书桌前", "sit", "bedroom", ["书桌", "学习"]),
+        new("dining", "餐桌边", "sit", "kitchen", ["餐桌", "吃饭", "餐厅"]),
+        new("kitchen", "灶台前", "stand", "kitchen", ["厨房", "做饭", "灶台"]),
+        new("pool", "泳池边", "stand", "yard", ["泳池", "游泳"]),
+        new("court", "篮球场", "stand", "yard", ["篮球", "打球", "球场"]),
+        new("deck", "运动木台", "stand", "yard", ["运动", "跳舞的地方", "木台", "院子"]),
+    ];
+
+    /// <summary>The words for the spots, as MOSAIC lists them: each label, then its aliases, each word once.</summary>
+    public static IReadOnlyList<string> PlaceWords { get; } =
+        [.. Spots.SelectMany(s => s.Aliases.Prepend(s.Label)).Where(w => w.Length > 0).Distinct(StringComparer.Ordinal)];
+
+    public static IReadOnlyList<string> Negations { get; } = ["不要", "别", "不用", "不许", "don't", "do not", "dont"];
+
+    /// <summary>The speaker going themselves (我去睡觉了): not asking her to go.</summary>
+    public static IReadOnlyList<string> SelfGoing { get; } = ["我去", "我要去", "我先去", "我得去", "我该去", "我也去", "我想去"];
+
+    public static IReadOnlyList<string> GoWords { get; } = ["去", "到", "回", "坐到", "躺到"];
+
+    /// <summary>Asking her along or telling her to (我们看电视吧, 陪我弹琴, 该睡觉了).</summary>
+    public static IReadOnlyList<string> Invitations { get; } = ["一起", "陪我", "我们", "咱们", "你去", "快去", "该"];
+
+    public static IReadOnlyList<string> StandUpWords { get; } = ["起来", "站起来", "起床", "stand", "stand up", "get up"];
+
+    public static IReadOnlyList<(string[] Keywords, string Script)> Movements { get; } =
+    [
+        (["转一圈", "转个圈", "spin"], "原地左转 6.3 停 1"),
+        (["转过身", "转身", "turn around"], "原地左转 3.15 停 1"),
+        (["走过来", "过来", "到我这", "靠近", "come here", "come closer"], "@approach"),
+        (["退后", "后退", "往后", "step back"], "@back"),
+        (["走开", "离远", "back off", "go away"], "@away"),
+        (["走一走", "走两步", "散步", "walk around"], "@stroll"),
+    ];
+
+    public static IReadOnlyList<string> DanceKeywords { get; } =
+        ["跳舞", "跳个舞", "跳支舞", "跳一支舞", "跳段舞", "跳一段舞", "来段舞", "来支舞", "跳一下", "跳一个", "跳一曲", "来一段", "dance"];
+
+    /// <summary>Gestures the user asks for.</summary>
+    public static IReadOnlyList<(string[] Keywords, string Gesture)> Gestures { get; } =
+    [
+        (["鞠躬", "鞠个躬", "bow"], "bow"),
+        (["挥挥手", "挥手", "招招手", "wave"], "bye"),
+        (["打招呼", "打个招呼", "say hi"], "call"),
+        (["带路", "指路", "show me the way"], "guide"),
+        (["举手", "举个手", "raise your hand"], "respond"),
+        (["理头发", "理理头发", "拢头发", "整理头发", "fix your hair"], "groom"),
+    ];
+
+    /// <summary>Answers to what they say without asking: a farewell, then thanks (a greeting is <see cref="Greeting"/>).</summary>
+    public static IReadOnlyList<(string[] Keywords, string Gesture)> SituationalGestures { get; } =
+    [
+        (["再见", "拜拜", "回头见", "goodbye", "bye"], "byebye"),
+        (["谢谢", "多谢", "感谢", "thank"], "bow"),
+    ];
+
+    /// <summary>A greeting on word boundaries (你好 but not 你好像), answered with a wave.</summary>
+    public static Regex Greeting { get; } = new(
+        @"(^|[\s，。！？、,.!?~～])(你好|您好|早上好|早安|中午好|下午好|晚上好|嗨)(?=$|[\s，。！？、,.!?~～呀啊哦吗])|\b(hello|hi|hey|good (morning|afternoon|evening))\b",
+        RegexOptions.CultureInvariant);
+
+    /// <summary>In a few words what a walk, a dance or a gesture is, for the note (AIJADE's wording; MOSAIC tells its model only the kind).</summary>
+    public static IReadOnlyDictionary<string, string> Doings { get; } = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["原地左转 6.3 停 1"] = "转一圈", ["原地左转 3.15 停 1"] = "转过身", ["@approach"] = "走过来", ["@back"] = "往后退一点",
+        ["@away"] = "走开", ["@stroll"] = "走一走", ["dance"] = "跳一支舞", ["bow"] = "鞠躬", ["bye"] = "挥手",
+        ["byebye"] = "挥手告别", ["call"] = "打招呼", ["guide"] = "带路", ["respond"] = "举手", ["groom"] = "理理头发",
+    };
+
+    private static bool Negated(string t) => Negations.Any(n => t.Contains(n, StringComparison.Ordinal));
+
+    /// <summary>
+    /// A spot in her home the message sends her to, by the word that named it, or <see cref="StandUp"/> when it only says to
+    /// get up, else null: the word after a go-word (去沙发), or a word of two or more characters with an invitation (我们看电视吧).
+    /// Longer words first. None when the message has a negation or the speaker is going themselves.
+    /// </summary>
+    public static string? Place(string text)
+    {
+        var t = text.ToLowerInvariant();
+        if (Negated(t) || SelfGoing.Any(n => t.Contains(n, StringComparison.Ordinal)))
+            return null;
+        foreach (var place in PlaceWords.OrderByDescending(p => p.Length))
+        {
+            if (GoWords.Any(g => t.Contains(g + place, StringComparison.Ordinal)))
+                return place;
+            if (place.Length >= 2 && t.Contains(place, StringComparison.Ordinal) && Invitations.Any(i => t.Contains(i, StringComparison.Ordinal)))
+                return place;
+        }
+        return StandUpWords.Any(w => t.Contains(w, StringComparison.Ordinal)) ? StandUp : null;
+    }
+
+    /// <summary>The walk the message asks for (MOSAIC's script or goal token), or null; none under a negation.</summary>
+    public static string? Movement(string text)
+    {
+        var t = text.ToLowerInvariant();
+        return Negated(t) ? null : Movements.FirstOrDefault(m => m.Keywords.Any(k => t.Contains(k, StringComparison.Ordinal))).Script;
+    }
+
+    /// <summary>Whether the message asks her to dance; not under a negation.</summary>
+    public static bool Dance(string text)
+    {
+        var t = text.ToLowerInvariant();
+        return !Negated(t) && DanceKeywords.Any(k => t.Contains(k, StringComparison.Ordinal));
+    }
+
+    /// <summary>The gesture the message asks for, or, when <paramref name="situational"/>, answers (a farewell, thanks, a greeting); else null.</summary>
+    public static string? Gesture(string text, bool situational = true)
+    {
+        var t = text.ToLowerInvariant();
+        if (Negated(t))
+            return null;
+        foreach (var (keywords, gesture) in situational ? Gestures.Concat(SituationalGestures) : Gestures)
+        {
+            if (keywords.Any(k => t.Contains(k, StringComparison.Ordinal)))
+                return gesture;
+        }
+        return situational && Greeting.IsMatch(t) ? "bye" : null;
+    }
+
+    /// <summary>What she goes to a spot to do, as MOSAIC tells its model: 去 + label, then 坐下 or 躺下休息 by the spot.</summary>
+    public static string? PlaceDoing(string word)
+    {
+        var spot = Spots.FirstOrDefault(s => s.Label == word || s.Aliases.Contains(word, StringComparer.Ordinal));
+        return spot is null ? null : "去" + spot.Label + spot.Activity switch { "sit" => "坐下", "lie" => "躺下休息", _ => "" };
+    }
+
+    /// <summary>
+    /// What her body does after the reply, in MOSAIC's order: a spot (standing up only when she <paramref name="seated"/> sits
+    /// or lies), else a walk, else a dance, else a gesture, situational ones included as when MOSAIC's model does not choose
+    /// actions; null when the message asks for none.
+    /// </summary>
+    public static StageAction? Decide(string text, bool seated)
+    {
+        var place = Place(text);
+        if (place == StandUp)
+            return seated ? new StageAction(StageActionKind.Stand, null, "站起来") : null;
+        if (place is not null)
+            return new StageAction(StageActionKind.Place, place, PlaceDoing(place)!);
+        if (Movement(text) is { } walk)
+            return new StageAction(StageActionKind.Walk, walk, Doings[walk]);
+        if (Dance(text))
+            return new StageAction(StageActionKind.Dance, null, Doings["dance"]);
+        return Gesture(text) is { } gesture ? new StageAction(StageActionKind.Gesture, gesture, Doings[gesture]) : null;
+    }
+
+    /// <summary>The workbench's name for each gesture id in its gesture command (手势 鞠躬); "bye" has only the name 挥手.</summary>
+    public static IReadOnlyDictionary<string, string> GestureCommandNames { get; } = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["bow"] = "鞠躬", ["bye"] = "挥手", ["byebye"] = "拜拜", ["guide"] = "指引", ["call"] = "招呼", ["respond"] = "举手", ["groom"] = "理头发",
+    };
+
+    /// <summary>The longest text one 说 command of the workbench takes.</summary>
+    public const int MaxSpeech = 300;
+
+    /// <summary>
+    /// The workbench command line for one reply (<c>POST /api/v1/live-scene/command</c>): her expression from the reply's PEF
+    /// vector (表情 valence arousal dominance curiosity), the reply spoken in pieces of at most <see cref="MaxSpeech"/>
+    /// characters (说), then the action (去 沙发, 起来, 走路 @approach, 跳舞, 手势 鞠躬). The workbench splits commands at
+    /// ';', '；' and line breaks, so these become commas in the spoken text.
+    /// </summary>
+    public static string CommandLine(ExpressionVector expression, string reply, StageAction? action)
+    {
+        static string F(double v, double min) => Math.Round(Math.Clamp(double.IsFinite(v) ? v : 0, min, 1), 2).ToString("0.##", CultureInfo.InvariantCulture);
+        var commands = new List<string>
+        {
+            $"表情 {F(expression.Valence, -1)} {F(expression.Arousal, 0)} {F(expression.Dominance, 0)} {F(expression.Curiosity, 0)}",
+        };
+        commands.AddRange(SpeechPieces(reply).Select(p => "说 " + p));
+        if (action is not null)
+        {
+            commands.Add(action.Kind switch
+            {
+                StageActionKind.Place => "去 " + action.Argument,
+                StageActionKind.Stand => "起来",
+                StageActionKind.Walk => "走路 " + action.Argument,
+                StageActionKind.Dance => "跳舞",
+                _ => "手势 " + GestureCommandNames[action.Argument!],
+            });
+        }
+        return string.Join("; ", commands);
+    }
+
+    /// <summary>The reply as the pieces she says: separators turned into commas, cut after a sentence end where it can be.</summary>
+    public static IReadOnlyList<string> SpeechPieces(string reply)
+    {
+        var text = string.Join("，", reply.Split([';', '；', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries));
+        var pieces = new List<string>();
+        var piece = new StringBuilder();
+        foreach (var rune in text.EnumerateRunes())
+        {
+            while (piece.Length + rune.Utf16SequenceLength > MaxSpeech)
+            {
+                var s = piece.ToString();
+                var cut = s.LastIndexOfAny(['。', '！', '？', '!', '?', '~']) + 1;
+                cut = cut > 0 ? cut : s.Length;
+                pieces.Add(s[..cut].Trim());
+                piece.Clear().Append(s[cut..]);
+            }
+            piece.Append(rune.ToString());
+        }
+        if (piece.ToString().Trim() is { Length: > 0 } last)
+            pieces.Add(last);
+        return [.. pieces.Where(p => p.Length > 0)];
+    }
+
+    public static string ActionNote(StageAction action) => ActionNoteTemplate.Replace("{doing}", action.Doing, StringComparison.Ordinal);
+
+    public static string WhereNote(string where) => WhereNoteTemplate.Replace("{where}", where, StringComparison.Ordinal);
+
+    /// <summary>
+    /// The note on what she has really learned (contract 1.4.0 B), or null when the workbench lists nothing: the rule, the
+    /// fields, then <c>learned_recently:</c> with each item's day, skill and seconds, newest first as MOSAIC gives them.
+    /// </summary>
+    public static string? LearnedNote(IReadOnlyList<LearnedMotion>? learned) =>
+        learned is not { Count: > 0 } ? null
+        : $"{LearnedShared} {LearnedFields} learned_recently: " +
+          string.Join("; ", learned.Select(m => $"{m.Day} {m.SkillWords} ({m.KeptSeconds.ToString("0.0", CultureInfo.InvariantCulture)} s)")) + ".";
+
+    /// <summary>
+    /// The notes before the user's message on the stage: the action note or the no-action note, then where she is when known,
+    /// then what she has learned when the workbench lists anything, then the action of an earlier reply that did not happen.
+    /// </summary>
+    public static IReadOnlyList<string> Notes(StageAction? action, string? where, IReadOnlyList<LearnedMotion>? learned = null, StageAction? undone = null)
+    {
+        List<string> notes = [action is null ? NoActionNote : ActionNote(action)];
+        if (where is { Length: > 0 })
+            notes.Add(WhereNote(where));
+        if (LearnedNote(learned) is { } note)
+            notes.Add(note);
+        if (undone is not null)
+            notes.Add(UndoneNoteTemplate.Replace("{doing}", undone.Doing, StringComparison.Ordinal));
+        return notes;
+    }
+}

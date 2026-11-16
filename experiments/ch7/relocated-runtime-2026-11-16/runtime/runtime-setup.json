@@ -1,0 +1,215 @@
+{
+  "status": "PROJECT_LOCAL_RUNTIME_READY",
+  "planCommit": "0dd5b04e1fc77325c6f7e7aa97c21ac86c0d310c",
+  "startedAt": "2026-11-16T01:29:30.155721+00:00",
+  "checkedAt": "2026-11-16T01:42:00.475881+00:00",
+  "elapsedSeconds": 750.317089099,
+  "initialFailureRetained": "runtime-setup-first.json",
+  "steps": [
+    {
+      "name": "runtime-image-create",
+      "command": [
+        "hdiutil",
+        "create",
+        "-size",
+        "20g",
+        "-type",
+        "SPARSE",
+        "-fs",
+        "APFS",
+        "-volname",
+        "AIJADE_Runtime",
+        "/Volumes/Untitled/AIJADE/.runtime/aijade-runtime-20261116.sparseimage"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/runtime-image-create.log",
+      "endedAt": "2026-11-16T01:29:31.216345+00:00"
+    },
+    {
+      "name": "runtime-image-attach",
+      "command": [
+        "hdiutil",
+        "attach",
+        "-nobrowse",
+        "-mountpoint",
+        "/Volumes/Untitled/AIJADE/.runtime/posix",
+        "/Volumes/Untitled/AIJADE/.runtime/aijade-runtime-20261116.sparseimage"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/runtime-image-attach.log",
+      "endedAt": "2026-11-16T01:29:31.571887+00:00"
+    },
+    {
+      "name": "colima-start-01",
+      "command": [
+        "/Users/mac/.local/bin/colima",
+        "start",
+        "--runtime",
+        "docker",
+        "--vm-type",
+        "vz",
+        "--cpus",
+        "2",
+        "--memory",
+        "2",
+        "--root-disk",
+        "8",
+        "--disk",
+        "8",
+        "--mount",
+        "none",
+        "--ssh-agent=false",
+        "--ssh-config=false",
+        "--kubernetes=false",
+        "--binfmt=false"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/colima-start-01.log",
+      "endedAt": "2026-11-16T01:32:09.557958+00:00"
+    },
+    {
+      "name": "docker-version",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "version"
+      ],
+      "exitCode": 1,
+      "log": ".research/runs/ch7-relocation-20261116/docker-version.log",
+      "endedAt": "2026-11-16T01:32:09.643892+00:00"
+    },
+    {
+      "name": "colima-start-02",
+      "command": [
+        "/Users/mac/.local/bin/colima",
+        "start",
+        "--runtime",
+        "docker",
+        "--vm-type",
+        "vz",
+        "--cpus",
+        "2",
+        "--memory",
+        "2",
+        "--root-disk",
+        "8",
+        "--disk",
+        "8",
+        "--mount",
+        "none",
+        "--ssh-agent=false",
+        "--ssh-config=false",
+        "--kubernetes=false",
+        "--binfmt=false"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/colima-start-02.log"
+    },
+    {
+      "name": "docker-version-after-path-repair",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "version"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/docker-version-after-path-repair.log"
+    },
+    {
+      "name": "postgres-pull",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "pull",
+        "ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/postgres-pull.log"
+    },
+    {
+      "name": "redis-pull",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "pull",
+        "redis:7-alpine"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/redis-pull.log"
+    },
+    {
+      "name": "postgres-start",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "run",
+        "-d",
+        "--name",
+        "aijade-next-db",
+        "-e",
+        "POSTGRES_PASSWORD=aijade",
+        "-e",
+        "POSTGRES_USER=aijade",
+        "-e",
+        "POSTGRES_DB=aijade",
+        "-p",
+        "127.0.0.1:55432:5432",
+        "--memory",
+        "768m",
+        "ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/postgres-start.log"
+    },
+    {
+      "name": "redis-start",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "run",
+        "-d",
+        "--name",
+        "aijade-next-redis",
+        "-p",
+        "127.0.0.1:56379:6379",
+        "--memory",
+        "128m",
+        "redis:7-alpine"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/redis-start.log"
+    },
+    {
+      "name": "postgres-version-and-extension",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "exec",
+        "aijade-next-db",
+        "psql",
+        "-X",
+        "-U",
+        "aijade",
+        "-d",
+        "aijade",
+        "-v",
+        "ON_ERROR_STOP=1",
+        "-Atc",
+        "SELECT version(); SELECT name,default_version FROM pg_available_extensions WHERE name IN ('vector','vchord') ORDER BY name;"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/postgres-version-and-extension.log"
+    },
+    {
+      "name": "runtime-images",
+      "command": [
+        "/Users/mac/.local/bin/docker",
+        "inspect",
+        "aijade-next-db",
+        "aijade-next-redis"
+      ],
+      "exitCode": 0,
+      "log": ".research/runs/ch7-relocation-20261116/runtime-images.log"
+    }
+  ],
+  "vmStartInvocations": 2,
+  "qualificationAdmissionStarted": false,
+  "stateRoot": "/Volumes/Untitled/AIJADE/.runtime/posix",
+  "sparseImage": "/Volumes/Untitled/AIJADE/.runtime/aijade-runtime-20261116.sparseimage",
+  "vmCpu": 2,
+  "vmMemoryGiB": 2,
+  "newHeldoutCases": 0
+}
