@@ -20,7 +20,7 @@
         <ul>
             @foreach (var day in days)
             {
-                <li>@string.Format(System.Globalization.CultureInfo.CurrentCulture, State.Text["memory.day.line"], day.Day.ToString("d", System.Globalization.CultureInfo.CurrentCulture), day.OwnerTurns, day.FirstLines, day.FirstLinesAnswered, day.Selfies, day.Reminders, State.Text[day.MoodTrend switch { > 0 => "memory.day.up", < 0 => "memory.day.down", _ => "memory.day.same" }])</li>
+                <li>@string.Format(System.Globalization.CultureInfo.CurrentCulture, State.Text["memory.day.activityLine"], day.Day.ToString("d", System.Globalization.CultureInfo.CurrentCulture), day.OwnerTurns, day.FirstLines, day.FirstLinesAnswered, day.Selfies, day.Reminders)</li>
             }
         </ul>
     </details>

@@ -1,7 +1,7 @@
 {
   "name": "aijade-mmd-bundle",
   "private": true,
-  "description": "Builds src/Aijade.UI/wwwroot/lib/mmd-backend.js (Babylon.js + babylon-mmd, both MIT) from mmd-backend.src.js.",
+  "description": "Builds src/Aijade.UI/wwwroot/lib/mmd-backend.js (Babylon.js Apache-2.0 + babylon-mmd MIT) from mmd-backend.src.js.",
   "scripts": {
     "build": "esbuild mmd-backend.src.js --bundle --format=esm --minify --target=es2022 --outfile=../../src/Aijade.UI/wwwroot/lib/mmd-backend.js --legal-comments=external && node write-licenses.mjs && node -e \"require('fs').copyFileSync('node_modules/babylon-mmd/esm/Runtime/Optimized/wasm/spr/index_bg.wasm','../../src/Aijade.UI/wwwroot/lib/index_bg.wasm')\""
   },

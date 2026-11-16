@@ -2,6 +2,8 @@
 
 AIJADE 优先开发持续交互的情感陪伴。MOSAIC 的连接组研究和具身智能保持独立，两个项目按明确接口借鉴产品能力。本页描述本轮重构后已有的代码与运行关系；30 个陪伴项目和 3 个架构主参考见 [参考目录](COMPANION-REFERENCES.md)，它们的能力不计入 AIJADE 的完成状态。
 
+本轮独立架构见 [INDEPENDENT-ARCHITECTURE](INDEPENDENT-ARCHITECTURE.md)、[完整功能目录](FUNCTIONS.md) 与 [ADR-005](decisions/ADR-005.md)。七项职责是身份、记忆、生活、感知、规划、执行、交付，复用既有模块而非七个常驻服务。原生虚拟场景由本库维护逻辑状态，本地系统语音与离线识别由自有服务提供；历史渲染研究保持独立。
+
 2026-11-16 对 12 个指定视频的介绍、评论、音轨转写和关键帧另做了[参考核对与独立实现记录](VIDEO-REFERENCE-ADOPTION.md)。本轮在现有通用桥接层补齐聊天历史、长期记忆和后备关系/收藏的私群隔离，以及排队群事件的锁内限流复核；没有加入新的插件宿主或产品依赖。
 
 `ChannelScope` 区分私聊和群聊受众：私聊保留旧 key，群聊按平台/群号划分历史，按平台/群号/发言人划分长期记忆，后备笔记本再加入角色。既有 QQ 私聊的网页绑定仍走服务端授权同步，群聊不借用该授权；原生 QQ OneBot 仍仅接收授权主人私聊。旧混合记忆不自动导入群聊，新范围与旧记录并存。
@@ -25,9 +27,10 @@ flowchart LR
         core_api["认证 HTTP API<br/>聊天 · 同步 · 媒体 · 证据"]
         state_store[("PostgreSQL<br/>角色 · 关系 · 收藏<br/>日记 · 交付记录<br/>地点时区 · 记忆 · 事件<br/>修订号 · 授权绑定")]
         event_worker["既有队列 / Worker<br/>本机唤醒或 Redis<br/>沿用 V9 处理器"]
+        owned_scene["AIJADE 原生虚拟场景<br/>账户/角色 · 幂等 · 修订号<br/>逻辑状态与渲染结果分开"]
     end
     model_services["配置的模型/媒体服务<br/>聊天 · 图片 · ASR<br/>TTS · 歌声"]
-    optional_integrations["可选集成<br/>MCP · Tools · Stage<br/>Billing"]
+    optional_integrations["按需模块<br/>自有协议适配 · Tools<br/>Billing"]
     research_drivers["独立研究驱动<br/>P1 / P2 / P3<br/>原始记录与证据"]
     web_apps -->|"各端加载"| companion_runtime
     chat_bots -->|"各端加载"| companion_runtime
@@ -37,6 +40,8 @@ flowchart LR
     core_api --> event_worker
     event_worker --> state_store
     core_api --> model_services
+    core_api --> owned_scene
+    owned_scene --> state_store
     core_api -.->|"显式启用"| optional_integrations
     research_drivers -->|"既有研究路径"| core_api
     research_drivers -->|"编译依赖"| foundation
@@ -45,7 +50,7 @@ flowchart LR
     classDef data fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
     classDef optional fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
     class web_apps,chat_bots host
-    class companion_runtime,core_api core
+    class companion_runtime,core_api,owned_scene core
     class foundation,state_store,event_worker,research_drivers data
     class model_services,optional_integrations optional
 ```

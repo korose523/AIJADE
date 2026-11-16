@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 //   Bridge:StateFile     where conversation → chat mappings are kept (default ./aijade-bots-state.json)
 //   Bridge:Reminders     false to keep no reminders; otherwise she keeps those asked for in private conversations on the
 //                        platforms that can start a message (QQ, Telegram) and says them when due (ADR-003)
-//   Renderer:MosaicPort  optional: drive the MOSAIC native MMD client (--behavior-live PORT) with each reply's PEF intent
+//   Renderer:MosaicPort  retired: remove this external-renderer product setting before starting
 //   Discord:Token, Telegram:Token   a connector runs for each one that is set
 //   Satori:Url (+ Satori:Token)     a Satori server, e.g. http://localhost:5140/satori/ (QQ, OneBot, KOOK … through Koishi)
 //   OneBot:NapCat (+ Port, TokenFile, SecretFile, Owner, Voice)   QQ through NapCat's OneBot 11 HTTP server, e.g.
@@ -39,8 +39,8 @@ builder.Services.AddSingleton(_ =>
     tokens.SetAsync(token).AsTask().GetAwaiter().GetResult();
     return new AijadeApi(new HttpClient { BaseAddress = server, Timeout = TimeSpan.FromMinutes(5) }, tokens);
 });
-if (int.TryParse(config["Renderer:MosaicPort"], out var mosaicPort))
-    builder.Services.AddSingleton(_ => new Aijade.Integrations.Renderer.MosaicRendererLink(mosaicPort));
+if (!string.IsNullOrWhiteSpace(config["Renderer:MosaicPort"]))
+    throw new InvalidOperationException("Renderer:MosaicPort is a retired product setting. Use AIJADE's native scene/UI; the external renderer protocol remains an independently frozen research adapter.");
 builder.Services.AddSingleton(sp => new CompanionBridge(sp.GetRequiredService<AijadeApi>(), new BridgeOptions
 {
     CharacterId = config["Bridge:CharacterId"] is { Length: > 0 } c ? c : null,
@@ -70,9 +70,7 @@ builder.Services.AddSingleton(sp => new CompanionBridge(sp.GetRequiredService<Ai
     ReminderPlatforms = bool.TryParse(config["Bridge:Reminders"], out var remind) && !remind
         ? []
         : sp.GetServices<IChannelConnector>().OfType<IProactiveConnector>().Select(c => c.Platform).ToArray(),
-    OnPerformance = sp.GetService<Aijade.Integrations.Renderer.MosaicRendererLink>() is { } renderer
-        ? (intent, message) => renderer.SendAsync(intent, message.Key)
-        : null,
+
 }));
 if (config["Discord:Token"] is { Length: > 0 } discord)
     builder.Services.AddSingleton<IChannelConnector>(sp => new DiscordConnector(discord, sp.GetRequiredService<AijadeApi>(), sp.GetRequiredService<ILogger<DiscordConnector>>()));

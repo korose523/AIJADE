@@ -12,6 +12,7 @@ namespace Aijade.Server;
 /// </summary>
 public sealed record ServerModules(string Profile, bool Mcp, bool Tools, bool Stage, bool Billing)
 {
+    private static readonly string[] ProductDomains = ["identity", "memory", "life", "perception", "planning", "execution", "delivery"];
     public static ServerModules Read(IConfiguration config)
     {
         var profile = (config["Aijade:Profile"] ?? "full").ToLowerInvariant();
@@ -40,8 +41,8 @@ public sealed record ServerModules(string Profile, bool Mcp, bool Tools, bool St
         }
         if (Stage)
         {
-            StageEndpoints.Workbench(config[StageEndpoints.ConfigKey]);
-            services.AddHttpClient(StageEndpoints.HttpClientName, c => c.Timeout = TimeSpan.FromSeconds(10));
+            StageEndpoints.ValidateConfiguration(config);
+            services.AddSingleton<NativeStageStore>();
         }
         if (Billing)
         {
@@ -69,6 +70,9 @@ public sealed record ServerModules(string Profile, bool Mcp, bool Tools, bool St
         {
             profile = Profile, role, queue = redis ? "redis" : "inline",
             modules = new { mcp = Mcp, tools = Tools, stage = Stage, billing = Billing },
+            architecture = new { version = "aijade-owned-v1", orchestration = "in-process", stateAuthority = "postgresql",
+                stageBackend = Stage && bool.TryParse(app.Configuration[StageEndpoints.NativeEnabledKey], out var native) && native ? "aijade-native-virtual" : "disabled",
+                externalProjectRuntimeRequired = false, domains = ProductDomains },
         })).RequireAuthorization();
         if (Mcp)
             app.MapAijadeMcp();

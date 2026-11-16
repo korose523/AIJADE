@@ -226,6 +226,23 @@ public class StageTests
     private static MosaicStage StageOver(StageReplies replies) =>
         new(new AijadeApi(new HttpClient(replies) { BaseAddress = new Uri("http://localhost/") }, new MemoryTokenStore()));
 
+    private sealed class StageTimeout : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            throw new TaskCanceledException("optional scene timed out");
+    }
+
+    [Fact]
+    public async Task An_optional_scene_timeout_returns_no_scene_but_user_cancellation_still_propagates()
+    {
+        using var http = new HttpClient(new StageTimeout()) { BaseAddress = new Uri("http://localhost/") };
+        var client = new CompanionStage(new AijadeApi(http, new MemoryTokenStore()));
+        Assert.Null(await client.StateAsync(TestContext.Current.CancellationToken));
+        using var cancelled = new CancellationTokenSource();
+        await cancelled.CancelAsync();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => client.StateAsync(cancelled.Token));
+    }
+
     [Fact]
     public async Task Following_a_line_waits_until_it_has_finished_and_keeps_asking_through_a_restart()
     {
@@ -255,88 +272,8 @@ public class StageTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => StageOver(new StageReplies(Scene(true, null))).FollowAsync(Sofa, null, every, limit, cancelled.Token));
     }
 
-    private sealed class FakeWorkbench : HttpMessageHandler
-    {
-        public List<(string Path, string? Body)> Requests { get; } = [];
-
-        public JsonObject State { get; set; } = new()
-        {
-            ["running"] = true, ["where"] = "在客厅，沙发，坐着", ["posture"] = "sit", ["sequenceRunning"] = false, ["notice"] = "她在沙发坐下了", ["logTail"] = "not relayed",
-            ["learned"] = new JsonArray(new JsonObject
-            {
-                ["day"] = "2026-10-29", ["skill"] = "walk", ["skill_words"] = "走路", ["kept_seconds"] = 42.5, ["novel_seconds"] = null,
-                ["video_title"] = "走路 全身 固定机位 练习", ["uploader"] = "某UP主", ["source"] = "bilibili",
-            }),
-        };
-
-        public bool Down { get; set; }
-
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            if (Down)
-                throw new HttpRequestException("connection refused");
-            var body = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
-            Requests.Add((request.RequestUri!.AbsolutePath, body));
-            if (request.Method == HttpMethod.Get)
-                return Json(HttpStatusCode.OK, State);
-            var text = JsonNode.Parse(body!)!["text"]!.GetValue<string>();
-            return text.Contains("去 月球", StringComparison.Ordinal)
-                ? Json(HttpStatusCode.BadRequest, new JsonObject { ["error"] = "「去 月球」：家里没有这个地方。" })
-                : Json(HttpStatusCode.OK, new JsonObject { ["sent"] = new JsonArray() });
-        }
-
-        private static HttpResponseMessage Json(HttpStatusCode status, JsonNode body) =>
-            new(status) { Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json") };
-    }
-
     [Fact]
-    public async Task The_server_relays_the_stage_for_admins_only()
-    {
-        var ct = TestContext.Current.CancellationToken;
-        var workbench = new FakeWorkbench();
-        await using var host = await ServerTestHost.StartAsync(new Dictionary<string, string?> { [StageEndpoints.ConfigKey] = "http://127.0.0.1:5002" }, worker: false,
-            services: s => s.AddHttpClient(StageEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => workbench));
-
-        Assert.Equal(403, (await host.SendAsync(HttpMethod.Get, "/api/v1/stage")).Status); // a user account may not drive the owner's device
-        var (status, state) = await host.SendAsync(HttpMethod.Get, "/api/v1/stage", token: ServerTestHost.AdminToken);
-        Assert.Equal(200, status);
-        Assert.Equal(("在客厅，沙发，坐着", "sit", true), (state!["where"]!.GetValue<string>(), state["posture"]!.GetValue<string>(), state["running"]!.GetValue<bool>()));
-        Assert.Equal("走路", state["learned"]![0]!["skill_words"]!.GetValue<string>());
-        Assert.Equal(("她在沙发坐下了", false), (state["notice"]!.GetValue<string>(), state["sequenceRunning"]!.GetValue<bool>()));
-        Assert.Null(state["logTail"]);
-
-        var line = Stage.CommandLine(Calm, "好呀。", Stage.Decide("去床上躺着吧", seated: true));
-        Assert.Equal(200, (await host.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = line }, ServerTestHost.AdminToken)).Status);
-        Assert.Equal(("/api/v1/live-scene/command", line), (workbench.Requests[^1].Path, JsonNode.Parse(workbench.Requests[^1].Body!)!["text"]!.GetValue<string>()));
-
-        var sent = workbench.Requests.Count;
-        var (refusedStatus, refused) = await host.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = "说 好; 聊天 你好" }, ServerTestHost.AdminToken);
-        Assert.Equal((400, "STAGE_COMMAND_REFUSED"), (refusedStatus, refused!["error"]!.GetValue<string>()));
-        Assert.Equal(sent, workbench.Requests.Count); // not relayed
-        var (badStatus, bad) = await host.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = "去 月球" }, ServerTestHost.AdminToken);
-        Assert.Equal(400, badStatus);
-        Assert.Contains("家里没有这个地方", bad!["message"]!.GetValue<string>(), StringComparison.Ordinal);
-
-        var tokens = new MemoryTokenStore();
-        await tokens.SetAsync(ServerTestHost.AdminToken);
-        var stage = new MosaicStage(new AijadeApi(host.Client, tokens));
-        var home = await stage.StateAsync(ct);
-        Assert.Equal(("在客厅，沙发，坐着", "sit", true), (home!.Where, home.Posture, home.Running));
-        Assert.Equal(("她在沙发坐下了", false), (home.Notice, home.SequenceRunning));
-        Assert.Equal([new LearnedMotion("2026-10-29", "walk", "走路", 42.5, null, "走路 全身 固定机位 练习", "某UP主", "bilibili")], home.Learned!);
-        Assert.DoesNotContain("某UP主", Stage.LearnedNote(home.Learned)!, StringComparison.Ordinal); // third-party content stays out of the prompt
-        workbench.State = new JsonObject { ["running"] = false, ["where"] = null, ["posture"] = null };
-        Assert.Null(await stage.StateAsync(ct)); // no scene: the chat goes on as usual
-        workbench.Down = true;
-        Assert.Null(await stage.StateAsync(ct));
-        await Assert.ThrowsAsync<AijadeApiException>(() => stage.SendAsync("说 你好", ct));
-        await tokens.SetAsync(ServerTestHost.Token);
-        workbench.Down = false;
-        Assert.Null(await stage.StateAsync(ct)); // a user account sees no stage
-    }
-
-    [Fact]
-    public async Task Without_a_workbench_address_there_is_no_stage()
+    public async Task Without_native_scene_enablement_there_is_no_stage()
     {
         await using var host = await ServerTestHost.StartAsync(worker: false);
         Assert.Equal(404, (await host.SendAsync(HttpMethod.Get, "/api/v1/stage", token: ServerTestHost.AdminToken)).Status);

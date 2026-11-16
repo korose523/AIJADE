@@ -6,21 +6,10 @@ using Aijade.Server.Infrastructure;
 
 namespace Aijade.Server.Product;
 
-// Speech on this machine through the loopback services of the author's MOSAIC project (ADR-003, migration batch 1), for the
-// gateway's "speech", "transcription" and "alignment" sections with "kind": "local":
-//   speech         POST {upstream}/tts {"text", "emotion"} → audio/wav (MOSAIC tools/tts_neural.py: VoxCPM2 with one fixed
-//                  voice, or Qwen3-TTS). The emotion is one of MOSAIC's four and sets the tone of the voice, as it sets her
-//                  face there; AIJADE's stage expression is mapped to it through the shared companion contract.
-//   transcription  POST {upstream}/transcribe {"wav_b64", "language"} → {"text", "language", "audio_s"} (MOSAIC
-//                  tools/asr_server.py, Qwen3-ASR). The audio is a WAV of at most 4 MiB; the language is one of the
-//                  recognizer's names, or "auto".
-//   alignment      POST {upstream}/align {"text", "wav_b64"} → {"engine", "duration_s", "characters": [{"char", "start_s",
-//                  "end_s", "initial", "final"}]} (MOSAIC tools/align_server.py, Qwen3-ForcedAligner): each Chinese character
-//                  of a spoken reply timed, with its strict pinyin initial and final, for the stage's mouth. Only this kind
-//                  exists for alignment.
-// The services take no key and listen on 127.0.0.1 only, so the route's keys are not used. The formats and limits are those
-// of MOSAIC r601 (tools/tts_neural.py, tools/asr_server.py, and tools/align_server.py as of r322), read without changing
-// MOSAIC.
+// AIJADE-owned loopback voice protocol. The service is tools/companion-services/server.py; speech and ASR are
+// configured independently. The legacy local HTTP schema remains compatible with recorded research and client data.
+// It does not require a MOSAIC process. System synthesis is not trained personal voice, and unsupported alignment/singing
+// return explicit failures. Historical protocol provenance remains in ADR-003 and the original evidence records.
 
 public static class LocalVoice
 {

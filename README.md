@@ -11,6 +11,8 @@ relationship state, photos, voice and a private media collection. The author pri
 MOSAIC focuses on connectome research and embodied intelligence; the projects may borrow useful product ideas.
 [ADR-004](docs/decisions/ADR-004.md) supersedes the previous research-first/product-maintenance priority.
 Web and QQ share the selected character, life/location profile, relationship, media collection and explicitly saved diary excerpts through the server.
+See [the complete capability inventory](docs/FUNCTIONS.md) and [independent architecture](docs/INDEPENDENT-ARCHITECTURE.md) for current ownership boundaries, configuration and research version separation.
+
 See [the companion setup and sync guide](docs/COMPANION.md) for pairing, live changes, media and optional local services.
 
 The existing dissertation apparatus and archived results remain separate. Product data is never used as research data,
@@ -64,7 +66,7 @@ stop later parts without an automatic resend. The companion page shows these rec
 distinct from recipient delivery or reading. The Web view labels reply origins and reminder identities. Consuming a stored reminder line remains separate from platform acceptance; retained attempts prevent redispatch of the same stored source.
 
 For a companion deployment, configure the existing PostgreSQL and model gateway, then run `tools/run-companion.sh`.
-It keeps the core, shared memory and evidence pipeline, and mounts MCP, external tools, the MOSAIC bridge and billing only
+It keeps the core, shared memory and evidence pipeline, and mounts MCP, external tools, the AIJADE-owned virtual scene and billing only
 when selected. The existing `full` profile remains the default for deployment and research compatibility. No new service stack,
 package dependency or .NET project is required.
 
@@ -153,7 +155,7 @@ numbered interface elements (and `mode=ax` the numbered list), so the model can 
 this needs the Accessibility permission. Users switch tool use on with the "MCP tools" module.
 
 **Model routes** — besides chat models, the gateway (Settings → Admin → Gateway) takes one route each for speech
-(`kind`: `openai`, `elevenlabs`, `aliyun-qwen-tts`, `aliyun-cosyvoice`, or `local` for MOSAIC's voice services on the same
+(`kind`: `openai`, `elevenlabs`, `aliyun-qwen-tts`, `aliyun-cosyvoice`, or `local` for AIJADE's own loopback voice service on the same
 machine), images (`openai`, `replicate`, `comfyui`, `gemini` — Google AI Studio's native API, e.g.
 `gemini-2.5-flash-image`), embeddings, transcription (also `local`) and alignment (`local` only: each Chinese character of
 a spoken reply timed, so that the stage's mouth follows the text). For providers other than OpenAI the route's `voice`

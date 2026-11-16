@@ -1,0 +1,1618 @@
+{
+  "schema": "aijade-owned-capabilities-v1",
+  "inventoryDate": "2026-11-16",
+  "baseCommit": "63e2321dbb259d61976c3522de7112c7754d3c7b",
+  "inventoryScope": "Current independent-refactor working tree anchored at baseCommit, including newly authored native Stage; source inventory is not a clean-base snapshot or execution result.",
+  "classification": "source-backed functional families, not a claim that all are enabled or live-verified",
+  "scientificAcceptance": false,
+  "newExperimentsRun": 0,
+  "domains": [
+    {
+      "id": "identity",
+      "name": "身份与关系",
+      "authority": "账户/角色/授权绑定的服务端修订状态"
+    },
+    {
+      "id": "memory",
+      "name": "记忆",
+      "authority": "账户、角色与受众范围内的持久记录；检索证据有来源"
+    },
+    {
+      "id": "life",
+      "name": "生活",
+      "authority": "显式虚拟日程、关系变化、天气和日记；不宣称生物意识"
+    },
+    {
+      "id": "perception",
+      "name": "感知",
+      "authority": "用户授予的媒体与带来源的观察；生成内容不充当真实感知"
+    },
+    {
+      "id": "planning",
+      "name": "规划",
+      "authority": "同一回复运行库、模块选择与预算；模型只提出受限意图"
+    },
+    {
+      "id": "execution",
+      "name": "执行",
+      "authority": "本库领域操作与明确授权执行；逻辑状态、渲染和物理效果分别记录"
+    },
+    {
+      "id": "delivery",
+      "name": "交付",
+      "authority": "宿主与渠道投递；保存、平台回执、接收/已读分别对待"
+    },
+    {
+      "id": "research",
+      "name": "独立研究",
+      "authority": "P1/P2/P3/第7章的冻结源码、驱动、原始记录与未通过门槛"
+    },
+    {
+      "id": "support",
+      "name": "基础支撑",
+      "authority": "数据库、模型协议、部署、管理、遥测与文档；不建立第二套角色权威"
+    }
+  ],
+  "modules": [
+    {
+      "id": "Aijade.Bots",
+      "project": "src/Aijade.Bots/Aijade.Bots.csproj",
+      "primaryDomain": "delivery",
+      "additionalDomains": [
+        "identity",
+        "life",
+        "planning"
+      ],
+      "role": "授权机器人宿主与渠道装配"
+    },
+    {
+      "id": "Aijade.Client",
+      "project": "src/Aijade.Client/Aijade.Client.csproj",
+      "primaryDomain": "planning",
+      "additionalDomains": [
+        "identity",
+        "memory",
+        "life",
+        "perception",
+        "execution",
+        "delivery"
+      ],
+      "role": "各端共享的产品运行库与领域客户端"
+    },
+    {
+      "id": "Aijade.ComputerUse",
+      "project": "src/Aijade.ComputerUse/Aijade.ComputerUse.csproj",
+      "primaryDomain": "execution",
+      "additionalDomains": [
+        "perception",
+        "support"
+      ],
+      "role": "本库计算机操作工具；桌面动作需权限与平台支持"
+    },
+    {
+      "id": "Aijade.Core",
+      "project": "src/Aijade.Core/Aijade.Core.csproj",
+      "primaryDomain": "support",
+      "additionalDomains": [
+        "research"
+      ],
+      "role": "线协议、数值/随机与共同基础类型"
+    },
+    {
+      "id": "Aijade.Growth",
+      "project": "src/Aijade.Growth/Aijade.Growth.csproj",
+      "primaryDomain": "research",
+      "additionalDomains": [
+        "planning",
+        "memory"
+      ],
+      "role": "探索性成长/验证/发布服务与试验算法；不是已验收自主成长"
+    },
+    {
+      "id": "Aijade.Integrations",
+      "project": "src/Aijade.Integrations/Aijade.Integrations.csproj",
+      "primaryDomain": "delivery",
+      "additionalDomains": [
+        "identity",
+        "execution",
+        "research"
+      ],
+      "role": "本库渠道适配；Renderer子目录为单列研究适配器"
+    },
+    {
+      "id": "Aijade.Learning",
+      "project": "src/Aijade.Learning/Aijade.Learning.csproj",
+      "primaryDomain": "research",
+      "additionalDomains": [
+        "memory",
+        "planning"
+      ],
+      "role": "连续学习、技能包与注册库；晋升仍受研究协议约束"
+    },
+    {
+      "id": "Aijade.Maui",
+      "project": "src/Aijade.Maui/Aijade.Maui.csproj",
+      "primaryDomain": "delivery",
+      "additionalDomains": [
+        "support"
+      ],
+      "role": "共享UI的移动/桌面壳；构建需相应工作负载"
+    },
+    {
+      "id": "Aijade.Memory",
+      "project": "src/Aijade.Memory/Aijade.Memory.csproj",
+      "primaryDomain": "memory",
+      "additionalDomains": [
+        "research"
+      ],
+      "role": "来源、检索、事务与记忆模型；含单列研究算法"
+    },
+    {
+      "id": "Aijade.Providers",
+      "project": "src/Aijade.Providers/Aijade.Providers.csproj",
+      "primaryDomain": "support",
+      "additionalDomains": [
+        "research"
+      ],
+      "role": "模型服务与substrate协议适配；模型权重由配置提供"
+    },
+    {
+      "id": "Aijade.Research",
+      "project": "src/Aijade.Research/Aijade.Research.csproj",
+      "primaryDomain": "research",
+      "additionalDomains": [],
+      "role": "基准、统计、沙箱、检索驱动研究适配器"
+    },
+    {
+      "id": "Aijade.Server",
+      "project": "src/Aijade.Server/Aijade.Server.csproj",
+      "primaryDomain": "support",
+      "additionalDomains": [
+        "identity",
+        "memory",
+        "life",
+        "perception",
+        "planning",
+        "execution",
+        "delivery",
+        "research"
+      ],
+      "role": "认证API、PostgreSQL权威与现有事件worker的单一组合宿主"
+    },
+    {
+      "id": "Aijade.Telemetry",
+      "project": "src/Aijade.Telemetry/Aijade.Telemetry.csproj",
+      "primaryDomain": "support",
+      "additionalDomains": [
+        "research"
+      ],
+      "role": "会话、轮次与表现遥测；观察不等同科学验收"
+    },
+    {
+      "id": "Aijade.UI",
+      "project": "src/Aijade.UI/Aijade.UI.csproj",
+      "primaryDomain": "delivery",
+      "additionalDomains": [
+        "identity",
+        "memory",
+        "life",
+        "perception",
+        "execution"
+      ],
+      "role": "各宿主复用的Blazor产品界面与浏览器舞台"
+    },
+    {
+      "id": "Aijade.Web",
+      "project": "src/Aijade.Web/Aijade.Web.csproj",
+      "primaryDomain": "delivery",
+      "additionalDomains": [
+        "support"
+      ],
+      "role": "Web/PWA宿主"
+    }
+  ],
+  "productLaunchers": [
+    "tools/run-companion.sh",
+    "src/Aijade.Server/Program.cs",
+    "src/Aijade.Server/ServerModules.cs",
+    "src/Aijade.Bots/Program.cs"
+  ],
+  "ownedRuntimeSources": [
+    "src/Aijade.Server/Product/Stage.cs",
+    "src/Aijade.Server/Product/NativeStageStore.cs",
+    "tools/companion-services/server.py"
+  ],
+  "historicalResearchExceptions": [
+    {
+      "id": "renderer-protocol",
+      "kind": "research_adapter",
+      "paths": [
+        "src/Aijade.Integrations/Renderer/MosaicRendererLink.cs",
+        "src/Aijade.Integrations/Renderer/RenderEvidence.cs"
+      ],
+      "reason": "Historical renderer comparison and protocol records retained; not instantiated by the product bot host."
+    },
+    {
+      "id": "finite-research-backend",
+      "kind": "research_adapter",
+      "paths": [
+        "experiments/ch7/finite_runtime.py",
+        "experiments/ch7/godot_local.py",
+        "experiments/ch7/finite_validate.py",
+        "experiments/ch7/run_finite_sequence.py"
+      ],
+      "reason": "Actual finite research runners live under experiments/ch7, not tools/finite-*. Their old backend provenance is preserved; this inventory grants no new run/qualification."
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "accounts",
+      "domain": "identity",
+      "title": "账户、登录与退出",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Auth/Accounts.cs",
+        "src/Aijade.Server/Auth/AuthEndpoints.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/auth/sign-up/email",
+        "/api/v1/auth/sign-in/email",
+        "/api/v1/auth/sign-out",
+        "/api/v1/auth/session"
+      ],
+      "externalRequirements": "PostgreSQL与宿主认证配置",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "federated-identity",
+      "domain": "identity",
+      "title": "OIDC登录与账号清除",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Auth/Oidc.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/auth/providers",
+        "/api/v1/auth/oidc/login",
+        "/api/v1/auth/account"
+      ],
+      "externalRequirements": "用户配置的OIDC提供方；可用性独立验证",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "characters",
+      "domain": "identity",
+      "title": "角色卡与会话选择",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/Library.cs",
+        "src/Aijade.UI/Pages/Characters.razor"
+      ],
+      "entrypoints": [
+        "/api/v1/characters",
+        "/api/v1/chats"
+      ],
+      "externalRequirements": "",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "private-pairing",
+      "domain": "identity",
+      "title": "网页与QQ私聊授权绑定及撤销",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionSync.cs",
+        "src/Aijade.Client/Companion/CompanionSync.cs",
+        "src/Aijade.Bots/CompanionConfiguration.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/companion/pairing-code",
+        "/api/v1/companion/pair",
+        "/api/v1/companion/links",
+        "CompanionConfiguration.ForAsync"
+      ],
+      "externalRequirements": "",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "shared-profile",
+      "domain": "identity",
+      "title": "角色、地点时区与关系修订同步",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionSync.cs",
+        "src/Aijade.Client/Companion/CompanionExperience.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/companion/characters/{id}/profile",
+        "/api/v1/companion/characters/{id}/observe"
+      ],
+      "externalRequirements": "",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "audience-isolation",
+      "domain": "identity",
+      "title": "私群聊天、记忆、后备关系与收藏隔离",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Integrations/ChannelScope.cs",
+        "src/Aijade.Integrations/CompanionBridge.cs",
+        "src/Aijade.Bots/CompanionConfiguration.cs"
+      ],
+      "entrypoints": [
+        "ChannelScope.Conversation",
+        "ChannelScope.Memory",
+        "ChannelScope.Companion"
+      ],
+      "externalRequirements": "原生QQ当前为授权主人私聊；群消息在通用桥接层处理",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "collections",
+      "domain": "identity",
+      "title": "表情、服装、参考图与歌曲收藏",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionSync.cs",
+        "src/Aijade.Client/Companion/CompanionMedia.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/companion/characters/{id}/assets",
+        "CompanionMedia.Validate"
+      ],
+      "externalRequirements": "素材与音色应有独立来源授权",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "persistent-memory",
+      "domain": "memory",
+      "title": "记忆持久化、来源与事务",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Memory/LongTermMemoryService.cs",
+        "src/Aijade.Memory/Storage/Storage.cs",
+        "src/Aijade.Memory/Provenance.cs",
+        "src/Aijade.Memory/V9/MemoryTx.cs"
+      ],
+      "entrypoints": [
+        "LongTermMemoryService",
+        "MemoryTxEngine"
+      ],
+      "externalRequirements": "",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "recall-recording",
+      "domain": "memory",
+      "title": "普通聊天记录及相关记忆召回",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Chat/MemoryContext.cs",
+        "src/Aijade.Server/Memory/MemoryLibrary.cs"
+      ],
+      "entrypoints": [
+        "ConversationRecorder.RecordAsync",
+        "MemoryRecallProvider.SupplyAsync",
+        "/api/v1/memory/items"
+      ],
+      "externalRequirements": "嵌入模式需要可配置模型服务；召回指标不等于回答质量",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "memory-management",
+      "domain": "memory",
+      "title": "记忆浏览、检索、遗忘、导入导出",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Memory/MemoryLibrary.cs",
+        "src/Aijade.UI/Pages/Memory.razor"
+      ],
+      "entrypoints": [
+        "/api/v1/memory/items",
+        "/api/v1/memory/items/export",
+        "/api/v1/memory/items/import"
+      ],
+      "externalRequirements": "历史活动按真实存储的消息、主动、自拍与提醒计数展示；旧MoodTrend投影不作为当前心情或关系",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "belief-episodic",
+      "domain": "memory",
+      "title": "信念、情节与记忆生命周期算法",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Memory/Beliefs/BeliefGraph.cs",
+        "src/Aijade.Memory/Episodic/EpisodicGraph.cs",
+        "src/Aijade.Memory/Lifecycle/Lifecycle.cs"
+      ],
+      "entrypoints": [
+        "BeliefMath",
+        "EpisodicGraph"
+      ],
+      "externalRequirements": "产品使用范围与研究测量分开；不把算法类存在当自然长时记忆效果",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "fictional-world",
+      "domain": "life",
+      "title": "虚拟日程、兴趣、发型和季节服装",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Companion/CompanionExperience.cs"
+      ],
+      "entrypoints": [
+        "CompanionWorld",
+        "LifeMoment",
+        "CompanionExperience"
+      ],
+      "externalRequirements": "明确虚拟生活；不声称角色在现实世界持续行动",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "weather-location",
+      "domain": "life",
+      "title": "可配置地点、时区与真实天气",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Client/Companion/CompanionWeather.cs",
+        "src/Aijade.Client/Companion/CompanionExperience.cs"
+      ],
+      "entrypoints": [
+        "CompanionWeather",
+        "CompanionProfile"
+      ],
+      "externalRequirements": "用户配置地点与天气开关；Open-Meteo HTTP；失败保留未知",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "initiative",
+      "domain": "life",
+      "title": "主动开口、安静时段与冷却",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Companion/Initiative.cs",
+        "src/Aijade.Client/Companion/CompanionLife.cs",
+        "src/Aijade.Integrations/CompanionBridge.cs"
+      ],
+      "entrypoints": [
+        "Initiative",
+        "CompanionLife",
+        "CompanionBridge.FirstRepliesAsync"
+      ],
+      "externalRequirements": "产品设置启用且渠道可达；不能用主动次数证明陪伴质量",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "reminders",
+      "domain": "life",
+      "title": "提醒解析、保存与到期触发",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Companion/Reminders.cs",
+        "src/Aijade.Client/Companion/ReminderStore.cs",
+        "src/Aijade.Bots/ConnectorHost.cs"
+      ],
+      "entrypoints": [
+        "ReminderBook",
+        "ConnectorHost.RemindOnceAsync"
+      ],
+      "externalRequirements": "设置时区；提醒生成、平台接受与已读分别记录",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "shared-diary",
+      "domain": "life",
+      "title": "共同日记的版本与共享",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionDiary.cs",
+        "src/Aijade.Client/Companion/CompanionDiary.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/companion/characters/{id}/diary"
+      ],
+      "externalRequirements": "日记保留来源；不能改写成用户原话",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "selfie-timing",
+      "domain": "life",
+      "title": "自拍时机与照片请求",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Companion/Selfies.cs",
+        "src/Aijade.Client/Companion/CompanionMediaTurn.cs",
+        "src/Aijade.Server/Product/Images.cs"
+      ],
+      "entrypoints": [
+        "Selfies",
+        "CompanionMediaTurn",
+        "/api/v1/images/selfie"
+      ],
+      "externalRequirements": "生图/舞台图像服务需配置，生成内容与真实照片区分",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "short-term-mood",
+      "domain": "life",
+      "title": "短期情绪独立于长期关系",
+      "implementation": "planned",
+      "sources": [
+        "docs/VIDEO-REFERENCE-ADOPTION.md",
+        "src/Aijade.Client/Companion/CompanionExperience.cs"
+      ],
+      "entrypoints": [
+        "设计中的生活模块扩展点"
+      ],
+      "externalRequirements": "尚无独立短期情绪状态机；不宣称激素或生物意识",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅计划及扩展点存在，未计作已实现功能。"
+      }
+    },
+    {
+      "id": "speech-recognition",
+      "domain": "perception",
+      "title": "整段与流式语音识别适配",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Product/ModelServices.cs",
+        "src/Aijade.Server/Product/AliyunSpeech.cs",
+        "src/Aijade.Server/Product/LocalVoice.cs",
+        "src/Aijade.UI/wwwroot/voice.js"
+      ],
+      "entrypoints": [
+        "/api/v1/openai/v1/audio/transcriptions",
+        "ModelServices.Map"
+      ],
+      "externalRequirements": "用户配置ASR端点/权重或服务；不是已训练自有语音模型",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "speech-synthesis",
+      "domain": "perception",
+      "title": "语音合成与逐字对齐",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Product/Gateway.cs",
+        "src/Aijade.Server/Product/LocalVoice.cs",
+        "src/Aijade.Client/Companion/LipSync.cs",
+        "src/Aijade.UI/wwwroot/audio.js"
+      ],
+      "entrypoints": [
+        "/api/v1/openai/v1/audio/speech",
+        "/api/v1/openai/v1/audio/alignment",
+        "LipSync"
+      ],
+      "externalRequirements": "配置TTS/对齐服务与获授权音色；成功HTTP不证明音色质量",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "image-input",
+      "domain": "perception",
+      "title": "图像缩放、描述与视觉上下文",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Client/Chat/Vision.cs",
+        "src/Aijade.UI/Services/VisionSession.cs",
+        "src/Aijade.UI/wwwroot/vision.js"
+      ],
+      "entrypoints": [
+        "VisionSession",
+        "VisionInterpreter"
+      ],
+      "externalRequirements": "用户选择媒体或开启感知；视觉模型与浏览器权限需验证",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "live-observation",
+      "domain": "perception",
+      "title": "带来源的实时上下文",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/LiveContext.cs",
+        "src/Aijade.Client/Chat/LiveContext.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/context/{source}"
+      ],
+      "externalRequirements": "观察、生成推测、设备真值不能混作同一事实",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "beat-viseme",
+      "domain": "perception",
+      "title": "节拍、音量、口型与视线输入",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Chat/BeatSync.cs",
+        "src/Aijade.Client/Companion/LipSync.cs",
+        "src/Aijade.UI/wwwroot/beat.js"
+      ],
+      "entrypoints": [
+        "BeatDetector",
+        "LipSync"
+      ],
+      "externalRequirements": "表现输入不代表真实情绪或具身控制",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "watch-together",
+      "domain": "perception",
+      "title": "按播放位置绑定字幕与抽帧",
+      "implementation": "planned",
+      "sources": [
+        "docs/VIDEO-REFERENCE-ADOPTION.md",
+        "src/Aijade.Client/Chat/Vision.cs"
+      ],
+      "entrypoints": [
+        "设计中的同视频/时间戳观察合同"
+      ],
+      "externalRequirements": "持续一起看与换片取消界面尚未实现",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅规范与扩展点；未接通外部一起看插件。"
+      }
+    },
+    {
+      "id": "mobile-sensing",
+      "domain": "perception",
+      "title": "前台按键摄像头与麦克风采集",
+      "implementation": "planned",
+      "sources": [
+        "docs/VIDEO-REFERENCE-ADOPTION.md",
+        "src/Aijade.Maui/MauiProgram.cs"
+      ],
+      "entrypoints": [
+        "移动端感知扩展点"
+      ],
+      "externalRequirements": "独立移动感知客户端待实现",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "MAUI宿主存在不等于移动感知完整验收。"
+      }
+    },
+    {
+      "id": "shared-turn-runtime",
+      "domain": "planning",
+      "title": "统一回复、上下文与观察者管线",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Chat/CompanionRuntime.cs",
+        "src/Aijade.Client/Chat/Orchestrator.cs"
+      ],
+      "entrypoints": [
+        "CompanionRuntime.Create",
+        "ChatModuleSet",
+        "ChatOrchestrator.SendAsync"
+      ],
+      "externalRequirements": "共享代码库并非新增Agent服务器",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "bounded-context",
+      "domain": "planning",
+      "title": "模块快照与提示长度预算",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Chat/CompanionRuntime.cs",
+        "src/Aijade.Client/Chat/PromptBudget.cs"
+      ],
+      "entrypoints": [
+        "ChatModuleSet",
+        "PromptBudget"
+      ],
+      "externalRequirements": "字符预算与token/模型容量分开核对",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "bounded-tools",
+      "domain": "planning",
+      "title": "受限工具循环、超时与未知停止",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Chat/ToolConversation.cs",
+        "src/Aijade.Server/Tools/ToolHub.cs"
+      ],
+      "entrypoints": [
+        "ToolConversation",
+        "ToolHub",
+        "/api/v1/tools/call"
+      ],
+      "externalRequirements": "工具路由需授权配置；结果未知不自动重放",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "profile-composition",
+      "domain": "planning",
+      "title": "伴侣/完整宿主的能力装配",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/ServerModules.cs",
+        "tools/run-companion.sh"
+      ],
+      "entrypoints": [
+        "ServerModules.Read",
+        "tools/run-companion.sh"
+      ],
+      "externalRequirements": "模块开关不安装插件；完整模式保留研究兼容路径",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "group-admission",
+      "domain": "planning",
+      "title": "发言准入、会话串行与限流",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Integrations/CompanionBridge.cs",
+        "src/Aijade.Integrations/ChannelScope.cs"
+      ],
+      "entrypoints": [
+        "CompanionBridge.ShouldAnswer",
+        "CompanionBridge.AnswerAsync"
+      ],
+      "externalRequirements": "原生QQ只接授权主人的私聊；通用群聊不是QQ多群实收验收",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "fragment-coalescing",
+      "domain": "planning",
+      "title": "分段输入的有界合并窗口",
+      "implementation": "planned",
+      "sources": [
+        "docs/VIDEO-REFERENCE-ADOPTION.md",
+        "src/Aijade.Integrations/OneBotConnector.cs"
+      ],
+      "entrypoints": [
+        "现有入站队列扩展点"
+      ],
+      "externalRequirements": "保留原始消息ID、命令与媒体边界；合并策略待实现",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "现有入站队列不等于已完成语义分段合并。"
+      }
+    },
+    {
+      "id": "native-stage",
+      "domain": "execution",
+      "title": "AIJADE原生虚拟舞台状态与命令",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/Stage.cs",
+        "src/Aijade.Server/Product/NativeStageStore.cs",
+        "src/Aijade.Client/Companion/MosaicStage.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/stage",
+        "/api/v1/stage/command",
+        "NativeStageStore.ReadAsync",
+        "NativeStageStore.ApplyAsync",
+        "CompanionStage"
+      ],
+      "externalRequirements": "本轮以本库/PostgreSQL虚拟状态替换外部工作台代理；renderObserved=false，逻辑状态不等同渲染、声音播放、动作或物理效果",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "本库源码入口已存在；编译、定向回归与真实渲染验收分别记录。"
+      }
+    },
+    {
+      "id": "browser-stage",
+      "domain": "execution",
+      "title": "网页MMD舞台与表现",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.UI/Shared/StagePanel.razor",
+        "src/Aijade.UI/wwwroot/stage.js",
+        "src/Aijade.UI/wwwroot/mmd-renderer.js"
+      ],
+      "entrypoints": [
+        "StagePanel",
+        "stage.js"
+      ],
+      "externalRequirements": "用户自有/获授权PMX、VMD和渲染依赖；浏览器及真实模型单独验收",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "image-generation",
+      "domain": "execution",
+      "title": "图像、自拍与参考图服务路由",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Product/Images.cs",
+        "src/Aijade.Client/Companion/CompanionMediaTurn.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/images",
+        "/photo"
+      ],
+      "externalRequirements": "配置生成模型与参考素材；生成结果要标明",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "singing",
+      "domain": "execution",
+      "title": "歌声端点与歌曲收藏",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionLocalServices.cs",
+        "src/Aijade.Client/Companion/CompanionMediaTurn.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/openai/v1/audio/singing",
+        "/sing"
+      ],
+      "externalRequirements": "本地或用户自有歌声服务与音色；目录配置不等于加载/训练完成",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "computer-control",
+      "domain": "execution",
+      "title": "计算机只读观察与授权操作",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.ComputerUse/Program.cs",
+        "src/Aijade.ComputerUse/ComputerUse.cs",
+        "src/Aijade.ComputerUse/MacDesktop.cs",
+        "src/Aijade.ComputerUse/WindowsDesktop.cs"
+      ],
+      "entrypoints": [
+        "aijade-computer-use MCP stdio"
+      ],
+      "externalRequirements": "平台权限与明确写操作授权；不是通用无限桌面代理",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "minecraft",
+      "domain": "execution",
+      "title": "Minecraft协议、导航与行为",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Integrations/Minecraft/McClient.cs",
+        "src/Aijade.Integrations/Minecraft/MinecraftBehaviour.cs"
+      ],
+      "entrypoints": [
+        "Minecraft:Host",
+        "MinecraftBehaviour"
+      ],
+      "externalRequirements": "配置游戏服务端并单独运行实机测试",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "chess",
+      "domain": "execution",
+      "title": "与角色进行国际象棋",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/Games/Chess.cs",
+        "src/Aijade.Client/Games/ChessCompanion.cs",
+        "src/Aijade.UI/Pages/ChessGame.razor"
+      ],
+      "entrypoints": [
+        "Chess",
+        "ChessCompanion",
+        "ChessGame"
+      ],
+      "externalRequirements": "",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "home-automation",
+      "domain": "execution",
+      "title": "HomeAssistant/小米设备协议适配",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Tools/HomeAssistantTools.cs",
+        "src/Aijade.Server/Tools/Xiaomi.cs"
+      ],
+      "entrypoints": [
+        "ToolHub领域提供方"
+      ],
+      "externalRequirements": "已授权设备与API；适配代码由AIJADE拥有，实际设备效果另验收",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "factorio",
+      "domain": "execution",
+      "title": "Factorio服务协议适配",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Tools/Factorio.cs"
+      ],
+      "entrypoints": [
+        "ToolHub Factorio提供方"
+      ],
+      "externalRequirements": "配置游戏服务与操作权限",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "room-assets",
+      "domain": "execution",
+      "title": "虚拟房间与可编辑角色资产流程",
+      "implementation": "planned",
+      "sources": [
+        "docs/VIDEO-REFERENCE-ADOPTION.md",
+        "src/Aijade.UI/Shared/StagePanel.razor"
+      ],
+      "entrypoints": [
+        "舞台与资产扩展点"
+      ],
+      "externalRequirements": "房间交互/拆层工作流待实现；不安装外部房间/拆层插件",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "已有舞台不等于完整房间物理、自动拆层或资产质量。"
+      }
+    },
+    {
+      "id": "web-pwa",
+      "domain": "delivery",
+      "title": "网页与PWA宿主",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Web/Program.cs",
+        "src/Aijade.Web/wwwroot/manifest.webmanifest",
+        "src/Aijade.Web/wwwroot/service-worker.published.js"
+      ],
+      "entrypoints": [
+        "Aijade.Web",
+        "PWA service worker"
+      ],
+      "externalRequirements": "浏览器端到端测试需显式启用",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "maui-host",
+      "domain": "delivery",
+      "title": "Android/Windows共享UI宿主",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Maui/MauiProgram.cs",
+        "src/Aijade.Maui/Aijade.Maui.csproj"
+      ],
+      "entrypoints": [
+        "Aijade.Maui"
+      ],
+      "externalRequirements": "对应MAUI工作负载、SDK与目标设备；不在默认solution构建中",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "qq-private",
+      "domain": "delivery",
+      "title": "QQ授权主人私聊、语音和收藏入口",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Integrations/OneBotConnector.cs",
+        "src/Aijade.Integrations/OneBotDelivery.cs",
+        "src/Aijade.Bots/ConnectorHost.cs"
+      ],
+      "entrypoints": [
+        "OneBot:NapCat",
+        "OneBot:Owner",
+        "OneBotConnector.RunAsync"
+      ],
+      "externalRequirements": "NapCat OneBot11服务、密钥文件与主人白名单；本轮不宣称真实QQ接收通过",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "telegram-discord",
+      "domain": "delivery",
+      "title": "Telegram与Discord适配",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Bots/TelegramConnector.cs",
+        "src/Aijade.Bots/DiscordConnector.cs"
+      ],
+      "entrypoints": [
+        "Telegram:Token",
+        "Discord:Token"
+      ],
+      "externalRequirements": "平台注册与已授权令牌",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "satori-x",
+      "domain": "delivery",
+      "title": "Satori与X协议适配",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Integrations/SatoriConnector.cs",
+        "src/Aijade.Integrations/XConnector.cs"
+      ],
+      "entrypoints": [
+        "Satori:Url",
+        "X:AccessToken"
+      ],
+      "externalRequirements": "用户配置平台服务及授权；不安装整套第三方插件宿主",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "bilibili-live",
+      "domain": "delivery",
+      "title": "B站直播渠道适配",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Integrations/BilibiliLiveConnector.cs"
+      ],
+      "entrypoints": [
+        "Bilibili:RoomId"
+      ],
+      "externalRequirements": "房间及可选授权登录；不等于自动刷视频/评论能力",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "source-linked-receipts",
+      "domain": "delivery",
+      "title": "普通/主动/提醒的统一交付记录",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionDelivery.cs",
+        "src/Aijade.Client/Companion/CompanionDelivery.cs",
+        "src/Aijade.Integrations/OneBotDelivery.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/companion/characters/{id}/deliveries"
+      ],
+      "externalRequirements": "保存、发送尝试、平台接受、未知与已读分别处理",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "reply-pacing",
+      "domain": "delivery",
+      "title": "有界分段、发送节奏与中断",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Integrations/OneBotConnector.cs",
+        "src/Aijade.Client/Companion/CompanionMedia.cs"
+      ],
+      "entrypoints": [
+        "OneBotConnector.SendReplyAsync"
+      ],
+      "externalRequirements": "平台回执和当前输入版本共同限制后续片段",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "mcp-protocol",
+      "domain": "delivery",
+      "title": "本库MCP服务与可配置提供方",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Mcp/AijadeMcpServer.cs",
+        "src/Aijade.Server/Tools/McpToolProvider.cs"
+      ],
+      "entrypoints": [
+        "Aijade:Modules:Mcp",
+        "/api/v1/tools"
+      ],
+      "externalRequirements": "MCP是兼容协议；外部提供方需用户配置，非默认插件安装器",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "p1-contracts",
+      "domain": "research",
+      "title": "P1契约、变异与外部回执研究",
+      "implementation": "implemented",
+      "sources": [
+        "tools/Aijade.P1/Program.cs",
+        "tools/Aijade.Mutation/Program.cs",
+        "src/Aijade.Research/Steering/Steering.cs"
+      ],
+      "entrypoints": [
+        "tools/Aijade.P1",
+        "tools/Aijade.Mutation"
+      ],
+      "externalRequirements": "冻结研究方案与已有记录；工程测试不是外部科学效度",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "p2-skills",
+      "domain": "research",
+      "title": "P2技能、JS沙箱、判断与基准",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Research/SkillBench/Bench.cs",
+        "src/Aijade.Research/SkillBench/Sandbox.cs",
+        "src/Aijade.Research/SkillBench/JudgmentPreparation.cs",
+        "src/Aijade.Research/SkillBench/PromptExposure.cs"
+      ],
+      "entrypoints": [
+        "SkillBench",
+        "JudgmentPreparation",
+        "PublicBenchBank"
+      ],
+      "externalRequirements": "保留逐题纳入/排除与AI辅助判读；不把准备工作当模型效果",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "p3-memory",
+      "domain": "research",
+      "title": "P3 LoCoMo/LongMemEval与政策评测",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Research/MemoryEval/MetricDefinitions.cs",
+        "src/Aijade.Memory/Locomo/Locomo.cs",
+        "src/Aijade.Memory/Locomo/LongMemEval.cs",
+        "tools/Aijade.Experiments/Program.cs"
+      ],
+      "entrypoints": [
+        "MemoryEval",
+        "tools/Aijade.Experiments"
+      ],
+      "externalRequirements": "已有回执限定语料、政策、版本和分母；不外推回答质量",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "rq-c-requests",
+      "domain": "research",
+      "title": "受限请求与验证反馈研究",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Research/RqC/RqcRunner.cs",
+        "src/Aijade.Research/RqC/RequestBudget.cs",
+        "src/Aijade.Research/RqC/VerifierFeedback.cs"
+      ],
+      "entrypoints": [
+        "RqcRunner",
+        "RequestBudget"
+      ],
+      "externalRequirements": "输入、模型、次数与终止条件须绑定方案",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "skill-promotion",
+      "domain": "research",
+      "title": "学习、技能晋升与因果证据事务",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/V9/PromotionService.cs",
+        "src/Aijade.Server/V9/EvidenceDomain.cs",
+        "src/Aijade.Memory/V9/V9Runtime.cs",
+        "src/Aijade.Learning/Forge/Forge.cs"
+      ],
+      "entrypoints": [
+        "PromotionService",
+        "EvidenceDomainService",
+        "V9CausalRuntime"
+      ],
+      "externalRequirements": "事务一致不代表技能语义正确；研究资格独立",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "growth-prototypes",
+      "domain": "research",
+      "title": "成长、兴趣、验证与可信发布原型",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Growth/GrowthLoop.cs",
+        "src/Aijade.Growth/Services/TrustedReleaseController.cs",
+        "src/Aijade.Growth/Services/EpistemicVerifier.cs",
+        "src/Aijade.Growth/Pilot/RunPilot.cs"
+      ],
+      "entrypoints": [
+        "GrowthLoop",
+        "TrustedReleaseController",
+        "RunPilot"
+      ],
+      "externalRequirements": "探索性/研究模块，不宣称已通过自主学习或普遍技能迁移",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "ch7-finite",
+      "domain": "research",
+      "title": "第7章有限流程与历史证据守卫",
+      "implementation": "implemented",
+      "sources": [
+        "experiments/ch7/finite_runtime.py",
+        "experiments/ch7/finite_validate.py",
+        "experiments/ch7/run_finite_sequence.py",
+        "tools/verify-historical-manifest.py"
+      ],
+      "entrypoints": [
+        "experiments/ch7/run_finite_sequence.py",
+        "tools/verify-historical-manifest.py"
+      ],
+      "externalRequirements": "不新增案例、模型调用或硬件资格；旧准入拒绝与失败原样保留",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "external-renderer",
+      "domain": "research",
+      "title": "原渲染器协议研究适配",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Integrations/Renderer/MosaicRendererLink.cs",
+        "src/Aijade.Integrations/Renderer/RenderEvidence.cs",
+        "experiments/ch7/godot_local.py"
+      ],
+      "entrypoints": [
+        "MosaicRendererLink",
+        "experiments/ch7/godot_local.py"
+      ],
+      "externalRequirements": "仅历史比较/显式研究适配；不进入默认产品宿主；不改旧字节",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "host-database",
+      "domain": "support",
+      "title": "API宿主、数据库与迁移",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/AijadeServer.cs",
+        "src/Aijade.Server/Infrastructure/Database.cs"
+      ],
+      "entrypoints": [
+        "AijadeServer",
+        "/healthz"
+      ],
+      "externalRequirements": "PostgreSQL；服务部署与数据库备份另行管理",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "event-queue",
+      "domain": "support",
+      "title": "现有事件worker与可选Redis",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/ServerModules.cs",
+        "src/Aijade.Server/Infrastructure/JobBroker.cs",
+        "src/Aijade.Server/V9/ServerRuntime.cs"
+      ],
+      "entrypoints": [
+        "CompanionWorker",
+        "IJobBroker",
+        "V9Worker"
+      ],
+      "externalRequirements": "companion单机可使用原有本机唤醒；Redis显式配置",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "model-gateway",
+      "domain": "support",
+      "title": "聊天、嵌入、图像与语音模型协议",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Product/Gateway.cs",
+        "src/Aijade.Server/Product/ModelServices.cs",
+        "src/Aijade.Providers/Llm/LlmClient.cs",
+        "src/Aijade.Providers/Llm/MeaiAdapters.cs"
+      ],
+      "entrypoints": [
+        "/api/v1/openai/v1/chat/completions",
+        "/api/v1/openai/v1/embeddings"
+      ],
+      "externalRequirements": "用户提供模型服务或本机权重；独立编排不等于独立训练基础模型",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "local-service-settings",
+      "domain": "support",
+      "title": "本地服务配置、健康检查与歌声设置",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/CompanionLocalServices.cs",
+        "src/Aijade.UI/Pages/CompanionServices.razor"
+      ],
+      "entrypoints": [
+        "/api/v1/admin/gateway/local-services",
+        "/api/v1/admin/gateway/local-services/check"
+      ],
+      "externalRequirements": "检查只证明被检接口可达，训练/音色效果仍未知",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "admin-and-secrets",
+      "domain": "support",
+      "title": "管理后台与提供方配置",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Server/Product/Admin.cs",
+        "src/Aijade.Server/Product/Library.cs",
+        "src/Aijade.Server/Tools/ToolHub.cs",
+        "src/Aijade.UI/Pages/Admin.razor"
+      ],
+      "entrypoints": [
+        "/api/v1/admin",
+        "/api/v1/providers",
+        "/api/v1/admin/tools"
+      ],
+      "externalRequirements": "用户授权管理范围及加密保存的服务凭据",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "billing",
+      "domain": "support",
+      "title": "可选计费与额度",
+      "implementation": "configurable",
+      "sources": [
+        "src/Aijade.Server/Product/Billing.cs",
+        "src/Aijade.Server/Product/Flux.cs"
+      ],
+      "entrypoints": [
+        "Aijade:Modules:Billing",
+        "FluxLedger"
+      ],
+      "externalRequirements": "Stripe等计费服务与明确配置；不自动购买服务",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "telemetry",
+      "domain": "support",
+      "title": "会话、轮次、表现与来源遥测",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Telemetry/Telemetry.cs",
+        "src/Aijade.Telemetry/Session.cs",
+        "src/Aijade.Telemetry/PersonaTelemetry.cs",
+        "src/Aijade.Client/Chat/RenderReporter.cs"
+      ],
+      "entrypoints": [
+        "TelemetryJson",
+        "RenderReporter"
+      ],
+      "externalRequirements": "日志完整性与真实效果验收分开",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "i18n-settings",
+      "domain": "support",
+      "title": "多语言、设置与各端共享UI",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Client/I18n/Strings.cs",
+        "src/Aijade.Client/Settings/AppSettings.cs",
+        "src/Aijade.UI/Services/ServiceRegistration.cs"
+      ],
+      "entrypoints": [
+        "Strings",
+        "AppSettings",
+        "ServiceRegistration"
+      ],
+      "externalRequirements": "",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "source-compatibility",
+      "domain": "support",
+      "title": "数值、线协议与可重放随机基础",
+      "implementation": "implemented",
+      "sources": [
+        "src/Aijade.Core/Schema/WireSchema.cs",
+        "src/Aijade.Core/Random/Mulberry32.cs",
+        "src/Aijade.Core/Js/JsNumberJsonConverter.cs"
+      ],
+      "entrypoints": [
+        "WireSchema",
+        "Mulberry32"
+      ],
+      "externalRequirements": "保留既有比较与参考语义；不因重构改变历史计分",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "workspace-and-ci",
+      "domain": "support",
+      "title": "本机路径、启动配置与CI",
+      "implementation": "implemented",
+      "sources": [
+        "tools/with-workspace-env.sh",
+        "tools/run-companion.sh",
+        ".github/workflows/ci.yml"
+      ],
+      "entrypoints": [
+        "tools/run-companion.sh",
+        "tools/verify-independent-architecture.py"
+      ],
+      "externalRequirements": "本机所有工作产物保留在指定AIJADE根；CI通过不是论文投稿就绪",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅源代码入口清点；测试与真实服务验收另看版本化回执。"
+      }
+    },
+    {
+      "id": "independent-backup-restore",
+      "domain": "support",
+      "title": "完整状态备份与隔离恢复演练",
+      "implementation": "planned",
+      "sources": [
+        "docs/VIDEO-REFERENCE-ADOPTION.md",
+        "src/Aijade.Server/Memory/MemoryLibrary.cs",
+        "src/Aijade.Server/Product/CompanionSync.cs"
+      ],
+      "entrypoints": [
+        "记忆与同步状态的备份扩展点"
+      ],
+      "externalRequirements": "已有记忆导出不等于账户/关系/绑定完整灾备",
+      "verification": {
+        "kind": "source_inventory",
+        "scope": "仅规格与已有扩展点；完整隔离恢复尚待实现。"
+      }
+    }
+  ],
+  "dependenciesPolicy": {
+    "owned": "AIJADE domain state, orchestration, runtime adapters and evidence are implemented in this repository.",
+    "standardLibraries": "Documented .NET/browser/database/HTTP/protocol libraries remain explicit dependencies, not claims of original implementation.",
+    "configurableServices": "Model weights/endpoints, platform APIs and hardware services require their own configuration and live verification.",
+    "forbidden": "Default product launchers must not load another project worktree, MOSAIC native executor or complete third-party plugin host."
+  }
+}

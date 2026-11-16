@@ -201,7 +201,7 @@
         if (!State.Settings.Current.Modules.SpeakFirst || busy || drawing || listening || draft.Length > 0 || ChatId is null || messages.Count == 0)
             return;
         // On MOSAIC's stage she does not speak first while lying down, as there.
-        var home = State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
+        var home = State.Settings.Current.Modules.NativeStage ? await new CompanionStage(State.Api, character?.Id).StateAsync() : null;
         if (home is { Lying: true } || busy || drawing || listening || draft.Length > 0 || ChatId is null)
             return;
         var chatId = ChatId;
@@ -276,7 +276,7 @@
             var chat = (await State.Api.ChatsAsync(cts.Token)).FirstOrDefault(c => c.Id == due.Conversation);
             if (chat is null) { gone = true; return; }
             var shared = await State.Sync.ReadAsync(chat.CharacterId, ct: cts.Token);
-            var home = open && State.Settings.Current.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync() : null;
+            var home = open && State.Settings.Current.Modules.NativeStage ? await new CompanionStage(State.Api, shared.CharacterId).StateAsync() : null;
             await foreach (var e in OrchestratorFor(shared.Character).RemindAsync(due.Conversation, shared.Character, history, $"persona:{shared.CharacterId ?? "default"}", due, shared.RuntimeProfile.Zone, cts.Token))
             {
                 switch (e)
@@ -497,7 +497,7 @@
             var mediaRequest = State.CompanionFor(character?.Id).Profile.Enabled && CompanionMediaTurn.IsRequest(text);
             var drawRequests = new List<string>();
             // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
-            var home = !mediaRequest && settings.Modules.MosaicStage ? await new MosaicStage(State.Api).StateAsync(cts.Token) : null;
+            var home = !mediaRequest && settings.Modules.NativeStage ? await new CompanionStage(State.Api, character?.Id).StateAsync(cts.Token) : null;
             var action = home is null ? null : Stage.Decide(text, home.Seated);
             // A reminder asked for, cancelled or asked about is decided by fixed words before the reply, and she is told so (ADR-003).
             var reminders = State.Reminders;
@@ -510,7 +510,7 @@
                 if (promised is not null || reminderNotes.Count > 0)
                     await reminders.SaveAsync(book, Now());
             }
-            var notes = (home is null ? [] : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
+            var notes = (home is null ? [] : home.StateKind == "virtual" ? NativeSceneNotes(action, home) : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
             if (home is not null)
                 undone = null; // told once
             await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
@@ -588,14 +588,18 @@
     }
 
     /// <summary>
-    /// The workbench accepts a line before her body acts. Follow it in the background: if it did not happen, the owner sees the
-    /// workbench's words now and the model is told on the next turn which action did not happen, without those words.
+    /// Describe the logical scene without treating a saved transition as an observed body action.
     /// </summary>
-    private async Task FollowStageAsync(StageAction? action, string? noticeBefore, CancellationToken ct)
+    private static IReadOnlyList<string> NativeSceneNotes(StageAction? action, StageState home) =>
+        ["AIJADE virtual scene only: " + home.Where + ". This is fictional logical state, not physical location or observed rendering.",
+         action is null ? "No virtual action was selected. Do not invent a body action." :
+             "The user requested a virtual-scene transition: " + action.Doing + ". It may be unavailable. Never claim physical execution, motion playback or a rendered result from this request."];
+
+    private async Task FollowStageAsync(StageAction? action, string? noticeBefore, string? sceneCharacterId, CancellationToken ct)
     {
         try
         {
-            var report = await new MosaicStage(State.Api).FollowAsync(action, noticeBefore, ct: ct);
+            var report = await new CompanionStage(State.Api, sceneCharacterId).FollowAsync(action, noticeBefore, ct: ct);
             if (report.Outcome != StageOutcome.Failed)
                 return;
             await InvokeAsync(() =>
@@ -612,8 +616,7 @@
     }
 
     /// <summary>
-    /// Show the reply on the stage, report the render receipt, and speak it with lip sync. On MOSAIC's stage
-    /// (<paramref name="home"/>) the reply is said there, followed by the decided action, and not spoken here.
+    /// Save optional virtual scene state, apply the separate visual intent, and speak through the configured audio route.
     /// </summary>
     private async Task PerformAsync(TurnCompleted done, StageState? home, StageAction? action)
     {
@@ -622,14 +625,14 @@
         {
             try
             {
-                await new MosaicStage(State.Api).SendAsync(Stage.CommandLine(done.Intent.Expression, done.Reply.Content, action));
-                saidOnStage = true;
-                stageWatch?.Cancel(); // the workbench gave up the line before this one for this one
+                await new CompanionStage(State.Api, home.CharacterId).SendAsync(Stage.CommandLine(done.Intent.Expression, done.Reply.Content, action));
+                saidOnStage = home.StateKind != "virtual"; // logical speech state does not mean audio was played
+                stageWatch?.Cancel(); // stop following the preceding command
                 stageWatch?.Dispose();
                 stageWatch = new CancellationTokenSource();
-                _ = FollowStageAsync(action, home.Notice, stageWatch.Token);
+                _ = FollowStageAsync(action, home.Notice, home.CharacterId, stageWatch.Token);
             }
-            catch (AijadeApiException e)
+            catch (Exception e) when (e is AijadeApiException or HttpRequestException or TaskCanceledException)
             {
                 error = State.Text.Format("chat.error", e.Message); // the reply stands and is spoken here instead
             }

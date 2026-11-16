@@ -1,7 +1,7 @@
-using System.Net.Http.Json;
 using System.Text.Json.Nodes;
 
 using Aijade.Server.Infrastructure;
+using Aijade.Server.Auth;
 using Aijade.Server.V9;
 
 using Microsoft.AspNetCore.Builder;
@@ -10,22 +10,7 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Aijade.Server.Product;
 
-/// <summary>
-/// The owner's stage in MOSAIC's home (docs/STAGE-MOSAIC.md, plan A step 2; ADR-002 supplement 4): relays the chat's stage
-/// commands to MOSAIC's live-scene workbench and reads back whether the scene runs, where she is, her posture and the
-/// motions she has learned lately (contract 1.4.0 A; ADR-002 supplement 5).
-/// <list type="bullet">
-/// <item>Off unless <c>Stage:WorkbenchUrl</c> is set; the address must be a loopback one, because the workbench has no
-/// authentication and is never reached over a network. A non-loopback address stops the server at start.</item>
-/// <item>Admins only: it drives a device on the server's machine.</item>
-/// <item>Only the commands the chat sends pass (表情, 说, 去, 起来, 走路, 跳舞, 手势).</item>
-/// <item>Of the learned motions only the contract's fields are relayed; the video's title and uploader reach only the owner's
-/// client, which does not give them to a model.</item>
-/// <item>A command's 200 only means the workbench accepted the line; the body acts later. The workbench's <c>sequenceRunning</c>
-/// and its last <c>notice</c> are relayed so that the client can tell whether it did (contract 1.4.1). The notice can name local
-/// paths: it reaches only the owner's client, which does not give it to a model.</item>
-/// </list>
-/// </summary>
+/// <summary>AIJADE-owned virtual scene endpoints. Legacy command vocabulary is retained, not external execution.</summary>
 public static class StageEndpoints
 {
     public const string HttpClientName = "stage";
@@ -88,73 +73,69 @@ public static class StageEndpoints
     {
         foreach (var command in line.Split([';', '；', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
-            var head = command.Split([' ', '\t', '，', ','], 2, StringSplitOptions.RemoveEmptyEntries)[0];
+            var words = command.Split([' ', '\t', '，', ','], 2, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 0) return command;
+            var head = words[0];
             if (!Heads.Contains(head))
                 return command;
         }
         return null;
     }
 
+    public const string NativeEnabledKey = "Stage:Enabled";
+
+    public static void ValidateConfiguration(IConfiguration config)
+    {
+        if (!string.IsNullOrWhiteSpace(config[ConfigKey]))
+            throw new InvalidOperationException("Stage:WorkbenchUrl is retired. Enable the AIJADE-owned virtual scene with Stage:Enabled=true; no external workbench is launched or contacted.");
+        if (config[NativeEnabledKey] is { Length: > 0 } value && !bool.TryParse(value, out _))
+            throw new InvalidOperationException("Stage:Enabled must be true or false");
+    }
+
+    private static void Enabled(IConfiguration config)
+    {
+        if (!bool.TryParse(config[NativeEnabledKey], out var enabled) || !enabled)
+            throw ApiException.NotFound("the AIJADE native virtual scene is disabled");
+    }
+
     public static void Map(IEndpointRouteBuilder app)
     {
-        var g = app.MapGroup("/api/v1/stage").RequireAuthorization(AdminEndpoints.Policy);
-        g.MapGet("", async (IConfiguration config, IHttpClientFactory http, CancellationToken ct) =>
+        var g = app.MapGroup("/api/v1/stage").RequireAuthorization();
+        g.MapGet("", async (HttpContext context, IConfiguration config, CompanionSyncStore companion, NativeStageStore scene, CancellationToken ct) =>
         {
-            var workbench = Workbench(config[ConfigKey]) ?? throw ApiException.NotFound("no stage is configured");
-            JsonObject? state;
-            try
-            {
-                state = await http.CreateClient(HttpClientName).GetFromJsonAsync<JsonObject>(new Uri(workbench, "/api/v1/live-scene"), ct).ConfigureAwait(false);
-            }
-            catch (Exception e) when (e is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
-            {
-                return Results.Json(new JsonObject { ["running"] = false, ["reachable"] = false, ["learned"] = new JsonArray() });
-            }
-            var running = state?["running"]?.GetValue<bool>() == true;
-            return Results.Json(new JsonObject
-            {
-                ["running"] = running, ["reachable"] = true,
-                ["where"] = running ? state?["where"]?.GetValue<string>() : null,
-                ["posture"] = running ? state?["posture"]?.GetValue<string>() : null,
-                ["learned"] = running ? Learned(state?["learned"]) : new JsonArray(),
-                ["notice"] = running ? Notice(state?["notice"]) : null,
-                ["sequenceRunning"] = running && state?["sequenceRunning"] is JsonValue sequence && sequence.TryGetValue<bool>(out var busy) ? busy : null,
-            });
+            Enabled(config);
+            var owner = context.User.UserId();
+            var selected = context.Request.Query.TryGetValue("characterId", out var requested) ? requested.ToString() : null;
+            var state = await companion.StateAsync(owner, selected is "default" or "" ? null : selected, current: selected is null, media: false, ct).ConfigureAwait(false);
+            return Results.Json(await scene.ReadAsync(owner, state.CharacterId, ct).ConfigureAwait(false));
         });
-        g.MapPost("/command", async (HttpContext c, IConfiguration config, IHttpClientFactory http, CancellationToken ct) =>
+        g.MapPost("/command", async (HttpContext context, IConfiguration config, CompanionSyncStore companion, NativeStageStore scene, CancellationToken ct) =>
         {
-            var workbench = Workbench(config[ConfigKey]) ?? throw ApiException.NotFound("no stage is configured");
-            var b = await V9Endpoints.ReadJsonAsync(c.Request, "INVALID_REQUEST", ct).ConfigureAwait(false);
-            var text = b?["text"]?.GetValue<string>()?.Trim();
-            if (string.IsNullOrEmpty(text) || text.Length > MaxCommand)
+            Enabled(config);
+            var node = await V9Endpoints.ReadJsonAsync(context.Request, "INVALID_REQUEST", ct).ConfigureAwait(false);
+            if (node is not JsonObject body) throw ApiException.BadRequest("an object is required", "INVALID_REQUEST");
+            var text = body["text"] is JsonValue value && value.TryGetValue<string>(out var content) ? content.Trim() : null;
+            if (string.IsNullOrWhiteSpace(text) || text.Length > MaxCommand || text.Trim(';', '；', '\n', ' ', '\t').Length == 0)
                 throw ApiException.BadRequest($"text must be 1-{MaxCommand} characters", "INVALID_REQUEST");
             if (Refused(text) is { } refused)
                 throw ApiException.BadRequest($"not a stage command: {refused}", "STAGE_COMMAND_REFUSED");
-            HttpResponseMessage res;
-            try
+            if (body.ContainsKey("commandId") && (body["commandId"] is not JsonValue identifier || !identifier.TryGetValue<string>(out _)))
+                throw ApiException.BadRequest("commandId must be a string", "INVALID_REQUEST");
+            var id = body["commandId"]?.GetValue<string>() ?? Guid.NewGuid().ToString("N");
+            if (id.Length is < 1 or > 80 || id.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not ('-' or '_' or ':')))
+                throw ApiException.BadRequest("invalid commandId", "INVALID_REQUEST");
+            long? revision = null;
+            if (body.ContainsKey("expectedRevision"))
             {
-                res = await http.CreateClient(HttpClientName).PostAsJsonAsync(new Uri(workbench, "/api/v1/live-scene/command"), new { text }, ct).ConfigureAwait(false);
+                if (body["expectedRevision"] is not JsonValue r || !r.TryGetValue<long>(out var number) || number < 0)
+                    throw ApiException.BadRequest("invalid expectedRevision", "INVALID_REQUEST");
+                revision = number;
             }
-            catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
-            {
-                throw new ApiException(502, "STAGE_UNREACHABLE", "the stage's workbench does not answer");
-            }
-            using (res)
-            {
-                if (!res.IsSuccessStatusCode)
-                {
-                    string? error = null;
-                    try
-                    {
-                        error = JsonNode.Parse(await res.Content.ReadAsStringAsync(ct).ConfigureAwait(false))?["error"]?.GetValue<string>();
-                    }
-                    catch (Exception e) when (e is System.Text.Json.JsonException or InvalidOperationException)
-                    {
-                    }
-                    throw ApiException.BadRequest(error ?? $"the workbench refused the command ({(int)res.StatusCode})", "STAGE_COMMAND_REFUSED");
-                }
-            }
-            return Results.Json(new JsonObject { ["ok"] = true });
+            if (!body.ContainsKey("characterId") || body["characterId"] is not JsonValue role || !role.TryGetValue<string>(out var selected) || selected.Length is < 1 or > 128)
+                throw ApiException.BadRequest("an explicit characterId is required; use default for the default character", "INVALID_REQUEST");
+            var owner = context.User.UserId();
+            var state = await companion.StateAsync(owner, selected == "default" ? null : selected, current: false, media: false, ct).ConfigureAwait(false);
+            return Results.Json(await scene.ApplyAsync(owner, state.CharacterId, text, id, revision, ct).ConfigureAwait(false));
         });
     }
 }

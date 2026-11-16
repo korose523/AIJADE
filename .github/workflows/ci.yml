@@ -31,6 +31,10 @@ jobs:
         with:
           global-json-file: global.json
       - run: dotnet test --configuration Release
+      - name: Verify independently owned capabilities and reject external project coupling
+        run: python3 -B tools/verify-independent-architecture.py --self-test
+      - name: Verify native local voice protocol, cancellation and cleanup
+        run: python3 -B -m unittest discover -s tools/companion-services -p 'test_*.py' -v
       - name: Verify project-local paths and companion launch arguments
         run: python3 tests/shell/verify_workspace_env.py
       - name: Verify finite binary identity, bounded owned cleanup and terminal receipts

@@ -17,7 +17,7 @@ public sealed record LearnedMotion(string Day, string Skill, string SkillWords, 
 /// workbench's last notice, for the owner's eyes only; <paramref name="SequenceRunning"/> says whether its last command line is
 /// still being carried out, null when it does not say.
 /// </summary>
-public sealed record StageState(bool Running, string? Where, string? Posture, IReadOnlyList<LearnedMotion>? Learned = null, string? Notice = null, bool? SequenceRunning = null)
+public sealed record StageState(bool Running, string? Where, string? Posture, IReadOnlyList<LearnedMotion>? Learned = null, string? Notice = null, bool? SequenceRunning = null, string? StateKind = null, bool? RenderObserved = null, string? CharacterId = null)
 {
     /// <summary>Sitting or lying, so that "get up" means something.</summary>
     public bool Seated => Posture is "sit" or "lie";
@@ -27,10 +27,9 @@ public sealed record StageState(bool Running, string? Where, string? Posture, IR
 }
 
 /// <summary>
-/// The chat's side of MOSAIC's stage (docs/STAGE-MOSAIC.md, plan A step 2): reads her state and sends one reply's commands
-/// through the server, which relays them to MOSAIC's workbench on its own machine (<c>/api/v1/stage</c>, admins only).
+/// The chat client for the AIJADE-owned virtual scene. Legacy response fields remain readable; virtual state is not a render receipt.
 /// </summary>
-public sealed class MosaicStage(AijadeApi api)
+public sealed class CompanionStage(AijadeApi api, string? characterId = null)
 {
     /// <summary>
     /// Her state, or null when the server has no stage, the account may not use it, the workbench is not running, or the
@@ -40,12 +39,13 @@ public sealed class MosaicStage(AijadeApi api)
     {
         try
         {
-            if (await api.SendAsync(HttpMethod.Get, "/api/v1/stage", ct: ct).ConfigureAwait(false) is not JsonObject r || r["running"]?.GetValue<bool>() != true)
+            if (await api.SendAsync(HttpMethod.Get, "/api/v1/stage?characterId=" + Uri.EscapeDataString(characterId ?? "default"), ct: ct).ConfigureAwait(false) is not JsonObject r || r["running"]?.GetValue<bool>() != true)
                 return null;
             return new StageState(true, r["where"]?.GetValue<string>(), r["posture"]?.GetValue<string>(), Learned(r["learned"] as JsonArray),
-                Text(r, "notice"), r["sequenceRunning"] is JsonValue v && v.TryGetValue<bool>(out var busy) ? busy : null);
+                Text(r, "notice"), r["sequenceRunning"] is JsonValue v && v.TryGetValue<bool>(out var busy) ? busy : null,
+                Text(r, "stateKind"), r["renderObserved"] is JsonValue observed && observed.TryGetValue<bool>(out var rendered) ? rendered : null, Text(r, "characterId"));
         }
-        catch (Exception e) when (e is AijadeApiException or HttpRequestException)
+        catch (Exception e) when (e is AijadeApiException or HttpRequestException || e is TaskCanceledException && !ct.IsCancellationRequested)
         {
             return null;
         }
@@ -66,7 +66,7 @@ public sealed class MosaicStage(AijadeApi api)
 
     /// <summary>Send one command line (<see cref="Stage.CommandLine"/>); a refusal comes back as <see cref="AijadeApiException"/>.</summary>
     public Task SendAsync(string commandLine, CancellationToken ct = default) =>
-        api.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = commandLine }, ct);
+        api.SendAsync(HttpMethod.Post, "/api/v1/stage/command", new JsonObject { ["text"] = commandLine, ["commandId"] = Guid.NewGuid().ToString("N"), ["characterId"] = characterId ?? "default" }, ct);
 
     /// <summary>
     /// Follows a command line just sent until the workbench has finished it, then judges the last notice
@@ -79,9 +79,19 @@ public sealed class MosaicStage(AijadeApi api)
         while (watch.Elapsed < (limit ?? TimeSpan.FromMinutes(5)))
         {
             if (await StateAsync(ct).ConfigureAwait(false) is { SequenceRunning: false } done)
-                return new StageReport(Stage.Outcome(action, noticeBefore, done.Notice), done.Notice);
+                return new StageReport(done.StateKind == "virtual" ? StageOutcome.Unknown : Stage.Outcome(action, noticeBefore, done.Notice), done.Notice);
             await Task.Delay(every ?? TimeSpan.FromSeconds(2), ct).ConfigureAwait(false);
         }
         return new StageReport(StageOutcome.Unknown, null);
     }
+}
+
+/// <summary>Source-compatible name for older clients; delegates to AIJADE's native scene client.</summary>
+public sealed class MosaicStage(AijadeApi api)
+{
+    private readonly CompanionStage stage = new(api);
+    public Task<StageState?> StateAsync(CancellationToken ct = default) => stage.StateAsync(ct);
+    public Task SendAsync(string commandLine, CancellationToken ct = default) => stage.SendAsync(commandLine, ct);
+    public Task<StageReport> FollowAsync(StageAction? action, string? noticeBefore, TimeSpan? every = null, TimeSpan? limit = null, CancellationToken ct = default)
+        => stage.FollowAsync(action, noticeBefore, every, limit, ct);
 }
