@@ -1,0 +1,545 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text;
+using System.Text.Json.Nodes;
+
+using Aijade.Core.Random;
+using Aijade.Research.SkillBench;
+
+namespace Aijade.Research.RqC;
+
+// The candidate
+// generator / self-verifier backends of the RQ-C harness — a seeded mock (the positive control whose recovery is gated
+// on the presence of a feedback signal) and an Ollama backend with locked sampling (temperature 0 + seed).
+
+/// <summary>What the environment told the loop about the previous candidate.</summary>
+public sealed record EnvironmentFeedbackSignal(IReadOnlyList<int> FailedCaseIndices, int Passed, int Total, IReadOnlyList<string> Errors);
+
+public sealed record GenerateContext(int Attempt, EnvironmentFeedbackSignal? EnvFeedback = null, string? SelfCritique = null, string? PreviousCode = null, string? PreviousFailure = null);
+
+/// <param name="Pass">The verdict.</param>
+/// <param name="Score">0.8 for a pass, 0.2 for a fail.</param>
+/// <param name="Rationale">The reply as fed back to the generator (the first 280 characters).</param>
+/// <param name="FullReply">The whole reply, recorded for audit only; null when it equals <paramref name="Rationale"/>.</param>
+public sealed record SelfVerifierVerdict(bool Pass, double Score, string Rationale, string? FullReply = null);
+
+/// <summary>
+/// Resume an interrupted run: answer the first calls with the generations and self-verification replies the interrupted run
+/// recorded (candidates.jsonl, in call order), then hand over to the live backend. Every other part of the harness is
+/// deterministic, so the replayed prefix reproduces the interrupted run's state exactly; the runner checks that it does.
+/// </summary>
+public sealed class ResumingBackend(ILlmBackend live, IReadOnlyList<string> generations, IReadOnlyList<(bool Pass, string Rationale)> verdicts,
+    bool advanceReplayBackend = false) : ILlmBackend
+{
+    private int nextGeneration;
+    private int nextRationale;
+
+    public string Name => live.Name;
+
+    public int ReplayedGenerations => nextGeneration;
+
+    public int ReplayedVerifications => nextRationale;
+
+    public bool Exhausted => nextGeneration >= generations.Count && nextRationale >= verdicts.Count;
+
+    public async Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
+    {
+        if (nextGeneration >= generations.Count)
+            return await live.GenerateAsync(task, ctx, cancellationToken).ConfigureAwait(false);
+        var recorded = generations[nextGeneration++];
+        // A seeded simulation must consume the replayed draws before continuing its random stream.
+        if (advanceReplayBackend && await live.GenerateAsync(task, ctx, cancellationToken).ConfigureAwait(false) != recorded)
+            throw new InvalidDataException("The simulation generation differs from its recorded prefix.");
+        return recorded;
+    }
+
+    public async Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default)
+    {
+        if (nextRationale >= verdicts.Count)
+            return await live.VerifyAsync(task, candidate, cancellationToken).ConfigureAwait(false);
+        // the rationale is what the live backend kept (the Ollama reply cut to 280 characters), the verdict the one it logged;
+        // the score is the Ollama backend's function of the verdict
+        var (pass, rationale) = verdicts[nextRationale++];
+        if (advanceReplayBackend)
+        {
+            var actual = await live.VerifyAsync(task, candidate, cancellationToken).ConfigureAwait(false);
+            if (actual.Pass != pass || actual.Rationale != rationale)
+                throw new InvalidDataException("The simulation verdict differs from its recorded prefix.");
+        }
+        return new SelfVerifierVerdict(pass, pass ? 0.8 : 0.2, rationale);
+    }
+}
+
+/// <summary>The negative-control generator: the first generation of each task is returned for every later attempt.</summary>
+public sealed class InertBackend(ILlmBackend live) : ILlmBackend
+{
+    private readonly Dictionary<string, string> first = new(StringComparer.Ordinal);
+
+    public string Name => live.Name;
+
+    public async Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
+    {
+        if (first.TryGetValue(task.Id, out var cached))
+            return cached;
+        var candidate = await live.GenerateAsync(task, new GenerateContext(0, null, null, null), cancellationToken).ConfigureAwait(false);
+        first[task.Id] = candidate;
+        return candidate;
+    }
+
+    public Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default) =>
+        live.VerifyAsync(task, candidate, cancellationToken);
+}
+
+public interface ILlmBackend
+{
+    string Name { get; }
+
+    Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default);
+
+    Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default);
+}
+
+public static class Backends
+{
+    internal static string WrapCode(string code) =>
+        string.Join("\n", "Here is the implementation. Return ONLY the function; do not explain.", "", "```js", code, "```");
+
+    /// <summary>
+    /// The generation prompt. On an informed retry the evidence comes first and the request last, so the model reads the
+    /// diagnosis before writing (evidence placed after the request measurably failed to change the output).
+    /// </summary>
+    public static string BuildGeneratePrompt(BenchTask task, GenerateContext ctx)
+    {
+        var s = ctx.SelfCritique;
+        var e = ctx.EnvFeedback;
+        var informedRetry = (e is not null || s is not null || ctx.PreviousFailure is not null) && ctx.Attempt > 0;
+        var lines = new List<string>();
+        if (informedRetry)
+        {
+            lines.Add("You are an expert JavaScript programmer fixing a previous failure.");
+            lines.Add($"Task: {task.ModelInstruction}");
+            lines.Add("");
+            lines.Add("--- WHY THE PREVIOUS ATTEMPT FAILED ---");
+            if (e is not null)
+            {
+                lines.Add($"The previous implementation was executed against the task's test suite and FAILED: {e.Passed}/{e.Total} cases passed.");
+                if (e.FailedCaseIndices.Count > 0)
+                    lines.Add($"Failing case indices (0-based): {string.Join(", ", e.FailedCaseIndices)}.");
+                if (e.Errors.Count > 0)
+                    lines.Add($"It raised: {string.Join(" | ", e.Errors)}");
+                lines.Add("The expected outputs of the test cases are withheld from you. Diagnose the defect from the case inputs and the failure pattern.");
+            }
+            if (s is not null)
+                lines.Add($"Your own verification step REJECTED the previous implementation with this critique: {s}");
+            lines.Add("");
+            if (!string.IsNullOrWhiteSpace(ctx.PreviousCode))
+            {
+                lines.Add("The rejected implementation, which you MUST NOT repeat:");
+                lines.Add("```js");
+                lines.Add(Text.JsTrim(ctx.PreviousCode));
+                lines.Add("```");
+                lines.Add("");
+            }
+            lines.Add("Write a CORRECTED implementation that is materially DIFFERENT from the rejected one.");
+            lines.Add("Re-examine the specification and the failing cases; do not just re-emit the same logic with cosmetic edits.");
+        }
+        else
+        {
+            lines.Add("You are an expert JavaScript programmer.");
+            lines.Add($"Implement the following function. Task: {task.ModelInstruction}");
+        }
+        lines.Add("Respond with ONLY a single fenced JavaScript code block (```js ... ```)");
+        lines.Add(task.PublicContract is null
+            ? "that defines a function named `solve` (or a single callable expression)."
+            : "that defines the top-level callable `solve`.");
+        lines.Add("Do not include any explanation outside the code block.");
+        return string.Join("\n", lines);
+    }
+
+    private static string PromptArgs(BenchTask task, BenchCase test) =>
+        task.PublicContract is null ? JsJson.Stringify(test.Args) : test.Args;
+
+    /// <summary>The exact input representation shown to the verifier, without an expected output.</summary>
+    public static string FormatCaseInput(BenchTask task, int index) => PromptArgs(task, task.Tests[index]);
+
+    /// <summary>The verification prompt includes the case inputs and keeps expected outputs in the execution path.</summary>
+    public static string BuildVerifyPrompt(BenchTask task, string code) => BuildVerifyPrompt(task, code, null);
+
+    public static string BuildVerifyPrompt(BenchTask task, string code, IReadOnlyList<int>? visibleCases) =>
+        BuildVerifyPrompt(task, code, visibleCases, VerifierInstructions.Legacy);
+
+    public static string BuildVerifyPrompt(BenchTask task, string code, IReadOnlyList<int>? visibleCases, string instructionVersion)
+    {
+        VerifierInstructions.Validate(instructionVersion);
+        var lines = new List<string>
+        {
+        "You are verifying a JavaScript solution against a task.",
+        $"Task: {task.ModelInstruction}",
+        "Candidate code:",
+        "```js",
+        code,
+        "```",
+        };
+        if (visibleCases is not null)
+            lines.Add(ExposureNotice(task, visibleCases));
+        lines.AddRange([
+        "You are given ONLY the inputs of the test cases, never the expected outputs:",
+        string.Join("\n", VisibleIndices(task, visibleCases).Select(i => $"  case {i}: args = {PromptArgs(task, task.Tests[i])} (expected WITHHELD)")),
+        instructionVersion == VerifierInstructions.WholeTask ? VerifierInstructions.WholeTaskCriterion
+            : "For each case, decide whether the code returns the correct result, then give an overall verdict.",
+        "Respond with a single line: either \"PASS\" or \"FAIL\", followed by a short reason."]);
+        return string.Join("\n", lines);
+    }
+
+    /// <summary>
+    /// Template B of the verifier prompt (P2 prompt-template control, wording registered 2026-10-18 before any run): the same
+    /// information and the same requested output format as <see cref="BuildVerifyPrompt(BenchTask, string)"/>, in a different order and
+    /// phrasing, saying what PASS and FAIL mean.
+    /// </summary>
+    public static string BuildVerifyPromptB(BenchTask task, string code) => BuildVerifyPromptB(task, code, null);
+
+    public static string BuildVerifyPromptB(BenchTask task, string code, IReadOnlyList<int>? visibleCases) =>
+        BuildVerifyPromptB(task, code, visibleCases, VerifierInstructions.Legacy);
+
+    public static string BuildVerifyPromptB(BenchTask task, string code, IReadOnlyList<int>? visibleCases, string instructionVersion)
+    {
+        VerifierInstructions.Validate(instructionVersion);
+        var lines = new List<string>
+        {
+        $"Task: {task.ModelInstruction}",
+        "A candidate solution:",
+        "```js",
+        code,
+        "```",
+        };
+        if (visibleCases is not null)
+            lines.Add(ExposureNotice(task, visibleCases));
+        lines.AddRange([
+        "Test inputs (the expected outputs are not shown):",
+        string.Join("\n", VisibleIndices(task, visibleCases).Select(i => $"  {i + 1}. {PromptArgs(task, task.Tests[i])}")),
+        instructionVersion == VerifierInstructions.WholeTask ? VerifierInstructions.WholeTaskCriterion
+            : "Question: does the candidate return the correct output for every one of these inputs?",
+        "Answer on one line that starts with PASS (it does) or FAIL (it does not), then give a brief justification."]);
+        return string.Join("\n", lines);
+    }
+
+    private static IEnumerable<int> VisibleIndices(BenchTask task, IReadOnlyList<int>? indices) =>
+        indices is null ? Enumerable.Range(0, task.Tests.Count) : indices;
+
+    private static string ExposureNotice(BenchTask task, IReadOnlyList<int> indices)
+    {
+        PromptExposure.ValidateIndices(task, indices);
+        return indices.Count == 0
+            ? $"No test inputs are displayed (0 of {task.Tests.Count}). The complete oracle is withheld. Judge the full specification from the code."
+            : $"Only {indices.Count} of {task.Tests.Count} oracle inputs are displayed. The complete oracle is withheld. Judge the full specification, not only these examples.";
+    }
+
+    /// <summary>FNV-1a over the first UTF-16 unit of each code point of "model|baseUrl" — the default locked seed.</summary>
+    public static uint DeriveOllamaSeed(string model, string baseUrl)
+    {
+        var h = 0x811C9DC5u;
+        Span<char> buf = stackalloc char[2];
+        foreach (var rune in $"{model}|{baseUrl}".EnumerateRunes())
+        {
+            rune.EncodeToUtf16(buf);
+            h = unchecked((h ^ buf[0]) * 0x01000193u);
+        }
+        return h;
+    }
+}
+
+/// <summary>JavaScript helpers evaluated in a throwaway engine (JSON.stringify and String.prototype.trim semantics).</summary>
+internal static class JsJson
+{
+    public static string Stringify(string literal) =>
+        Jint.Runtime.TypeConverter.ToString(new Jint.Engine().Evaluate($"JSON.stringify({literal})"));
+}
+
+internal static class Text
+{
+    public static string JsTrim(string s) => Aijade.Core.Js.JsText.Trim(s);
+}
+
+/// <summary>
+/// The seeded simulation backend. A retry carrying evidence recovers with probability pRetrySuccess; a retry without
+/// evidence is the null design. The self-verdict is sampled from the injected hallucination / miss rates around the true
+/// sandbox verdict, which is what lets the estimator's unbiasedness be tested.
+/// </summary>
+public sealed class MockBackend(uint seed, Sandbox sandbox, double pCorrect = 0.5, double hallucination = 0.3, double miss = 0.1, double pRetrySuccess = 0.7,
+    IReadOnlyDictionary<string, string>? referenceSolutions = null) : ILlmBackend
+{
+    private readonly Mulberry32 _rng = new(seed);
+    private readonly IReadOnlyDictionary<string, string> _references = referenceSolutions ?? Bench.ReferenceSolutions;
+
+    public string Name => "mock";
+
+    private static bool HasSignal(GenerateContext c) => c.EnvFeedback is not null || c.SelfCritique is not null || c.PreviousFailure is not null;
+
+    public Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
+    {
+        if (ctx.Attempt > 0 && HasSignal(ctx) && _rng.Next() < pRetrySuccess)
+            return Task.FromResult(Backends.WrapCode(_references[task.Id]));
+        var code = _rng.Next() < pCorrect
+            ? _references[task.Id]
+            : Bench.WrongCandidates[(int)Math.Floor(_rng.Next() * Bench.WrongCandidates.Count)];
+        return Task.FromResult(Backends.WrapCode(code));
+    }
+
+    public Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default)
+    {
+        var code = Bench.ExtractCodeBlock(candidate) ?? candidate;
+        var ok = sandbox.RunTask(code, task).Ok;
+        var pass = ok ? _rng.Next() >= miss : _rng.Next() < hallucination;
+        var score = pass ? 0.6 + (_rng.Next() * 0.39) : _rng.Next() * 0.39;
+        return Task.FromResult(new SelfVerifierVerdict(pass, score,
+            $"[simulation] true_ok={(ok ? "true" : "false")}; sampled self-verdict from hallucination={Aijade.Core.Js.JsFormat.Number(hallucination)}, miss={Aijade.Core.Js.JsFormat.Number(miss)}"));
+    }
+}
+
+/// <summary>Ollama chat backend with locked sampling (temperature 0 + seed) so generations and verdicts are reproducible.</summary>
+public sealed class OllamaBackend(HttpClient http, string model, string baseUrl = "http://localhost:11434", double temperature = 0, uint? seed = null, TimeSpan? timeout = null, int? maxReplyTokens = null, bool verdictFallback = false, int? numCtx = null, string verifyTemplate = "A", RequestBudget? requestBudget = null) : ILlmBackend
+{
+    public string Name => "ollama";
+
+    private int aborted;
+    private int lengthLimited;
+    private int nonConforming;
+    private int fallbackRead;
+
+    /// <summary>
+    /// Verifier replies that do not begin with PASS or FAIL, as the prompt asks. Under the verdict rule fixed before the runs
+    /// they are FAIL verdicts; with <c>verdictFallback</c> their last explicit "verdict: PASS|FAIL" is read instead.
+    /// </summary>
+    public int NonConformingVerdicts => Volatile.Read(ref nonConforming);
+
+    /// <summary>Non-conforming replies whose verdict the fallback read from an explicit "verdict: PASS|FAIL".</summary>
+    public int FallbackVerdicts => Volatile.Read(ref fallbackRead);
+
+    /// <summary>
+    /// Replies the server aborted because the model kept repeating one token under greedy decoding ("token repeat limit
+    /// reached"). Such a reply is the model failing to answer, not an infrastructure fault: a generation becomes a candidate
+    /// without code, a verification a FAIL verdict. Counted for the run summary.
+    /// </summary>
+    public int AbortedReplies => Volatile.Read(ref aborted);
+
+    /// <summary>Replies that reached the run's token bound (<c>done_reason</c> "length"); treated like an aborted reply.</summary>
+    public int LengthLimitedReplies => Volatile.Read(ref lengthLimited);
+
+    /// <summary>The text recorded for a generation at the token bound (it contains no code, so execution fails).</summary>
+    public const string LengthLimitedGeneration = "[no answer: the reply reached the token limit]";
+
+    /// <summary>The text recorded for an aborted generation (it contains no code, so execution fails).</summary>
+    public const string AbortedGeneration = "[no answer: the server aborted a repetitive generation]";
+
+    private async Task<(string Content, bool Aborted)> ChatAsync(string prompt, string stage, string? taskId, CancellationToken ct)
+    {
+        (string Content, Stop Stop) response;
+        try { response = await ChatOnceAsync(prompt, stage, taskId, ct).ConfigureAwait(false); }
+        catch (Exception error) when (requestBudget is not null && error is not RequestBudgetFailure
+            && error is HttpRequestException or IOException or JsonException or InvalidOperationException or OperationCanceledException)
+        {
+            throw requestBudget.Fail("RESPONSE_OR_TRANSPORT_ERROR", stage, taskId, error.Message, error);
+        }
+        var (content, stop) = response;
+        if (requestBudget is not null && stop != Stop.None)
+            throw requestBudget.Fail(stop == Stop.Length ? "REPLY_LENGTH_LIMIT" : "REPETITION_ABORT", stage, taskId,
+                "The policy-enabled attempt stopped without assigning a model verdict.");
+        return stop switch
+        {
+            Stop.Repetition => (AbortedGeneration, true),
+            Stop.Length => (LengthLimitedGeneration, true),
+            _ => (content, false),
+        };
+    }
+
+    private enum Stop { None, Repetition, Length }
+
+    private async Task<(string Content, Stop Stop)> ChatOnceAsync(string prompt, string stage, string? taskId, CancellationToken ct)
+    {
+        if (requestBudget is not null && model != requestBudget.Policy.Model)
+            throw requestBudget.Fail("MODEL_IDENTITY_MISMATCH", stage, taskId, "The backend model differs from its exact-token policy.");
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        cts.CancelAfter(timeout ?? TimeSpan.FromMilliseconds(120_000));
+        var budgeted = requestBudget is null ? null : await requestBudget.CheckAsync(prompt, stage, taskId, cts.Token).ConfigureAwait(false);
+        var body = new JsonObject
+        {
+            ["model"] = model,
+            ["messages"] = new JsonArray(new JsonObject { ["role"] = "user", ["content"] = prompt }),
+            ["stream"] = false,
+            ["options"] = new JsonObject { ["temperature"] = temperature, ["seed"] = seed ?? Backends.DeriveOllamaSeed(model, baseUrl) },
+        };
+        if (requestBudget?.Policy.KeepAliveSeconds is { } retention)
+            body["keep_alive"] = retention;
+        var replyCap = budgeted?.ReplyTokens ?? maxReplyTokens;
+        if (replyCap is { } cap)
+            body["options"]!["num_predict"] = cap;
+        var context = requestBudget?.Policy.Exposure.Scenario.ContextTokens ?? numCtx;
+        if (context is { } ctxTokens)
+            body["options"]!["num_ctx"] = ctxTokens;   // newer Ollama servers otherwise load the model's full native context
+        HttpResponseMessage res;
+        var rawBody = body.ToJsonString();
+        if (budgeted is not null)requestBudget!.RecordHttpRequest(budgeted, rawBody);
+        try
+        {
+            res = await http.PostAsync(new Uri($"{baseUrl}/api/chat"), new StringContent(rawBody, Encoding.UTF8, "application/json"), cts.Token).ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+        {
+            if (requestBudget is not null)
+                throw requestBudget.Fail("HTTP_ERROR", stage, taskId, e.Message, e);
+            throw new InvalidOperationException($"Ollama backend unreachable at {baseUrl}/api/chat — is the model server running? ({e.Message})", e);
+        }
+        using (res)
+        {
+            if (!res.IsSuccessStatusCode)
+            {
+                var error = await res.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
+                if (requestBudget is not null && budgeted is not null)
+                    requestBudget.RecordResponse(budgeted, error);
+                if (error.Contains("token repeat limit", StringComparison.OrdinalIgnoreCase))
+                {
+                    Interlocked.Increment(ref aborted);
+                    return ("", Stop.Repetition);
+                }
+                if (requestBudget is not null)
+                    throw requestBudget.Fail("HTTP_ERROR", stage, taskId, $"Ollama returned HTTP {(int)res.StatusCode}.");
+                throw new InvalidOperationException($"Ollama backend returned HTTP {(int)res.StatusCode} {res.ReasonPhrase}");
+            }
+            var raw = await res.Content.ReadAsStringAsync(cts.Token).ConfigureAwait(false);
+            if (requestBudget is not null && budgeted is not null)
+                requestBudget.RecordResponse(budgeted, raw);
+            JsonObject? data;
+            try { data = JsonNode.Parse(raw)?.AsObject(); }
+            catch (JsonException error)
+            {
+                if (requestBudget is not null)
+                    throw requestBudget.Fail("RESPONSE_FORMAT_ERROR", stage, taskId, error.Message, error);
+                throw;
+            }
+            if (replyCap is not null && data?["done_reason"]?.GetValue<string>() == "length")
+            {
+                Interlocked.Increment(ref lengthLimited);
+                return ("", Stop.Length);
+            }
+            return (data?["message"]?["content"]?.GetValue<string>() ?? "", Stop.None);
+        }
+    }
+
+    /// <summary>The fixed prompt of the discarded warm-up request.</summary>
+    public const string WarmUpPrompt = "Reply with the single word READY.";
+
+    /// <summary>
+    /// One request with the run's sampling options whose output is discarded. After a model load, Ollama's first greedy
+    /// request can differ from all later ones (observed with qwen2.5-coder:1.5b on Ollama 0.35.1); warming up first makes
+    /// every recorded request a "warm" one.
+    /// </summary>
+    public Task WarmUpAsync(CancellationToken cancellationToken = default) => ChatAsync(WarmUpPrompt, "warmup", null, cancellationToken);   // output (or an abort) discarded
+
+    public async Task<string> GenerateAsync(BenchTask task, GenerateContext ctx, CancellationToken cancellationToken = default)
+    {
+        VisibleCases(task, "generation");
+        var (content, wasAborted) = await ChatAsync(Backends.BuildGeneratePrompt(task, ctx), "generation", task.Id, cancellationToken).ConfigureAwait(false);
+        if (wasAborted)
+            return content;   // AbortedGeneration or LengthLimitedGeneration
+        if (content.Length == 0 && requestBudget is not null)
+            throw requestBudget.Fail("EMPTY_RESPONSE", "generation", task.Id, "No generation was returned.");
+        return content.Length > 0 ? content : throw new InvalidOperationException("Ollama generate() returned an empty response");
+    }
+
+    public async Task<SelfVerifierVerdict> VerifyAsync(BenchTask task, string candidate, CancellationToken cancellationToken = default)
+    {
+        var code = Bench.ExtractCodeBlock(candidate) ?? candidate;
+        var visible = VisibleCases(task, "verification");
+        var instructionVersion = requestBudget?.Policy.Exposure.VerifierInstructionVersion ?? VerifierInstructions.Legacy;
+        var prompt = verifyTemplate == "B" ? Backends.BuildVerifyPromptB(task, code, visible, instructionVersion)
+            : Backends.BuildVerifyPrompt(task, code, visible, instructionVersion);
+        var (content, wasAborted) = await ChatAsync(prompt, "verification", task.Id, cancellationToken).ConfigureAwait(false);
+        if (wasAborted)
+            return new SelfVerifierVerdict(false, 0.2, content == LengthLimitedGeneration ? "FAIL [the reply reached the token limit]" : "FAIL [the server aborted a repetitive reply]");
+        if (content.Length == 0)
+        {
+            if (requestBudget is not null)
+                throw requestBudget.Fail("EMPTY_RESPONSE", "verification", task.Id, "No verifier reply was returned.");
+            throw new InvalidOperationException("Ollama verify() returned an empty response");
+        }
+        var pass = ReadVerdict(content, verdictFallback, out var conforming, out var fallback);
+        if (!conforming)
+        {
+            Interlocked.Increment(ref nonConforming);
+            if (requestBudget is not null)
+                throw requestBudget.Fail("VERDICT_FORMAT_ERROR", "verification", task.Id, "The reply did not begin with PASS or FAIL; no verdict assigned.");
+        }
+        if (fallback)
+            Interlocked.Increment(ref fallbackRead);
+        return new SelfVerifierVerdict(pass, pass ? 0.8 : 0.2, content.Length > 280 ? content[..280] : content, content.Length > 280 ? content : null);
+    }
+
+    private IReadOnlyList<int>? VisibleCases(BenchTask task, string stage)
+    {
+        if (requestBudget is null)return null;
+        try { return requestBudget.Policy.Exposure.ForTask(task); }
+        catch (InvalidDataException error)
+        {
+            throw requestBudget.Fail("EXPOSURE_IDENTITY_MISMATCH", stage, task.Id, error.Message, error);
+        }
+    }
+
+    /// <summary>
+    /// The verdict rule fixed before the runs: a reply passes when it begins with PASS. A reply that begins with neither PASS
+    /// nor FAIL is non-conforming; with <paramref name="fallback"/> its last explicit "verdict: PASS|FAIL" decides, and
+    /// without one it stays a FAIL.
+    /// </summary>
+    public static bool ReadVerdict(string reply, bool fallback, out bool conforming, out bool readByFallback)
+    {
+        readByFallback = false;
+        conforming = PassLine.IsMatch(reply) || FailLine.IsMatch(reply);
+        if (conforming || !fallback)
+            return PassLine.IsMatch(reply);
+        var m = VerdictLine.Matches(reply);
+        if (m.Count == 0)
+            return false;
+        readByFallback = true;
+        return m[^1].Groups[1].Value.Equals("PASS", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static readonly System.Text.RegularExpressions.Regex PassLine = new(@"^\s*PASS\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    private static readonly System.Text.RegularExpressions.Regex FailLine = new(@"^\s*FAIL\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    private static readonly System.Text.RegularExpressions.Regex VerdictLine = new(@"verdict\W{0,3}\s*(PASS|FAIL)\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
+    /// <summary>The server version for the run summary, or null on any failure (a missing version never aborts a run).</summary>
+    public static async Task<string?> VersionAsync(HttpClient http, string baseUrl, CancellationToken ct = default)
+    {
+        try
+        {
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            cts.CancelAfter(3000);
+            var data = await http.GetFromJsonAsync<JsonObject>(new Uri($"{baseUrl}/api/version"), cts.Token).ConfigureAwait(false);
+            return data?["version"]?.GetValue<string>();
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// The digest of the model's weights as the server lists them (a tag such as "qwen2.5-coder:7b" can be re-pulled to other
+    /// weights; the digest cannot), or null on any failure.
+    /// </summary>
+    public static async Task<string?> DigestAsync(HttpClient http, string baseUrl, string model, CancellationToken ct = default)
+    {
+        try
+        {
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            cts.CancelAfter(3000);
+            var data = await http.GetFromJsonAsync<JsonObject>(new Uri($"{baseUrl}/api/tags"), cts.Token).ConfigureAwait(false);
+            var name = model.Contains(':', StringComparison.Ordinal) ? model : model + ":latest";
+            return (data?["models"] as JsonArray)?.OfType<JsonObject>()
+                .FirstOrDefault(m => m["name"]?.GetValue<string>() == name || m["model"]?.GetValue<string>() == name)?["digest"]?.GetValue<string>();
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException or InvalidOperationException)
+        {
+            return null;
+        }
+    }
+}

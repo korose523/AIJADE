@@ -1,0 +1,69 @@
+{
+  "usable": {
+    "taskId": "arr-sum",
+    "line": 3601,
+    "candidate": {
+      "step": 3600,
+      "skillId": "sv1-ef0-t0-r0-arr-sum",
+      "reused": false,
+      "execOk": true,
+      "code": "function solve(nums) {\n  return nums.reduce((acc, num) => acc + num, 0);\n}",
+      "generation": "```js\nfunction solve(nums) {\n  return nums.reduce((acc, num) => acc + num, 0);\n}\n```",
+      "selfRationale": "PASS"
+    },
+    "trial": {
+      "condition": "sv1-ef0",
+      "trial": 0,
+      "round": 0,
+      "taskId": "arr-sum",
+      "skillId": "sv1-ef0-t0-r0-arr-sum",
+      "reused": false,
+      "attempt": 0,
+      "hadEnvFeedback": false,
+      "hadSelfCritique": false,
+      "regeneratedFromFailure": false,
+      "selfVerdict": "pass",
+      "execOk": true,
+      "durationMs": 1
+    },
+    "code": "function solve(nums) {\n  return nums.reduce((acc, num) => acc + num, 0);\n}",
+    "codeSha256": "575db20c33cdaee1115825c2438f015e8a02cdfb20e9c9608bbfd537c26137d9"
+  },
+  "unusable": {
+    "taskId": "parse-query-string",
+    "line": 3730,
+    "candidate": {
+      "step": 3729,
+      "skillId": "sv1-ef0-t2-r0-parse-query-string",
+      "reused": false,
+      "execOk": false,
+      "code": "function solve(qs) {\n  return qs.split('&').reduce((acc, pair) => {\n    const [key, value] = pair.split('=');\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}",
+      "generation": "```js\nfunction solve(qs) {\n  return qs.split('&').reduce((acc, pair) => {\n    const [key, value] = pair.split('=');\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}\n```",
+      "selfRationale": "PASS"
+    },
+    "trial": {
+      "condition": "sv1-ef0",
+      "trial": 2,
+      "round": 0,
+      "taskId": "parse-query-string",
+      "skillId": "sv1-ef0-t2-r0-parse-query-string",
+      "reused": false,
+      "attempt": 0,
+      "hadEnvFeedback": false,
+      "hadSelfCritique": false,
+      "regeneratedFromFailure": false,
+      "selfVerdict": "pass",
+      "execOk": false,
+      "durationMs": 2
+    },
+    "code": "function solve(qs) {\n  return qs.split('&').reduce((acc, pair) => {\n    const [key, value] = pair.split('=');\n    acc[decodeURIComponent(key)] = decodeURIComponent(value);\n    return acc;\n  }, {});\n}",
+    "codeSha256": "6dfe1beeae78bded57fc53f276e848a89bdb3e72628fdee985922c166df8d3da"
+  },
+  "sources": {
+    "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5/candidates.jsonl": "bbd6e0b8f95976fff16bc7c35302d10d97854c94b564c504e2f498e2e02371a0",
+    "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5/trials.jsonl": "d7532c6f81dc3435f752e5a60f360e97a6d12fd29ade5eb2fcbd55a9bd8b6dae",
+    "experiments/rq-c/oracle-audit.json": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+    "src/Aijade.Research/SkillBench/bench-data.json": "2a2873e44499418a9cb6031862547ea70bf1722128e0ba6d10a6ad3f38aa85d6"
+  },
+  "interpretation": "Purposive development selection. Unusable code equals the unchanged behavior-failure example in the AI-assisted exploratory oracle re-tally; no independent human verification."
+}

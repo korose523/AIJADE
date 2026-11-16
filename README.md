@@ -181,6 +181,13 @@ app asks for the server address; from the Android emulator the host's developmen
 AIJADE referenced the open-source virtual-character / AI-companion project [Project AIRI](https://github.com/moeru-ai/airi)
 (MIT). We thank Neko Ayaka and all of its contributors.
 
+The [relocated runtime archive](experiments/ch7/relocated-runtime-2026-11-16/README.md)
+retains project-local dependency restoration, complete Mac regressions, the
+before-window binary freeze and one refused known-input admission. Its memory
+and swap conditions passed; the frozen Ollama process-name condition did not.
+The full finite driver and confirmed held-out comparison remain unqualified and
+NOT_RUN. The archive verifier is offline and cannot launch or retry a study.
+
 ## Licence
 
 MIT, © 2026 Zexiao Weng. Third-party components are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
