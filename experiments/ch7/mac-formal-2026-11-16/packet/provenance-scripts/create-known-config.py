@@ -1,0 +1,12 @@
+from pathlib import Path
+import hashlib,json,subprocess,xml.etree.ElementTree as ET
+B=Path('/Volumes/Untitled/AIJADE');C=Path(__file__).resolve().parent;W=C/'worktree';Q='fe0fa07c655224fdeed32556cd31ce4022126037';O=B/'.research/runs/ch7-relocation-20261116'
+build=json.loads((C/'build-attempt-02/frozen-build.json').read_text());pub=json.loads((C/'binary-freeze-publication.json').read_text());ci=json.loads((C/'execution-source-ci-final.json').read_text())
+assert build['commit']==pub['sourceCommit']==Q and ci['conclusion']=='success'
+assert pub['status']=='ACTUAL_BINARY_IDENTITIES_PUBLIC_BEFORE_ADMISSION'
+assert hashlib.sha256((C/'build-attempt-02/frozen-build.json').read_bytes()).hexdigest()==pub['frozenBuildSha256']
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip()==Q
+assert not subprocess.check_output(['git','status','--porcelain'],cwd=W)
+path=C/'qualification-fixed-launch.json';assert not path.exists()
+config=dict(schema='aijade.ch7.fixed-launch.v1',purpose='qualification_only',implementationCommit=Q,repositoryCommit=Q,buildFreezeCommit=pub['buildFreezeCommit'],repo=str(W),python=str(B/'.runtime/python-envs/p2-tokenizer/bin/python'),client=str(O/'prepared-renderer'),model=str(B/'references/private-renderer-assets/m2/明音凛1.1.pmx'),selection=str(C/'qualification-inputs-fe0fa07/selection.json'),inputs=str(C/'qualification-inputs-fe0fa07'),output=str(B/'.runtime/posix/runs/ch7-mac-formal-20261116/qualification-01'),assembly=build['assemblyPath'],build_manifest=str(C/'build-attempt-02/frozen-build.json'),godot=str(W/'experiments/ch7/godot_local.py'),execution_plan=str(W/'experiments/plans/2026-11-16-ch7-mac-formal-backend.md'),process_policy=str(W/'configs/research/ch7-mac-process-policy.json'),dotnet='/Users/mac/.dotnet/dotnet',docker='/Users/mac/.local/bin/docker',db_container='aijade-next-db',build_freeze_path='experiments/ch7/mac-formal-2026-11-16/frozen-build.json',launch_record=str(C/'qualification-single-launch.json'),docker_host='unix:///Volumes/Untitled/AIJADE/.runtime/posix/colima/default/docker.sock',database_url='postgres://aijade:aijade@127.0.0.1:55432/aijade',real_godot='/Users/mac/.local/share/mosaic/godot-4.5.2/Godot_mono.app/Contents/MacOS/Godot',sandbox_profile=str(C/'godot-project-writes-only.sb'),godot_log_dir=str(C/'godot-runtime-logs'))
+path.write_text(json.dumps(config,indent=2)+'\n');print(json.dumps(dict(status='SINGLE_KNOWN_QUALIFICATION_CONFIG_WRITTEN_NOT_LAUNCHED',config=str(path),Q=Q,B=pub['buildFreezeCommit'])))

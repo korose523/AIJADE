@@ -1,0 +1,69 @@
+{
+  "status": "OWNED_ARCHITECTURE_SOURCE_BOUNDARIES_PASS",
+  "sourceProjects": 15,
+  "internalProjectReferences": 28,
+  "domains": 9,
+  "capabilityFamilies": 69,
+  "capabilityStatuses": {
+    "configurable": 19,
+    "implemented": 44,
+    "in_progress": 0,
+    "planned": 6
+  },
+  "productLaunchers": 4,
+  "historicalResearchExceptionGroups": 2,
+  "ownedRuntimeSources": 3,
+  "nativeStageProxyGuard": "PASS",
+  "scientificAcceptance": false,
+  "newExperimentsRun": 0,
+  "servicesStarted": 0,
+  "scope": "Source inventory and dependency boundaries only; no claim of live platform, model, rendering, physical or scientific acceptance.",
+  "negativeControls": [
+    {
+      "name": "unclassified-source-project",
+      "rejected": true,
+      "reason": "Source project coverage mismatch"
+    },
+    {
+      "name": "parent-escaping-capability-source",
+      "rejected": true,
+      "reason": "Unsafe source path: ../MOSAIC/source.cs"
+    },
+    {
+      "name": "absolute-capability-source",
+      "rejected": true,
+      "reason": "Unsafe source path: /Users/mac/WorkBuddy/MOSAIC/source.cs"
+    },
+    {
+      "name": "missing-capability-source",
+      "rejected": true,
+      "reason": "Missing or external source: src/missing-capability-source.cs"
+    },
+    {
+      "name": "project-reference-outside-repository",
+      "rejected": true,
+      "reason": "External or missing project reference: src/Aijade.Bots/Aijade.Bots.csproj -> ../../../../MOSAIC/project.csproj"
+    },
+    {
+      "name": "external-mosaic-launcher",
+      "rejected": true,
+      "reason": "External product launch dependency: tools/run-companion.sh:19"
+    },
+    {
+      "name": "legacy-renderer-instantiation",
+      "rejected": true,
+      "reason": "External product launch dependency: src/Aijade.Bots/Program.cs:86"
+    },
+    {
+      "name": "inventory-promoted-to-scientific-acceptance",
+      "rejected": true,
+      "reason": "An architecture inventory cannot grant scientific acceptance or record a new experiment"
+    },
+    {
+      "name": "stage-workbench-http-proxy-reintroduced",
+      "rejected": true,
+      "reason": "External HTTP workbench proxy in Native Stage.Map"
+    }
+  ],
+  "checkedProductHead": "df5a06e42e444e3fe4d491da56f6481d8ff21161"
+}

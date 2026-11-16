@@ -1,0 +1,67 @@
+{
+  "status": "COHERENT_REFUSAL_CONTROLS_PASS",
+  "baselineManifestSchema": "aijade.ch7.mac-formal-packet-manifest.v1",
+  "baselineManifestVerified": "PACKET_STORED_AND_LOGICAL_BYTES_VERIFIED",
+  "controls": [
+    {
+      "name": "unknown-rewritten-as-pass",
+      "rejected": true,
+      "reason": "recorded observer decision differs from exact Q replay"
+    },
+    {
+      "name": "missing-sample-coherent-count",
+      "rejected": true,
+      "reason": "complete 300-sample settling trace required"
+    },
+    {
+      "name": "changed-source",
+      "rejected": true,
+      "reason": "Q/B/I/plan/policy/source identity differs"
+    },
+    {
+      "name": "false-admission-status",
+      "rejected": true,
+      "reason": "refusal was changed into admission or measurement"
+    },
+    {
+      "name": "hidden-admission-trace",
+      "rejected": true,
+      "reason": "unexpected admission/block/renderer/database/raw file is present or missing"
+    },
+    {
+      "name": "hidden-renderer-block",
+      "rejected": true,
+      "reason": "unexpected admission/block/renderer/database/raw file is present or missing"
+    },
+    {
+      "name": "hidden-row-disposition",
+      "rejected": true,
+      "reason": "hidden measured or unknown condition rows"
+    },
+    {
+      "name": "false-empty-api-body",
+      "rejected": true,
+      "reason": "recorded observer decision differs from exact Q replay"
+    },
+    {
+      "name": "first-unused-build-substitution",
+      "rejected": true,
+      "reason": "actual Q/B binary freeze differs; the old 666 build is not the actual binary"
+    },
+    {
+      "name": "false-controller-cleanup",
+      "rejected": true,
+      "reason": "controller absence was not independently checked"
+    },
+    {
+      "name": "wrong-manifest-schema",
+      "rejected": true,
+      "reason": "wrong packet manifest schema"
+    }
+  ],
+  "networkRequests": 0,
+  "modelRequests": 0,
+  "rendererSessions": 0,
+  "measuredWindows": 0,
+  "auditorSha256": "ed9f1f8ad58f788682d9401b6eee8fc407d61892a2bf64686fc7c2fdd9d8df34"
+}

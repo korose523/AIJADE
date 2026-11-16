@@ -1,0 +1,159 @@
+test_admission_gap_and_claimed_summary_are_independently_checked (test_finite_sequence_audit.SequenceAuditControls.test_admission_gap_and_claimed_summary_are_independently_checked) ... FAIL
+test_block_scorer_total_cannot_replace_raw_reconstruction (test_finite_sequence_audit.SequenceAuditControls.test_block_scorer_total_cannot_replace_raw_reconstruction) ... FAIL
+test_coherently_rebound_shrunk_window_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_coherently_rebound_shrunk_window_is_rejected) ... ok
+test_cross_block_database_reuse_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_cross_block_database_reuse_is_rejected) ... FAIL
+test_fixtures_cannot_substitute_for_the_real_block_audit (test_finite_sequence_audit.SequenceAuditControls.test_fixtures_cannot_substitute_for_the_real_block_audit) ... ok
+test_formal_population_independent_raw_counts_retain_adverse_c2 (test_finite_sequence_audit.SequenceAuditControls.test_formal_population_independent_raw_counts_retain_adverse_c2) ... ERROR
+test_global_sustained_timer_cannot_reset_between_blocks (test_finite_sequence_audit.SequenceAuditControls.test_global_sustained_timer_cannot_reset_between_blocks) ... FAIL
+test_inconsistent_q_or_binary_inputs_are_rejected (test_finite_sequence_audit.SequenceAuditControls.test_inconsistent_q_or_binary_inputs_are_rejected) ... ok
+test_known_qualification_population_and_real_registry_denominators (test_finite_sequence_audit.SequenceAuditControls.test_known_qualification_population_and_real_registry_denominators) ... ERROR
+test_missing_or_duplicate_condition_rows_are_rejected (test_finite_sequence_audit.SequenceAuditControls.test_missing_or_duplicate_condition_rows_are_rejected) ... ok
+test_missing_or_extra_block_is_not_a_smaller_population (test_finite_sequence_audit.SequenceAuditControls.test_missing_or_extra_block_is_not_a_smaller_population) ... ok
+test_overlap_and_resource_baseline_reset_are_rejected (test_finite_sequence_audit.SequenceAuditControls.test_overlap_and_resource_baseline_reset_are_rejected) ... FAIL
+test_process_or_api_refusal_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_process_or_api_refusal_is_rejected) ... FAIL
+test_reordered_embedded_blocks_are_rejected (test_finite_sequence_audit.SequenceAuditControls.test_reordered_embedded_blocks_are_rejected) ... ok
+test_repository_binding_failure_is_not_silently_ignored (test_finite_sequence_audit.SequenceAuditControls.test_repository_binding_failure_is_not_silently_ignored) ... ok
+test_rss_is_raw_same_time_family_sum_and_swap_is_same_baseline (test_finite_sequence_audit.SequenceAuditControls.test_rss_is_raw_same_time_family_sum_and_swap_is_same_baseline) ... FAIL
+test_unknown_cleanup_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_unknown_cleanup_is_rejected) ... FAIL
+test_unknown_disposition_and_stopped_status_never_become_zero (test_finite_sequence_audit.SequenceAuditControls.test_unknown_disposition_and_stopped_status_never_become_zero) ... ok
+
+======================================================================
+ERROR: test_formal_population_independent_raw_counts_retain_adverse_c2 (test_finite_sequence_audit.SequenceAuditControls.test_formal_population_independent_raw_counts_retain_adverse_c2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 186, in test_formal_population_independent_raw_counts_retain_adverse_c2
+    self.fixture(True); result = audit.verify(self.root, self.repo)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/finite_sequence_audit.py", line 360, in verify
+    rebuilt = reconstruct(rows, runtime, contract, registry)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/finite_sequence_audit.py", line 151, in reconstruct
+    require(set(by_rule) == set(case_ids) and Counter(r['window'] for r in rules) == Counter(registry),
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/finite_sequence_audit.py", line 29, in require
+    raise ValueError(message)
+ValueError: missing/duplicated family in block
+
+======================================================================
+ERROR: test_known_qualification_population_and_real_registry_denominators (test_finite_sequence_audit.SequenceAuditControls.test_known_qualification_population_and_real_registry_denominators)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 180, in test_known_qualification_population_and_real_registry_denominators
+    self.fixture(); result = audit.verify(self.root, self.repo)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/finite_sequence_audit.py", line 360, in verify
+    rebuilt = reconstruct(rows, runtime, contract, registry)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/finite_sequence_audit.py", line 151, in reconstruct
+    require(set(by_rule) == set(case_ids) and Counter(r['window'] for r in rules) == Counter(registry),
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/finite_sequence_audit.py", line 29, in require
+    raise ValueError(message)
+ValueError: missing/duplicated family in block
+
+======================================================================
+FAIL: test_admission_gap_and_claimed_summary_are_independently_checked (test_finite_sequence_audit.SequenceAuditControls.test_admission_gap_and_claimed_summary_are_independently_checked)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 288, in test_admission_gap_and_claimed_summary_are_independently_checked
+    with self.assertRaisesRegex(ValueError, 'admission coverage'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "admission coverage" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_block_scorer_total_cannot_replace_raw_reconstruction (test_finite_sequence_audit.SequenceAuditControls.test_block_scorer_total_cannot_replace_raw_reconstruction)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 296, in test_block_scorer_total_cannot_replace_raw_reconstruction
+    with self.assertRaisesRegex(ValueError, 'independent raw count'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "independent raw count" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_cross_block_database_reuse_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_cross_block_database_reuse_is_rejected)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 252, in test_cross_block_database_reuse_is_rejected
+    with self.assertRaisesRegex(ValueError, 'database reused'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "database reused" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_global_sustained_timer_cannot_reset_between_blocks (test_finite_sequence_audit.SequenceAuditControls.test_global_sustained_timer_cannot_reset_between_blocks)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 283, in test_global_sustained_timer_cannot_reset_between_blocks
+    with self.assertRaisesRegex(ValueError, 'sustained sequence rss'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "sustained sequence rss" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_overlap_and_resource_baseline_reset_are_rejected (test_finite_sequence_audit.SequenceAuditControls.test_overlap_and_resource_baseline_reset_are_rejected)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 257, in test_overlap_and_resource_baseline_reset_are_rejected
+    with self.assertRaisesRegex(ValueError, 'resource baseline'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "resource baseline" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_process_or_api_refusal_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_process_or_api_refusal_is_rejected)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 266, in test_process_or_api_refusal_is_rejected
+    with self.assertRaisesRegex(ValueError, 'process refusal'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "process refusal" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_rss_is_raw_same_time_family_sum_and_swap_is_same_baseline (test_finite_sequence_audit.SequenceAuditControls.test_rss_is_raw_same_time_family_sum_and_swap_is_same_baseline)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 272, in test_rss_is_raw_same_time_family_sum_and_swap_is_same_baseline
+    with self.assertRaisesRegex(ValueError, 'RSS not reconstructed'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "RSS not reconstructed" does not match "missing/duplicated family in block"
+
+======================================================================
+FAIL: test_unknown_cleanup_is_rejected (test_finite_sequence_audit.SequenceAuditControls.test_unknown_cleanup_is_rejected)
+----------------------------------------------------------------------
+ValueError: missing/duplicated family in block
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_finite_sequence_audit.py", line 242, in test_unknown_cleanup_is_rejected
+    with self.assertRaisesRegex(ValueError, 'cleanup'): audit.verify(self.root, self.repo)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "cleanup" does not match "missing/duplicated family in block"
+
+----------------------------------------------------------------------
+Ran 18 tests in 7.143s
+
+FAILED (failures=8, errors=2)

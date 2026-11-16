@@ -90,3 +90,13 @@ jobs:
         run: python3 experiments/ch7/finite-readiness-2026-11-16/verify_archive.py --controls
       - name: Verify relocated runtime preparation, retained failures and one process-refused admission
         run: python3 -B experiments/ch7/relocated-runtime-2026-11-16/verify_archive.py --controls
+      - name: Materialize exact Mac qualification implementation for offline refusal replay
+        uses: actions/checkout@v7
+        with:
+          ref: fe0fa07c655224fdeed32556cd31ce4022126037
+          path: .runtime/ch7-mac-formal-source
+          persist-credentials: false
+      - name: Fetch the original public plan and binary-publication objects
+        run: git -C .runtime/ch7-mac-formal-source fetch --no-tags --depth=1 origin 795b23d7e69a8b59396b84199bd7429451ecbb4f 0c3f3cc922e940c97628837476946526659d936e
+      - name: Replay complete retained Mac refusal and coherent adversarial controls without live services
+        run: python3 -B experiments/ch7/mac-formal-2026-11-16/verify_archive.py --root experiments/ch7/mac-formal-2026-11-16/packet --repo .runtime/ch7-mac-formal-source --controls
