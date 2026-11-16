@@ -20,7 +20,8 @@ import sys
 import time
 
 import psutil
-from finite_runtime import validate_build, cleanup_owned_databases, stop_owned_processes, dispositions
+from finite_runtime import (validate_build, cleanup_owned_databases, stop_owned_processes, dispositions,
+    BUILD_FREEZE_PATH, MAC_PLAN, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry)
 
 GIB = 1024 ** 3
 PLAN = '78785a5'
@@ -43,12 +44,28 @@ def write(path, value):
 def _main(args):
     repo = args.repo.resolve()
     assert subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo, text=True) == ''
-    commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
+    repository_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
+    commit = getattr(args,'implementation_commit',None) or repository_commit
+    mac=args.execution_plan.name==MAC_PLAN
+    assert mac or commit==repository_commit
+    if mac:
+        assert args.execution_plan.resolve()==repo/'experiments/plans'/MAC_PLAN
+        assert args.execution_plan.read_bytes()==subprocess.check_output(['git','show',commit+':experiments/plans/'+MAC_PLAN],cwd=repo)
     assert commit == os.environ['AIJADE_GIT_COMMIT']
     assert os.environ.get('DOTNET_PROCESSOR_COUNT') == '2'
     assert psutil.__version__ == '7.2.2'
     assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',args.db_container)
-    build = validate_build(args.assembly,args.build_manifest,commit,repo,args.build_freeze_commit)
+    freeze_path=getattr(args,'build_freeze_path',BUILD_FREEZE_PATH)
+    binding=validate_repository_binding(repo,commit,repository_commit,getattr(args,'data_publication_manifest',None),require_head=True) if mac else {}
+    build = validate_build(args.assembly,args.build_manifest,commit,repo,args.build_freeze_commit,freeze_path,strict_publication=mac)
+    policy=None;process_identity={}
+    if mac:
+        assert getattr(args,'process_policy',None) is not None
+        policy,process_identity=load_mac_policy(repo,args.process_policy,commit)
+        from mac_process_guard import observe
+    metadata=dict(binding,buildFreezeCommit=args.build_freeze_commit,buildFreezePath=freeze_path,
+                  executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
+    if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
     runtime = json.loads(args.manifest.read_text())
     contract = json.loads(args.scoring.read_text())
     assert runtime['purpose'] in ['qualification_only','confirmed_finite_heldout']
@@ -60,7 +77,7 @@ def _main(args):
         assert args.manifest.resolve().is_relative_to(repo)
         assert args.scoring.resolve().is_relative_to(repo)
         for path in [args.manifest,args.scoring,args.selection]:
-            original = subprocess.check_output(['git','show',commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
+            original = subprocess.check_output(['git','show',repository_commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
             assert hashlib.sha256(original).hexdigest() == sha(path), 'Uncommitted or changed finite input'
         freeze = json.loads((repo/'experiments/ch7/finite-heldout/construction-freeze.json').read_text())
         assert freeze['constructionFreezeCommit'] == runtime['constructionFreezeCommit']
@@ -70,6 +87,9 @@ def _main(args):
             assert hashlib.sha256(original).hexdigest() == digest
         suitability = json.loads((args.manifest.parent.parent/'suitability-acceptance.json').read_text())
         assert suitability['status'] == 'PASS_ALL_FORTY_BEFORE_MEASUREMENT'
+        if mac:
+            assert commit!=repository_commit and runtime['constructionFreezeCommit']==commit
+    elif mac:assert commit==repository_commit and runtime['constructionFreezeCommit']==commit
     source_freeze = json.loads((repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json').read_text())
     for row in source_freeze['files']:
         assert sha(repo/row['path']) == row['sha256'], 'Previously frozen policy/source changed'
@@ -90,6 +110,7 @@ def _main(args):
     shutil.copy2(args.manifest, output / 'runtime-manifest.json')
     shutil.copy2(args.scoring, output / 'scoring-manifest.json')
     shutil.copy2(args.build_manifest, output / 'frozen-build.json')
+    if mac:shutil.copy2(args.process_policy,output/'process-policy.json')
     runtime = json.loads((output / 'runtime-manifest.json').read_text())
     selection = json.loads((output / 'selection.json').read_text())
     for relative, expected in selection['sources'].items():
@@ -118,11 +139,13 @@ def _main(args):
             list((repo/'experiments/ch7').glob('finite_*.py')) +
             [repo/'experiments/ch7/run_finite_block.py',repo/'experiments/ch7/run_finite_sequence.py'] +
             [repo/'experiments/ch7/godot_local.py'] +
-            list((repo/'tests/Aijade.Tests').glob('ResearchFinite*.cs')))},
+            list((repo/'tests/Aijade.Tests').glob('ResearchFinite*.cs'))+
+            ([repo/'experiments/ch7/mac_process_guard.py'] if mac else []))},
         constructionFreezeCommit=runtime['constructionFreezeCommit'], purpose=runtime['purpose'],
         runtimeRepositoryPath=str(args.manifest.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
         scoringRepositoryPath=str(args.scoring.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
-        earlierSourceFreezeSha256=sha(repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json')))
+        earlierSourceFreezeSha256=sha(repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json'),
+        **{k:v for k,v in metadata.items() if k not in ['buildFreezeCommit','executionPlanSha256']}))
     env = dict(os.environ)
     env.update(DOTNET_ROOT=str(args.dotnet.parent), DOTNET_CLI_TELEMETRY_OPTOUT='1',
                UseSharedCompilation='false', MSBUILDDISABLENODEREUSE='1', DOTNET_CLI_USE_MSBUILD_SERVER='0',
@@ -136,15 +159,33 @@ def _main(args):
     timer_file = Path(os.environ['AIJADE_FINITE_TIMERS_FILE'])
     roots = []
     handles = []
-    timers = json.loads(timer_file.read_text()) if timer_file.exists() else {}
+    timers = {} if mac else (json.loads(timer_file.read_text()) if timer_file.exists() else {})
     cpu = {}
     phases = {}
     peaks = dict(rssBytes=0, swapIncreaseBytes=0, minAvailableBytes=psutil.virtual_memory().available)
-    telemetry = (output / 'telemetry.jsonl').open('x')
+    telemetry = None if mac else (output / 'telemetry.jsonl').open('x')
     planned = [p['input']['caseId']+'/'+c for p in runtime['cases'] for c in p['input']['conditions']]
     write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases={},modelRequests=0))
     reason = None
     status = 'RUNNING'
+    monitor=None;owned_registry=None
+    if mac:
+        peaks['minAvailableBytes']=2**100
+        own=[(metadata['controllerProcess']['pid'],metadata['controllerProcess']['createTime'])]
+        owned_registry=OwnedRegistry(own)
+        def sample():
+            observation=observe(policy,owned_roots=owned_registry.roots());observation.update(process_identity)
+            owned_registry.remember(observation)
+            rss=sum(p['rssBytes'] for p in observation.get('ownedProcesses',[]))
+            available=psutil.virtual_memory().available;swap_used=psutil.swap_memory().used
+            peaks['rssBytes']=max(peaks['rssBytes'],rss)
+            peaks['swapIncreaseBytes']=max(peaks['swapIncreaseBytes'],max(0,swap_used-initial_swap))
+            peaks['minAvailableBytes']=min(peaks['minAvailableBytes'],available)
+            return dict(utc=utc(),elapsedSeconds=time.monotonic()-started,rssBytes=rss,availableBytes=available,
+                        swapUsedBytes=swap_used,processObservation=observation,**process_identity)
+        monitor=MacMonitor(output/'telemetry.jsonl',sample,
+            lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
+            sequence_epoch,initial_swap,maximum_wall=4800,local_epoch=started).start()
 
     def launch(name, command, cwd, extra=None):
         stream = (output / (name + '.log')).open('x')
@@ -152,12 +193,21 @@ def _main(args):
         proc = subprocess.Popen(command, cwd=cwd, env=dict(env, **(extra or {})),
                                 stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
         roots.append(proc)
+        created=psutil.Process(proc.pid).create_time() if mac else None
+        if mac:owned_registry.register(proc.pid,created)
         phases[name] = dict(startedAt=utc(), pid=proc.pid, exitCode=None)
+        if mac:phases[name]['createTime']=created
         write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases=phases,modelRequests=0))
         return proc
 
     def tick():
         now = time.monotonic()
+        if mac:
+            monitor.check()
+            if now-sequence_epoch>4800:raise RuntimeError('overall_wall_limit_stop')
+            if now-started>1200:raise RuntimeError('wall_limit_stop')
+            time.sleep(.2)
+            return
         self_process = psutil.Process()
         family = {(self_process.pid, self_process.create_time()): self_process}
         for root in roots:
@@ -167,16 +217,16 @@ def _main(args):
                 parent = psutil.Process(root.pid)
                 for child in [parent] + parent.children(recursive=True):
                     family[(child.pid, child.create_time())] = child
-            except psutil.Error:
-                pass
+            except psutil.Error as error:
+                raise RuntimeError('unknown_owned_process_tree: '+type(error).__name__) from error
         rss = 0
         for key, child in family.items():
             try:
                 rss += child.memory_info().rss
                 t = child.cpu_times()
                 cpu[key] = max(cpu.get(key, 0), t.user + t.system)
-            except psutil.Error:
-                pass
+            except psutil.Error as error:
+                raise RuntimeError('unknown_owned_resource_observation: '+type(error).__name__) from error
         available = psutil.virtual_memory().available
         swap = max(0, psutil.swap_memory().used - initial_swap)
         peaks['rssBytes'] = max(peaks['rssBytes'], rss)
@@ -269,18 +319,30 @@ def _main(args):
             record['exitCode'] = owned.poll()
             record.setdefault('endedAt',utc())
         close_errors=[]
-        for handle in handles+[telemetry]:
+        for handle in handles+([telemetry] if telemetry is not None else []):
             try:handle.close()
             except OSError as error:close_errors.append(type(error).__name__+': '+str(error))
         leases = output / 'database-leases.jsonl'
         cleanup = cleanup_owned_databases(leases,args.docker,args.db_container)
+        if monitor is not None:
+            try:monitor.stop()
+            except ValueError as error:
+                status='STOPPED';reason=(reason+'; ' if reason else '')+str(error)
+            try:registry_final=owned_registry.final()
+            except ValueError as error:registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
+            write(output/'owned-process-registry.json',registry_final)
+            metadata['ownedProcessRegistrySha256']=sha(output/'owned-process-registry.json')
+            if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
+                status='STOPPED';reason=(reason+'; ' if reason else '')+'known owned descendant remains or identity unknown'
+        if time.monotonic()-started>1200:
+            status='STOPPED';reason=(reason+'; ' if reason else '')+'block wall limit including cleanup'
         write(output/'database-cleanup.json', cleanup)
         state = dispositions(output,planned,flow_started='flow' in phases)
         if any(r['remaining']!=0 or r['error'] for r in cleanup) or any(r['errors'] or r['exitCode'] is None for r in process_cleanup) or state['dispositionErrors'] or close_errors:
             status='STOPPED';reason=(reason+'; ' if reason else '')+'owned cleanup or disposition unresolved'
         write(output/'process-cleanup.json',process_cleanup)
         write(output / 'receipt.json', dict(schema='aijade.ch7.finite-block-receipt.v1', status=status, reason=reason,
-            codeCommit=commit, finishedAt=utc(), wallSeconds=time.monotonic()-started, ownedCpuSeconds=sum(cpu.values()),
+            codeCommit=commit, finishedAt=utc(), wallSeconds=time.monotonic()-started, ownedCpuSeconds=None if mac else sum(cpu.values()),
             peak=peaks, phases=phases, plannedCases=2*len(runtime['cases']), plannedPairs=len(runtime['cases']), plannedSharedRenderedIntents=len(runtime['cases']),
             registeredIntentCount=max(0,len((output/'registry.jsonl').read_text().splitlines())-1) if (output/'registry.jsonl').is_file() else 0,
             completedCases=len(state['completedCaseIds']),
@@ -288,7 +350,7 @@ def _main(args):
             unattemptedCaseIds=state['unattemptedCaseIds'],dispositionErrors=state['dispositionErrors'],logCloseErrors=close_errors,
             heldOutCases=len(runtime['cases']) if runtime['purpose']=='confirmed_finite_heldout' else 0, purpose=runtime['purpose'], blockIndex=runtime['blockIndex'],
             initialSystemSwapUsedBytes=initial_swap, sequenceEpochMonotonic=sequence_epoch, conditionsMeasured=['C1','C2'], semanticJudgments='AI-assisted; no independent human review',
-            formalHardwareQualification=False, modelRequests=0))
+            formalHardwareQualification=False, modelRequests=0,**dict(metadata,**({'blockEpochMonotonic':started} if mac else {}))))
     print(json.dumps(dict(status=status, reason=reason, wallSeconds=time.monotonic()-started)))
     return 0 if status.startswith('COMPLETE') else 1
 
@@ -316,4 +378,8 @@ if __name__ == '__main__':
         parser.add_argument('--' + key, type=Path, required=True)
     parser.add_argument('--db-container',required=True)
     parser.add_argument('--build-freeze-commit',required=True)
+    parser.add_argument('--implementation-commit')
+    parser.add_argument('--build-freeze-path',default=BUILD_FREEZE_PATH)
+    parser.add_argument('--data-publication-manifest')
+    parser.add_argument('--process-policy',type=Path)
     raise SystemExit(main(parser.parse_args()))

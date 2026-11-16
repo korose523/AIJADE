@@ -38,6 +38,12 @@ jobs:
           python3 -m venv .runtime/finite-control-env
           .runtime/finite-control-env/bin/python -m pip install psutil==7.2.2
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_runtime.py' -v
+      - name: Verify prospective Mac process, version and complete-sequence controls without live services
+        run: |
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_corruption_baselines.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_launcher.py' -v
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions

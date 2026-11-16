@@ -18,7 +18,13 @@ FILES=['receipt.json','input-identities.json','runtime-manifest.json','selection
 
 
 def run(root,repo):
-    originals={n:hashlib.sha256(raw(root,n)).hexdigest() for n in FILES};controls=[]
+    files=list(FILES)
+    if load(root,'input-identities.json').get('processPolicySha256') is not None:
+        files += ['process-policy.json','owned-process-registry.json']
+    # A broken primary or omitted new evidence cannot masquerade as rejection
+    # of every mutation. Validate each complete disposable baseline first.
+    verify(root,repo)
+    originals={n:hashlib.sha256(raw(root,n)).hexdigest() for n in files};controls=[]
     names=['missing-arm','duplicate-arm','retrieved-code','database-token','time-reversal','render-seal',
            'hidden-durable-rows-coherent','changed-window-rebound','changed-denominator-rebound','failure-witness-coherent',
            'replay-observation-coherent','unplanned-probe-coherent','embedded-build-revision','runtime-rebound',
@@ -26,8 +32,9 @@ def run(root,repo):
     for name in names:
         with tempfile.TemporaryDirectory(prefix='aijade-finite-audit-control-') as temporary:
             target=Path(temporary)
-            for rel in FILES:
+            for rel in files:
                 path=target/rel;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(raw(root,rel))
+            verify(target,repo)
             def save(rel,value):(target/rel).write_text(json.dumps(value,indent=2)+'\n')
             def digest(rel):return hashlib.sha256((target/rel).read_bytes()).hexdigest()
             def bind_row(row):
@@ -82,12 +89,13 @@ def run(root,repo):
                 value=load(target,'frozen-build.json');key=next(k for k in value['files'] if k.endswith('.dll'));value['files'][key]='0'*64;save('frozen-build.json',value)
                 identity=load(target,'input-identities.json');identity['binaries']=copy.deepcopy(value['files']);identity['buildManifestSha256']=digest('frozen-build.json');save('input-identities.json',identity)
             else:rows[0]['gatewayAttempts']=1;save('cases.json',rows);bind_row(rows[0])
-            require(any(digest(n)!=originals[n] for n in FILES),'no-op mutation cannot count as rejected corruption')
+            require(any(digest(n)!=originals[n] for n in files),'no-op mutation cannot count as rejected corruption')
             try:verify(target,repo)
             except (ValueError,KeyError,TypeError,AssertionError) as error:controls.append(dict(control=name,rejected=True,reason=type(error).__name__+': '+str(error)))
             else:raise AssertionError('corrupted finite packet accepted: '+name)
-    require(originals=={n:hashlib.sha256(raw(root,n)).hexdigest() for n in FILES},'primary data changed by controls')
+    require(originals=={n:hashlib.sha256(raw(root,n)).hexdigest() for n in files},'primary data changed by controls')
     return dict(status='PASS',rejectedCorruptions=len(controls),controls=controls,primaryUnchanged=True,
+                completeBaselineChecks=1+len(controls),copiedEvidenceFiles=files,
                 interpretation='Disposable instrument controls; no added empirical or independent human observations.')
 
 

@@ -12,7 +12,9 @@ import sys
 import time
 
 import psutil
-from finite_runtime import validate_build, read_block_receipt, dispositions
+from finite_runtime import (validate_build, read_block_receipt, dispositions, BUILD_FREEZE_PATH,
+    MAC_PLAN, validate_repository_binding, load_mac_policy, validate_mac_observation,
+    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, OwnedRegistry)
 
 GIB=1024**3
 
@@ -26,11 +28,17 @@ def _execute(a):
     require(not output.exists(),'never overwrite a window/attempt')
     require(psutil.__version__=='7.2.2' and os.environ.get('DOTNET_PROCESSOR_COUNT')=='2','runtime/processor identity')
     require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='','dirty execution checkout')
-    head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
-    require(os.environ['AIJADE_GIT_COMMIT']==head,'current execution commit')
-    validate_build(a.assembly,a.build_manifest,head,repo,a.build_freeze_commit)
     plan=a.execution_plan.resolve()
     require(plan.is_relative_to(repo) and plan.is_file(),'explicit tracked execution plan required')
+    head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
+    mac=plan.name==MAC_PLAN
+    if mac:require(str(plan.relative_to(repo))=='experiments/plans/'+MAC_PLAN,'wrong canonical Mac execution plan')
+    implementation=getattr(a,'implementation_commit',None) or head
+    require(os.environ['AIJADE_GIT_COMMIT']==implementation,'actual implementation commit')
+    require(mac or implementation==head,'legacy execution requires current source binaries')
+    freeze_path=getattr(a,'build_freeze_path',BUILD_FREEZE_PATH)
+    binding=validate_repository_binding(repo,implementation,head,getattr(a,'data_publication_manifest',None),require_head=True) if mac else {}
+    validate_build(a.assembly,a.build_manifest,implementation,repo,a.build_freeze_commit,freeze_path,strict_publication=mac)
     original=subprocess.check_output(['git','show',head+':'+str(plan.relative_to(repo))],cwd=repo)
     require(original==plan.read_bytes(),'execution plan differs from committed bytes')
     qualification=(a.inputs/'runtime-manifest.json').exists()
@@ -39,17 +47,68 @@ def _execute(a):
     require(all(m['purpose']==('qualification_only' if qualification else 'confirmed_finite_heldout') for m in inputs),'mixed scope')
     require([m['blockIndex'] for m in inputs]==([0] if qualification else [0,1,2,3]),'block order')
     require(all(len(m['cases'])==10 for m in inputs),'planned block size')
+    policy=None;process_identity={}
+    if mac:
+        require(all(m['constructionFreezeCommit']==implementation for m in inputs),'inputs are not constructed against Q')
+        require((head==implementation) if qualification else (head!=implementation),'qualification must run Q; formal execution must run additive I')
+        if not qualification:
+            for original_path in [a.selection]+[directory/name for directory in sources for name in ['runtime-manifest.json','scoring-manifest.json']]:
+                path=original_path.resolve()
+                require(not original_path.is_symlink() and path.is_file() and path.is_relative_to(repo),'formal input must be a regular tracked repository file before admission')
+                require(subprocess.check_output(['git','show',head+':'+str(path.relative_to(repo))],cwd=repo)==path.read_bytes(),'formal input differs from published I before admission')
+        require(getattr(a,'process_policy',None) is not None,'new Mac process policy required')
+        policy,process_identity=load_mac_policy(repo,a.process_policy,implementation)
+        from mac_process_guard import observe
+    metadata=dict(binding,buildFreezeCommit=a.build_freeze_commit,buildFreezePath=freeze_path,
+                  executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),**process_identity) if mac else {}
+    if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
     if qualification:
-        require(plan.name=='2026-11-16-ch7-relocated-runtime-qualification.md' and a.settle_seconds==600,'new known qualification requires its one fixed settling phase')
+        require(plan.name in ['2026-11-16-ch7-relocated-runtime-qualification.md',MAC_PLAN] and a.settle_seconds==600,'new known qualification requires its one fixed settling phase')
     output.mkdir(parents=True);(output/'admission').mkdir()
+    planned=[m['cases'][i]['input']['caseId']+'/'+arm for m in inputs for i in range(10) for arm in m['cases'][i]['input']['conditions']]
+    prepared=dict(status='PREPARED_NO_MEASUREMENT',codeCommit=implementation,purpose=inputs[0]['purpose'],
+        plannedPairs=len(planned)//2,plannedConditionRows=len(planned),plannedBlocks=len(inputs),completedBlocks=0,
+        completedConditionRows=0,inFlightCaseIds=[],unknownCaseIds=[],unattemptedCaseIds=planned,blocks=[],modelRequests=0,
+        formalHardwareQualification=False,independentHumanReview=False,**metadata)
+    if mac:
+        (output/'process-policy.json').write_bytes(a.process_policy.read_bytes())
+        require(hashlib.sha256((output/'process-policy.json').read_bytes()).hexdigest()==process_identity['processPolicySha256'],'policy changed before phase')
+        write(output/'receipt.json',prepared)
+    def observed(owned_roots=None):
+        process=observe(policy,owned_roots=owned_roots or [])
+        process.update(process_identity)
+        return dict(utc=utc(),availableBytes=psutil.virtual_memory().available,
+                    swapUsedBytes=psutil.swap_memory().used,processObservation=process,
+                    rssBytes=sum(p['rssBytes'] for p in process.get('ownedProcesses',[])),**process_identity)
+    def phase(duration,path):
+        with path.open('x') as log:
+            def save(item):log.write(json.dumps(item)+'\n');log.flush()
+            return fixed_phase(duration,observed,save)
     if a.settle_seconds:
         require(a.settle_seconds==600 and qualification,'only the prospectively bounded known-qualification settling phase is enabled')
         amendment=plan
         require(amendment.is_file(),'missing prospective settling protocol')
         (output/'settling').mkdir();settle_start=time.monotonic();settle_samples=[]
-        write(output/'receipt.json',dict(status='FIXED_UNLOADED_SETTLING_RUNNING',codeCommit=head,requestedSeconds=600,
-            prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),measurementStarted=False))
-        with (output/'settling/telemetry.jsonl').open('x') as log:
+        settling_progress=dict(prepared) if mac else dict(codeCommit=head)
+        settling_progress.update(status='FIXED_UNLOADED_SETTLING_RUNNING',requestedSeconds=600,
+            prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),measurementStarted=False)
+        write(output/'receipt.json',settling_progress)
+        if mac:
+            settle_samples,settle_clock=phase(600,output/'settling/telemetry.jsonl')
+            settling=dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=implementation,
+                requestedSeconds=600,elapsedSeconds=settle_clock['endMonotonic']-settle_clock['startMonotonic'],
+                samples=len(settle_samples),intervalReset=False,measurementStarted=False,
+                prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),phaseClock=settle_clock,**metadata)
+            try:
+                settling['coverage']=validate_coverage(settle_samples,600,300)
+                for sample in settle_samples:
+                    require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
+                    validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
+            except ValueError as error:
+                settling.update(status='SETTLING_OBSERVATION_REFUSED',reason=str(error));write(output/'settling/receipt.json',settling);raise
+            write(output/'settling/receipt.json',settling)
+        else:
+          with (output/'settling/telemetry.jsonl').open('x') as log:
             while True:
                 elapsed=time.monotonic()-settle_start
                 item=dict(utc=utc(),elapsedSeconds=elapsed,availableBytes=psutil.virtual_memory().available,
@@ -58,11 +117,20 @@ def _execute(a):
                 settle_samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
                 if elapsed>=600:break
                 time.sleep(min(2,600-elapsed))
-        write(output/'settling/receipt.json',dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=head,
+          write(output/'settling/receipt.json',dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=head,
             requestedSeconds=600,elapsedSeconds=settle_samples[-1]['elapsedSeconds'],samples=len(settle_samples),
             intervalReset=False,measurementStarted=False,prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest()))
-    sample_start=time.monotonic();samples=[]
-    with (output/'admission/telemetry.jsonl').open('x') as log:
+    sample_start=time.monotonic();samples=[];coverage=None;observation_error=None
+    if mac:
+        samples,admission_clock=phase(120,output/'admission/telemetry.jsonl')
+        try:
+            coverage=validate_coverage(samples,120,60)
+            for sample in samples:
+                require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
+                validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
+        except ValueError as error:observation_error=str(error)
+    else:
+      with (output/'admission/telemetry.jsonl').open('x') as log:
         while True:
             elapsed=time.monotonic()-sample_start
             processes=[p.info for p in psutil.process_iter(['pid','name'])
@@ -72,49 +140,70 @@ def _execute(a):
             samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
             if elapsed>=120:break
             time.sleep(min(2,120-elapsed))
-    admitted=min(s['availableBytes'] for s in samples)>=4*GIB and max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples)<=64*1024**2 and not any(s['researchProcesses'] for s in samples)
-    admission=dict(status='ADMITTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',codeCommit=head,
-        elapsedSeconds=samples[-1]['elapsedSeconds'],samples=len(samples),minimumAvailableBytes=min(s['availableBytes'] for s in samples),
-        swapRangeBytes=max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples),
-        noResearchProcesses=not any(s['researchProcesses'] for s in samples),formalHardwareQualification=False,windowReset=False,
+    idle=(observation_error is None and coverage is not None) if mac else not any(s['researchProcesses'] for s in samples)
+    admitted=bool(samples) and min(s['availableBytes'] for s in samples)>=4*GIB and max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples)<=64*1024**2 and idle
+    admission=dict(status='ADMITTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',codeCommit=implementation,
+        elapsedSeconds=(admission_clock['endMonotonic']-admission_clock['startMonotonic']) if mac else samples[-1]['elapsedSeconds'],samples=len(samples),minimumAvailableBytes=min(s['availableBytes'] for s in samples) if samples else None,
+        swapRangeBytes=max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples) if samples else None,
+        noResearchProcesses=idle,formalHardwareQualification=False,windowReset=False,
         precedingFixedSettlingSeconds=a.settle_seconds,executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest())
+    if mac:admission.update(metadata,coverage=coverage,observationError=observation_error,phaseClock=admission_clock)
     write(output/'admission/receipt.json',admission)
-    planned=[m['cases'][i]['input']['caseId']+'/'+arm for m in inputs for i in range(10) for arm in m['cases'][i]['input']['conditions']]
     sequence=dict(schema='aijade.ch7.finite-sequence-receipt.v1',status='ADMITTED_NOT_STARTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',
-        codeCommit=head,purpose=inputs[0]['purpose'],plannedPairs=len(planned)//2,plannedConditionRows=len(planned),
+        codeCommit=implementation,purpose=inputs[0]['purpose'],plannedPairs=len(planned)//2,plannedConditionRows=len(planned),
         plannedBlocks=len(inputs),completedBlocks=0,completedConditionRows=0,inFlightCaseIds=[],unattemptedCaseIds=planned,
         blocks=[],modelRequests=0,formalHardwareQualification=False,independentHumanReview=False,
         executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),unknownCaseIds=[])
+    sequence.update(metadata)
     write(output/'receipt.json',sequence)
     if not admitted:print(json.dumps(sequence));return 0
     epoch=time.monotonic();baseline=psutil.swap_memory().used;timers=output/'sustained-timers.json';write(timers,{})
     env=dict(os.environ,AIJADE_FINITE_EPOCH=str(epoch),AIJADE_FINITE_SWAP_BASELINE=str(baseline),AIJADE_FINITE_TIMERS_FILE=str(timers))
-    sequence.update(status='RUNNING',startedAt=utc(),initialSystemSwapUsedBytes=baseline)
+    sequence.update(status='RUNNING',startedAt=utc(),initialSystemSwapUsedBytes=baseline,sequenceEpochMonotonic=epoch)
+    if mac:sequence['blockControllers']=[]
     write(output/'receipt.json',sequence);reason=None;active=None
     completed=[];inflight=[];target=None;active_planned=[]
+    monitor=None;owned_registry=None
+    if mac:
+        own=[(metadata['controllerProcess']['pid'],metadata['controllerProcess']['createTime'])]
+        owned_registry=OwnedRegistry(own)
+        def runtime_observed():
+            item=observed(owned_registry.roots());owned_registry.remember(item['processObservation']);return item
+        monitor=MacMonitor(output/'process-observations.jsonl',runtime_observed,
+            lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
+            epoch,baseline,timers).start()
     try:
         for index,source in enumerate(sources):
             require(time.monotonic()-epoch<4800,'overall wall exhausted before next block')
             # Carry sustained global timers across the small between-block interval.
-            now=time.monotonic();state=json.loads(timers.read_text());available=psutil.virtual_memory().available;swap=max(0,psutil.swap_memory().used-baseline)
-            for name,crossed in [('available',available<3*GIB),('swap',swap>GIB)]:
+            now=time.monotonic();state={} if mac else json.loads(timers.read_text());available=psutil.virtual_memory().available;swap=max(0,psutil.swap_memory().used-baseline)
+            if mac:monitor.check()
+            for name,crossed in ([] if mac else [('available',available<3*GIB),('swap',swap>GIB)]):
                 if not crossed:state.pop(name,None)
                 else:
                     state.setdefault(name,now);require(now-state[name]<30,'between-block sustained '+name+' stop')
-            write(timers,state)
+            if not mac:write(timers,state)
             target=output/('block-'+str(index+1));command=[sys.executable,str(repo/'experiments/ch7/run_finite_block.py')]
             active=None
             values=dict(repo=repo,client=a.client,model=a.model,selection=a.selection,manifest=source/'runtime-manifest.json',
                         scoring=source/'scoring-manifest.json',output=target,dotnet=a.dotnet,assembly=a.assembly,
                         build_manifest=a.build_manifest,godot=a.godot,docker=a.docker,execution_plan=plan,db_container=a.db_container,
                         build_freeze_commit=a.build_freeze_commit)
+            if mac:
+                values.update(implementation_commit=implementation,build_freeze_path=freeze_path,process_policy=a.process_policy)
+                if getattr(a,'data_publication_manifest',None) is not None:values['data_publication_manifest']=a.data_publication_manifest
             values={key.replace('_','-'):value for key,value in values.items()}
             for key,value in values.items():command+=['--'+key,str(value)]
             active_planned=[p['input']['caseId']+'/'+arm for p in inputs[index]['cases'] for arm in p['input']['conditions']]
             with (output/('block-'+str(index+1)+'-controller.log')).open('x') as log:
                 active=subprocess.Popen(command,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+                if mac:
+                    created=psutil.Process(active.pid).create_time();owned_registry.register(active.pid,created)
+                    sequence['blockControllers'].append(dict(blockIndex=index,pid=active.pid,createTime=created))
+                    write(output/'receipt.json',sequence)
                 block_started=time.monotonic()
                 while active.poll() is None:
+                    if mac:monitor.check()
                     require(time.monotonic()-block_started<1245,'owned block/cleanup watchdog expired')
                     time.sleep(1)
             block=read_block_receipt(target/'receipt.json');sequence['blocks'].append(block)
@@ -124,6 +213,7 @@ def _execute(a):
                 unattemptedCaseIds=[p for p in planned if p not in completed and p not in inflight and p not in state['unknownCaseIds']])
             require(active.returncode==0 and block['status']=='COMPLETE_FINITE_BLOCK_OBSERVATIONS','block stopped; no subsequent block or retry')
             require(all(r['remaining']==0 and not r.get('error') for r in json.loads((target/'database-cleanup.json').read_text())),'owned lease remains/unknown')
+            if mac:monitor.check()
             sequence['completedBlocks']+=1;write(output/'receipt.json',sequence)
         sequence['status']='COMPLETE_FINITE_SEQUENCE_OBSERVATIONS'
     except BaseException as error:
@@ -136,6 +226,18 @@ def _execute(a):
                 sequence['ownedControllerCleanupTimedOut']=True
         if active is not None:sequence['lastControllerExitCode']=active.poll()
     finally:
+        if monitor is not None:
+            try:monitor.stop()
+            except ValueError as error:
+                reason=(reason+'; ' if reason else '')+str(error);sequence['status']='STOPPED'
+            sequence['processObservationCount']=len(monitor.samples)
+            sequence['processObservationErrors']=monitor.errors
+            try:registry_final=owned_registry.final()
+            except ValueError as error:registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
+            write(output/'owned-process-registry.json',registry_final)
+            sequence['ownedProcessRegistrySha256']=hashlib.sha256((output/'owned-process-registry.json').read_bytes()).hexdigest()
+            if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
+                reason=(reason+'; ' if reason else '')+'known owned descendant remains or identity unknown';sequence['status']='STOPPED'
         if reason is not None and target is not None:
             try:
                 last=json.loads((target/'receipt.json').read_text())
@@ -181,4 +283,8 @@ if __name__=='__main__':
     p.add_argument('--db-container',required=True)
     p.add_argument('--build-freeze-commit',required=True)
     p.add_argument('--settle-seconds',type=int,default=0)
+    p.add_argument('--implementation-commit')
+    p.add_argument('--build-freeze-path',default=BUILD_FREEZE_PATH)
+    p.add_argument('--data-publication-manifest')
+    p.add_argument('--process-policy',type=Path)
     raise SystemExit(execute(p.parse_args()))
