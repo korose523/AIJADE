@@ -1,0 +1,62 @@
+{
+  "schema": "aijade-owned-architecture-engineering-v1",
+  "implementationCommit": "d7a33017bd0df82752ce5c52fd637e7909b591bd",
+  "priorProductCommit": "63e2321dbb259d61976c3522de7112c7754d3c7b",
+  "historicalResearchCommit": "f90f04110f46fb17a2a43a777ed5d4e68a361902",
+  "sourceInventory": {
+    "projects": 15,
+    "internalProjectReferences": 28,
+    "capabilityFamilies": 69,
+    "implementedSourceFamilies": 44,
+    "configurableFamilies": 19,
+    "plannedFamilies": 6,
+    "negativeControlsRejected": 9,
+    "meaning": "Source inventory, not live or scientific acceptance"
+  },
+  "linuxCi": {
+    "url": "https://github.com/korose523/AIJADE/actions/runs/43813593508",
+    "conclusion": "success",
+    "unitIntegrationPassed": 690,
+    "unitIntegrationSkipped": 31,
+    "unitIntegrationFailed": 0,
+    "browserSkipped": 38,
+    "historicalArchiveChecks": "PASS"
+  },
+  "macBrowser": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "server": "Implementation commit backend and WebAssembly output",
+    "harness": "Existing unchanged E2E assembly; AIJADE_E2E_SERVER_DLL points to rebuilt server",
+    "scenarioGroups": ["CompanionSyncWebTests", "CompanionDeliveryWebTests", "CompanionExperienceWebTests"],
+    "modelUpstream": "controlled fake",
+    "qqEvents": "signed protocol test events, not an authenticated live QQ account"
+  },
+  "ownedVoice": {
+    "standardLibraryTestsPassed": 12,
+    "serverSourceSha256": "ef7d3228a68b080f7f50ca0f8ff7bd0ccf26b3f78f1fb442fecfc700e2d3de87",
+    "realHttpTts": {
+      "engine": "macos-system-say",
+      "wavBytes": 135086,
+      "wavSha256": "900098b50ba2ef95a07893b0fd68c31440be2c6cee82f63fa6bdd7d8d686799a",
+      "durationSeconds": 2.970294784580499,
+      "sampleRate": 22050,
+      "trainingVerified": false,
+      "emotionApplied": false
+    },
+    "realHttpAsr": {
+      "model": "Systran/faster-whisper-tiny",
+      "existingModelRevision": "d90ca5fe260221311c53c58e660288d3deb8d356",
+      "modelDownloadedByService": false,
+      "actualText": "你好,這是AJ的本地與音箭插",
+      "accuracyHumanReviewed": false
+    },
+    "alignment": "NOT_IMPLEMENTED_HTTP_503",
+    "singing": "NOT_IMPLEMENTED_HTTP_503",
+    "temporaryFilesCleaned": true
+  },
+  "scientificAcceptance": false,
+  "independentHumanReview": false,
+  "newScientificCases": 0,
+  "currentProductInheritsHistoricalQualification": false
+}
