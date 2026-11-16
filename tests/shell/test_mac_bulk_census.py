@@ -246,7 +246,7 @@ class BulkObserverControls(unittest.TestCase):
         active, events = self.root / 'active.json', self.root / 'events.jsonl'
         # A native disposable fixture avoids measuring a cold Python startup
         # against the production native helper's unchanged 0.5-second deadline.
-        compiler = shutil.which('cc')
+        compiler = shutil.which('cc') or shutil.which('clang')
         if compiler is None: self.skipTest('A native fixture compiler is unavailable')
         template.update(records='@ROWS@', recordCount=3, returnedBytes=1944)
         template['readHistory'][-1]['returnedBytes'] = 1944
