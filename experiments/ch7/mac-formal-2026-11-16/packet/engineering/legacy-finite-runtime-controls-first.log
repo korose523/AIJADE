@@ -1,0 +1,22 @@
+test_build_from_wrong_commit_is_refused (test_finite_runtime.RuntimeFaultControls.test_build_from_wrong_commit_is_refused) ... ok
+test_duplicate_lease_is_dropped_once_and_absence_is_requeried (test_finite_runtime.RuntimeFaultControls.test_duplicate_lease_is_dropped_once_and_absence_is_requeried) ... ok
+test_entire_lease_list_is_validated_before_any_drop (test_finite_runtime.RuntimeFaultControls.test_entire_lease_list_is_validated_before_any_drop) ... ok
+test_exhausted_cleanup_budget_never_reports_absence (test_finite_runtime.RuntimeFaultControls.test_exhausted_cleanup_budget_never_reports_absence) ... ok
+test_exit_zero_without_a_block_receipt_is_not_completion (test_finite_runtime.RuntimeFaultControls.test_exit_zero_without_a_block_receipt_is_not_completion) ... ok
+test_explicit_binary_and_dependency_identity_rejects_stale_or_missing_files (test_finite_runtime.RuntimeFaultControls.test_explicit_binary_and_dependency_identity_rejects_stale_or_missing_files) ... ok
+test_failed_presence_is_unknown_and_other_owned_leases_are_still_cleaned (test_finite_runtime.RuntimeFaultControls.test_failed_presence_is_unknown_and_other_owned_leases_are_still_cleaned) ... ok
+test_owned_process_group_is_stopped_and_reaped (test_finite_runtime.RuntimeFaultControls.test_owned_process_group_is_stopped_and_reaped) ... ok
+test_partial_journal_preserves_started_and_unknown_dispositions (test_finite_runtime.RuntimeFaultControls.test_partial_journal_preserves_started_and_unknown_dispositions) ... ok
+test_precondition_error_writes_receipt_but_cannot_overwrite_existing_output (test_finite_runtime.RuntimeFaultControls.test_precondition_error_writes_receipt_but_cannot_overwrite_existing_output) ... RuntimeError: controlled launch/precondition failure
+RuntimeError: existing output refused
+ok
+test_sequence_error_after_start_preserves_real_completed_count (test_finite_runtime.RuntimeFaultControls.test_sequence_error_after_start_preserves_real_completed_count) ... RuntimeError: controlled controller failure
+ok
+test_signal_during_idle_phase_retains_a_terminal_nonmeasurement_receipt (test_finite_runtime.RuntimeFaultControls.test_signal_during_idle_phase_retains_a_terminal_nonmeasurement_receipt) ... RuntimeError: sequence signal 15
+ok
+test_started_flow_without_capture_is_unknown_rather_than_unattempted (test_finite_runtime.RuntimeFaultControls.test_started_flow_without_capture_is_unknown_rather_than_unattempted) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.487s
+
+OK

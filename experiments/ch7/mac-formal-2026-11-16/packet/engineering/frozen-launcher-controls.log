@@ -1,0 +1,37 @@
+test_existing_attempt_and_unowned_output_are_refused_before_launch (test_frozen_launcher.FrozenLauncherControls.test_existing_attempt_and_unowned_output_are_refused_before_launch) ... ok
+test_formal_has_no_second_settling_or_alternative_window (test_frozen_launcher.FrozenLauncherControls.test_formal_has_no_second_settling_or_alternative_window) ... ERROR
+test_qualification_has_exact_six_hundred_seconds_and_fixed_identities (test_frozen_launcher.FrozenLauncherControls.test_qualification_has_exact_six_hundred_seconds_and_fixed_identities) ... ERROR
+test_unknown_scope_and_nonimmutable_identity_are_refused (test_frozen_launcher.FrozenLauncherControls.test_unknown_scope_and_nonimmutable_identity_are_refused) ... ok
+
+======================================================================
+ERROR: test_formal_has_no_second_settling_or_alternative_window (test_frozen_launcher.FrozenLauncherControls.test_formal_has_no_second_settling_or_alternative_window)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_frozen_launcher.py", line 36, in test_formal_has_no_second_settling_or_alternative_window
+    _, _, args = launcher.command(self.config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/launch_frozen_sequence.py", line 82, in command
+    args = [str(owned(config['python'])), str(repo / 'experiments/ch7/run_finite_sequence.py')]
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/launch_frozen_sequence.py", line 29, in owned
+    raise ValueError('project path outside the authorized root')
+ValueError: project path outside the authorized root
+
+======================================================================
+ERROR: test_qualification_has_exact_six_hundred_seconds_and_fixed_identities (test_frozen_launcher.FrozenLauncherControls.test_qualification_has_exact_six_hundred_seconds_and_fixed_identities)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/tests/shell/test_frozen_launcher.py", line 28, in test_qualification_has_exact_six_hundred_seconds_and_fixed_identities
+    _, _, args = launcher.command(self.config)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/launch_frozen_sequence.py", line 82, in command
+    args = [str(owned(config['python'])), str(repo / 'experiments/ch7/run_finite_sequence.py')]
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116/worktree/experiments/ch7/launch_frozen_sequence.py", line 29, in owned
+    raise ValueError('project path outside the authorized root')
+ValueError: project path outside the authorized root
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.025s
+
+FAILED (errors=2)
