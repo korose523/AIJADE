@@ -1,0 +1,108 @@
+{
+  "schema": "aijade.ch7.mac-bulk-refusal-controls.v1",
+  "status": "VALID_BASELINE_AND_ALL_15_COHERENT_NEGATIVE_CONTROLS_PASS",
+  "baselineManifestSha256": "04897ab29eb5eca4b47d4d0aef872777497cd627e4ebcfa99b796f851ff46c1a",
+  "baselinePayloadFiles": 71,
+  "baselineAuditStatus": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "baselineCoreSha256": "a029d58b66e3e0c4c5bf32e3558ced84706478d6f28b2a20a8d854d015ad6905",
+  "auditorSha256": "72127141742a314bb27954db98162e7a09b77b5a4e0895dd970d2e7dbcc15fd2",
+  "controlsSourceSha256": "5cf7868c2546f3b92055f7e9d7bd84895556aac5864e7b087eda771f2370c046",
+  "controls": [
+    {
+      "name": "claimed-final-fail-to-pass",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: claimed process/RSS decision differs from Q replay"
+    },
+    {
+      "name": "unknown-to-unattempted",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: terminal original unknown dispositions or scope altered"
+    },
+    {
+      "name": "drop-runtime-failure-and-error",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: runtime sample/error population changed"
+    },
+    {
+      "name": "drop-settling-sample",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: fixed phase duration/population changed"
+    },
+    {
+      "name": "forge-continuous-phase-transition",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: original failed transition changed/concealed"
+    },
+    {
+      "name": "substitute-q-observer",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: Q source substitution: experiments/ch7/mac_process_guard_v2.py"
+    },
+    {
+      "name": "substitute-b-native-metadata",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: B metadata bytes changed: experiments/ch7/mac-census-2026-11-16/native-build.json"
+    },
+    {
+      "name": "corrupt-final-native-raw",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: empty/truncated/misaligned native response"
+    },
+    {
+      "name": "hide-block-output",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: hidden/missing block or qualification output"
+    },
+    {
+      "name": "forge-api-empty-from-nonempty",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: claimed process/RSS decision differs from Q replay"
+    },
+    {
+      "name": "controller-still-present",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: independent controller-exit proof absent"
+    },
+    {
+      "name": "hide-unused-first-build-failures",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: two TRX required"
+    },
+    {
+      "name": "alter-one-old-fact",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: old 12311-fact baseline changed"
+    },
+    {
+      "name": "unknown-runtime-rss-to-zero",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: claimed process/RSS decision differs from Q replay"
+    },
+    {
+      "name": "wrong-manifest-schema",
+      "coherentManifestRebound": true,
+      "semanticRejected": true,
+      "reason": "ValueError: wrong packet manifest schema"
+    }
+  ],
+  "total": 15,
+  "rejected": 15,
+  "acceptedMutations": 0,
+  "noOpMutations": 0,
+  "actualQualificationWindows": 0,
+  "networkRequests": 0
+}

@@ -1,0 +1,49 @@
+{
+  "status": "VERSIONED_BULK_OBSERVER_ENGINEERING_READY_NOT_QUALIFIED",
+  "files": {
+    "experiments/ch7/mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+    "experiments/ch7/mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+    "experiments/ch7/build_mac_census.py": "d9bf19e306ee405204c2faf0b28a48f0614fe00d7a8405348f4c154d19dbf4ad",
+    "tests/shell/test_mac_bulk_census.py": "65dd1064caaeca84374222ce66f7028c44ef10fd2635b5f2ede5c7e2d23f33ac",
+    "tests/shell/test_mac_native_c.py": "2d5a270a08da9004a18ec6d578d20e41d22f3ee12370a7a9ff47693b756fdbfb",
+    "configs/research/ch7-mac-bulk-process-policy.json": "1c48614601b9b74c0da4fb6860848cba5a12ea0570f3053ddfa487e7036097f8"
+  },
+  "preservedV1Sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+  "nativeHelper": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-census-20261116/native/mac_bulk_census",
+    "sha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+    "sourceSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+  },
+  "nativeBuildMetadataSha256": "76abb652b3e351865e733b392b56ba73d167ff5247e57257608fa460ca012e72",
+  "controls": {
+    "pythonPassed": 15,
+    "nativePassed": 18,
+    "failedFinal": 0,
+    "pythonLogSha256": "f25772027073e574668a1102db2453ce660ed62651ac2e544193918417eb55f4",
+    "nativeLogSha256": "b0fd84d2986c6304c1e3f29aab12f965c959a1b48e4f255c674188e5ce597451",
+    "preservedFailureLogs": [
+      "python-bulk-controls-final.log",
+      "native-c-controls-first.log"
+    ],
+    "fixtureFixes": [
+      "Use a tiny compiled POSIX C positive fixture instead of cold Python startup; production deadline unchanged",
+      "Test shim undefines SDK fortify formatter macro before fixture injection"
+    ]
+  },
+  "idleEngineering": {
+    "file": "native/engineering-observation.json",
+    "sha256": "a427386ad7204589808ab55f63f6f39b5051217f640f46c119085ce1583d7546",
+    "status": "PASS",
+    "durationSeconds": 1.2566611189977266,
+    "notAdmission": true
+  },
+  "ownedEngineeringByRoot": {
+    "file": "native/owned-engineering-observation.json",
+    "sha256": "9acf4dc0e47e6ae7f74d1180285da05124e4a592830c4f44578c10d562262892",
+    "notAdmission": true
+  },
+  "newQualificationOrAdmissionWindowsBySubagent": 0,
+  "modelOrRendererCalls": 0,
+  "committedBySubagent": false,
+  "nowStoppedSourceEdits": true
+}

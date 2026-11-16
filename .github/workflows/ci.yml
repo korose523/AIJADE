@@ -90,3 +90,16 @@ jobs:
         run: git -C .runtime/ch7-mac-formal-source fetch --no-tags --depth=1 origin 795b23d7e69a8b59396b84199bd7429451ecbb4f 0c3f3cc922e940c97628837476946526659d936e
       - name: Replay complete retained Mac refusal and coherent adversarial controls without live services
         run: python3 -B experiments/ch7/mac-formal-2026-11-16/verify_archive.py --root experiments/ch7/mac-formal-2026-11-16/packet --repo .runtime/ch7-mac-formal-source --controls
+      - name: Materialize actual bulk-census implementation for terminal-record replay
+        uses: actions/checkout@v7
+        with:
+          ref: d96152b98f61e3cb47db9ec3d95e00591830d024
+          path: .runtime/ch7-mac-bulk-source
+          persist-credentials: false
+      - name: Fetch frozen bulk-census plan, build and historical objects
+        run: git -C .runtime/ch7-mac-bulk-source fetch --no-tags --depth=1 origin d96152b98f61e3cb47db9ec3d95e00591830d024 a20f090423548dedbf1337ec50786daa9e2d028a 82cfaa2fd4ff7810cab09012829e5b8d7a2c82c9 3e37a85b5bb39669782543fc7197d73eecf2dc1f 2d52777bc6b34fd8c6410800f0c56268d8132301
+      - name: Replay complete bulk terminal record and coherent corruption controls
+        run: |
+          mkdir -p .runtime/mac-bulk-refusal
+          python3 -B experiments/ch7/mac-census-2026-11-16/audit.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/audit.json
+          python3 -B experiments/ch7/mac-census-2026-11-16/refusal_negative_controls.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/controls.json --temp-root .runtime/mac-bulk-refusal/disposable

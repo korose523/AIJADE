@@ -1,0 +1,574 @@
+{
+  "schema": "aijade.ch7.post-stop-owned-lifecycle-analysis.v1",
+  "status": "STATIC_DIAGNOSIS_ONLY_NO_REEXECUTION",
+  "analyzedAt": "2026-11-16T13:11:22.655575+00:00",
+  "rawRoot": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-mac-census-20261116/qualification-01",
+  "implementationCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+  "buildFreezeCommit": "a20f090423548dedbf1337ec50786daa9e2d028a",
+  "executionPlanSha256": "d8c5ed7cc58267571c5bdb1ee1cd1043eba9c6a3136f340677d69087575038b5",
+  "processPolicySha256": "1c48614601b9b74c0da4fb6860848cba5a12ea0570f3053ddfa487e7036097f8",
+  "observerModuleSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+  "scope": {
+    "liveSnapshotsRun": 0,
+    "qualificationWindowsRun": 0,
+    "rendererRuns": 0,
+    "modelCalls": 0,
+    "frozenFilesModified": false,
+    "published": false,
+    "completeIndependentSequenceAuditRun": false
+  },
+  "terminal": {
+    "recordedStatus": "STOPPED",
+    "recordedReason": "ValueError: runtime observation failed: ValueError: process observation adverse or unknown; runtime observation failed: ValueError: process observation adverse or unknown",
+    "formalHardwareQualification": false,
+    "completedBlocks": 0,
+    "completedConditionRows": 0,
+    "modelRequests": 0,
+    "plannedConditionRows": 20,
+    "unknownCaseIds": [
+      "u_6f517fd12e4ada03/C1",
+      "u_6f517fd12e4ada03/C2",
+      "u_3262407f7b06f468/C2",
+      "u_3262407f7b06f468/C1",
+      "u_b655e4fdcca80f86/C2",
+      "u_b655e4fdcca80f86/C1",
+      "u_1b81d876de1008b4/C1",
+      "u_1b81d876de1008b4/C2",
+      "u_7c1fde769e93f69b/C2",
+      "u_7c1fde769e93f69b/C1",
+      "u_b731af9ded39a494/C1",
+      "u_b731af9ded39a494/C2",
+      "u_51f0799d11b47ca8/C1",
+      "u_51f0799d11b47ca8/C2",
+      "u_2d69e7fd46cf9c05/C2",
+      "u_2d69e7fd46cf9c05/C1",
+      "u_d13d4ca584242835/C1",
+      "u_d13d4ca584242835/C2",
+      "u_5b459708324f5e70/C2",
+      "u_5b459708324f5e70/C1"
+    ],
+    "unknownCount": 20,
+    "inFlightCount": 0,
+    "unattemptedCount": 0,
+    "blockDirectoryExists": false,
+    "blockReceiptExists": false,
+    "blockControllerLogBytes": 0,
+    "lastControllerExitCode": -15,
+    "lastControllerExitCodeMeaning": "Recorded -15 after parent termination; does not establish an earlier clean child/preflight exit."
+  },
+  "phaseReceipts": {
+    "settlingStatus": "FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION",
+    "admissionStatus": "ADMITTED",
+    "controllerAcceptedBothPhases": true,
+    "staticRawAggregates": {
+      "settling": {
+        "samples": 300,
+        "statusCounts": {
+          "PASS": 300
+        },
+        "minimumAvailableBytes": 7210364928,
+        "minimumSwapUsedBytes": 847249408,
+        "maximumSwapUsedBytes": 847249408,
+        "maximumGapSeconds": 2.0092260930105112,
+        "idleOwnedSetsEmpty": true,
+        "swapRangeBytes": 0
+      },
+      "admission": {
+        "samples": 60,
+        "statusCounts": {
+          "PASS": 60
+        },
+        "minimumAvailableBytes": 7168843776,
+        "minimumSwapUsedBytes": 847249408,
+        "maximumSwapUsedBytes": 847249408,
+        "maximumGapSeconds": 2.0092026450147387,
+        "idleOwnedSetsEmpty": true,
+        "swapRangeBytes": 0
+      }
+    },
+    "settlingEndMonotonic": 138215.144676326,
+    "admissionStartMonotonic": 138218.775848829,
+    "settlingToAdmissionGapSeconds": 3.6311725030245725,
+    "maximumFrozenTransitionGapSeconds": 3,
+    "transitionRuleSatisfied": false,
+    "postAdmissionToSequenceEpochSeconds": 0.7375948679982685,
+    "phaseAcceptNotWholeSequenceAuditAcceptance": true,
+    "sourceBasedGapInference": "run_finite_sequence.py:99-111 replays all settling samples through validate_mac_sample after phase() returns and before admission phase() at line127. This is a plausible source of boundary overhead, not a measured breakdown proving all 3.631 seconds came from replay."
+  },
+  "runtime": {
+    "physicalJsonLines": 9,
+    "actualObservations": 8,
+    "errorMarkers": 1,
+    "statusCounts": {
+      "PASS": 7,
+      "FAIL": 1
+    },
+    "sampleSummaries": [
+      {
+        "index": 0,
+        "sequenceElapsedSeconds": 0.001741041982313618,
+        "status": "PASS",
+        "rssBytes": 340226048,
+        "ownedCount": 4
+      },
+      {
+        "index": 1,
+        "sequenceElapsedSeconds": 2.011116423003841,
+        "status": "PASS",
+        "rssBytes": 341614592,
+        "ownedCount": 4
+      },
+      {
+        "index": 2,
+        "sequenceElapsedSeconds": 4.089242735004518,
+        "status": "PASS",
+        "rssBytes": 342290432,
+        "ownedCount": 4
+      },
+      {
+        "index": 3,
+        "sequenceElapsedSeconds": 6.011143440991873,
+        "status": "PASS",
+        "rssBytes": 343916544,
+        "ownedCount": 4
+      },
+      {
+        "index": 4,
+        "sequenceElapsedSeconds": 8.010553936997894,
+        "status": "PASS",
+        "rssBytes": 343375872,
+        "ownedCount": 4
+      },
+      {
+        "index": 5,
+        "sequenceElapsedSeconds": 10.006003649003105,
+        "status": "PASS",
+        "rssBytes": 344145920,
+        "ownedCount": 4
+      },
+      {
+        "index": 6,
+        "sequenceElapsedSeconds": 12.005998754990287,
+        "status": "PASS",
+        "rssBytes": 345681920,
+        "ownedCount": 4
+      },
+      {
+        "index": 7,
+        "sequenceElapsedSeconds": 14.010577935987385,
+        "status": "FAIL",
+        "rssBytes": null,
+        "ownedCount": 0
+      }
+    ],
+    "lastSampleId": "d96243daa106437d89d2875649033abb",
+    "lastSampleStartedMonotonic": 138353.529834574,
+    "lastSampleFinishedMonotonic": 138354.495512267,
+    "lastSampleElapsedSeconds": 14.010577935987385,
+    "recordedBlockers": [
+      {
+        "code": "SNAPSHOT_READ_UNKNOWN",
+        "severity": "UNKNOWN",
+        "phase": "after"
+      },
+      {
+        "code": "OWNED_ROOT_MISSING_OR_REUSED",
+        "severity": "UNKNOWN",
+        "phase": "after"
+      },
+      {
+        "code": "OWNED_PROCESS_REPARENTED_OUTSIDE_CLOSURE",
+        "severity": "FAIL",
+        "phase": "after",
+        "pid": 55469
+      },
+      {
+        "code": "OWNED_PROCESS_REPARENTED_OUTSIDE_CLOSURE",
+        "severity": "FAIL",
+        "phase": "after",
+        "pid": 57792
+      }
+    ],
+    "recordedOwnedRssBytes": null,
+    "lastOwnedRoots": [
+      {
+        "pid": 55469,
+        "createTime": 1794833067.305583
+      },
+      {
+        "pid": 57792,
+        "createTime": 1794833805.810615
+      },
+      {
+        "pid": 57825,
+        "createTime": 1794833813.907719
+      }
+    ],
+    "errorMarkersRaw": [
+      {
+        "utc": null,
+        "monotonicSeconds": 138353.529437161,
+        "sequenceElapsedSeconds": 14.010577935987385,
+        "observationError": "ValueError: process observation adverse or unknown"
+      }
+    ],
+    "lastFrames": {
+      "before": {
+        "nativeStatus": "OK",
+        "nativeRawSha256": "988850327db8ef16d7d7e5f931d7108508b5c02a49bec389d88d322bdb590bed",
+        "nativeShaMatches": true,
+        "nativeByteCountMatches": true,
+        "nativeRecordCount": 656,
+        "returnedBytes": 425088,
+        "abiRecordBytes": 648,
+        "nativeReadAttempts": 1,
+        "nativeReadErrnos": [
+          0
+        ],
+        "nativeNotAtomicMachineHistory": true,
+        "nativeClockKind": "clock_gettime.CLOCK_MONOTONIC",
+        "nativeStartMonotonicNs": 138352403195000,
+        "nativeEndMonotonicNs": 138352404272000,
+        "nativeTimingNotComparedWithPythonAbsoluteOrigin": true,
+        "nativeHelperPid": 57843,
+        "nativeHelperExitCode": 0,
+        "nativeHelperTimedOut": false,
+        "nativeHelperOversized": false,
+        "nativeCleanupKnown": true,
+        "nativeGraphErrors": [],
+        "snapshotErrors": [],
+        "rawTargetRecords": {
+          "55469": {
+            "pid": 55469,
+            "parentPid": 55463,
+            "createTimeMicros": 1794833067305583,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57792": {
+            "pid": 57792,
+            "parentPid": 55469,
+            "createTimeMicros": 1794833805810615,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57825": {
+            "pid": 57825,
+            "parentPid": 57792,
+            "createTimeMicros": 1794833813907719,
+            "category": "other",
+            "commandNameAtLimit": false
+          }
+        },
+        "normalizedTargetRecords": {
+          "55469": {
+            "pid": 55469,
+            "parentPid": 55463,
+            "createTime": 1794833067.305583,
+            "createTimeMicros": 1794833067305583,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57792": {
+            "pid": 57792,
+            "parentPid": 55469,
+            "createTime": 1794833805.810615,
+            "createTimeMicros": 1794833805810615,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57825": {
+            "pid": 57825,
+            "parentPid": 57792,
+            "createTime": 1794833813.907719,
+            "createTimeMicros": 1794833813907719,
+            "category": "other",
+            "commandNameAtLimit": false
+          }
+        },
+        "ownedProcesses": [
+          {
+            "pid": 55469,
+            "createTime": 1794833067.305583,
+            "parentPid": 55463,
+            "rssBytes": 311455744,
+            "rssSource": "psutil-live"
+          },
+          {
+            "pid": 57792,
+            "createTime": 1794833805.810615,
+            "parentPid": 55469,
+            "rssBytes": 28196864,
+            "rssSource": "psutil-live"
+          },
+          {
+            "pid": 57825,
+            "createTime": 1794833813.907719,
+            "parentPid": 57792,
+            "rssBytes": 5427200,
+            "rssSource": "psutil-live"
+          },
+          {
+            "pid": 57843,
+            "createTime": 1794833819.834056,
+            "parentPid": 55469,
+            "rssBytes": 1028096,
+            "rssSource": "native-collector-self"
+          }
+        ]
+      },
+      "after": {
+        "nativeStatus": "OK",
+        "nativeRawSha256": "5a5e4e12ebad2406adbc1ce84ea4d965f8799cb78a044a32a7bc5b2ad632824e",
+        "nativeShaMatches": true,
+        "nativeByteCountMatches": true,
+        "nativeRecordCount": 655,
+        "returnedBytes": 424440,
+        "abiRecordBytes": 648,
+        "nativeReadAttempts": 1,
+        "nativeReadErrnos": [
+          0
+        ],
+        "nativeNotAtomicMachineHistory": true,
+        "nativeClockKind": "clock_gettime.CLOCK_MONOTONIC",
+        "nativeStartMonotonicNs": 138352899099000,
+        "nativeEndMonotonicNs": 138352900243000,
+        "nativeTimingNotComparedWithPythonAbsoluteOrigin": true,
+        "nativeHelperPid": 57847,
+        "nativeHelperExitCode": 0,
+        "nativeHelperTimedOut": false,
+        "nativeHelperOversized": false,
+        "nativeCleanupKnown": true,
+        "nativeGraphErrors": [],
+        "snapshotErrors": [
+          {
+            "code": "OWNED_PROCESS_RSS_UNKNOWN",
+            "errorClass": "ValueError"
+          }
+        ],
+        "rawTargetRecords": {
+          "55469": {
+            "pid": 55469,
+            "parentPid": 55463,
+            "createTimeMicros": 1794833067305583,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57792": {
+            "pid": 57792,
+            "parentPid": 55469,
+            "createTimeMicros": 1794833805810615,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57825": null
+        },
+        "normalizedTargetRecords": {
+          "55469": {
+            "pid": 55469,
+            "parentPid": 55463,
+            "createTime": 1794833067.305583,
+            "createTimeMicros": 1794833067305583,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57792": {
+            "pid": 57792,
+            "parentPid": 55469,
+            "createTime": 1794833805.810615,
+            "createTimeMicros": 1794833805810615,
+            "category": "other",
+            "commandNameAtLimit": false
+          },
+          "57825": null
+        },
+        "ownedProcesses": []
+      }
+    }
+  },
+  "causalDiagnosis": {
+    "provenFacts": [
+      "PID57825 with createTime1794833813.907719 is present in before and absent in the valid after bulk census.",
+      "PID55469 and PID57792 have identical createTime and parentPid across both raw native frames; no parent change is shown for either controller.",
+      "PID57825 was first observed among ownedProcesses at sample4/t8.010553936997894 and was included as a root starting sample5. It is not an explicitlyRegisteredIdentity.",
+      "The after native census itself is OK with no processGraph errors; the snapshot error is the generic ownership/RSS catch ValueError.",
+      "No block-1 directory or block receipt exists and the block controller log is empty."
+    ],
+    "frozenCodeChain": [
+      {
+        "source": "experiments/ch7/finite_runtime.py",
+        "lines": "234-274",
+        "mechanism": "remember adds every observed owned identity to active; roots later returns all active identities after live retirement lookups, including transient discovered workers."
+      },
+      {
+        "source": "experiments/ch7/mac_process_guard_v2.py",
+        "lines": "418-430",
+        "mechanism": "_owned_ids raises for one absent/reused root and returns no partial membership."
+      },
+      {
+        "source": "experiments/ch7/mac_process_guard_v2.py",
+        "lines": "553-578",
+        "mechanism": "_snapshot catches the missing-root ValueError as OWNED_PROCESS_RSS_UNKNOWN, leaving after ownedProcesses empty."
+      },
+      {
+        "source": "experiments/ch7/mac_process_guard_v2.py",
+        "lines": "650-652,686-696",
+        "mechanism": "validator falls back to members=set() then tests previous stable identities against that empty set; this generates the two recorded reparent FAIL diagnostics without evidence of actual reparenting."
+      }
+    ],
+    "recordedFailPreserved": true,
+    "interpretation": "The recorded FAIL is preserved. Its two reparent labels are cascade diagnostics caused by missing-root membership invalidation, not established physical reparenting. The aggregate RSS stays unknown/null and the sequence remains stopped regardless.",
+    "notEstablished": [
+      "Exact executable/argv of PID57825; category other is not Git proof.",
+      "Exact exit time, clean exit or exit code of PID57825.",
+      "Physical reparenting of PID55469 or PID57792.",
+      "Exact preflight instruction reached by block controller57792.",
+      "A completed rendered condition, model request, formal hardware qualification or fresh held-out measurement."
+    ],
+    "sourceBasedStageInference": "The frozen block creates output only after Git/repository/build/policy/input/protected-source preflight (run_finite_block.py:44-99); absent output is consistent with pre-output preflight. That stage invokes Git but raw category other cannot identify PID57825 as Git."
+  },
+  "registry": {
+    "status": "ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT",
+    "explicitlyRegisteredIdentities": [
+      {
+        "pid": 57792,
+        "createTime": 1794833805.810615,
+        "registeredMonotonic": 138339.529051954
+      }
+    ],
+    "worker57825Retirement": [
+      {
+        "pid": 57825,
+        "createTime": 1794833813.907719,
+        "status": "ABSENT",
+        "observedCreateTime": null,
+        "checkedMonotonic": 138354.672995216
+      }
+    ],
+    "remainingIdentities": [],
+    "interpretation": "Later retirement ABSENT establishes observed old-identity absence during cleanup, not exact exit timing/type or an earlier clean exit. The before-live roots lookup could establish presence only at its own earlier instant, not future liveness."
+  },
+  "dispositionMechanism": {
+    "source": "experiments/ch7/run_finite_sequence.py:244-253; experiments/ch7/finite_runtime.py:375-393",
+    "meaning": "When target receipt is absent, flow_started falls back to active is not None. With launched controller and no journal, dispositions conservatively marks all planned unfinished records UNKNOWN. Do not relabel these as unattempted simply because block output is absent."
+  },
+  "nextIterationDesigns": [
+    {
+      "id": "D1",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "title": "Stream per-tick validation and preserve a continuous phase boundary",
+      "design": "Validate each fixed-phase observation as it is saved; do not replay all 300 observations before starting admission. Preserve the same 600/120 durations, >=300/60 samples and <=3 second boundary gap. Independently replay the saved evidence after the stopped/successful sequence; no rule relaxation or reset.",
+      "controls": [
+        "A slow phase-end replay produces >3 seconds and is rejected.",
+        "Streaming validation finishing within each tick leaves no phase-end batch; exact gap is still measured.",
+        "Slow validation, missing last/first samples and late completion remain adverse."
+      ]
+    },
+    {
+      "id": "D2",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "title": "Separate persistent controller leases from discovered finite workers",
+      "design": "Required persistent controllers remain explicit PID/createTime leases. Observed descendant identities enter a separate historical ledger, not a permanent must-live roots list. A valid complete later bulk census can establish an old worker identity is absent; changed createTime is PID reuse, not identity continuity. A still-present worker with unreadable identity/RSS remains UNKNOWN; never substitute zero. Preserve protection against actual orphan/reparent escape.",
+      "controls": [
+        "A remembered finite worker is before-present/after-absent while both controllers remain stable.",
+        "A required controller is absent or reused and refuses execution.",
+        "Present worker RSS read failure remains UNKNOWN/null.",
+        "A worker reparented outside the controller forest remains in the identity ledger and adverse.",
+        "An incomplete bulk census cannot retire a missing worker."
+      ]
+    },
+    {
+      "id": "D3",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "title": "Typed partial closure and causal diagnostic rules",
+      "design": "Closure returns matched roots, missing roots, reused roots, valid diagnostic members and coverageComplete. Any incomplete closure remains adverse. Retain valid members for diagnosis, but do not use the partial sum as a known full RSS aggregate. Emit proven reparent only from a complete evaluable ancestry relation; missing-root evaluation emits closure-unknown and does not manufacture reparent from an empty fallback set.",
+      "controls": [
+        "One missing finite worker does not label stable controllers as reparented.",
+        "Missing or malformed roots never become an accepted partial forest.",
+        "A genuine same-identity changed-parent orphan is rejected.",
+        "Unknown aggregate RSS remains null, never zero; known partial RSS is explicitly partial."
+      ]
+    },
+    {
+      "id": "D4",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "title": "Explicit subprocess and stage provenance",
+      "design": "Record bounded launch/exit leases for preflight commands and the renderer/test driver with executable identity, PID/createTime and stage. Keep anonymous category=other as unclassified. Do not retrofit a Git label into the current trace.",
+      "controls": [
+        "Unknown other-category descendants are not attributed to Git.",
+        "Pre-output launched block with no journal stays 20 UNKNOWN under the frozen disposition rule.",
+        "Exit code, creation time and lease identity mismatch are adverse."
+      ]
+    }
+  ],
+  "authorizationBoundary": "All proposed changes and controls are NOT_RUN. No second plan/window is executed or implied authorized by this diagnosis. A future prospectively published revision, separately frozen source/build and explicit applicable execution authorization are required before a new qualification attempt.",
+  "evidence": {
+    "receipt.json": {
+      "sha256": "984ca43b74b432635cc0a49c81b7abd0d0a62674f7a1aa07ba0d2c3844c82106",
+      "size": 2758
+    },
+    "settling/receipt.json": {
+      "sha256": "c31b6b88d9b440b530a921e836b7f3fde260faaa8a3b26b4c80c38b79b7e7c92",
+      "size": 1498
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "00a801532eadf05ae2c9737ba582f01803d8f40b430d89aeba9029bf55c1bf10",
+      "size": 118546887
+    },
+    "admission/receipt.json": {
+      "sha256": "cf6b8fdded6383dea44eb60c7e0ecbd2489e58cd565f11e1caa29fb7e8738e4c",
+      "size": 1501
+    },
+    "admission/telemetry.jsonl": {
+      "sha256": "fba55134bbd4bf1502b83c15575978b3b845f07d8ee203007589dea7c07ad430",
+      "size": 23709528
+    },
+    "process-observations.jsonl": {
+      "sha256": "76ac1a2e18aea80282519a6f48385c3907f2efe0f5d623720f6da1264bb74da4",
+      "size": 3181696
+    },
+    "owned-process-registry.json": {
+      "sha256": "e54dfb3b18e071be2e829efe36ad0cd87402aab2f2fa7e38236c63912b180ceb",
+      "size": 2931
+    },
+    "process-policy.json": {
+      "sha256": "1c48614601b9b74c0da4fb6860848cba5a12ea0570f3053ddfa487e7036097f8",
+      "size": 1322
+    },
+    "block-1-controller.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "sustained-timers.json": {
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "size": 3
+    }
+  },
+  "sourceBindings": {
+    "experiments/ch7/mac_process_guard_v2.py": {
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "frozenQSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "matchesFrozenQ": true
+    },
+    "experiments/ch7/finite_runtime.py": {
+      "sha256": "ac8926aab5c26292de13f5c61fb319c18cbf2eb4bd94f84ece258b921108557f",
+      "frozenQSha256": "ac8926aab5c26292de13f5c61fb319c18cbf2eb4bd94f84ece258b921108557f",
+      "matchesFrozenQ": true
+    },
+    "experiments/ch7/run_finite_sequence.py": {
+      "sha256": "87c3aefd4461e65dca2e50c9b6f90d4ede6aa12dd0464754cc025d3c485d669f",
+      "frozenQSha256": "87c3aefd4461e65dca2e50c9b6f90d4ede6aa12dd0464754cc025d3c485d669f",
+      "matchesFrozenQ": true
+    },
+    "experiments/ch7/run_finite_block.py": {
+      "sha256": "1c6ca00c2b190294b7a33f0d9d8312e0c18f79c7c327529f89af1a255d239c81",
+      "frozenQSha256": "1c6ca00c2b190294b7a33f0d9d8312e0c18f79c7c327529f89af1a255d239c81",
+      "matchesFrozenQ": true
+    },
+    "experiments/ch7/finite_sequence_audit.py": {
+      "sha256": "e8a0acf8d045db36c12d43f3d31cc9bb1c768461304e8536a5cfd9d79a1c3e55",
+      "frozenQSha256": "e8a0acf8d045db36c12d43f3d31cc9bb1c768461304e8536a5cfd9d79a1c3e55",
+      "matchesFrozenQ": true
+    }
+  }
+}
