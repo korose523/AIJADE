@@ -1,0 +1,116 @@
+{
+  "status": "FAILED_COMPLETE_DEFAULT_REGRESSION_NOT_USED_FOR_QUALIFICATION",
+  "sourceCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+  "artifactRoot": "/Volumes/Untitled/AIJADE/.runtime/posix/build-artifacts/ch7-mac-census-20261116",
+  "reason": "Historical tests locate frozen repository inputs through artifact-directory ancestors; an external artifact root breaks that contract.",
+  "correction": "Restore the previously validated repo/.runtime/build-artifacts output root without modifying frozen source or excluding tests.",
+  "trx": [
+    {
+      "path": "default-regression/_macdeMacBook-Pro_2026-11-16_21_26_04_net10.0.trx",
+      "sha256": "7693aa2526d43ba192a8cf72f377072835653a02fd52ea76d1cee74a23ecf979",
+      "counts": {
+        "NotExecuted": 38
+      },
+      "failed": []
+    },
+    {
+      "path": "default-regression/_macdeMacBook-Pro_2026-11-16_21_26_35_net10.0.trx",
+      "sha256": "8c7e6604a7aa421acc417fb8b7eb0d65c980871694aa3a72153d9badcd8e9ff9",
+      "counts": {
+        "Passed": 663,
+        "NotExecuted": 29,
+        "Failed": 21
+      },
+      "failed": [
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Frozen_candidate_bank_execution_matches_original_labels_without_replacement",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"revoke\", placement: \"after_delivery\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLiveManifestParserTests.Missing_wrong_typed_unbound_and_heldout_inputs_are_refused",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"replay\", placement: \"after_duplicate_reuse\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Retrieved_route_refuses_malformed_or_unbound_content",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"failure\", placement: \"outcome_before\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Retrieved_content_changes_selected_program_and_act_on_the_actual_memory_API",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"revoke\", placement: \"after_authority_probe\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLiveManifestParserTests.Closed_known_manifest_contains_operational_inputs_and_balanced_pairs",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_parser_roundtrips_known_inputs_and_enforces_closed_source_bound_blocks",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"replay\", placement: \"after_first_reuse\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"revoke\", placement: \"after_memory_probe\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"replay\", placement: \"before_delivery\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"revoke\", placement: \"before_delivery\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLiveManifestParserTests.Expected_labels_unknown_fields_and_duplicate_json_properties_are_refused",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"failure\", placement: \"authority_after\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"failure\", placement: \"outbox_before\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"failure\", placement: \"authority_before\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLiveManifestParserTests.Consistent_case_renaming_changes_no_input_operation_or_programme",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLiveManifestParserTests.A_bounded_block_does_not_require_the_ten_development_names_or_count",
+          "message": "System.InvalidOperationException : Repository not found"
+        },
+        {
+          "name": "Aijade.Tests.ResearchLoopQualificationTests.Finite_operation_placements_use_actual_known_evidence_and_preserve_full_observations(operation: \"replay\", placement: \"after_delivery\")",
+          "message": "System.InvalidOperationException : Repository root missing"
+        }
+      ]
+    }
+  ],
+  "admissionStarted": false,
+  "rendererSessions": 0,
+  "freshHeldoutCases": 0,
+  "at": "2026-11-16T12:32:21.502367+00:00"
+}
