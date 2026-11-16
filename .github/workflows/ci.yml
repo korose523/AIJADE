@@ -60,8 +60,14 @@ jobs:
         run: python3 experiments/ch7/retrieval-led-2026-11-12/verify_archive.py
       - name: Verify paired known-case baseline, immutable scoring and post-measurement audit correction
         run: python3 experiments/ch7/paired-development-2026-11-12/verify_archive.py
-      - name: Verify identifier-independent scoring, source freeze and unexecuted held-out proposal
-        run: python3 experiments/ch7/manifest-preparation-2026-11-12/verify_archive.py
+      - name: Materialize the immutable research snapshot before product evolution
+        uses: actions/checkout@v7
+        with:
+          ref: f90f04110f46fb17a2a43a777ed5d4e68a361902
+          path: .runtime/historical-manifest
+          persist-credentials: false
+      - name: Verify unchanged historical packet and pinned source without qualifying current product code
+        run: python3 -B tools/verify-historical-manifest.py --snapshot .runtime/historical-manifest
       - name: Verify conditional live manifest dataflow, retained swap stop and fixed idle admission
         run: python3 experiments/ch7/live-manifest-2026-11-12/verify_archive.py
       - name: Verify authored source and embedded build revision are distinguished

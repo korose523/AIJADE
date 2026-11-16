@@ -12,15 +12,15 @@ namespace Aijade.Integrations;
 /// <summary>A message seen on an external channel.</summary>
 /// <param name="Platform">"discord", "telegram", "satori", "x", "bilibili" …</param>
 /// <param name="ConversationId">The platform's id for the room / chat / thread the reply goes back to.</param>
-/// <param name="AuthorId">The platform's id for the person (memory is kept per person).</param>
+/// <param name="AuthorId">The platform's id for the person (memory is kept per person and audience).</param>
 /// <param name="AuthorName">How the person is shown to the model in group rooms.</param>
 /// <param name="Text">The message, with the bot's own mention removed.</param>
 /// <param name="IsDirect">A private message to the bot (always answered).</param>
 /// <param name="AddressesBot">The bot was mentioned or replied to (answered in group rooms).</param>
 public sealed record ChannelMessage(string Platform, string ConversationId, string AuthorId, string AuthorName, string Text, bool IsDirect, bool AddressesBot)
 {
-    /// <summary>One AIJADE chat per platform conversation.</summary>
-    public string Key => $"{Platform}:{ConversationId}";
+    /// <summary>One AIJADE chat per platform conversation and audience kind.</summary>
+    public string Key => ChannelScope.Conversation(this);
 }
 
 /// <summary>What the companion says back: text, and optionally one picture it drew.</summary>
@@ -49,7 +49,7 @@ public sealed class BridgeOptions
     /// <summary>The character the companion plays on external channels (null = the default Aijade-9 persona).</summary>
     public string? CharacterId { get; init; }
 
-    /// <summary>Recall and record long-term memory, per person (see <see cref="CompanionBridge.MemorySession"/>).</summary>
+    /// <summary>Recall and record long-term memory, per person and audience (see <see cref="CompanionBridge.MemorySession"/>).</summary>
     public bool Memory { get; init; } = true;
 
     /// <summary>
@@ -124,8 +124,8 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         }, companion, audio, options.Time);
     }
 
-    /// <summary>The memory session of one person on one platform: recall and recording never cross people.</summary>
-    public static string MemorySession(ChannelMessage m) => $"bot:{m.Platform}:{m.AuthorId}";
+    /// <summary>The memory session of one person and audience: private records are never recalled in a group.</summary>
+    public static string MemorySession(ChannelMessage m) => ChannelScope.Memory(m);
     private readonly ConcurrentDictionary<string, SemaphoreSlim> locks = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, DateTimeOffset> lastReply = new(StringComparer.Ordinal);
     private readonly SemaphoreSlim stateGate = new(1, 1);
@@ -195,6 +195,11 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
         await gate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
+            // Several group events can pass the fast check while the first turn is awaiting the model. Check again
+            // under the conversation lock, using the current clock rather than the time the event entered the queue.
+            now = options.Time.GetUtcNow();
+            if (!message.IsDirect && lastReply.TryGetValue(message.Key, out last) && now - last < options.MinInterval)
+                return null;
             lastReply[message.Key] = now;
             var sync = options.ResolveCompanion is null ? null : await options.ResolveCompanion(message, ct).ConfigureAwait(false);
             var who = sync?.Character ?? (sync is null ? await CharacterAsync(ct).ConfigureAwait(false) : null);

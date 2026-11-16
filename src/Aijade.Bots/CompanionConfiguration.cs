@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aijade.Bots;
 
-/// <summary>Product settings and a durable notebook per platform/person/character, never one shared relationship.</summary>
+/// <summary>Product settings and a durable notebook per platform/person/audience/character, never one shared relationship.</summary>
 public sealed class CompanionConfiguration
 {
     private readonly ConcurrentDictionary<string, CompanionExperience> companions = new(StringComparer.Ordinal);
@@ -34,7 +34,7 @@ public sealed class CompanionConfiguration
 
     public CompanionExperience For(ChannelMessage m)
     {
-        var key = $"{m.Platform}:{m.AuthorId}:{CharacterId}";
+        var key = ChannelScope.Companion(m, CharacterId);
         return companions.GetOrAdd(key, _ => new(new CompanionNotebook(store, key), () => Profile, weather, key));
     }
 
