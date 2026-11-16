@@ -21,7 +21,7 @@ import time
 
 import psutil
 from finite_runtime import (validate_build, cleanup_owned_databases, stop_owned_processes, dispositions,
-    BUILD_FREEZE_PATH, MAC_PLAN, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry)
+    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry)
 
 GIB = 1024 ** 3
 PLAN = '78785a5'
@@ -46,11 +46,11 @@ def _main(args):
     assert subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo, text=True) == ''
     repository_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
     commit = getattr(args,'implementation_commit',None) or repository_commit
-    mac=args.execution_plan.name==MAC_PLAN
+    mac=args.execution_plan.name in MAC_PLANS
     assert mac or commit==repository_commit
     if mac:
-        assert args.execution_plan.resolve()==repo/'experiments/plans'/MAC_PLAN
-        assert args.execution_plan.read_bytes()==subprocess.check_output(['git','show',commit+':experiments/plans/'+MAC_PLAN],cwd=repo)
+        assert args.execution_plan.resolve()==repo/'experiments/plans'/args.execution_plan.name
+        assert args.execution_plan.read_bytes()==subprocess.check_output(['git','show',commit+':experiments/plans/'+args.execution_plan.name],cwd=repo)
     assert commit == os.environ['AIJADE_GIT_COMMIT']
     assert os.environ.get('DOTNET_PROCESSOR_COUNT') == '2'
     assert psutil.__version__ == '7.2.2'
@@ -62,7 +62,9 @@ def _main(args):
     if mac:
         assert getattr(args,'process_policy',None) is not None
         policy,process_identity=load_mac_policy(repo,args.process_policy,commit)
-        from mac_process_guard import observe
+        assert args.execution_plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy)
+        validate_mac_build_policy(policy,build)
+        observe=mac_observer(policy).observe
     metadata=dict(binding,buildFreezeCommit=args.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
@@ -140,7 +142,7 @@ def _main(args):
             [repo/'experiments/ch7/run_finite_block.py',repo/'experiments/ch7/run_finite_sequence.py'] +
             [repo/'experiments/ch7/godot_local.py'] +
             list((repo/'tests/Aijade.Tests').glob('ResearchFinite*.cs'))+
-            ([repo/'experiments/ch7/mac_process_guard.py'] if mac else []))},
+            ([repo/'experiments/ch7/mac_process_guard.py'] + ([repo/'experiments/ch7/mac_process_guard_v2.py',repo/'experiments/ch7/mac_bulk_census.c'] if mac_plan(policy)!=MAC_PLAN else []) if mac else []))},
         constructionFreezeCommit=runtime['constructionFreezeCommit'], purpose=runtime['purpose'],
         runtimeRepositoryPath=str(args.manifest.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
         scoringRepositoryPath=str(args.scoring.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
@@ -162,7 +164,7 @@ def _main(args):
     timers = {} if mac else (json.loads(timer_file.read_text()) if timer_file.exists() else {})
     cpu = {}
     phases = {}
-    peaks = dict(rssBytes=0, swapIncreaseBytes=0, minAvailableBytes=psutil.virtual_memory().available)
+    peaks = dict(rssBytes=None if mac else 0, swapIncreaseBytes=0, minAvailableBytes=psutil.virtual_memory().available)
     telemetry = None if mac else (output / 'telemetry.jsonl').open('x')
     planned = [p['input']['caseId']+'/'+c for p in runtime['cases'] for c in p['input']['conditions']]
     write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases={},modelRequests=0))
@@ -176,9 +178,9 @@ def _main(args):
         def sample():
             observation=observe(policy,owned_roots=owned_registry.roots());observation.update(process_identity)
             owned_registry.remember(observation)
-            rss=sum(p['rssBytes'] for p in observation.get('ownedProcesses',[]))
+            rss=observation.get('ownedRssBytes')
             available=psutil.virtual_memory().available;swap_used=psutil.swap_memory().used
-            peaks['rssBytes']=max(peaks['rssBytes'],rss)
+            if type(rss) is int:peaks['rssBytes']=max(peaks['rssBytes'] or 0,rss)
             peaks['swapIncreaseBytes']=max(peaks['swapIncreaseBytes'],max(0,swap_used-initial_swap))
             peaks['minAvailableBytes']=min(peaks['minAvailableBytes'],available)
             return dict(utc=utc(),elapsedSeconds=time.monotonic()-started,rssBytes=rss,availableBytes=available,

@@ -17,6 +17,7 @@ import re
 from comparison_manifest import FIELDS, REGISTRY_SHA256, window_registry
 
 PLAN_SHA256 = 'ca53a7df038b413bbefc6ca56195e16183620777d0391893b6419b21975bdfa2'
+CENSUS_PLAN_SHA256 = 'd8c5ed7cc58267571c5bdb1ee1cd1043eba9c6a3136f340677d69087575038b5'
 SHARED = ('implementationCommit', 'repositoryCommit', 'buildFreezeCommit',
           'buildFreezePath', 'inputPublicationCommit', 'dataPublicationManifestPath',
           'dataPublicationManifestSha256', 'addedDataPaths', 'processPolicyPath', 'processPolicySha256',
@@ -182,10 +183,17 @@ def _identity(value, purpose):
                 and re.fullmatch('[0-9a-f]{64}', value['dataPublicationManifestSha256']), 'invalid I manifest hash')
 
 
+def expected_plan_sha256(value):
+    from finite_runtime import MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH
+    paths={MAC_BUILD_FREEZE_PATH:PLAN_SHA256,MAC_CENSUS_BUILD_FREEZE_PATH:CENSUS_PLAN_SHA256}
+    require(value.get('buildFreezePath') in paths,'unknown execution decision build path')
+    return paths[value['buildFreezePath']]
+
+
 def _same_identity(value, sequence, purpose):
     _identity(value, purpose)
     require(all(value[key] == sequence[key] for key in SHARED), 'mixed Q/B/I, policy or observer identities')
-    require(value['executionPlanSha256'] == PLAN_SHA256, 'wrong prospective execution plan')
+    require(value['executionPlanSha256'] == sequence['executionPlanSha256'] == expected_plan_sha256(sequence), 'wrong prospective execution plan')
 
 
 def _no_missing(receipt):
@@ -405,7 +413,7 @@ def verify(root, repo):
     require(sequence['modelRequests'] == 0 and type(sequence['modelRequests']) is int
             and sequence['formalHardwareQualification'] is False and sequence['independentHumanReview'] is False,
             'sequence scientific scope inflated')
-    require(sequence['executionPlanSha256'] == PLAN_SHA256, 'wrong prospective execution plan')
+    require(sequence['executionPlanSha256'] == expected_plan_sha256(sequence), 'wrong prospective execution plan')
     _identity(sequence, purpose); _no_missing(sequence)
     binding = _repository_binding(repo, sequence['implementationCommit'], sequence['repositoryCommit'],
                                   sequence['dataPublicationManifestPath'])

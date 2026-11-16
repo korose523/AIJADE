@@ -109,7 +109,7 @@ class SequenceAuditControls(unittest.TestCase):
         (self.root / 'process-policy.json').write_bytes((self.repo / 'policy.json').read_bytes())
         (self.repo / 'data.json').write_text('{"syntheticNonExecutable":true}\n')
         shared = dict(codeCommit=Q, implementationCommit=Q, repositoryCommit=I if formal else Q,
-            buildFreezeCommit=B, buildFreezePath='new/frozen-build.json',
+            buildFreezeCommit=B, buildFreezePath='experiments/ch7/mac-formal-2026-11-16/frozen-build.json',
             inputPublicationCommit=I if formal else None,
             dataPublicationManifestPath='data.json' if formal else None,
             dataPublicationManifestSha256=sha(self.repo / 'data.json') if formal else None,
@@ -211,6 +211,24 @@ class SequenceAuditControls(unittest.TestCase):
                 phaseClock=dict(startMonotonic=clock_origin, endMonotonic=clock_origin + duration,
                                 requestedSeconds=duration, intervalReset=False), **shared))
         return sequence
+
+    def test_bulk_decision_whole_population_and_cross_decision_refusal(self):
+        self.fixture()
+        def rebound(value):
+            if isinstance(value,dict):
+                for key,item in value.items():
+                    if key=='buildFreezePath':value[key]='experiments/ch7/mac-census-2026-11-16/frozen-build.json'
+                    elif key=='executionPlanSha256':value[key]=audit.CENSUS_PLAN_SHA256
+                    else:rebound(item)
+            elif isinstance(value,list):
+                for item in value:rebound(item)
+        for path in self.root.rglob('*.json'):
+            value=self.load(path);before=json.dumps(value,sort_keys=True);rebound(value)
+            if json.dumps(value,sort_keys=True)!=before:write(path,value)
+        result=audit.verify(self.root,self.repo)
+        self.assertEqual(result['status'],'FINITE_SEQUENCE_RAW_AUDIT_PASS')
+        path=self.root/'admission/receipt.json';value=self.load(path);value['executionPlanSha256']=audit.PLAN_SHA256;write(path,value)
+        with self.assertRaisesRegex(ValueError,'wrong prospective execution plan'):audit.verify(self.root,self.repo)
 
     def change_block_receipt(self, index, change):
         path = self.root / ('block-%d/receipt.json' % index); value = self.load(path); change(value); write(path, value)

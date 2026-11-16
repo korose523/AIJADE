@@ -70,7 +70,7 @@ def verify(root, repo):
     cases = {c['input']['caseId']: c for c in runtime['cases']}; n = len(cases)
     require(1 <= n <= 10 and receipt['plannedPairs'] == n and receipt['completedCases'] == receipt['plannedCases'] == 2*n, 'incomplete live population')
     require(receipt['status'] == 'COMPLETE_FINITE_BLOCK_OBSERVATIONS' and receipt['codeCommit'] == identity['codeCommit'], 'execution status/source')
-    from finite_runtime import (MAC_PLAN, MAC_BUILD_FREEZE_PATH, BUILD_FREEZE_PATH, safe_relative,
+    from finite_runtime import (MAC_PLAN, MAC_PLANS, mac_plan, mac_build_path, MAC_BUILD_FREEZE_PATH, BUILD_FREEZE_PATH, safe_relative,
         validate_repository_binding, validate_mac_sample, validate_coverage, validate_owned_registry)
     canonical_plan='experiments/plans/'+MAC_PLAN
     q_has_mac_plan=subprocess.run(['git','cat-file','-e',receipt['codeCommit']+':'+canonical_plan],cwd=repo,
@@ -86,13 +86,16 @@ def verify(root, repo):
         binding=validate_repository_binding(repo,identity['implementationCommit'],repository_commit,identity['dataPublicationManifestPath'])
         require(all(identity.get(key)==value for key,value in binding.items()),'repository I is not the declared additive data publication')
         require((repository_commit==identity['implementationCommit']) if runtime['purpose']=='qualification_only' else (repository_commit!=identity['implementationCommit']),'wrong qualification/formal Q/I role')
-        require(identity['buildFreezePath']==MAC_BUILD_FREEZE_PATH,'new mode rebound to a historical build freeze')
-        plan_rel='experiments/plans/'+MAC_PLAN
-        require(sha(subprocess.check_output(['git','show',identity['implementationCommit']+':'+plan_rel],cwd=repo))==identity['executionPlanSha256']==receipt['executionPlanSha256'],'new execution plan identity changed')
         policy_raw=raw(root,'process-policy.json');policy=json.loads(policy_raw)
+        require(identity['buildFreezePath']==mac_build_path(policy),'new mode rebound to a historical build freeze')
+        plan_rel='experiments/plans/'+mac_plan(policy)
+        require(sha(subprocess.check_output(['git','show',identity['implementationCommit']+':'+plan_rel],cwd=repo))==identity['executionPlanSha256']==receipt['executionPlanSha256'],'new execution plan identity changed')
         policy_path=safe_relative(identity['processPolicyPath'])
         require(sha(policy_raw)==identity['processPolicySha256'] and subprocess.check_output(['git','show',identity['implementationCommit']+':'+policy_path],cwd=repo)==policy_raw,'process policy not frozen at Q')
-        require(identity['liveSources'].get('experiments/ch7/mac_process_guard.py')==identity['observerModuleSha256'],'observer implementation identity missing')
+        observer_path='experiments/ch7/'+('mac_process_guard_v2.py' if mac_plan(policy)!=MAC_PLAN else 'mac_process_guard.py')
+        require(identity['liveSources'].get(observer_path)==identity['observerModuleSha256'],'observer implementation identity missing')
+        if mac_plan(policy)!=MAC_PLAN:
+            require(identity['liveSources'].get('experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source identity missing')
         protected_path=repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json'
         require(sha(protected_path.read_bytes())==identity['earlierSourceFreezeSha256'],'331-file freeze identity changed')
         protected=json.loads(protected_path.read_text())['files'];require(len(protected)==331,'331-file freeze population changed')
@@ -127,6 +130,10 @@ def verify(root, repo):
     require(build['assemblyInformationalVersion']==metadata['informationalVersion']==identity['assemblyInformationalVersion'] and build['files']==identity['binaries'], 'used assembly/dependency freeze')
     freeze_path=safe_relative(identity.get('buildFreezePath',BUILD_FREEZE_PATH))
     require(subprocess.check_output(['git','show',identity['buildFreezeCommit']+':'+freeze_path],cwd=repo)==raw(root,'frozen-build.json'), 'pre-qualification build freeze changed')
+    if mac and mac_plan(policy)!=MAC_PLAN:
+        native=build['nativeCensus'];declared=policy['nativeHelper']
+        require(all(native.get(key)==declared.get(key) for key in ('path','sha256','sourceSha256')),'native build differs from process policy')
+        require(native['sourceSha256']==identity['liveSources']['experiments/ch7/mac_bulk_census.c'],'native source/build mismatch')
     renderer_log=raw(root,'renderer.log').decode()
     require('client build: skipped' in renderer_log and 'client build: rebuilt' not in renderer_log, 'renderer was rebuilt after admission')
     require(identity['purpose']==runtime['purpose'] and identity['constructionFreezeCommit']==runtime['constructionFreezeCommit'], 'construction identity')

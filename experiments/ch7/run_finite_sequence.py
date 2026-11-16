@@ -13,7 +13,7 @@ import time
 
 import psutil
 from finite_runtime import (validate_build, read_block_receipt, dispositions, BUILD_FREEZE_PATH,
-    MAC_PLAN, validate_repository_binding, load_mac_policy, validate_mac_observation,
+    MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_observation,
     validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, OwnedRegistry)
 
 GIB=1024**3
@@ -31,14 +31,14 @@ def _execute(a):
     plan=a.execution_plan.resolve()
     require(plan.is_relative_to(repo) and plan.is_file(),'explicit tracked execution plan required')
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
-    mac=plan.name==MAC_PLAN
-    if mac:require(str(plan.relative_to(repo))=='experiments/plans/'+MAC_PLAN,'wrong canonical Mac execution plan')
+    mac=plan.name in MAC_PLANS
+    if mac:require(str(plan.relative_to(repo))=='experiments/plans/'+plan.name,'wrong canonical Mac execution plan')
     implementation=getattr(a,'implementation_commit',None) or head
     require(os.environ['AIJADE_GIT_COMMIT']==implementation,'actual implementation commit')
     require(mac or implementation==head,'legacy execution requires current source binaries')
     freeze_path=getattr(a,'build_freeze_path',BUILD_FREEZE_PATH)
     binding=validate_repository_binding(repo,implementation,head,getattr(a,'data_publication_manifest',None),require_head=True) if mac else {}
-    validate_build(a.assembly,a.build_manifest,implementation,repo,a.build_freeze_commit,freeze_path,strict_publication=mac)
+    build=validate_build(a.assembly,a.build_manifest,implementation,repo,a.build_freeze_commit,freeze_path,strict_publication=mac)
     original=subprocess.check_output(['git','show',head+':'+str(plan.relative_to(repo))],cwd=repo)
     require(original==plan.read_bytes(),'execution plan differs from committed bytes')
     qualification=(a.inputs/'runtime-manifest.json').exists()
@@ -58,12 +58,14 @@ def _execute(a):
                 require(subprocess.check_output(['git','show',head+':'+str(path.relative_to(repo))],cwd=repo)==path.read_bytes(),'formal input differs from published I before admission')
         require(getattr(a,'process_policy',None) is not None,'new Mac process policy required')
         policy,process_identity=load_mac_policy(repo,a.process_policy,implementation)
-        from mac_process_guard import observe
+        require(plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy),'policy/plan/build decision mismatch')
+        validate_mac_build_policy(policy,build)
+        observe=mac_observer(policy).observe
     metadata=dict(binding,buildFreezeCommit=a.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
     if qualification:
-        require(plan.name in ['2026-11-16-ch7-relocated-runtime-qualification.md',MAC_PLAN] and a.settle_seconds==600,'new known qualification requires its one fixed settling phase')
+        require(plan.name in ['2026-11-16-ch7-relocated-runtime-qualification.md',*MAC_PLANS] and a.settle_seconds==600,'new known qualification requires its one fixed settling phase')
     output.mkdir(parents=True);(output/'admission').mkdir()
     planned=[m['cases'][i]['input']['caseId']+'/'+arm for m in inputs for i in range(10) for arm in m['cases'][i]['input']['conditions']]
     prepared=dict(status='PREPARED_NO_MEASUREMENT',codeCommit=implementation,purpose=inputs[0]['purpose'],
@@ -79,7 +81,7 @@ def _execute(a):
         process.update(process_identity)
         return dict(utc=utc(),availableBytes=psutil.virtual_memory().available,
                     swapUsedBytes=psutil.swap_memory().used,processObservation=process,
-                    rssBytes=sum(p['rssBytes'] for p in process.get('ownedProcesses',[])),**process_identity)
+                    rssBytes=process.get('ownedRssBytes'),**process_identity)
     def phase(duration,path):
         with path.open('x') as log:
             def save(item):log.write(json.dumps(item)+'\n');log.flush()

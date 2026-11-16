@@ -27,7 +27,11 @@ def require(ok, message):
 BUILD_FREEZE_PATH='experiments/ch7/relocated-runtime-2026-11-16/frozen-build.json'
 MAC_PLAN='2026-11-16-ch7-mac-formal-backend.md'
 MAC_BUILD_FREEZE_PATH='experiments/ch7/mac-formal-2026-11-16/frozen-build.json'
-MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/finite-heldout/')
+MAC_CENSUS_PLAN='2026-11-16-ch7-mac-bulk-census.md'
+MAC_CENSUS_BUILD_FREEZE_PATH='experiments/ch7/mac-census-2026-11-16/frozen-build.json'
+MAC_PLANS=(MAC_PLAN,MAC_CENSUS_PLAN)
+PROJECT_ROOT=Path('/Volumes/Untitled/AIJADE')
+MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/mac-census-2026-11-16/', 'experiments/ch7/finite-heldout/')
 MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.trx'}
 
 
@@ -94,14 +98,41 @@ def validate_repository_binding(repo,implementation,repository=None,data_manifes
     return result
 
 
+def mac_observer(policy):
+    import importlib
+    kind=policy.get('kind')
+    require(kind in (None,'mac-observed-idle-daemon-v1','mac-bulk-observed-idle-daemon-v2'),'unrecognized observer policy kind')
+    return importlib.import_module('mac_process_guard_v2' if kind=='mac-bulk-observed-idle-daemon-v2' else 'mac_process_guard')
+
+
+def mac_plan(policy):
+    return MAC_CENSUS_PLAN if policy.get('kind')=='mac-bulk-observed-idle-daemon-v2' else MAC_PLAN
+
+
+def mac_build_path(policy):
+    return MAC_CENSUS_BUILD_FREEZE_PATH if mac_plan(policy)==MAC_CENSUS_PLAN else MAC_BUILD_FREEZE_PATH
+
+
+def validate_mac_build_policy(policy,build):
+    if mac_plan(policy)==MAC_CENSUS_PLAN:
+        native=build.get('nativeCensus');expected=policy.get('nativeHelper')
+        require(type(native) is dict and type(expected) is dict and all(native.get(key)==expected.get(key) for key in ('path','sha256','sourceSha256')),'native build and process-policy identity differ')
+
+
 def load_mac_policy(repo,path,implementation):
     repo=Path(repo).resolve();original=Path(path);path=original.resolve()
     require(path.is_relative_to(repo) and path.is_file() and not original.is_symlink(),'explicit repository-local process policy required')
     relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
     require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
-    module=repo/'experiments/ch7/mac_process_guard.py'
-    require(module.read_bytes()==git_bytes(repo,'show',implementation+':experiments/ch7/mac_process_guard.py'),'observer module differs from Q')
-    return json.loads(raw),dict(processPolicyPath=relative,processPolicySha256=hashlib.sha256(raw).hexdigest(),observerModuleSha256=sha(module))
+    policy=json.loads(raw);guard=mac_observer(policy);guard.validate_policy(policy)
+    module=repo/'experiments/ch7'/('mac_process_guard_v2.py' if mac_plan(policy)==MAC_CENSUS_PLAN else 'mac_process_guard.py')
+    require(module.read_bytes()==git_bytes(repo,'show',implementation+':'+str(module.relative_to(repo))),'observer module differs from Q')
+    if mac_plan(policy)==MAC_CENSUS_PLAN:
+        for name in ('mac_process_guard.py','mac_bulk_census.c'):
+            source=repo/'experiments/ch7'/name
+            require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+str(source.relative_to(repo))),'observer dependency differs from Q')
+        require(sha(repo/'experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source differs from policy')
+    return policy,dict(processPolicyPath=relative,processPolicySha256=hashlib.sha256(raw).hexdigest(),observerModuleSha256=sha(module))
 
 
 def validate_mac_observation(observation,policy_sha,module_sha,policy=None):
@@ -110,8 +141,7 @@ def validate_mac_observation(observation,policy_sha,module_sha,policy=None):
     require(observation.get('status')=='PASS' and observation.get('blockers')==[],'process observation adverse or unknown')
     require(type(observation.get('ownedProcesses')) is list,'owned process observation missing')
     require(policy is not None,'observer evidence requires the frozen policy for independent validation')
-    from mac_process_guard import validate_observation
-    recalculated=validate_observation(policy,observation)
+    recalculated=mac_observer(policy).validate_observation(policy,observation)
     require(recalculated.get('status')=='PASS' and recalculated.get('blockers')==[], 'raw process/API evidence does not independently pass')
     return recalculated
 
@@ -277,7 +307,12 @@ def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None,fre
         frozen=subprocess.check_output(['git','show',freeze_commit+':'+freeze_path],cwd=repo)
         require(frozen==manifest.read_bytes(), 'pre-qualification public build freeze differs')
         if strict_publication:
-            require(freeze_path==MAC_BUILD_FREEZE_PATH,'new Mac qualification requires its separate build-freeze path')
+            require(freeze_path in (MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH),'new Mac qualification requires its separate build-freeze path')
+            if freeze_path==MAC_CENSUS_BUILD_FREEZE_PATH:
+                native=build['nativeCensus'];helper=Path(native['path'])
+                require(helper.is_absolute() and helper.resolve().is_relative_to(PROJECT_ROOT.resolve()) and '..' not in helper.parts and not helper.is_symlink() and helper.is_file() and sha(helper)==native['sha256'],'native helper changed or outside project')
+                source='experiments/ch7/mac_bulk_census.c'
+                require(sha(Path(repo)/source)==native['sourceSha256'] and hashlib.sha256(git_bytes(repo,'show',commit+':'+source)).hexdigest()==native['sourceSha256'],'native compiled source differs from Q')
             commit_id(repo,freeze_commit)
     return build
 
