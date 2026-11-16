@@ -10,6 +10,8 @@ import re
 import signal
 import subprocess
 import time
+import threading
+from pathlib import PurePosixPath
 
 
 def sha(path):
@@ -23,9 +25,242 @@ def require(ok, message):
 
 
 BUILD_FREEZE_PATH='experiments/ch7/relocated-runtime-2026-11-16/frozen-build.json'
+MAC_PLAN='2026-11-16-ch7-mac-formal-backend.md'
+MAC_BUILD_FREEZE_PATH='experiments/ch7/mac-formal-2026-11-16/frozen-build.json'
+MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/finite-heldout/')
+MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.trx'}
 
 
-def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None):
+def safe_relative(value):
+    require(type(value) is str and value and '\\' not in value and ':' not in value, 'unsafe tracked relative path')
+    parts=value.split('/')
+    require(not value.startswith('/') and all(p not in ('','.','..') and not any(ord(c)<32 for c in p) for p in parts), 'unsafe tracked relative path')
+    require(PurePosixPath(value).as_posix()==value, 'noncanonical tracked path')
+    return value
+
+
+def git_bytes(repo,*arguments):
+    return subprocess.check_output(['git',*arguments],cwd=repo)
+
+
+def commit_id(repo,value):
+    require(re.fullmatch(r'[0-9a-f]{40}',value or '') is not None,'full immutable commit required')
+    require(git_bytes(repo,'rev-parse',value+'^{commit}').decode().strip()==value,'commit does not exist')
+    return value
+
+
+def changed_paths(repo,base,target):
+    fields=git_bytes(repo,'diff','--name-status','--no-renames','-z',base,target).split(b'\0')
+    require(fields[-1]==b'', 'malformed Git change closure')
+    fields=fields[:-1];require(len(fields)%2==0,'malformed Git change closure')
+    return [(fields[i].decode(),safe_relative(fields[i+1].decode())) for i in range(0,len(fields),2)]
+
+
+def validate_repository_binding(repo,implementation,repository=None,data_manifest_path=None,require_head=False):
+    """Q owns every executable blob; I may only add exactly declared input/evidence files."""
+    repo=Path(repo).resolve();q=commit_id(repo,implementation);i=commit_id(repo,repository or implementation)
+    require(subprocess.run(['git','merge-base','--is-ancestor',q,i],cwd=repo,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0,'Q is not an ancestor of repository I')
+    if require_head:
+        require(git_bytes(repo,'rev-parse','HEAD').decode().strip()==i,'HEAD differs from repository commit')
+        require(not git_bytes(repo,'status','--porcelain'),'dirty execution checkout')
+    changes=changed_paths(repo,q,i)
+    result=dict(implementationCommit=q,repositoryCommit=i,inputPublicationCommit=i if i!=q else None,
+                dataPublicationManifestPath=None,dataPublicationManifestSha256=None,addedDataPaths=[])
+    if q==i:
+        require(data_manifest_path is None,'data publication manifest is only valid at I')
+        return result
+    require(data_manifest_path is not None,'explicit tracked I data publication manifest required')
+    path=safe_relative(str(data_manifest_path));raw=git_bytes(repo,'show',i+':'+path)
+    manifest=json.loads(raw)
+    require(manifest.get('schema')=='aijade.ch7.mac-data-publication.v1' and manifest.get('implementationCommit')==q,'wrong Q/I data publication manifest')
+    added=manifest.get('addedPaths')
+    require(type(added) is list and all(type(p) is str for p in added)
+            and len(added)==len(set(added)) and path in added,'declared added path closure missing or duplicated')
+    for item in added:
+        safe_relative(item);require(item.startswith(MAC_DATA_PREFIXES),'non-data I path is prohibited')
+        require(Path(item).suffix.lower() in MAC_DATA_SUFFIXES,'executable or unknown I file type is prohibited')
+    q_names=git_bytes(repo,'ls-tree','-r','--name-only','-z',q).decode().split('\0')
+    require(len({p.casefold() for p in added})==len(added) and not ({p.casefold() for p in added}&{p.casefold() for p in q_names if p}),'I path case collision')
+    tree={}
+    for row in git_bytes(repo,'ls-tree','-rz',i).split(b'\0'):
+        if row:
+            metadata,name=row.split(b'\t',1);mode,kind,_=metadata.decode().split();tree[name.decode()]=(mode,kind)
+    require(all(tree.get(path)==('100644','blob') for path in added),'I data must be regular non-executable blobs; links and executable modes are prohibited')
+    require(all(action=='A' for action,_ in changes),'I modified, removed or renamed a Q blob')
+    require({p for _,p in changes}==set(added),'I changes differ from the declared additions')
+    if require_head:
+        require((repo/path).read_bytes()==raw,'I publication manifest working bytes differ')
+    result.update(dataPublicationManifestPath=path,dataPublicationManifestSha256=hashlib.sha256(raw).hexdigest(),addedDataPaths=sorted(added))
+    return result
+
+
+def load_mac_policy(repo,path,implementation):
+    repo=Path(repo).resolve();original=Path(path);path=original.resolve()
+    require(path.is_relative_to(repo) and path.is_file() and not original.is_symlink(),'explicit repository-local process policy required')
+    relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
+    require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
+    module=repo/'experiments/ch7/mac_process_guard.py'
+    require(module.read_bytes()==git_bytes(repo,'show',implementation+':experiments/ch7/mac_process_guard.py'),'observer module differs from Q')
+    return json.loads(raw),dict(processPolicyPath=relative,processPolicySha256=hashlib.sha256(raw).hexdigest(),observerModuleSha256=sha(module))
+
+
+def validate_mac_observation(observation,policy_sha,module_sha,policy=None):
+    require(type(observation) is dict and observation.get('processPolicySha256')==policy_sha
+            and observation.get('observerModuleSha256')==module_sha,'observer/policy identity missing')
+    require(observation.get('status')=='PASS' and observation.get('blockers')==[],'process observation adverse or unknown')
+    require(type(observation.get('ownedProcesses')) is list,'owned process observation missing')
+    require(policy is not None,'observer evidence requires the frozen policy for independent validation')
+    from mac_process_guard import validate_observation
+    recalculated=validate_observation(policy,observation)
+    require(recalculated.get('status')=='PASS' and recalculated.get('blockers')==[], 'raw process/API evidence does not independently pass')
+    return recalculated
+
+
+def validate_mac_sample(item,policy_sha,module_sha,policy):
+    require(item.get('processPolicySha256')==policy_sha and item.get('observerModuleSha256')==module_sha,'sample observer identity missing')
+    recalculated=validate_mac_observation(item['processObservation'],policy_sha,module_sha,policy)
+    require(type(item.get('rssBytes')) is int and item['rssBytes']==recalculated['ownedRssBytes'],'sample owned RSS differs from raw process evidence')
+    return recalculated
+
+
+def validate_coverage(samples,duration=None,minimum_samples=None,max_gap=3):
+    require(type(samples) is list and samples,'missing observation coverage')
+    clocks=[s['elapsedSeconds'] for s in samples]
+    require(all(type(v) in (int,float) and v>=0 for v in clocks),'invalid observation clock')
+    require(all(b>a and b-a<=max_gap for a,b in zip(clocks,clocks[1:])),'observation time reversal or gap')
+    if minimum_samples is not None:require(len(samples)>=minimum_samples,'incomplete sample population')
+    if duration is not None:
+        require(clocks[0]<=max_gap and duration-clocks[-1]<=max_gap and clocks[-1]<=duration,'incomplete phase endpoints')
+        require(all(s['elapsedSeconds']+s.get('observationDurationSeconds',0)<=duration for s in samples),'observation exceeded the fixed phase deadline')
+    return dict(samples=len(samples),maximumGapSeconds=max([0]+[b-a for a,b in zip(clocks,clocks[1:])]),coverageComplete=True)
+
+
+def fixed_phase(duration,sampler,writer,clock=time.monotonic,sleeper=time.sleep):
+    """Nominal two-second monotonic deadlines; no reset, extension or favorable segment."""
+    start=clock();end=start+duration;index=0;samples=[]
+    while start+index*2<end:
+        target=start+index*2;remaining=target-clock()
+        if remaining>0:sleeper(remaining)
+        now=clock()
+        if now>=end:break
+        item=sampler();item.update(elapsedSeconds=now-start,monotonicSeconds=now,scheduledSeconds=index*2,
+                                   observationCompletedMonotonic=clock(),observationDurationSeconds=clock()-now)
+        samples.append(item);writer(item);index+=1
+    remaining=end-clock()
+    if remaining>0:sleeper(remaining)
+    return samples,dict(startMonotonic=start,endMonotonic=clock(),requestedSeconds=duration,intervalReset=False)
+
+
+class MacMonitor:
+    """A read-only observation thread covers blocking startup, child work and cleanup."""
+    def __init__(self,path,sampler,validator,epoch,swap_baseline,timers_path=None,maximum_wall=4800,local_epoch=None):
+        self.path=Path(path);self.sampler=sampler;self.validator=validator;self.epoch=epoch
+        self.swap_baseline=swap_baseline;self.timers_path=Path(timers_path) if timers_path else None
+        self.maximum_wall=maximum_wall;self.stop_event=threading.Event();self.errors=[];self.samples=[]
+        self.local_epoch=epoch if local_epoch is None else local_epoch
+        self.timers={};self.thread=threading.Thread(target=self._run,name='aijade-readonly-process-observer',daemon=True)
+
+    def start(self):
+        self.thread.start()
+        return self
+
+    def _run(self):
+        deadline=time.monotonic();previous=None
+        try:
+            with self.path.open('x') as log:
+                while not self.stop_event.is_set():
+                    now=time.monotonic()
+                    try:
+                        item=self.sampler();item.update(monotonicSeconds=now,sequenceElapsedSeconds=now-self.epoch,
+                            elapsedSeconds=now-self.local_epoch,observationCompletedMonotonic=time.monotonic())
+                        item['swapIncreaseBytes']=max(0,item['swapUsedBytes']-self.swap_baseline)
+                        self.samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
+                        require(previous is None or 0<now-previous<=3,'runtime process observation coverage gap')
+                        self.validator(item)
+                        require(now-self.epoch<=self.maximum_wall,'overall wall limit stop')
+                        for name,crossed in [('rss',item['rssBytes']>2*1024**3),('available',item['availableBytes']<3*1024**3),('swap',item['swapIncreaseBytes']>1024**3)]:
+                            if not crossed:self.timers.pop(name,None)
+                            else:
+                                self.timers.setdefault(name,now)
+                                require(now-self.timers[name]<30,'runtime sustained '+name+' stop')
+                        if self.timers_path:self.timers_path.write_text(json.dumps(self.timers)+'\n')
+                    except BaseException as error:
+                        self.errors.append(type(error).__name__+': '+str(error))
+                        log.write(json.dumps(dict(utc=None,monotonicSeconds=now,sequenceElapsedSeconds=now-self.epoch,
+                                                  observationError=self.errors[-1]))+'\n');log.flush()
+                    previous=now;deadline+=2
+                    if self.stop_event.wait(max(0,deadline-time.monotonic())):break
+        except BaseException as error:self.errors.append(type(error).__name__+': '+str(error))
+
+    def check(self):
+        require(not self.errors,'runtime observation failed: '+ '; '.join(self.errors))
+
+    def stop(self):
+        self.stop_event.set();self.thread.join(timeout=3)
+        require(not self.thread.is_alive(),'owned observer thread failed to stop')
+        self.check()
+
+
+class OwnedRegistry:
+    """Remember proven descendants across reparenting; retire only known-absent identities."""
+    def __init__(self,roots,lookup=None):
+        self.active={tuple(value) for value in roots};self.controllers=set(self.active)
+        self.known=set(self.active);self.retired=[];self.registered=[];self.lookup=lookup or self._lookup
+
+    @staticmethod
+    def _lookup(pid):
+        import psutil
+        try:return psutil.Process(pid).create_time()
+        except psutil.NoSuchProcess:return None
+        except psutil.Error as error:raise ValueError('owned PID identity is unknown: '+type(error).__name__) from error
+
+    def roots(self):
+        for pid,created in list(self.active):
+            actual=self.lookup(pid)
+            if actual is None or actual!=created:
+                self.active.remove((pid,created))
+                self.retired.append(dict(pid=pid,createTime=created,status='ABSENT' if actual is None else 'PID_REUSED_OLD_IDENTITY_ABSENT',
+                                         observedCreateTime=actual,checkedMonotonic=time.monotonic()))
+        require(self.controllers<=self.active,'owned controller identity disappeared')
+        return sorted(self.active)
+
+    def remember(self,observation):
+        for value in observation.get('ownedProcesses',[]):
+            key=(value['pid'],value['createTime']);self.active.add(key);self.known.add(key)
+
+    def register(self,pid,created):
+        key=(pid,created)
+        if key not in self.known:self.registered.append(dict(pid=pid,createTime=created,registeredMonotonic=time.monotonic()))
+        self.active.add(key);self.known.add(key)
+
+    def final(self):
+        self.roots()
+        remaining=sorted(self.active-self.controllers)
+        return dict(status='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT' if not remaining else 'OWNED_IDENTITIES_REMAIN',
+                    controllers=[dict(pid=p,createTime=c) for p,c in sorted(self.controllers)],
+                    knownIdentities=[dict(pid=p,createTime=c) for p,c in sorted(self.known)],
+                    explicitlyRegisteredIdentities=self.registered,
+                    retiredIdentities=self.retired,
+                    remainingIdentities=[dict(pid=p,createTime=c) for p,c in remaining])
+
+
+def validate_owned_registry(record,samples):
+    require(record.get('status')=='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT' and record.get('remainingIdentities')==[], 'owned identities remain or cleanup is unknown')
+    key=lambda value:(value['pid'],value['createTime'])
+    controllers={key(value) for value in record['controllers']}
+    known={key(value) for value in record['knownIdentities']}
+    registered={key(value) for value in record['explicitlyRegisteredIdentities']}
+    observed={key(value) for sample in samples for value in sample['processObservation']['ownedProcesses']}
+    require(len(controllers)==1 and known==controllers|registered|observed,'owned registry identity closure differs')
+    retired=record['retiredIdentities'];retired_keys=[key(value) for value in retired]
+    require(len(set(retired_keys))==len(retired_keys) and set(retired_keys)==known-controllers,'owned absence proof is incomplete or duplicated')
+    for value in retired:
+        require(value['status'] in ['ABSENT','PID_REUSED_OLD_IDENTITY_ABSENT'],'owned absence is unknown')
+        require((value['observedCreateTime'] is None) if value['status']=='ABSENT' else (value['observedCreateTime']!=value['createTime']),'PID reuse is not proof of old-identity absence')
+    return dict(knownOwnedIdentities=len(known),retiredNonControllerIdentities=len(retired),allOwnedChildrenAbsent=True)
+
+
+def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None,freeze_path=BUILD_FREEZE_PATH,strict_publication=False):
     assembly=Path(assembly).resolve();manifest=Path(manifest).resolve()
     require(assembly.name=='Aijade.Tests.dll' and assembly.is_file(), 'explicit test assembly missing')
     build=json.loads(manifest.read_text())
@@ -38,8 +273,12 @@ def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None):
     require(all(sha(p)==build['files'][name] for name,p in files.items()), 'build binary/dependency bytes changed')
     if repo is not None:
         require(re.fullmatch(r'[0-9a-f]{40}',freeze_commit or '') is not None, 'public build-freeze commit required')
-        frozen=subprocess.check_output(['git','show',freeze_commit+':'+BUILD_FREEZE_PATH],cwd=repo)
+        freeze_path=safe_relative(freeze_path)
+        frozen=subprocess.check_output(['git','show',freeze_commit+':'+freeze_path],cwd=repo)
         require(frozen==manifest.read_bytes(), 'pre-qualification public build freeze differs')
+        if strict_publication:
+            require(freeze_path==MAC_BUILD_FREEZE_PATH,'new Mac qualification requires its separate build-freeze path')
+            commit_id(repo,freeze_commit)
     return build
 
 

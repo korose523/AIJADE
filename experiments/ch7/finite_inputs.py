@@ -138,19 +138,39 @@ def derive_suite(repo, freeze, model_sha):
     return files
 
 
-def construct(repo, freeze, model_sha, output):
+def construct(repo, freeze, model_sha, output,acceptance_path=None,acceptance_commit=None,acceptance_repository_path=None):
     require(not output.exists(), 'case construction is single use')
     require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='', 'dirty construction checkout')
     require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==freeze, 'construction freeze is not current source')
-    receipt=json.loads((repo/'experiments/ch7/finite-heldout/qualification-acceptance.json').read_text())
+    binding=None
+    if acceptance_path is not None:
+        from finite_runtime import safe_relative, commit_id
+        require(acceptance_commit is not None and acceptance_repository_path is not None,'external acceptance needs an exact published commit/path')
+        commit_id(repo,acceptance_commit);relative=safe_relative(acceptance_repository_path)
+        original_path=Path(acceptance_path);path=original_path.resolve()
+        require(path.is_file() and not original_path.is_symlink() and path.is_relative_to(Path('/Volumes/Untitled/AIJADE')),'external acceptance must be a regular project-local file')
+        published=subprocess.check_output(['git','show',acceptance_commit+':'+relative],cwd=repo)
+        require(published==path.read_bytes(),'external acceptance differs from its published exact Git bytes')
+        receipt=json.loads(published)
+        require(receipt.get('implementationCommit')==freeze,'acceptance is for a different qualified Q')
+        binding=dict(implementationCommit=freeze,acceptancePublicationCommit=acceptance_commit,
+                     acceptanceRepositoryPath=relative,acceptanceSha256=sha(published),
+                     seedDerivedOnlyAfterPublishedAcceptance=True)
+    else:
+        require(acceptance_commit is None and acceptance_repository_path is None,'partial external acceptance binding')
+        receipt=json.loads((repo/'experiments/ch7/finite-heldout/qualification-acceptance.json').read_text())
     require(receipt['status']=='QUALIFIED_BEFORE_FRESH_CASE_CONSTRUCTION', 'qualification not accepted')
     for relative,value in derive_suite(repo,freeze,model_sha).items():write_new(output/relative,value)
+    return binding
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=['bank','qualification','construct'])
     p.add_argument('--repo',type=Path,default=ROOT);p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--freeze');p.add_argument('--model-sha256');a=p.parse_args()
+    p.add_argument('--freeze');p.add_argument('--model-sha256')
+    p.add_argument('--acceptance-path',type=Path);p.add_argument('--acceptance-commit');p.add_argument('--acceptance-repository-path');a=p.parse_args()
     if a.mode=='bank': write_new(a.output,bank(a.repo))
     elif a.mode=='qualification': qualify(a.repo,a.freeze,a.output)
-    else: construct(a.repo,a.freeze,a.model_sha256,a.output)
+    else:
+        binding=construct(a.repo,a.freeze,a.model_sha256,a.output,a.acceptance_path,a.acceptance_commit,a.acceptance_repository_path)
+        if binding is not None:print(json.dumps(binding,indent=2))

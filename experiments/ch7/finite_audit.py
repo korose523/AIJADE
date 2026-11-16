@@ -64,11 +64,41 @@ def validate_placements(row,finite,key,phase):
 
 
 def verify(root, repo):
+    root=Path(root);repo=Path(repo)
     receipt = load(root, 'receipt.json'); identity = load(root, 'input-identities.json')
     runtime = load(root, 'runtime-manifest.json'); selection = load(root, 'selection.json'); rows = load(root, 'cases.json')
     cases = {c['input']['caseId']: c for c in runtime['cases']}; n = len(cases)
     require(1 <= n <= 10 and receipt['plannedPairs'] == n and receipt['completedCases'] == receipt['plannedCases'] == 2*n, 'incomplete live population')
     require(receipt['status'] == 'COMPLETE_FINITE_BLOCK_OBSERVATIONS' and receipt['codeCommit'] == identity['codeCommit'], 'execution status/source')
+    from finite_runtime import (MAC_PLAN, MAC_BUILD_FREEZE_PATH, BUILD_FREEZE_PATH, safe_relative,
+        validate_repository_binding, validate_mac_sample, validate_coverage, validate_owned_registry)
+    canonical_plan='experiments/plans/'+MAC_PLAN
+    q_has_mac_plan=subprocess.run(['git','cat-file','-e',receipt['codeCommit']+':'+canonical_plan],cwd=repo,
+                                  stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0
+    mac=q_has_mac_plan or 'processPolicySha256' in identity or 'implementationCommit' in identity
+    repository_commit=identity.get('repositoryCommit',receipt['codeCommit'])
+    if mac:
+        keys=['implementationCommit','repositoryCommit','buildFreezeCommit','buildFreezePath','inputPublicationCommit',
+              'dataPublicationManifestPath','dataPublicationManifestSha256','processPolicyPath','processPolicySha256','observerModuleSha256']
+        keys+=['addedDataPaths','executionPlanSha256']
+        require(all(key in identity and receipt.get(key)==identity[key] for key in keys),'missing or unequal Q/B/I identity')
+        require(identity['implementationCommit']==receipt['codeCommit'],'DLL/source Q identity changed')
+        binding=validate_repository_binding(repo,identity['implementationCommit'],repository_commit,identity['dataPublicationManifestPath'])
+        require(all(identity.get(key)==value for key,value in binding.items()),'repository I is not the declared additive data publication')
+        require((repository_commit==identity['implementationCommit']) if runtime['purpose']=='qualification_only' else (repository_commit!=identity['implementationCommit']),'wrong qualification/formal Q/I role')
+        require(identity['buildFreezePath']==MAC_BUILD_FREEZE_PATH,'new mode rebound to a historical build freeze')
+        plan_rel='experiments/plans/'+MAC_PLAN
+        require(sha(subprocess.check_output(['git','show',identity['implementationCommit']+':'+plan_rel],cwd=repo))==identity['executionPlanSha256']==receipt['executionPlanSha256'],'new execution plan identity changed')
+        policy_raw=raw(root,'process-policy.json');policy=json.loads(policy_raw)
+        policy_path=safe_relative(identity['processPolicyPath'])
+        require(sha(policy_raw)==identity['processPolicySha256'] and subprocess.check_output(['git','show',identity['implementationCommit']+':'+policy_path],cwd=repo)==policy_raw,'process policy not frozen at Q')
+        require(identity['liveSources'].get('experiments/ch7/mac_process_guard.py')==identity['observerModuleSha256'],'observer implementation identity missing')
+        protected_path=repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json'
+        require(sha(protected_path.read_bytes())==identity['earlierSourceFreezeSha256'],'331-file freeze identity changed')
+        protected=json.loads(protected_path.read_text())['files'];require(len(protected)==331,'331-file freeze population changed')
+        for item in protected:
+            require(sha((repo/item['path']).read_bytes())==item['sha256']
+                    and sha(subprocess.check_output(['git','show',identity['implementationCommit']+':'+item['path']],cwd=repo))==item['sha256'],'protected Q research source changed')
     require(receipt['heldOutCases'] == (n if runtime['purpose']=='confirmed_finite_heldout' else 0) and receipt['modelRequests']==0 and receipt['formalHardwareQualification'] is False, 'scope inflated')
     require(runtime['purpose'] in ['qualification_only','confirmed_finite_heldout'], 'finite purpose')
     require(sha(raw(root, 'runtime-manifest.json')) == identity['runtimeManifestSha256'], 'runtime input identity')
@@ -83,7 +113,7 @@ def verify(root, repo):
         for field,filename in [('runtimeRepositoryPath','runtime-manifest.json'),('scoringRepositoryPath','scoring-manifest.json')]:
             rel=identity[field]
             require(not Path(rel).is_absolute() and '..' not in Path(rel).parts,'unsafe bound input path')
-            require(sha(subprocess.check_output(['git','show',receipt['codeCommit']+':'+rel],cwd=repo))==sha(raw(root,filename)),'published finite input identity changed')
+            require(sha(subprocess.check_output(['git','show',repository_commit+':'+rel],cwd=repo))==sha(raw(root,filename)),'published finite input identity changed')
     else:
         from finite_inputs import qualify
         with tempfile.TemporaryDirectory(prefix='aijade-finite-known-derivation-') as temporary:
@@ -95,8 +125,8 @@ def verify(root, repo):
     build=load(root,'frozen-build.json')
     require(sha(raw(root,'frozen-build.json'))==identity['buildManifestSha256'] and build['commit']==receipt['codeCommit'], 'explicit build manifest identity')
     require(build['assemblyInformationalVersion']==metadata['informationalVersion']==identity['assemblyInformationalVersion'] and build['files']==identity['binaries'], 'used assembly/dependency freeze')
-    from finite_runtime import BUILD_FREEZE_PATH
-    require(subprocess.check_output(['git','show',identity['buildFreezeCommit']+':'+BUILD_FREEZE_PATH],cwd=repo)==raw(root,'frozen-build.json'), 'pre-qualification build freeze changed')
+    freeze_path=safe_relative(identity.get('buildFreezePath',BUILD_FREEZE_PATH))
+    require(subprocess.check_output(['git','show',identity['buildFreezeCommit']+':'+freeze_path],cwd=repo)==raw(root,'frozen-build.json'), 'pre-qualification build freeze changed')
     renderer_log=raw(root,'renderer.log').decode()
     require('client build: skipped' in renderer_log and 'client build: rebuilt' not in renderer_log, 'renderer was rebuilt after admission')
     require(identity['purpose']==runtime['purpose'] and identity['constructionFreezeCommit']==runtime['constructionFreezeCommit'], 'construction identity')
@@ -215,6 +245,21 @@ def verify(root, repo):
     process_cleanup=load(root,'process-cleanup.json')
     require(len(process_cleanup)==2 and all(r['exitCode']==0 and not r['errors'] for r in process_cleanup), 'owned process cleanup incomplete')
     telemetry=lines(root,'telemetry.jsonl'); require(telemetry and receipt['wallSeconds']<=1200, 'resource trace/wall limit')
+    if mac:
+        validate_coverage(telemetry,receipt['wallSeconds'],1)
+        for sample in telemetry:
+            require('observationError' not in sample,'resource observation was unknown')
+            validate_mac_sample(sample,identity['processPolicySha256'],identity['observerModuleSha256'],policy)
+            require(abs(sample['sequenceElapsedSeconds']-(sample['monotonicSeconds']-receipt['sequenceEpochMonotonic']))<1e-6,'sequence resource clock changed')
+            require(abs(sample['elapsedSeconds']-(sample['monotonicSeconds']-receipt['blockEpochMonotonic']))<1e-6,'block resource clock changed')
+            require(sample['swapIncreaseBytes']==max(0,sample['swapUsedBytes']-receipt['initialSystemSwapUsedBytes']),'swap baseline changed')
+            require(sample['observationCompletedMonotonic']>=sample['monotonicSeconds'],'observer clock reversal')
+        registry=load(root,'owned-process-registry.json')
+        require(sha(raw(root,'owned-process-registry.json'))==receipt['ownedProcessRegistrySha256'],'owned registry changed')
+        require(registry['controllers']==[receipt['controllerProcess']]==[identity['controllerProcess']],'owned controller lease changed')
+        validate_owned_registry(registry,telemetry)
+        registered={(v['pid'],v['createTime']) for v in registry['explicitlyRegisteredIdentities']}
+        require({(v['pid'],v['createTime']) for v in receipt['phases'].values()}<=registered,'phase PID/create-time lease missing')
     require(max(t['rssBytes'] for t in telemetry)==receipt['peak']['rssBytes'] and min(t['availableBytes'] for t in telemetry)==receipt['peak']['minAvailableBytes'], 'resource extrema')
     timers={}
     for t in telemetry:
@@ -224,10 +269,12 @@ def verify(root, repo):
                 timers.setdefault(name,t['elapsedSeconds']); require(t['elapsedSeconds']-timers[name]<30, 'unreported resource stop')
     scored=score_directory(root)
     if (root/'scoring.json').is_file(): require(load(root,'scoring.json')==scored, 'actual raw/window score reconstruction')
-    return dict(status='FINITE_DATAFLOW_AUDIT_PASS', casePairs=n, measuredConditionRows=2*n,
+    result=dict(status='FINITE_DATAFLOW_AUDIT_PASS', casePairs=n, measuredConditionRows=2*n,
                 retainedOriginalDatabases=2*n, sharedRenderedIntents=n, freshFiniteHeldoutPairs=n if runtime['purpose']=='confirmed_finite_heldout' else 0, modelRequests=0,
                 conditionCounts={arm:{k:v for k,v in scored['arms'][arm].items() if k!='byCase'} for arm in ['C1','C2']},
                 round2SemanticActCorrectness='NOT_MEASURED', interpretation=scored['interpretation'])
+    if mac:result.update({key:identity[key] for key in keys},codeCommit=receipt['codeCommit'],processObservationCount=len(telemetry))
+    return result
 
 
 if __name__=='__main__':
