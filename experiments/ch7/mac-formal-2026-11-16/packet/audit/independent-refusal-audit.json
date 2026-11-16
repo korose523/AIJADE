@@ -1,0 +1,652 @@
+{
+  "schema": "aijade.ch7.mac-formal-refusal-audit.v1",
+  "status": "INDEPENDENT_REFUSAL_AUDIT_PASS",
+  "sourceCommit": "fe0fa07c655224fdeed32556cd31ce4022126037",
+  "buildFreezeCommit": "795b23d7e69a8b59396b84199bd7429451ecbb4f",
+  "planCommit": "0c3f3cc922e940c97628837476946526659d936e",
+  "planSha256": "ca53a7df038b413bbefc6ca56195e16183620777d0391893b6419b21975bdfa2",
+  "numbers": {
+    "settlingSeconds": 600.0050841940101,
+    "samples": 300,
+    "passSamples": 282,
+    "unknownSamples": 18,
+    "failSamples": 0,
+    "maxGapSeconds": 2.2336423009983264,
+    "apiExplicitEmptySamples": 300,
+    "unknownReadAndCoverageSamples": 13,
+    "unknownCoverageOnlySamples": 5,
+    "noSuchProcessReadEvents": 32,
+    "settlingMinimumAvailableBytes": 5400440832,
+    "settlingMaximumAvailableBytes": 8138772480,
+    "settlingSwapMinimumBytes": 947912704,
+    "settlingSwapMaximumBytes": 2928148480,
+    "settlingSwapRangeBytes": 1980235776,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedKnownConditionRows": 20,
+    "unattemptedKnownConditionRows": 20,
+    "completedConditionRows": 0,
+    "rendererSessions": 0,
+    "newModelRequests": 0,
+    "freshHeldoutCases": 0,
+    "binaryDependencyFiles": 576,
+    "defaultPassed": 684,
+    "defaultNotExecuted": 29,
+    "browserNotExecuted": 38
+  },
+  "scope": {
+    "admissionStarted": false,
+    "qualificationStarted": false,
+    "fullFiniteDriverQualified": false,
+    "heldoutComparisonComplete": false,
+    "freshHeldoutCases": 0,
+    "table7_3": "NOT_RUN",
+    "formalHardwareQualification": false,
+    "independentHumanReview": false
+  },
+  "rawIdentities": {
+    "qualification/process-policy.json": "6c677d370a0d86c52b63c4f37af171f3f2f88b344e9743c59a4d8ebc70d0d659",
+    "qualification/receipt.json": "f49e3faabf80d5916ff84a691c86e40bc5e2e55fea3580471b2a1ab779a161af",
+    "qualification/settling/receipt.json": "910db045234d108e232e33a89b782f2adde2fffd3daf9a367ed11a80c6acedeb",
+    "qualification/settling/telemetry.jsonl": "8200b5c0365087701bc1ddec9a8c476164faa18bdfd1bff52f0f12b3e94985ea"
+  },
+  "actualBuildSha256": "a3ba1aa6ebfc93a8ec5132570931fbe45e17193ccfc93e6ec3a0a0fddf71fc38",
+  "protectedSourceFiles": 331,
+  "observerModuleSha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+  "processPolicySha256": "6c677d370a0d86c52b63c4f37af171f3f2f88b344e9743c59a4d8ebc70d0d659",
+  "blockerCodeOccurrences": {
+    "PROCESS_READ_UNKNOWN": 13,
+    "PROCESS_COVERAGE_INCOMPLETE": 18
+  },
+  "unknownDetails": [
+    {
+      "sampleIndex": 2,
+      "elapsedSeconds": 4.005566533000092,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            42081,
+            42082,
+            42083
+          ],
+          "departedPids": [
+            42081,
+            42082,
+            42083
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42081,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42082,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42083,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 4,
+      "elapsedSeconds": 8.005561762998695,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [
+            42098
+          ],
+          "departedPids": [
+            42098
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42098,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 25,
+      "elapsedSeconds": 50.006039565007086,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [
+            42131,
+            42263
+          ],
+          "departedPids": [
+            42131,
+            42263
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42131,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42263,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 41,
+      "elapsedSeconds": 82.00942037600907,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            42585,
+            42586
+          ],
+          "departedPids": [
+            42585,
+            42586
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42585,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42586,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 54,
+      "elapsedSeconds": 108.00803099300538,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [
+            42687
+          ],
+          "departedPids": [
+            42687
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 42687,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 69,
+      "elapsedSeconds": 138.0082626700023,
+      "blockerCodes": [
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [],
+          "departedPids": [],
+          "arrivedPids": [
+            42807,
+            42808
+          ],
+          "readErrors": []
+        }
+      ]
+    },
+    {
+      "sampleIndex": 80,
+      "elapsedSeconds": 160.23802889500803,
+      "blockerCodes": [
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [],
+          "departedPids": [
+            290,
+            42684
+          ],
+          "arrivedPids": [],
+          "readErrors": []
+        }
+      ]
+    },
+    {
+      "sampleIndex": 99,
+      "elapsedSeconds": 198.00425212000846,
+      "blockerCodes": [
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [],
+          "departedPids": [],
+          "arrivedPids": [
+            43050
+          ],
+          "readErrors": []
+        }
+      ]
+    },
+    {
+      "sampleIndex": 117,
+      "elapsedSeconds": 234.00422651499684,
+      "blockerCodes": [
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [],
+          "departedPids": [],
+          "arrivedPids": [
+            43202
+          ],
+          "readErrors": []
+        }
+      ]
+    },
+    {
+      "sampleIndex": 133,
+      "elapsedSeconds": 266.00470892900194,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            11033,
+            11034
+          ],
+          "departedPids": [
+            11033,
+            11034
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 11033,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 11034,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 138,
+      "elapsedSeconds": 276.0049234129983,
+      "blockerCodes": [
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [],
+          "departedPids": [
+            5641
+          ],
+          "arrivedPids": [
+            43392
+          ],
+          "readErrors": []
+        }
+      ]
+    },
+    {
+      "sampleIndex": 140,
+      "elapsedSeconds": 280.0030707780097,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [
+            45882,
+            45931,
+            45932,
+            45953,
+            46002,
+            46004,
+            46921
+          ],
+          "departedPids": [
+            45882,
+            45931,
+            45932,
+            45953,
+            46002,
+            46004,
+            46921
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 45882,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 45931,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 45932,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 45953,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 46002,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 46004,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 46921,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 141,
+      "elapsedSeconds": 282.000134108006,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [
+            702,
+            813,
+            1320,
+            68037,
+            68038,
+            68039,
+            68040,
+            68052,
+            68053
+          ],
+          "departedPids": [
+            702,
+            813,
+            1320,
+            68037,
+            68038,
+            68039,
+            68040,
+            68052,
+            68053
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 702,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 813,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 1320,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 68037,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 68038,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 68039,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 68040,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 68052,
+              "errorClass": "NoSuchProcess"
+            },
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 68053,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 225,
+      "elapsedSeconds": 450.00507313500566,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            43783
+          ],
+          "departedPids": [
+            43783
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 43783,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 255,
+      "elapsedSeconds": 510.0038148989988,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            43912
+          ],
+          "departedPids": [
+            43912
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 43912,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 265,
+      "elapsedSeconds": 530.0048348550044,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "before",
+          "missingReadPids": [
+            43953
+          ],
+          "departedPids": [
+            43953
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 43953,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 270,
+      "elapsedSeconds": 540.0043967950041,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            43979
+          ],
+          "departedPids": [
+            43979
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 43979,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sampleIndex": 285,
+      "elapsedSeconds": 570.0041608430038,
+      "blockerCodes": [
+        "PROCESS_READ_UNKNOWN",
+        "PROCESS_COVERAGE_INCOMPLETE"
+      ],
+      "snapshots": [
+        {
+          "phase": "after",
+          "missingReadPids": [
+            44043
+          ],
+          "departedPids": [
+            44043
+          ],
+          "arrivedPids": [],
+          "readErrors": [
+            {
+              "code": "PROCESS_READ_UNKNOWN",
+              "pid": 44043,
+              "errorClass": "NoSuchProcess"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "controllerExit": {
+    "status": "ABSENT",
+    "observedCreateTime": null,
+    "schema": "aijade.ch7.mac-refusal-controller-exit.v1",
+    "checkedAt": "2026-11-16T09:55:09.827148+00:00",
+    "pid": 42219,
+    "createTime": 1794822021.79164,
+    "processMutations": 0,
+    "processesEnumerated": 1
+  },
+  "interpretation": "Complete retained settling refusal before admission; sampled empty daemon/API evidence does not establish full-machine quiescence, formal device qualification or any C1/C2 result."
+}

@@ -1,0 +1,473 @@
+{
+  "observedAt": "2026-11-16T08:34:13.309481+00:00",
+  "scope": "READ_ONLY_RUNTIME_PRECONDITIONS",
+  "modelCalls": 0,
+  "rendererStarts": 0,
+  "stressOrAdmissionStarts": 0,
+  "serviceRestartsOrTerminations": 0,
+  "credentialsOrEnvironmentDumped": false,
+  "filesystems": [
+    {
+      "role": "project",
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next",
+      "deviceNumber": 922746884,
+      "capacityBytes": 1000202784768,
+      "freeBytes": 286763208704,
+      "nonWritingWritePermissionCheck": true,
+      "mountFilesystemType": "macfuse"
+    },
+    {
+      "role": "runtime",
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix",
+      "deviceNumber": 16777235,
+      "capacityBytes": 21265080320,
+      "freeBytes": 14005014528,
+      "nonWritingWritePermissionCheck": true,
+      "FilesystemType": "apfs",
+      "FilesystemName": "APFS",
+      "Writable": true
+    },
+    {
+      "role": "newEvidence",
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-formal-20261116",
+      "deviceNumber": 922746884,
+      "capacityBytes": 1000202784768,
+      "freeBytes": 286763208704,
+      "nonWritingWritePermissionCheck": true,
+      "mountFilesystemType": "macfuse"
+    }
+  ],
+  "host": {
+    "logicalCpus": 8,
+    "physicalCpus": 4,
+    "memoryModel": "host_RAM_GPU_memory_topology_not_characterized",
+    "hostMemoryBytes": 17179869184,
+    "architecture": "x86_64"
+  },
+  "relevantProcesses": [
+    {
+      "pid": 669,
+      "parentPid": 1,
+      "executable": "/Applications/Ollama.app/Contents/MacOS/Ollama"
+    },
+    {
+      "pid": 701,
+      "parentPid": 669,
+      "executable": "/Applications/Ollama.app/Contents/Resources/ollama"
+    }
+  ],
+  "ollama": {
+    "api": "http://127.0.0.1:11434",
+    "ownership": "SHARED_DESKTOP_APPLICATION_NO_PROJECT_OWNERSHIP_PROOF",
+    "mayStopWithoutFurtherCoordination": false,
+    "serverVersion": "0.40.16",
+    "loadedModels": []
+  },
+  "colima": {
+    "statusExitCode": 0,
+    "stateRoot": "/Volumes/Untitled/AIJADE/.runtime/posix/colima",
+    "state": {
+      "arch": "x86_64",
+      "runtime": "docker",
+      "cpu": 2,
+      "memory": 2147483648,
+      "disk": 8589934592
+    }
+  },
+  "docker": {
+    "socket": "/Volumes/Untitled/AIJADE/.runtime/posix/colima/default/docker.sock",
+    "socketExists": true,
+    "psExitCode": 0,
+    "projectContainers": [
+      {
+        "Names": "aijade-next-redis",
+        "Image": "redis:7-alpine",
+        "Status": "Up 7 hours",
+        "Ports": "127.0.0.1:56379->6379/tcp",
+        "redisPingExitCode": 0,
+        "redisPingPong": true,
+        "redisInfoExitCode": 0,
+        "redisVersion": "7.4.12"
+      },
+      {
+        "Names": "aijade-next-db",
+        "Image": "ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0",
+        "Status": "Up 7 hours",
+        "Ports": "127.0.0.1:55432->5432/tcp",
+        "postgresBinaryVersionExitCode": 0,
+        "postgresBinaryVersion": "postgres (PostgreSQL) 18.0 (Debian 18.0-1.pgdg12+3)",
+        "pgIsReadyExitCode": 0,
+        "sqlAuthenticationTested": false
+      }
+    ]
+  },
+  "dotnet": {
+    "explicitProjectSdk": "/Users/mac/.dotnet/dotnet",
+    "pathDefaultSdk": "/usr/local/share/dotnet/dotnet",
+    "listSdksExitCode": 0,
+    "installedSdks": [
+      "8.0.425 [/Users/mac/.dotnet/sdk]",
+      "10.0.401 [/Users/mac/.dotnet/sdk]",
+      "10.0.402 [/Users/mac/.dotnet/sdk]",
+      "10.0.403 [/Users/mac/.dotnet/sdk]"
+    ],
+    "currentProjectGlobalSdkVersion": "10.0.403"
+  },
+  "godot": {
+    "path": "/Users/mac/.local/share/mosaic/godot-4.5.2/Godot_mono.app/Contents/MacOS/Godot",
+    "exists": true,
+    "isFile": true,
+    "isDirectory": false,
+    "bytes": 363557184,
+    "executable": true,
+    "versionFromExistingReceipt": "4.5.2.stable.mono.official.6ce3de25a",
+    "executedForThisInventory": false
+  },
+  "preparedRenderer": {
+    "root": "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/prepared-renderer",
+    "marker": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/prepared-renderer/aijade-prepared-renderer.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 13964,
+      "executable": true,
+      "sha256": "9bca301fecea6e16350e2008b69e4711a6f13fc34af630546942a1a87132cb7e",
+      "recorded": {
+        "status": "PREBUILT_NO_RUNTIME_REBUILD",
+        "sdk": "/Users/mac/.dotnet/dotnet"
+      },
+      "topLevelFieldNames": [
+        "status",
+        "preparedAt",
+        "files",
+        "originalLauncherSha256",
+        "patchedLauncherSha256",
+        "adjustment",
+        "sdk"
+      ]
+    },
+    "manifestFileCount": 112,
+    "matchingCount": 112,
+    "missing": [],
+    "changed": [],
+    "rendererLaunched": false
+  },
+  "pmxAssets": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/references/private-renderer-assets/m2/明音凛1.1.pmx",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 8443240,
+      "executable": true,
+      "sha256": "0151ed94ef82d4d53684b614333ec46f20b59750db59b88db0819dbd74caab53"
+    }
+  ],
+  "reusableArtifacts": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/runtime-setup.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 5589,
+      "executable": true,
+      "sha256": "239c583ffc45f0b5c0d7cff005f21699c18f7d8e1d33dcdba657c467d4d62445",
+      "recorded": {
+        "status": "PROJECT_LOCAL_RUNTIME_READY",
+        "startedAt": "2026-11-16T01:29:30.155721+00:00",
+        "checkedAt": "2026-11-16T01:42:00.475881+00:00",
+        "stateRoot": "/Volumes/Untitled/AIJADE/.runtime/posix",
+        "sparseImage": "/Volumes/Untitled/AIJADE/.runtime/aijade-runtime-20261116.sparseimage",
+        "vmCpu": 2,
+        "vmMemoryGiB": 2,
+        "newHeldoutCases": 0,
+        "qualificationAdmissionStarted": false
+      },
+      "topLevelFieldNames": [
+        "status",
+        "planCommit",
+        "startedAt",
+        "checkedAt",
+        "elapsedSeconds",
+        "initialFailureRetained",
+        "steps",
+        "vmStartInvocations",
+        "qualificationAdmissionStarted",
+        "stateRoot",
+        "sparseImage",
+        "vmCpu",
+        "vmMemoryGiB",
+        "newHeldoutCases"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/renderer-preparation.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 13964,
+      "executable": true,
+      "sha256": "9bca301fecea6e16350e2008b69e4711a6f13fc34af630546942a1a87132cb7e",
+      "recorded": {
+        "status": "PREBUILT_NO_RUNTIME_REBUILD",
+        "sdk": "/Users/mac/.dotnet/dotnet"
+      },
+      "topLevelFieldNames": [
+        "status",
+        "preparedAt",
+        "files",
+        "originalLauncherSha256",
+        "patchedLauncherSha256",
+        "adjustment",
+        "sdk"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-relocation-20261116/single-qualification-command-exit.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 208,
+      "executable": true,
+      "sha256": "be758372b6033d2333c1b75ea17a33a235667a9120b3bd8b7e426e9af76b66b9",
+      "recorded": {
+        "exitCode": 0,
+        "finishedAt": "2026-11-16T02:45:35.588229+00:00",
+        "secondAdmissionStarted": false
+      },
+      "topLevelFieldNames": [
+        "exitCode",
+        "finishedAt",
+        "output",
+        "secondAdmissionStarted"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-relocation-20261116/qualification-01/receipt.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 1188,
+      "executable": false,
+      "sha256": "786973bb1a4c3d11f964155e402bc8f7806fa606e5b431e30e88021f291df715",
+      "recorded": {
+        "status": "NOT_ADMITTED_NO_MEASUREMENT"
+      },
+      "topLevelFieldNames": [
+        "schema",
+        "status",
+        "codeCommit",
+        "purpose",
+        "plannedPairs",
+        "plannedConditionRows",
+        "plannedBlocks",
+        "completedBlocks",
+        "completedConditionRows",
+        "inFlightCaseIds",
+        "unattemptedCaseIds",
+        "blocks",
+        "modelRequests",
+        "formalHardwareQualification",
+        "independentHumanReview",
+        "executionPlanSha256",
+        "unknownCaseIds"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-relocation-20261116/qualification-01/admission/receipt.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 454,
+      "executable": false,
+      "sha256": "2d1a559701810e1a76e26563031fb73e061e93b080de1a00f0d4866a764bba33",
+      "recorded": {
+        "status": "NOT_ADMITTED_NO_MEASUREMENT"
+      },
+      "topLevelFieldNames": [
+        "status",
+        "codeCommit",
+        "elapsedSeconds",
+        "samples",
+        "minimumAvailableBytes",
+        "swapRangeBytes",
+        "noResearchProcesses",
+        "formalHardwareQualification",
+        "windowReset",
+        "precedingFixedSettlingSeconds",
+        "executionPlanSha256"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-relocation-20261116/qualification-01/settling/receipt.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 365,
+      "executable": false,
+      "sha256": "d6f0cd9749630444d04cc178e84d8d8d4095a3670075b8f7d28ca77160fc634a",
+      "recorded": {
+        "status": "FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION"
+      },
+      "topLevelFieldNames": [
+        "status",
+        "codeCommit",
+        "requestedSeconds",
+        "elapsedSeconds",
+        "samples",
+        "intervalReset",
+        "measurementStarted",
+        "prospectiveAmendmentSha256"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/relocated-runtime-2026-11-16/readiness.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 2204,
+      "executable": true,
+      "sha256": "962f1ec2e04d82054c141869d4bca18866f024e8193b60a0a96d3cf46595466a",
+      "recorded": {
+        "status": "RUNTIME_AND_ENGINEERING_CONTROLS_READY_ADMISSION_REFUSED"
+      },
+      "topLevelFieldNames": [
+        "schema",
+        "status",
+        "recordedAt",
+        "sourceCommit",
+        "planCommit",
+        "buildFreezeCommit",
+        "numbers",
+        "fullFiniteDriverQualified",
+        "heldoutComparisonComplete",
+        "newCaseConstructionAllowed",
+        "caseGenerationSeed",
+        "table7_3",
+        "formalHardwareQualification",
+        "independentHumanReview",
+        "planPublishedAloneBeforeImplementation",
+        "binaryIdentitiesPublishedBeforeSettling",
+        "admissionReason",
+        "ollamaAfterRefusal",
+        "earlierRefusalsAndOrderDeviationPreserved",
+        "qualificationCorruptionControls",
+        "aiAssistance"
+      ]
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/finite-readiness-2026-11-16/manifest.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 99669,
+      "executable": true,
+      "sha256": "7d496d034e7e042c1610ba4ade075efc595190dd9fdc0983c2ed78fca95972d1",
+      "recorded": {},
+      "topLevelFieldNames": [
+        "schema",
+        "files"
+      ]
+    }
+  ],
+  "oldPreparedJson": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/2026-11-12/attempts/development-01/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 31161,
+      "executable": true,
+      "sha256": "b4f08c93ca7e7ddfee792e5e4a969b84be6e82d44708837b486a067d440889e3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/2026-11-12/attempts/development-02/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 31163,
+      "executable": true,
+      "sha256": "6f0eb6057c521e30ccbee4e9d540f42b117ce17cb5adb1cdcf5aaba0042954d6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/live-manifest-2026-11-12/attempts/development-01/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 60316,
+      "executable": true,
+      "sha256": "2a7b1ca704730d098603579863efa01c9488d00cf545a01791e6c116fd94f436"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/live-manifest-2026-11-12/attempts/development-02/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 60316,
+      "executable": true,
+      "sha256": "24dfc4d5e3153b26331e812d62eb3cdba10848dbf7e153207a04497df9d7b0bb"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/paired-development-2026-11-12/attempts/development-01/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 45890,
+      "executable": true,
+      "sha256": "5f7d449e06751913a7b11e7f84c3a16ef3c1cc5bde552467844478121efccd9e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/paired-development-2026-11-12/engineering/replay-regression/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 31163,
+      "executable": true,
+      "sha256": "6f0eb6057c521e30ccbee4e9d540f42b117ce17cb5adb1cdcf5aaba0042954d6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/retrieval-led-2026-11-12/attempts/development-02/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 22718,
+      "executable": true,
+      "sha256": "b5529b81b824a8022df8d99766239e3859ef93fc638a1b29943474c5b5b353b2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/retrieval-led-2026-11-12/engineering/replay-regression/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 31163,
+      "executable": true,
+      "sha256": "6f0eb6057c521e30ccbee4e9d540f42b117ce17cb5adb1cdcf5aaba0042954d6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/round2-render-2026-11-12/attempts/development-01/prepared.json",
+      "exists": true,
+      "isFile": true,
+      "isDirectory": false,
+      "bytes": 60258,
+      "executable": true,
+      "sha256": "764108733fe0b8da82287e09c0c636baf62c7e1e76e63a4953e2a3ef7b2b8d8f"
+    }
+  ],
+  "finishedAt": "2026-11-16T08:34:17.645985+00:00",
+  "metadataCorrection": "Host is x86_64; no Apple unified-memory topology was established. Total RAM remains 16 GiB; no GPU memory was measured or added.",
+  "formalGateObservations": {
+    "priorAdmissionStatus": "NOT_ADMITTED_NO_MEASUREMENT",
+    "priorAvailableMinimumBytes": 6402031616,
+    "priorSwapRangeBytes": 0,
+    "priorNoResearchProcesses": false,
+    "priorCompletedConditionRows": 0,
+    "priorModelRequests": 0,
+    "currentProcessPredicateWouldRefuseSharedOllama": true,
+    "noNewAdmissionExecuted": true,
+    "ownershipReceiptsReviewed": [
+      "/Volumes/Untitled/AIJADE/AIJADE-next/experiments/ch7/relocated-runtime-2026-11-16/publication/single-qualification-launch.json"
+    ],
+    "priorSecondAdmissionAuthorized": false
+  }
+}

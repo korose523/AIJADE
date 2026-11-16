@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "kind": "mac-observed-idle-daemon-v1",
+  "daemon": {
+    "app": {
+      "pid": 669,
+      "createTime": 1794695519.392843,
+      "parentPid": 1,
+      "executable": "/Applications/Ollama.app/Contents/MacOS/Ollama",
+      "sha256": "a42e1fcb0cdf56fb09f565a0afbb65330e51343b36eb80486256de3e960f5f10",
+      "argvSha256": "74138b8864d66676adcb0e05ffb1828217610eef1cb0a52b2bbc2ba1f18e8a60",
+      "commandForm": "gui"
+    },
+    "serve": {
+      "pid": 701,
+      "createTime": 1794695525.96261,
+      "parentPid": 669,
+      "executable": "/Applications/Ollama.app/Contents/Resources/ollama",
+      "sha256": "5c3cf935be8d896433a5caefefc8857bc2bb9e32c77c35e7c3d38b7c5919822f",
+      "argvSha256": "1528ec037575f9504bd955405980cd646dfdadf9c481d9b2863ca24cb1dd188e",
+      "commandForm": "serve"
+    }
+  },
+  "listener": {
+    "address": "127.0.0.1",
+    "port": 11434,
+    "pid": 701
+  },
+  "api": {
+    "url": "http://127.0.0.1:11434/api/ps",
+    "timeoutSeconds": 0.5,
+    "maxBytes": 65536
+  }
+}

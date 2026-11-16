@@ -1,0 +1,51 @@
+{
+  "status": "REAL_OWNED_DATABASE_LIFECYCLE_VERIFIED",
+  "startedAt": "2026-11-16T08:46:54.963700+00:00",
+  "database": "aijade_test_7f0e048d2b004bb3a5b4f84a9ea51591",
+  "created": true,
+  "dropped": true,
+  "remaining": 0,
+  "steps": [
+    {
+      "label": "version_and_extensions",
+      "returnCode": 0,
+      "stdout": "PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit\nplpgsql:1.0\n",
+      "stderr": ""
+    },
+    {
+      "label": "preexisting_absence",
+      "returnCode": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    },
+    {
+      "label": "create_exact_owned_database",
+      "returnCode": 0,
+      "stdout": "CREATE DATABASE\n",
+      "stderr": ""
+    },
+    {
+      "label": "verify_created",
+      "returnCode": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    },
+    {
+      "label": "drop_exact_recorded_owned_database",
+      "returnCode": 0,
+      "stdout": "DROP DATABASE\n",
+      "stderr": ""
+    },
+    {
+      "label": "independent_absence_after_drop",
+      "returnCode": 0,
+      "stdout": "0\n",
+      "stderr": ""
+    }
+  ],
+  "modelRequests": 0,
+  "rendererStarts": 0,
+  "postgres": "PostgreSQL 18.0 (Debian 18.0-1.pgdg12+3) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit\nplpgsql:1.0",
+  "databaseImageId": "sha256:24a51a291b2f7c30214be566a7ad8474ee02de8947482084297d263520a97e16",
+  "finishedAt": "2026-11-16T08:46:56.110106+00:00"
+}
