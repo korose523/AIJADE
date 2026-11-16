@@ -1,0 +1,233 @@
+{
+  "recordType": "engineering_validation",
+  "checkedAt": "2026-11-16T05:06:41.079368+00:00",
+  "implementationCommit": "c504df5d252b12d20f33042aa36bb501681d90da",
+  "sourceFiles": {
+    "src/Aijade.Integrations/ChannelScope.cs": "8ce07b5ab9bb6f34767690beccc51b9eaf9bc32dfdf08c44940ecae719665e1e",
+    "src/Aijade.Integrations/CompanionBridge.cs": "b3dde4f45d0675b01cd700873a1bc2b0e6779ea4760576603252fcccb9d13823",
+    "src/Aijade.Bots/CompanionConfiguration.cs": "4516a26d6f46ccd5a5c54833965e298e4f35b1ad18639264057a766244ae0666",
+    "tests/Aijade.Tests/ChannelAudienceTests.cs": "1c4899402e1495e77e2e3d8b74f0af127a8506ffb0e95ec9a98b0583f5b1f8d1",
+    "tools/verify-historical-manifest.py": "e6be1eb3f3952134a65477fc3e2c3dbfe2cbde4a26df9db62263852f0e9d0df3",
+    ".github/workflows/ci.yml": "fbabf8727488938a8b4282173a7814075c0866e1a2cfb6032c91eaefe9a97827"
+  },
+  "referenceLedgerSha256": "21202272a59bf84b7b577f3d722d3cabd75b7aaf3afbe9dfdeff4bc9551b3b28",
+  "macDefaultRegression": {
+    "total": 718,
+    "passed": 689,
+    "failed": 0,
+    "skipped": 29,
+    "trxSha256": "b78b25a14a5ac9398d3ac4a32647826b7f86e046ed560594c4e8c356cba59a83"
+  },
+  "browserOptInRegression": {
+    "total": 38,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 38,
+    "trxSha256": "2fca44568777e9904083ceb58dc7ddbb3d0c0f305c43650ecab5ca886a6c5412"
+  },
+  "affectedSuites": {
+    "ChannelAudienceTests": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "CompanionSyncTests": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0
+    },
+    "IntegrationTests": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ProactiveDeliveryTests": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "CompanionConfigurationTests": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "testAssembly": {
+    "informationalVersion": "0.1.0+c504df5d252b12d20f33042aa36bb501681d90da",
+    "sha256": "3f9585455f1657bd255fb8e1cddc9b75de4098422dbe4aa23bb7ddcb54fe7f6d"
+  },
+  "oldProductionBehavior": {
+    "commit": "f90f04110f46fb17a2a43a777ed5d4e68a361902",
+    "newRegressionControls": 5,
+    "failedAsExpected": 5,
+    "scope": "Original production implementation exercised by the new tests; not an original-commit test-suite failure."
+  },
+  "githubCodeCi": {
+    "runId": 43807000733,
+    "headSha": "c504df5d252b12d20f33042aa36bb501681d90da",
+    "url": "https://github.com/korose523/AIJADE/actions/runs/43807000733",
+    "conclusion": "success",
+    "linuxDefaultRegression": {
+      "passed": 687,
+      "failed": 0,
+      "skipped": 31,
+      "total": 718
+    },
+    "linuxBrowserOptIn": {
+      "passed": 0,
+      "skipped": 38
+    },
+    "logSha256": "c43090e44ba158ef99865b7bd260ee2b32e0660abcd032723e7dba6865f98479"
+  },
+  "archiveChecks": {
+    "count": 20,
+    "allPassed": true,
+    "retainedPython39CompatibilityFailures": 5,
+    "retryInterpreter": "Existing project Python 3.12.14; raw timestamps and archived data unchanged",
+    "results": [
+      {
+        "name": "Verify project-local paths and companion launch arguments",
+        "exitCode": 0,
+        "logSha256": "d185d84186834af1048bebe4cfe4b02e8d4bb7bc685691469dc2bcb0fb5dcbc3"
+      },
+      {
+        "name": "Verify finite binary identity, bounded owned cleanup and terminal receipts",
+        "exitCode": 0,
+        "logSha256": "0cdb4c2517d1682fccbb48f27072afc573313452775e567f8f47625cf118d6ba"
+      },
+      {
+        "name": "Check finite-comparison adverse scoring and independent raw aggregation",
+        "exitCode": 0,
+        "logSha256": "12288e1e699daef75915949fe98dd8799364265228fddf8434dd5b3e8c5f2b0d"
+      },
+      {
+        "name": "Check public-reference type and missing-data conventions",
+        "exitCode": 0,
+        "logSha256": "08f2347fac0d6b292336627d3e246bc48cdfd40cb0ff0eabe1b033b3aeada290"
+      },
+      {
+        "name": "Verify P2-A recovered references and candidate decisions",
+        "exitCode": 0,
+        "logSha256": "1477adc9b3b53a428e0c852ada3f06b12da37eddb0afcfdeb6203637d413b4cc"
+      },
+      {
+        "name": "Verify complete P2-A executable-bank records and prompt measurements",
+        "exitCode": 0,
+        "logSha256": "5111bf0ab5a9d1059f46ea4ffa530cc7ea23b541e262fa68e95e3f590b66a448"
+      },
+      {
+        "name": "Verify complete P2-A tokenizer streams and capacity ledger without model inference",
+        "exitCode": 0,
+        "logSha256": "f59ff9b58009b30207adce3c056b46ea59127aac7936f553b7ed429f9490d055"
+      },
+      {
+        "name": "Verify P2-A bounded input choices, complete streams and actual request-guard controls",
+        "exitCode": 0,
+        "logSha256": "d16ec7c4f48e64d2cb870e496c12171b5b3cc4eb9dde676e5be4e6efaca7f5bb"
+      },
+      {
+        "name": "Verify matched P2 input exposure and both stopped whole-task calibration attempts",
+        "exitCode": 0,
+        "logSha256": "e3d0a2cb9feda29c44a10d394bc65c98ba29fbeb301d0c1bad46827cfd0ac518"
+      },
+      {
+        "name": "Verify complete LongMemEval eligibility, populations and actual delivery records",
+        "exitCode": 0,
+        "logSha256": "5568a13a675dec1ba6c873032e8e4f0ce77486d51d69a9f1d0642765da7a9750"
+      },
+      {
+        "name": "Verify Chapter 7 complete staged development qualification and retained failed attempt",
+        "exitCode": 0,
+        "logSha256": "425fdcdb0fdc5e2dc1323b6de578b03759443c5b3c215751fe439929858303af"
+      },
+      {
+        "name": "Verify retrieval-led development chronology, database continuity and both attempts",
+        "exitCode": 0,
+        "logSha256": "5c6501e7412fdc11b93f1dc52594227b92e9ebe5ee19f4546e3560fe43aaa93d"
+      },
+      {
+        "name": "Verify paired known-case baseline, immutable scoring and post-measurement audit correction",
+        "exitCode": 0,
+        "logSha256": "fd4cbdf1fdb7e12178d3a552d105a908ecd1d256cb66fa119ac2e56c1a093861"
+      },
+      {
+        "name": "Verify unchanged historical packet and pinned source without qualifying current product code",
+        "exitCode": 0,
+        "logSha256": "df7be1457337a083c9d50721439cdcca6f63fc9c12c637010a98b840aab5e822"
+      },
+      {
+        "name": "Verify conditional live manifest dataflow, retained swap stop and fixed idle admission",
+        "exitCode": 0,
+        "logSha256": "51c244a1e0c2810aad88e717ac9f98e39f70bd90a788fad6560b1d1111aff13d"
+      },
+      {
+        "name": "Verify authored source and embedded build revision are distinguished",
+        "exitCode": 0,
+        "logSha256": "c90b0bddd9e215a53f25c936845bf365ae16389ae5e1d24ebecf4b4b4f475604"
+      },
+      {
+        "name": "Verify known-case persisted acts, separate second rendering and complete dispositions",
+        "exitCode": 0,
+        "logSha256": "cc5632433488e66897a579d40862b4836bf856be7dc552a04e730d1d206dd1e8"
+      },
+      {
+        "name": "Verify full controlled history, recorder timing and candidate-to-prompt evidence",
+        "exitCode": 0,
+        "logSha256": "9709f8229e787233b932b308c1f55bdb0f41b89b38b0687249f9e0dd0672081f"
+      },
+      {
+        "name": "Verify finite-driver instrument checks and both refused admission windows",
+        "exitCode": 0,
+        "logSha256": "d170fc1df3fd7647c8079c9a3a474007043e281a6780e634e7eda99916c3575c"
+      },
+      {
+        "name": "Verify relocated runtime preparation, retained failures and one process-refused admission",
+        "exitCode": 0,
+        "logSha256": "f26f5bb32c0805373e11cd4608380410a9493399dcee247e2444c898c3a73f2e"
+      }
+    ]
+  },
+  "historicalSourceGuard": {
+    "snapshot": "f90f04110f46fb17a2a43a777ed5d4e68a361902",
+    "historicalSourceFiles": 331,
+    "unchangedCurrentPacketFiles": 12,
+    "currentProductChangedFrozenSources": [
+      "src/Aijade.Bots/CompanionConfiguration.cs",
+      "src/Aijade.Integrations/CompanionBridge.cs"
+    ],
+    "negativeControls": [
+      {
+        "control": "wrong-source-snapshot",
+        "expectedCommit": "f90f04110f46fb17a2a43a777ed5d4e68a361902",
+        "providedCommit": "c504df5d252b12d20f33042aa36bb501681d90da",
+        "rejected": true,
+        "reason": "Wrong historical snapshot"
+      },
+      {
+        "control": "changed-current-archive-packet",
+        "rejected": true,
+        "reason": "Historical packet changed: experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json",
+        "originalSha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+        "changedSha256": "6307f79c2caf466b93f1aab798c2a6660d2e3c3a0782a083bb06167c62d70a6e",
+        "actualHistoricalArchiveChanged": false
+      }
+    ],
+    "currentProductResearchQualified": false
+  },
+  "localReceiptHashes": {
+    "full-regression.log": "8bc23b4557294298e478a9c099b67faf303e345d8737c79f831893b474283c66",
+    "old-behavior-tests.log": "e01710583b7271a52dbf9103af28febc16f1124ae4461544b8f7e85692b26d12",
+    "old-behavior-controls.json": "50b97c3ed6ddd7b67abf6b49478b082ed84dc7cafa74ace1628c0a7369c16dbc",
+    "archive-check-results.json": "a4241b249c8c3b259e94c94538b997f33d98e5991b30484983d814923b080ef3",
+    "archive-check-results-final.json": "52e3d99f9da60a37b77c1ea9e705aa49e9cc16dbc9b20922280af99be8442c78",
+    "historical-verification-final.json": "df7be1457337a083c9d50721439cdcca6f63fc9c12c637010a98b840aab5e822",
+    "historical-negative-controls-final.json": "77d0baaa176856593117b9e132fbb9bc07541f329ad25e0e48a203fd662480fd"
+  },
+  "localOnlyEvidenceDirectory": "AIJADE/.research/runs/bilibili-references-20261116",
+  "externalModelOrQQAcceptanceClaimed": false,
+  "rawThirdPartyMediaOrSourcePublished": false,
+  "newScientificCases": 0,
+  "newScientificModelJudgments": 0,
+  "independentHumanReview": false,
+  "scope": "Product engineering and reference review only. Native QQ remains authorized-owner private chat; generic bridge group tests use synthetic model output over the real server/PostgreSQL. Later documentation commits do not change the bound implementation sources."
+}
