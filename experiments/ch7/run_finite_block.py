@@ -95,8 +95,8 @@ def _main(args):
     for relative, expected in selection['sources'].items():
         assert sha(repo / relative) == expected, relative
     dll = args.assembly.resolve()
-    binary_files = sorted(p for p in dll.parent.iterdir() if p.is_file())
-    binaries = {p.name: sha(p) for p in binary_files}
+    binary_files = [dll.parent/relative for relative in sorted(build['files'])]
+    binaries = {str(p.relative_to(dll.parent)): sha(p) for p in binary_files}
     sources = {str(p.relative_to(source_copy)): sha(p) for p in source_copy.rglob('*') if p.is_file()
                and not {'.godot','bin','obj','__pycache__'} & set(p.relative_to(source_copy).parts)}
     model_sha = sha(args.model)
@@ -253,7 +253,7 @@ def _main(args):
         assert [(r['caseId'], r['condition']) for r in cases] == [(p['input']['caseId'], c) for p in runtime['cases'] for c in p['input']['conditions']]
         assert all(r['batch'] == runtime['purpose'] and 'expected' not in r and 'qualified' not in r and 'engineeringExpectationMatched' not in r for r in cases)
         assert all(c['gatewayAttempts'] == 0 for c in cases)
-        assert binaries == {p.name: sha(p) for p in binary_files}
+        assert binaries == {str(p.relative_to(dll.parent)): sha(p) for p in binary_files}
         assert sha(args.model) == model_sha
         assert all(sha(repo / relative) == expected for relative, expected in selection['sources'].items())
         assert sources == {rel: sha(source_copy / rel) for rel in sources}

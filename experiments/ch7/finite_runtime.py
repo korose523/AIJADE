@@ -32,7 +32,7 @@ def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None):
     require(build['status']=='CLEAN_COMMITTED_BUILD_FROZEN_BEFORE_QUALIFICATION' and build['commit']==commit, 'wrong committed build')
     require(build['assemblyInformationalVersion']=='0.1.0+'+commit, 'declared assembly revision')
     require(build['assemblyInformationalVersion'].encode() in assembly.read_bytes(), 'assembly revision bytes absent')
-    files={p.name:p for p in assembly.parent.iterdir() if p.is_file()}
+    files={str(p.relative_to(assembly.parent)):p for p in assembly.parent.rglob('*') if p.is_file()}
     require(assembly.with_suffix('.deps.json').name in files and assembly.with_suffix('.runtimeconfig.json').name in files, 'assembly runtime/dependency file missing')
     require(set(files)==set(build['files']), 'build file population changed')
     require(all(sha(p)==build['files'][name] for name,p in files.items()), 'build binary/dependency bytes changed')

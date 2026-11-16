@@ -32,11 +32,12 @@ class RuntimeFaultControls(unittest.TestCase):
         p=self.root/'leases.jsonl';p.write_text(''.join(json.dumps(dict(database=n))+'\n' for n in names));return p
     def build(self):
         # A nonexecutable byte fixture tests identity/refusal, never actual .NET validity.
-        b=self.root/'Aijade.Tests.dll';b.write_bytes(b'nonexecutable identity fixture: 0.1.0+'+HEAD.encode())
-        for ext in ['deps','runtimeconfig']:(self.root/('Aijade.Tests.'+ext+'.json')).write_text('{}')
+        binary=self.root/'bin';binary.mkdir()
+        b=binary/'Aijade.Tests.dll';b.write_bytes(b'nonexecutable identity fixture: 0.1.0+'+HEAD.encode())
+        for ext in ['deps','runtimeconfig']:(binary/('Aijade.Tests.'+ext+'.json')).write_text('{}')
         p=self.root/'freeze.json'
         v=dict(status='CLEAN_COMMITTED_BUILD_FROZEN_BEFORE_QUALIFICATION',commit=HEAD,assemblyInformationalVersion='0.1.0+'+HEAD,
-               files={q.name:hashlib.sha256(q.read_bytes()).hexdigest() for q in self.root.iterdir() if q.is_file()})
+               files={str(q.relative_to(binary)):hashlib.sha256(q.read_bytes()).hexdigest() for q in binary.rglob('*') if q.is_file()})
         p.write_text(json.dumps(v));return b,p,v
     def test_explicit_binary_and_dependency_identity_rejects_stale_or_missing_files(self):
         b,p,v=self.build()
@@ -45,7 +46,7 @@ class RuntimeFaultControls(unittest.TestCase):
         validate_build(b,p,HEAD)
         b.write_bytes(b.read_bytes()+b'changed')
         with self.assertRaisesRegex(ValueError,'bytes changed'):validate_build(b,p,HEAD)
-        b.write_bytes(b.read_bytes()[:-7]);(self.root/'Aijade.Tests.deps.json').unlink()
+        b.write_bytes(b.read_bytes()[:-7]);(b.parent/'Aijade.Tests.deps.json').unlink()
         with self.assertRaisesRegex(ValueError,'dependency file missing'):validate_build(b,p,HEAD)
     def test_build_from_wrong_commit_is_refused(self):
         b,p,v=self.build();v['commit']='2'*40;p.write_text(json.dumps(v))
