@@ -156,14 +156,24 @@ class FormalRuntimeControls(unittest.TestCase):
         raw=json.dumps(value).encode();target=self.repo/relative;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(raw)
         a=self.commit('A acceptance fixture');external=self.root/'acceptance.json';external.write_bytes(raw)
         self.git('checkout','--detach','-q',self.q)
-        with patch.object(finite_inputs,'derive_suite',return_value={}) as derive:
-            binding=finite_inputs.construct(self.repo,self.q,'0'*64,self.root/'no-cases',external,a,relative)
-            self.assertEqual(binding['acceptancePublicationCommit'],a);derive.assert_called_once()
-        self.assertFalse((self.root/'no-cases').exists())
-        external.write_bytes(raw+b' ')
-        with patch.object(finite_inputs,'derive_suite') as derive,self.assertRaisesRegex(ValueError,'exact Git bytes'):
-            finite_inputs.construct(self.repo,self.q,'0'*64,self.root/'no-cases',external,a,relative)
-        derive.assert_not_called()
+        # The production Mac boundary remains strict. Only this fixture maps
+        # that authorized root to its own temp workspace, including on Linux CI.
+        def fixture_path(value):
+            return self.root if str(value)=='/Volumes/Untitled/AIJADE' else Path(value)
+        with patch.object(finite_inputs,'Path',side_effect=fixture_path):
+            with patch.object(finite_inputs,'derive_suite',return_value={}) as derive:
+                binding=finite_inputs.construct(self.repo,self.q,'0'*64,self.root/'no-cases',external,a,relative)
+                self.assertEqual(binding['acceptancePublicationCommit'],a);derive.assert_called_once()
+            self.assertFalse((self.root/'no-cases').exists())
+            with tempfile.TemporaryDirectory(prefix='outside-authorized-fixture-',dir=self.root.parent) as outside:
+                forbidden=Path(outside)/'acceptance.json';forbidden.write_bytes(raw)
+                with patch.object(finite_inputs,'derive_suite') as derive,self.assertRaisesRegex(ValueError,'project-local'):
+                    finite_inputs.construct(self.repo,self.q,'0'*64,self.root/'no-cases',forbidden,a,relative)
+                derive.assert_not_called()
+            external.write_bytes(raw+b' ')
+            with patch.object(finite_inputs,'derive_suite') as derive,self.assertRaisesRegex(ValueError,'exact Git bytes'):
+                finite_inputs.construct(self.repo,self.q,'0'*64,self.root/'no-cases',external,a,relative)
+            derive.assert_not_called()
 
     def test_unknown_observation_is_recorded_without_fabricated_rss(self):
         path=self.root/'unknown.jsonl'
