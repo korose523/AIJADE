@@ -21,7 +21,8 @@ import time
 
 import psutil
 from finite_runtime import (validate_build, cleanup_owned_databases, stop_owned_processes, dispositions,
-    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry)
+    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, MAC_LIFECYCLE_SOURCES, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry,
+    setup_lifecycle, managed_check_output, finish_monitored_cleanup)
 
 GIB = 1024 ** 3
 PLAN = '78785a5'
@@ -41,16 +42,62 @@ def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
 
 
+def launch_owned_process(name, command, cwd, env, stream, registry, *, mac, v3):
+    if v3:
+        process = registry.launch(command, role='finite', stage=name, cwd=cwd, env=env,
+                                  stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
+        lease = registry.register(process)
+        created = lease['identity']['createTimeMicros'] / 1000000
+    else:
+        process = subprocess.Popen(command, cwd=cwd, env=env, stdout=stream,
+                                   stderr=subprocess.STDOUT, start_new_session=True)
+        created = psutil.Process(process.pid).create_time() if mac else None
+        if mac:registry.register(process.pid, created)
+    return process, created
+
+
+def finish_v3_owned_cleanup(roots, leases, docker, container, monitor, registry):
+    """Attempt every owned cleanup and always stop the existing monitor once.
+
+    The sole post-cleanup sample is its next existing scheduled tick. Failures
+    remain explicit; this function never starts a replacement observation.
+    """
+    errors = []
+    try:
+        processes = stop_owned_processes(roots)
+    except BaseException as error:
+        errors.append('process cleanup: ' + type(error).__name__ + ': ' + str(error))
+        processes = [dict(pid=p.pid, exitCode=None, errors=[errors[-1]]) for p in roots]
+    try:
+        databases = cleanup_owned_databases(leases, docker, container, run=registry.run)
+    except BaseException as error:
+        errors.append('database cleanup: ' + type(error).__name__ + ': ' + str(error))
+        databases = [dict(database=None, presentAfterProcessExit=None, remaining=None, error=errors[-1])]
+    if monitor is not None:
+        try:
+            finish_monitored_cleanup(monitor, require_terminal_sample=True)
+        except BaseException as error:
+            errors.append('monitor cleanup: ' + type(error).__name__ + ': ' + str(error))
+    try:
+        final = registry.final()
+    except BaseException as error:
+        errors.append('registry cleanup: ' + type(error).__name__ + ': ' + str(error))
+        final = dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE', error=errors[-1])
+    return processes, databases, final, errors
+
+
 def _main(args):
+    lifecycle = getattr(args, '_lifecycle_registry', None)
+    v3 = lifecycle is not None
     repo = args.repo.resolve()
-    assert subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo, text=True) == ''
-    repository_commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
+    assert managed_check_output(['git', 'status', '--porcelain'], cwd=repo, text=True) == ''
+    repository_commit = managed_check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
     commit = getattr(args,'implementation_commit',None) or repository_commit
     mac=args.execution_plan.name in MAC_PLANS
     assert mac or commit==repository_commit
     if mac:
         assert args.execution_plan.resolve()==repo/'experiments/plans'/args.execution_plan.name
-        assert args.execution_plan.read_bytes()==subprocess.check_output(['git','show',commit+':experiments/plans/'+args.execution_plan.name],cwd=repo)
+        assert args.execution_plan.read_bytes()==managed_check_output(['git','show',commit+':experiments/plans/'+args.execution_plan.name],cwd=repo)
     assert commit == os.environ['AIJADE_GIT_COMMIT']
     assert os.environ.get('DOTNET_PROCESSOR_COUNT') == '2'
     assert psutil.__version__ == '7.2.2'
@@ -68,6 +115,7 @@ def _main(args):
     metadata=dict(binding,buildFreezeCommit=args.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
+    if v3:metadata.update(lifecycleJournalPath=str(lifecycle.path),lifecycleScopeId=lifecycle.scope_id)
     runtime = json.loads(args.manifest.read_text())
     contract = json.loads(args.scoring.read_text())
     assert runtime['purpose'] in ['qualification_only','confirmed_finite_heldout']
@@ -79,13 +127,13 @@ def _main(args):
         assert args.manifest.resolve().is_relative_to(repo)
         assert args.scoring.resolve().is_relative_to(repo)
         for path in [args.manifest,args.scoring,args.selection]:
-            original = subprocess.check_output(['git','show',repository_commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
+            original = managed_check_output(['git','show',repository_commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
             assert hashlib.sha256(original).hexdigest() == sha(path), 'Uncommitted or changed finite input'
         freeze = json.loads((repo/'experiments/ch7/finite-heldout/construction-freeze.json').read_text())
         assert freeze['constructionFreezeCommit'] == runtime['constructionFreezeCommit']
         for relative, digest in freeze['sources'].items():
             assert sha(repo/relative) == digest, 'Construction-frozen source changed'
-            original = subprocess.check_output(['git','show',runtime['constructionFreezeCommit']+':'+relative],cwd=repo)
+            original = managed_check_output(['git','show',runtime['constructionFreezeCommit']+':'+relative],cwd=repo)
             assert hashlib.sha256(original).hexdigest() == digest
         suitability = json.loads((args.manifest.parent.parent/'suitability-acceptance.json').read_text())
         assert suitability['status'] == 'PASS_ALL_FORTY_BEFORE_MEASUREMENT'
@@ -124,7 +172,7 @@ def _main(args):
                and not {'.godot','bin','obj','__pycache__'} & set(p.relative_to(source_copy).parts)}
     model_sha = sha(args.model)
     write(output / 'input-identities.json', dict(
-        codeCommit=commit, planCommit=subprocess.check_output(['git', 'rev-parse', PLAN], cwd=repo, text=True).strip(),
+        codeCommit=commit, planCommit=managed_check_output(['git', 'rev-parse', PLAN], cwd=repo, text=True).strip(),
         planSha256=sha(repo / 'experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md'),
         runtimeManifestSha256=sha(output/'runtime-manifest.json'), scoringManifestSha256=sha(output/'scoring-manifest.json'),
         binaries=binaries, rendererSources=sources, modelSha256=model_sha,
@@ -142,7 +190,8 @@ def _main(args):
             [repo/'experiments/ch7/run_finite_block.py',repo/'experiments/ch7/run_finite_sequence.py'] +
             [repo/'experiments/ch7/godot_local.py'] +
             list((repo/'tests/Aijade.Tests').glob('ResearchFinite*.cs'))+
-            ([repo/'experiments/ch7/mac_process_guard.py'] + ([repo/'experiments/ch7/mac_process_guard_v2.py',repo/'experiments/ch7/mac_bulk_census.c'] if mac_plan(policy)!=MAC_PLAN else []) if mac else []))},
+            ([repo/'experiments/ch7/mac_process_guard.py'] + ([repo/'experiments/ch7/mac_process_guard_v2.py',repo/'experiments/ch7/mac_bulk_census.c'] if mac_plan(policy)!=MAC_PLAN else []) if mac else []) +
+            ([repo/relative for relative in MAC_LIFECYCLE_SOURCES] if v3 else []))},
         constructionFreezeCommit=runtime['constructionFreezeCommit'], purpose=runtime['purpose'],
         runtimeRepositoryPath=str(args.manifest.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
         scoringRepositoryPath=str(args.scoring.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
@@ -174,10 +223,12 @@ def _main(args):
     if mac:
         peaks['minAvailableBytes']=2**100
         own=[(metadata['controllerProcess']['pid'],metadata['controllerProcess']['createTime'])]
-        owned_registry=OwnedRegistry(own)
+        owned_registry=lifecycle if v3 else OwnedRegistry(own)
         def sample():
-            observation=observe(policy,owned_roots=owned_registry.roots());observation.update(process_identity)
-            owned_registry.remember(observation)
+            observation=(observe(policy,owned_roots=owned_registry.roots(),lifecycle=lifecycle) if v3 else
+                         observe(policy,owned_roots=owned_registry.roots()))
+            observation.update(process_identity)
+            if not v3:owned_registry.remember(observation)
             rss=observation.get('ownedRssBytes')
             available=psutil.virtual_memory().available;swap_used=psutil.swap_memory().used
             if type(rss) is int:peaks['rssBytes']=max(peaks['rssBytes'] or 0,rss)
@@ -192,11 +243,9 @@ def _main(args):
     def launch(name, command, cwd, extra=None):
         stream = (output / (name + '.log')).open('x')
         handles.append(stream)
-        proc = subprocess.Popen(command, cwd=cwd, env=dict(env, **(extra or {})),
-                                stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
+        proc, created = launch_owned_process(name, command, cwd, dict(env, **(extra or {})), stream,
+                                             owned_registry, mac=mac, v3=v3)
         roots.append(proc)
-        created=psutil.Process(proc.pid).create_time() if mac else None
-        if mac:owned_registry.register(proc.pid,created)
         phases[name] = dict(startedAt=utc(), pid=proc.pid, exitCode=None)
         if mac:phases[name]['createTime']=created
         write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases=phases,modelRequests=0))
@@ -315,7 +364,12 @@ def _main(args):
         status = 'STOPPED'
         reason = type(error).__name__ + ': ' + str(error)
     finally:
-        process_cleanup = stop_owned_processes(roots)
+        cleanup_errors=[]
+        if v3:
+            process_cleanup, cleanup, registry_final, cleanup_errors = finish_v3_owned_cleanup(
+                roots, output/'database-leases.jsonl', args.docker, args.db_container, monitor, owned_registry)
+        else:
+            process_cleanup = stop_owned_processes(roots)
         for name, record in phases.items():
             owned = next(p for p in roots if p.pid==record['pid'])
             record['exitCode'] = owned.poll()
@@ -325,17 +379,23 @@ def _main(args):
             try:handle.close()
             except OSError as error:close_errors.append(type(error).__name__+': '+str(error))
         leases = output / 'database-leases.jsonl'
-        cleanup = cleanup_owned_databases(leases,args.docker,args.db_container)
+        if not v3:cleanup = cleanup_owned_databases(leases,args.docker,args.db_container)
         if monitor is not None:
-            try:monitor.stop()
-            except ValueError as error:
-                status='STOPPED';reason=(reason+'; ' if reason else '')+str(error)
-            try:registry_final=owned_registry.final()
-            except ValueError as error:registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
+            if not v3:
+                try:monitor.stop()
+                except ValueError as error:
+                    status='STOPPED';reason=(reason+'; ' if reason else '')+str(error)
+                try:registry_final=owned_registry.final()
+                except ValueError as error:registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
             write(output/'owned-process-registry.json',registry_final)
             metadata['ownedProcessRegistrySha256']=sha(output/'owned-process-registry.json')
+            if v3:
+                journal=lifecycle.path.read_bytes()
+                metadata.update(lifecycleJournalBytes=len(journal),lifecycleJournalSha256=hashlib.sha256(journal).hexdigest())
             if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
                 status='STOPPED';reason=(reason+'; ' if reason else '')+'known owned descendant remains or identity unknown'
+        if cleanup_errors:
+            status='STOPPED';reason=(reason+'; ' if reason else '')+'; '.join(cleanup_errors)
         if time.monotonic()-started>1200:
             status='STOPPED';reason=(reason+'; ' if reason else '')+'block wall limit including cleanup'
         write(output/'database-cleanup.json', cleanup)
@@ -359,7 +419,11 @@ def _main(args):
 
 def main(args):
     existed=args.output.exists()
-    try:return _main(args)
+    lifecycle=None
+    try:
+        if not existed:lifecycle=setup_lifecycle(args,args.output.name)
+        args._lifecycle_registry=lifecycle
+        return _main(args)
     except BaseException as error:
         if not existed:
             args.output.mkdir(parents=True,exist_ok=True)
@@ -372,6 +436,32 @@ def main(args):
             write(path,receipt)
         print(type(error).__name__+': '+str(error),file=sys.stderr)
         return 1
+    finally:
+        if lifecycle is not None:
+            try:
+                if not lifecycle.closed:lifecycle.close()
+                if not existed:
+                    path=args.output/'receipt.json'
+                    if path.is_file():
+                        receipt=json.loads(path.read_text())
+                        journal=lifecycle.path.read_bytes()
+                        receipt.update(lifecycleJournalPath=str(lifecycle.path),lifecycleScopeId=lifecycle.scope_id,
+                                       lifecycleJournalBytes=len(journal),lifecycleJournalSha256=hashlib.sha256(journal).hexdigest())
+                        write(path,receipt)
+            except BaseException as error:
+                if not existed:
+                    args.output.mkdir(parents=True,exist_ok=True)
+                    path=args.output/'receipt.json'
+                    try:receipt=json.loads(path.read_text())
+                    except (OSError,ValueError):receipt={}
+                    detail='lifecycle finalization: '+type(error).__name__+': '+str(error)
+                    receipt.update(status='STOPPED_LIFECYCLE_FINALIZATION_ERROR',
+                                   reason=(receipt.get('reason')+'; ' if receipt.get('reason') else '')+detail,
+                                   finishedAt=utc(),modelRequests=0,lifecycleScopeId=lifecycle.scope_id,
+                                   lifecycleJournalPath=str(lifecycle.path))
+                    write(path,receipt)
+                print(type(error).__name__+': '+str(error),file=sys.stderr)
+                return 1
 
 
 if __name__ == '__main__':

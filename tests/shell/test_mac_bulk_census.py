@@ -235,11 +235,21 @@ class BulkObserverControls(unittest.TestCase):
     def test_native_pipe_cap_timeout_and_cleanup_are_bounded(self):
         big = self.fixture('import os;os.write(1,b"x"*(4194304+10000))\n')
         result = guard._run_native(big)
-        self.assertTrue(result['oversized']); self.assertTrue(result['cleanupKnown'])
+        # The production deadline may win before an oversized pipe finishes.
+        # Both outcomes must refuse and retain bounded, reaped evidence.
+        self.assertTrue(result['oversized'] or result['timedOut']); self.assertTrue(result['cleanupKnown'])
         self.assertLessEqual(len(result['stdout']), guard.MAX_CENSUS_BYTES + 1)
         slow = self.fixture('import time;time.sleep(5)\n')
         result = guard._run_native(slow)
         self.assertTrue(result['timedOut']); self.assertTrue(result['cleanupKnown'])
+
+    def test_output_cap_branch_independently_refuses_without_relaxing_deadline(self):
+        big = self.fixture('import os;os.write(1,b"x"*100000)\n')
+        with patch.object(guard, 'MAX_CENSUS_BYTES', 65536):
+            result = guard._run_native(big)
+        self.assertTrue(result['oversized']); self.assertFalse(result['timedOut'])
+        self.assertTrue(result['cleanupKnown']); self.assertLessEqual(len(result['stdout']),65537)
+        self.assertEqual(guard.MAX_CENSUS_BYTES,4194304)
 
     def test_two_concurrent_disposable_captures_serialize_and_do_not_capture_peer(self):
         template = native(parent=20)

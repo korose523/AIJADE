@@ -1,0 +1,679 @@
+#!/usr/bin/env python3
+"""AIJADE-owned, identity-ready subprocess leases and replayable evidence.
+
+No observation/model call occurs on import or final(). A missing identity is not
+an exit status; only the direct owner's Popen.wait records a terminal outcome.
+"""
+from __future__ import annotations
+
+from contextlib import contextmanager
+import copy
+import fcntl
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import selectors
+import shutil
+import stat
+import subprocess
+import sys
+import threading
+import time
+import uuid
+
+BASE = Path('/Volumes/Untitled/AIJADE')
+POSIX = BASE / '.runtime/posix'
+EVENT_SCHEMA = 'aijade.process-lifecycle-event.v1'
+VIEW_SCHEMA = 'aijade.process-lifecycle-view.v1'
+MAX_JOURNAL_BYTES = 16 * 1024 * 1024
+MAX_LOCK_WAIT = 1.25
+READY_SECONDS = 1.0
+ZERO = '0' * 64
+_locks = threading.local()
+_env_registry = None
+_env_registry_lock = threading.RLock()
+
+
+def _synchronized(function):
+    def wrapped(self,*args,**kwargs):
+        with self._mutex:return function(self,*args,**kwargs)
+    return wrapped
+
+
+def need(value, message):
+    if not value:
+        raise ValueError(message)
+
+
+def canonical(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=True,
+                      allow_nan=False).encode()
+
+
+def digest(value):
+    return hashlib.sha256(value).hexdigest()
+
+
+def _hex(value, size=64):
+    return type(value) is str and len(value) == size and all(c in '0123456789abcdef' for c in value)
+
+
+def _number(value):
+    return type(value) in (int, float) and math.isfinite(value) and value >= 0
+
+
+def identity(pid=None):
+    import psutil
+    process = psutil.Process(os.getpid() if pid is None else pid)
+    before = process.create_time()
+    parent = process.ppid()
+    need(psutil.Process(process.pid).create_time() == before, 'identity reused while reading')
+    return dict(pid=process.pid, createTimeMicros=round(before * 1000000), parentPid=parent)
+
+
+def identity_key(value):
+    need(type(value) is dict and set(value) == {'pid', 'createTimeMicros', 'parentPid'}, 'identity schema')
+    need(type(value['pid']) is int and value['pid'] > 1
+         and type(value['createTimeMicros']) is int and value['createTimeMicros'] > 0
+         and type(value['parentPid']) is int and value['parentPid'] > 0, 'identity values')
+    return value['pid'], value['createTimeMicros']
+
+
+def key_from_node(node):
+    micros = node.get('createTimeMicros')
+    if micros is None:
+        need(_number(node.get('createTime')), 'node creation time missing')
+        micros = round(node['createTime'] * 1000000)
+    return node['pid'], micros
+
+
+def project_path(value):
+    original = Path(value)
+    need(original.is_absolute() and '..' not in original.parts, 'absolute canonical project path required')
+    resolved = original.resolve()
+    need(resolved == original and (resolved == BASE or BASE in resolved.parents), 'path outside project or symlink')
+    need(not any(p.is_symlink() for p in (original, *original.parents)), 'symlink in lifecycle path')
+    return original
+
+
+def coordination_lock_path(policy):
+    key = digest(str(Path(policy['nativeHelper']['path']).resolve()).encode())
+    return POSIX / 'locks' / ('mac-lifecycle-' + key + '.lock')
+
+
+def _open_owned(path, flags, mode=0o600):
+    path = project_path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(path, flags | os.O_NOFOLLOW, mode)
+    item = os.fstat(fd)
+    try:
+        need(stat.S_ISREG(item.st_mode) and item.st_uid == os.getuid() and item.st_nlink == 1
+             and not item.st_mode & 0o077, 'unsafe lifecycle file owner/type/mode/link count')
+        actual = os.stat(path, follow_symlinks=False)
+        need((item.st_dev, item.st_ino) == (actual.st_dev, actual.st_ino), 'lifecycle file replaced')
+    except BaseException:
+        os.close(fd)
+        raise
+    return fd
+
+
+@contextmanager
+def capture_lock(path, timeout=MAX_LOCK_WAIT):
+    """Reentrant only within this exact thread; never silently bypass a peer."""
+    path = project_path(path)
+    need(POSIX in path.parents and _number(timeout) and 0 < timeout <= MAX_LOCK_WAIT,
+         'capture lock must be project APFS with bounded timeout')
+    active = getattr(_locks, 'active', {})
+    token = str(path)
+    if token in active:
+        yield dict(pathSha256=digest(token.encode()), waitSeconds=0.0, nested=True)
+        return
+    started = time.monotonic()
+    fd = _open_owned(path, os.O_RDWR | os.O_CREAT)
+    acquired = False
+    metadata = dict(schema='aijade.lifecycle.capture-lock.v1',pathSha256=digest(token.encode()),
+                    maxWaitSeconds=MAX_LOCK_WAIT,state='UNKNOWN')
+    try:
+        while True:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+                break
+            except BlockingIOError:
+                if time.monotonic() - started >= timeout:
+                    raise ValueError('lifecycle capture lock timeout')
+                time.sleep(min(0.005, timeout - (time.monotonic() - started)))
+        active[token] = fd
+        _locks.active = active
+        item=os.fstat(fd)
+        ident=dict(device=item.st_dev,inode=item.st_ino,regular=True,singleLink=True,ownedByCurrentUser=True)
+        metadata.update(waitSeconds=time.monotonic()-started,acquiredMonotonic=time.monotonic(),
+                        nested=False,initialIdentity=ident,state='HELD')
+        yield metadata
+        item=os.stat(path,follow_symlinks=False)
+        final=dict(device=item.st_dev,inode=item.st_ino,regular=stat.S_ISREG(item.st_mode),
+                   singleLink=item.st_nlink==1,ownedByCurrentUser=item.st_uid==os.getuid())
+        need(final==ident,'whole observation lock identity changed')
+        metadata.update(finalIdentity=final,releasedMonotonic=time.monotonic(),state='HELD_AND_RELEASED')
+    finally:
+        if acquired:
+            active.pop(token, None)
+            fcntl.flock(fd, fcntl.LOCK_UN)
+        os.close(fd)
+
+
+def _unique(pairs):
+    result = {}
+    for key, value in pairs:
+        need(key not in result, 'duplicate journal JSON key')
+        result[key] = value
+    return result
+
+
+def replay_journal(raw, _prior=None):
+    """Validate exact hash/order and source-bound launch/release/wait state."""
+    need(type(raw) is bytes and len(raw) <= MAX_JOURNAL_BYTES, 'journal bytes/cap')
+    need(not raw or raw.endswith(b'\n'), 'truncated journal record')
+    if _prior is None:
+        events,leases,discovered,scopes=[],{},{},{}
+        identity_index={}
+        previous,prior_mono,context=ZERO,-1.0,None
+    else:
+        events,leases,discovered,scopes=(_prior[k] for k in ('events','leases','discovered','scopes'))
+        identity_index=_prior['identityIndex']
+        previous=events[-1]['sha256'] if events else ZERO
+        prior_mono=events[-1]['monotonicSeconds'] if events else -1.0
+        context=(_prior['runId'],_prior['sourceCommit'],_prior['policySha256']) if events else None
+    for line in raw.splitlines():
+        event = json.loads(line, object_pairs_hook=_unique,
+                           parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite journal')))
+        fields = {'schema','seq','event','monotonicSeconds','runId','writer','sourceCommit',
+                  'policySha256','data','previousSha256','sha256'}
+        need(type(event) is dict and set(event) == fields and event['schema'] == EVENT_SCHEMA, 'journal schema')
+        need(type(event['seq']) is int and event['seq'] == len(events)+1
+             and event['previousSha256'] == previous, 'journal order/hash chain')
+        payload = {k:v for k,v in event.items() if k != 'sha256'}
+        need(_hex(event['sha256']) and digest(canonical(payload)) == event['sha256'], 'journal hash changed')
+        need(_number(event['monotonicSeconds']) and event['monotonicSeconds'] >= prior_mono, 'journal time reversal')
+        identity_key(event['writer'])
+        need(_hex(event['runId'],32) and _hex(event['sourceCommit'],40)
+             and _hex(event['policySha256']), 'journal source context')
+        current = (event['runId'],event['sourceCommit'],event['policySha256'])
+        need(context is None or current == context, 'journal context changed')
+        context = current
+        data, name = event['data'], event['event']
+        need(type(data) is dict, 'journal event data')
+        if name in ('CONTROLLER_REGISTER','FINITE_REGISTER'):
+            lease_id = data['leaseId']; ident = data['identity']; identity_key(ident)
+            need(_hex(lease_id,32) and lease_id not in leases and data['role'] in ('controller','finite'), 'duplicate/invalid lease')
+            need(type(data['stageId']) is str and data['stageId'] and _hex(data['commandSha256'])
+                 and _hex(data['executableSha256']) and _number(data['readyMonotonic'])
+                 and data['readyMonotonic'] <= event['monotonicSeconds'], 'launch witness')
+            if name == 'CONTROLLER_REGISTER':
+                need(data['role'] == 'controller' and ident == event['writer'], 'root registration is not self')
+            else:
+                identity_key(data['parentIdentity'])
+                need(data['parentIdentity'] == event['writer'] and ident['parentPid'] == event['writer']['pid'], 'launch parent mismatch')
+                owner_id=identity_index.get(identity_key(event['writer']))
+                need(owner_id is not None and leases[owner_id].get('exitCode') is None,
+                     'unowned writer launched a child')
+            need(identity_key(ident) not in identity_index,'identity has multiple launch leases')
+            leases[lease_id] = dict(data, registerSeq=event['seq'],registerMonotonic=event['monotonicSeconds'],releaseSeq=None,
+                                    waitSeq=None, exitCode=None, absence=None)
+            identity_index[identity_key(ident)]=lease_id
+        elif name == 'RELEASE':
+            need(data.get('leaseId') in leases,'release before launch')
+            lease = leases[data['leaseId']]
+            need(lease['role'] == 'finite' and lease['parentIdentity'] == event['writer']
+                 and lease['releaseSeq'] is None and lease['waitSeq'] is None, 'invalid exec release')
+            lease['releaseSeq'] = event['seq']
+            lease['releaseMonotonic'] = event['monotonicSeconds']
+        elif name == 'WAIT':
+            need(data.get('leaseId') in leases,'wait before launch')
+            lease = leases[data['leaseId']]
+            need(lease['role'] == 'finite' and lease['parentIdentity'] == event['writer']
+                 and lease['identity'] == data['identity'] and lease['releaseSeq'] is not None
+                 and lease['waitSeq'] is None and type(data['exitCode']) is int
+                 and data['waitSource'] == 'Popen.wait' and _number(data['reapedMonotonic'])
+                 and data['reapedMonotonic'] <= event['monotonicSeconds'], 'unbound/duplicate wait result')
+            lease.update(waitSeq=event['seq'], exitCode=data['exitCode'],
+                         reapedMonotonic=data['reapedMonotonic'])
+            # waitpid has reaped this exact directly launched identity. This is
+            # absence evidence, including for the last sampling instrument; it
+            # does not repair a missing RSS measurement or prove useful work.
+            lease['absence']=dict(witnessKind='PARENT_WAIT_REAPED',identity=lease['identity'],
+                parentIdentity=lease['parentIdentity'],eventSeq=event['seq'],
+                reapedMonotonic=data['reapedMonotonic'],exitCode=data['exitCode'])
+            lease['absenceWitnessKind']='PARENT_WAIT_REAPED'
+        elif name == 'DISCOVER':
+            key = identity_key(data['identity'])
+            chain=data.get('ancestry')
+            need(type(chain) is list and len(chain)>=2 and chain[0]==data['identity']
+                 and chain[-1]==event['writer'],'discovery ancestry endpoints')
+            keys=[identity_key(v) for v in chain]
+            need(len(keys)==len(set(keys)) and all(a['parentPid']==b['pid']
+                 and b['createTimeMicros']<=a['createTimeMicros'] for a,b in zip(chain,chain[1:])),
+                 'discovery ancestry edges')
+            need(data.get('scopeId') in scopes and scopes[data['scopeId']]['controllerIdentity']==event['writer'],
+                 'discovery scope binding')
+            need(_hex(data.get('sampleId'),32) and data.get('phase') in ('before','after')
+                 and _hex(data.get('nativeStdoutSha256')) and _number(data.get('graphStartedMonotonic'))
+                 and _number(data.get('graphCompletedMonotonic'))
+                 and data['graphStartedMonotonic']<=data['graphCompletedMonotonic']<=event['monotonicSeconds'],
+                 'discovery raw source clock/identity')
+            discovered.setdefault(key, dict(data, eventSeq=event['seq']))
+        elif name in ('ABSENCE','DISCOVER_ABSENCE'):
+            key = identity_key(data['identity'])
+            need(_hex(data['sampleId'],32) and data['phase'] in ('before','after')
+                 and _hex(data['nativeStdoutSha256']), 'absence witness missing')
+            need(_number(data.get('graphStartedMonotonic')) and _number(data.get('graphCompletedMonotonic'))
+                 and data['graphStartedMonotonic']<=data['graphCompletedMonotonic']<=event['monotonicSeconds'],
+                 'absence graph clock/writer order')
+            found = [leases[identity_index[key]]] if key in identity_index else []
+            need(name=='ABSENCE' or not found,'discovered absence cannot close a managed lease')
+            need(name=='ABSENCE' or key in discovered,'unknown discovered identity absence')
+            for lease in found:
+                need(lease['role'] == 'finite' and lease['waitSeq'] is not None,
+                     'absence does not replace controller/finite wait')
+                need(_number(data.get('graphStartedMonotonic'))
+                     and data['graphStartedMonotonic'] >= lease['reapedMonotonic'],
+                     'absence frame predates actual wait')
+                lease['absence'] = dict(data, eventSeq=event['seq'],witnessKind='COMPLETE_NATIVE_ABSENCE')
+                lease['absenceWitnessKind']='COMPLETE_NATIVE_ABSENCE'
+            if key in discovered:
+                discovered[key]['absence'] = dict(data,eventSeq=event['seq'],witnessKind='COMPLETE_NATIVE_ABSENCE')
+                discovered[key]['exitStatus']='UNKNOWN'
+        elif name == 'SCOPE_OPEN':
+            need(_hex(data['scopeId'],32) and data['scopeId'] not in scopes
+                 and data['controllerIdentity'] == event['writer'], 'invalid scope open')
+            identity_key(data['controllerIdentity'])
+            if data.get('parentLeaseId') is not None:
+                need(leases[data['parentLeaseId']]['identity'] == event['writer'], 'scope parent lease mismatch')
+            else:
+                owner_id=identity_index.get(identity_key(event['writer']))
+                need(owner_id is not None and leases[owner_id]['role']=='controller', 'scope has no controller lease')
+            scopes[data['scopeId']] = dict(data, openSeq=event['seq'], closeSeq=None)
+        elif name == 'SCOPE_CLOSE':
+            scope = scopes[data['scopeId']]
+            need(scope['controllerIdentity'] == event['writer'] and scope['closeSeq'] is None, 'invalid scope close')
+            scope['closeSeq'] = event['seq']
+        else:
+            raise ValueError('unknown lifecycle event')
+        events.append(event); previous=event['sha256']; prior_mono=event['monotonicSeconds']
+    return dict(events=events,leases=leases,discovered=discovered,scopes=scopes,identityIndex=identity_index,
+                runId=context[0] if context else None,sourceCommit=context[1] if context else None,
+                policySha256=context[2] if context else None,lastSequence=len(events),
+                bytes=len(raw),sha256=digest(raw))
+
+
+def read_journal(path, limitBytes=None):
+    fd = _open_owned(path, os.O_RDONLY)
+    started=time.monotonic()
+    try:
+        while True:
+            try:fcntl.flock(fd,fcntl.LOCK_SH|fcntl.LOCK_NB);break
+            except BlockingIOError:
+                need(time.monotonic()-started<MAX_LOCK_WAIT,'journal read lock timeout');time.sleep(.002)
+        with os.fdopen(os.dup(fd),'rb') as stream:
+            raw=stream.read(MAX_JOURNAL_BYTES+1 if limitBytes is None else limitBytes)
+    finally:fcntl.flock(fd,fcntl.LOCK_UN);os.close(fd)
+    need(len(raw) <= MAX_JOURNAL_BYTES and (limitBytes is None or len(raw)==limitBytes), 'journal missing/capped prefix')
+    return raw
+
+
+def validate_view(view, journal_bytes=None):
+    need(type(view) is dict and view.get('schema') == VIEW_SCHEMA, 'lifecycle view schema')
+    count = view['journalBytes']
+    need(type(count) is int and 0 < count <= MAX_JOURNAL_BYTES, 'journal prefix size')
+    if journal_bytes is None:
+        raw = read_journal(view['journalPath'],count)
+    elif isinstance(journal_bytes,(str,Path)):
+        raw = read_journal(journal_bytes,count)
+    else:
+        need(type(journal_bytes) is bytes and len(journal_bytes)>=count, 'journal replay bytes missing')
+        raw = journal_bytes[:count]
+    state = replay_journal(raw)
+    need(state['sha256'] == view['journalSha256'] and state['lastSequence'] == view['lastSequence']
+         and state['runId'] == view['runId'], 'journal view prefix differs')
+    scope = state['scopes'][view['scopeId']]
+    need(view['controllerIdentity'] == scope['controllerIdentity'], 'view scope controller differs')
+    wanted={tuple(v) for v in view['referencedIdentities']}
+    need(len(wanted)==len(view['referencedIdentities']),'duplicate referenced identity')
+    expected=[v for v in state['leases'].values() if v['absence'] is None or identity_key(v['identity']) in wanted]
+    need(view['leases']==expected and view['controllers']==[v['leaseId'] for v in expected
+         if v['identity']==view['controllerIdentity']],'lifecycle lease view projection differs')
+    return state
+
+
+class ManagedProcess:
+    def __init__(self, registry, process, lease_id):
+        self.registry,self.process,self.lease_id = registry,process,lease_id
+        self._done = threading.Event();self._error=None
+        self._reaper = threading.Thread(target=self._reap,name='aijade-finite-reaper',daemon=True)
+        self._reaper.start()
+
+    def _reap(self):
+        try:
+            code=self.process.wait()
+            self.registry._append('WAIT',dict(leaseId=self.lease_id,identity=self.registry._lease(self.lease_id)['identity'],
+                exitCode=code,waitSource='Popen.wait',reapedMonotonic=time.monotonic()))
+        except BaseException as error:self._error=error
+        finally:self._done.set()
+
+    @property
+    def pid(self):return self.process.pid
+    @property
+    def returncode(self):return self.process.returncode
+    @property
+    def stdout(self):return self.process.stdout
+    @property
+    def stderr(self):return self.process.stderr
+    @property
+    def stdin(self):return self.process.stdin
+    def poll(self):
+        if self._done.is_set():
+            if self._error:raise ValueError('finite wait evidence unknown') from self._error
+            return self.process.returncode
+        # Kernel liveness and metadata completion are separate. Never report an
+        # already reaped PID as alive and invite a cleanup signal to a reused PID.
+        return self.process.poll()
+    def wait(self,timeout=None):
+        if not self._done.wait(timeout):raise subprocess.TimeoutExpired(self.process.args,timeout)
+        if self._error:raise ValueError('finite wait evidence unknown') from self._error
+        return self.process.returncode
+    def communicate(self,input=None,timeout=None):
+        out,err=self.process.communicate(input=input,timeout=timeout)
+        self.wait(timeout=timeout)
+        return out,err
+    def send_signal(self,value):return self.process.send_signal(value)
+    def terminate(self):return self.process.terminate()
+    def kill(self):return self.process.kill()
+
+
+class Registry:
+    def __init__(self,journal_path,roots=(),*,stage='runtime',source_commit,policy_sha256,
+                 run_id=None,capture_lock_path=None,parent_lease_id=None):
+        self.path=project_path(journal_path);self.stage=stage;self.writer=identity()
+        self.source_commit=source_commit;self.policy_sha256=policy_sha256
+        need(_hex(source_commit,40) and _hex(policy_sha256),'registry source identity missing')
+        self.run_id=run_id or uuid.uuid4().hex
+        self.lock_path=project_path(capture_lock_path or (POSIX/'locks'/('lifecycle-'+digest(str(self.path).encode())+'.lock')))
+        self._mutex=threading.RLock();self.handles=[];self.scope_id=uuid.uuid4().hex;self.closed=False
+        self._cached_raw=b'';self._cached_state=None;self._cached_inode=None;self._policy=None
+        fd=_open_owned(self.path,os.O_RDWR|os.O_CREAT);os.close(fd)
+        state=self._state()
+        if state['events']:
+            need((state['runId'],state['sourceCommit'],state['policySha256'])==
+                 (self.run_id,source_commit,policy_sha256),'registry attach context differs')
+        self._roots=[]
+        for pid,created in roots:
+            need(pid==self.writer['pid'] and round(created*1000000)==self.writer['createTimeMicros'], 'only exact local self may be persistent')
+            self._roots.append((pid,created))
+        existing=[(k,v) for k,v in state['leases'].items() if v['identity']==self.writer]
+        if not existing:
+            need(not state['events'] and parent_lease_id is None,'unregistered nested controller')
+            root_id=uuid.uuid4().hex
+            self._append('CONTROLLER_REGISTER',dict(leaseId=root_id,role='controller',stageId=stage,identity=self.writer,
+                parentIdentity=None,commandSha256=digest(canonical(sys.argv)),executableSha256=digest(Path(sys.executable).resolve().read_bytes()),
+                readyMonotonic=time.monotonic()))
+            self.parent_lease_id=None
+        else:
+            need(parent_lease_id in [k for k,_ in existing], 'nested scope parent lease missing')
+            self.parent_lease_id=parent_lease_id
+        self._append('SCOPE_OPEN',dict(scopeId=self.scope_id,controllerIdentity=self.writer,parentLeaseId=self.parent_lease_id,stageId=stage))
+
+    def _sync(self,raw,inode=None):
+        if inode is not None:
+            need(self._cached_inode is None or self._cached_inode==inode,'lifecycle journal replaced')
+            self._cached_inode=inode
+        need(len(raw)>=len(self._cached_raw) and raw[:len(self._cached_raw)]==self._cached_raw,
+             'lifecycle journal truncated, rewound or prefix changed')
+        tail=raw[len(self._cached_raw):]
+        if self._cached_state is None:self._cached_state=replay_journal(raw)
+        elif tail:self._cached_state=replay_journal(tail,self._cached_state)
+        self._cached_raw=raw
+        self._cached_state.update(bytes=len(raw),sha256=digest(raw))
+        return self._cached_state
+    def _state(self):
+        with self._mutex:
+            raw=read_journal(self.path);item=os.stat(self.path,follow_symlinks=False)
+            return self._sync(raw,(item.st_dev,item.st_ino))
+    def _lease(self,lease_id):return self._state()['leases'][lease_id]
+
+    def _append(self,name,data):
+        with self._mutex:
+            fd=_open_owned(self.path,os.O_RDWR)
+            started=time.monotonic()
+            try:
+                while True:
+                    try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);break
+                    except BlockingIOError:
+                        need(time.monotonic()-started<MAX_LOCK_WAIT,'journal lock timeout');time.sleep(.002)
+                with os.fdopen(os.dup(fd),'rb') as stream:raw=stream.read(MAX_JOURNAL_BYTES+1)
+                item=os.fstat(fd);state=self._sync(raw,(item.st_dev,item.st_ino))
+                event=dict(schema=EVENT_SCHEMA,seq=state['lastSequence']+1,event=name,monotonicSeconds=time.monotonic(),
+                    runId=self.run_id,writer=self.writer,sourceCommit=self.source_commit,policySha256=self.policy_sha256,
+                    data=data,previousSha256=state['events'][-1]['sha256'] if state['events'] else ZERO)
+                event['sha256']=digest(canonical(event));new=canonical(event)+b'\n'
+                need(len(raw)+len(new)<=MAX_JOURNAL_BYTES,'journal cap exceeded')
+                state=replay_journal(new,state);self._cached_state=state
+                os.lseek(fd,0,os.SEEK_END);need(os.write(fd,new)==len(new),'partial lifecycle append');os.fsync(fd)
+                self._cached_raw=raw+new;state.update(bytes=len(raw)+len(new),sha256=digest(raw+new))
+                return event
+            finally:fcntl.flock(fd,fcntl.LOCK_UN);os.close(fd)
+
+    def environment(self):
+        return dict(AIJADE_LIFECYCLE_JOURNAL=str(self.path),AIJADE_LIFECYCLE_SOURCE_COMMIT=self.source_commit,
+            AIJADE_LIFECYCLE_POLICY_SHA256=self.policy_sha256,AIJADE_LIFECYCLE_RUN_ID=self.run_id,
+            AIJADE_LIFECYCLE_CAPTURE_LOCK=str(self.lock_path),AIJADE_LIFECYCLE_STAGE=self.stage,
+            AIJADE_LIFECYCLE_PARENT_LEASE=self.parent_lease_id or '')
+
+    def activate(self):
+        global _env_registry
+        need(self.writer==identity(),'cannot activate another process registry')
+        with _env_registry_lock:
+            _env_registry=self;os.environ.update(self.environment())
+        return self
+
+    def bind_policy(self,policy):
+        need(str(coordination_lock_path(policy))==str(self.lock_path),'registry policy capture lock mismatch')
+        self._policy=copy.deepcopy(policy)
+        return self
+
+    def roots(self):
+        need(not self.closed,'local persistent scope closed')
+        return list(self._roots)
+
+    def register(self,process,**unused):
+        need(isinstance(process,ManagedProcess) and process.registry is self,'only an identity-ready owned handle may register')
+        return self._lease(process.lease_id)
+
+    def launch(self,command,*,role='finite',stage=None,**kwargs):
+        need(not self.closed,'cannot launch after local persistent scope closes')
+        need(role in ('finite','controller') and type(command) in (list,tuple) and command
+             and all(type(x) is str and '\x00' not in x for x in command),'finite command schema')
+        need(not kwargs.get('shell') and not kwargs.get('preexec_fn') and not kwargs.get('pass_fds'), 'unsupported subprocess escape')
+        # A child controller is finite from this parent's perspective; its own
+        # nested Registry opens a local persistent scope while it is alive.
+        env=dict(os.environ if kwargs.get('env') is None else kwargs.pop('env'))
+        env.update(self.environment())
+        env['AIJADE_LIFECYCLE_STAGE']=stage or self.stage
+        executable=shutil.which(command[0],path=env.get('PATH')) if not Path(command[0]).is_absolute() else command[0]
+        need(executable is not None,'finite executable missing')
+        # Preserve the caller's absolute argv0: resolving a virtualenv Python
+        # symlink before exec would bypass its pyvenv.cfg and change the runtime.
+        executable=Path(executable).absolute()
+        executable_sha=digest(executable.resolve(strict=True).read_bytes())
+        ready_r,ready_w=os.pipe();gate_r,gate_w=os.pipe();process=None
+        lease_id=uuid.uuid4().hex;env['AIJADE_LIFECYCLE_PARENT_LEASE']=lease_id
+        shim=Path(__file__).with_name('lifecycle_exec.py')
+        try:
+            with capture_lock(self.lock_path):
+                process=subprocess.Popen([sys.executable,'-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
+                    env=env,pass_fds=(ready_w,gate_r),**kwargs)
+                os.close(ready_w);ready_w=-1;os.close(gate_r);gate_r=-1
+                selected=selectors.DefaultSelector();selected.register(ready_r,selectors.EVENT_READ)
+                raw=bytearray();deadline=time.monotonic()+READY_SECONDS
+                try:
+                    while b'\n' not in raw:
+                        remaining=deadline-time.monotonic();need(remaining>0,'identity-ready timeout')
+                        need(selected.select(remaining),'identity-ready timeout')
+                        block=os.read(ready_r,4097-len(raw));need(block,'identity-ready EOF')
+                        raw.extend(block);need(len(raw)<=4096,'identity-ready cap')
+                finally:selected.close()
+                ready=json.loads(bytes(raw));ident=ready['identity'];identity_key(ident)
+                need(ident['pid']==process.pid and ident['parentPid']==self.writer['pid']
+                     and identity(process.pid)==ident and _number(ready['readyMonotonic']), 'identity-ready mismatch')
+                self._append('FINITE_REGISTER',dict(leaseId=lease_id,role='finite',stageId=stage or self.stage,
+                    identity=ident,parentIdentity=self.writer,commandSha256=digest(canonical(list(command))),
+                    executableSha256=executable_sha,readyMonotonic=ready['readyMonotonic'],shimSha256=digest(shim.read_bytes())))
+                self._append('RELEASE',dict(leaseId=lease_id))
+                os.write(gate_w,b'1')
+            handle=ManagedProcess(self,process,lease_id);self.handles.append(handle);return handle
+        except BaseException:
+            if process is not None:
+                if process.poll() is None:process.kill()
+                process.wait(timeout=.5)
+            raise
+        finally:
+            for fd in (ready_r,ready_w,gate_r,gate_w):
+                if fd>=0:os.close(fd)
+
+    def run(self,command,*,input=None,capture_output=False,timeout=None,check=False,**kwargs):
+        if input is not None:need('stdin' not in kwargs,'stdin/input conflict');kwargs['stdin']=subprocess.PIPE
+        if capture_output:
+            need('stdout' not in kwargs and 'stderr' not in kwargs,'capture_output conflict')
+            kwargs.update(stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        process=self.launch(command,**kwargs)
+        try:out,err=process.communicate(input=input,timeout=timeout)
+        except BaseException:
+            if process.poll() is None:process.kill()
+            process.wait(timeout=1)
+            raise
+        result=subprocess.CompletedProcess(command,process.returncode,out,err)
+        if check:result.check_returncode()
+        return result
+
+    def wait(self,process,timeout=None):return process.wait(timeout)
+
+    def sample(self,identities=()):
+        with self._mutex:
+            state=self._state();wanted=set(identities)
+            leases=copy.deepcopy([v for v in state['leases'].values() if v['absence'] is None or identity_key(v['identity']) in wanted])
+            return dict(schema=VIEW_SCHEMA,runId=self.run_id,journalPath=str(self.path),journalBytes=len(self._cached_raw),
+                journalSha256=digest(self._cached_raw),lastSequence=state['lastSequence'],scopeId=self.scope_id,
+                controllerIdentity=self.writer,leases=leases,referencedIdentities=[list(v) for v in sorted(wanted)],
+                controllers=[v['leaseId'] for v in leases if v['identity']==self.writer])
+
+    @_synchronized
+    def remember(self,observation):
+        """Retain discovery and complete native-graph absence; never invent waits."""
+        need(self._policy is not None,'native policy must be bound before remembering frames')
+        import mac_process_guard_v3 as guard
+        state=self._state();known={identity_key(v['identity']):v for v in state['leases'].values()}
+        roots=guard._normalize_roots(observation['ownedRoots'])
+        need(not roots or (len(roots)==1 and roots[0]['pid']==self.writer['pid']
+             and round(roots[0]['createTime']*1000000)==self.writer['createTimeMicros']),
+             'observation local persistent root differs from exact self')
+        graphs=[]
+        for phase in ('before','after'):
+            frame=observation.get('evidence',{}).get(phase,{})
+            graph=frame.get('processGraph',{})
+            if graph.get('errors') or not graph.get('nativeCensus',{}).get('stdoutSha256'):continue
+            try:
+                parsed,collector=guard.parse_native_evidence(self._policy,graph['nativeCensus'])
+                if parsed!=graph.get('nodes'):continue
+            except Exception:continue
+            nodes=graph.get('nodes');need(type(nodes) is list,'missing complete process nodes')
+            present={key_from_node(v):v for v in nodes};graphs.append((phase,graph,present))
+            members=guard._owned_ids(parsed,roots);by_pid={v['pid']:v for v in parsed}
+            for row in parsed:
+                if row['pid'] not in members:continue
+                if row['pid']==collector['pid'] and key_from_node(row)==(collector['pid'],collector['createTimeMicros']):continue
+                ident=dict(pid=row['pid'],createTimeMicros=row['createTimeMicros'],parentPid=row['parentPid'])
+                key=identity_key(ident)
+                if key not in known and key not in state['discovered']:
+                    ancestry=[];cursor=row;seen=set()
+                    while True:
+                        current=dict(pid=cursor['pid'],createTimeMicros=cursor['createTimeMicros'],parentPid=cursor['parentPid'])
+                        need(identity_key(current) not in seen,'discovery ancestry cycle')
+                        seen.add(identity_key(current));ancestry.append(current)
+                        if identity_key(current)==identity_key(self.writer):break
+                        need(cursor['parentPid'] in by_pid,'discovery root ancestry incomplete')
+                        cursor=by_pid[cursor['parentPid']]
+                    self._append('DISCOVER',dict(identity=ident,sampleId=observation['sampleId'],phase=phase,
+                        scopeId=self.scope_id,ancestry=ancestry,
+                        nativeStdoutSha256=graph['nativeCensus']['stdoutSha256'],
+                        graphStartedMonotonic=frame['graphStartedMonotonic'],
+                        graphCompletedMonotonic=frame['graphCompletedMonotonic']))
+        # The observer validates native evidence before calling remember. The
+        # independent audit additionally binds each ABSENCE to that saved frame.
+        for lease in state['leases'].values():
+            if lease['role']!='finite' or lease['waitSeq'] is None or lease['absence'] is not None:continue
+            key=identity_key(lease['identity'])
+            for phase,graph,present in reversed(graphs):
+                frame=observation['evidence'][phase]
+                if key not in present and frame.get('graphStartedMonotonic',-1)>=lease['reapedMonotonic']:
+                    self._append('ABSENCE',dict(identity=lease['identity'],sampleId=observation['sampleId'],phase=phase,
+                        nativeStdoutSha256=graph['nativeCensus']['stdoutSha256'],
+                        graphStartedMonotonic=frame['graphStartedMonotonic'],
+                        graphCompletedMonotonic=frame['graphCompletedMonotonic']));break
+        for key,value in list(state['discovered'].items()):
+            if key in known or value.get('absence') is not None:continue
+            for phase,graph,present in reversed(graphs):
+                if key not in present:
+                    frame=observation['evidence'][phase]
+                    self._append('DISCOVER_ABSENCE',dict(identity=value['identity'],sampleId=observation['sampleId'],phase=phase,
+                        nativeStdoutSha256=graph['nativeCensus']['stdoutSha256'],
+                        graphStartedMonotonic=frame['graphStartedMonotonic'],
+                        graphCompletedMonotonic=frame['graphCompletedMonotonic']));break
+
+    @_synchronized
+    def close(self):
+        if not self.closed:self._append('SCOPE_CLOSE',dict(scopeId=self.scope_id));self.closed=True
+
+    def final(self):
+        for handle in self.handles:
+            if handle.process.returncode is not None:handle.wait(timeout=MAX_LOCK_WAIT)
+        state=self._state();mine={identity_key(self.writer)};changed=True
+        while changed:
+            before=len(mine)
+            mine.update(identity_key(v['identity']) for v in state['leases'].values()
+                        if v['parentIdentity'] is not None and identity_key(v['parentIdentity']) in mine)
+            changed=len(mine)!=before
+        finite=[v for v in state['leases'].values() if identity_key(v['identity']) in mine and v['role']=='finite'
+                and v['identity']!=self.writer]
+        unknown=[v for v in finite if v['waitSeq'] is None or v['absence'] is None or v['exitCode']!=0]
+        all_managed={identity_key(v['identity']) for v in state['leases'].values()}
+        local_discovered=[v for key,v in state['discovered'].items() if key not in all_managed and
+                          (not v.get('ancestry') or any(identity_key(i) in mine for i in v['ancestry']))]
+        unleased=[v for v in local_discovered if v.get('absence') is None]
+        self.close()
+        return dict(schema='aijade.process-lifecycle-final.v1',status='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT'
+                    if not unknown and not unleased else 'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE',
+                    scopeId=self.scope_id,scopeClosed=True,knownFiniteLeases=finite,unresolvedFiniteLeases=unknown,
+                    localDiscoveredIdentities=local_discovered,
+                    unleasedDiscoveredIdentities=unleased,remainingIdentities=[v['identity'] for v in unknown],
+                    lifecycleView=self.sample())
+
+
+def from_environment():
+    global _env_registry
+    with _env_registry_lock:
+        path=os.environ.get('AIJADE_LIFECYCLE_JOURNAL')
+        if not path:return None
+        if _env_registry is None or _env_registry.writer['pid']!=os.getpid():
+            current=identity()
+            _env_registry=Registry(path,[(current['pid'],current['createTimeMicros']/1000000)],
+                stage=os.environ['AIJADE_LIFECYCLE_STAGE'],source_commit=os.environ['AIJADE_LIFECYCLE_SOURCE_COMMIT'],
+                policy_sha256=os.environ['AIJADE_LIFECYCLE_POLICY_SHA256'],run_id=os.environ['AIJADE_LIFECYCLE_RUN_ID'],
+                capture_lock_path=os.environ['AIJADE_LIFECYCLE_CAPTURE_LOCK'],
+                parent_lease_id=os.environ['AIJADE_LIFECYCLE_PARENT_LEASE'])
+        return _env_registry
+
+
+def run(command,**kwargs):
+    registry=from_environment();need(registry is not None,'lifecycle environment is required')
+    return registry.run(command,**kwargs)

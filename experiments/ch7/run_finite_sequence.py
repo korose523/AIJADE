@@ -14,7 +14,8 @@ import time
 import psutil
 from finite_runtime import (validate_build, read_block_receipt, dispositions, BUILD_FREEZE_PATH,
     MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_observation,
-    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, OwnedRegistry)
+    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, OwnedRegistry,
+    MAC_LIFECYCLE_PLAN, setup_lifecycle, managed_check_output, finish_monitored_cleanup)
 
 GIB=1024**3
 
@@ -24,13 +25,14 @@ def utc():return dt.datetime.now(dt.timezone.utc).isoformat()
 
 
 def _execute(a):
+    lifecycle=getattr(a,'_lifecycle_registry',None);v3=lifecycle is not None
     repo=a.repo.resolve();output=a.output.resolve();require=lambda c,m: None if c else (_ for _ in ()).throw(ValueError(m))
     require(not output.exists(),'never overwrite a window/attempt')
     require(psutil.__version__=='7.2.2' and os.environ.get('DOTNET_PROCESSOR_COUNT')=='2','runtime/processor identity')
-    require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='','dirty execution checkout')
+    require(managed_check_output(['git','status','--porcelain'],cwd=repo,text=True)=='','dirty execution checkout')
     plan=a.execution_plan.resolve()
     require(plan.is_relative_to(repo) and plan.is_file(),'explicit tracked execution plan required')
-    head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
+    head=managed_check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
     mac=plan.name in MAC_PLANS
     if mac:require(str(plan.relative_to(repo))=='experiments/plans/'+plan.name,'wrong canonical Mac execution plan')
     implementation=getattr(a,'implementation_commit',None) or head
@@ -39,7 +41,7 @@ def _execute(a):
     freeze_path=getattr(a,'build_freeze_path',BUILD_FREEZE_PATH)
     binding=validate_repository_binding(repo,implementation,head,getattr(a,'data_publication_manifest',None),require_head=True) if mac else {}
     build=validate_build(a.assembly,a.build_manifest,implementation,repo,a.build_freeze_commit,freeze_path,strict_publication=mac)
-    original=subprocess.check_output(['git','show',head+':'+str(plan.relative_to(repo))],cwd=repo)
+    original=managed_check_output(['git','show',head+':'+str(plan.relative_to(repo))],cwd=repo)
     require(original==plan.read_bytes(),'execution plan differs from committed bytes')
     qualification=(a.inputs/'runtime-manifest.json').exists()
     sources=[a.inputs] if qualification else [a.inputs/('block-'+str(i)) for i in range(1,5)]
@@ -55,7 +57,7 @@ def _execute(a):
             for original_path in [a.selection]+[directory/name for directory in sources for name in ['runtime-manifest.json','scoring-manifest.json']]:
                 path=original_path.resolve()
                 require(not original_path.is_symlink() and path.is_file() and path.is_relative_to(repo),'formal input must be a regular tracked repository file before admission')
-                require(subprocess.check_output(['git','show',head+':'+str(path.relative_to(repo))],cwd=repo)==path.read_bytes(),'formal input differs from published I before admission')
+                require(managed_check_output(['git','show',head+':'+str(path.relative_to(repo))],cwd=repo)==path.read_bytes(),'formal input differs from published I before admission')
         require(getattr(a,'process_policy',None) is not None,'new Mac process policy required')
         policy,process_identity=load_mac_policy(repo,a.process_policy,implementation)
         require(plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy),'policy/plan/build decision mismatch')
@@ -64,6 +66,7 @@ def _execute(a):
     metadata=dict(binding,buildFreezeCommit=a.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
+    if v3:metadata.update(lifecycleJournalPath=str(lifecycle.path),lifecycleScopeId=lifecycle.scope_id)
     if qualification:
         require(plan.name in ['2026-11-16-ch7-relocated-runtime-qualification.md',*MAC_PLANS] and a.settle_seconds==600,'new known qualification requires its one fixed settling phase')
     output.mkdir(parents=True);(output/'admission').mkdir()
@@ -77,7 +80,7 @@ def _execute(a):
         require(hashlib.sha256((output/'process-policy.json').read_bytes()).hexdigest()==process_identity['processPolicySha256'],'policy changed before phase')
         write(output/'receipt.json',prepared)
     def observed(owned_roots=None):
-        process=observe(policy,owned_roots=owned_roots or [])
+        process=observe(policy,owned_roots=owned_roots or [],lifecycle=lifecycle) if v3 else observe(policy,owned_roots=owned_roots or [])
         process.update(process_identity)
         return dict(utc=utc(),availableBytes=psutil.virtual_memory().available,
                     swapUsedBytes=psutil.swap_memory().used,processObservation=process,
@@ -86,71 +89,105 @@ def _execute(a):
         with path.open('x') as log:
             def save(item):log.write(json.dumps(item)+'\n');log.flush()
             return fixed_phase(duration,observed,save)
-    if a.settle_seconds:
-        require(a.settle_seconds==600 and qualification,'only the prospectively bounded known-qualification settling phase is enabled')
-        amendment=plan
-        require(amendment.is_file(),'missing prospective settling protocol')
-        (output/'settling').mkdir();settle_start=time.monotonic();settle_samples=[]
-        settling_progress=dict(prepared) if mac else dict(codeCommit=head)
-        settling_progress.update(status='FIXED_UNLOADED_SETTLING_RUNNING',requestedSeconds=600,
-            prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),measurementStarted=False)
-        write(output/'receipt.json',settling_progress)
-        if mac:
-            settle_samples,settle_clock=phase(600,output/'settling/telemetry.jsonl')
-            settling=dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=implementation,
-                requestedSeconds=600,elapsedSeconds=settle_clock['endMonotonic']-settle_clock['startMonotonic'],
-                samples=len(settle_samples),intervalReset=False,measurementStarted=False,
-                prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),phaseClock=settle_clock,**metadata)
+    preflight=None
+    if v3:
+        from phase_continuity import run_preflight, PreflightRefused
+        from contextlib import ExitStack
+        if a.settle_seconds:(output/'settling').mkdir()
+        with ExitStack() as stack:
+            streams={name:stack.enter_context((output/name/'telemetry.jsonl').open('x'))
+                     for name in (['settling','admission'] if a.settle_seconds else ['admission'])}
+            events=stack.enter_context((output/'phase-events.jsonl').open('x'))
+            def event_save(item):events.write(json.dumps(item)+'\n');events.flush()
+            def raw_save(name):
+                def save(item):streams[name].write(json.dumps(item)+'\n');streams[name].flush()
+                return save
             try:
-                settling['coverage']=validate_coverage(settle_samples,600,300)
-                for sample in settle_samples:
+                preflight=run_preflight(observed,
+                    lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
+                    {name:raw_save(name) for name in streams},event_writer=event_save,settling_seconds=a.settle_seconds)
+            except PreflightRefused as error:
+                write(output/'preflight-continuity.json',error.result)
+                for name,partial in error.result['phases'].items():
+                    write(output/name/'receipt.json',dict(partial,codeCommit=implementation,**metadata))
+                raise
+        write(output/'preflight-continuity.json',preflight)
+        if 'settling' in preflight['phases']:
+            phase=preflight['phases']['settling']
+            settling=dict(phase,codeCommit=implementation,requestedSeconds=600,intervalReset=False,measurementStarted=False,
+                prospectiveAmendmentSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),**metadata)
+            write(output/'settling/receipt.json',settling)
+        phase=preflight['phases']['admission'];admitted=phase['status']=='ADMITTED'
+        admission=dict(phase,codeCommit=implementation,noResearchProcesses=admitted,formalHardwareQualification=False,
+            windowReset=False,precedingFixedSettlingSeconds=a.settle_seconds,
+            observationError=None,**metadata)
+        write(output/'admission/receipt.json',admission)
+    else:
+        if a.settle_seconds:
+            require(a.settle_seconds==600 and qualification,'only the prospectively bounded known-qualification settling phase is enabled')
+            amendment=plan
+            require(amendment.is_file(),'missing prospective settling protocol')
+            (output/'settling').mkdir();settle_start=time.monotonic();settle_samples=[]
+            settling_progress=dict(prepared) if mac else dict(codeCommit=head)
+            settling_progress.update(status='FIXED_UNLOADED_SETTLING_RUNNING',requestedSeconds=600,
+                prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),measurementStarted=False)
+            write(output/'receipt.json',settling_progress)
+            if mac:
+                settle_samples,settle_clock=phase(600,output/'settling/telemetry.jsonl')
+                settling=dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=implementation,
+                    requestedSeconds=600,elapsedSeconds=settle_clock['endMonotonic']-settle_clock['startMonotonic'],
+                    samples=len(settle_samples),intervalReset=False,measurementStarted=False,
+                    prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest(),phaseClock=settle_clock,**metadata)
+                try:
+                    settling['coverage']=validate_coverage(settle_samples,600,300)
+                    for sample in settle_samples:
+                        require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
+                        validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
+                except ValueError as error:
+                    settling.update(status='SETTLING_OBSERVATION_REFUSED',reason=str(error));write(output/'settling/receipt.json',settling);raise
+                write(output/'settling/receipt.json',settling)
+            else:
+              with (output/'settling/telemetry.jsonl').open('x') as log:
+                while True:
+                    elapsed=time.monotonic()-settle_start
+                    item=dict(utc=utc(),elapsedSeconds=elapsed,availableBytes=psutil.virtual_memory().available,
+                        swapUsedBytes=psutil.swap_memory().used,researchProcesses=[p.info for p in psutil.process_iter(['pid','name'])
+                        if (p.info['name'] or '').lower() in ['dotnet','ollama'] or 'godot' in (p.info['name'] or '').lower()])
+                    settle_samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
+                    if elapsed>=600:break
+                    time.sleep(min(2,600-elapsed))
+              write(output/'settling/receipt.json',dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=head,
+                requestedSeconds=600,elapsedSeconds=settle_samples[-1]['elapsedSeconds'],samples=len(settle_samples),
+                intervalReset=False,measurementStarted=False,prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest()))
+        sample_start=time.monotonic();samples=[];coverage=None;observation_error=None
+        if mac:
+            samples,admission_clock=phase(120,output/'admission/telemetry.jsonl')
+            try:
+                coverage=validate_coverage(samples,120,60)
+                for sample in samples:
                     require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
                     validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
-            except ValueError as error:
-                settling.update(status='SETTLING_OBSERVATION_REFUSED',reason=str(error));write(output/'settling/receipt.json',settling);raise
-            write(output/'settling/receipt.json',settling)
+            except ValueError as error:observation_error=str(error)
         else:
-          with (output/'settling/telemetry.jsonl').open('x') as log:
+          with (output/'admission/telemetry.jsonl').open('x') as log:
             while True:
-                elapsed=time.monotonic()-settle_start
+                elapsed=time.monotonic()-sample_start
+                processes=[p.info for p in psutil.process_iter(['pid','name'])
+                           if (p.info['name'] or '').lower() in ['dotnet','ollama'] or 'godot' in (p.info['name'] or '').lower()]
                 item=dict(utc=utc(),elapsedSeconds=elapsed,availableBytes=psutil.virtual_memory().available,
-                    swapUsedBytes=psutil.swap_memory().used,researchProcesses=[p.info for p in psutil.process_iter(['pid','name'])
-                    if (p.info['name'] or '').lower() in ['dotnet','ollama'] or 'godot' in (p.info['name'] or '').lower()])
-                settle_samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
-                if elapsed>=600:break
-                time.sleep(min(2,600-elapsed))
-          write(output/'settling/receipt.json',dict(status='FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION',codeCommit=head,
-            requestedSeconds=600,elapsedSeconds=settle_samples[-1]['elapsedSeconds'],samples=len(settle_samples),
-            intervalReset=False,measurementStarted=False,prospectiveAmendmentSha256=hashlib.sha256(amendment.read_bytes()).hexdigest()))
-    sample_start=time.monotonic();samples=[];coverage=None;observation_error=None
-    if mac:
-        samples,admission_clock=phase(120,output/'admission/telemetry.jsonl')
-        try:
-            coverage=validate_coverage(samples,120,60)
-            for sample in samples:
-                require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
-                validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
-        except ValueError as error:observation_error=str(error)
-    else:
-      with (output/'admission/telemetry.jsonl').open('x') as log:
-        while True:
-            elapsed=time.monotonic()-sample_start
-            processes=[p.info for p in psutil.process_iter(['pid','name'])
-                       if (p.info['name'] or '').lower() in ['dotnet','ollama'] or 'godot' in (p.info['name'] or '').lower()]
-            item=dict(utc=utc(),elapsedSeconds=elapsed,availableBytes=psutil.virtual_memory().available,
-                      swapUsedBytes=psutil.swap_memory().used,researchProcesses=processes)
-            samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
-            if elapsed>=120:break
-            time.sleep(min(2,120-elapsed))
-    idle=(observation_error is None and coverage is not None) if mac else not any(s['researchProcesses'] for s in samples)
-    admitted=bool(samples) and min(s['availableBytes'] for s in samples)>=4*GIB and max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples)<=64*1024**2 and idle
-    admission=dict(status='ADMITTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',codeCommit=implementation,
-        elapsedSeconds=(admission_clock['endMonotonic']-admission_clock['startMonotonic']) if mac else samples[-1]['elapsedSeconds'],samples=len(samples),minimumAvailableBytes=min(s['availableBytes'] for s in samples) if samples else None,
-        swapRangeBytes=max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples) if samples else None,
-        noResearchProcesses=idle,formalHardwareQualification=False,windowReset=False,
-        precedingFixedSettlingSeconds=a.settle_seconds,executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest())
-    if mac:admission.update(metadata,coverage=coverage,observationError=observation_error,phaseClock=admission_clock)
-    write(output/'admission/receipt.json',admission)
+                          swapUsedBytes=psutil.swap_memory().used,researchProcesses=processes)
+                samples.append(item);log.write(json.dumps(item)+'\n');log.flush()
+                if elapsed>=120:break
+                time.sleep(min(2,120-elapsed))
+        idle=(observation_error is None and coverage is not None) if mac else not any(s['researchProcesses'] for s in samples)
+        admitted=bool(samples) and min(s['availableBytes'] for s in samples)>=4*GIB and max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples)<=64*1024**2 and idle
+        admission=dict(status='ADMITTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',codeCommit=implementation,
+            elapsedSeconds=(admission_clock['endMonotonic']-admission_clock['startMonotonic']) if mac else samples[-1]['elapsedSeconds'],samples=len(samples),minimumAvailableBytes=min(s['availableBytes'] for s in samples) if samples else None,
+            swapRangeBytes=max(s['swapUsedBytes'] for s in samples)-min(s['swapUsedBytes'] for s in samples) if samples else None,
+            noResearchProcesses=idle,formalHardwareQualification=False,windowReset=False,
+            precedingFixedSettlingSeconds=a.settle_seconds,executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest())
+        if mac:admission.update(metadata,coverage=coverage,observationError=observation_error,phaseClock=admission_clock)
+        write(output/'admission/receipt.json',admission)
     sequence=dict(schema='aijade.ch7.finite-sequence-receipt.v1',status='ADMITTED_NOT_STARTED' if admitted else 'NOT_ADMITTED_NO_MEASUREMENT',
         codeCommit=implementation,purpose=inputs[0]['purpose'],plannedPairs=len(planned)//2,plannedConditionRows=len(planned),
         plannedBlocks=len(inputs),completedBlocks=0,completedConditionRows=0,inFlightCaseIds=[],unattemptedCaseIds=planned,
@@ -168,12 +205,14 @@ def _execute(a):
     monitor=None;owned_registry=None
     if mac:
         own=[(metadata['controllerProcess']['pid'],metadata['controllerProcess']['createTime'])]
-        owned_registry=OwnedRegistry(own)
+        owned_registry=lifecycle if v3 else OwnedRegistry(own)
         def runtime_observed():
-            item=observed(owned_registry.roots());owned_registry.remember(item['processObservation']);return item
+            item=observed(owned_registry.roots())
+            if not v3:owned_registry.remember(item['processObservation'])
+            return item
         monitor=MacMonitor(output/'process-observations.jsonl',runtime_observed,
             lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
-            epoch,baseline,timers).start()
+            epoch,baseline,timers,previous_sample_monotonic=(preflight['runtimeHandoffAnchor']['lastSampleMonotonic'] if v3 else None)).start()
     try:
         for index,source in enumerate(sources):
             require(time.monotonic()-epoch<4800,'overall wall exhausted before next block')
@@ -198,9 +237,13 @@ def _execute(a):
             for key,value in values.items():command+=['--'+key,str(value)]
             active_planned=[p['input']['caseId']+'/'+arm for p in inputs[index]['cases'] for arm in p['input']['conditions']]
             with (output/('block-'+str(index+1)+'-controller.log')).open('x') as log:
-                active=subprocess.Popen(command,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+                active=(lifecycle.launch(command,role='finite',stage='block-'+str(index+1),cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True) if v3 else
+                        subprocess.Popen(command,cwd=repo,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True))
                 if mac:
-                    created=psutil.Process(active.pid).create_time();owned_registry.register(active.pid,created)
+                    if v3:
+                        lease=owned_registry.register(active);created=lease['identity']['createTimeMicros']/1000000
+                    else:
+                        created=psutil.Process(active.pid).create_time();owned_registry.register(active.pid,created)
                     sequence['blockControllers'].append(dict(blockIndex=index,pid=active.pid,createTime=created))
                     write(output/'receipt.json',sequence)
                 block_started=time.monotonic()
@@ -208,6 +251,7 @@ def _execute(a):
                     if mac:monitor.check()
                     require(time.monotonic()-block_started<1245,'owned block/cleanup watchdog expired')
                     time.sleep(1)
+                if v3:active.wait(timeout=1.25)
             block=read_block_receipt(target/'receipt.json');sequence['blocks'].append(block)
             state=dispositions(target,active_planned,flow_started=True)
             completed.extend(state['completedCaseIds']);inflight=state['inFlightCaseIds']
@@ -229,7 +273,7 @@ def _execute(a):
         if active is not None:sequence['lastControllerExitCode']=active.poll()
     finally:
         if monitor is not None:
-            try:monitor.stop()
+            try:finish_monitored_cleanup(monitor,require_terminal_sample=v3)
             except ValueError as error:
                 reason=(reason+'; ' if reason else '')+str(error);sequence['status']='STOPPED'
             sequence['processObservationCount']=len(monitor.samples)
@@ -238,6 +282,10 @@ def _execute(a):
             except ValueError as error:registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
             write(output/'owned-process-registry.json',registry_final)
             sequence['ownedProcessRegistrySha256']=hashlib.sha256((output/'owned-process-registry.json').read_bytes()).hexdigest()
+            if v3:
+                sequence['lifecycleJournalSha256']=hashlib.sha256(lifecycle.path.read_bytes()).hexdigest()
+                sequence['phaseEventsSha256']=hashlib.sha256((output/'phase-events.jsonl').read_bytes()).hexdigest()
+                sequence['preflightContinuitySha256']=hashlib.sha256((output/'preflight-continuity.json').read_bytes()).hexdigest()
             if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
                 reason=(reason+'; ' if reason else '')+'known owned descendant remains or identity unknown';sequence['status']='STOPPED'
         if reason is not None and target is not None:
@@ -261,7 +309,10 @@ def execute(a):
     previous=signal.getsignal(signal.SIGTERM)
     def interrupted(signum,frame):raise RuntimeError('sequence signal '+str(signum))
     signal.signal(signal.SIGTERM,interrupted)
+    lifecycle=None
     try:
+        if not existed:lifecycle=setup_lifecycle(a,'sequence')
+        a._lifecycle_registry=lifecycle
         return _execute(a)
     except BaseException as error:
         if not existed:
@@ -276,7 +327,34 @@ def execute(a):
             write(path,receipt)
         print(type(error).__name__+': '+str(error),file=sys.stderr)
         return 1
-    finally:signal.signal(signal.SIGTERM,previous)
+    finally:
+        try:
+            if lifecycle is not None:
+                if not lifecycle.closed:lifecycle.close()
+                # The final immutable bytes include SCOPE_CLOSE. Blocks bind
+                # earlier prefixes of this exact shared append-only journal.
+                raw=lifecycle.path.read_bytes()
+                archive=a.output/'lifecycle-journal.jsonl'
+                with archive.open('xb') as stream:stream.write(raw)
+                receipt=json.loads((a.output/'receipt.json').read_text())
+                receipt.update(lifecycleJournalSha256=hashlib.sha256(raw).hexdigest(),
+                               lifecycleJournalBytes=len(raw),lifecycleJournalArchive='lifecycle-journal.jsonl',
+                               lifecycleScopeId=lifecycle.scope_id,lifecycleJournalPath=str(lifecycle.path))
+                write(a.output/'receipt.json',receipt)
+        except BaseException as error:
+            if not existed:
+                a.output.mkdir(parents=True,exist_ok=True);path=a.output/'receipt.json'
+                try:receipt=json.loads(path.read_text())
+                except (OSError,ValueError):receipt={}
+                detail='lifecycle finalization: '+type(error).__name__+': '+str(error)
+                receipt.update(status='STOPPED_LIFECYCLE_FINALIZATION_ERROR',
+                               reason=(receipt.get('reason')+'; ' if receipt.get('reason') else '')+detail,
+                               finishedAt=utc(),modelRequests=0,lifecycleJournalPath=str(lifecycle.path),
+                               lifecycleScopeId=lifecycle.scope_id)
+                write(path,receipt)
+            print(type(error).__name__+': '+str(error),file=sys.stderr)
+            return 1
+        finally:signal.signal(signal.SIGTERM,previous)
 
 
 if __name__=='__main__':

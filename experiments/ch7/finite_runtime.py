@@ -29,9 +29,18 @@ MAC_PLAN='2026-11-16-ch7-mac-formal-backend.md'
 MAC_BUILD_FREEZE_PATH='experiments/ch7/mac-formal-2026-11-16/frozen-build.json'
 MAC_CENSUS_PLAN='2026-11-16-ch7-mac-bulk-census.md'
 MAC_CENSUS_BUILD_FREEZE_PATH='experiments/ch7/mac-census-2026-11-16/frozen-build.json'
-MAC_PLANS=(MAC_PLAN,MAC_CENSUS_PLAN)
+MAC_LIFECYCLE_PLAN='2026-11-17-ch7-mac-lifecycle-continuity.md'
+MAC_LIFECYCLE_BUILD_FREEZE_PATH='experiments/ch7/mac-lifecycle-2026-11-17/frozen-build.json'
+MAC_LIFECYCLE_KIND='mac-lifecycle-observed-idle-daemon-v3'
+MAC_PLANS=(MAC_PLAN,MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN)
+MAC_LIFECYCLE_SOURCES=tuple('experiments/ch7/'+name for name in (
+    'mac_process_guard_v3.py','process_lifecycle.py','lifecycle_exec.py',
+    'phase_continuity.py','lifecycle_audit.py','mac_process_guard.py',
+    'mac_process_guard_v2.py','mac_bulk_census.c','finite_runtime.py',
+    'run_finite_sequence.py','run_finite_block.py','finite_audit.py',
+    'finite_sequence_audit.py','godot_local.py'))
 PROJECT_ROOT=Path('/Volumes/Untitled/AIJADE')
-MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/mac-census-2026-11-16/', 'experiments/ch7/finite-heldout/')
+MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/mac-census-2026-11-16/', 'experiments/ch7/mac-lifecycle-2026-11-17/', 'experiments/ch7/finite-heldout/')
 MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.trx'}
 
 
@@ -43,8 +52,77 @@ def safe_relative(value):
     return value
 
 
+def managed_check_output(command, **kwargs):
+    # Historical policies have no lifecycle environment and retain their old path.
+    if not os.environ.get('AIJADE_LIFECYCLE_JOURNAL'):
+        return subprocess.check_output(command, **kwargs)
+    from process_lifecycle import from_environment
+    registry=from_environment()
+    if 'stdout' in kwargs:raise ValueError('check_output stdout override')
+    result=registry.run(command, stdout=subprocess.PIPE, check=True, **kwargs)
+    return result.stdout
+
+
+def managed_run(command, **kwargs):
+    if not os.environ.get('AIJADE_LIFECYCLE_JOURNAL'):
+        return subprocess.run(command, **kwargs)
+    from process_lifecycle import from_environment
+    return from_environment().run(command, **kwargs)
+
+
 def git_bytes(repo,*arguments):
-    return subprocess.check_output(['git',*arguments],cwd=repo)
+    return managed_check_output(['git',*arguments],cwd=repo)
+
+
+
+def setup_lifecycle(args, stage):
+    """Open source-bound instrumentation before v3 controller preflight commands."""
+    if getattr(getattr(args,'execution_plan',None),'name',None) != MAC_LIFECYCLE_PLAN:return None
+    import psutil
+    from process_lifecycle import Registry, from_environment
+    policy_raw=args.process_policy.read_bytes();policy=json.loads(policy_raw)
+    require(policy.get('kind')==MAC_LIFECYCLE_KIND,'v3 execution/policy mismatch')
+    guard=mac_observer(policy);guard.validate_policy(policy)
+    source=os.environ.get('AIJADE_GIT_COMMIT','')
+    require(re.fullmatch('[0-9a-f]{40}',source) is not None,'lifecycle Q identity missing')
+    policy_sha=hashlib.sha256(policy_raw).hexdigest()
+    if os.environ.get('AIJADE_LIFECYCLE_JOURNAL'):
+        registry=from_environment()
+        require(registry.source_commit==source and registry.policy_sha256==policy_sha,
+                'inherited lifecycle source/policy mismatch')
+    else:
+        parent=args.output.resolve().parent;parent.mkdir(parents=True,exist_ok=True)
+        journal=parent/(args.output.name+'-lifecycle.jsonl')
+        require(not journal.exists(),'never reuse a prior lifecycle journal')
+        registry=Registry(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
+            source_commit=source,policy_sha256=policy_sha,
+            capture_lock_path=guard.coordination_lock_path(policy))
+    registry.activate()
+    return registry
+
+
+def wait_post_cleanup_sample(monitor, cleanup_monotonic):
+    """Wait once for the next existing scheduled tick; never collect a replacement."""
+    deadline=cleanup_monotonic+3
+    while True:
+        monitor.check()
+        candidates=[s for s in monitor.samples if s.get('monotonicSeconds',-1)>=cleanup_monotonic]
+        if candidates:
+            require(len(candidates)==1,'unexpected multiple post-cleanup ticks before finalization')
+            return candidates[0]
+        require(time.monotonic()<=deadline,'next scheduled post-cleanup sample missed its bound')
+        time.sleep(.01)
+
+
+
+def finish_monitored_cleanup(monitor, require_terminal_sample=False):
+    errors=[]
+    if require_terminal_sample:
+        try:wait_post_cleanup_sample(monitor,time.monotonic())
+        except BaseException as error:errors.append('post-cleanup: '+type(error).__name__+': '+str(error))
+    try:monitor.stop()
+    except BaseException as error:errors.append('monitor-stop: '+type(error).__name__+': '+str(error))
+    require(not errors,'; '.join(errors))
 
 
 def commit_id(repo,value):
@@ -63,7 +141,7 @@ def changed_paths(repo,base,target):
 def validate_repository_binding(repo,implementation,repository=None,data_manifest_path=None,require_head=False):
     """Q owns every executable blob; I may only add exactly declared input/evidence files."""
     repo=Path(repo).resolve();q=commit_id(repo,implementation);i=commit_id(repo,repository or implementation)
-    require(subprocess.run(['git','merge-base','--is-ancestor',q,i],cwd=repo,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0,'Q is not an ancestor of repository I')
+    require(managed_run(['git','merge-base','--is-ancestor',q,i],cwd=repo,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0,'Q is not an ancestor of repository I')
     if require_head:
         require(git_bytes(repo,'rev-parse','HEAD').decode().strip()==i,'HEAD differs from repository commit')
         require(not git_bytes(repo,'status','--porcelain'),'dirty execution checkout')
@@ -101,22 +179,30 @@ def validate_repository_binding(repo,implementation,repository=None,data_manifes
 def mac_observer(policy):
     import importlib
     kind=policy.get('kind')
-    require(kind in (None,'mac-observed-idle-daemon-v1','mac-bulk-observed-idle-daemon-v2'),'unrecognized observer policy kind')
+    require(kind in (None,'mac-observed-idle-daemon-v1','mac-bulk-observed-idle-daemon-v2',MAC_LIFECYCLE_KIND),'unrecognized observer policy kind')
+    if kind==MAC_LIFECYCLE_KIND:return importlib.import_module('mac_process_guard_v3')
     return importlib.import_module('mac_process_guard_v2' if kind=='mac-bulk-observed-idle-daemon-v2' else 'mac_process_guard')
 
 
 def mac_plan(policy):
+    if policy.get('kind')==MAC_LIFECYCLE_KIND:return MAC_LIFECYCLE_PLAN
     return MAC_CENSUS_PLAN if policy.get('kind')=='mac-bulk-observed-idle-daemon-v2' else MAC_PLAN
 
 
 def mac_build_path(policy):
+    if mac_plan(policy)==MAC_LIFECYCLE_PLAN:return MAC_LIFECYCLE_BUILD_FREEZE_PATH
     return MAC_CENSUS_BUILD_FREEZE_PATH if mac_plan(policy)==MAC_CENSUS_PLAN else MAC_BUILD_FREEZE_PATH
 
 
 def validate_mac_build_policy(policy,build):
-    if mac_plan(policy)==MAC_CENSUS_PLAN:
+    if mac_plan(policy) in (MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN):
         native=build.get('nativeCensus');expected=policy.get('nativeHelper')
         require(type(native) is dict and type(expected) is dict and all(native.get(key)==expected.get(key) for key in ('path','sha256','sourceSha256')),'native build and process-policy identity differ')
+    if mac_plan(policy)==MAC_LIFECYCLE_PLAN:
+        sources=build.get('observerSources')
+        repo=Path(__file__).resolve().parents[2]
+        require(type(sources) is dict and set(sources)==set(MAC_LIFECYCLE_SOURCES)
+                and all(sha(repo/name)==value for name,value in sources.items()),'v3 build observer source closure differs')
 
 
 def load_mac_policy(repo,path,implementation):
@@ -125,30 +211,44 @@ def load_mac_policy(repo,path,implementation):
     relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
     require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
     policy=json.loads(raw);guard=mac_observer(policy);guard.validate_policy(policy)
-    module=repo/'experiments/ch7'/('mac_process_guard_v2.py' if mac_plan(policy)==MAC_CENSUS_PLAN else 'mac_process_guard.py')
+    module=repo/'experiments/ch7'/('mac_process_guard_v3.py' if mac_plan(policy)==MAC_LIFECYCLE_PLAN else 'mac_process_guard_v2.py' if mac_plan(policy)==MAC_CENSUS_PLAN else 'mac_process_guard.py')
     require(module.read_bytes()==git_bytes(repo,'show',implementation+':'+str(module.relative_to(repo))),'observer module differs from Q')
-    if mac_plan(policy)==MAC_CENSUS_PLAN:
+    if mac_plan(policy) in (MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN):
         for name in ('mac_process_guard.py','mac_bulk_census.c'):
             source=repo/'experiments/ch7'/name
             require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+str(source.relative_to(repo))),'observer dependency differs from Q')
         require(sha(repo/'experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source differs from policy')
-    return policy,dict(processPolicyPath=relative,processPolicySha256=hashlib.sha256(raw).hexdigest(),observerModuleSha256=sha(module))
+    dependencies={}
+    if mac_plan(policy)==MAC_LIFECYCLE_PLAN:
+        for relative_source in MAC_LIFECYCLE_SOURCES:
+            source=repo/relative_source
+            require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+relative_source),'lifecycle dependency differs from Q')
+            dependencies[relative_source]=sha(source)
+    return policy,dict(processPolicyPath=relative,processPolicySha256=hashlib.sha256(raw).hexdigest(),observerModuleSha256=sha(module),**({'observerSources':dependencies} if dependencies else {}))
 
 
-def validate_mac_observation(observation,policy_sha,module_sha,policy=None):
+def validate_mac_observation(observation,policy_sha,module_sha,policy=None,lifecycle_journal=None):
     require(type(observation) is dict and observation.get('processPolicySha256')==policy_sha
             and observation.get('observerModuleSha256')==module_sha,'observer/policy identity missing')
     require(observation.get('status')=='PASS' and observation.get('blockers')==[],'process observation adverse or unknown')
     require(type(observation.get('ownedProcesses')) is list,'owned process observation missing')
     require(policy is not None,'observer evidence requires the frozen policy for independent validation')
-    recalculated=mac_observer(policy).validate_observation(policy,observation)
+    recalculated=(mac_observer(policy).validate_observation(policy,observation,lifecycle_journal=lifecycle_journal)
+                  if policy.get('kind')==MAC_LIFECYCLE_KIND else mac_observer(policy).validate_observation(policy,observation))
     require(recalculated.get('status')=='PASS' and recalculated.get('blockers')==[], 'raw process/API evidence does not independently pass')
     return recalculated
 
 
-def validate_mac_sample(item,policy_sha,module_sha,policy):
+def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None):
+    if policy.get('kind')==MAC_LIFECYCLE_KIND:
+        began=item.get('monotonicSeconds');ended=item.get('observationCompletedMonotonic')
+        require(type(began) in (int,float) and type(ended) in (int,float) and 0<=ended-began<=2.5,
+                'complete v3 observation including postprocessing exceeded budget')
+        raw=item.get('processObservation',{})
+        require(began<=raw.get('startedMonotonic',-1)<=raw.get('finishedMonotonic',float('inf'))<=ended,
+                'v3 raw evidence lies outside actual outer observation')
     require(item.get('processPolicySha256')==policy_sha and item.get('observerModuleSha256')==module_sha,'sample observer identity missing')
-    recalculated=validate_mac_observation(item['processObservation'],policy_sha,module_sha,policy)
+    recalculated=validate_mac_observation(item['processObservation'],policy_sha,module_sha,policy,lifecycle_journal=lifecycle_journal)
     require(type(item.get('rssBytes')) is int and item['rssBytes']==recalculated['ownedRssBytes'],'sample owned RSS differs from raw process evidence')
     return recalculated
 
@@ -183,11 +283,12 @@ def fixed_phase(duration,sampler,writer,clock=time.monotonic,sleeper=time.sleep)
 
 class MacMonitor:
     """A read-only observation thread covers blocking startup, child work and cleanup."""
-    def __init__(self,path,sampler,validator,epoch,swap_baseline,timers_path=None,maximum_wall=4800,local_epoch=None):
+    def __init__(self,path,sampler,validator,epoch,swap_baseline,timers_path=None,maximum_wall=4800,local_epoch=None,previous_sample_monotonic=None):
         self.path=Path(path);self.sampler=sampler;self.validator=validator;self.epoch=epoch
         self.swap_baseline=swap_baseline;self.timers_path=Path(timers_path) if timers_path else None
         self.maximum_wall=maximum_wall;self.stop_event=threading.Event();self.errors=[];self.samples=[]
         self.local_epoch=epoch if local_epoch is None else local_epoch
+        self.previous_sample_monotonic=previous_sample_monotonic
         self.timers={};self.thread=threading.Thread(target=self._run,name='aijade-readonly-process-observer',daemon=True)
 
     def start(self):
@@ -195,7 +296,7 @@ class MacMonitor:
         return self
 
     def _run(self):
-        deadline=time.monotonic();previous=None
+        deadline=time.monotonic();previous=self.previous_sample_monotonic
         try:
             with self.path.open('x') as log:
                 while not self.stop_event.is_set():
@@ -304,11 +405,11 @@ def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None,fre
     if repo is not None:
         require(re.fullmatch(r'[0-9a-f]{40}',freeze_commit or '') is not None, 'public build-freeze commit required')
         freeze_path=safe_relative(freeze_path)
-        frozen=subprocess.check_output(['git','show',freeze_commit+':'+freeze_path],cwd=repo)
+        frozen=managed_check_output(['git','show',freeze_commit+':'+freeze_path],cwd=repo)
         require(frozen==manifest.read_bytes(), 'pre-qualification public build freeze differs')
         if strict_publication:
-            require(freeze_path in (MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH),'new Mac qualification requires its separate build-freeze path')
-            if freeze_path==MAC_CENSUS_BUILD_FREEZE_PATH:
+            require(freeze_path in (MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH,MAC_LIFECYCLE_BUILD_FREEZE_PATH),'new Mac qualification requires its separate build-freeze path')
+            if freeze_path in (MAC_CENSUS_BUILD_FREEZE_PATH,MAC_LIFECYCLE_BUILD_FREEZE_PATH):
                 native=build['nativeCensus'];helper=Path(native['path'])
                 require(helper.is_absolute() and helper.resolve().is_relative_to(PROJECT_ROOT.resolve()) and '..' not in helper.parts and not helper.is_symlink() and helper.is_file() and sha(helper)==native['sha256'],'native helper changed or outside project')
                 source='experiments/ch7/mac_bulk_census.c'
@@ -367,7 +468,7 @@ def stop_owned_processes(roots, grace_seconds=5):
             try:os.killpg(root.pid,signal.SIGKILL)
             except OSError as error:row['errors'].append(type(error).__name__+': '+str(error))
         try:root.wait(timeout=1)
-        except subprocess.SubprocessError as error:row['errors'].append(type(error).__name__+': '+str(error))
+        except (subprocess.SubprocessError,ValueError) as error:row['errors'].append(type(error).__name__+': '+str(error))
         row['exitCode']=root.poll()
     return records
 

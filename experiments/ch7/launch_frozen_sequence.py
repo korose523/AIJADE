@@ -41,7 +41,8 @@ def progress(output):
     receipt = read(output / 'receipt.json') or {}
     stage = receipt.get('status', 'CONTROLLER_PRECONDITION')
     telemetry = None
-    if stage.startswith('FIXED_'):
+    if stage.startswith('FIXED_') or (not receipt.get('startedAt') and
+            any((output/phase/'telemetry.jsonl').is_file() for phase in ('settling','admission'))):
         candidates = [output / 'admission/telemetry.jsonl', output / 'settling/telemetry.jsonl']
     else:
         candidates = sorted(output.glob('block-*/telemetry.jsonl'), reverse=True)
@@ -58,6 +59,8 @@ def progress(output):
                 except ValueError:
                     continue
                 telemetry = {'file': str(path.relative_to(output)), **{key: value.get(key) for key in ('elapsedSeconds', 'availableBytes', 'swapUsedBytes', 'rssBytes')}}
+                if not receipt.get('startedAt') and value.get('phase') in ('settling','admission'):
+                    stage='PREFLIGHT_'+value['phase'].upper()
                 break
         except OSError:
             pass

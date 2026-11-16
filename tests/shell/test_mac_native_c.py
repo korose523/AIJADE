@@ -18,8 +18,9 @@ import unittest
 import uuid
 
 BASE = Path('/Volumes/Untitled/AIJADE')
-RUN = BASE / '.research/runs/ch7-mac-census-20261116'
 REPO = Path(__file__).resolve().parents[2]
+# New engineering outputs never add files to an immutable previous run.
+RUN = Path(os.environ.get('AIJADE_NATIVE_CONTROLS_ROOT', str(REPO / '.runtime/ch7-native-controls')))
 SOURCE = REPO / 'experiments/ch7/mac_bulk_census.c'
 LIMIT = 16777216
 

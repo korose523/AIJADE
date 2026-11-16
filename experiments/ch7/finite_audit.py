@@ -63,15 +63,17 @@ def validate_placements(row,finite,key,phase):
     else:require(witness is None,'SQL witness without failure')
 
 
-def verify(root, repo):
+def verify(root, repo, *, ancestry_context=None):
     root=Path(root);repo=Path(repo)
+    v3=False;lifecycle_journal=None;lifecycle_result=None
     receipt = load(root, 'receipt.json'); identity = load(root, 'input-identities.json')
     runtime = load(root, 'runtime-manifest.json'); selection = load(root, 'selection.json'); rows = load(root, 'cases.json')
     cases = {c['input']['caseId']: c for c in runtime['cases']}; n = len(cases)
     require(1 <= n <= 10 and receipt['plannedPairs'] == n and receipt['completedCases'] == receipt['plannedCases'] == 2*n, 'incomplete live population')
     require(receipt['status'] == 'COMPLETE_FINITE_BLOCK_OBSERVATIONS' and receipt['codeCommit'] == identity['codeCommit'], 'execution status/source')
     from finite_runtime import (MAC_PLAN, MAC_PLANS, mac_plan, mac_build_path, MAC_BUILD_FREEZE_PATH, BUILD_FREEZE_PATH, safe_relative,
-        validate_repository_binding, validate_mac_sample, validate_coverage, validate_owned_registry)
+        validate_repository_binding, validate_mac_sample, validate_coverage, validate_owned_registry,
+        MAC_LIFECYCLE_KIND, MAC_LIFECYCLE_SOURCES, load_mac_policy, validate_mac_build_policy)
     canonical_plan='experiments/plans/'+MAC_PLAN
     q_has_mac_plan=subprocess.run(['git','cat-file','-e',receipt['codeCommit']+':'+canonical_plan],cwd=repo,
                                   stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0
@@ -87,13 +89,29 @@ def verify(root, repo):
         require(all(identity.get(key)==value for key,value in binding.items()),'repository I is not the declared additive data publication')
         require((repository_commit==identity['implementationCommit']) if runtime['purpose']=='qualification_only' else (repository_commit!=identity['implementationCommit']),'wrong qualification/formal Q/I role')
         policy_raw=raw(root,'process-policy.json');policy=json.loads(policy_raw)
+        v3=policy.get('kind')==MAC_LIFECYCLE_KIND
+        if v3:
+            from finite_sequence_audit import lifecycle_journal_bytes, lifecycle_ancestry_context, _v3_sources, LIFECYCLE_PLAN_SHA256
+            keys+=['observerSources','lifecycleScopeId']
+            require(all(key in identity and receipt.get(key)==identity[key] for key in ('observerSources','lifecycleScopeId')),
+                    'v3 dependency/scope identity missing or unequal')
+            _v3_sources(identity)
+            require(identity['executionPlanSha256']==LIFECYCLE_PLAN_SHA256,'wrong prospective v3 execution plan')
+            lifecycle_journal=lifecycle_journal_bytes(root,receipt,prefix=True)
+            if ancestry_context is None:
+                ancestry_context=lifecycle_ancestry_context(root,receipt)
         require(identity['buildFreezePath']==mac_build_path(policy),'new mode rebound to a historical build freeze')
         plan_rel='experiments/plans/'+mac_plan(policy)
         require(sha(subprocess.check_output(['git','show',identity['implementationCommit']+':'+plan_rel],cwd=repo))==identity['executionPlanSha256']==receipt['executionPlanSha256'],'new execution plan identity changed')
         policy_path=safe_relative(identity['processPolicyPath'])
         require(sha(policy_raw)==identity['processPolicySha256'] and subprocess.check_output(['git','show',identity['implementationCommit']+':'+policy_path],cwd=repo)==policy_raw,'process policy not frozen at Q')
-        observer_path='experiments/ch7/'+('mac_process_guard_v2.py' if mac_plan(policy)!=MAC_PLAN else 'mac_process_guard.py')
+        observer_path='experiments/ch7/'+('mac_process_guard_v3.py' if v3 else 'mac_process_guard_v2.py' if mac_plan(policy)!=MAC_PLAN else 'mac_process_guard.py')
         require(identity['liveSources'].get(observer_path)==identity['observerModuleSha256'],'observer implementation identity missing')
+        if v3:
+            _,observed_identity=load_mac_policy(repo,repo/policy_path,identity['implementationCommit'])
+            require(observed_identity['observerSources']==identity['observerSources'], 'v3 dependencies differ from Q')
+            require(all(identity['liveSources'].get(path)==identity['observerSources'][path] for path in MAC_LIFECYCLE_SOURCES),
+                    'v3 live source dependency omitted')
         if mac_plan(policy)!=MAC_PLAN:
             require(identity['liveSources'].get('experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source identity missing')
         protected_path=repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json'
@@ -126,6 +144,9 @@ def verify(root, repo):
     metadata=load(root,'build-identity.json')
     require(metadata['expectedCodeCommit']==receipt['codeCommit'] and metadata['informationalVersion'].endswith('+'+receipt['codeCommit']), 'embedded binary revision mismatch')
     build=load(root,'frozen-build.json')
+    if v3:
+        validate_mac_build_policy(policy,build)
+        require(build['observerSources']==identity['observerSources'],'used v3 build dependency map differs')
     require(sha(raw(root,'frozen-build.json'))==identity['buildManifestSha256'] and build['commit']==receipt['codeCommit'], 'explicit build manifest identity')
     require(build['assemblyInformationalVersion']==metadata['informationalVersion']==identity['assemblyInformationalVersion'] and build['files']==identity['binaries'], 'used assembly/dependency freeze')
     freeze_path=safe_relative(identity.get('buildFreezePath',BUILD_FREEZE_PATH))
@@ -256,17 +277,27 @@ def verify(root, repo):
         validate_coverage(telemetry,receipt['wallSeconds'],1)
         for sample in telemetry:
             require('observationError' not in sample,'resource observation was unknown')
-            validate_mac_sample(sample,identity['processPolicySha256'],identity['observerModuleSha256'],policy)
+            if v3:
+                validate_mac_sample(sample,identity['processPolicySha256'],identity['observerModuleSha256'],policy,
+                                    lifecycle_journal=lifecycle_journal)
+            else:
+                validate_mac_sample(sample,identity['processPolicySha256'],identity['observerModuleSha256'],policy)
             require(abs(sample['sequenceElapsedSeconds']-(sample['monotonicSeconds']-receipt['sequenceEpochMonotonic']))<1e-6,'sequence resource clock changed')
             require(abs(sample['elapsedSeconds']-(sample['monotonicSeconds']-receipt['blockEpochMonotonic']))<1e-6,'block resource clock changed')
             require(sample['swapIncreaseBytes']==max(0,sample['swapUsedBytes']-receipt['initialSystemSwapUsedBytes']),'swap baseline changed')
             require(sample['observationCompletedMonotonic']>=sample['monotonicSeconds'],'observer clock reversal')
-        registry=load(root,'owned-process-registry.json')
-        require(sha(raw(root,'owned-process-registry.json'))==receipt['ownedProcessRegistrySha256'],'owned registry changed')
-        require(registry['controllers']==[receipt['controllerProcess']]==[identity['controllerProcess']],'owned controller lease changed')
-        validate_owned_registry(registry,telemetry)
-        registered={(v['pid'],v['createTime']) for v in registry['explicitlyRegisteredIdentities']}
-        require({(v['pid'],v['createTime']) for v in receipt['phases'].values()}<=registered,'phase PID/create-time lease missing')
+        if v3:
+            from finite_sequence_audit import _lifecycle_ownership
+            require(receipt['controllerProcess']==identity['controllerProcess'],'v3 block controller identity changed')
+            lifecycle_result=_lifecycle_ownership(root,receipt,telemetry,policy,scoped=True,
+                                                 ancestry_context=ancestry_context)
+        else:
+            registry=load(root,'owned-process-registry.json')
+            require(sha(raw(root,'owned-process-registry.json'))==receipt['ownedProcessRegistrySha256'],'owned registry changed')
+            require(registry['controllers']==[receipt['controllerProcess']]==[identity['controllerProcess']],'owned controller lease changed')
+            validate_owned_registry(registry,telemetry)
+            registered={(v['pid'],v['createTime']) for v in registry['explicitlyRegisteredIdentities']}
+            require({(v['pid'],v['createTime']) for v in receipt['phases'].values()}<=registered,'phase PID/create-time lease missing')
     require(max(t['rssBytes'] for t in telemetry)==receipt['peak']['rssBytes'] and min(t['availableBytes'] for t in telemetry)==receipt['peak']['minAvailableBytes'], 'resource extrema')
     timers={}
     for t in telemetry:
@@ -281,6 +312,7 @@ def verify(root, repo):
                 conditionCounts={arm:{k:v for k,v in scored['arms'][arm].items() if k!='byCase'} for arm in ['C1','C2']},
                 round2SemanticActCorrectness='NOT_MEASURED', interpretation=scored['interpretation'])
     if mac:result.update({key:identity[key] for key in keys},codeCommit=receipt['codeCommit'],processObservationCount=len(telemetry))
+    if v3:result['processLifecycle']=lifecycle_result
     return result
 
 
