@@ -33,6 +33,11 @@ jobs:
       - run: dotnet test --configuration Release
       - name: Verify project-local paths and companion launch arguments
         run: python3 tests/shell/verify_workspace_env.py
+      - name: Verify finite binary identity, bounded owned cleanup and terminal receipts
+        run: |
+          python3 -m venv .runtime/finite-control-env
+          .runtime/finite-control-env/bin/python -m pip install psutil==7.2.2
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_runtime.py' -v
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions

@@ -13,7 +13,8 @@ from comparison_manifest import require
 
 FILES=['receipt.json','input-identities.json','runtime-manifest.json','selection.json','scoring-manifest.json','cases.json',
        'journal.jsonl','prepared.json','renderer-request.json','renderer-closed.json','manifest.json','registry.jsonl',
-       'database-cleanup.json','telemetry.jsonl','client/aijade-render-state.jsonl','build-identity.json']
+       'database-cleanup.json','telemetry.jsonl','client/aijade-render-state.jsonl','build-identity.json',
+       'frozen-build.json','process-cleanup.json','renderer.log']
 
 
 def run(root,repo):
@@ -21,7 +22,7 @@ def run(root,repo):
     names=['missing-arm','duplicate-arm','retrieved-code','database-token','time-reversal','render-seal',
            'hidden-durable-rows-coherent','changed-window-rebound','changed-denominator-rebound','failure-witness-coherent',
            'replay-observation-coherent','unplanned-probe-coherent','embedded-build-revision','runtime-rebound',
-           'missing-owned-lease','provider-attempt-coherent']
+           'missing-owned-lease','provider-attempt-coherent','unknown-cleanup-coherent','unknown-process-cleanup','build-hashes-rebound']
     for name in names:
         with tempfile.TemporaryDirectory(prefix='aijade-finite-audit-control-') as temporary:
             target=Path(temporary)
@@ -73,6 +74,13 @@ def run(root,repo):
                 contract=load(target,'scoring-manifest.json');contract['runtimeManifestSha256']=digest('runtime-manifest.json');save('scoring-manifest.json',contract)
                 identity['scoringManifestSha256']=digest('scoring-manifest.json');save('input-identities.json',identity)
             elif name=='missing-owned-lease':value=load(target,'database-cleanup.json');value.pop();save('database-cleanup.json',value)
+            elif name=='unknown-cleanup-coherent':
+                value=load(target,'database-cleanup.json');value[0].update(remaining=None,error='transport failed');save('database-cleanup.json',value)
+            elif name=='unknown-process-cleanup':
+                value=load(target,'process-cleanup.json');value[0].update(exitCode=None,errors=['termination not observed']);save('process-cleanup.json',value)
+            elif name=='build-hashes-rebound':
+                value=load(target,'frozen-build.json');key=next(k for k in value['files'] if k.endswith('.dll'));value['files'][key]='0'*64;save('frozen-build.json',value)
+                identity=load(target,'input-identities.json');identity['binaries']=copy.deepcopy(value['files']);identity['buildManifestSha256']=digest('frozen-build.json');save('input-identities.json',identity)
             else:rows[0]['gatewayAttempts']=1;save('cases.json',rows);bind_row(rows[0])
             require(any(digest(n)!=originals[n] for n in FILES),'no-op mutation cannot count as rejected corruption')
             try:verify(target,repo)

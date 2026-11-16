@@ -20,6 +20,7 @@ import sys
 import time
 
 import psutil
+from finite_runtime import validate_build, cleanup_owned_databases, stop_owned_processes, dispositions
 
 GIB = 1024 ** 3
 PLAN = '78785a5'
@@ -39,13 +40,15 @@ def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
 
 
-def main(args):
+def _main(args):
     repo = args.repo.resolve()
     assert subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo, text=True) == ''
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
     assert commit == os.environ['AIJADE_GIT_COMMIT']
     assert os.environ.get('DOTNET_PROCESSOR_COUNT') == '2'
     assert psutil.__version__ == '7.2.2'
+    assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',args.db_container)
+    build = validate_build(args.assembly,args.build_manifest,commit,repo,args.build_freeze_commit)
     runtime = json.loads(args.manifest.read_text())
     contract = json.loads(args.scoring.read_text())
     assert runtime['purpose'] in ['qualification_only','confirmed_finite_heldout']
@@ -73,32 +76,48 @@ def main(args):
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     source_copy = output / 'renderer-source'
+    # The client was built before the fixed unloaded phase. Retain its exact loaded DLLs.
     shutil.copytree(args.client, source_copy,
-                    ignore=shutil.ignore_patterns('.godot', 'bin', 'obj', '__pycache__'))
+                    ignore=shutil.ignore_patterns('.git', '.svn', '__pycache__'))
+    prepared_client=json.loads((source_copy/'aijade-prepared-renderer.json').read_text())
+    assert prepared_client['status']=='PREBUILT_NO_RUNTIME_REBUILD'
+    for relative,digest in prepared_client['files'].items():
+        assert not Path(relative).is_absolute() and '..' not in Path(relative).parts
+        assert sha(source_copy/relative)==digest, 'Prepared renderer identity changed'
     preset = repo / 'experiments/p1/external-renderer/preset'
     shutil.copytree(preset, output / 'preset')
     shutil.copy2(args.selection, output / 'selection.json')
     shutil.copy2(args.manifest, output / 'runtime-manifest.json')
     shutil.copy2(args.scoring, output / 'scoring-manifest.json')
+    shutil.copy2(args.build_manifest, output / 'frozen-build.json')
     runtime = json.loads((output / 'runtime-manifest.json').read_text())
     selection = json.loads((output / 'selection.json').read_text())
     for relative, expected in selection['sources'].items():
         assert sha(repo / relative) == expected, relative
-    dll = repo / 'tests/Aijade.Tests/bin/Release/net10.0/Aijade.Tests.dll'
-    binary_files = sorted(dll.parent.glob('*.dll'))
+    dll = args.assembly.resolve()
+    binary_files = sorted(p for p in dll.parent.iterdir() if p.is_file())
     binaries = {p.name: sha(p) for p in binary_files}
-    sources = {str(p.relative_to(source_copy)): sha(p) for p in source_copy.rglob('*') if p.is_file()}
+    sources = {str(p.relative_to(source_copy)): sha(p) for p in source_copy.rglob('*') if p.is_file()
+               and not {'.godot','bin','obj','__pycache__'} & set(p.relative_to(source_copy).parts)}
     model_sha = sha(args.model)
     write(output / 'input-identities.json', dict(
         codeCommit=commit, planCommit=subprocess.check_output(['git', 'rev-parse', PLAN], cwd=repo, text=True).strip(),
         planSha256=sha(repo / 'experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md'),
         runtimeManifestSha256=sha(output/'runtime-manifest.json'), scoringManifestSha256=sha(output/'scoring-manifest.json'),
         binaries=binaries, rendererSources=sources, modelSha256=model_sha,
+        buildManifestSha256=sha(args.build_manifest), assemblyInformationalVersion=build['assemblyInformationalVersion'],
+        buildFreezeCommit=args.build_freeze_commit,
+        preparedRenderer=prepared_client, explicitAssemblyPath=str(dll),
+        explicitDockerPath=str(args.docker), databaseContainer=args.db_container,
+        godotWrapperSha256=sha(args.godot), realGodotSha256=sha(Path(os.environ['AIJADE_REAL_GODOT'])),
+        sandboxProfileSha256=sha(Path(os.environ['AIJADE_GODOT_SANDBOX_PROFILE'])),
+        executionPlanSha256=sha(args.execution_plan),
         selectionSha256=sha(output / 'selection.json'),
         benchSha256=sha(repo / 'src/Aijade.Research/SkillBench/bench-data.json'),
         liveSources={str(p.relative_to(repo)):sha(p) for p in sorted(
             list((repo/'experiments/ch7').glob('finite_*.py')) +
             [repo/'experiments/ch7/run_finite_block.py',repo/'experiments/ch7/run_finite_sequence.py'] +
+            [repo/'experiments/ch7/godot_local.py'] +
             list((repo/'tests/Aijade.Tests').glob('ResearchFinite*.cs')))},
         constructionFreezeCommit=runtime['constructionFreezeCommit'], purpose=runtime['purpose'],
         runtimeRepositoryPath=str(args.manifest.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
@@ -110,6 +129,7 @@ def main(args):
                PATH=str(args.dotnet.parent) + os.pathsep + env.get('PATH', ''))
     session = 'ch7-finite-' + output.parent.name + '-' + output.name
     env['MOSAIC_SESSION_ID'] = session
+    env['AIJADE_PREBUILT_RENDERER'] = '1'
     started = time.monotonic()
     initial_swap = int(os.environ.get('AIJADE_FINITE_SWAP_BASELINE',psutil.swap_memory().used))
     sequence_epoch = float(os.environ.get('AIJADE_FINITE_EPOCH',started))
@@ -121,6 +141,8 @@ def main(args):
     phases = {}
     peaks = dict(rssBytes=0, swapIncreaseBytes=0, minAvailableBytes=psutil.virtual_memory().available)
     telemetry = (output / 'telemetry.jsonl').open('x')
+    planned = [p['input']['caseId']+'/'+c for p in runtime['cases'] for c in p['input']['conditions']]
+    write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases={},modelRequests=0))
     reason = None
     status = 'RUNNING'
 
@@ -131,6 +153,7 @@ def main(args):
                                 stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
         roots.append(proc)
         phases[name] = dict(startedAt=utc(), pid=proc.pid, exitCode=None)
+        write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases=phases,modelRequests=0))
         return proc
 
     def tick():
@@ -204,6 +227,7 @@ def main(args):
         assert request_body['session'] == session
         assert request_body['preparedSha256'] == sha(output / 'prepared.json')
         renderer = launch('renderer', [sys.executable, str(source_copy / 'scripts/run-native-mmd-scene.py'),
+            '--godot',str(args.godot),'--dotnet',str(args.dotnet),
             '--headless', '--out', str(output / 'client'), '--pmx', str(args.model), '--scale', '0.1',
             '--clip', str(output / 'preset/companion-rest.vmd'), '--pose-mode', 'pmx', '--preserve-signed-linear-weights',
             '--behavior', str(output / 'preset/companion-plan.json'), '--behavior-live', str(port), '--timeout', '400'], source_copy)
@@ -233,51 +257,35 @@ def main(args):
         assert sha(args.model) == model_sha
         assert all(sha(repo / relative) == expected for relative, expected in selection['sources'].items())
         assert sources == {rel: sha(source_copy / rel) for rel in sources}
+        assert all(sha(source_copy/rel)==digest for rel,digest in prepared_client['files'].items()), 'Renderer rebuilt or changed after admission'
         status = 'COMPLETE_FINITE_BLOCK_OBSERVATIONS'
-    except Exception as error:
+    except BaseException as error:
         status = 'STOPPED'
         reason = type(error).__name__ + ': ' + str(error)
     finally:
-        for root in roots:
-            if root.poll() is None:
-                os.killpg(root.pid, signal.SIGTERM)
-        deadline = time.monotonic() + 5
-        while any(root.poll() is None for root in roots) and time.monotonic() < deadline:
-            time.sleep(.1)
-        for root in roots:
-            if root.poll() is None:
-                os.killpg(root.pid, signal.SIGKILL)
+        process_cleanup = stop_owned_processes(roots)
         for name, record in phases.items():
             owned = next(p for p in roots if p.pid==record['pid'])
             record['exitCode'] = owned.poll()
             record.setdefault('endedAt',utc())
-        for handle in handles:
-            handle.close()
-        telemetry.close()
-        cleanup = []
+        close_errors=[]
+        for handle in handles+[telemetry]:
+            try:handle.close()
+            except OSError as error:close_errors.append(type(error).__name__+': '+str(error))
         leases = output / 'database-leases.jsonl'
-        for line in leases.read_text().splitlines() if leases.is_file() else []:
-            name = json.loads(line)['database']
-            assert re.fullmatch(r'aijade_test_[0-9a-f]{32}', name)
-            command = [str(Path.home()/'.local/bin/docker'), 'exec', 'aijade-next-db',
-                       'psql', '-X', '-U', 'aijade', '-d', 'aijade', '-tAc']
-            present = subprocess.check_output(command + ["SELECT count(*) FROM pg_database WHERE datname='" + name + "'"], text=True).strip()
-            if present != '0':
-                subprocess.run(command + ['DROP DATABASE ' + name + ' WITH (FORCE)'], check=True, capture_output=True)
-            remaining = subprocess.check_output(command + ["SELECT count(*) FROM pg_database WHERE datname='" + name + "'"], text=True).strip()
-            cleanup.append(dict(database=name, presentAfterProcessExit=int(present), remaining=int(remaining)))
+        cleanup = cleanup_owned_databases(leases,args.docker,args.db_container)
         write(output/'database-cleanup.json', cleanup)
-        completed = [r['caseId']+'/'+r['condition'] for r in json.loads((output/'cases.json').read_text())] if (output/'cases.json').is_file() else []
-        journal = [json.loads(s) for s in (output/'journal.jsonl').read_text().splitlines()] if (output/'journal.jsonl').is_file() else []
-        started_cases = {r['caseId'] for r in journal if '/' in r['caseId']}
-        case_ids = [p['input']['caseId']+'/'+c for p in runtime['cases'] for c in p['input']['conditions']]
+        state = dispositions(output,planned,flow_started='flow' in phases)
+        if any(r['remaining']!=0 or r['error'] for r in cleanup) or any(r['errors'] or r['exitCode'] is None for r in process_cleanup) or state['dispositionErrors'] or close_errors:
+            status='STOPPED';reason=(reason+'; ' if reason else '')+'owned cleanup or disposition unresolved'
+        write(output/'process-cleanup.json',process_cleanup)
         write(output / 'receipt.json', dict(schema='aijade.ch7.finite-block-receipt.v1', status=status, reason=reason,
             codeCommit=commit, finishedAt=utc(), wallSeconds=time.monotonic()-started, ownedCpuSeconds=sum(cpu.values()),
             peak=peaks, phases=phases, plannedCases=2*len(runtime['cases']), plannedPairs=len(runtime['cases']), plannedSharedRenderedIntents=len(runtime['cases']),
             registeredIntentCount=max(0,len((output/'registry.jsonl').read_text().splitlines())-1) if (output/'registry.jsonl').is_file() else 0,
-            completedCases=len(json.loads((output/'cases.json').read_text())) if (output/'cases.json').is_file() else 0,
-            inFlightCaseIds=[k for k in case_ids if k in started_cases and k not in completed],
-            unattemptedCaseIds=[k for k in case_ids if k not in started_cases],
+            completedCases=len(state['completedCaseIds']),
+            inFlightCaseIds=state['inFlightCaseIds'],unknownCaseIds=state['unknownCaseIds'],
+            unattemptedCaseIds=state['unattemptedCaseIds'],dispositionErrors=state['dispositionErrors'],logCloseErrors=close_errors,
             heldOutCases=len(runtime['cases']) if runtime['purpose']=='confirmed_finite_heldout' else 0, purpose=runtime['purpose'], blockIndex=runtime['blockIndex'],
             initialSystemSwapUsedBytes=initial_swap, sequenceEpochMonotonic=sequence_epoch, conditionsMeasured=['C1','C2'], semanticJudgments='AI-assisted; no independent human review',
             formalHardwareQualification=False, modelRequests=0))
@@ -285,8 +293,27 @@ def main(args):
     return 0 if status.startswith('COMPLETE') else 1
 
 
+def main(args):
+    existed=args.output.exists()
+    try:return _main(args)
+    except BaseException as error:
+        if not existed:
+            args.output.mkdir(parents=True,exist_ok=True)
+            path=args.output/'receipt.json'
+            try:receipt=json.loads(path.read_text())
+            except (OSError,ValueError):receipt={}
+            started=bool(receipt.get('phases',{}).get('flow'))
+            receipt.update(status='STOPPED_CONTROLLER_ERROR' if started else 'STOPPED_PRECONDITION',reason=type(error).__name__+': '+str(error),finishedAt=utc(),
+                           measurementStarted=started,modelRequests=0,phases=receipt.get('phases',{}))
+            write(path,receipt)
+        print(type(error).__name__+': '+str(error),file=sys.stderr)
+        return 1
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    for key in ['repo', 'client', 'model', 'selection', 'manifest', 'scoring', 'output', 'dotnet']:
+    for key in ['repo', 'client', 'model', 'selection', 'manifest', 'scoring', 'output', 'dotnet','assembly','build-manifest','godot','docker','execution-plan']:
         parser.add_argument('--' + key, type=Path, required=True)
+    parser.add_argument('--db-container',required=True)
+    parser.add_argument('--build-freeze-commit',required=True)
     raise SystemExit(main(parser.parse_args()))
