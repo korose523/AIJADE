@@ -354,7 +354,7 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
         if micros is None:
             micros = round(real(controller.get('createTime'), 'controller creation') * 1000000)
         require((controller.get('pid'), micros) == identity(root), 'journal root differs from bound controller receipt')
-    frames = {}; sample_ids = set(); seen_prefix_bytes = -1; peak = 0; observations = []; observed_owned = set()
+    frames = {}; sample_ids = set(); seen_prefix_bytes = {}; scope_completed = {}; peak = 0; observations = []; observed_owned = set()
     context_observations = {}
     context_rows = {}
     native_leases = set()
@@ -374,8 +374,8 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
         view = observation.get('lifecycle', {})
         require(view.get('schema') == 'aijade.process-lifecycle-view.v1', 'missing lifecycle view')
         size = integer(view.get('journalBytes'), 'journal prefix bytes')
-        require(0 < size <= len(raw) and size >= seen_prefix_bytes and raw[:size].endswith(b'\n'),
-                'journal prefix omitted/reversed/truncated')
+        require(0 < size <= len(raw) and raw[:size].endswith(b'\n'),
+                'journal prefix omitted/truncated')
         prefix = raw[:size]
         require(hashlib.sha256(prefix).hexdigest() == view.get('journalSha256'), 'actual journal prefix differs')
         local = _replay(prefix, source_commit, policy_sha256)
@@ -384,6 +384,11 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
         require(scope is not None and scope['closeSeq'] is None and scope['controllerIdentity'] == view.get('controllerIdentity'),
                 'sample local persistent scope missing/closed/changed')
         require(scope_id is None or view['scopeId'] == scope_id, 'sample belongs to another local lifecycle scope')
+        scope_key = (local['runId'],view['scopeId'],*identity(scope['controllerIdentity']))
+        require(size >= seen_prefix_bytes.get(scope_key,-1), 'journal prefix reversed within the same verified scope')
+        require(actual_start >= scope_completed.get(scope_key,-1), 'same-scope original observation calls overlap')
+        scope_completed[scope_key] = real(outer.get('observationCompletedMonotonic'),'actual scope observation completion')
+        seen_prefix_bytes[scope_key] = size
         refs = sorted({node_identity(node) for frame in captured for node in frame['nodes']})
         require(view.get('referencedIdentities') == [list(x) for x in refs], 'view native identity coverage differs')
         projected = [v for v in local['leases'].values() if v['absence'] is None or identity(v['identity']) in refs]
@@ -428,17 +433,15 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
                     'whole-owned RSS membership unknown')
             for node in frame['nodes']:
                 key = node_identity(node)
-                if key in known:
+                if key in known and key in included_keys:
                     require(node['parentPid'] == known[key]['identity']['parentPid'], 'actual registered process parent changed')
                     lease = known[key]
                     if lease['waitSeq'] is not None:
                         require(frame['graphStartedMonotonic'] < lease['reapedMonotonic'],
                                 'reaped managed identity is still present in a later raw census')
                 for old_key, lease in known.items():
-                    if old_key[0] == node['pid'] and old_key != key and lease['absence'] is None:
+                    if old_key in included_keys and old_key[0] == node['pid'] and old_key != key and lease['absence'] is None:
                         raise ValueError('active registered PID reused without its own terminal absence')
-                if key in state['discovered']:
-                    require(node['parentPid'] == state['discovered'][key]['identity']['parentPid'], 'actual discovered process parent changed')
             for row in rows:
                 key = (row['pid'], round(real(row.get('createTime'), 'RSS creation') * 1000000))
                 require(node_identity(by_pid[row['pid']]) == key and row['parentPid'] == by_pid[row['pid']]['parentPid']
@@ -451,7 +454,7 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
         require(observation.get('ownedProcesses') == captured[-1]['rows'], 'claimed owned process list differs from raw after')
         total = sum(r['rssBytes'] for r in captured[-1]['rows'])
         require(observation.get('ownedRssBytes') == total and outer.get('rssBytes') == total, 'whole-owned RSS sum differs')
-        peak = max(peak, total); seen_prefix_bytes = size; observations.append((observation, captured))
+        peak = max(peak, total); observations.append((observation, captured))
         context_observations[sid] = observation
         context_rows[sid] = canonical(outer)
     context_raw = raw if ancestry_journal is None else _journal_bytes(ancestry_journal)
@@ -515,6 +518,13 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
         ancestry_keys.setdefault(key,set()).update(identity(v) for v in chain)
     responsible_discovered = {key for key, keys in ancestry_keys.items()
                               if scope_id is None or bool(keys & included_keys)}
+    for _, captured in observations:
+        for frame in captured:
+            for node in frame['nodes']:
+                key = node_identity(node)
+                if key in responsible_discovered:
+                    require(node['parentPid'] == state['discovered'][key]['identity']['parentPid'],
+                            'actual responsible discovered process parent changed')
     for event in state['events']:
         if event['event'] in ('ABSENCE', 'DISCOVER_ABSENCE'):
             data = event['data']; frame = frames.get((data['sampleId'], data['phase']))

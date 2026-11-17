@@ -496,6 +496,24 @@ def _typed_members(nodes,roots,state,controller,frame,collector,add,phase):
     if roots:
         for key,value in state['discovered'].items():
             if key in leases:continue
+            # The shared journal includes sibling scopes. Responsibility follows
+            # original, validated ancestry, including a parent-observed process
+            # whose chain passes through this local controller. A malformed or
+            # missing chain is adverse, never permission to omit an identity.
+            try:
+                chain=value.get('ancestry')
+                if type(chain) is not list or len(chain)<2:raise ValueError('discovery ancestry missing')
+                keys=[lifecycle_support.identity_key(item) for item in chain]
+                scope=state['scopes'][value['scopeId']]
+                if (chain[0]!=value['identity'] or keys[0]!=key
+                    or chain[-1]!=scope['controllerIdentity']
+                    or len(keys)!=len(set(keys))
+                    or not all(a['parentPid']==b['pid'] and b['createTimeMicros']<=a['createTimeMicros']
+                               for a,b in zip(chain,chain[1:]))):
+                    raise ValueError('discovery ancestry binding')
+            except (KeyError,TypeError,ValueError):
+                add('DISCOVERED_ANCESTRY_INVALID','FAIL',phase=phase,pid=key[0]);continue
+            if not family.intersection(keys):continue
             node=by_pid.get(key[0])
             if node is not None and lifecycle_support.key_from_node(node)==key:
                 if value.get('absence') is not None and _absence_time(value['absence'])<=started:

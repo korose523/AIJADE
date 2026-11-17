@@ -246,4 +246,70 @@ class LifecycleGuardControls(unittest.TestCase):
         self.assertEqual(self.decision(p,o,r)['status'],'FAIL')
 
 
+class DiscoveredScopeResponsibilityControls(unittest.TestCase):
+    """Pure ownership projection; no observer/process/API calls."""
+    def facts(self,parent_discovered=False):
+        parent=dict(pid=10,createTimeMicros=10000000,parentPid=1)
+        block=dict(pid=20,createTimeMicros=20000000,parentPid=10)
+        descendant=dict(pid=40,createTimeMicros=40000000,parentPid=20)
+        def node(i):return dict(pid=i['pid'],parentPid=i['parentPid'],
+            createTime=i['createTimeMicros']/1000000,createTimeMicros=i['createTimeMicros'])
+        chain=[descendant,block,parent] if parent_discovered else [descendant,block]
+        scope_controller=parent if parent_discovered else block
+        state=dict(leases={'local':dict(identity=block,parentIdentity=None,role='controller',absence=None,waitSeq=None)},
+            scopes={'scope':dict(controllerIdentity=scope_controller)},
+            discovered={(40,40000000):dict(identity=descendant,scopeId='scope',ancestry=chain)})
+        return block,state,[node(parent),node(block),node(descendant)]
+    def check(self,block,state,nodes):
+        blockers=[]
+        members=guard._typed_members(nodes,[dict(pid=block['pid'],createTime=block['createTimeMicros']/1000000)],
+            state,block,dict(graphStartedMonotonic=100.,graphCompletedMonotonic=100.1),None,
+            lambda code,severity='UNKNOWN',**fields:blockers.append(dict(code=code,severity=severity,**fields)),'before')
+        return members,blockers
+    def test_parent_only_live_sibling_is_outside_local_discovery_responsibility(self):
+        block,state,nodes=self.facts(parent_discovered=True)
+        sibling=dict(pid=40,createTimeMicros=40000000,parentPid=10)
+        value=state['discovered'][(40,40000000)]
+        value.update(identity=sibling,ancestry=[sibling,state['scopes']['scope']['controllerIdentity']])
+        nodes[-1]['parentPid']=10
+        members,blockers=self.check(block,state,nodes)
+        self.assertEqual(members,{20});self.assertEqual(blockers,[])
+    def test_parent_first_discovered_block_descendant_remains_local_responsibility(self):
+        block,state,nodes=self.facts(parent_discovered=True)
+        members,blockers=self.check(block,state,nodes)
+        self.assertEqual(members,{20,40});self.assertEqual(blockers,[])
+        nodes[-1]['parentPid']=1
+        _,blockers=self.check(block,state,nodes)
+        self.assertIn('DISCOVERED_ANCESTRY_ESCAPE',[v['code'] for v in blockers])
+    def test_local_real_escape_and_parent_change_still_fail(self):
+        block,state,nodes=self.facts();nodes[-1]['parentPid']=1
+        _,blockers=self.check(block,state,nodes);codes={v['code'] for v in blockers}
+        self.assertTrue({'DISCOVERED_ANCESTRY_ESCAPE','DISCOVERED_PARENT_CHANGED'}<=codes)
+        self.assertTrue(all(v['severity']=='FAIL' for v in blockers))
+    def test_local_reappearance_still_fails(self):
+        block,state,nodes=self.facts()
+        state['discovered'][(40,40000000)]['absence']=dict(witnessKind='COMPLETE_NATIVE_ABSENCE',graphCompletedMonotonic=99.)
+        _,blockers=self.check(block,state,nodes)
+        self.assertIn('DISCOVERED_IDENTITY_REAPPEARED',[v['code'] for v in blockers])
+    def test_local_pid_reuse_still_fails(self):
+        block,state,nodes=self.facts();nodes[-1].update(createTime=41.,createTimeMicros=41000000)
+        _,blockers=self.check(block,state,nodes)
+        self.assertIn('DISCOVERED_PID_REUSED',[v['code'] for v in blockers])
+    def test_missing_or_invalid_ancestry_is_adverse_not_a_scope_exemption(self):
+        for change in ('missing','empty','type','edge','cycle','endpoint','identity','scope','creation'):
+            with self.subTest(change=change):
+                block,state,nodes=self.facts();value=state['discovered'][(40,40000000)]
+                if change=='missing':value.pop('ancestry')
+                elif change=='empty':value['ancestry']=[]
+                elif change=='type':value['ancestry']='not-a-chain'
+                elif change=='edge':value['ancestry'][0]=dict(value['identity'],parentPid=1)
+                elif change=='cycle':value['ancestry'].append(copy.deepcopy(value['ancestry'][0]))
+                elif change=='endpoint':value['ancestry'][-1]=dict(pid=10,createTimeMicros=10000000,parentPid=1)
+                elif change=='identity':value['identity']=dict(value['identity'],createTimeMicros=40000001)
+                elif change=='scope':value['scopeId']='unknown'
+                elif change=='creation':value['ancestry'][-1]=dict(value['ancestry'][-1],createTimeMicros=50000000)
+                _,blockers=self.check(block,state,nodes)
+                self.assertIn('DISCOVERED_ANCESTRY_INVALID',[v['code'] for v in blockers])
+
+
 if __name__=='__main__':unittest.main()

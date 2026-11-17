@@ -379,6 +379,26 @@ class LifecycleJournalAuditControls(unittest.TestCase):
             a.verify_lifecycle(self.fixture.raw,self.fixture.rows,source_commit=Q,policy_sha256=P,policy=POLICY,
                 controller=ROOT,ancestry_samples=[changed],ancestry_journal=self.fixture.raw)
 
+    def test_31_parent_sibling_change_is_local_irrelevant_but_global_adverse(self):
+        principal,local,context,scope=self.scoped_discovery(False)
+        # Keep the original parent-owned discovery source unchanged. A later
+        # complete native projection shows that parent's sibling elsewhere;
+        # this is outside the block, while the enclosing root remains liable.
+        for frame in local['processObservation']['syntheticFrames']:
+            frame['nodes'][-1]['parentPid']=50
+            frame['nodes'].append(node(dict(pid=50,createTimeMicros=50000000,parentPid=5)))
+        self.fixture.seal()
+        local=self.fixture.rows[1]
+        local['processObservation']['lifecycle'].update(scopeId=scope,controllerIdentity=CHILD,controllers=[L1])
+        principal=b''.join(self.fixture.raw.splitlines(keepends=True)[:7])
+        context=[self.fixture.rows[0],self.fixture.rows[2]]
+        result=a.verify_lifecycle(principal,[local],source_commit=Q,policy_sha256=P,policy=POLICY,
+            controller=CHILD,scope_id=scope,ancestry_samples=context,ancestry_journal=self.fixture.raw)
+        self.assertTrue(result['cleanupAccepted'])
+        with self.assertRaisesRegex(ValueError,'actual responsible discovered process parent changed'):
+            a.verify_lifecycle(principal,[local],source_commit=Q,policy_sha256=P,policy=POLICY,
+                controller=ROOT,ancestry_samples=context,ancestry_journal=self.fixture.raw)
+
 
 if __name__ == '__main__':
     unittest.main()
