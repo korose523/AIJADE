@@ -1,0 +1,245 @@
+{
+  "schema": "aijade.lossless-transport-controls.v1",
+  "status": "PASS",
+  "passed": 27,
+  "total": 27,
+  "controls": [
+    {
+      "name": "tiny_opaque_bytes_roundtrip_no_json_rewrite",
+      "status": "PASS",
+      "result": {
+        "status": "LOSSLESS_ENVELOPE_BYTES_VERIFIED_NO_RESEARCH_ACCEPTANCE",
+        "envelopeSha256": "19197544bbd0c57a92cbd6436cdd7c6a7a6d93ba6329fb63bf839874efe949f5",
+        "logicalSizeBytes": 324,
+        "logicalSha256": "42151d9b7398d4fd7eae78662b92e1ebabed43750e6cf6caffbb4123c05fa016",
+        "memberCount": 6,
+        "encodedTotalBytes": 429,
+        "allMembersCompleteSingleGzip": true,
+        "logicalOutputWritten": true,
+        "originalBytesRewritten": false,
+        "researchSemanticsChecked": false
+      }
+    },
+    {
+      "name": "empty_logical_file_has_one_complete_member",
+      "status": "PASS",
+      "result": {
+        "status": "LOSSLESS_ENVELOPE_BYTES_VERIFIED_NO_RESEARCH_ACCEPTANCE",
+        "envelopeSha256": "7484544a62ed8f37e6f77c12c1ff04f423bcb27363e170702024b07b49d3c46d",
+        "logicalSizeBytes": 0,
+        "logicalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "memberCount": 1,
+        "encodedTotalBytes": 20,
+        "allMembersCompleteSingleGzip": true,
+        "logicalOutputWritten": false,
+        "originalBytesRewritten": false,
+        "researchSemanticsChecked": false
+      }
+    },
+    {
+      "name": "immutable_envelope_pin_refuses_substitution",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "pinned envelope bytes differ"
+    },
+    {
+      "name": "truncated_member_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "incomplete gzip EOF or extra encoded member"
+    },
+    {
+      "name": "corrupt_crc_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "invalid gzip stream/CRC/trailer"
+    },
+    {
+      "name": "extra_empty_gzip_member_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "extra gzip member or trailing encoded bytes"
+    },
+    {
+      "name": "arbitrary_trailing_bytes_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "extra gzip member or trailing encoded bytes"
+    },
+    {
+      "name": "nonzero_header_time_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "fixed gzip header/flags/mtime/filename differs"
+    },
+    {
+      "name": "optional_filename_flags_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "fixed gzip header/flags/mtime/filename differs"
+    },
+    {
+      "name": "encoded_sha_mismatch_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "encoded member SHA/size differs"
+    },
+    {
+      "name": "decoded_original_sha_mismatch_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "decoded original SHA/size differs"
+    },
+    {
+      "name": "whole_logical_sha_mismatch_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "complete original logical body SHA/size differs"
+    },
+    {
+      "name": "ordinal_reorder_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "contiguous ordinal integer/range"
+    },
+    {
+      "name": "offset_gap_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "contiguous byte offset integer/range"
+    },
+    {
+      "name": "boolean_size_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "complete member decoded size integer/range"
+    },
+    {
+      "name": "equal_float_size_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "complete member decoded size integer/range"
+    },
+    {
+      "name": "missing_member_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "missing/extra/symlink member or directory"
+    },
+    {
+      "name": "extra_member_file_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "missing/extra/symlink member or directory"
+    },
+    {
+      "name": "logical_name_traversal_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "canonical logical name required"
+    },
+    {
+      "name": "caller_logical_cap_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "logical size integer/range"
+    },
+    {
+      "name": "encoded_cap_above_github_ceiling_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "member encoded cap integer/range"
+    },
+    {
+      "name": "duplicate_json_envelope_key_refused",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "duplicate envelope key"
+    },
+    {
+      "name": "gzip_expansion_stops_at_declared_decoded_cap",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "decoded body exceeds declared bound"
+    },
+    {
+      "name": "rejected_decoded_output_is_never_promoted",
+      "status": "PASS",
+      "result": {
+        "rejectedFinalOutputAbsent": true,
+        "partialRetained": true
+      }
+    },
+    {
+      "name": "existing_output_never_overwritten",
+      "status": "PASS",
+      "expected": "REFUSED",
+      "actualType": "ValueError",
+      "reason": "exclusive decoded output outside envelope required"
+    },
+    {
+      "name": "deterministic_128MiB_streamed_multimember_envelope",
+      "status": "PASS",
+      "result": {
+        "rawBytes": 134217728,
+        "rawSha256": "82701ea823567a81ee48c9ec3e141b52b935b1408aaa04564f9cc0dec19e2a3c",
+        "members": 8,
+        "encodedTotalBytes": 588992,
+        "envelopeSha256": "f3629910f43528f4a0ff8d5284bf0a2324bf3adbfcbcbab98bf684fb7ccf7a2e",
+        "twoEncodesByteIdentical": true,
+        "decodedFullSizeAndShaVerified": true,
+        "secondDecodedRawNotWritten": true,
+        "maximumDecodeOutputChunkBytes": 1048576,
+        "zlibVersion": "1.2.12",
+        "zlibRuntimeVersion": "1.2.12"
+      }
+    },
+    {
+      "name": "immutable_existing_e4_transport_lossless_not_semantic_acceptance",
+      "status": "PASS",
+      "result": {
+        "status": "EXACT_SINGLE_MEMBER_TRANSPORT_VERIFIED_NO_SEMANTIC_ACCEPTANCE",
+        "encodedSizeBytes": 8127250,
+        "encodedSha256": "d1c473e34d22a811b513472ded481002596087a5562292b846d7df32423a599f",
+        "decodedSizeBytes": 66926629,
+        "decodedSha256": "92c355ddbeb500eb4f3924ef0583d41b2f63a810a6198ef0ae82ce88dc9aaa64",
+        "completeEof": true,
+        "extraMembers": false,
+        "actualE4BytesOnly": true,
+        "newColdGuardAudit": false,
+        "newEngineeringAcceptance": false
+      }
+    }
+  ],
+  "elapsedSeconds": 4.80855546798557,
+  "codecSourceSha256": "5aef0e38d39a67273f6f9999b4dc52cc6b09250e8dbbd9fd09cdbaabcbaa3a72",
+  "controlSourceSha256": "5eaaf9ea45351e1e456d2408192d70952ca4f11a07c194d9aa99b09a05cca673",
+  "projectRuntimeDirectory": "/Volumes/Untitled/AIJADE/.runtime/posix/archive-codec-controls/codec-controls-01",
+  "allNewFilesInsideAIJADE": true,
+  "actualE4PacketChanged": false,
+  "actualE5PacketCreated": false,
+  "scientificOutcomeInvented": false,
+  "gitNetworkNativeApiModelCalls": 0,
+  "semanticAcceptance": false
+}
