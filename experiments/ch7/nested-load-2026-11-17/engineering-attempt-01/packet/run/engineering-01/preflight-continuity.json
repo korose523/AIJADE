@@ -1,0 +1,53 @@
+{
+  "schema": "aijade.ch7.phase-continuity-preflight.v1",
+  "status": "PREFLIGHT_REFUSED",
+  "phases": {
+    "settling": {
+      "status": "PREFLIGHT_REFUSED",
+      "samples": 1,
+      "validatedSamples": 0,
+      "expectedSamples": 300,
+      "elapsedSeconds": null,
+      "minimumAvailableBytes": null,
+      "minimumSwapUsedBytes": null,
+      "maximumSwapUsedBytes": null,
+      "swapRangeBytes": null,
+      "phaseClock": {
+        "startMonotonic": 231791.410374619,
+        "endMonotonic": null,
+        "requestedSeconds": 600,
+        "intervalReset": false
+      },
+      "coverage": {
+        "samples": 1,
+        "maximumGapSeconds": 0,
+        "firstElapsedSeconds": 0.0005117429827805609,
+        "lastElapsedSeconds": 0.0005117429827805609,
+        "coverageComplete": false
+      }
+    }
+  },
+  "eventCount": 2,
+  "samples": 1,
+  "validatedSamples": 0,
+  "maximumGlobalGapSeconds": 0,
+  "lastSample": {
+    "sampleId": "812103d6ce174d4e882ad0a740a69984",
+    "globalIndex": 0,
+    "monotonicSeconds": 231791.410886362,
+    "observationCompletedMonotonic": 231793.671657107
+  },
+  "runtimeHandoffAnchor": null,
+  "windowReset": false,
+  "schedule": {
+    "originMonotonic": 231791.410374619,
+    "intervalSeconds": 2,
+    "maximumGapSeconds": 3,
+    "settlingSeconds": 600,
+    "admissionSeconds": 120,
+    "intervalReset": false
+  },
+  "reasonCode": "PREFLIGHT_CALLBACK_FAILED",
+  "reason": "ValueError: complete preflight service/lateness/fixed phase exceeded",
+  "refusedAtMonotonic": 231794.469617283
+}

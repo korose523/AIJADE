@@ -1,0 +1,137 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    # the database-backed tests run against the same PostgreSQL image as tools/dev-services.sh; tests that need a model
+    # server, a Minecraft server, a desktop or a browser stay opt-in and are reported as skipped
+    services:
+      postgres:
+        image: ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0
+        env:
+          POSTGRES_USER: aijade
+          POSTGRES_PASSWORD: aijade
+          POSTGRES_DB: aijade
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd "pg_isready -U aijade"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      AIJADE_TEST_DATABASE_URL: postgres://aijade:aijade@127.0.0.1:55432/aijade
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - run: dotnet test --configuration Release
+      - name: Verify project-local paths and companion launch arguments
+        run: python3 tests/shell/verify_workspace_env.py
+      - name: Verify finite binary identity, bounded owned cleanup and terminal receipts
+        run: |
+          python3 -m venv .runtime/finite-control-env
+          .runtime/finite-control-env/bin/python -m pip install psutil==7.2.2
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_runtime.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_block_lifecycle.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_lifecycle_integration.py' -v
+      - name: Fetch original prefix-engineering refusal and prior passport source objects
+        run: git fetch --no-tags --depth=1 origin b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb bb2c25b808c1c3f604e081b5fa4da4d4f76af84d
+      - name: Replay retained prefix-engineering refusal with coherent semantic controls
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls
+      - name: Verify complete P4 refusal records and adversarial controls without Mac services
+        run: |
+          git fetch --no-tags --depth=1 origin 147564c9db812c1a9e5ae07992d9aa282399a310 8acfa99d061f1c41197fac2a1c243b3b347bcfef 42fc728ade94c60b0d24575b9510b69dd2048676 5d020ccbf54c16965b4a1fe3467b3d8d726d23f8
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-v4-2026-11-17/qualification-attempt-01/verify_archive.py --repo . --controls
+      - name: Verify prospective Mac process, version and complete-sequence controls without live services
+        run: |
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_segmented_capture.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_measured_mac_monitor.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_nested_*.py' -v
+          .runtime/finite-control-env/bin/python -B tests/shell/run_versioned_mac_controls.py
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_process_lifecycle*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_binary_authentication.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_phase_continuity*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_lifecycle_*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_corruption_baselines.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_launcher.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_sequence_parent.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_construction_binding.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_backend_preflight.py' -v
+      - name: Check finite-comparison adverse scoring and independent raw aggregation
+        run: python3 experiments/ch7/finite_scoring_controls.py
+      - name: Check public-reference type and missing-data conventions
+        run: python3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v
+      - name: Verify P2-A recovered references and candidate decisions
+        run: python3 experiments/p2-a/candidate-review/2026-11-11/verify_archive.py
+      - name: Verify complete P2-A executable-bank records and prompt measurements
+        run: python3 experiments/p2-a/executable-bank/2026-11-11/verify_archive.py
+      - name: Verify complete P2-A tokenizer streams and capacity ledger without model inference
+        run: python3 experiments/p2-a/tokenizer-capacity/2026-11-11/verify_archive.py
+      - name: Verify P2-A bounded input choices, complete streams and actual request-guard controls
+        run: python3 experiments/p2-a/bounded-input/2026-11-11/verify_archive.py
+      - name: Verify matched P2 input exposure and both stopped whole-task calibration attempts
+        run: python3 experiments/p2-a/judgment-alignment/2026-11-11/verify_archive.py
+      - name: Verify complete LongMemEval eligibility, populations and actual delivery records
+        run: python3 experiments/p3-longmemeval/2026-11-11/verify_archive.py
+      - name: Verify Chapter 7 complete staged development qualification and retained failed attempt
+        run: python3 experiments/ch7/2026-11-12/verify_archive.py
+      - name: Verify retrieval-led development chronology, database continuity and both attempts
+        run: python3 experiments/ch7/retrieval-led-2026-11-12/verify_archive.py
+      - name: Verify paired known-case baseline, immutable scoring and post-measurement audit correction
+        run: python3 experiments/ch7/paired-development-2026-11-12/verify_archive.py
+      - name: Verify identifier-independent scoring, source freeze and unexecuted held-out proposal
+        run: python3 experiments/ch7/manifest-preparation-2026-11-12/verify_archive.py
+      - name: Verify conditional live manifest dataflow, retained swap stop and fixed idle admission
+        run: python3 experiments/ch7/live-manifest-2026-11-12/verify_archive.py
+      - name: Verify authored source and embedded build revision are distinguished
+        run: python3 experiments/ch7/verify_live_build_provenance.py
+      - name: Verify known-case persisted acts, separate second rendering and complete dispositions
+        run: python3 experiments/ch7/round2-render-2026-11-12/verify_archive.py
+      - name: Verify full controlled history, recorder timing and candidate-to-prompt evidence
+        run: python3 experiments/p3-history/2026-11-12/verify_archive.py
+      - name: Verify finite-driver instrument checks and both refused admission windows
+        run: python3 experiments/ch7/finite-readiness-2026-11-16/verify_archive.py --controls
+      - name: Verify unchanged restored historical relocated-runtime packet and controls
+        run: python3 -B experiments/ch7/relocated-runtime-2026-11-16/verify_archive.py --controls
+      - name: Materialize exact Mac qualification implementation for offline refusal replay
+        uses: actions/checkout@v7
+        with:
+          ref: fe0fa07c655224fdeed32556cd31ce4022126037
+          path: .runtime/ch7-mac-formal-source
+          persist-credentials: false
+      - name: Fetch the original public plan and binary-publication objects
+        run: git -C .runtime/ch7-mac-formal-source fetch --no-tags --depth=1 origin 795b23d7e69a8b59396b84199bd7429451ecbb4f 0c3f3cc922e940c97628837476946526659d936e
+      - name: Replay complete retained Mac refusal and coherent adversarial controls without live services
+        run: python3 -B experiments/ch7/mac-formal-2026-11-16/verify_archive.py --root experiments/ch7/mac-formal-2026-11-16/packet --repo .runtime/ch7-mac-formal-source --controls
+      - name: Materialize actual bulk-census implementation for terminal-record replay
+        uses: actions/checkout@v7
+        with:
+          ref: d96152b98f61e3cb47db9ec3d95e00591830d024
+          path: .runtime/ch7-mac-bulk-source
+          persist-credentials: false
+      - name: Fetch frozen bulk-census plan, build and historical objects
+        run: git -C .runtime/ch7-mac-bulk-source fetch --no-tags --depth=1 origin d96152b98f61e3cb47db9ec3d95e00591830d024 a20f090423548dedbf1337ec50786daa9e2d028a 82cfaa2fd4ff7810cab09012829e5b8d7a2c82c9 3e37a85b5bb39669782543fc7197d73eecf2dc1f 2d52777bc6b34fd8c6410800f0c56268d8132301
+      - name: Replay complete bulk terminal record and coherent corruption controls
+        run: |
+          mkdir -p .runtime/mac-bulk-refusal
+          python3 -B experiments/ch7/mac-census-2026-11-16/audit.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/audit.json
+          python3 -B experiments/ch7/mac-census-2026-11-16/refusal_negative_controls.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/controls.json --temp-root .runtime/mac-bulk-refusal/disposable
+      - name: Materialize exact typed-lifecycle implementation for offline terminal replay
+        uses: actions/checkout@v7
+        with:
+          ref: 0c42cc29c64730131466af6b079a900005713cba
+          path: .runtime/ch7-mac-lifecycle-source
+          persist-credentials: false
+      - name: Fetch frozen lifecycle plan and binary publication
+        run: git -C .runtime/ch7-mac-lifecycle-source fetch --no-tags --depth=1 origin 9f3a5ead4ca63f489399907fe2e2a8d2aecbab68 efbcfa0196cbc69bd24cad5b03f01b5078898b7b
+      - name: Replay all lifecycle terminal evidence and twelve coherent archive corruptions
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-lifecycle-2026-11-17/refusal_negative_controls.py --root experiments/ch7/mac-lifecycle-2026-11-17/packet --repo .runtime/ch7-mac-lifecycle-source --output .runtime/mac-lifecycle-refusal-controls
