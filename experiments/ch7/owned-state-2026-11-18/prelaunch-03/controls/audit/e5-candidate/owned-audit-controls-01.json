@@ -1,0 +1,85 @@
+{
+  "schema": "aijade.ch7.e5-owned-initialization-audit-controls.v1",
+  "status": "TWENTYFOUR_OWNED_AND_TWENTYTWO_RETAINED_AND_EIGHTEEN_FIXED_E4_CONTROLS_PASS",
+  "audit": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/audit_nested_load.py",
+    "sha256": "88a3d165f1e47ed1fd533011f7858a58c519105f5f1caa3eb0bb384a3204cd11",
+    "bytes": 58564
+  },
+  "controls": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py",
+    "sha256": "8d75e89563445224cdaeebc2ed82bd30d44cd91747422d5a1656ef51467e9c47",
+    "bytes": 18681
+  },
+  "ownedCursor": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py",
+    "sha256": "1d5013ce4e4ae7b00a560fa4c290ea82dfb4b04be112de322567854dac33b0a2",
+    "bytes": 18957
+  },
+  "guard": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/mac_process_guard_v3.py",
+    "sha256": "e918de7431e3f27af2e03017a2f504bf00d85a6a08bf05d7ba5fcd3e14291035",
+    "bytes": 77528
+  },
+  "originalParser": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py",
+    "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "bytes": 58249
+  },
+  "originalCompleteReturnClone": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/full_state_clone_cursor.py",
+    "sha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+    "bytes": 13263
+  },
+  "fixedE4Audit": {
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/nested-copy-2026-11-18/engineering-attempt-02/packet/source/experiments/ch7/audit_nested_load.py",
+    "sha256": "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7",
+    "bytes": 54076
+  },
+  "fixedE4Test": {
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/tests/shell/test_nested_initialization_audit.py",
+    "sha256": "a261ea7c3e20f857b880cd6310d7452e1bc585464f273eae70996d888dff95a6",
+    "bytes": 14859
+  },
+  "logs": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/version-scoped-owned-controls-01.log",
+      "sha256": "2c1bdc62af36d5b0b9591d89b27c74c782d40788efde2edb2eb72a8c1d1ed437",
+      "bytes": 12545
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/owned-initialization-controls-03.log",
+      "sha256": "917838bb433fd45e0ef3b644c7a3d04d12a72379363dedbbc4ef04d6bfddeee0",
+      "bytes": 4293
+    }
+  ],
+  "newOwnedControls": 24,
+  "retainedAuditAndIndexControls": 22,
+  "fixedE4Controls": 18,
+  "total": 64,
+  "preparationFailuresRetained": [
+    {
+      "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/owned-initialization-controls-01.log",
+      "reason": "Synthetic fixture helper changed sys.path before owned colocated guard import; no runtime source changed."
+    },
+    {
+      "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/owned-initialization-controls-02.log",
+      "reason": "Synthetic fixture mixed real file bootstrap with later bytes-origin evaluate; corrected to same actual fixture file, preserving replacement refusal."
+    }
+  ],
+  "counterContract": {
+    "initialCanonicalParses": 1,
+    "initialOuterStateClones": 1,
+    "perEvaluationFullStateCopies": 0,
+    "initialInnerCalls": 1,
+    "initialOuterCalls": 0,
+    "logicalDecisionBytes": "sum len(canonical complete independent cold decision), not physical marshal bytes"
+  },
+  "interpretation": "Synthetic minimal process evidence intentionally yields UNKNOWN in complete cold and owned decisions. Controls validate exact ownership/counter/audit refusal semantics, never raw guard PASS, live service speed or engineering acceptance.",
+  "sourceScope": "C8 staged only. Old E4 testa261 whole bytes and assertions untouched, evaluated against fixed originalE4 audit11d5 through its pre-existing environment override. New tests read onlyAIJADE_E5 subject overrides.",
+  "worktreeEdited": false,
+  "liveWindowStarted": false,
+  "backendQualified": false,
+  "seedConstructed": false,
+  "heldoutComparisonComplete": false
+}

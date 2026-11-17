@@ -1,0 +1,565 @@
+test_01_complete_baseline_counters_include_first_actual_tail (__main__.InitializationAuditControls.test_01_complete_baseline_counters_include_first_actual_tail) ... ERROR
+test_02_canonical_parser_count_boolean_one_cannot_pass_rebound_hashes (__main__.InitializationAuditControls.test_02_canonical_parser_count_boolean_one_cannot_pass_rebound_hashes) ... ERROR
+test_03_coherent_bootstrap_wrong_scope_is_not_file_owner (__main__.InitializationAuditControls.test_03_coherent_bootstrap_wrong_scope_is_not_file_owner) ... ERROR
+test_04_coherent_future_cutoff_cannot_borrow_completed_wait (__main__.InitializationAuditControls.test_04_coherent_future_cutoff_cannot_borrow_completed_wait) ... ERROR
+test_05_write_completion_not_clone_completion_controls_startup_budget (__main__.InitializationAuditControls.test_05_write_completion_not_clone_completion_controls_startup_budget) ... ERROR
+test_06_rebound_observation_flag_is_not_allowed (__main__.InitializationAuditControls.test_06_rebound_observation_flag_is_not_allowed) ... ERROR
+test_07_first_post_bootstrap_full_read_and_compare_cannot_be_omitted (__main__.InitializationAuditControls.test_07_first_post_bootstrap_full_read_and_compare_cannot_be_omitted) ... ERROR
+test_08_first_new_tail_cannot_be_omitted_from_parser_counters (__main__.InitializationAuditControls.test_08_first_new_tail_cannot_be_omitted_from_parser_counters) ... ERROR
+test_09_rebound_cached_verdict_is_not_initialization (__main__.InitializationAuditControls.test_09_rebound_cached_verdict_is_not_initialization) ... ERROR
+test_10_legal_other_reference_cannot_replace_actual_scope_artifact (__main__.InitializationAuditControls.test_10_legal_other_reference_cannot_replace_actual_scope_artifact) ... ERROR
+test_11_wrong_inode_cannot_be_claimed_by_matching_logical_path (__main__.InitializationAuditControls.test_11_wrong_inode_cannot_be_claimed_by_matching_logical_path) ... ERROR
+test_12_post_bootstrap_counter_reset_cannot_hide_initial_cost (__main__.InitializationAuditControls.test_12_post_bootstrap_counter_reset_cannot_hide_initial_cost) ... ERROR
+test_13_supported_type_count_is_alias_aware_and_rejects_foreign_types (__main__.InitializationAuditControls.test_13_supported_type_count_is_alias_aware_and_rejects_foreign_types) ... ok
+test_14_existing_finite_history_and_wait_tail_preserve_exact_container_statistics (__main__.InitializationAuditControls.test_14_existing_finite_history_and_wait_tail_preserve_exact_container_statistics) ... ERROR
+test_15_e5_runtime_contract_accepts_fifteen_and_rejects_coherent_old_ten (__main__.InitializationAuditControls.test_15_e5_runtime_contract_accepts_fifteen_and_rejects_coherent_old_ten) ... ok
+test_16_e5_actual_write_clock_boundary_14_9_is_accepted (__main__.InitializationAuditControls.test_16_e5_actual_write_clock_boundary_14_9_is_accepted) ... ERROR
+test_17_e5_actual_write_clock_boundary_15_001_is_refused (__main__.InitializationAuditControls.test_17_e5_actual_write_clock_boundary_15_001_is_refused) ... ERROR
+test_18_parent_preparation_actual_write_boundary_remains_nine_hundred (__main__.InitializationAuditControls.test_18_parent_preparation_actual_write_boundary_remains_nine_hundred) ... ERROR
+test_19_distinct_owner_pair_and_roles_cannot_be_coherently_aliased (__main__.InitializationAuditControls.test_19_distinct_owner_pair_and_roles_cannot_be_coherently_aliased) ... ERROR
+test_20_raw_foreign_pair_reference_cannot_borrow_valid_prefix (__main__.InitializationAuditControls.test_20_raw_foreign_pair_reference_cannot_borrow_valid_prefix) ... ERROR
+test_21_per_evaluation_state_copy_claim_is_not_owned_contract (__main__.InitializationAuditControls.test_21_per_evaluation_state_copy_claim_is_not_owned_contract) ... ERROR
+test_22_complete_decision_canonical_logical_byte_count_cannot_be_omitted (__main__.InitializationAuditControls.test_22_complete_decision_canonical_logical_byte_count_cannot_be_omitted) ... ERROR
+test_23_private_history_population_must_retain_all_leases (__main__.InitializationAuditControls.test_23_private_history_population_must_retain_all_leases) ... ERROR
+test_24_guard_predicate_ast_accepts_original_and_rejects_semantic_change (__main__.InitializationAuditControls.test_24_guard_predicate_ast_accepts_original_and_rejects_semantic_change) ... ERROR
+
+======================================================================
+ERROR: test_01_complete_baseline_counters_include_first_actual_tail (__main__.InitializationAuditControls.test_01_complete_baseline_counters_include_first_actual_tail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 111, in test_01_complete_baseline_counters_include_first_actual_tail
+    b=self.baseline(Path(d));result=self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_02_canonical_parser_count_boolean_one_cannot_pass_rebound_hashes (__main__.InitializationAuditControls.test_02_canonical_parser_count_boolean_one_cannot_pass_rebound_hashes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 118, in test_02_canonical_parser_count_boolean_one_cannot_pass_rebound_hashes
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_03_coherent_bootstrap_wrong_scope_is_not_file_owner (__main__.InitializationAuditControls.test_03_coherent_bootstrap_wrong_scope_is_not_file_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 124, in test_03_coherent_bootstrap_wrong_scope_is_not_file_owner
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_04_coherent_future_cutoff_cannot_borrow_completed_wait (__main__.InitializationAuditControls.test_04_coherent_future_cutoff_cannot_borrow_completed_wait)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 132, in test_04_coherent_future_cutoff_cannot_borrow_completed_wait
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_05_write_completion_not_clone_completion_controls_startup_budget (__main__.InitializationAuditControls.test_05_write_completion_not_clone_completion_controls_startup_budget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 149, in test_05_write_completion_not_clone_completion_controls_startup_budget
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_06_rebound_observation_flag_is_not_allowed (__main__.InitializationAuditControls.test_06_rebound_observation_flag_is_not_allowed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 156, in test_06_rebound_observation_flag_is_not_allowed
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_07_first_post_bootstrap_full_read_and_compare_cannot_be_omitted (__main__.InitializationAuditControls.test_07_first_post_bootstrap_full_read_and_compare_cannot_be_omitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 162, in test_07_first_post_bootstrap_full_read_and_compare_cannot_be_omitted
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_08_first_new_tail_cannot_be_omitted_from_parser_counters (__main__.InitializationAuditControls.test_08_first_new_tail_cannot_be_omitted_from_parser_counters)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 168, in test_08_first_new_tail_cannot_be_omitted_from_parser_counters
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_09_rebound_cached_verdict_is_not_initialization (__main__.InitializationAuditControls.test_09_rebound_cached_verdict_is_not_initialization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 176, in test_09_rebound_cached_verdict_is_not_initialization
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_10_legal_other_reference_cannot_replace_actual_scope_artifact (__main__.InitializationAuditControls.test_10_legal_other_reference_cannot_replace_actual_scope_artifact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 182, in test_10_legal_other_reference_cannot_replace_actual_scope_artifact
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_11_wrong_inode_cannot_be_claimed_by_matching_logical_path (__main__.InitializationAuditControls.test_11_wrong_inode_cannot_be_claimed_by_matching_logical_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 188, in test_11_wrong_inode_cannot_be_claimed_by_matching_logical_path
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_12_post_bootstrap_counter_reset_cannot_hide_initial_cost (__main__.InitializationAuditControls.test_12_post_bootstrap_counter_reset_cannot_hide_initial_cost)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 194, in test_12_post_bootstrap_counter_reset_cannot_hide_initial_cost
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_14_existing_finite_history_and_wait_tail_preserve_exact_container_statistics (__main__.InitializationAuditControls.test_14_existing_finite_history_and_wait_tail_preserve_exact_container_statistics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 249, in test_14_existing_finite_history_and_wait_tail_preserve_exact_container_statistics
+    b=self.baseline(Path(d),initialization_sequence=4,sample_sequences=(5,5,5))
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_16_e5_actual_write_clock_boundary_14_9_is_accepted (__main__.InitializationAuditControls.test_16_e5_actual_write_clock_boundary_14_9_is_accepted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 275, in test_16_e5_actual_write_clock_boundary_14_9_is_accepted
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_17_e5_actual_write_clock_boundary_15_001_is_refused (__main__.InitializationAuditControls.test_17_e5_actual_write_clock_boundary_15_001_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 282, in test_17_e5_actual_write_clock_boundary_15_001_is_refused
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_18_parent_preparation_actual_write_boundary_remains_nine_hundred (__main__.InitializationAuditControls.test_18_parent_preparation_actual_write_boundary_remains_nine_hundred)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 289, in test_18_parent_preparation_actual_write_boundary_remains_nine_hundred
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_19_distinct_owner_pair_and_roles_cannot_be_coherently_aliased (__main__.InitializationAuditControls.test_19_distinct_owner_pair_and_roles_cannot_be_coherently_aliased)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 201, in test_19_distinct_owner_pair_and_roles_cannot_be_coherently_aliased
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_20_raw_foreign_pair_reference_cannot_borrow_valid_prefix (__main__.InitializationAuditControls.test_20_raw_foreign_pair_reference_cannot_borrow_valid_prefix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 210, in test_20_raw_foreign_pair_reference_cannot_borrow_valid_prefix
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_21_per_evaluation_state_copy_claim_is_not_owned_contract (__main__.InitializationAuditControls.test_21_per_evaluation_state_copy_claim_is_not_owned_contract)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 216, in test_21_per_evaluation_state_copy_claim_is_not_owned_contract
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_22_complete_decision_canonical_logical_byte_count_cannot_be_omitted (__main__.InitializationAuditControls.test_22_complete_decision_canonical_logical_byte_count_cannot_be_omitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 222, in test_22_complete_decision_canonical_logical_byte_count_cannot_be_omitted
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_23_private_history_population_must_retain_all_leases (__main__.InitializationAuditControls.test_23_private_history_population_must_retain_all_leases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 228, in test_23_private_history_population_must_retain_all_leases
+    b=self.baseline(Path(d));self.verify(b)
+      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/mock.py", line 1396, in patched
+    return func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 52, in baseline
+    first,second,core=cursor.bootstrap_pair(view_at(initialization_sequence))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 282, in bootstrap_pair
+    first=OwnedGuardCursor('inner')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 83, in __init__
+    self.__guard,self.__predicate,self.__predicate_code,self.__guard_sha=_bind_guard()
+                                                                         ^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/newowned_guard_cursor.py", line 42, in _bind_guard
+    need(Path(module.__file__).resolve()==expected.resolve(),'exact colocated guard required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: exact colocated guard required
+
+======================================================================
+ERROR: test_24_guard_predicate_ast_accepts_original_and_rejects_semantic_change (__main__.InitializationAuditControls.test_24_guard_predicate_ast_accepts_original_and_rejects_semantic_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/test_nested_owned_initialization_audit.py", line 233, in test_24_guard_predicate_ast_accepts_original_and_rejects_semantic_change
+    a.verify_guard_predicate_source(guard.__file__)
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-candidate/audit_nested_load.py", line 265, in verify_guard_predicate_source
+    node=next(n for n in tree.body if isinstance(n,ast.FunctionDef)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+StopIteration
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.160s
+
+FAILED (errors=22)

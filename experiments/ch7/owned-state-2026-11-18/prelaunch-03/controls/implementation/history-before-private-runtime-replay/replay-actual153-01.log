@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/replay_owned_e4.py", line 242, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/replay_owned_e4.py", line 170, in main
+    baseline=old_pair(old_view,old_path,old_record,old_writer)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/replay_owned_e4.py", line 96, in old_pair
+    first,second,_=old_clone.bootstrap_pair(view,path)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/baseline/experiments/ch7/full_state_clone_cursor.py", line 219, in bootstrap_pair
+    second_state=first.validate_view(view,journal_bytes)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/baseline/experiments/ch7/full_state_clone_cursor.py", line 128, in validate_view
+    raw = read_journal(source, count)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 346, in read_journal
+    fd = _open_owned(path, os.O_RDONLY)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 113, in _open_owned
+    need(stat.S_ISREG(item.st_mode) and item.st_uid == os.getuid() and item.st_nlink == 1
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/candidate/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: unsafe lifecycle file owner/type/mode/link count

@@ -1,0 +1,103 @@
+{
+  "schema": "aijade.e5.binary-c-compare-stage-summary.v1",
+  "status": "OFFLINE_CANDIDATE_READY_NO_W5_APPLY_NO_OBSERVED_WINDOW",
+  "sourceFiles": {
+    "baseline": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-baseline/binary_authentication.py",
+      "sha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f"
+    },
+    "candidate": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-candidate/experiments/ch7/binary_authentication.py",
+      "sha256": "b87fd94186c805ca7639d3e7ac4cc2ca93c4319a194ab6c3932ee221710bc4d4"
+    }
+  },
+  "changedFunctionNames": [
+    "_compare"
+  ],
+  "baselineCommit": "8231d8b9d67e5188787b69225a72145f2d4c5a63",
+  "modeUnchanged": "full-read-exact-bytes-v1",
+  "controls": {
+    "tests": 35,
+    "passed": 35,
+    "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-controls-02.log",
+    "priorFailurePreserved": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-controls-01.log",
+    "priorFailureReason": "The test enumerated 7881 cases while asserting a population above 10000; expanded chunk-size population, no implementation change."
+  },
+  "comparisonProof": {
+    "alignedBytesNoExtraSlice": true,
+    "partialReferenceSliceMaximumBytes": 1048576,
+    "temporarySliceConsumedWithinOneExpression": true,
+    "additionalPartialSlicePeakControl": true,
+    "everyCallActualOpenReadEOF": true,
+    "metadataChecksUnchanged": true,
+    "fallbackAndCacheAndStatisticCodeUnchanged": true
+  },
+  "probe": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-comparison-probe-01/result.json",
+    "sha256": "358afa51e0bf2f9c70311efa3261ced9ee06a044a7586b04c180b80286995d16",
+    "fixedRepeats": 3,
+    "actualBytesPerPrimaryPhase": 138097040,
+    "statisticsExactlyEqualAllPhases": true,
+    "summary": {
+      "legacy": {
+        "cold": {
+          "medianSeconds": 0.36406117700971663,
+          "maximumSeconds": 0.36795164601062424
+        },
+        "equal": {
+          "medianSeconds": 0.3494149910111446,
+          "maximumSeconds": 0.35807277500862256
+        },
+        "mismatch": {
+          "medianSeconds": 0.4904975950194057,
+          "maximumSeconds": 0.497151006013155
+        }
+      },
+      "candidate": {
+        "cold": {
+          "medianSeconds": 0.35766672901809216,
+          "maximumSeconds": 0.36242143702111207
+        },
+        "equal": {
+          "medianSeconds": 0.03344372700667009,
+          "maximumSeconds": 0.03390073298942298
+        },
+        "mismatch": {
+          "medianSeconds": 0.17600811101146974,
+          "maximumSeconds": 0.17640838399529457
+        }
+      }
+    },
+    "compareProfiles": {
+      "legacy": [
+        {
+          "source": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-baseline/binary_authentication.py",
+          "line": 50,
+          "primitiveCalls": 132,
+          "calls": 132,
+          "ownSeconds": 0.323787865,
+          "cumulativeSeconds": 0.324130807
+        }
+      ],
+      "candidate": [
+        {
+          "source": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/binary-candidate/experiments/ch7/binary_authentication.py",
+          "line": 50,
+          "primitiveCalls": 132,
+          "calls": 132,
+          "ownSeconds": 0.00035127300000000004,
+          "cumulativeSeconds": 0.012886107
+        }
+      ]
+    }
+  },
+  "scope": {
+    "syntheticProjectFilesOnly": true,
+    "actualDaemonSdkApiNativeModelReads": 0,
+    "newObservedWindows": 0,
+    "completeActualReadsToEOF": true,
+    "sourceCompareProfileNotWholeService": true,
+    "backendQualified": false,
+    "scientificAcceptance": false
+  }
+}

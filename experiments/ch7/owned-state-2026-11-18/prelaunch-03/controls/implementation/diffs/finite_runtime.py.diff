@@ -1,0 +1,63 @@
+--- Q8231/finite_runtime.py
++++ E5-STAGED/finite_runtime.py
+@@ -51,6 +51,8 @@
+ 
+ 
+ def lifecycle_observer_sources(policy):
++    if policy.get('onlineReplayMode')=='owned-guard-state-exact-prefix-v1':
++        return tuple(dict.fromkeys(MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py','experiments/ch7/newowned_guard_cursor.py')))
+     if policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1':
+         return MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py')
+     return MAC_LIFECYCLE_SOURCES
+@@ -276,7 +278,7 @@
+     relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
+     require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
+     policy=json.loads(raw);plan=mac_plan(policy)
+-    require(policy.get('onlineReplayMode')!='full-state-c-clone-exact-prefix-v1',
++    require(policy.get('onlineReplayMode') not in ('full-state-c-clone-exact-prefix-v1','owned-guard-state-exact-prefix-v1'),
+             'C-clone replay requires a separately frozen new scientific execution decision; legacy plans cannot execute it')
+     require((relative==MAC_PREFIX_POLICY_PATH)==(plan==MAC_PREFIX_PLAN),'prefix policy path/execution decision mismatch')
+     if plan==MAC_PREFIX_PLAN:
+@@ -337,7 +339,30 @@
+     inner,outer={},{}
+     if policy.get('onlineReplayMode') is not None:
+         require(policy.get('kind')==MAC_LIFECYCLE_KIND,'unsupported online replay policy kind')
+-        if policy['onlineReplayMode']=='full-state-c-clone-exact-prefix-v1':
++        if policy['onlineReplayMode']=='owned-guard-state-exact-prefix-v1':
++            started=time.monotonic()
++            from process_lifecycle import Registry, project_path
++            require(isinstance(lifecycle,Registry) and preparation_path is not None,
++                    'owned guard requires actual journal-only preparation before observation')
++            mac_observer(policy).validate_policy(policy)
++            from newowned_guard_cursor import bootstrap_pair
++            path=project_path(preparation_path)
++            require(path.name=='initialization.json' and path.parent.is_dir() and not path.exists(),
++                    'new exclusive owned guard initialization artifact required')
++            view=lifecycle.sample()
++            captured=time.monotonic()
++            first,second,record=bootstrap_pair(view)
++            record.update(factoryStartedMonotonic=started,viewCapturedMonotonic=captured,
++                          recordWriteStartedMonotonic=time.monotonic())
++            raw=(json.dumps(record,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
++            with path.open('xb') as stream:
++                stream.write(raw);stream.flush();os.fsync(stream.fileno())
++            completed=time.monotonic()
++            write_clock=dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),
++                startedMonotonic=record['recordWriteStartedMonotonic'],completedMonotonic=completed)
++            first.bind_preparation(record,write_clock);second.bind_preparation(record,write_clock)
++            inner['lifecycle_cursor'],outer['lifecycle_cursor']=first,second
++        elif policy['onlineReplayMode']=='full-state-c-clone-exact-prefix-v1':
+             started=time.monotonic()
+             from process_lifecycle import Registry, project_path
+             require(isinstance(lifecycle,Registry) and preparation_path is not None,
+@@ -372,6 +397,10 @@
+ 
+ def lifecycle_cursor_initialization(options):
+     cursor=options.get('lifecycle_cursor')
++    if cursor is not None and type(cursor).__name__=='OwnedGuardCursor':
++        from newowned_guard_cursor import OwnedGuardCursor
++        require(type(cursor) is OwnedGuardCursor,'exact source-bound owned guard cursor required')
++        return cursor.preparation_metadata()
+     if cursor is None or type(cursor).__name__!='FullStateCloneCursor':return {}
+     from full_state_clone_cursor import FullStateCloneCursor
+     require(type(cursor) is FullStateCloneCursor,'actual source-bound C-clone cursor required')
