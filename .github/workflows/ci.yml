@@ -40,6 +40,11 @@ jobs:
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_runtime.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_block_lifecycle.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_lifecycle_integration.py' -v
+      - name: Fetch original prefix-engineering refusal and prior passport source objects
+        run: git fetch --no-tags --depth=1 origin b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb bb2c25b808c1c3f604e081b5fa4da4d4f76af84d
+      - name: Replay retained prefix-engineering refusal with coherent semantic controls
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls
       - name: Verify prospective Mac process, version and complete-sequence controls without live services
         run: |
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
@@ -123,8 +128,3 @@ jobs:
       - name: Replay all lifecycle terminal evidence and twelve coherent archive corruptions
         run: |
           .runtime/finite-control-env/bin/python -B experiments/ch7/mac-lifecycle-2026-11-17/refusal_negative_controls.py --root experiments/ch7/mac-lifecycle-2026-11-17/packet --repo .runtime/ch7-mac-lifecycle-source --output .runtime/mac-lifecycle-refusal-controls
-      - name: Fetch original prefix-engineering refusal and prior passport source objects
-        run: git fetch --no-tags --depth=1 origin b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb bb2c25b808c1c3f604e081b5fa4da4d4f76af84d
-      - name: Replay retained prefix-engineering refusal with coherent semantic controls
-        run: |
-          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls
