@@ -51,7 +51,10 @@ jobs:
           .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-v4-2026-11-17/qualification-attempt-01/verify_archive.py --repo . --controls
       - name: Verify prospective Mac process, version and complete-sequence controls without live services
         run: |
-          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_segmented_capture.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_measured_mac_monitor.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_nested_*.py' -v
+          .runtime/finite-control-env/bin/python -B tests/shell/run_versioned_mac_controls.py
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_process_lifecycle*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_binary_authentication.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_phase_continuity*.py' -v
