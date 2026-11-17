@@ -1,0 +1,156 @@
+{
+  "schema": "aijade.lifecycle.native-managed-final-controls.v1",
+  "status": "READY_FOR_SOURCE_BOUND_INTEGRATION_NOT_QUALIFIED",
+  "checkedAt": "2026-11-17T00:27:52.225947+00:00",
+  "candidateQ1": {
+    "commit": "61a335c297f60d0b258c92d73ad5c20573cc4c24",
+    "status": "UNEXECUTED_NATIVE_LIFECYCLE_OMISSION_CANDIDATE",
+    "actualObserverCalls": 0,
+    "actualNativeCensusCalls": 0,
+    "actualApiQueries": 0,
+    "actualQualificationAttempts": 0,
+    "preservedSource": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/native-unmanaged-candidate-61a335c"
+  },
+  "finalSourceCapture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/native-managed-final-08-before-controls",
+  "files": [
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "6123e980f1b474aaa978aab744e23defb2e70eeb74eb30aae5809990763568e3",
+      "bytes": 56504,
+      "capturedBytesSha256": "6123e980f1b474aaa978aab744e23defb2e70eeb74eb30aae5809990763568e3"
+    },
+    {
+      "path": "experiments/ch7/process_lifecycle.py",
+      "sha256": "3baff2c5ace0bc11ebcd4bb78442df1bf01889008d2488100312e02242916881",
+      "bytes": 48881,
+      "capturedBytesSha256": "3baff2c5ace0bc11ebcd4bb78442df1bf01889008d2488100312e02242916881"
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "bytes": 1005,
+      "capturedBytesSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "path": "tests/shell/test_mac_lifecycle_guard.py",
+      "sha256": "79a51326f954afeef8fee0bc04c5f9f9517e126e968dccc10429b9a550edaab6",
+      "bytes": 17253,
+      "capturedBytesSha256": "79a51326f954afeef8fee0bc04c5f9f9517e126e968dccc10429b9a550edaab6"
+    },
+    {
+      "path": "tests/shell/test_process_lifecycle.py",
+      "sha256": "7737ef312b8f696030d780584e8d29cfbfb48688c1450abbe0ef2841e831594b",
+      "bytes": 12260,
+      "capturedBytesSha256": "7737ef312b8f696030d780584e8d29cfbfb48688c1450abbe0ef2841e831594b"
+    },
+    {
+      "path": "tests/shell/test_mac_lifecycle_native.py",
+      "sha256": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef",
+      "bytes": 6570,
+      "capturedBytesSha256": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef"
+    }
+  ],
+  "protectedHistoricalFiles": [
+    {
+      "path": "experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "comparison": "EXACT_BYTES_MATCH_Q1_IMMUTABLE_GIT_EXPORT"
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "comparison": "EXACT_BYTES_MATCH_Q1_IMMUTABLE_GIT_EXPORT"
+    },
+    {
+      "path": "experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "comparison": "EXACT_BYTES_MATCH_Q1_IMMUTABLE_GIT_EXPORT"
+    }
+  ],
+  "controls": {
+    "total": 45,
+    "passed": 45,
+    "failures": 0,
+    "logs": [
+      {
+        "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-07-guard.log",
+        "sha256": "7f7369dd7253de3e7c6e9d293272c8a668cf6fe3e039a6bcf328cf7b6a0462de",
+        "tests": 22,
+        "status": "PASS"
+      },
+      {
+        "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-07-process.log",
+        "sha256": "9c2a19e4df3f325d5ca276eb91b63c28df0f030dc9d96ddf1dcb6df2a9a8000f",
+        "tests": 18,
+        "status": "PASS"
+      },
+      {
+        "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-08-native.log",
+        "sha256": "da3fdc387463d3e61dc91fd67ac80a6e8f35e961590fae66f6d7cc16b298bc30",
+        "tests": 5,
+        "status": "PASS"
+      }
+    ],
+    "scope": "Serialized offline guard fixtures; bounded disposable non-census C actors; portable OS-pipe fault/output fixtures. Three Darwin C/dummy controls are explicit skips on non-Darwin; no OS-wide process census was invoked."
+  },
+  "implementation": {
+    "native": "Every native helper launch uses identity-ready ManagedProcess plus exact FINITE_REGISTER/RELEASE/Popen.wait lease; guard binds original native collector identity and policy command/executable/source to this lease. No unjournaled native fallback.",
+    "readyGate": "Minimal child reports PID/parent while gate held; actual parent obtains and rereads exact kernel creation identity before register and release. No PID-only birth inference.",
+    "failedLaunches": "LAUNCH_REFUSED preserves actual handle PID/partial-ready bytes and hashes, identity-read results, errors and actual bounded wait. Unknown birth is never FINITE_REGISTER. Journal-write failure retains source-bound fallback artifact; any refusal remains adverse.",
+    "refusedCleanupAPI": "Registry.cleanup_refused(grace_seconds=5.0,wait_seconds=1.0): snapshot actual refused_process_records at method entry, preserve exact order/population/attemptIds, no sampling or new process, actual handles only, no clearing refusal. Only a live original handle launched with start_new_session=True may signal its kernel-validated own group; no-session or already-reaped leader never invokes killpg. Returns explicit direct-wait results, never claims descendant/group absence.",
+    "scope": "This patch does not change v1/v2/native C, policy or runners. Root owns integration and new Q/B freeze."
+  },
+  "syntheticComplexity": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-long-controls.json",
+    "sha256": "bcc1edd62aff7643ebfdce5914c28db3a48123f624e7eb4159ff4f81cf1faf9e",
+    "events": 4322,
+    "rawJournalBytes": 3193323,
+    "rawJournalSha256": "66f9b1d7ebba035282e40d517be891ca3c4cbb632eae37bbfcd3db4367a65f4d",
+    "oneGuardMaxSeconds": 0.364703911007382,
+    "twoFullReplayMaxSeconds": 0.6729965800186619,
+    "qualificationInference": false
+  },
+  "unfavorableControlsPreserved": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-01-native-fake.log",
+      "sha256": "01f897adcc4c400c9421976543b780f67fb420c208e8ac177ce5fae5bea2f71f",
+      "reason": "Three Python-shebang dummy startup/deadline controls failed; not real census.",
+      "candidateSourceSnapshot": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/native-managed-candidate-before-controls"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-02-native-c-fake.log",
+      "sha256": "a5f626d071ceec3f3e1e7fec527c9e7e243243997ebec6bee1721ee886523663",
+      "reason": "Three C dummy controls failed under original child-psutil identity-ready shim; startup bottleneck not isolated to a second Python payload.",
+      "candidateSourceSnapshot": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/native-managed-candidate-c-dummy-controls"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-04-native-fake.log",
+      "sha256": "7e5a378c3e12b801e45b67ceaba2afe36afe476607531917cb02ee3624d19ad2",
+      "reason": "One coupled metadata-error/C-cold-exec fixture timed out before intended branch; replaced by deterministic pipe transport fault.",
+      "candidateSourceSnapshot": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/native-managed-refusal-evidence-before-controls"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-07-native.log",
+      "sha256": "b0528e13742fac656d1e61acce9dce0c405dbd43ccd288a0487e345e52b5a380",
+      "reason": "One C output-cap fixture timed out before stdout; output cap isolated by fixed OS-pipe fixture, existing C positive/timeout remain separate.",
+      "candidateSourceSnapshot": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/native-managed-refused-cleanup-final"
+    }
+  ],
+  "priorComplexityRefusal": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/failure-candidates/complexity-attempt-01-reconstructed",
+    "provenance": "Earlier initial slow candidate was not contemporaneously byte-captured. Its edit-history reconstruction, patches and explicit provenance limit remain preserved; do not present reconstructed bytes as original certification."
+  },
+  "executionBoundaries": {
+    "actualObserverCalls": 0,
+    "actualNativeCensusCalls": 0,
+    "actualApiQueries": 0,
+    "actualQualificationAttempts": 0,
+    "actualRendererCalls": 0,
+    "actualModelCalls": 0,
+    "caseRuns": 0,
+    "admission": false,
+    "qualification": false,
+    "heldoutComplete": false
+  },
+  "nextAction": "Parent performs unified source-bound controls and publishes/fixes a new implementation/build freeze before any single engineering probe or authorized qualification. Preserve all preceding failures and terminal research decisions."
+}

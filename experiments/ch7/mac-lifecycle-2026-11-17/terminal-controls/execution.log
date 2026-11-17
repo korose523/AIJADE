@@ -1,0 +1,1025 @@
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 2.730052995000733}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 8.136517861014}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 17.05109140201239}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 30.43487780902069}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 48.90346246000263}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 73.33029740699567}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 104.55095486601931}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 143.287538641016}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 190.56361225401633}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 247.65882784500718}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 315.3317007320002}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 374.2933473800076}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-_t3qu1tj/results/terminal-replay.json",
+  "sha256": "cf02ddb56ba778ce4b7e99d2bf0a03eeb5f22c22c37b9c44aa093074f2b6a5e1",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 1, "name": "boolean_false_as_completed_row_counter", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/receipt.json"], "expectedReason": "TERMINAL_INTEGER", "actualReason": "TERMINAL_INTEGER:completedConditionRows", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 0, "fresh": 294}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3824968720145989}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.7840371070196852}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2543585840030573}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6700734629994258}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.106702678021975}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.5624621190072503}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.1165186610014644}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.613756374019431}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.116908765019616}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.6448018749943}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.196949825010961}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.623204113013344}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-huxmhn65/results/terminal-replay.json",
+  "sha256": "47c2acc66f4e610a2a8bae30c656a99d98eb2b803bef8059113e69b1490f4ccc",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 2, "name": "qualification_claim_from_terminal_stop", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/receipt.json"], "expectedReason": "TERMINAL_NOT_QUALIFIED", "actualReason": "TERMINAL_NOT_QUALIFIED", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3768799770041369}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.8257553269795608}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2289593459863681}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6438586419972125}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.1540425769926514}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.62880276600481}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.1061123779800255}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.6043610310007352}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.11599152898998}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.727036784985103}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.2649091229832266}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.687628073996166}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-wh8niamf/results/terminal-replay.json",
+  "sha256": "78fe51e63571c8bf94ca029fa785a0d81b8d02b7807a618daeff6f838eaa7362",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 3, "name": "coherent_294_stream_accepted_claim", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/preflight-continuity.json", "qualification/settling/receipt.json"], "expectedReason": "PARTIAL_INTEGER", "actualReason": "PARTIAL_INTEGER:validatedSamples", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3910626409924589}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.895375639986014}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.3014133299875539}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.717882426979486}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.226265365985455}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.686933467979543}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.1670780559943523}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.653778392006643}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.160065920004854}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.773294370999793}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.32273101399187}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.748432327993214}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-fyg0v605/results/terminal-replay.json",
+  "sha256": "738a4af6a6768aabf9a9b9589382c274af4447ba6560983ac36be474f48b3258",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 4, "name": "prepared_empty_admission_relabelled_as_run", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/admission/telemetry.jsonl"], "expectedReason": "ADMISSION_EMPTY_PREPARED_ONLY", "actualReason": "ADMISSION_EMPTY_PREPARED_ONLY", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.38207906199386343}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.7732620429887902}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2367624699836597}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6602290919981897}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.102675754984375}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.5652107689820696}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.0470578749955166}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.6159414919966366}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.125940219993936}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.648433338996256}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.1919465030077845}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.62334069199278}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-dik5b5ol/results/terminal-replay.json",
+  "sha256": "3e81290c5061c9f047ab6bfc305f8f48f69e3e501967723837f8dc0b41cdbf58",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 5, "name": "20_unknown_instead_of_unattempted", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/receipt.json"], "expectedReason": "KNOWN20_DISPOSITION", "actualReason": "KNOWN20_DISPOSITION", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3928337020042818}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.7817010069848038}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2583366819890216}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.680962932005059}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.134762942994712}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.5912361329828855}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.146858350984985}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.6355399769963697}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.1375656590098515}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.658296662993962}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.292318177991547}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.722547840006882}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-tic90fcy/results/terminal-replay.json",
+  "sha256": "1562a105267fdb136766fd92fbaf51eb7811e9b9d15d5c9bc2824f2cd3266c15",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 6, "name": "last_required_raw_observation_removed", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/settling/telemetry.jsonl.gz"], "expectedReason": "CONTIGUOUS_RAW294", "actualReason": "CONTIGUOUS_RAW294", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3915537949942518}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.8146207130048424}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.288306370988721}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.7031664660025854}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.1475588500034064}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.6087238659965806}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.1676051289832685}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.667200416995911}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.173599698988255}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.6979980540054385}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.2411082460021134}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.752713722002227}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-8rmtow0_/results/terminal-replay.json",
+  "sha256": "b9195e609cd493f8f73064ec836329dab2537017d9ccad26f1c4f0752e0ecf0e",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 1, "seconds": 0.40355891999206506}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 1, "seconds": 0.8062903099926189}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 1, "seconds": 1.2725622610014398}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 1, "seconds": 1.691155025997432}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 1, "seconds": 2.133655521000037}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 1, "seconds": 2.592943400988588}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 1, "seconds": 3.0672630289918743}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 1, "seconds": 3.6341163539909758}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 1, "seconds": 4.148472561995732}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 1, "seconds": 4.686732020985801}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 1, "seconds": 5.22290946598514}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 1, "seconds": 5.653940265008714}
+{"index": 7, "name": "sampled_api_actual_body_coherently_nonempty", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["metadata/directory-state.json", "qualification/settling/telemetry.jsonl.gz"], "expectedReason": "raw replay errors", "actualReason": "raw replay errors preserved in checkpoint", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3797024379891809}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.7822832090023439}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2515582049963996}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6689275529934093}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.11896486999467}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.575567403982859}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.1225589420064352}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.6187579889956396}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.127623487991514}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.6523979250050616}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.1931362739996985}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.709427486988716}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-gcfunbs5/results/terminal-replay.json",
+  "sha256": "b8a010b1cf42b0a5ce2c19969f1b23ac890bb7f3b70986f40b72ed1fcda80cfe",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.3769509929988999}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.780687010003021}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.1930207760015037}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6740492620156147}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.1161885440233164}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.573925747012254}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.0510804540244862}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.618031908001285}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.139686703012558}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.666352513013408}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.212877466023201}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.6438233780208975}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-k_fju997/results/terminal-replay.json",
+  "sha256": "797c22d0f2a9ef7d145cb1cec79fc4399b3b37c6c44d9e9c2dff5bb7b6fe70a2",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 8, "name": "archived_audit_falsely_certifies_qualification", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["audit/independent-lifecycle-refusal-audit.json"], "expectedReason": "ARCHIVED_INDEPENDENT_REPORT_CHANGED", "actualReason": "ARCHIVED_INDEPENDENT_REPORT_CHANGED", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.37749738700222224}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.8345568140211981}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2379635910037905}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6569003320182674}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.173540755000431}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.64161816201522}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.11922237300314}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.605643015995156}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.116857718996471}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.718462904012995}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.26114653001423}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.688330449018395}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-4swi3avq/results/terminal-replay.json",
+  "sha256": "028107a344cfe7bda1a85332751c8f01dca7cb66c4b241913bb0eb851cafc44f",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 9, "name": "frozen_guard_comment_change_manifest_rebound", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["source/experiments/ch7/mac_process_guard_v3.py"], "expectedReason": "SOURCE_GIT_BYTES", "actualReason": "SOURCE_GIT_BYTES:experiments/ch7/mac_process_guard_v3.py", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.38033383499714546}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.7707195489783771}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.1818903079838492}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6577333449968137}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.106743068987271}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.567905591975432}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.0437633039837237}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.616488577972632}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.125695945986081}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.663839261978865}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.259361214993987}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.688871767983073}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-mwpzw__v/results/terminal-replay.json",
+  "sha256": "ef85373e03d179644b7d457fe10bb26a4397bb9f9cb8257b04e433f46dda05be",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 10, "name": "old_fact_changed_same12352_population", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["metadata/facts-baseline.json"], "expectedReason": "FACTS_BASELINE12352", "actualReason": "FACTS_BASELINE12352", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.4387100570020266}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.8319715859834105}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2334902729780879}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6580096749821678}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.1721590039960574}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.6410210430040024}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.119823613000335}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.6062064970028587}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.116020919987932}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.720728997985134}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.262333673977992}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.692576923989691}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-0tf6hy0s/results/terminal-replay.json",
+  "sha256": "61f2e5bbb802791b70444a35159bbf2295228780a56d1ea4641a94296956c77c",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 11, "name": "empty_prepared_admission_artifact_omitted", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/admission/telemetry.jsonl"], "expectedReason": "LOGICAL_REPRESENTATION_NOT_UNIQUE", "actualReason": "LOGICAL_REPRESENTATION_NOT_UNIQUE:qualification/admission/telemetry.jsonl", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 0.37966091200360097}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 0.7776717180095147}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 1.2432279959903099}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 1.6583789919968694}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 2.107241964986315}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 2.6512673110119067}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 3.131754870992154}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 3.625853689009091}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 4.1307739019976}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 4.648639054008527}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 5.265826544986339}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 5.689768771990202}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py", line 188, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-q33xkqi7/results/terminal-replay.json",
+  "sha256": "0325de8d753a4ddd887ea064bf8d4a73362dc09bb2b80f06cfe26360da43bfcc",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}
+{"index": 12, "name": "extra_cleanup_success_refusal_sidecar", "baselineAccepted": true, "mutationWasEffective": true, "manifestCoherentlyRebound": true, "changedPaths": ["qualification/launch-refused-control.json"], "expectedReason": "UNEXPECTED_FALLBACK_OR_WORKLOAD_FILE", "actualReason": "UNEXPECTED_FALLBACK_OR_WORKLOAD_FILE", "rejected": true, "passed": true, "baselineReplayCache": {"hits": 294, "fresh": 0}}

@@ -1,0 +1,29 @@
+--- reconstructed-complexity01/mac_process_guard_v3.py
++++ actual-current/mac_process_guard_v3.py
+@@ -692,7 +692,7 @@
+         lock=observation['coordinationLock']
+         if lock.get('schema')!='aijade.lifecycle.capture-lock.v1' or lock.get('state')!='HELD_AND_RELEASED' or lock.get('pathSha256')!=_sha_bytes(str(coordination_lock_path(policy)).encode()) or lock.get('maxWaitSeconds')!=1.25:
+             add('WHOLE_OBSERVATION_LOCK_UNKNOWN')
+-        elif not _finite(lock.get('waitSeconds')) or not 0<=lock['waitSeconds']<=1.25 or lock.get('initialIdentity')!=lock.get('finalIdentity') or any(lock['initialIdentity'].get(k) is not True for k in ('regular','singleLink','ownedByCurrentUser')):
++        elif not _finite(lock.get('waitSeconds')) or not 0<=lock['waitSeconds']<=1.25 or lock.get('initialIdentity')!=lock.get('finalIdentity') or type(lock['initialIdentity'].get('device')) is not int or lock['initialIdentity']['device']<0 or type(lock['initialIdentity'].get('inode')) is not int or lock['initialIdentity']['inode']<=0 or any(lock['initialIdentity'].get(k) is not True for k in ('regular','singleLink','ownedByCurrentUser')):
+             add('WHOLE_OBSERVATION_LOCK_IDENTITY_OR_WAIT_UNKNOWN')
+         expected_pids = {x['pid'] for x in policy['daemon'].values()}
+         if expected_pids.intersection(x['pid'] for x in roots): add('DAEMON_CANNOT_BE_OWNED', 'FAIL')
+@@ -841,12 +841,11 @@
+             result.update(evidence={'before':before,'api':api,'after':after},ownedProcesses=after['ownedProcesses'],
+                           lifecycle=lifecycle.sample(refs))
+         result['finishedMonotonic']=time.monotonic()
+-        first=validate_observation(policy,result)
+-        # Only valid raw frame evidence can create an absence record. The same
+-        # sample is then replayed against the newer exact journal prefix.
+-        if first['status']=='PASS':
+-            lifecycle.remember(result)
+-            result['lifecycle']=lifecycle.sample(refs)
++        # remember independently parses native evidence and reconstructs the
++        # exact local ancestry. Recording those facts is not a PASS grant and
++        # never repairs unknown RSS/API evidence. Avoid full-history replay twice.
++        lifecycle.remember(result)
++        result['lifecycle']=lifecycle.sample(refs)
+         result['finishedMonotonic']=time.monotonic()
+         decision=validate_observation(policy,result)
+     except Exception as error:

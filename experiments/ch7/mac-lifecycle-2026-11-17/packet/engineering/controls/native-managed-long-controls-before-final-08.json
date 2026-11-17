@@ -1,0 +1,42 @@
+{
+  "schema": "aijade.lifecycle.native-managed-synthetic-complexity.v1",
+  "status": "SERIALIZED_NATIVE_LEASE_AND_FULL_REPLAY_PASS_SYNTHETIC_ONLY",
+  "checkedAt": "2026-11-17T00:18:59.499653+00:00",
+  "events": 4322,
+  "rawJournalBytes": 3193323,
+  "rawJournalSha256": "66f9b1d7ebba035282e40d517be891ca3c4cbb632eae37bbfcd3db4367a65f4d",
+  "sourceHashes": {
+    "process_lifecycle.py": "986eebc3f3fd881e5414983bbb63cf74c82656060bf0011b695a93f3d9cc3c18",
+    "mac_process_guard_v3.py": "6123e980f1b474aaa978aab744e23defb2e70eeb74eb30aae5809990763568e3",
+    "lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+  },
+  "measurements": {
+    "one_guard": {
+      "seconds": [
+        0.3293718459899537,
+        0.31916734599508345,
+        0.3380263250146527,
+        0.308396458014613,
+        0.31237163598416373
+      ],
+      "maximumSeconds": 0.3380263250146527,
+      "medianSeconds": 0.31916734599508345
+    },
+    "guard_and_outer_replay": {
+      "seconds": [
+        0.6135667869821191,
+        0.6721190440002829,
+        0.6621894339914434,
+        0.654392763011856,
+        0.6182960830046795
+      ],
+      "maximumSeconds": 0.6721190440002829,
+      "medianSeconds": 0.654392763011856
+    }
+  },
+  "actualObserverCalls": 0,
+  "actualNativeCensusCalls": 0,
+  "actualApiQueries": 0,
+  "qualification": false,
+  "scope": "Cold/full parser CPU cost on fixed synthetic data with both native helper leases. No live budget, host capacity or eligibility is inferred."
+}

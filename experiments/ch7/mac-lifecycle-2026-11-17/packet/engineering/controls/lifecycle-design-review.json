@@ -1,0 +1,449 @@
+{
+  "schema": "aijade.ch7.lifecycle-v3.design-review.v1",
+  "status": "DESIGN_ONLY_NOT_IMPLEMENTED_NOT_RUN",
+  "reviewedAt": "2026-11-16T22:15:42.006516+00:00",
+  "workspace": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-census-20261116/worktree",
+  "researchArchiveCommit": "471e41abcad8ac386166c679a8dd6eabff76029b",
+  "workspaceClean": true,
+  "previousImplementationCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+  "previousBuildFreezeCommit": "a20f090423548dedbf1337ec50786daa9e2d028a",
+  "sourceBindings": {
+    "experiments/ch7/mac_process_guard_v2.py": {
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "frozenQSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "matchesOriginalQ": true
+    },
+    "experiments/ch7/finite_runtime.py": {
+      "sha256": "ac8926aab5c26292de13f5c61fb319c18cbf2eb4bd94f84ece258b921108557f",
+      "frozenQSha256": "ac8926aab5c26292de13f5c61fb319c18cbf2eb4bd94f84ece258b921108557f",
+      "matchesOriginalQ": true
+    },
+    "experiments/ch7/run_finite_block.py": {
+      "sha256": "1c6ca00c2b190294b7a33f0d9d8312e0c18f79c7c327529f89af1a255d239c81",
+      "frozenQSha256": "1c6ca00c2b190294b7a33f0d9d8312e0c18f79c7c327529f89af1a255d239c81",
+      "matchesOriginalQ": true
+    },
+    "experiments/ch7/run_finite_sequence.py": {
+      "sha256": "87c3aefd4461e65dca2e50c9b6f90d4ede6aa12dd0464754cc025d3c485d669f",
+      "frozenQSha256": "87c3aefd4461e65dca2e50c9b6f90d4ede6aa12dd0464754cc025d3c485d669f",
+      "matchesOriginalQ": true
+    },
+    "experiments/ch7/godot_local.py": {
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+      "frozenQSha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+      "matchesOriginalQ": true
+    },
+    "experiments/ch7/mac_bulk_census.c": {
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "frozenQSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "matchesOriginalQ": true
+    },
+    "experiments/ch7/mac_process_guard.py": {
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "frozenQSha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "matchesOriginalQ": true
+    }
+  },
+  "scope": {
+    "networkCalls": 0,
+    "liveProcessSnapshots": 0,
+    "qualificationWindows": 0,
+    "rendererRuns": 0,
+    "modelCalls": 0,
+    "testsExecuted": 0,
+    "implementationFilesModified": false,
+    "previousRecordsModified": false
+  },
+  "confirmedPriorRecord": {
+    "rawRoot": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-mac-census-20261116/qualification-01",
+    "postStopAnalysisSha256": "e7f7b75ea98522561014ce51aa32a21a2981d9b5d39386dd7211eccb12c82610",
+    "sequenceReceiptSha256": "984ca43b74b432635cc0a49c81b7abd0d0a62674f7a1aa07ba0d2c3844c82106",
+    "processObservationsSha256": "76ac1a2e18aea80282519a6f48385c3907f2efe0f5d623720f6da1264bb74da4",
+    "registrySha256": "e54dfb3b18e071be2e829efe36ad0cd87402aab2f2fa7e38236c63912b180ceb",
+    "recordedStatus": "STOPPED",
+    "actualRuntimeObservations": 8,
+    "runtimePassSamples": 7,
+    "runtimeFailSamples": 1,
+    "recordedFinalBlockers": [
+      {
+        "code": "SNAPSHOT_READ_UNKNOWN",
+        "severity": "UNKNOWN",
+        "phase": "after"
+      },
+      {
+        "code": "OWNED_ROOT_MISSING_OR_REUSED",
+        "severity": "UNKNOWN",
+        "phase": "after"
+      },
+      {
+        "code": "OWNED_PROCESS_REPARENTED_OUTSIDE_CLOSURE",
+        "severity": "FAIL",
+        "phase": "after",
+        "pid": 55469
+      },
+      {
+        "code": "OWNED_PROCESS_REPARENTED_OUTSIDE_CLOSURE",
+        "severity": "FAIL",
+        "phase": "after",
+        "pid": 57792
+      }
+    ],
+    "settlingSamples": 300,
+    "admissionSamples": 60,
+    "settlingToAdmissionGapSeconds": 3.6311725030245725,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 20,
+    "unattemptedConditionRows": 0,
+    "worker57825Attribution": "Unclassified other descendant; no executable/argv/direct-parent wait witness. Do not assert Git or clean exit.",
+    "pastStopPreserved": true
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "priority": "REQUIRED",
+      "source": "finite_runtime.py:234-290",
+      "finding": "Every remembered descendant becomes an active required root, and NoSuchProcess/PID reuse retires it without a parent wait witness. The existing registry proves recorded absence, not clean child completion.",
+      "evidence": "Actual worker57825 was discovered, not explicitlyRegistered; it was root-eligible before the last two frames and later marked ABSENT. No launch/exitcode evidence identifies that worker in this trace."
+    },
+    {
+      "id": "F2",
+      "priority": "REQUIRED",
+      "source": "finite_runtime.py:257-265; run_finite_sequence.py:201-205; run_finite_block.py:195-200",
+      "finding": "Registration is conditional on not already being known. A concurrent monitor can remember a direct child first and suppress the explicit launch record. Shared active/known/registered state is not protected by a common lock.",
+      "evidence": "register() writes explicitlyRegistered only if key not in self.known; remember() can insert that same key."
+    },
+    {
+      "id": "F3",
+      "priority": "REQUIRED",
+      "source": "run_finite_sequence.py:201-205; run_finite_block.py:195-200",
+      "finding": "Popen -> create_time -> register has a birth/identity race; a very short child can exit or be observed by the other monitor before identity registration is complete.",
+      "evidence": "Both direct launch sites call Popen before fetching create_time and do not hold capture-coordination ownership through registration."
+    },
+    {
+      "id": "F4",
+      "priority": "REQUIRED",
+      "source": "run_finite_block.py:44-99,173-199,253-258,278-282; finite_runtime.py:46-85; godot_local.py:21-23; mac_process_guard_v2.py:446",
+      "finding": "The direct launch sites are not the full spawn closure. Block Git preflight occurs before its registry; shared binding functions spawn Git; renderer launcher invokes a nested Godot wrapper and sandbox/Godot; observer lsof is a further finite process.",
+      "evidence": "A parent sequence census can see these descendants even if a block-local registry has not started or only registered the long-lived flow/renderer launchers."
+    },
+    {
+      "id": "F5",
+      "priority": "REQUIRED",
+      "source": "mac_process_guard_v2.py:418-430,553-578,650-652,686-696",
+      "finding": "Missing one root clears the derived whole membership. The later reparent predicate then labels unchanged controllers as reparented.",
+      "evidence": "Raw last before/after preserve55469->55463 and57792->55469 with identical createTime. The after root57825 is absent, membership fallback is empty, and the raw FAIL labels are retained but are not proof of physical reparenting."
+    },
+    {
+      "id": "F6",
+      "priority": "REQUIRED",
+      "source": "run_finite_sequence.py:99-111,125-133; finite_runtime.py:167-181; finite_sequence_audit.py:394",
+      "finding": "Fixed-phase sampling finishes before complete per-phase raw revalidation. That creates O(sample_count) work on the critical handoff path.",
+      "evidence": "Receipt phase boundary gap is3.6311725030245725seconds > frozen3. Cause attribution to replay is plausible source inference; the old trace has no per-operation handoff breakdown."
+    }
+  ],
+  "minimalVersioning": {
+    "observerModule": "experiments/ch7/mac_process_guard_v3.py (new)",
+    "lifecycleModule": "experiments/ch7/owned_process_lifecycle_v3.py (new; provisional name)",
+    "kind": "mac-lifecycle-observed-idle-daemon-v3 (proposed exact dispatch token)",
+    "schemaVersion": 3,
+    "preserveHistoricalBytes": [
+      "mac_process_guard.py",
+      "mac_process_guard_v2.py",
+      "mac_bulk_census.c",
+      "all old policies/plans/raw traces/refusal and audit packets"
+    ],
+    "runtimeDispatch": "Explicit new plan/policy path only; add versioned v3 runtime functions or plan-gated dispatch without reinterpreting old v1/v2 inputs. Never monkey-patch v2 globals.",
+    "reuseBoundary": "Reuse source-bound bulk parser, daemon/listener/API rules and exact native-collector witness from v2. New v3 must expose its own module hash plus all inherited dependency/native hashes in Q3/B3/policy. Do not broaden native selfRSS exception.",
+    "beforeQualEngineeringGate": "All actual spawn routes and both monitors must produce replayable finite-child evidence in meaningful bounded engineering controls before freezing a qualification attempt. Unknown spawn coverage blocks readiness."
+  },
+  "leaseModel": {
+    "identity": "Canonical (pid,createTimeMicros), plus leaseId/runId/parent identity; compatible floats may be exported but cannot replace exact matching.",
+    "persistentController": {
+      "examples": [
+        "outer sequence controller",
+        "block controller during its explicitly active stage"
+      ],
+      "rule": "Required from identity-bound stage registration until documented stage completion and exact owner wait/release for child controllers. Missing/reused/unreadable while active is adverse. The outer live controller is not auto-retired.",
+      "noAutoRetirement": true
+    },
+    "finiteTask": {
+      "examples": [
+        "Git/command subprocess",
+        "flow dotnet process",
+        "renderer launcher and its Godot wrapper chain",
+        "lsof/support subprocess when observed inside an owned execution forest"
+      ],
+      "rule": "Must have a source-bound actual launch lease and same direct parent reap/wait result. Completed bulk absence is only absence evidence; finite completion requires the exit witness and all required child closure. Present-frame resource evidence remains mandatory.",
+      "states": [
+        "DECLARED_INTENT",
+        "IDENTIFIED_WAITING_RELEASE",
+        "ACTIVE",
+        "REAPED_WITH_ACTUAL_STATUS",
+        "CONFIRMED_ABSENT_AFTER_REAP",
+        "UNKNOWN_OR_STOPPED"
+      ],
+      "successfulRecordedExit": "Actual direct-parent wait/poll returncode0, matching PID/createTime lease, valid event order and all descendant closure; no claim of hardware certification or human verification."
+    },
+    "discoveredDescendant": {
+      "rule": "Record identity/ancestry in a historical observed ledger and include its live RSS when owned; do not silently make it a persistent controller or authorize it. Unleased/missing-exit descendants remain adverse until an exact source-bound launch/wait chain resolves them.",
+      "absenceStatusWithoutExit": "ABSENT_EXIT_STATUS_UNKNOWN",
+      "noCleanExitInference": true
+    },
+    "observerInstrumentBoundary": "The already exact native helper witness remains version-bound and self-only. Other helper processes receive finite provenance, not a general exemption. Idle research ownedRoots/ownedProcesses remain empty; instrumentation provenance does not authorize a research/model process."
+  },
+  "proposedInterfaces": {
+    "register_controller": "register_controller(identity,parent_identity,stage_id,lease_id) -> immutable persistent lease",
+    "spawn_finite": "spawn_finite(command_spec,parent_lease,stage_id) -> managed handle with ready identity handshake; preserve exact executable/argv behavior",
+    "record_wait": "reap(managed_handle) -> event with actual returncode, same launch lease, owner identity and wait clock; record before heavy receipt replay",
+    "discover": "remember_observed(snapshot) -> discovered identities only; never substitutes for direct register",
+    "view": "lease_view(sample_start,sample_end) -> persistent roots, managed finite states, discovered unresolved identities and exact journal prefix/hash",
+    "observe": "observe(policy,owned_roots=persistent_roots,lifecycle_evidence=lease_view) -> PASS/FAIL/UNKNOWN plus complete raw frames, typed closure and nullable full RSS",
+    "audit": "validate_observation_v3(policy,observation,lifecycle_journal) and validate_lifecycle_archive -> replay evidence/state/RSS, not a claimed PASS field"
+  },
+  "launchEvidenceAndConcurrency": {
+    "requiredLaunchFields": [
+      "runId",
+      "leaseId",
+      "ownerControllerPid",
+      "ownerControllerCreateTimeMicros",
+      "parentPid",
+      "parentCreateTimeMicros",
+      "pid",
+      "createTimeMicros",
+      "stageId",
+      "commandSpecSha256",
+      "spawn/identity/release monotonic times",
+      "sourceCommit",
+      "processPolicySha256"
+    ],
+    "requiredExitFields": [
+      "same runId/leaseId/owner identity/child identity",
+      "actual wait/poll returncode (integer; unknown is null)",
+      "wait source bound to the same Popen handle",
+      "reapMonotonic",
+      "ordered event sequence and previous-record hash"
+    ],
+    "registration": "Always append direct-launch evidence even if discovery already saw the identity; deduplicate only by the exact lease event. Use an in-process state lock and an APFS project-local cross-process journal/capture coordination protocol.",
+    "birthRace": "A child-ready handshake (or a proven equivalent capture-coordinated managed spawn) holds a fast task until PID/createTime and parent ownership are established. No PID-only fallback. Wrapper may exec the exact command to retain identity where appropriate; any remaining nested spawn must itself be covered.",
+    "captureCoordination": "Prevent a native census from seeing a managed birth before its lease is published. Do not serialize away or hide actual exits. Exit evidence must be available without waiting on a lock held by a capture that needs that very evidence; define/test one lock order and fixed timeouts.",
+    "appendJournal": "Append-only source-bound per-run event chain with explicit writer/controller identity and monotonic ordering; preserve complete bytes for independent replay. Do not claim cryptographic OS attestation: trust remains the frozen collector implementation and actual recorded wait path.",
+    "resourceLimit": "If an identity is present in a raw census but RSS identity/read is unknown, the full aggregate is null/adverse even if an exitcode0 event later appears. Last-known RSS, zero-fill and generic selfRSS are prohibited.",
+    "unobservedExit": "Absent graph identity with no exact wait record is unresolved; a grace period or another favorable census is not a substitute. No arbitrary delay/retry to obtain a passing state."
+  },
+  "closureSemantics": {
+    "resultFields": [
+      "matchedPersistentRoots",
+      "missingPersistentRoots",
+      "reusedIdentities",
+      "matchedFiniteLeases",
+      "unresolvedFiniteIdentities",
+      "diagnosticMembers",
+      "coverageComplete",
+      "partialKnownRssBytes",
+      "ownedRssBytes"
+    ],
+    "missingMember": "Retain proven stable members only for diagnosis. Incomplete coverage keeps ownedRssBytes null and overall status adverse; it cannot become partial PASS.",
+    "trueReparent": "Emit a proven reparent/ownership escape only when complete relevant identity/ancestry evidence establishes it. When membership cannot be evaluated, emit OWNERSHIP_CLOSURE_UNKNOWN rather than deriving reparent from members=set().",
+    "rssDedup": "Deduplicate identities within the outer owned family and do not sum parent sequence and nested block RSS totals as independent processes."
+  },
+  "spawnCoverage": [
+    {
+      "route": "block and shared Git preflight before registry creation",
+      "requirement": "Introduce lifecycle context before any measured spawn, or prospectively precompute deterministic Git/repository/build preflight before the fixed phases while preserving equal source/input/actual-binary checks and verifying the frozen artifact at use. A precomputed result cannot bypass changed-byte/head checks."
+    },
+    {
+      "route": "sequence -> block and block -> flow/renderer",
+      "requirement": "Persistent-stage controller lease vs finite task lease declared explicitly; exact direct-parent launch and reap events, including cancellation/cleanup status."
+    },
+    {
+      "route": "renderer launcher -> godot_local -> sandbox-exec/Godot",
+      "requirement": "New source-bound compatibility launcher/wrapper can instrument lifecycle without editing historical renderer snapshots; preserve exact loaded binaries/args and source/build provenance. Any uncovered nested process blocks qualification."
+    },
+    {
+      "route": "observer native collector and lsof",
+      "requirement": "Keep native self witness narrow. Account for lsof and cross-monitor observation; never exempt allother/short processes or silently swallow unknown RSS."
+    },
+    {
+      "route": "cleanup docker/psql and version/binding commands",
+      "requirement": "Inventory every subprocess in the measured/cleanup lifetime and source-bind its wait result; shared Docker/VM daemons remain shared and are neither adopted as owned nor killed."
+    }
+  ],
+  "phaseHandoff": {
+    "design": "Validate each saved raw sample online within the fixed two-second cadence; maintain constant-time aggregates and rolling log identity. Move complete revalidation to the independent post-terminal audit. Preserve the actual monotonic scheduling state across phases and keep observation active during receipt/launch work.",
+    "requiredEvents": [
+      "actual sample start/end",
+      "actual validation end",
+      "settling end",
+      "admission start/end",
+      "execution start",
+      "actual cross-phase adjacent-sample gap"
+    ],
+    "unchangedBounds": {
+      "settlingSeconds": 600,
+      "settlingMinimumSamples": 300,
+      "admissionSeconds": 120,
+      "admissionMinimumSamples": 60,
+      "maximumGapSeconds": 3,
+      "windowResetAllowed": false,
+      "automaticRetryAllowed": false
+    },
+    "failure": "A slow validator/write/startup causing any late sample, phase overrun, boundary gap or cross-phase raw-sample gap refuses immediately; do not backdate events, drop the slow sample, stretch the window or repeat.",
+    "independentReplay": "The final audit still replays all raw process/API/lifecycle evidence and recomputes phase/cross-phase coverage, population and resources; online flags never replace raw replay."
+  },
+  "controls": [
+    {
+      "id": "C01",
+      "type": "POSITIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "A declared persistent controller remains present with the exact PID/createTime/parent identity through both frames; finite child has identity-bound launch, valid present-frame RSS, exact direct-parent zero wait result, then complete-batch absence. Only that finite lease closes."
+    },
+    {
+      "id": "C02",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Persistent controller missing or reused while REQUIRED_ACTIVE refuses. No wait0, absent graph row, cleanup receipt or manual lease release can waive missing stage-end authority."
+    },
+    {
+      "id": "C03",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Discovered finite descendant disappears with no direct-parent exitcode/wait witness: mark ABSENT_EXIT_STATUS_UNKNOWN, keep scientific/qualification acceptance false. Complete census absence is not NORMAL_EXIT."
+    },
+    {
+      "id": "C04",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Valid child wait0 but its present native row has NoSuchProcess/AccessDenied/unknown RSS: whole owned aggregate remains UNKNOWN/null; never fill zero, last RSS, or native-collector selfRSS."
+    },
+    {
+      "id": "C05",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Child exits before PID/createTime handshake completes; even wait0 cannot repair the missing identity binding. PID-only launch is rejected."
+    },
+    {
+      "id": "C06",
+      "type": "POSITIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Monitor discovers a process before the direct launcher calls register; explicit direct-launch event is still recorded exactly once and discovery cannot create authorization."
+    },
+    {
+      "id": "C07",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Two monitors plus concurrent controller launches cause missing, duplicate, truncated, out-of-order, wrong-run, wrong-parent or timestamp-inconsistent journal events; reject instead of accepting a favorable prefix."
+    },
+    {
+      "id": "C08",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "One child is missing: valid persistent members remain available only for diagnosis, total coverage is unknown, and unchanged parents receive no fabricated REPARENTED label."
+    },
+    {
+      "id": "C09",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Known descendant changes parent or exits its declared ownership forest while alive; the ledger retains it and rejects true reparent/orphan escape even if its former parent has exited."
+    },
+    {
+      "id": "C10",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Old active PID is reused with different creation time: old identity is adverse/unresolved until its own wait proof; new process never inherits the old lease or RSS permission."
+    },
+    {
+      "id": "C11",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Child has nonzero/signal exit, absent returncode, mismatched Popen lease, wrong writer-parent identity or exit before launch. Record observed outcome without treating it as successful child completion."
+    },
+    {
+      "id": "C12",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Direct parent exits but a known grandchild remains alive, outside the closure or with unknown status; process cleanup cannot pass by only closing the parent lease."
+    },
+    {
+      "id": "C13",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Git, lsof, renderer launcher, godot_local/sandbox/Godot spawn routes omit a managed launch/exit identity: reject. No blanket categoryother, short-lived or observer-tool exemption."
+    },
+    {
+      "id": "C14",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Capture/registration/journal lock timeout or unsafe lock path/owner/mode/symlink, missing child-ready handshake or invalid lease token produces UNKNOWN/STOP; no retry loop or relaxed deadline."
+    },
+    {
+      "id": "C15",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Lifecycle records are mutated/rebound while retained observer frames are unchanged; offline replay must detect impossible state, source/policy/journal hash mismatch or incomplete closure."
+    },
+    {
+      "id": "C16",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Foreign dotnet/Godot, unexpected Ollama descendant/model, nonempty/missing API model list, daemon/listener change and native evidence failures remain rejected exactly as before."
+    },
+    {
+      "id": "C17",
+      "type": "POSITIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Streaming validation saves every raw sample and validates it within the same frozen phase cadence; phase and cross-phase actual timestamps satisfy original limits without reset."
+    },
+    {
+      "id": "C18",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "Slow validation/receipt write/child startup creates a >3second actual cross-stage adjacent-sample or phase-boundary gap, last sample misses a boundary, or completion overruns the fixed phase: reject without moving timestamps, dropping samples or repeating a favorable segment."
+    },
+    {
+      "id": "C19",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "A block is launched but no block receipt/journal exists; preserve the frozen20UNKNOWN fallback rather than reclassifying as20unattempted."
+    },
+    {
+      "id": "C20",
+      "type": "NEGATIVE",
+      "status": "NOT_RUN_DESIGN_ONLY",
+      "case": "An integrity-only receipt, zero model calls, successful cleanup, online per-sample flags or selected passing samples are substituted for complete known-driver qualification: remain NOT_QUALIFIED and40pair heldout NOT_RUN."
+    }
+  ],
+  "executionOrder": [
+    "Publish the separate prospective lifecycle/continuity plan and verify its remote bytes before implementing or measuring the new research path.",
+    "Implement and verify v3, complete actual spawn coverage, deterministic negative controls and bounded instrument engineering according to that plan; preserve every failed engineering attempt.",
+    "Freeze Q3, actual B3 binaries/native helper/dependencies, policy/module/journal schemas and immutable known qualification inputs; no fresh cases.",
+    "Run only the exact plan-authorized fixed phases and complete known-driver qualification once all preconditions pass; any adverse state terminates without an automatic retry.",
+    "Only after a complete independently replayed known qualification, publish the acceptance/implementation-and-construction freeze and construct the already confirmed40pairs/80conditions under the separate fixed input contract. No qualification follows from admission, cleanup or integrity-only controls."
+  ],
+  "authorAndResearchBoundaries": {
+    "formalHardwareQualification": false,
+    "newQualificationAccepted": false,
+    "freshHeldoutConstructed": false,
+    "heldoutComparison": "NOT_RUN",
+    "newCaseSeedProduced": false,
+    "independentHumanReview": false,
+    "authorApproval": false,
+    "priorRefusalsRetained": true,
+    "currentPriorFactLedger": "ad08fc3bd515799523a0f21111f31c2d531379200a25c9f8d62125a477980582 (12352 facts, immutable prior namespace)"
+  },
+  "independentDesignCrossCheck": {
+    "agent": "/root/feature_inventory/lifecycle_review",
+    "status": "READ_ONLY_DESIGN_REVIEW_COMPLETED",
+    "conclusions": [
+      "direct register must not be suppressed by discovery",
+      "managed birth identity handshake/capture coordination required",
+      "absence without exact wait code is not normal completion",
+      "all nested/helper spawn routes must close",
+      "exit0 cannot repair unknown RSS or manufacture reparent"
+    ]
+  },
+  "limitations": [
+    "This is a design recommendation, not an implementation, source freeze, tested protocol or new execution result.",
+    "The old record does not identify PID57825 as Git and cannot establish its exact exit status.",
+    "The exact lease/journal/lock API names remain proposed until the new plan freezes them; no permission is inferred to start a new window from this report."
+  ]
+}

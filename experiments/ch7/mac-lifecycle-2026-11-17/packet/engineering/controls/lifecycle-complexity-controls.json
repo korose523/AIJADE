@@ -1,0 +1,59 @@
+{
+  "schema": "aijade.lifecycle.non-sampler-complexity-control.v1",
+  "status": "SYNTHETIC_4322_EVENT_REPLAY_AND_INCREMENTAL_CACHE_PASS",
+  "eventPopulation": 4322,
+  "finiteTaskFixtures": 1440,
+  "rawJournalBytes": 3193321,
+  "rawJournalSha256": "6f2062c2421a0110b64840fb87306e8c9286c3854bef20afe25ea50b12cda518",
+  "measurements": {
+    "validate_view": {
+      "samples": 5,
+      "seconds": [
+        0.31455888599157333,
+        0.34036506098345853,
+        0.30543092600419186,
+        0.31328084599226713,
+        0.303769749996718
+      ],
+      "maximumSeconds": 0.34036506098345853,
+      "medianSeconds": 0.31328084599226713
+    },
+    "guard_raw_replay": {
+      "samples": 5,
+      "seconds": [
+        0.4619541820138693,
+        0.3229744620039128,
+        0.31265229199198075,
+        0.303841626009671,
+        0.30090193400974385
+      ],
+      "maximumSeconds": 0.4619541820138693,
+      "medianSeconds": 0.31265229199198075
+    },
+    "three_guard_replays": {
+      "samples": 5,
+      "seconds": [
+        0.9691144259995781,
+        0.9859948679804802,
+        1.0639723630156368,
+        0.9371066860039718,
+        0.9767243159876671
+      ],
+      "maximumSeconds": 1.0639723630156368,
+      "medianSeconds": 0.9767243159876671
+    },
+    "incremental_append": {
+      "events": 4320,
+      "totalSeconds": 49.553179469978204,
+      "maximumEventSeconds": 0.13295450000441633,
+      "medianEventSeconds": 0.011381795498891734,
+      "finalJournalBytes": 3346855,
+      "syntheticNoProcessesLaunched": true
+    }
+  },
+  "actualObserversRun": 0,
+  "nativeHelpersRun": 0,
+  "modelCalls": 0,
+  "qualification": false,
+  "scope": "Synthetic chronology/complexity only. Actual total live v3 observation still has an independent strict2.5s budget including lockwait/capture/postprocessing; these timings do not establish admission or remaining budget on the host."
+}

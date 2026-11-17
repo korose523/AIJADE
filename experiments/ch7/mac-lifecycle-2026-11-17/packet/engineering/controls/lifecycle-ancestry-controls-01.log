@@ -1,0 +1,70 @@
+test_01_complete_600_120_global_raw_population (test_lifecycle_audit_continuity.ContinuityAuditControls.test_01_complete_600_120_global_raw_population) ... ok
+test_02_formal_admission_only_has_60_not_360_samples (test_lifecycle_audit_continuity.ContinuityAuditControls.test_02_formal_admission_only_has_60_not_360_samples) ... ok
+test_03_each_negative_starts_with_valid_baseline (test_lifecycle_audit_continuity.ContinuityAuditControls.test_03_each_negative_starts_with_valid_baseline) ... ok
+test_04_missing_sample_writer_completion_is_refused (test_lifecycle_audit_continuity.ContinuityAuditControls.test_04_missing_sample_writer_completion_is_refused) ... ok
+test_05_duplicate_original_sample_id_is_refused (test_lifecycle_audit_continuity.ContinuityAuditControls.test_05_duplicate_original_sample_id_is_refused) ... ok
+test_06_omitted_or_added_slot_is_not_a_smaller_denominator (test_lifecycle_audit_continuity.ContinuityAuditControls.test_06_omitted_or_added_slot_is_not_a_smaller_denominator) ... ok
+test_07_cross_phase_sample_gap_over3_with_atomic_boundary_refuses (test_lifecycle_audit_continuity.ContinuityAuditControls.test_07_cross_phase_sample_gap_over3_with_atomic_boundary_refuses) ... ok
+test_08_original_3point631_boundary_cannot_be_repaired_by_events (test_lifecycle_audit_continuity.ContinuityAuditControls.test_08_original_3point631_boundary_cannot_be_repaired_by_events) ... ok
+test_09_slow_validation_and_write_cannot_cross_fixed_deadline (test_lifecycle_audit_continuity.ContinuityAuditControls.test_09_slow_validation_and_write_cannot_cross_fixed_deadline) ... ok
+test_10_summary_swap_zero_cannot_hide_actual_range (test_lifecycle_audit_continuity.ContinuityAuditControls.test_10_summary_swap_zero_cannot_hide_actual_range) ... ok
+test_11_summary_population_and_resources_are_rebuilt (test_lifecycle_audit_continuity.ContinuityAuditControls.test_11_summary_population_and_resources_are_rebuilt) ... ok
+test_12_missing_boundary_cannot_be_filled_from_receipts (test_lifecycle_audit_continuity.ContinuityAuditControls.test_12_missing_boundary_cannot_be_filled_from_receipts) ... ok
+test_13_reordered_event_clocks_are_refused (test_lifecycle_audit_continuity.ContinuityAuditControls.test_13_reordered_event_clocks_are_refused) ... ok
+test_14_actual_runtime_first_sample_is_required (test_lifecycle_audit_continuity.ContinuityAuditControls.test_14_actual_runtime_first_sample_is_required) ... ok
+test_15_runtime_handoff3_exact_accepts_and_3epsilon_refuses (test_lifecycle_audit_continuity.ContinuityAuditControls.test_15_runtime_handoff3_exact_accepts_and_3epsilon_refuses) ... ok
+test_16_runtime_epoch_3epsilon_refuses_without_first_sample_excuse (test_lifecycle_audit_continuity.ContinuityAuditControls.test_16_runtime_epoch_3epsilon_refuses_without_first_sample_excuse) ... ok
+test_17_rss_null_never_becomes_idle_zero (test_lifecycle_audit_continuity.ContinuityAuditControls.test_17_rss_null_never_becomes_idle_zero) ... ok
+test_18_raw_top_level_and_observer_ids_must_agree (test_lifecycle_audit_continuity.ContinuityAuditControls.test_18_raw_top_level_and_observer_ids_must_agree) ... ok
+test_19_actual_new_scheduler_schema_roundtrips_independent_audit (test_lifecycle_audit_continuity.ContinuityAuditControls.test_19_actual_new_scheduler_schema_roundtrips_independent_audit) ... ok
+test_20_settling_resource_description_is_not_admission_threshold (test_lifecycle_audit_continuity.ContinuityAuditControls.test_20_settling_resource_description_is_not_admission_threshold) ... ok
+test_21_real_positive_phase_handoff_is_not_fabricated_atomic (test_lifecycle_audit_continuity.ContinuityAuditControls.test_21_real_positive_phase_handoff_is_not_fabricated_atomic) ... ok
+test_22_complete_observer_call_including_postprocessing_has_2point5_budget (test_lifecycle_audit_continuity.ContinuityAuditControls.test_22_complete_observer_call_including_postprocessing_has_2point5_budget) ... ok
+test_01_complete_launch_wait_native_absence_and_cleanup (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_01_complete_launch_wait_native_absence_and_cleanup) ... ok
+test_02_original_event_hash_tamper_refuses (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_02_original_event_hash_tamper_refuses) ... ok
+test_03_coherently_rebound_source_substitution_refuses (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_03_coherently_rebound_source_substitution_refuses) ... ok
+test_04_nonzero_actual_wait_is_retained_adverse (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_04_nonzero_actual_wait_is_retained_adverse) ... ok
+test_05_absence_cannot_replace_missing_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_05_absence_cannot_replace_missing_wait) ... ok
+test_06_parent_wait_identity_cannot_be_substituted (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_06_parent_wait_identity_cannot_be_substituted) ... ok
+test_07_wait_before_release_is_not_repaired_by_zero_exit (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_07_wait_before_release_is_not_repaired_by_zero_exit) ... ok
+test_08_absence_requires_the_saved_native_frame_hash (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_08_absence_requires_the_saved_native_frame_hash) ... ok
+test_09_absence_frame_must_follow_bound_actual_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_09_absence_frame_must_follow_bound_actual_wait) ... ok
+test_10_still_present_identity_is_not_absent_after_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_10_still_present_identity_is_not_absent_after_wait) ... ok
+test_11_missing_persistent_root_refuses_without_fake_reparent (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_11_missing_persistent_root_refuses_without_fake_reparent) ... ok
+test_12_actual_changed_parent_is_rejected_from_native_graph (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_12_actual_changed_parent_is_rejected_from_native_graph) ... ok
+test_13_present_rss_unknown_never_zero_filled_by_wait0 (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_13_present_rss_unknown_never_zero_filled_by_wait0) ... ok
+test_14_pid_reuse_does_not_inherit_finite_lease (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_14_pid_reuse_does_not_inherit_finite_lease) ... ok
+test_15_dropping_active_view_lease_is_rejected (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_15_dropping_active_view_lease_is_rejected) ... ok
+test_16_unknown_or_truncated_journal_is_not_a_favorable_prefix (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_16_unknown_or_truncated_journal_is_not_a_favorable_prefix) ... ok
+test_17_exact_parent_kernel_reap_closes_managed_identity_without_extra_census (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_17_exact_parent_kernel_reap_closes_managed_identity_without_extra_census) ... ok
+test_18_root_controller_receipt_binding_is_independent (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_18_root_controller_receipt_binding_is_independent) ... ok
+test_19_unbound_new_controller_cannot_adopt_foreign_pid (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_19_unbound_new_controller_cannot_adopt_foreign_pid) ... ok
+test_20_native_api_validator_is_called_for_every_original_sample (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_20_native_api_validator_is_called_for_every_original_sample) ... ok
+test_21_discovered_only_absence_is_not_finite_success_or_wait_zero (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_21_discovered_only_absence_is_not_finite_success_or_wait_zero) ... ok
+test_22_discovered_only_without_native_absence_stays_unresolved (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_22_discovered_only_without_native_absence_stays_unresolved) ... ok
+test_23_discovery_cannot_adopt_foreign_unobserved_identity (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_23_discovery_cannot_adopt_foreign_unobserved_identity) ... ERROR
+test_24_local_block_cleanup_does_not_forge_its_parent_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_24_local_block_cleanup_does_not_forge_its_parent_wait) ... ok
+test_01_real_parsers_replay_complete_synthetic_native_api_and_journal (test_lifecycle_audit_raw.FullRawLifecycleAuditControls.test_01_real_parsers_replay_complete_synthetic_native_api_and_journal) ... ok
+test_02_raw_native_corruption_is_rejected_without_mock_validator (test_lifecycle_audit_raw.FullRawLifecycleAuditControls.test_02_raw_native_corruption_is_rejected_without_mock_validator) ... ok
+test_03_unknown_present_rss_stays_adverse_even_with_exact_parent_wait (test_lifecycle_audit_raw.FullRawLifecycleAuditControls.test_03_unknown_present_rss_stays_adverse_even_with_exact_parent_wait) ... ok
+test_04_empty_api_label_cannot_replace_nonempty_original_body (test_lifecycle_audit_raw.FullRawLifecycleAuditControls.test_04_empty_api_label_cannot_replace_nonempty_original_body) ... ok
+
+======================================================================
+ERROR: test_23_discovery_cannot_adopt_foreign_unobserved_identity (test_lifecycle_audit_journal.LifecycleJournalAuditControls.test_23_discovery_cannot_adopt_foreign_unobserved_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 269, in test_23_discovery_cannot_adopt_foreign_unobserved_identity
+    self.fixture.seal()
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 77, in seal
+    prefix = b''.join(lines[:prefix_count]); state = producer.replay_journal(prefix)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/process_lifecycle.py", line 257, in replay_journal
+    need(len(keys)==len(set(keys)) and all(a['parentPid']==b['pid']
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/process_lifecycle.py", line 47, in need
+    raise ValueError(message)
+ValueError: discovery ancestry edges
+
+----------------------------------------------------------------------
+Ran 50 tests in 0.384s
+
+FAILED (errors=1)

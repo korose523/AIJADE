@@ -1,0 +1,93 @@
+{
+  "schema": "aijade.ch7.lifecycle-independent-native-lease-controls.v1",
+  "checkedAt": "2026-11-16T23:39:05.599840+00:00",
+  "status": "OFFLINE_NATIVE_UNIFIED_LEASE_CONTROLS_PASS_NOT_QUALIFICATION",
+  "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+  "ownedModifiedSources": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py",
+      "sha256": "6d095223803c6d1806466df67a2eace82f31e8d2e7a870cbed806e852379dbb0"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_raw.py",
+      "sha256": "012ccbcfa223a8cceb969461f32b3964de027188bf88a6b4ff2e3b5decde5c62"
+    }
+  ],
+  "unchangedHistoricalSources": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+    }
+  ],
+  "controls": {
+    "tests": 70,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "continuity": 22,
+    "journalAndScope": 30,
+    "serializedNativeApiJournalAndBinding": 18,
+    "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-native-lease-controls-03.log",
+    "logSha256": "d28922117e46a0bbe32256bbd756fab8a77bdcb6a1ec0350f5fabecf7e964e2e",
+    "earlierThisTaskLogs": [
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-native-lease-controls-01.log",
+        "sha256": "b7fbf84cfc57b8250c2928452423b865ccae162dea004ee122a384460a2ac990"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-native-lease-controls-02.log",
+        "sha256": "1dba175fc84465b50e631e46fa197d89d11e9d09e2c8d207709d5da19f7417be"
+      }
+    ]
+  },
+  "newBindingContracts": [
+    "Every original before/after nativeCensus requires managedLeaseId tied to a unique source-bound finite lease with stage observer-native-census.",
+    "Collector PID, exact creation micros and parent match lease identity; spawnedHelperPid and observerPid match that identity and exact observing controller parent.",
+    "Command SHA is the canonical single-element array [frozen native helper path], proving no extra argument in the declared command; executable/source before/after hashes match the frozen policy.",
+    "Identity-ready registration, release, exact direct-parent Popen.wait0/kernel reaping and journaled wait chronology all fall inside that actual graph call; raw local exitCode0 alone is insufficient.",
+    "Every collector call has its own lease; borrowing a prior/before collector lease or replacing identity/source/executable/argv/wait-owner is adverse.",
+    "Present collector RSS remains only the exact original native self witness, now additionally requiring unified managed ownership. The unleased collector ownership escape was removed.",
+    "Principal scope cutoff plus full ancestry context retained; supplemental native captures are also independently lease-bound.",
+    "Preserved v2 native primitive still accepts its historical local Popen/self witness. Explicit tests prove v3 guard and independent audit reject that witness if unified evidence is omitted.",
+    "Independent direct binding controls call native parser+journal replayer+binding check without the v3 guard precheck, preventing a duplicate guard check from hiding a missing independent predicate."
+  ],
+  "criticalNegativeControls": [
+    "test_07_native_local_popen_witness_without_managed_binding_is_refused",
+    "test_08_coherent_native_registration_triplet_omission_is_refused",
+    "test_09_coherent_extra_native_argv_is_not_empty_argv",
+    "test_10_coherent_native_executable_substitution_is_refused",
+    "test_11_coherent_native_pid_creation_substitution_is_refused",
+    "test_12_rebound_native_wait_from_wrong_owner_is_refused_before_projection",
+    "test_13_native_raw_exit_zero_without_actual_wait_is_refused",
+    "test_14_after_capture_cannot_borrow_before_collector_lease",
+    "test_15_native_source_hash_is_not_repaired_by_valid_wait_and_lease",
+    "test_16_complete_old_native_witness_cannot_escape_by_omitting_all_unified_evidence",
+    "test_17_independent_native_binding_rejects_coherent_omission_without_guard_precheck",
+    "test_18_independent_native_binding_rejects_nonempty_argv_without_guard_precheck"
+  ],
+  "fixtureCompatibility": "test_lifecycle_audit_raw.build_fixture()/ancestry_fixture() now have one original synthetic task plus four native managed tasks; finiteWaitZero is5, not1. All original C stdout fields are retained; added evidence is managedLeaseId and journal binding.",
+  "scope": {
+    "nativeHelperRuns": 0,
+    "observerCalls": 0,
+    "APIRequests": 0,
+    "modelCalls": 0,
+    "rendererRuns": 0,
+    "scientificWindows": 0,
+    "docsEdited": false,
+    "blockEdited": false,
+    "oldFactsOrPacketsRejudged": false,
+    "gitCommitPerformed": false,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false,
+    "heldoutComparisonComplete": false
+  },
+  "publicationBoundary": "The preceding published candidate had no live observation or qualification. These are prospective implementation/fixture corrections; no prior measurement is relabelled."
+}

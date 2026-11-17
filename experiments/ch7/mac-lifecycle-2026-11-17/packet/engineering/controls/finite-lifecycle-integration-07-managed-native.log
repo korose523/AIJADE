@@ -1,0 +1,45 @@
+test_ancestry_context_cannot_cover_a_changed_local_raw_sample (__main__.LifecycleAdapterControls) ... ok
+test_archive_local_copy_precedes_old_absolute_live_path (__main__.LifecycleAdapterControls) ... ok
+test_block_lifecycle_scope_excludes_parent_self (__main__.LifecycleAdapterControls) ... ok
+test_claimed_registry_finite_count_cannot_hide_missing_lease (__main__.LifecycleAdapterControls) ... ok
+test_coherently_rebound_fake_ancestry_rejected_by_actual_adapter_replay (__main__.LifecycleAdapterControls) ... ok
+test_complete_14_source_map_required (__main__.LifecycleAdapterControls) ... ok
+test_complete_context_retains_raw_bytes_and_all_physical_hashes (__main__.LifecycleAdapterControls) ... ok
+test_context_parsed_rows_cannot_be_changed_without_original_bytes (__main__.LifecycleAdapterControls) ... ok
+test_cross_block_dependency_substitution_refused (__main__.LifecycleAdapterControls) ... ok
+test_full_native_api_journal_parsers_accept_adapter_context_without_mocks (__main__.LifecycleAdapterControls) ... ERROR
+test_guard_hash_and_dependency_map_must_agree (__main__.LifecycleAdapterControls) ... ok
+test_idle_scope_substitution_is_not_a_controller_free_phase (__main__.LifecycleAdapterControls) ... ok
+test_legacy_guard_signature_is_unchanged (__main__.LifecycleAdapterControls) ... ok
+test_malformed_preferred_copy_cannot_fall_back_to_valid_live (__main__.LifecycleAdapterControls) ... ok
+test_missing_mother_raw_context_is_a_refusal_not_smaller_scope (__main__.LifecycleAdapterControls) ... ok
+test_only_missing_archives_allow_original_local_fallback (__main__.LifecycleAdapterControls) ... ok
+test_parent_archive_copy_precedes_live_path_for_block (__main__.LifecycleAdapterControls) ... ok
+test_prefix_size_sha_and_record_boundary_are_bound (__main__.LifecycleAdapterControls) ... ok
+test_preflight_anchor_substitution_refused_after_full_delegate (__main__.LifecycleAdapterControls) ... ok
+test_real_lifecycle_delegate_refusal_is_not_swallowed (__main__.LifecycleAdapterControls) ... ok
+test_scoped_prefix_remains_principal_and_full_context_only_supplies_frames (__main__.LifecycleAdapterControls) ... ok
+test_sequence_lifecycle_requires_entire_journal_closure (__main__.LifecycleAdapterControls) ... ok
+test_symbolic_link_is_not_an_archive_copy (__main__.LifecycleAdapterControls) ... ok
+test_temporary_corruption_baseline_receives_original_complete_context (__main__.LifecycleAdapterControls) ... ok
+test_unresolved_registry_cannot_be_cleared_by_delegate (__main__.LifecycleAdapterControls) ... ok
+test_v3_continuity_replays_idle_rows_and_actual_runtime_handoff (__main__.LifecycleAdapterControls) ... ok
+test_v3_guard_receives_original_bytes_explicitly (__main__.LifecycleAdapterControls) ... ok
+test_versioned_plan_path_keeps_old_decisions_distinct (__main__.LifecycleAdapterControls) ... ok
+
+======================================================================
+ERROR: test_full_native_api_journal_parsers_accept_adapter_context_without_mocks (__main__.LifecycleAdapterControls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_finite_lifecycle_integration.py", line 396, in test_full_native_api_journal_parsers_accept_adapter_context_without_mocks
+    result=audit._lifecycle_ownership(self.root,sequence,fixture.rows,policy,
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_sequence_audit.py", line 307, in _lifecycle_ownership
+    require(type(registry.get('knownFiniteLeases')) is list
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_sequence_audit.py", line 38, in require
+    raise ValueError(message)
+ValueError: lifecycle final finite population differs from raw journal
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.456s
+
+FAILED (errors=1)

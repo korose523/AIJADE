@@ -1,0 +1,19 @@
+test_native_output_cap_still_refuses_and_reaps_fake (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_output_cap_still_refuses_and_reaps_fake) ... FAIL
+test_native_primitive_uses_identity_ready_register_release_actual_wait (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_primitive_uses_identity_ready_register_release_actual_wait) ... ok
+test_native_ready_refusal_keeps_failure_identity_without_direct_fallback (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_ready_refusal_keeps_failure_identity_without_direct_fallback) ... ok
+test_native_timeout_kills_only_owned_fake_and_keeps_wait_status (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_timeout_kills_only_owned_fake_and_keeps_wait_status) ... ok
+test_wait_error_keeps_already_received_raw_bytes_and_remains_adverse (test_mac_lifecycle_native.NativeWaitErrorFixture.test_wait_error_keeps_already_received_raw_bytes_and_remains_adverse) ... ok
+
+======================================================================
+FAIL: test_native_output_cap_still_refuses_and_reaps_fake (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_output_cap_still_refuses_and_reaps_fake)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_mac_lifecycle_native.py", line 67, in test_native_output_cap_still_refuses_and_reaps_fake
+    self.assertTrue(r['oversized'],r);self.assertTrue(r['cleanupKnown'],r)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'spawnedHelperPid': 74435, 'observerPid': 74419, 'exitCode': -9, 'timedOut': True, 'oversized': False, 'cleanupKnown': True, 'stdout': b'', 'stderrBytes': 0, 'managedLeaseId': 'db666b14a2e64aada829829649c56089', 'durationSeconds': 0.5074659989913926}
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.431s
+
+FAILED (failures=1)

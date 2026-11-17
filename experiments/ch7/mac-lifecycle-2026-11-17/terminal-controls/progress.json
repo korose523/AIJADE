@@ -1,0 +1,228 @@
+{
+  "schema": "aijade.ch7.lifecycle-terminal-negative-controls.v1",
+  "status": "RUNNING",
+  "originalManifestSha256": "ea6c32940112727907ea41f4d260a4a7a81f3cdc9233661d9b8a14472417feaa",
+  "newObservation": false,
+  "qualification": false,
+  "live19CorruptionControls": "NOT_RUN",
+  "rows": [
+    {
+      "index": 1,
+      "name": "boolean_false_as_completed_row_counter",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/receipt.json"
+      ],
+      "expectedReason": "TERMINAL_INTEGER",
+      "actualReason": "TERMINAL_INTEGER:completedConditionRows",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 0,
+        "fresh": 294
+      }
+    },
+    {
+      "index": 2,
+      "name": "qualification_claim_from_terminal_stop",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/receipt.json"
+      ],
+      "expectedReason": "TERMINAL_NOT_QUALIFIED",
+      "actualReason": "TERMINAL_NOT_QUALIFIED",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 3,
+      "name": "coherent_294_stream_accepted_claim",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/preflight-continuity.json",
+        "qualification/settling/receipt.json"
+      ],
+      "expectedReason": "PARTIAL_INTEGER",
+      "actualReason": "PARTIAL_INTEGER:validatedSamples",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 4,
+      "name": "prepared_empty_admission_relabelled_as_run",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/admission/telemetry.jsonl"
+      ],
+      "expectedReason": "ADMISSION_EMPTY_PREPARED_ONLY",
+      "actualReason": "ADMISSION_EMPTY_PREPARED_ONLY",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 5,
+      "name": "20_unknown_instead_of_unattempted",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/receipt.json"
+      ],
+      "expectedReason": "KNOWN20_DISPOSITION",
+      "actualReason": "KNOWN20_DISPOSITION",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 6,
+      "name": "last_required_raw_observation_removed",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/settling/telemetry.jsonl.gz"
+      ],
+      "expectedReason": "CONTIGUOUS_RAW294",
+      "actualReason": "CONTIGUOUS_RAW294",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 7,
+      "name": "sampled_api_actual_body_coherently_nonempty",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "metadata/directory-state.json",
+        "qualification/settling/telemetry.jsonl.gz"
+      ],
+      "expectedReason": "raw replay errors",
+      "actualReason": "raw replay errors preserved in checkpoint",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 8,
+      "name": "archived_audit_falsely_certifies_qualification",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "audit/independent-lifecycle-refusal-audit.json"
+      ],
+      "expectedReason": "ARCHIVED_INDEPENDENT_REPORT_CHANGED",
+      "actualReason": "ARCHIVED_INDEPENDENT_REPORT_CHANGED",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 9,
+      "name": "frozen_guard_comment_change_manifest_rebound",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "source/experiments/ch7/mac_process_guard_v3.py"
+      ],
+      "expectedReason": "SOURCE_GIT_BYTES",
+      "actualReason": "SOURCE_GIT_BYTES:experiments/ch7/mac_process_guard_v3.py",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 10,
+      "name": "old_fact_changed_same12352_population",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "metadata/facts-baseline.json"
+      ],
+      "expectedReason": "FACTS_BASELINE12352",
+      "actualReason": "FACTS_BASELINE12352",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 11,
+      "name": "empty_prepared_admission_artifact_omitted",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/admission/telemetry.jsonl"
+      ],
+      "expectedReason": "LOGICAL_REPRESENTATION_NOT_UNIQUE",
+      "actualReason": "LOGICAL_REPRESENTATION_NOT_UNIQUE:qualification/admission/telemetry.jsonl",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    },
+    {
+      "index": 12,
+      "name": "extra_cleanup_success_refusal_sidecar",
+      "baselineAccepted": true,
+      "mutationWasEffective": true,
+      "manifestCoherentlyRebound": true,
+      "changedPaths": [
+        "qualification/launch-refused-control.json"
+      ],
+      "expectedReason": "UNEXPECTED_FALLBACK_OR_WORKLOAD_FILE",
+      "actualReason": "UNEXPECTED_FALLBACK_OR_WORKLOAD_FILE",
+      "rejected": true,
+      "passed": true,
+      "baselineReplayCache": {
+        "hits": 294,
+        "fresh": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "aijade.ch7.phase-continuity-preflight.v1",
+  "status": "PREFLIGHT_REFUSED",
+  "phases": {
+    "settling": {
+      "status": "PREFLIGHT_REFUSED",
+      "samples": 294,
+      "validatedSamples": 293,
+      "expectedSamples": 300,
+      "elapsedSeconds": null,
+      "minimumAvailableBytes": 6855667712,
+      "minimumSwapUsedBytes": 645922816,
+      "maximumSwapUsedBytes": 645922816,
+      "swapRangeBytes": 0,
+      "phaseClock": {
+        "startMonotonic": 181956.412783903,
+        "endMonotonic": null,
+        "requestedSeconds": 600,
+        "intervalReset": false
+      },
+      "coverage": {
+        "samples": 294,
+        "maximumGapSeconds": 2.427652179991128,
+        "firstElapsedSeconds": 0.0007071869913488626,
+        "lastElapsedSeconds": 598.3867839559971,
+        "coverageComplete": false
+      }
+    }
+  },
+  "eventCount": 295,
+  "samples": 294,
+  "validatedSamples": 293,
+  "maximumGlobalGapSeconds": 2.427652179991128,
+  "lastSample": {
+    "sampleId": "9dd5557f714840b28a8787b6f31c4951",
+    "globalIndex": 293,
+    "monotonicSeconds": 182554.799567859,
+    "observationCompletedMonotonic": 182556.749498879
+  },
+  "runtimeHandoffAnchor": null,
+  "windowReset": false,
+  "schedule": {
+    "originMonotonic": 181956.412783903,
+    "intervalSeconds": 2,
+    "maximumGapSeconds": 3,
+    "settlingSeconds": 600,
+    "admissionSeconds": 120,
+    "intervalReset": false
+  },
+  "reasonCode": "INVALID_SAMPLE",
+  "reason": "ValueError: raw observation completed after the fixed phase deadline",
+  "refusedAtMonotonic": 182556.755333148
+}

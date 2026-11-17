@@ -1,0 +1,34 @@
+test_archive_local_copy_precedes_old_absolute_live_path (__main__.LifecycleAdapterControls) ... ok
+test_block_lifecycle_scope_excludes_parent_self (__main__.LifecycleAdapterControls) ... ok
+test_claimed_registry_finite_count_cannot_hide_missing_lease (__main__.LifecycleAdapterControls) ... ok
+test_complete_14_source_map_required (__main__.LifecycleAdapterControls) ... ok
+test_cross_block_dependency_substitution_refused (__main__.LifecycleAdapterControls) ... ok
+test_guard_hash_and_dependency_map_must_agree (__main__.LifecycleAdapterControls) ... ok
+test_legacy_guard_signature_is_unchanged (__main__.LifecycleAdapterControls) ... ok
+test_malformed_preferred_copy_cannot_fall_back_to_valid_live (__main__.LifecycleAdapterControls) ... FAIL
+test_only_missing_archives_allow_original_local_fallback (__main__.LifecycleAdapterControls) ... ok
+test_parent_archive_copy_precedes_live_path_for_block (__main__.LifecycleAdapterControls) ... ok
+test_prefix_size_sha_and_record_boundary_are_bound (__main__.LifecycleAdapterControls) ... ok
+test_preflight_anchor_substitution_refused_after_full_delegate (__main__.LifecycleAdapterControls) ... ok
+test_sequence_lifecycle_requires_entire_journal_closure (__main__.LifecycleAdapterControls) ... ok
+test_symbolic_link_is_not_an_archive_copy (__main__.LifecycleAdapterControls) ... ok
+test_v3_continuity_replays_idle_rows_and_actual_runtime_handoff (__main__.LifecycleAdapterControls) ... ok
+test_v3_guard_receives_original_bytes_explicitly (__main__.LifecycleAdapterControls) ... ok
+test_versioned_plan_path_keeps_old_decisions_distinct (__main__.LifecycleAdapterControls) ... ok
+
+======================================================================
+FAIL: test_malformed_preferred_copy_cannot_fall_back_to_valid_live (__main__.LifecycleAdapterControls)
+----------------------------------------------------------------------
+ValueError: sequence lifecycle population changed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_finite_lifecycle_integration.py", line 117, in test_malformed_preferred_copy_cannot_fall_back_to_valid_live
+    audit.lifecycle_journal_bytes(self.root, receipt)
+AssertionError: "bytes/SHA" does not match "sequence lifecycle population changed"
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.138s
+
+FAILED (failures=1)

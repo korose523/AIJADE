@@ -1,0 +1,208 @@
+{
+  "schema": "aijade.mac-lifecycle-owned-implementation-controls.v1",
+  "status": "OWNED_SOURCE_OFFLINE_AND_DISPOSABLE_CONTROLS_PASS_NO_LIVE_QUALIFICATION",
+  "checkedAt": "2026-11-16T23:23:00.760633+00:00",
+  "repository": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree",
+  "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+  "planSha256": "1599aa06b81a4a8ea97a36e70f5a76aec5b70eb5c43f8e687c5addfaf5c35c72",
+  "ownedFiles": {
+    "experiments/ch7/process_lifecycle.py": {
+      "sha256": "4f8adce77c5a955b85e563b9ea535383af0fec51d710877e2e481c272d6e90d1",
+      "bytes": 38484
+    },
+    "experiments/ch7/mac_process_guard_v3.py": {
+      "sha256": "564c53757bde49acc08abfb3283d675c6524567cfbf132ac56c313bcc142e7f6",
+      "bytes": 54320
+    },
+    "experiments/ch7/lifecycle_exec.py": {
+      "sha256": "eec4acced93bcd7a2f0278d54a988ece9236dcfeb9af620f732ad15ae6b86c74",
+      "bytes": 946
+    },
+    "tests/shell/test_mac_lifecycle_guard.py": {
+      "sha256": "c044aa05b470cbabe2cf7cfe3facf7fbf284e99a8cfc9d87fab340453a9229ba",
+      "bytes": 12877
+    },
+    "tests/shell/test_process_lifecycle.py": {
+      "sha256": "f05267883dfc579beb650c11bfc0c8d9b8c6b16a2e36ca11aac00d18c6e82549",
+      "bytes": 8037
+    }
+  },
+  "originalV1V2NativePreservedByteExact": {
+    "experiments/ch7/mac_process_guard.py": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+    "experiments/ch7/mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+    "experiments/ch7/mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+  },
+  "finalSourceCapture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/final-owned-implementation",
+  "tests": {
+    "guardOfflineFixtures": 18,
+    "macDisposableAndSemanticProcessControls": 13,
+    "totalOwn": 31,
+    "passedOwn": 31,
+    "failedOwn": 0,
+    "portableFakeControls": true,
+    "macOnlyControlsExplicitlySkippedOutsideDarwin": true,
+    "linuxCiExecutedByThisAgent": false,
+    "finalLogs": [
+      "lifecycle-controls-attempt-05-guard.log",
+      "lifecycle-controls-attempt-05-process.log"
+    ],
+    "earlierFailuresRetained": true
+  },
+  "semantics": {
+    "persistentRootMissingAdverse": true,
+    "directFiniteActualWaitRequired": true,
+    "managedWaitReapedProvesOnlyExactIdentityAbsence": true,
+    "waitZeroDoesNotRepairUnknownRss": true,
+    "discoveredAncestryProvenance": true,
+    "discoveredAbsenceExitStatus": "UNKNOWN",
+    "scopeResponsibilitiesUseOriginalRawIdentityChain": true,
+    "partialMembershipDiagnosticOnly": true,
+    "wholeRssUnknownIsNull": true,
+    "explicitRegistrationCannotBeSuppressedByDiscovery": true,
+    "identityReadyBeforeExec": true,
+    "originalArgv0AndVirtualenvPreserved": true,
+    "kernelPollSeparateFromMetadata": true,
+    "wholeObservationIncludesPostprocessing": true,
+    "maximumLockWaitSeconds": 1.25,
+    "maximumCompleteObservationSeconds": 2.5,
+    "nativeApiListenerBoundsUnchanged": true
+  },
+  "complexity": {
+    "syntheticEvents": 4322,
+    "finiteFixtureTasks": 1440,
+    "firstAttempt": "SEMANTIC_PASS_PERFORMANCE_REFUSED_BEFORE_QUALIFICATION",
+    "firstThreeReplayMaximumSeconds": 7.530304629995953,
+    "finalReaderCost": {
+      "one_full_guard": {
+        "repetitions": 5,
+        "seconds": [
+          0.3249562529963441,
+          0.3323060690017883,
+          0.32233402199926786,
+          0.3287760370003525,
+          0.32454310002503917
+        ],
+        "maximumSeconds": 0.3323060690017883,
+        "medianSeconds": 0.3249562529963441
+      },
+      "guard_and_outer_full_replay": {
+        "repetitions": 5,
+        "seconds": [
+          0.6493177629890852,
+          0.6574338329955935,
+          0.6667506560042966,
+          0.6285482240200508,
+          0.622274004999781
+        ],
+        "maximumSeconds": 0.6667506560042966,
+        "medianSeconds": 0.6493177629890852
+      },
+      "legacy_three_full_replays": {
+        "repetitions": 5,
+        "seconds": [
+          0.9925165539898444,
+          0.9745996400015429,
+          1.0100366740080062,
+          1.0012368219904602,
+          0.9701786299992818
+        ],
+        "maximumSeconds": 1.0100366740080062,
+        "medianSeconds": 0.9925165539898444
+      }
+    },
+    "cachedAppendStressReport": "lifecycle-complexity-attempt-02.json",
+    "currentPrefixValidation": "Exact old-prefix byte equality plus stable inode; only new JSON event tail is replayed, every raw archive replay remains full.",
+    "scope": "Synthetic CPU/IO controls only; not a live sampler/admission/resource guarantee."
+  },
+  "failureSourceProvenance": {
+    "originalPerformance01SourceCapturedAtStart": false,
+    "reconstructedCandidate": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/failure-candidates/complexity-attempt-01-reconstructed",
+    "reconstructedProvenance": "RECONSTRUCTED_FROM_EDIT_HISTORY_NOT_CONTEMPORANEOUS_CAPTURE",
+    "wholeOriginalByteEqualityNotIndependentlyVerified": true,
+    "reconstructedMechanismReplay": "Three full raw guard replays6.698880048seconds; no observer/native/model.",
+    "currentActualSourceBytesCaptured": true,
+    "earlierFunctionalTestFailures": "Logs01 and04 retain all failures.01contains true argv0/venv compatibility fault plus fixture/exception checks;04overlapped independent audit ancestry fixture migration. No failed result was overwritten."
+  },
+  "runtime": {
+    "status": "EXISTING_PROJECT_RUNTIME_REUSED_NO_INSTALL",
+    "failedProbes": [
+      {
+        "python": "/usr/bin/python3",
+        "exitCode": 1,
+        "error": "ModuleNotFoundError: No module named 'psutil'"
+      },
+      {
+        "python": "/Volumes/Untitled/AIJADE/.runtime/python-envs/video-asr-20261116/bin/python",
+        "exitCode": 1,
+        "error": "ModuleNotFoundError: No module named 'psutil'"
+      }
+    ],
+    "selectedPython": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python",
+    "selectedVersion": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+    "psutilVersion": "7.2.2",
+    "newPackagesInstalled": 0,
+    "observations": 0
+  },
+  "evidenceLogs": {
+    "lifecycle-controls-attempt-01.log": {
+      "sha256": "affaba263fc488f11ffd3505b6dbbe6b845dbff04ab6a80895fd7f4223a2a142",
+      "bytes": 15424
+    },
+    "lifecycle-controls-attempt-02.log": {
+      "sha256": "48947c54f710189af7b6a93f4b2a17ee049bd695f913641ad9a4c9ef3238e35b",
+      "bytes": 13078
+    },
+    "lifecycle-controls-attempt-03.log": {
+      "sha256": "d4937642340570f72741ffeb2b00202a96be41d1139469a09aa1f16754cc60cb",
+      "bytes": 17862
+    },
+    "lifecycle-controls-attempt-04.log": {
+      "sha256": "ebfd2a6c0766e8ffea73d535903db44c6463c236c91b4d165231111123d808aa",
+      "bytes": 26784
+    },
+    "lifecycle-controls-attempt-05-guard.log": {
+      "sha256": "77fbbd58ebd4a86765d7c25b939f02158996e008955bf72839e07a11a03547a3",
+      "bytes": 2959
+    },
+    "lifecycle-controls-attempt-05-process.log": {
+      "sha256": "55c80e11166cc0da22e8e30cb92c2734bbca3da18fbb1c8282a4af6334792496",
+      "bytes": 2236
+    },
+    "lifecycle-dummy-attempt-01.log": {
+      "sha256": "54da5d516336e953a578c1def103bedd85586eed6d05a4974cde8213863d8234",
+      "bytes": 792
+    },
+    "lifecycle-stress-attempt-01.log": {
+      "sha256": "b56df9d5c2bdce48a66d8ff5915eabe18c27f162e95a6ee033d660116749c358",
+      "bytes": 1986
+    },
+    "lifecycle-stress-attempt-02.log": {
+      "sha256": "65e759e55986d265771cb3e13bde22761a00b944546b37b0f2631d3275f50dba",
+      "bytes": 2005
+    },
+    "lifecycle-complexity-final-reader.log": {
+      "sha256": "9cf1a63b8e471d815e7f5b828154ff27f5b6b48560ee60ee75e09ca015b5bc04",
+      "bytes": 1940
+    },
+    "reconstructed-complexity01-replay.log": {
+      "sha256": "088331df658f626899079eacfb07d16684910db2b09d875d06ddb9b8513982e5",
+      "bytes": 502
+    }
+  },
+  "notPerformed": {
+    "actualObserverSnapshots": 0,
+    "nativeHelpersExecuted": 0,
+    "realListenerOrModelApiQueries": 0,
+    "qualificationWindows": 0,
+    "rendererRuns": 0,
+    "modelCalls": 0,
+    "gitCommits": 0,
+    "docsOrPolicyEdits": 0
+  },
+  "remainingGates": [
+    "Root integration/source-bound regression and independent lifecycle/continuity replays.",
+    "Freeze and publish actual Q3/B3/policy before the separately bounded engineering capture.",
+    "Real short source-bound engineering capture (Root only) remains NOT_RUN by this agent and is not admission.",
+    "One complete prospective qualification only after all prerequisites;40pair construction remains conditional and NOT_RUN."
+  ]
+}

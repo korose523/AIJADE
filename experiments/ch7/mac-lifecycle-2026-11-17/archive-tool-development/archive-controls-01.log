@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/refusal_negative_controls.py", line 211, in <module>
+    run(args.root.resolve(), args.repo.resolve(), args.output.resolve())
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/refusal_negative_controls.py", line 170, in run
+    status='RUNNING', originalManifestSha256=audit.sha((root / 'manifest.json').read_bytes()),
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/packet/manifest.json'

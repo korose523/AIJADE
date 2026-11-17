@@ -1,0 +1,73 @@
+{
+  "schema": "aijade.ch7.finite-block-lifecycle-integration.v1",
+  "checkedAt": "2026-11-16T23:06:41.043088+00:00",
+  "status": "OFFLINE_WIRING_CONTROLS_PASS_SOURCE_CHAIN_REVIEWED_NOT_LIVE",
+  "ownedFiles": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/run_finite_block.py",
+      "sha256": "0cdbf00c1aab9172e67bbbc9a77ba98dccdaebf7c9ca4d0e358d5d12514e699c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_finite_block_lifecycle.py",
+      "sha256": "a14986ded6ecbbe1f4251f0365a88ba1a508c2839776815e25899652b08f08f5"
+    }
+  ],
+  "controls": {
+    "passed": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "python": "3.12.14",
+    "psutil": "7.2.2",
+    "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/block-lifecycle-controls-02.log",
+    "logSha256": "e79f6ac7a88b368ba75ce636fc7fd4353ca3b2a6ab661c69dfd84936b39593ad",
+    "firstImportFailurePreserved": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/block-lifecycle-controls-01.log"
+  },
+  "changes": [
+    "Open/reuse local v3 lifecycle scope before the first Git precondition. All block Git calls route through managed_check_output.",
+    "Reuse inherited registry and policy lock; v3 observe receives lifecycle and does not double-remember observations.",
+    "Direct flow/renderer commands use identity-ready registry.launch+register(handle); recorded creation identity comes from the lease rather than a racy PID reread.",
+    "Database cleanup uses registry.run. Process/database/terminal-sample/registry failures are accumulated independently; the existing monitor is always asked to finish once.",
+    "Final local scope closes on both normal and precondition/error paths, and receipt records exact shared-journal prefix bytes/SHA. Global later append does not change bound prefix.",
+    "Legacy launch/registry/observer paths retained; godot_local.py untouched; original renderer descendants retain discovered-only evidence semantics.",
+    "All declared v3 source dependencies are included in input liveSources."
+  ],
+  "readOnlyChainReview": {
+    "status": "CURRENT_SOURCE_WIRING_CONSISTENT_NOT_LIVE_INTEROPERABILITY",
+    "checkedSources": [
+      {
+        "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/run_finite_sequence.py",
+        "sha256": "d8a19cb6835c2fbab4df8066ab26c2b8b7630852b5f6e92b60c8a54c468834c1"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_runtime.py",
+        "sha256": "e0f33b1c7ab95031293263f504192f0d431562e56dfac49cbbfed648f706d87c"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/process_lifecycle.py",
+        "sha256": "3f6c584c754c3965eb9d8a47978f6994acffdb9d9972294b38fe562e1b93bab5"
+      }
+    ],
+    "findings": [
+      "Sequence and block call setup_lifecycle before their first Git command; shared merge-base uses managed_run.",
+      "Parent and block register the same managed handle and obtain identity from its immutable ready lease.",
+      "Registry launch now carries declared stage to child environment; inherited local from_environment opens its own scope against the parent finite lease.",
+      "Both monitors use the same policy/native-path-derived coordination lock and source/policy/run journal; no v3 duplicate remember.",
+      "Block closes only its local scope; its parent finite WAIT belongs to the sequence. Block receipt binds prefix bytes; sequence finalization archives complete immutable journal including root close."
+    ],
+    "blockingIssueFound": false
+  },
+  "diffCheck": {
+    "command": "git diff --check -- experiments/ch7/run_finite_block.py tests/shell/test_finite_block_lifecycle.py",
+    "exitCode": 0
+  },
+  "scope": {
+    "observerCalls": 0,
+    "scientificWindows": 0,
+    "modelCalls": 0,
+    "rendererRuns": 0,
+    "docsEdited": false,
+    "otherRootFilesEdited": false,
+    "commitPerformed": false
+  }
+}

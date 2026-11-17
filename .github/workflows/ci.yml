@@ -108,3 +108,14 @@ jobs:
           mkdir -p .runtime/mac-bulk-refusal
           python3 -B experiments/ch7/mac-census-2026-11-16/audit.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/audit.json
           python3 -B experiments/ch7/mac-census-2026-11-16/refusal_negative_controls.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/controls.json --temp-root .runtime/mac-bulk-refusal/disposable
+      - name: Materialize exact typed-lifecycle implementation for offline terminal replay
+        uses: actions/checkout@v7
+        with:
+          ref: 0c42cc29c64730131466af6b079a900005713cba
+          path: .runtime/ch7-mac-lifecycle-source
+          persist-credentials: false
+      - name: Fetch frozen lifecycle plan and binary publication
+        run: git -C .runtime/ch7-mac-lifecycle-source fetch --no-tags --depth=1 origin 9f3a5ead4ca63f489399907fe2e2a8d2aecbab68 efbcfa0196cbc69bd24cad5b03f01b5078898b7b
+      - name: Replay all lifecycle terminal evidence and twelve coherent archive corruptions
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-lifecycle-2026-11-17/refusal_negative_controls.py --root experiments/ch7/mac-lifecycle-2026-11-17/packet --repo .runtime/ch7-mac-lifecycle-source --output .runtime/mac-lifecycle-refusal-controls

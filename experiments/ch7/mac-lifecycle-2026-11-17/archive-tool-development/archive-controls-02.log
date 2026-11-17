@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/refusal_negative_controls.py", line 211, in <module>
+    run(args.root.resolve(), args.repo.resolve(), args.output.resolve())
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/refusal_negative_controls.py", line 178, in run
+    audit.need(baseline['terminalRecordIntegrityAccepted'] is True and baseline['fullQualified'] is False,
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/audit.py", line 45, in need
+    raise Refused(code)
+audit.Refused: CONTROL_BASELINE_MUST_ACCEPT_TERMINAL_RECORD:boolean_false_as_completed_row_counter

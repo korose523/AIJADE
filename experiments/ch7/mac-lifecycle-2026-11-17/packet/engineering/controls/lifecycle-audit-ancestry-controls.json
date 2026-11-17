@@ -1,0 +1,73 @@
+{
+  "schema": "aijade.ch7.lifecycle-independent-ancestry-audit-controls.v1",
+  "checkedAt": "2026-11-16T23:18:16.848041+00:00",
+  "status": "OFFLINE_CONTROLS_PASS_ANCESTRY_SCOPE_CLOSED_NOT_QUALIFICATION",
+  "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+  "ownedSources": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py",
+      "sha256": "c34e5fd64a69863e01c804e12e1c4b20541debb276156bbc392757aab6b0f967"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_continuity.py",
+      "sha256": "72747eef972f82462cc8602500bbe313bd4e6baaa006611ae24df4890c094de7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py",
+      "sha256": "d5193b70dee9b8a81f7b757f250bc27fd24c06fbf8dd6e40b13437a0e755174d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_raw.py",
+      "sha256": "006c9d092060697e9601d2d404c5b98fbdefae3827e008f3ae51daf2901a7425"
+    }
+  ],
+  "blockAndTargetedBlockTestsRemainFrozen": true,
+  "controls": {
+    "tests": 58,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "continuity": 22,
+    "journalAndScope": 30,
+    "fullSerializedNativeApiJournalReplay": 6,
+    "finalLogPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-ancestry-controls-04.log",
+    "finalLogSha256": "9029a98b9f8c9032374424eb60d6946a5f8e82383b4a6b663c2cb69c6dc2c0b6",
+    "firstFailedAttemptPreserved": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-ancestry-controls-01.log",
+    "firstFailureReason": "An intended foreign ancestry control used a fake parent creation time before its claimed parent root, so producer structural checks rejected fixture construction. The coherent fixture was repaired; no audit criterion was relaxed."
+  },
+  "newApi": "verify_lifecycle(journal,samples,*,source_commit,policy_sha256,policy,controller=None,require_cleanup=True,scope_id=None,ancestry_samples=None,ancestry_journal=None)",
+  "contracts": [
+    "Principal journal remains the block receipt exact cutoff prefix. Supplemental full journal must start with identical principal bytes and retain exact Q/policy/run. Final cleanup state comes only from the principal prefix.",
+    "Every principal DISCOVER supplies scopeId and complete identity ancestry from node to the exact observing controller. Structural hash/event replay alone is insufficient.",
+    "Before excluding any discovery from a local scope, independently bind its sampleId/phase/native SHA/actual graph envelope/scope/writer, then reconstruct every parent PID and creation identity from its original complete native graph.",
+    "Historical ancestry membership establishes local cleanup responsibility. An identity is relevant if any verified chain identity intersects local self or managed descendants, even when the parent monitor discovered it first.",
+    "A parent-owned sibling is excluded only after its actual raw chain is verified; missing frames or coherently forged creation identity cannot shrink responsibility.",
+    "Additional context samples are guard/native replayed but do not contribute local RSS peaks, sample population, or future cleanup completion. Repeated sample IDs require exact whole outer raw-row equality.",
+    "Managed actual parent wait/reap and discovered-only native absence with UNKNOWN exit remain distinct; reparent responsibility and unknown RSS constraints retained."
+  ],
+  "criticalControls": [
+    "test_25_coherently_rebound_parent_creation_cannot_forge_ancestry",
+    "test_26_parent_owned_sibling_does_not_block_local_scope_cleanup",
+    "test_27_parent_first_discovered_block_descendant_remains_local_responsibility",
+    "test_28_missing_parent_source_frame_cannot_shrink_local_responsibility",
+    "test_29_coherent_fake_chain_excluding_block_is_rejected_before_scope_filter",
+    "test_30_context_same_observer_id_cannot_change_outer_raw_record",
+    "test_lifecycle_audit_raw.test_05_complete_raw_discovered_ancestry_and_unknown_exit_absence",
+    "test_lifecycle_audit_raw.test_06_coherent_fake_parent_creation_fails_full_native_ancestry_replay"
+  ],
+  "fullRawFixtureEntry": "tests/shell/test_lifecycle_audit_raw.py:ancestry_fixture() returns serialized synthetic original native/API/journal evidence; no audit/guard/native parser is mocked.",
+  "scope": {
+    "observerCalls": 0,
+    "nativeHelperRuns": 0,
+    "modelCalls": 0,
+    "rendererRuns": 0,
+    "scientificWindows": 0,
+    "blockEditedInThisTask": false,
+    "docsEdited": false,
+    "oldFactsOrPacketsChanged": false,
+    "commitPerformed": false,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false,
+    "heldoutComparisonComplete": false
+  }
+}

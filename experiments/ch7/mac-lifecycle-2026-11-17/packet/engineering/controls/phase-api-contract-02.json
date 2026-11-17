@@ -1,0 +1,172 @@
+{
+  "schema": "aijade.ch7.phase-continuity.api-contract.v1",
+  "engineeringOnly": true,
+  "scientificObservation": false,
+  "signature": "run_preflight(sampler, validator, writers, *, event_writer, settling_seconds=600, clock=time.monotonic, sleeper=time.sleep)",
+  "writers": "Prepared callable dict with settling/admission keys; settling is unnecessary in formal-only mode. Callbacks must complete durable writes before returning.",
+  "validator": "Must independently verify each original raw observation or raise. Process/API/ownership policy remains bound by Root. Controller separately enforces empty idle roots/processes, identity, clocks, memory and swap.",
+  "sampleWriteTiming": "Raw contains writerStartedMonotonic; only the subsequent sample-written event contains the actual writerCompletedMonotonic. The callback serialization is never backdated or mutated after it returns.",
+  "sampleIdentity": "raw.sampleId is taken from processObservation.sampleId when absent; both must match when supplied. Unique within the bounded preflight.",
+  "stateComplexity": "Coverage/resource aggregation is O(1); no raw sample list or whole-log replay. The distinct sample-ID set is bounded by exactly360 or60 planned samples.",
+  "eventPathSuggestion": "phase-events.jsonl, prepared before the window",
+  "exampleResult": {
+    "schema": "aijade.ch7.phase-continuity-preflight.v1",
+    "status": "PREFLIGHT_COMPLETE_ADMITTED",
+    "phases": {
+      "settling": {
+        "status": "FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION",
+        "samples": 300,
+        "validatedSamples": 300,
+        "expectedSamples": 300,
+        "elapsedSeconds": 600.0,
+        "minimumAvailableBytes": 5368709120,
+        "minimumSwapUsedBytes": 20,
+        "maximumSwapUsedBytes": 20,
+        "swapRangeBytes": 0,
+        "phaseClock": {
+          "startMonotonic": 1000.0,
+          "endMonotonic": 1600.0,
+          "requestedSeconds": 600,
+          "intervalReset": false
+        },
+        "coverage": {
+          "samples": 300,
+          "maximumGapSeconds": 2.0,
+          "firstElapsedSeconds": 0.0,
+          "lastElapsedSeconds": 598.0,
+          "coverageComplete": true
+        }
+      },
+      "admission": {
+        "status": "ADMITTED",
+        "samples": 60,
+        "validatedSamples": 60,
+        "expectedSamples": 60,
+        "elapsedSeconds": 120.0,
+        "minimumAvailableBytes": 5368709120,
+        "minimumSwapUsedBytes": 20,
+        "maximumSwapUsedBytes": 20,
+        "swapRangeBytes": 0,
+        "phaseClock": {
+          "startMonotonic": 1600.1,
+          "endMonotonic": 1720.1,
+          "requestedSeconds": 120,
+          "intervalReset": false
+        },
+        "coverage": {
+          "samples": 60,
+          "maximumGapSeconds": 2.0,
+          "firstElapsedSeconds": 0.0,
+          "lastElapsedSeconds": 117.90000000000009,
+          "coverageComplete": true
+        }
+      }
+    },
+    "eventCount": 363,
+    "samples": 360,
+    "validatedSamples": 360,
+    "maximumGlobalGapSeconds": 2.099999999999909,
+    "lastSample": {
+      "sampleId": "00000000000000000000000000000167",
+      "globalIndex": 359,
+      "monotonicSeconds": 1718.0,
+      "observationCompletedMonotonic": 1718.4
+    },
+    "runtimeHandoffAnchor": {
+      "lastSampleMonotonic": 1718.0,
+      "lastSampleId": "00000000000000000000000000000167",
+      "lastGlobalIndex": 359,
+      "phaseEndMonotonic": 1720.1,
+      "handoffRecordedMonotonic": 1720.1
+    },
+    "windowReset": false,
+    "schedule": {
+      "originMonotonic": 1000.0,
+      "intervalSeconds": 2,
+      "maximumGapSeconds": 3,
+      "settlingSeconds": 600,
+      "admissionSeconds": 120,
+      "intervalReset": false
+    }
+  },
+  "exampleRawSample": {
+    "availableBytes": 5368709120,
+    "swapUsedBytes": 20,
+    "processObservation": {
+      "sampleId": "0000000000000000000000000000012c",
+      "ownedRoots": [],
+      "ownedProcesses": [],
+      "status": "PASS"
+    },
+    "phase": "admission",
+    "globalIndex": 300,
+    "sampleId": "0000000000000000000000000000012c",
+    "globalScheduledMonotonic": 1600.0,
+    "monotonicSeconds": 1600.1,
+    "elapsedSeconds": 0.0,
+    "scheduledSeconds": 0,
+    "observationCompletedMonotonic": 1600.5,
+    "observationDurationSeconds": 0.40000000000009095,
+    "validatorStartedMonotonic": 1600.5,
+    "validatorCompletedMonotonic": 1600.52,
+    "streamValidationStatus": "PASS",
+    "writerStartedMonotonic": 1600.52
+  },
+  "exampleEvents": {
+    "entry": {
+      "schema": "aijade.ch7.phase-continuity-event.v1",
+      "eventIndex": 0,
+      "event": "phase-enter",
+      "monotonicSeconds": 1000.0,
+      "phase": "settling",
+      "actualStartMonotonic": 1000.0
+    },
+    "sampleWritten": {
+      "schema": "aijade.ch7.phase-continuity-event.v1",
+      "eventIndex": 1,
+      "event": "sample-written",
+      "monotonicSeconds": 1000.43,
+      "phase": "settling",
+      "globalIndex": 0,
+      "sampleId": "00000000000000000000000000000000",
+      "writerStartedMonotonic": 1000.42,
+      "writerCompletedMonotonic": 1000.43,
+      "validatorStartedMonotonic": 1000.4,
+      "validatorCompletedMonotonic": 1000.42
+    },
+    "boundary": {
+      "schema": "aijade.ch7.phase-continuity-event.v1",
+      "eventIndex": 301,
+      "event": "phase-boundary",
+      "monotonicSeconds": 1600.1,
+      "fromPhase": "settling",
+      "toPhase": "admission",
+      "actualExitMonotonic": 1600.0,
+      "actualEntryMonotonic": 1600.1
+    },
+    "exit": {
+      "schema": "aijade.ch7.phase-continuity-event.v1",
+      "eventIndex": 362,
+      "event": "phase-exit",
+      "monotonicSeconds": 1720.1,
+      "phase": "admission",
+      "actualEndMonotonic": 1720.1
+    }
+  },
+  "runtimeRequirement": "Root must apply0<=runtimeEpoch-admissionEnd<=3 and0<firstRuntimeSample.monotonicSeconds-anchor.lastSampleMonotonic<=3 using actual clocks. Returning preflight admission does not authorize dropping that independent handoff check.",
+  "files": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/phase_continuity.py",
+      "sha256": "a0669e697117082a7a79f625f2e68b5aa2bbdb894609b6cf9b351ef49252f46c",
+      "bytes": 16007
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_phase_continuity.py",
+      "sha256": "c13e18d29e86798c3bed62728f0f7fc963dc1c32385bfb38b3e1cd179d674a38",
+      "bytes": 16763
+    }
+  ],
+  "revision": 2,
+  "supersedes": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/phase-api-contract.json",
+  "boundarySemantics": "Exit and entry are separate actual clock reads. phase-boundary.monotonicSeconds equals actualEntryMonotonic; previous phaseClock.end equals actualExitMonotonic; next phaseClock.start equals actualEntryMonotonic. Require0<=entry-exit<=3 and independent adjacent raw sample starts<=3. Nominal global ticks never move; next deadline=realentry+120."
+}

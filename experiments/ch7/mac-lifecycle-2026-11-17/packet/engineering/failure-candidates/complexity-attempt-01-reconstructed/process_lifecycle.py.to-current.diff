@@ -1,0 +1,171 @@
+--- reconstructed-complexity01/process_lifecycle.py
++++ actual-current/process_lifecycle.py
+@@ -178,9 +178,11 @@
+     need(not raw or raw.endswith(b'\n'), 'truncated journal record')
+     if _prior is None:
+         events,leases,discovered,scopes=[],{},{},{}
++        identity_index={}
+         previous,prior_mono,context=ZERO,-1.0,None
+     else:
+         events,leases,discovered,scopes=(_prior[k] for k in ('events','leases','discovered','scopes'))
++        identity_index=_prior['identityIndex']
+         previous=events[-1]['sha256'] if events else ZERO
+         prior_mono=events[-1]['monotonicSeconds'] if events else -1.0
+         context=(_prior['runId'],_prior['sourceCommit'],_prior['policySha256']) if events else None
+@@ -214,11 +216,13 @@
+             else:
+                 identity_key(data['parentIdentity'])
+                 need(data['parentIdentity'] == event['writer'] and ident['parentPid'] == event['writer']['pid'], 'launch parent mismatch')
+-                need(any(identity_key(v['identity']) == identity_key(event['writer'])
+-                         and v.get('exitCode') is None for v in leases.values()), 'unowned writer launched a child')
+-            need(not any(identity_key(v['identity']) == identity_key(ident) for v in leases.values()), 'identity has multiple launch leases')
++                owner_id=identity_index.get(identity_key(event['writer']))
++                need(owner_id is not None and leases[owner_id].get('exitCode') is None,
++                     'unowned writer launched a child')
++            need(identity_key(ident) not in identity_index,'identity has multiple launch leases')
+             leases[lease_id] = dict(data, registerSeq=event['seq'],registerMonotonic=event['monotonicSeconds'],releaseSeq=None,
+                                     waitSeq=None, exitCode=None, absence=None)
++            identity_index[identity_key(ident)]=lease_id
+         elif name == 'RELEASE':
+             need(data.get('leaseId') in leases,'release before launch')
+             lease = leases[data['leaseId']]
+@@ -245,6 +249,20 @@
+             lease['absenceWitnessKind']='PARENT_WAIT_REAPED'
+         elif name == 'DISCOVER':
+             key = identity_key(data['identity'])
++            chain=data.get('ancestry')
++            need(type(chain) is list and len(chain)>=2 and chain[0]==data['identity']
++                 and chain[-1]==event['writer'],'discovery ancestry endpoints')
++            keys=[identity_key(v) for v in chain]
++            need(len(keys)==len(set(keys)) and all(a['parentPid']==b['pid']
++                 and b['createTimeMicros']<=a['createTimeMicros'] for a,b in zip(chain,chain[1:])),
++                 'discovery ancestry edges')
++            need(data.get('scopeId') in scopes and scopes[data['scopeId']]['controllerIdentity']==event['writer'],
++                 'discovery scope binding')
++            need(_hex(data.get('sampleId'),32) and data.get('phase') in ('before','after')
++                 and _hex(data.get('nativeStdoutSha256')) and _number(data.get('graphStartedMonotonic'))
++                 and _number(data.get('graphCompletedMonotonic'))
++                 and data['graphStartedMonotonic']<=data['graphCompletedMonotonic']<=event['monotonicSeconds'],
++                 'discovery raw source clock/identity')
+             discovered.setdefault(key, dict(data, eventSeq=event['seq']))
+         elif name in ('ABSENCE','DISCOVER_ABSENCE'):
+             key = identity_key(data['identity'])
+@@ -253,7 +271,7 @@
+             need(_number(data.get('graphStartedMonotonic')) and _number(data.get('graphCompletedMonotonic'))
+                  and data['graphStartedMonotonic']<=data['graphCompletedMonotonic']<=event['monotonicSeconds'],
+                  'absence graph clock/writer order')
+-            found = [v for v in leases.values() if identity_key(v['identity']) == key]
++            found = [leases[identity_index[key]]] if key in identity_index else []
+             need(name=='ABSENCE' or not found,'discovered absence cannot close a managed lease')
+             need(name=='ABSENCE' or key in discovered,'unknown discovered identity absence')
+             for lease in found:
+@@ -274,7 +292,8 @@
+             if data.get('parentLeaseId') is not None:
+                 need(leases[data['parentLeaseId']]['identity'] == event['writer'], 'scope parent lease mismatch')
+             else:
+-                need(any(v['role']=='controller' and v['identity']==event['writer'] for v in leases.values()), 'scope has no controller lease')
++                owner_id=identity_index.get(identity_key(event['writer']))
++                need(owner_id is not None and leases[owner_id]['role']=='controller', 'scope has no controller lease')
+             scopes[data['scopeId']] = dict(data, openSeq=event['seq'], closeSeq=None)
+         elif name == 'SCOPE_CLOSE':
+             scope = scopes[data['scopeId']]
+@@ -283,7 +302,7 @@
+         else:
+             raise ValueError('unknown lifecycle event')
+         events.append(event); previous=event['sha256']; prior_mono=event['monotonicSeconds']
+-    return dict(events=events,leases=leases,discovered=discovered,scopes=scopes,
++    return dict(events=events,leases=leases,discovered=discovered,scopes=scopes,identityIndex=identity_index,
+                 runId=context[0] if context else None,sourceCommit=context[1] if context else None,
+                 policySha256=context[2] if context else None,lastSequence=len(events),
+                 bytes=len(raw),sha256=digest(raw))
+@@ -357,7 +376,9 @@
+         if self._done.is_set():
+             if self._error:raise ValueError('finite wait evidence unknown') from self._error
+             return self.process.returncode
+-        return None
++        # Kernel liveness and metadata completion are separate. Never report an
++        # already reaped PID as alive and invite a cleanup signal to a reused PID.
++        return self.process.poll()
+     def wait(self,timeout=None):
+         if not self._done.wait(timeout):raise subprocess.TimeoutExpired(self.process.args,timeout)
+         if self._error:raise ValueError('finite wait evidence unknown') from self._error
+@@ -470,6 +491,7 @@
+         return self._lease(process.lease_id)
+ 
+     def launch(self,command,*,role='finite',stage=None,**kwargs):
++        need(not self.closed,'cannot launch after local persistent scope closes')
+         need(role in ('finite','controller') and type(command) in (list,tuple) and command
+              and all(type(x) is str and '\x00' not in x for x in command),'finite command schema')
+         need(not kwargs.get('shell') and not kwargs.get('preexec_fn') and not kwargs.get('pass_fds'), 'unsupported subprocess escape')
+@@ -551,23 +573,38 @@
+         need(self._policy is not None,'native policy must be bound before remembering frames')
+         import mac_process_guard_v3 as guard
+         state=self._state();known={identity_key(v['identity']):v for v in state['leases'].values()}
++        roots=guard._normalize_roots(observation['ownedRoots'])
++        need(not roots or (len(roots)==1 and roots[0]['pid']==self.writer['pid']
++             and round(roots[0]['createTime']*1000000)==self.writer['createTimeMicros']),
++             'observation local persistent root differs from exact self')
+         graphs=[]
+         for phase in ('before','after'):
+             frame=observation.get('evidence',{}).get(phase,{})
+             graph=frame.get('processGraph',{})
+             if graph.get('errors') or not graph.get('nativeCensus',{}).get('stdoutSha256'):continue
+             try:
+-                parsed,_=guard.parse_native_evidence(self._policy,graph['nativeCensus'])
++                parsed,collector=guard.parse_native_evidence(self._policy,graph['nativeCensus'])
+                 if parsed!=graph.get('nodes'):continue
+             except Exception:continue
+             nodes=graph.get('nodes');need(type(nodes) is list,'missing complete process nodes')
+             present={key_from_node(v):v for v in nodes};graphs.append((phase,graph,present))
+-            for row in frame.get('ownedProcesses',[]):
+-                if row.get('rssSource')=='native-collector-self':continue
+-                ident=dict(pid=row['pid'],createTimeMicros=round(row['createTime']*1000000),parentPid=row['parentPid'])
++            members=guard._owned_ids(parsed,roots);by_pid={v['pid']:v for v in parsed}
++            for row in parsed:
++                if row['pid'] not in members:continue
++                if row['pid']==collector['pid'] and key_from_node(row)==(collector['pid'],collector['createTimeMicros']):continue
++                ident=dict(pid=row['pid'],createTimeMicros=row['createTimeMicros'],parentPid=row['parentPid'])
+                 key=identity_key(ident)
+                 if key not in known and key not in state['discovered']:
++                    ancestry=[];cursor=row;seen=set()
++                    while True:
++                        current=dict(pid=cursor['pid'],createTimeMicros=cursor['createTimeMicros'],parentPid=cursor['parentPid'])
++                        need(identity_key(current) not in seen,'discovery ancestry cycle')
++                        seen.add(identity_key(current));ancestry.append(current)
++                        if identity_key(current)==identity_key(self.writer):break
++                        need(cursor['parentPid'] in by_pid,'discovery root ancestry incomplete')
++                        cursor=by_pid[cursor['parentPid']]
+                     self._append('DISCOVER',dict(identity=ident,sampleId=observation['sampleId'],phase=phase,
++                        scopeId=self.scope_id,ancestry=ancestry,
+                         nativeStdoutSha256=graph['nativeCensus']['stdoutSha256'],
+                         graphStartedMonotonic=frame['graphStartedMonotonic'],
+                         graphCompletedMonotonic=frame['graphCompletedMonotonic']))
+@@ -597,8 +634,9 @@
+     def close(self):
+         if not self.closed:self._append('SCOPE_CLOSE',dict(scopeId=self.scope_id));self.closed=True
+ 
+-    @_synchronized
+     def final(self):
++        for handle in self.handles:
++            if handle.process.returncode is not None:handle.wait(timeout=MAX_LOCK_WAIT)
+         state=self._state();mine={identity_key(self.writer)};changed=True
+         while changed:
+             before=len(mine)
+@@ -608,12 +646,15 @@
+         finite=[v for v in state['leases'].values() if identity_key(v['identity']) in mine and v['role']=='finite'
+                 and v['identity']!=self.writer]
+         unknown=[v for v in finite if v['waitSeq'] is None or v['absence'] is None or v['exitCode']!=0]
+-        unleased=[v for key,v in state['discovered'].items() if key not in
+-                  {identity_key(v['identity']) for v in state['leases'].values()} and v.get('absence') is None]
++        all_managed={identity_key(v['identity']) for v in state['leases'].values()}
++        local_discovered=[v for key,v in state['discovered'].items() if key not in all_managed and
++                          (not v.get('ancestry') or any(identity_key(i) in mine for i in v['ancestry']))]
++        unleased=[v for v in local_discovered if v.get('absence') is None]
+         self.close()
+         return dict(schema='aijade.process-lifecycle-final.v1',status='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT'
+                     if not unknown and not unleased else 'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE',
+                     scopeId=self.scope_id,scopeClosed=True,knownFiniteLeases=finite,unresolvedFiniteLeases=unknown,
++                    localDiscoveredIdentities=local_discovered,
+                     unleasedDiscoveredIdentities=unleased,remainingIdentities=[v['identity'] for v in unknown],
+                     lifecycleView=self.sample())
+ 

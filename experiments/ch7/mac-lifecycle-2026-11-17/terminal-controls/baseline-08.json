@@ -1,0 +1,283 @@
+{
+  "schema": "aijade.ch7.lifecycle-terminal-archive-audit.v1",
+  "terminalRecordIntegrityAccepted": true,
+  "fullQualified": false,
+  "formalHardwareQualification": false,
+  "heldoutComparisonComplete": false,
+  "independentHumanReview": false,
+  "status": "TERMINAL_REFUSAL_RECORD_INTEGRITY_ACCEPTED_NOT_QUALIFIED",
+  "payloadFiles": 350,
+  "manifestSha256": "ea6c32940112727907ea41f4d260a4a7a81f3cdc9233661d9b8a14472417feaa",
+  "publication": {
+    "implementationCommit": "0c42cc29c64730131466af6b079a900005713cba",
+    "buildFreezeCommit": "efbcfa0196cbc69bd24cad5b03f01b5078898b7b",
+    "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+    "configSha256": "81156c8c6d63d0f94864a3850d6f73649db9e32939789b552c56a77440d500fb"
+  },
+  "preserved": {
+    "protectedSourceFiles": 331,
+    "historicalPackets": [
+      {
+        "path": "experiments/ch7/mac-formal-2026-11-16/packet",
+        "payloads": 85,
+        "manifestSha256": "51d95447adf50e028daddf64b48138000db22fafad45e5d2569687707cd77b6f"
+      },
+      {
+        "path": "experiments/ch7/mac-census-2026-11-16/packet",
+        "payloads": 71,
+        "manifestSha256": "04897ab29eb5eca4b47d4d0aef872777497cd627e4ebcfa99b796f851ff46c1a"
+      }
+    ],
+    "baselineFacts": 12352,
+    "baselineFactsSha256": "ad08fc3bd515799523a0f21111f31c2d531379200a25c9f8d62125a477980582",
+    "sources": {
+      "experiments/ch7/mac_process_guard_v3.py": "781e265fbe3e767dfaa98b6c39b58e06b7516ce2d1cb6b9a74542c0131f0d5ec",
+      "experiments/ch7/process_lifecycle.py": "3baff2c5ace0bc11ebcd4bb78442df1bf01889008d2488100312e02242916881",
+      "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "experiments/ch7/phase_continuity.py": "a0669e697117082a7a79f625f2e68b5aa2bbdb894609b6cf9b351ef49252f46c",
+      "experiments/ch7/lifecycle_audit.py": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+      "experiments/ch7/mac_process_guard.py": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "experiments/ch7/mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "experiments/ch7/mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "experiments/ch7/finite_runtime.py": "634f10e8d8e7f927f9d55b570e608ddc41d53f9fd5c4e5d5b93cb120a3db66cf",
+      "experiments/ch7/run_finite_sequence.py": "c2c0e651b5ce50b9a177c3043541b425572c4e09bc6f67f39a10a3734e2da346",
+      "experiments/ch7/run_finite_block.py": "2b348831e725faed83f4bdf31f3fb2064eeaf458ccf65cbf420cb301c1d288f1",
+      "experiments/ch7/finite_audit.py": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd",
+      "experiments/ch7/finite_sequence_audit.py": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0",
+      "experiments/ch7/godot_local.py": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3"
+    }
+  },
+  "inputs": {
+    "knownPairs": 10,
+    "knownConditionRows": 20,
+    "unattempted": 20,
+    "freshHeldout": 0
+  },
+  "terminalReplay": {
+    "terminalRecordIntegrityAccepted": true,
+    "fullQualified": false,
+    "independentReplay": {
+      "schema": "aijade.ch7.mac-lifecycle-refusal-audit.v1",
+      "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+      "checkedAt": "2026-11-17T01:58:48.340075+00:00",
+      "sourceCommit": "0c42cc29c64730131466af6b079a900005713cba",
+      "buildFreezeCommit": "efbcfa0196cbc69bd24cad5b03f01b5078898b7b",
+      "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+      "planSha256": "1599aa06b81a4a8ea97a36e70f5a76aec5b70eb5c43f8e687c5addfaf5c35c72",
+      "numbers": {
+        "samples": 294,
+        "validatedSamples": 293,
+        "refusedSamples": 1,
+        "expectedSamples": 300,
+        "missingExpectedSamples": 6,
+        "settlingRequestedSeconds": 600,
+        "observerPassSamples": 294,
+        "observerUnknownSamples": 0,
+        "observerFailSamples": 0,
+        "firstStart": 0.0007071869913488626,
+        "lastStart": 598.3867839559971,
+        "lastCompleted": 600.3367149760015,
+        "finalNominal": 586,
+        "finalLateness": 12.386783955997089,
+        "maximumScheduledStartLateness": 12.386783955997089,
+        "scheduledStartLatenessOver3Samples": 44,
+        "maximumGapSeconds": 2.427652179991128,
+        "lastDeadlineOverrunSeconds": 0.3367149760015309,
+        "terminalRefusalElapsedSeconds": 600.3425492449896,
+        "settlingMinimumAvailableBytes": 6855667712,
+        "acceptedMinimumAvailableBytes": 6855667712,
+        "settlingSwapMinimumBytes": 645922816,
+        "settlingSwapMaximumBytes": 645922816,
+        "settlingSwapRangeBytes": 0,
+        "maximumObservationDurationSeconds": 2.1126395009923726,
+        "maximumIdleResearchOwnedRssBytes": 0,
+        "apiExplicitEmptySamples": 294,
+        "nativeCaptures": 588,
+        "managedNativeLeases": 588,
+        "listenerLeases": 588,
+        "gitPreflightLeases": 30,
+        "journalEvents": 3621,
+        "managedFiniteLeases": 1206,
+        "actualParentWaitZero": 1206,
+        "controllerScopes": 1,
+        "closedControllerScopes": 1,
+        "launchRefusals": 0,
+        "fallbackRefusalArtifacts": 0,
+        "admissionSamples": 0,
+        "plannedKnownPairs": 10,
+        "plannedConditionRows": 20,
+        "completedConditionRows": 0,
+        "unknownConditionRows": 0,
+        "unattemptedConditionRows": 20,
+        "completedBlocks": 0,
+        "rendererSessions": 0,
+        "modelRequests": 0,
+        "freshHeldoutCases": 0
+      },
+      "scope": {
+        "terminalRecordIntegrityAccepted": true,
+        "settlingCompleted": false,
+        "admissionStarted": false,
+        "qualificationStarted": false,
+        "fullFiniteDriverQualified": false,
+        "formalHardwareQualification": false,
+        "heldoutComparisonComplete": false,
+        "independentHumanReview": false,
+        "currentProductInheritsResearchQualification": false,
+        "freshHeldoutCases": 0,
+        "constructionSeedCreated": false,
+        "table7_3": "NOT_RUN"
+      },
+      "inputFiles": {
+        "admission/telemetry.jsonl": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "sizeBytes": 0
+        },
+        "lifecycle-journal.jsonl": {
+          "sha256": "e9fbd2430dbd7f92ab60a8899ea53a4e02c8d777148fc89fadba35937cea1fe8",
+          "sizeBytes": 2986320
+        },
+        "phase-events.jsonl": {
+          "sha256": "c04cd2569fb2e3b47a62285ed239d850702064d5c8fbe35a0512dc4440147b7a",
+          "sizeBytes": 120329
+        },
+        "preflight-continuity.json": {
+          "sha256": "cec951648a8bac7ad845bc7dec224819928877e8480835cee1a866963616070b",
+          "sizeBytes": 1568
+        },
+        "process-policy.json": {
+          "sha256": "913d773d1dd73177bb6ff01c06c51e0607ae8d85e7840133cf8e9772ab444476",
+          "sizeBytes": 1761
+        },
+        "receipt.json": {
+          "sha256": "f97538331dbacb37ee6e42a93ffffd70364bad3d13a845e2128c2fafaad355a8",
+          "sizeBytes": 4065
+        },
+        "settling/receipt.json": {
+          "sha256": "e6cf2cdc58f5334551badf1a12b98b635127ba819463d38df6176eb851712305",
+          "sizeBytes": 3328
+        },
+        "settling/telemetry.jsonl": {
+          "sha256": "68012ffc3093a99b30bba7d6bacbfc97366dbc8c822a182d8ce4281f8b7b45e4",
+          "sizeBytes": 126508199
+        }
+      },
+      "inputFileTableSha256": "ec43b8d8e92d4ccef43561eb609eda09713600565cd284cac6c620652a1c8dc2",
+      "sourceProofs": [
+        {
+          "path": "experiments/ch7/mac_process_guard_v3.py",
+          "sha256": "781e265fbe3e767dfaa98b6c39b58e06b7516ce2d1cb6b9a74542c0131f0d5ec"
+        },
+        {
+          "path": "experiments/ch7/process_lifecycle.py",
+          "sha256": "3baff2c5ace0bc11ebcd4bb78442df1bf01889008d2488100312e02242916881"
+        },
+        {
+          "path": "experiments/ch7/lifecycle_exec.py",
+          "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+        },
+        {
+          "path": "experiments/ch7/phase_continuity.py",
+          "sha256": "a0669e697117082a7a79f625f2e68b5aa2bbdb894609b6cf9b351ef49252f46c"
+        },
+        {
+          "path": "experiments/ch7/lifecycle_audit.py",
+          "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+        },
+        {
+          "path": "experiments/ch7/mac_process_guard.py",
+          "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87"
+        },
+        {
+          "path": "experiments/ch7/mac_process_guard_v2.py",
+          "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6"
+        },
+        {
+          "path": "experiments/ch7/mac_bulk_census.c",
+          "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+        },
+        {
+          "path": "experiments/ch7/finite_runtime.py",
+          "sha256": "634f10e8d8e7f927f9d55b570e608ddc41d53f9fd5c4e5d5b93cb120a3db66cf"
+        },
+        {
+          "path": "experiments/ch7/run_finite_sequence.py",
+          "sha256": "c2c0e651b5ce50b9a177c3043541b425572c4e09bc6f67f39a10a3734e2da346"
+        },
+        {
+          "path": "experiments/ch7/run_finite_block.py",
+          "sha256": "2b348831e725faed83f4bdf31f3fb2064eeaf458ccf65cbf420cb301c1d288f1"
+        },
+        {
+          "path": "experiments/ch7/finite_audit.py",
+          "sha256": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd"
+        },
+        {
+          "path": "experiments/ch7/finite_sequence_audit.py",
+          "sha256": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0"
+        },
+        {
+          "path": "experiments/ch7/godot_local.py",
+          "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3"
+        }
+      ],
+      "buildManifestSha256": "6e3188b8c1368115adda35eb7154a0056dc6b7fe09f84b97bb2aff4a053dea05",
+      "policySha256": "913d773d1dd73177bb6ff01c06c51e0607ae8d85e7840133cf8e9772ab444476",
+      "knownInputs": [
+        {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/control-08/inputs/runtime-manifest.json",
+          "sha256": "2ddff5567a7b253d78141da067e26c4952c70b8c806d3db23ca7b8a4df68d2c9"
+        },
+        {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/control-08/inputs/scoring-manifest.json",
+          "sha256": "6109e74024c369c0636f412bac92759a173a9d07cfdb24f2ffbdd85196abd724"
+        },
+        {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/control-08/inputs/selection.json",
+          "sha256": "f252859a56df3a736bf6001f571c2f1c6dfbe6ea3398549125213ba8127de98d"
+        }
+      ],
+      "frozenRuntimeAuditor": {
+        "status": "FROZEN_PREDICATE_REFUSAL",
+        "error": "ValueError: runtime must have one exact local persistent root",
+        "traceback": "Traceback (most recent call last):\n  File \"/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/terminal_replay.py\", line 188, in run\n    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py\", line 400, in verify_lifecycle\n    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')\n  File \"/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py\", line 22, in require\n    raise ValueError(message)\nValueError: runtime must have one exact local persistent root\n",
+        "sourceSha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+      },
+      "rawReplayCheckpoint": {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/.terminal-replay-gcfunbs5/results/terminal-replay-raw-replay-checkpoint.json",
+        "sha256": "a27f774e80911daf78804d9eb6dea23fd60b22a1e8f56c57ee4b4988dbed9e8a"
+      },
+      "interpretation": [
+        "All294 original process/native/API samples replay PASS. The final sample is rejected by the fixed600second completion deadline; this is not a collector FAIL.",
+        "Only293 samples were streaming-validated;294raw observations do not meet the required300. No phase-end receipt or admission transition is invented.",
+        "Actual adjacent start gaps remain<=3seconds, while the fixed nominal2second grid accumulates lateness. This separate diagnostic is preserved, not substituted for the recorded terminal cause.",
+        "Settling resource/API figures describe sampled settling only. They are neither admission acceptance nor continuous whole-machine inactivity or hardware reliability.",
+        "The frozen verify_lifecycle runtime acceptance API requires a persistent runtime root and rejects the unchanged unloaded roots. Original error and source SHA are retained; idle evidence integrity was separately replayed in full.",
+        "All20 known conditions remain unattempted. No renderer, model request, fresh case, construction seed, heldout result or successful qualification is inferred."
+      ],
+      "limitations": [
+        "No independent human review; this is AI-assisted deterministic raw replay.",
+        "Native/Git/listener waits are engineering identity/cleanup evidence, not successful scientific trajectories.",
+        "Portable archive callers must materialize exact logical bytes and supply frozen Q sources/known inputs; no raw or verifier changes are made."
+      ],
+      "noNewObservation": true,
+      "noRetry": true,
+      "originalBytesUnchanged": true
+    },
+    "cache": {
+      "hits": 294,
+      "fresh": 0
+    },
+    "originalReplaySourceSha256": "0f47334b9aaf88447af4da3770f4848eefc655b039b93536df9427f09f7e3503",
+    "adapterSha256": "a10753c8f470b36a1f449a84d792b5842512ceae21e779cf0e4c610b8da4059d",
+    "noNewObservation": true
+  },
+  "recordedProcessPass": 294,
+  "streamAccepted": 293,
+  "requiredSettling": 300,
+  "admissionSamples": 0,
+  "runtimeSamples": 0,
+  "completedRows": 0,
+  "runtimeQualificationStatus": "NOT_RUN",
+  "live19CorruptionControls": "NOT_RUN"
+}

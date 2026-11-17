@@ -1,0 +1,35 @@
+{
+  "status": "RETAINED_ENGINEERING_CONTROL_FAILURE_AND_TEST_ONLY_CORRECTION",
+  "at": "2026-11-16T23:26:44.169885+00:00",
+  "firstFullSuite": {
+    "tests": 298,
+    "failures": 1,
+    "logSha256": "55149685e88ea4384123c60912c9450738170d93e2376ad28c0d24cce255366f",
+    "knownOriginalObservation": "oversized was False; original result object was not serialized; timeout is not asserted as an observed fact"
+  },
+  "singleDiagnostic": {
+    "spawnedHelperPid": 71761,
+    "observerPid": 71757,
+    "exitCode": -9,
+    "timedOut": false,
+    "oversized": true,
+    "cleanupKnown": true,
+    "stderrBytes": 0,
+    "durationSeconds": 0.3499656330095604,
+    "stdoutBytes": 4194305,
+    "stdoutSha256": "8d3d3c04baadfd31cbebf771836900097b5f36cc142b74e40747c7b372beab8b",
+    "fixtureSource": "#!/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python\nimport os;os.write(1,b\"x\"*(4194304+10000))\n",
+    "qualification": false,
+    "productionSourceUnchanged": true
+  },
+  "interpretation": "The original assertion conflated a 4MiB output cap with completion before the separate0.5s deadline. Production may legitimately refuse for either. Preserve the full-size adverse-path control and separately assert output-cap refusal with a smaller test-only cap; neither production bound changes.",
+  "productionSourcesUnchanged": {
+    "mac_process_guard.py": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+    "mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+    "mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+  },
+  "newAdmissionStarted": false,
+  "newQualificationStarted": false,
+  "sourceBeforeSha256": "65dd1064caaeca84374222ce66f7028c44ef10fd2635b5f2ede5c7e2d23f33ac",
+  "sourceAfterSha256": "8383e68f197ed9f42ca505961c8ec7af435336c4e22348a50923cb72c03d7573"
+}

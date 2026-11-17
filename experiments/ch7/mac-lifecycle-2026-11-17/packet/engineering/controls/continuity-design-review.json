@@ -1,0 +1,254 @@
+{
+  "schema": "aijade.ch7.lifecycle.continuity-design-review.v1",
+  "status": "READ_ONLY_DESIGN_REVIEW_COMPLETE_NO_IMPLEMENTATION_OR_MEASUREMENT",
+  "createdAt": "2026-11-16T22:10:35.590416+00:00",
+  "scope": {
+    "repository": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-census-20261116/worktree",
+    "head": "471e41abcad8ac386166c679a8dd6eabff76029b",
+    "gitClean": true,
+    "researchImplementationCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+    "researchArchiveCommit": "471e41abcad8ac386166c679a8dd6eabff76029b",
+    "networkCalls": 0,
+    "authenticationRequests": 0,
+    "sourceModifications": 0,
+    "scientificOrEngineeringTestsExecuted": 0,
+    "liveObserverCalls": 0,
+    "modelsOrRendererStarted": false,
+    "qualificationOrAdmissionStarted": false,
+    "priorRefusalStatusUnchanged": true,
+    "outputRestrictedTo": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117",
+    "prospectivePlanRequiredBeforeImplementation": true
+  },
+  "sourceInventory": {
+    "experiments/ch7/finite_runtime.py": {
+      "sha256": "ac8926aab5c26292de13f5c61fb319c18cbf2eb4bd94f84ece258b921108557f",
+      "readRanges": [
+        [
+          138,
+          181
+        ],
+        [
+          184,
+          231
+        ]
+      ],
+      "functions": [
+        "validate_mac_sample",
+        "validate_coverage",
+        "fixed_phase",
+        "MacMonitor"
+      ],
+      "matchesImplementationCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+      "absolutePath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-census-20261116/worktree/experiments/ch7/finite_runtime.py"
+    },
+    "experiments/ch7/run_finite_sequence.py": {
+      "sha256": "87c3aefd4461e65dca2e50c9b6f90d4ede6aa12dd0464754cc025d3c485d669f",
+      "readRanges": [
+        [
+          70,
+          176
+        ]
+      ],
+      "functions": [
+        "_execute.observed",
+        "_execute.phase",
+        "_execute settling/admission/runtime transition"
+      ],
+      "matchesImplementationCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+      "absolutePath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-census-20261116/worktree/experiments/ch7/run_finite_sequence.py"
+    },
+    "experiments/ch7/finite_sequence_audit.py": {
+      "sha256": "e8a0acf8d045db36c12d43f3d31cc9bb1c768461304e8536a5cfd9d79a1c3e55",
+      "readRanges": [
+        [
+          301,
+          400
+        ]
+      ],
+      "functions": [
+        "_stream",
+        "_fixed_phase",
+        "_admission"
+      ],
+      "matchesImplementationCommit": "d96152b98f61e3cb47db9ec3d95e00591830d024",
+      "absolutePath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-mac-census-20261116/worktree/experiments/ch7/finite_sequence_audit.py"
+    }
+  },
+  "savedEvidence": [
+    {
+      "path": "experiments/ch7/mac-census-2026-11-16/packet/qualification/settling/receipt.json",
+      "sha256": "c31b6b88d9b440b530a921e836b7f3fde260faaa8a3b26b4c80c38b79b7e7c92"
+    },
+    {
+      "path": "experiments/ch7/mac-census-2026-11-16/packet/qualification/settling/telemetry.jsonl.gz",
+      "sha256": "bfad1cd4f62be06c8a0da418815a7ba56824179f9cf632d7875014ea7e72f4fe",
+      "logicalPopulationRead": 300
+    },
+    {
+      "path": "experiments/ch7/mac-census-2026-11-16/packet/qualification/admission/receipt.json",
+      "sha256": "cf6b8fdded6383dea44eb60c7e0ecbd2489e58cd565f11e1caa29fb7e8738e4c"
+    },
+    {
+      "path": "experiments/ch7/mac-census-2026-11-16/packet/qualification/admission/telemetry.jsonl.gz",
+      "sha256": "fa58d7ccf660061b287380557324945d9c830c2c37b449b9fd143de22240c030",
+      "logicalPopulationRead": 60
+    }
+  ],
+  "observedAttempt": {
+    "phaseRecords": {
+      "settling": {
+        "status": "FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION",
+        "phaseClock": {
+          "startMonotonic": 137615.142040142,
+          "endMonotonic": 138215.144676326,
+          "requestedSeconds": 600,
+          "intervalReset": false
+        },
+        "samples": 300,
+        "firstSample": {
+          "monotonicSeconds": 137615.14204267,
+          "elapsedSeconds": 2.5279878173023462e-06,
+          "observationCompletedMonotonic": 137616.026253393,
+          "observationDurationSeconds": 0.8842108579992782
+        },
+        "lastSample": {
+          "monotonicSeconds": 138213.14857047,
+          "elapsedSeconds": 598.0065303279844,
+          "observationCompletedMonotonic": 138214.047124077,
+          "observationDurationSeconds": 0.8985537670087069
+        }
+      },
+      "admission": {
+        "status": "ADMITTED",
+        "phaseClock": {
+          "startMonotonic": 138218.775848829,
+          "endMonotonic": 138338.781264357,
+          "requestedSeconds": 120,
+          "intervalReset": false
+        },
+        "samples": 60,
+        "firstSample": {
+          "monotonicSeconds": 138218.775850555,
+          "elapsedSeconds": 1.7259735614061356e-06,
+          "observationCompletedMonotonic": 138219.6738413,
+          "observationDurationSeconds": 0.8979908900219016
+        },
+        "lastSample": {
+          "monotonicSeconds": 138336.782533196,
+          "elapsedSeconds": 118.00668436699198,
+          "observationCompletedMonotonic": 138337.651909971,
+          "observationDurationSeconds": 0.8693769460078329
+        }
+      }
+    },
+    "phaseEndToNextStartGapSeconds": 3.6311725030245725,
+    "crossPhaseSampleStartGapSeconds": 5.627280084998347,
+    "lastObservationCompletionToNextStartSeconds": 4.728726477973396,
+    "admissionEndToRuntimeEpochSeconds": 0.7375948679982685,
+    "admissionLastToRuntimeFirstSampleStartGapSeconds": 2.738067070982652,
+    "phaseControllerAdmission": "ADMITTED",
+    "wholeBackendQualificationAccepted": false,
+    "reason": "The old whole-sequence phase transition threshold rejects the saved 3.631172503-second settling/admission gap. A later runtime FAIL/unknown-RSS ownership event is a separate unresolved blocker; a continuity repair does not repair or upgrade it.",
+    "rootCauseEvidence": "run_finite_sequence.py99 completes the entire 600-second collection, then105–108 revalidates all300 observations,111 writes the settling receipt, and only127 starts admission. This creates an O(N) unobserved handoff section. The receipt clocks identify its total3.631172503 seconds; no instrumentation separates validation time, serialization, I/O or scheduling contributions."
+  },
+  "currentAuditBoundaries": [
+    {
+      "source": "finite_runtime.py156–165",
+      "rule": "Within-phase increasing sample elapsed clocks, every adjacent gap<=3s, minimum population, first/last endpoints within3s, all observations complete inside fixed deadline."
+    },
+    {
+      "source": "finite_runtime.py168–181",
+      "rule": "Each fixed_phase independently captures a new actual monotonic origin, emits nominal2s slots, waits until its600/120-second end, then returns its complete samples. It does not validate samples inline or manage the next phase."
+    },
+    {
+      "source": "finite_sequence_audit.py344–378",
+      "rule": "Each fixed phase must have duration in[requested,requested+3], all raw evidence accepted, >=300/60 samples, no owned runtime roots, fresh sample IDs, increasing <=3s within-phase gaps and exact sample-to-origin clocks."
+    },
+    {
+      "source": "finite_sequence_audit.py390",
+      "rule": "0<=sequenceEpochMonotonic-admission.endMonotonic<=3."
+    },
+    {
+      "source": "finite_sequence_audit.py394",
+      "rule": "0<=admission.startMonotonic-settling.endMonotonic<=3."
+    },
+    {
+      "source": "finite_sequence_audit.py301–338",
+      "rule": "Runtime samples and resource timers use one sequence epoch/baseline and require <=3s adjacent coverage across execution and cleanup."
+    },
+    {
+      "source": "finite_sequence_audit.py344–400",
+      "rule": "It currently checks each idle phase and their receipt boundary separately; it does not concatenate the settling-last/admission-first raw sample clocks. A boundary gap<=3 alone could still permit a >3 raw sample gap."
+    }
+  ],
+  "proposedMinimumVersionedRepair": {
+    "activation": "New prospectively frozen lifecycle plan/policy/schema only. Preserve the old dispatcher/defaults and archived raw/Q replay semantics. No retrospective application to either refused attempt.",
+    "streamingValidation": [
+      "Add an explicit optional per-sample validator/accumulator to the new-version idle scheduler. Append the original unmodified observation to its declared log, validate raw evidence once before it may authorize progression, and maintain count/first/last/minAvailable/maxSwap/minSwap incrementally.",
+      "Remove the O(N) whole-phase verification loop from the live handoff of the new-version path. The independent auditor must still replay every original raw observation after execution; streaming is an execution optimization, not a replacement for independent scientific validation.",
+      "Keep sample collection start, observer start/finish, collection completion, validation start/finish, log-write completion and next scheduled deadline as separately captured actual monotonic values. A validation/write overrun, API UNKNOWN/FAIL or incomplete population stops; do not hide slow work by relabeling timestamps.",
+      "The new live accumulator must apply the unchanged memory/swap/process/API/empty-owned-root criteria and raw evidence verifier; no caching of mutable observations, derived PASS values or source-policy identity substitutions."
+    ],
+    "sharedScheduler": [
+      "Use one persistent controller-owned scheduler/state machine through settling, admission, runtime activation and cleanup, rather than creating independent phase loops around an unobserved batch replay. The same monotonic clock, previous raw sample identity/time and pending adverse state survive every handoff.",
+      "Every phase has a real entry event, a fixed duration measured from that actual entry, nominal2s scheduled slots and a real exit event. Keep scheduled targets separately from actual observation/transition times. The shared scheduler may create the next phase local origin at the actual handoff event, but must not restart an adverse window, move a previous sample or declare a planned timestamp to have occurred.",
+      "For the600s and120s idle phases preserve declared300/60 slots at local0,2,...,598/118 and the full fixed end wait. Carry the previous sample across the phase-local origin change and require the actual next sample-start gap<=3s; the local slot index reset is a declared phase transition, not a new favorable admission attempt.",
+      "At the actual phase-exit event perform only constant-time accepted-state/coverage checks and switch the declared phase. No full-file read/replay, Git invocation, binary hash loop or large JSON serialization belongs between the final idle phases. Precreate required output handles/metadata before the fixed window; retain bounded per-sample durable writes and fail on budget overrun.",
+      "Do not disguise file I/O latency as continuity. If receipt serialization happens after handoff, the same owned sampler must already be observing the new phase and errors must stop progression. Any queue overflow, missing flush, missing observation or late deadline is a recorded refusal, not an invitation to skip/drop samples.",
+      "After admission acceptance arm the runtime guard and real controller ownership mode before child/renderer/DB launch or metadata work. Bind the exact runtime epoch and swap baseline to that actual event; continue observations during startup/cleanup and preserve one runtime resource timer history."
+    ],
+    "handoffRecords": {
+      "suggestedFile": "phase-handoffs.jsonl",
+      "requiredFields": [
+        "schemaVersion",
+        "transitionIndex",
+        "fromPhase",
+        "toPhase",
+        "actualExitMonotonic",
+        "actualEntryMonotonic",
+        "priorSampleId",
+        "nextSampleId",
+        "priorSampleStartMonotonic",
+        "priorObservationCompletedMonotonic",
+        "nextSampleStartMonotonic",
+        "scheduledNextSampleMonotonic",
+        "validationCompletedMonotonic",
+        "decision",
+        "reason"
+      ],
+      "meaning": "All numeric event times must be captured where the event actually occurs. If one atomic phase switch is truly a single event, one captured timestamp can legitimately identify both exit and entry; it must not be manufactured by copying an earlier endpoint over later actual work."
+    },
+    "minimalFileTouchSet": [
+      "experiments/ch7/finite_runtime.py: new-version streaming/scheduler API while legacy defaults stay intact, or one additive finite_lifecycle_runtime.py module",
+      "experiments/ch7/run_finite_sequence.py: explicit new-plan dispatch and removal of new-path post-phase O(N) replay; immediate guarded phase transition",
+      "experiments/ch7/finite_sequence_audit.py: version-dispatched cross-phase raw continuity and event/aggregate reconstruction; historical verifier retains its original rules",
+      "tests/shell: deterministic fake-clock/slow-validator/write/refusal controls for the new scheduler and independent auditor"
+    ],
+    "identityBoundary": "Publish a new implementation Q, matching frozen build/source metadata B and plan/policy hashes before any new prospective bounded attempt. A new controller is not granted old implementation/backend qualification. Preserve oldQ source blobs,331 protected source records,85-file original refusal and new packet/archive/population byte identities."
+  },
+  "newAuditInvariants": [
+    "Preserve all old thresholds unchanged:2s nominal cadence; every observed adjacent gap<=3s; fixed600/120-second phases with>=300/60 observations; accepted phase duration in[requested,requested+3]; all observations finish inside their phase deadline; no reset or extension.",
+    "Retain 0<=admission.start-settling.end<=3 and0<=runtime.epoch-admission.end<=3 exactly. Add cross-boundary last/first raw sample-start gap<=3 for settling→admission and admission→runtime; audit actual values, not rounded summaries.",
+    "Reconstruct one globally ordered preflight/phase/runtime sample population with unique sample IDs, frozen source/policy identity, exact raw file membership and explicit phase labels. Do not bridge gaps with duplicated/resampled/backdated observations or synthetic handoff placeholders.",
+    "Recompute per-phase population/availability/swap range/empty-model/API/evidence acceptance from all raw samples, compare against streaming summary/receipt, and reject any disagreement. Independent replay remains authoritative.",
+    "Require actual handoff events ordered after the preceding validation and before downstream launch; every adverse sample, missed deadline, slow validation or incomplete write remains visible and forbids progression. Events cannot cure missing sample evidence.",
+    "Idle owned roots/processes remain empty. Runtime roots remain authorized exact PID/createTime identities; ownership/RSS/native census acceptance is separately audited. Continuity PASS never overrides a FAIL/UNKNOWN/null RSS.",
+    "Runtime sequence epoch/swap baseline/resource timers and cleanup coverage stay continuous; no phase transition permits a new swap baseline or resets a crossed30-second resource timer within execution.",
+    "Old rejected archives, scores,original20UNKNOWN,other failed attempts and NOT_RUN statements remain unchanged; replay them under their original frozen verifier and report the same refusal."
+  ],
+  "plannedOfflineControlsNotRun": [
+    "Valid fake-clock600+120 boundary with per-item nonzero validation/writes remains300+60, actual clocks and full durations exact, cross-phase sample gaps<=3.",
+    "A new artificial per-sample validator delay fits the2s slot and does not accumulate into an O(N) handoff; independently replay raw data and recompute the same summaries.",
+    "Validation/write/API delays causing any>3 adjacent raw gap, an observation beyond the fixed endpoint, incomplete300/60 population or total phase>requested+3 must refuse without restart.",
+    "Boundary gaps3 exactly accept,3+epsilon refuse, negative/reversed times refuse; raw cross-phase sample gap>3 refuses even when phaseClock endpoint gap<=3.",
+    "The real old3.631172503 receipt gap still refuses under the old path and under any applicable stronger new diagnostic; never convert archived telemetry to make it pass.",
+    "Inject UNKNOWN/FAIL/null RSS, dropped/duplicated IDs, changedphase labels, altered policy/source, modified timestamp, summary mismatch and queued writer failure; each refuses from a fully valid baseline.",
+    "Slow final receipt serialization while a genuine continuous sampler runs is observable; turning the sampler off for that work refuses. A fake handoff event cannot replace a raw sample.",
+    "admission→runtime transition and long startup/cleanup preserve sample cadence, controller lease authorization, shared epoch/baseline and resource timers; no renderer or case starts before the real accepted handoff."
+  ],
+  "unresolvedLimits": [
+    "The phase continuity design cannot establish that the machine will meet live deadlines; only a separately authorized prospective attempt can measure that.",
+    "The prior runtime FALSE reparent cascade/unknown owned RSS is independent and must be repaired/audited separately before backend acceptance.",
+    "No new code, tests, build, collector call, scientific window, generated case, Git/SVN mutation or manuscript edit is performed by this review."
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "schema": "aijade.ch7.lifecycle-independent-audit-controls.v1",
+  "checkedAt": "2026-11-16T22:55:06.342511+00:00",
+  "status": "OFFLINE_SYNTHETIC_CONTROLS_PASS_NOT_BACKEND_QUALIFICATION",
+  "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+  "planSha256": "1599aa06b81a4a8ea97a36e70f5a76aec5b70eb5c43f8e687c5addfaf5c35c72",
+  "ownedSources": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py",
+      "sha256": "303ce8d498c3e820dedb6b837645d2b79fc6cf035715baff6b36c5127c4c2346"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_continuity.py",
+      "sha256": "72747eef972f82462cc8602500bbe313bd4e6baaa006611ae24df4890c094de7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py",
+      "sha256": "5734541ba2493951a4cfc4e44a07128234d1a4b5421a5b7b1c65ae0d38e4bd63"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_raw.py",
+      "sha256": "751dde4e7877ade2def5fa18bb5b0e95cfa802e8208bccb42945563f79b53caf"
+    }
+  ],
+  "finalControls": {
+    "tests": 50,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "continuity": 22,
+    "journal": 24,
+    "fullSerializedNativeApiJournalReplay": 4,
+    "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-all-controls-05.log",
+    "logSha256": "a2fee67b0f8c92bfc6b756039b76f45670a3bf69f44730e83792f126b936dda2"
+  },
+  "apis": {
+    "verify_continuity": "verify_continuity(phases,streams,events,*,policy,runtime_samples=None,runtime_epoch=None,lifecycle_journal=None)",
+    "verify_lifecycle": "verify_lifecycle(journal,samples,*,source_commit,policy_sha256,policy,controller=None,require_cleanup=True,scope_id=None)",
+    "blockScope": "Pass scope_id and local controller; local cleanup excludes self/ancestor lease whose WAIT belongs to enclosing parent. Sequence full audit leaves scope_id=None and verifies all scopes/tasks.",
+    "journalArchive": "Explicit archived bytes/path, exact sample prefix/hash. Original absolute path is not archive identity."
+  },
+  "acceptanceBoundaries": [
+    "Independent journal hash/source/order/state replay does not call producer.replay_journal. Producer is used only to construct synthetic view projections in tests.",
+    "Each default audit sample is revalidated from the original v3 native/API/listener evidence and original lifecycle bytes. Four full raw controls use no mocked audit/guard/native parser.",
+    "Native primitive parser is reused from preserved v2; original v1/v2 policies/records and predicates are not rewritten or accepted as v3.",
+    "Only exact owner/Popen.wait PID+creation ready/release/wait identity proves managed kernel reaping. A nonzero exit remains adverse for workload qualification.",
+    "Managed WAIT kernel absence and optional complete native absence remain separate explicit witness kinds. Unknown present RSS cannot be repaired by an exit event.",
+    "An ancestry-proven discovered-only descendant may close cleanup with complete original native absence, retains UNKNOWN exit status, and never increments finite task success/wait0 counts.",
+    "Full before/after native populations and actual parent identities establish membership/escape. No empty-membership reparent inference.",
+    "Fixed scheduled population300/60 (or formal60), every original sample, exact writer-completion events, phase and global raw start max3, actual handoff and outer complete-call2.5budget are independently reconstructed.",
+    "Resource thresholds4GiB/64MiB apply to admission; settling resource numbers are descriptive and do not substitute an admission verdict."
+  ],
+  "priorControlLogs": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-all-controls-01.log",
+      "sha256": "d586ad2cf767415feeea9dea741b7c9e076cc4e28490aabb623b9ffcfc706283"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-all-controls-02.log",
+      "sha256": "3e95822a5306fd6753319cc28d7e7b4a7f2dd746c017fa62b8bab1cf31c9031e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-all-controls-03.log",
+      "sha256": "f74b633123fb5f192eb8d7473afc497b19a64169cc59be6f8d8e0081cf1f438c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-all-controls-04.log",
+      "sha256": "1ef3d6bb0f289f67e3b768f37f736b57713cef19720730f3f1e83cc8deeb36d3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-continuity-controls-01.log",
+      "sha256": "7af59a0954765e69ed5122c396dfa7e6b448063acab99043f6d67be6d6055b5b"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-continuity-controls-02.log",
+      "sha256": "4e4a853186ea223a5b4789523b4db4abaae528e29368a35d2c198a7629621754"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-continuity-controls-03.log",
+      "sha256": "6b2a6aeeeaae7f497e886ed0715e9eeaa0f5b04d9f506214f2e50860f2977aee"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-continuity-controls-04.log",
+      "sha256": "36bfccf9465299fdb20e3a73aee0874e8e9b5a10fa916704be8bf9c4977d8105"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-journal-controls-01.log",
+      "sha256": "71777beafbcd47fafc61f70bfd816a84f9e4c6c532f9896d397fded46fc6c25c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-journal-controls-02.log",
+      "sha256": "fd3644ea0d619e49496215d510ccc98e9590753d273682297f4ebd02eae3c524"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-journal-controls-03.log",
+      "sha256": "3a500ac398465f7c578e85d3bcfbd130e223753930928b1cd1e506bbe6287556"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-journal-controls-04.log",
+      "sha256": "a0b00cb20847e2fa4de2d7c97e9e9cfc672edef625a78583018897e20ed993ca"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-journal-controls-05.log",
+      "sha256": "37ee671e7376113baa5e9148eb230ef065dfbf1cb75729e5c46a3ef3146fc9a3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-raw-controls-01.log",
+      "sha256": "f40820d1682473cb9bb15ad5d8ec54d1214b30e6488f54eaa0c1f2a6eb8469f7"
+    }
+  ],
+  "engineeringCorrectionHistory": [
+    "Initial journal fixture projection failed after producer added actual register/release/reaped clocks; independent projection was aligned to those original event-derived fields, then passed.",
+    "One foreign-discovery negative control first stopped at a stale unregistered absence reference; fixture was coherently rebound so the intended native-ancestry branch is reached.",
+    "Later tests were updated where stronger actual reap/PID-reuse checks correctly rejected the same corruption earlier. Failed logs remain; parser/identity criteria were not relaxed.",
+    "Prospective Root decisions distinguish discovered absence with UNKNOWN exit from managed task completion, and exact kernel reaping from a recursively endless extra helper census. No historical packet was reclassified."
+  ],
+  "limitations": [
+    "Synthetic/offline fixture controls do not measure real observation timing, OS/process reliability, hardware qualification, actual backend trajectories or heldout effects.",
+    "No new case or seed, statistical estimate, journal approval, human validation or manuscript fact has been produced."
+  ],
+  "scope": {
+    "observerCalls": 0,
+    "nativeHelperExecutions": 0,
+    "modelCalls": 0,
+    "rendererRuns": 0,
+    "scientificWindows": 0,
+    "docsEdited": false,
+    "oldFactKeysChanged": false,
+    "oldPacketsRejudged": false,
+    "gitCommitPerformed": false,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false,
+    "heldoutComparisonComplete": false
+  }
+}

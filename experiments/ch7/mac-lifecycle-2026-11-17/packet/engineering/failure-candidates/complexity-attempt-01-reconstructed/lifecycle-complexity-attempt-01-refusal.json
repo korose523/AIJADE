@@ -1,0 +1,61 @@
+{
+  "schema": "aijade.lifecycle.non-sampler-complexity-control.v1",
+  "status": "SEMANTIC_PASS_PERFORMANCE_REFUSED_BEFORE_QUALIFICATION",
+  "eventPopulation": 4322,
+  "finiteTaskFixtures": 1440,
+  "rawJournalBytes": 3193321,
+  "rawJournalSha256": "6f2062c2421a0110b64840fb87306e8c9286c3854bef20afe25ea50b12cda518",
+  "measurements": {
+    "validate_view": {
+      "samples": 5,
+      "seconds": [
+        2.2907880320271943,
+        2.5429052300169133,
+        2.3080794689885806,
+        2.3107296300004236,
+        2.3256710990099236
+      ],
+      "maximumSeconds": 2.5429052300169133,
+      "medianSeconds": 2.3107296300004236
+    },
+    "guard_raw_replay": {
+      "samples": 5,
+      "seconds": [
+        2.342559473006986,
+        2.385240123985568,
+        2.4857518130156677,
+        2.3962125400139485,
+        2.3405857240140904
+      ],
+      "maximumSeconds": 2.4857518130156677,
+      "medianSeconds": 2.385240123985568
+    },
+    "three_guard_replays": {
+      "samples": 5,
+      "seconds": [
+        7.160619942995254,
+        7.095683908002684,
+        7.194391707016621,
+        7.19037267297972,
+        7.530304629995953
+      ],
+      "maximumSeconds": 7.530304629995953,
+      "medianSeconds": 7.19037267297972
+    },
+    "incremental_append": {
+      "events": 4320,
+      "totalSeconds": 56.995121261978056,
+      "maximumEventSeconds": 0.48704769101459533,
+      "medianEventSeconds": 0.012153327508713119,
+      "finalJournalBytes": 3346863,
+      "syntheticNoProcessesLaunched": true
+    }
+  },
+  "actualObserversRun": 0,
+  "nativeHelpersRun": 0,
+  "modelCalls": 0,
+  "qualification": false,
+  "scope": "Synthetic chronology/complexity only. Actual total live v3 observation still has an independent strict2.5s budget including lockwait/capture/postprocessing; these timings do not establish admission or remaining budget on the host.",
+  "performanceAccepted": false,
+  "reason": "Raw journal replay performs duplicate identity scans across all prior leases, making4322event three-guard replay7.53s; fix before source freeze. No live observer or qualification ran."
+}
