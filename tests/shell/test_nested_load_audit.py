@@ -11,6 +11,10 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'experiments/ch7'))
 import audit_nested_load as a
 from test_nested_event_index import fixture, ROOT
 
+REPO=Path(__file__).resolve().parents[2]
+SCRATCH=(Path('/Volumes/Untitled/AIJADE/.runtime/posix/tmp') if sys.platform=='darwin' else REPO/'.runtime/nested-audit-controls')
+SCRATCH.mkdir(parents=True,exist_ok=True)
+
 
 class NestedAuditControls(unittest.TestCase):
     def test_01_conditional_numeric_context_accepts_valid_baseline(self):
@@ -92,12 +96,12 @@ class NestedAuditControls(unittest.TestCase):
             measured,maximum_seconds=600,slots_maximum=300,epoch=90,baseline=500)
 
     def test_06_independent_stream_checks_accept_valid_synthetic_baseline(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             root=Path(d);self.make_stream(root)
             self.assertEqual(self.run_stream(root)[2]['status'],'SYNTHETIC_VALIDATOR_CANARY')
 
     def test_07_lateness_summary_cannot_override_original_clock(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             root=Path(d);self.make_stream(root);self.run_stream(root)
             p=root/'service-events.terminal.json';value=json.loads(p.read_text())
             value['services'][0]['startLatenessSeconds']=.4;p.write_text(json.dumps(value))
@@ -105,14 +109,14 @@ class NestedAuditControls(unittest.TestCase):
                 self.run_stream(root)
 
     def test_08_independent_resources_reject_sustained_crossing_despite_pass_claim(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             root=Path(d);self.make_stream(root,rows_count=17);self.run_stream(root)
             self.make_stream(root,rows_count=17,rss=3*1024**3)
             with self.assertRaisesRegex(ValueError,'sustained resource'):
                 self.run_stream(root)
 
     def test_09_global_swap_baseline_is_not_restarted_for_child(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             root=Path(d);self.make_stream(root);self.run_stream(root)
             p=root/'process-observations.jsonl';rows=[json.loads(v) for v in p.read_text().splitlines()]
             rows[1]['swapUsedBytes']=600;p.write_text(''.join(json.dumps(r)+'\n' for r in rows))
@@ -120,7 +124,7 @@ class NestedAuditControls(unittest.TestCase):
                 self.run_stream(root)
 
     def test_10_coherent_parent_local_epoch_reset_refuses_file_context(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             root=Path(d);self.make_stream(root);self.run_stream(root)
             p=root/'service-events.terminal.json';terminal=json.loads(p.read_text())
             original=a.canonical(terminal);terminal['localEpochMonotonic']=95
@@ -142,7 +146,7 @@ class NestedAuditControls(unittest.TestCase):
             a.verify_child_epoch_anchor(terminal,child,lease)
 
     def test_12_legal_other_scope_controller_cannot_replace_this_stream_or_idle_owner(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             root=Path(d);self.make_stream(root);self.run_stream(root)
             p=root/'process-observations.jsonl';rows=[json.loads(v) for v in p.read_text().splitlines()]
             original=a.canonical(rows)
@@ -157,7 +161,7 @@ class NestedAuditControls(unittest.TestCase):
                 a.verify_scope_owner(replacement,'2'*32,ROOT)
 
     def test_13_wrong_loaded_module_cannot_borrow_same_content_hash(self):
-        with tempfile.TemporaryDirectory(dir='/Volumes/Untitled/AIJADE/.runtime/posix/tmp') as d:
+        with tempfile.TemporaryDirectory(dir=SCRATCH) as d:
             repo=Path(d);valid=repo/'fixed.py';wrong=repo/'other.py'
             valid.write_bytes(b'# fixed synthetic dependency\n');wrong.write_bytes(valid.read_bytes())
             sources={'fixed.py':a.file_sha(valid)}
