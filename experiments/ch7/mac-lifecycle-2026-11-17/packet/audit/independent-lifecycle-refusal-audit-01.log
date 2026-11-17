@@ -1,0 +1,77 @@
+{"stage": "FULL_RAW_REPLAY", "completed": 25, "errors": 0, "seconds": 2.620455428987043}
+{"stage": "FULL_RAW_REPLAY", "completed": 50, "errors": 0, "seconds": 8.093525611999212}
+{"stage": "FULL_RAW_REPLAY", "completed": 75, "errors": 0, "seconds": 17.542941360996338}
+{"stage": "FULL_RAW_REPLAY", "completed": 100, "errors": 0, "seconds": 31.994099395989906}
+{"stage": "FULL_RAW_REPLAY", "completed": 125, "errors": 0, "seconds": 52.5368872009858}
+{"stage": "FULL_RAW_REPLAY", "completed": 150, "errors": 0, "seconds": 83.40332550898893}
+{"stage": "FULL_RAW_REPLAY", "completed": 175, "errors": 0, "seconds": 125.74809231498512}
+{"stage": "FULL_RAW_REPLAY", "completed": 200, "errors": 0, "seconds": 164.8244186739903}
+{"stage": "FULL_RAW_REPLAY", "completed": 225, "errors": 0, "seconds": 216.31511583799147}
+{"stage": "FULL_RAW_REPLAY", "completed": 250, "errors": 0, "seconds": 274.81121176699526}
+{"stage": "FULL_RAW_REPLAY", "completed": 275, "errors": 0, "seconds": 342.88345200699405}
+{"stage": "FULL_RAW_REPLAY", "completed": 294, "errors": 0, "seconds": 402.61178863199893}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/independent_lifecycle_refusal_audit.py", line 163, in run
+    accepted=audit.verify_lifecycle(journal,observations,source_commit=Q,policy_sha256=receipt['processPolicySha256'],
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 400, in verify_lifecycle
+    require(type(roots) is list and len(roots) == 1, 'runtime must have one exact local persistent root')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: runtime must have one exact local persistent root
+
+{
+  "status": "INDEPENDENT_TERMINAL_REFUSAL_AUDIT_PASS",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/independent-lifecycle-refusal-audit.json",
+  "sha256": "e64d900fe4ce47c689a40bd7a522db30b84f0e535ffcd58404ed2ec031b668fc",
+  "numbers": {
+    "samples": 294,
+    "validatedSamples": 293,
+    "refusedSamples": 1,
+    "expectedSamples": 300,
+    "missingExpectedSamples": 6,
+    "settlingRequestedSeconds": 600,
+    "observerPassSamples": 294,
+    "observerUnknownSamples": 0,
+    "observerFailSamples": 0,
+    "firstStart": 0.0007071869913488626,
+    "lastStart": 598.3867839559971,
+    "lastCompleted": 600.3367149760015,
+    "finalNominal": 586,
+    "finalLateness": 12.386783955997089,
+    "maximumScheduledStartLateness": 12.386783955997089,
+    "scheduledStartLatenessOver3Samples": 44,
+    "maximumGapSeconds": 2.427652179991128,
+    "lastDeadlineOverrunSeconds": 0.3367149760015309,
+    "terminalRefusalElapsedSeconds": 600.3425492449896,
+    "settlingMinimumAvailableBytes": 6855667712,
+    "acceptedMinimumAvailableBytes": 6855667712,
+    "settlingSwapMinimumBytes": 645922816,
+    "settlingSwapMaximumBytes": 645922816,
+    "settlingSwapRangeBytes": 0,
+    "maximumObservationDurationSeconds": 2.1126395009923726,
+    "maximumIdleResearchOwnedRssBytes": 0,
+    "apiExplicitEmptySamples": 294,
+    "nativeCaptures": 588,
+    "managedNativeLeases": 588,
+    "listenerLeases": 588,
+    "gitPreflightLeases": 30,
+    "journalEvents": 3621,
+    "managedFiniteLeases": 1206,
+    "actualParentWaitZero": 1206,
+    "controllerScopes": 1,
+    "closedControllerScopes": 1,
+    "launchRefusals": 0,
+    "fallbackRefusalArtifacts": 0,
+    "admissionSamples": 0,
+    "plannedKnownPairs": 10,
+    "plannedConditionRows": 20,
+    "completedConditionRows": 0,
+    "unknownConditionRows": 0,
+    "unattemptedConditionRows": 20,
+    "completedBlocks": 0,
+    "rendererSessions": 0,
+    "modelRequests": 0,
+    "freshHeldoutCases": 0
+  }
+}

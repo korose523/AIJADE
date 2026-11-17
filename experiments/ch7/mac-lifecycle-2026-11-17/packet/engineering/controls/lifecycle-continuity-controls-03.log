@@ -1,0 +1,25 @@
+test_01_complete_600_120_global_raw_population (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_02_formal_admission_only_has_60_not_360_samples (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_03_each_negative_starts_with_valid_baseline (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_04_missing_sample_writer_completion_is_refused (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_05_duplicate_original_sample_id_is_refused (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_06_omitted_or_added_slot_is_not_a_smaller_denominator (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_07_cross_phase_sample_gap_over3_with_atomic_boundary_refuses (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_08_original_3point631_boundary_cannot_be_repaired_by_events (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_09_slow_validation_and_write_cannot_cross_fixed_deadline (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_10_summary_swap_zero_cannot_hide_actual_range (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_11_summary_population_and_resources_are_rebuilt (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_12_missing_boundary_cannot_be_filled_from_receipts (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_13_reordered_event_clocks_are_refused (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_14_actual_runtime_first_sample_is_required (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_15_runtime_handoff3_exact_accepts_and_3epsilon_refuses (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_16_runtime_epoch_3epsilon_refuses_without_first_sample_excuse (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_17_rss_null_never_becomes_idle_zero (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_18_raw_top_level_and_observer_ids_must_agree (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_19_actual_new_scheduler_schema_roundtrips_independent_audit (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+test_20_settling_resource_description_is_not_admission_threshold (test_lifecycle_audit_continuity.ContinuityAuditControls) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.269s
+
+OK

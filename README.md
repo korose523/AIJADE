@@ -193,3 +193,9 @@ NOT_RUN. The archive verifier is offline and cannot launch or retry a study.
 ## Licence
 
 MIT, © 2026 Zexiao Weng. Third-party components are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+## Retained typed-lifecycle backend refusal
+
+The [17 November lifecycle archive](experiments/ch7/mac-lifecycle-2026-11-17/README.md) adds typed persistent controllers, parent-held identity gates for finite children, actual parent waits, scoped discovered-descendant ledgers and fixed monotonic phase scheduling. The sole actual window stops during settling:294 raw process-predicate PASS records,293 streaming-validated records and300 required; the final capture completes after the fixed600-second deadline. Admission never starts and all20 known conditions remain unattempted. Earlier UNKNOWN rows and refusals are retained.
+
+Complete offline replay and twelve effective, coherently manifested archive-corruption controls validate the terminal evidence. They do not qualify the full backend, the current independent companion product or the confirmed40-pair held-out comparison. Table7.3 remains NOT_RUN; no fresh seed or replacement window is generated. Product main preserves its later independent companion implementation and materializes exact research Q separately for historical verification.

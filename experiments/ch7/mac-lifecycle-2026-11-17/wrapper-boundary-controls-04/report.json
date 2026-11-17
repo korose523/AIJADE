@@ -1,0 +1,37 @@
+{
+  "schema": "aijade.ch7.lifecycle-terminal-wrapper-boundaries.v1",
+  "status": "NARROW_INPUT_POPULATION_AND_NO_OP_BOUNDARIES_PASS",
+  "checkedAt": "2026-11-17T02:02:20.998019+00:00",
+  "auditSourceSha256": "ef27e1a45c28d3c46a92cd612ec75c5d1f844908964400b546ea26226fbbf52f",
+  "rawReplayAdapterSha256": "a10753c8f470b36a1f449a84d792b5842512ceae21e779cf0e4c610b8da4059d",
+  "precedingFullControls": 12,
+  "precedingSourceCapture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/tool-source-before-controls-03",
+  "rows": [
+    {
+      "name": "exact_original_three_inputs",
+      "passed": true,
+      "derived": {
+        "knownPairs": 10,
+        "knownConditionRows": 20,
+        "unattempted": 20,
+        "freshHeldout": 0
+      }
+    },
+    {
+      "name": "coherently_rebound_fourth_seed",
+      "passed": true,
+      "reason": "KNOWN_INPUT_CLOSED_POPULATION"
+    },
+    {
+      "name": "unchanged_actual_baseline_no_op",
+      "passed": true,
+      "reason": "NO_OP_CONTROL_REFUSED:unchanged_actual_baseline"
+    }
+  ],
+  "fullRawReplayRepeated": false,
+  "originalPacketUnchanged": true,
+  "changes": "Only inputs_check wrapper gained exact physical/logical population. Frozen raw predicate is unchanged.",
+  "notThirteenFullControls": true,
+  "newObservation": false,
+  "newWindow": false
+}

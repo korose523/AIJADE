@@ -1,0 +1,32 @@
+--- audit.py@pre05
++++ audit.py@runtime-binding05
+@@ -344,6 +344,16 @@
+     return module.audit_terminal(root=root, repo=repo, cache=cache)
+ 
+ 
++def runtime_refusal_check(archived, computed):
++    actual, expected = archived['frozenRuntimeAuditor'], computed['frozenRuntimeAuditor']
++    phrase = 'runtime must have one exact local persistent root'
++    need(actual['status'] == expected['status'] == 'FROZEN_PREDICATE_REFUSAL' and
++         phrase in actual['error'] and phrase in expected['error'],
++         'RUNTIME_REFUSAL_MISREPRESENTED_AS_QUALIFICATION')
++    need(actual['error'] == expected['error'] and actual['sourceSha256'] == expected['sourceSha256'],
++         'RUNTIME_REFUSAL_EXACT_ERROR_SOURCE_BINDING')
++
++
+ def audit(root, repo, cache=None):
+     root, repo = Path(root).resolve(), Path(repo).resolve()
+     result = dict(schema='aijade.ch7.lifecycle-terminal-archive-audit.v1',
+@@ -366,10 +376,9 @@
+              canonical(archived['scope']) == canonical(computed['scope']),
+              'ARCHIVED_INDEPENDENT_REPORT_CHANGED')
+         need(archived['scope']['terminalRecordIntegrityAccepted'] is True and
+-             archived['scope']['fullFiniteDriverQualified'] is False and
+-             archived['frozenRuntimeAuditor']['status'] == 'FROZEN_PREDICATE_REFUSAL' and
+-             'runtime must have one exact local persistent root' in archived['frozenRuntimeAuditor']['error'],
++             archived['scope']['fullFiniteDriverQualified'] is False,
+              'RUNTIME_REFUSAL_MISREPRESENTED_AS_QUALIFICATION')
++        runtime_refusal_check(archived, computed)
+         result.update(status='TERMINAL_REFUSAL_RECORD_INTEGRITY_ACCEPTED_NOT_QUALIFIED',
+             terminalRecordIntegrityAccepted=True, payloadFiles=len(manifest['files']),
+             manifestSha256=sha(read(root, 'packet-manifest.json')), publication=publication,

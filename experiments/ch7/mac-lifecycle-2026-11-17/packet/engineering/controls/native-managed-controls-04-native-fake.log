@@ -1,0 +1,18 @@
+test_journal_wait_error_preserves_native_stdout_as_adverse (test_mac_lifecycle_native.NativeManagedLaunchControls.test_journal_wait_error_preserves_native_stdout_as_adverse) ... FAIL
+test_native_output_cap_still_refuses_and_reaps_fake (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_output_cap_still_refuses_and_reaps_fake) ... ok
+test_native_primitive_uses_identity_ready_register_release_actual_wait (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_primitive_uses_identity_ready_register_release_actual_wait) ... ok
+test_native_ready_refusal_keeps_failure_identity_without_direct_fallback (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_ready_refusal_keeps_failure_identity_without_direct_fallback) ... ok
+test_native_timeout_kills_only_owned_fake_and_keeps_wait_status (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_timeout_kills_only_owned_fake_and_keeps_wait_status) ... ok
+
+======================================================================
+FAIL: test_journal_wait_error_preserves_native_stdout_as_adverse (test_mac_lifecycle_native.NativeManagedLaunchControls.test_journal_wait_error_preserves_native_stdout_as_adverse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_mac_lifecycle_native.py", line 73, in test_journal_wait_error_preserves_native_stdout_as_adverse
+    self.assertEqual(r['stdout'],b'fixture-body')
+AssertionError: b'' != b'fixture-body'
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.081s
+
+FAILED (failures=1)

@@ -1,0 +1,24 @@
+test_mac_lifecycle_native (unittest.loader._FailedTest.test_mac_lifecycle_native) ... ERROR
+
+======================================================================
+ERROR: test_mac_lifecycle_native (unittest.loader._FailedTest.test_mac_lifecycle_native)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_mac_lifecycle_native
+Traceback (most recent call last):
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_mac_lifecycle_native.py", line 16, in <module>
+    import mac_process_guard_v3 as guard
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/mac_process_guard_v3.py", line 508
+    if (chain[0]!=value['identity'] or keys[0]!=key
+       ^
+SyntaxError: '(' was never closed
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (errors=1)

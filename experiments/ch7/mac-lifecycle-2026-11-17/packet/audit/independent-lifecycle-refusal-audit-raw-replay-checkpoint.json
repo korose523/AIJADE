@@ -1,0 +1,110 @@
+{
+  "schema": "aijade.ch7.lifecycle-independent-replay-checkpoint.v1",
+  "inputFiles": {
+    "admission/telemetry.jsonl": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sizeBytes": 0
+    },
+    "lifecycle-journal.jsonl": {
+      "sha256": "e9fbd2430dbd7f92ab60a8899ea53a4e02c8d777148fc89fadba35937cea1fe8",
+      "sizeBytes": 2986320
+    },
+    "phase-events.jsonl": {
+      "sha256": "c04cd2569fb2e3b47a62285ed239d850702064d5c8fbe35a0512dc4440147b7a",
+      "sizeBytes": 120329
+    },
+    "preflight-continuity.json": {
+      "sha256": "cec951648a8bac7ad845bc7dec224819928877e8480835cee1a866963616070b",
+      "sizeBytes": 1568
+    },
+    "process-policy.json": {
+      "sha256": "913d773d1dd73177bb6ff01c06c51e0607ae8d85e7840133cf8e9772ab444476",
+      "sizeBytes": 1761
+    },
+    "receipt.json": {
+      "sha256": "f97538331dbacb37ee6e42a93ffffd70364bad3d13a845e2128c2fafaad355a8",
+      "sizeBytes": 4065
+    },
+    "settling/receipt.json": {
+      "sha256": "e6cf2cdc58f5334551badf1a12b98b635127ba819463d38df6176eb851712305",
+      "sizeBytes": 3328
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "68012ffc3093a99b30bba7d6bacbfc97366dbc8c822a182d8ce4281f8b7b45e4",
+      "sizeBytes": 126508199
+    }
+  },
+  "sourceProofs": [
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "781e265fbe3e767dfaa98b6c39b58e06b7516ce2d1cb6b9a74542c0131f0d5ec"
+    },
+    {
+      "path": "experiments/ch7/process_lifecycle.py",
+      "sha256": "3baff2c5ace0bc11ebcd4bb78442df1bf01889008d2488100312e02242916881"
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "path": "experiments/ch7/phase_continuity.py",
+      "sha256": "a0669e697117082a7a79f625f2e68b5aa2bbdb894609b6cf9b351ef49252f46c"
+    },
+    {
+      "path": "experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87"
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6"
+    },
+    {
+      "path": "experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+    },
+    {
+      "path": "experiments/ch7/finite_runtime.py",
+      "sha256": "634f10e8d8e7f927f9d55b570e608ddc41d53f9fd5c4e5d5b93cb120a3db66cf"
+    },
+    {
+      "path": "experiments/ch7/run_finite_sequence.py",
+      "sha256": "c2c0e651b5ce50b9a177c3043541b425572c4e09bc6f67f39a10a3734e2da346"
+    },
+    {
+      "path": "experiments/ch7/run_finite_block.py",
+      "sha256": "2b348831e725faed83f4bdf31f3fb2064eeaf458ccf65cbf420cb301c1d288f1"
+    },
+    {
+      "path": "experiments/ch7/finite_audit.py",
+      "sha256": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd"
+    },
+    {
+      "path": "experiments/ch7/finite_sequence_audit.py",
+      "sha256": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0"
+    },
+    {
+      "path": "experiments/ch7/godot_local.py",
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3"
+    }
+  ],
+  "rawRows": 294,
+  "decisions": {
+    "PASS": 294
+  },
+  "apiEmpty": 294,
+  "nativeCaptureLeases": 588,
+  "sourceFrames": 588,
+  "errors": [],
+  "roleCounts": {
+    "git": 30,
+    "native": 588,
+    "listener": 588
+  },
+  "journalEvents": 3621,
+  "finiteLeases": 1206
+}

@@ -1,0 +1,16 @@
+--- audit.py@full-controls03
++++ audit.py@final-input-boundary
+@@ -245,6 +245,13 @@
+ 
+ 
+ def inputs_check(root, receipt):
++    expected = {'inputs/' + name for name in INPUT_SHA}
++    declared = {row['path'].removesuffix('.gz') for row in data(root, 'packet-manifest.json')['files']
++                if row['path'].startswith('inputs/')}
++    physical = [(path.relative_to(root).as_posix()).removesuffix('.gz')
++                for path in (root / 'inputs').rglob('*') if path.is_file()]
++    need(declared == expected and set(physical) == expected and len(physical) == len(expected),
++         'KNOWN_INPUT_CLOSED_POPULATION')
+     for name, digest in INPUT_SHA.items():
+         need(sha(read(root, 'inputs/' + name)) == digest, 'KNOWN_INPUT_BYTES:' + name)
+     runtime = data(root, 'inputs/runtime-manifest.json')

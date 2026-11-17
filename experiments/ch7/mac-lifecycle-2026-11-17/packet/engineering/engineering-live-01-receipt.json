@@ -1,0 +1,539 @@
+{
+  "status": "ENGINEERING_LIVE_PROBE_PASS_NO_QUALIFICATION",
+  "checkedAt": "2026-11-17T01:00:18.455272+00:00",
+  "implementationCommit": "0c42cc29c64730131466af6b079a900005713cba",
+  "buildFreezeCommit": "efbcfa0196cbc69bd24cad5b03f01b5078898b7b",
+  "scriptSha256": "182025b1585bd95293d0d81daf66d44a6b674f804110f9fd714ad34f2d3113b2",
+  "observations": 2,
+  "observerStatuses": [
+    "PASS",
+    "PASS"
+  ],
+  "wholeCallDurations": [
+    1.7484345929988194,
+    1.359058626985643
+  ],
+  "lifecycleJournalBytes": 26612,
+  "lifecycleJournalSha256": "27b83610456da2dd7e39950f2a56a8ed8bbc2c75275c7709875cf81ff03fb8e9",
+  "registryFinal": {
+    "schema": "aijade.process-lifecycle-final.v1",
+    "status": "ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT",
+    "scopeId": "5ddba41ce3f64b658a6f59d7233f8997",
+    "scopeClosed": true,
+    "knownFiniteLeases": [
+      {
+        "commandSha256": "d035a8ae417c384d1b960b22ac41471d08e5e2e5969f6f81f34bc3e1c37a8b1f",
+        "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+        "identity": {
+          "createTimeMicros": 1794877208616402,
+          "parentPid": 77780,
+          "pid": 77804
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "6fa664b1bbcd4a67871acd45a1440102",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181741.435945704,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "engineering-finite-child",
+        "registerSeq": 3,
+        "registerMonotonic": 181741.439342207,
+        "releaseSeq": 4,
+        "waitSeq": 18,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877208616402,
+            "parentPid": 77780,
+            "pid": 77804
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 18,
+          "reapedMonotonic": 181749.696371235,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181741.441611977,
+        "reapedMonotonic": 181749.696371235,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794877209008494,
+          "parentPid": 77780,
+          "pid": 77806
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "9b640b3842774f6e8741a94d389258ec",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181741.827115115,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 5,
+        "registerMonotonic": 181741.830574798,
+        "releaseSeq": 6,
+        "waitSeq": 7,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877209008494,
+            "parentPid": 77780,
+            "pid": 77806
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 7,
+          "reapedMonotonic": 181742.186972593,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181741.834452316,
+        "reapedMonotonic": 181742.186972593,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794877209809241,
+          "parentPid": 77780,
+          "pid": 77807
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "c97bfb6b53f74d0c8dc610640a3d2dc1",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181742.625467357,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "engineering-probe-not-qualification",
+        "registerSeq": 8,
+        "registerMonotonic": 181742.629137366,
+        "releaseSeq": 9,
+        "waitSeq": 10,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877209809241,
+            "parentPid": 77780,
+            "pid": 77807
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 10,
+          "reapedMonotonic": 181742.735039179,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181742.631086733,
+        "reapedMonotonic": 181742.735039179,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794877210049821,
+          "parentPid": 77780,
+          "pid": 77809
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "aa145621b6d74cc1bbf50a54dc4d8c40",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181742.872948546,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 11,
+        "registerMonotonic": 181742.877065782,
+        "releaseSeq": 12,
+        "waitSeq": 13,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877210049821,
+            "parentPid": 77780,
+            "pid": 77809
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 13,
+          "reapedMonotonic": 181742.892157233,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181742.879846347,
+        "reapedMonotonic": 181742.892157233,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794877210515736,
+          "parentPid": 77780,
+          "pid": 77810
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "91870da63b4c4d6f8376a7ec597b87a8",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181743.330375007,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "engineering-probe-not-qualification",
+        "registerSeq": 14,
+        "registerMonotonic": 181743.333822775,
+        "releaseSeq": 15,
+        "waitSeq": 16,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877210515736,
+            "parentPid": 77780,
+            "pid": 77810
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 16,
+          "reapedMonotonic": 181743.419854051,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181743.335765498,
+        "reapedMonotonic": 181743.419854051,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794877217001827,
+          "parentPid": 77780,
+          "pid": 77813
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "fe20d0ddb693440b89f80ae4c9ebe80a",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181749.81758393,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 19,
+        "registerMonotonic": 181749.821309616,
+        "releaseSeq": 20,
+        "waitSeq": 21,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877217001827,
+            "parentPid": 77780,
+            "pid": 77813
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 21,
+          "reapedMonotonic": 181749.834112731,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181749.82446972,
+        "reapedMonotonic": 181749.834112731,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794877217454629,
+          "parentPid": 77780,
+          "pid": 77814
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "9a4c1a2e48614c1ea15c4514ece8b6f4",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181750.269576486,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "engineering-probe-not-qualification",
+        "registerSeq": 22,
+        "registerMonotonic": 181750.272969486,
+        "releaseSeq": 23,
+        "waitSeq": 24,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877217454629,
+            "parentPid": 77780,
+            "pid": 77814
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 24,
+          "reapedMonotonic": 181750.360905276,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181750.275698251,
+        "reapedMonotonic": 181750.360905276,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794877217661481,
+          "parentPid": 77780,
+          "pid": 77816
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "fc400e78afd84d849814e2e80e906841",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181750.478370233,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 25,
+        "registerMonotonic": 181750.482193991,
+        "releaseSeq": 26,
+        "waitSeq": 27,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877217661481,
+            "parentPid": 77780,
+            "pid": 77816
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 27,
+          "reapedMonotonic": 181750.496132728,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181750.485868481,
+        "reapedMonotonic": 181750.496132728,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794877218117919,
+          "parentPid": 77780,
+          "pid": 77817
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "beeef06a665d4aeba22c483711a65646",
+        "parentIdentity": {
+          "createTimeMicros": 1794877206801086,
+          "parentPid": 46644,
+          "pid": 77780
+        },
+        "readyMonotonic": 181750.934518556,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "engineering-probe-not-qualification",
+        "registerSeq": 28,
+        "registerMonotonic": 181750.937828794,
+        "releaseSeq": 29,
+        "waitSeq": 30,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794877218117919,
+            "parentPid": 77780,
+            "pid": 77817
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "eventSeq": 30,
+          "reapedMonotonic": 181751.024180754,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 181750.939581041,
+        "reapedMonotonic": 181751.024180754,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      }
+    ],
+    "unresolvedFiniteLeases": [],
+    "launchRefusals": [],
+    "launchRefusalArtifacts": [],
+    "localDiscoveredIdentities": [
+      {
+        "ancestry": [
+          {
+            "createTimeMicros": 1794877208884944,
+            "parentPid": 77804,
+            "pid": 77805
+          },
+          {
+            "createTimeMicros": 1794877208616402,
+            "parentPid": 77780,
+            "pid": 77804
+          },
+          {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          }
+        ],
+        "graphCompletedMonotonic": 181742.195352761,
+        "graphStartedMonotonic": 181741.71076912,
+        "identity": {
+          "createTimeMicros": 1794877208884944,
+          "parentPid": 77804,
+          "pid": 77805
+        },
+        "nativeStdoutSha256": "73493e779556c85081784abf1c339e29d79e8bd72d3810027193836c82c28243",
+        "phase": "before",
+        "sampleId": "6c63d4eb1d3041558e468fe49e4464e7",
+        "scopeId": "5ddba41ce3f64b658a6f59d7233f8997",
+        "eventSeq": 17,
+        "absence": {
+          "graphCompletedMonotonic": 181750.504433271,
+          "graphStartedMonotonic": 181750.363931232,
+          "identity": {
+            "createTimeMicros": 1794877208884944,
+            "parentPid": 77804,
+            "pid": 77805
+          },
+          "nativeStdoutSha256": "e7674cafe65bda11f37189c0940e8e29cb2397662827033840fd835bdae4b977",
+          "phase": "after",
+          "sampleId": "f6b3300e376a4ef3a85e87ad39ee3725",
+          "eventSeq": 31,
+          "witnessKind": "COMPLETE_NATIVE_ABSENCE"
+        },
+        "exitStatus": "UNKNOWN"
+      }
+    ],
+    "unleasedDiscoveredIdentities": [],
+    "remainingIdentities": [],
+    "lifecycleView": {
+      "schema": "aijade.process-lifecycle-view.v1",
+      "runId": "0bbfddec425f40898da978286f7b68bb",
+      "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-mac-lifecycle-20261117/engineering-live-01/lifecycle-journal.jsonl",
+      "journalBytes": 26612,
+      "journalSha256": "27b83610456da2dd7e39950f2a56a8ed8bbc2c75275c7709875cf81ff03fb8e9",
+      "lastSequence": 32,
+      "scopeId": "5ddba41ce3f64b658a6f59d7233f8997",
+      "controllerIdentity": {
+        "pid": 77780,
+        "createTimeMicros": 1794877206801086,
+        "parentPid": 46644
+      },
+      "leases": [
+        {
+          "commandSha256": "10a9df907aaa161510cf735825d4abcff6d8197766cd97b57a498d3a7b520970",
+          "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+          "identity": {
+            "createTimeMicros": 1794877206801086,
+            "parentPid": 46644,
+            "pid": 77780
+          },
+          "leaseId": "16acd37309eb43699130bb7a5fa3b57a",
+          "parentIdentity": null,
+          "readyMonotonic": 181741.268913766,
+          "role": "controller",
+          "stageId": "engineering-probe-not-qualification",
+          "registerSeq": 1,
+          "registerMonotonic": 181741.270688623,
+          "releaseSeq": null,
+          "waitSeq": null,
+          "exitCode": null,
+          "absence": null
+        }
+      ],
+      "referencedIdentities": [],
+      "launchRefusalArtifacts": [],
+      "controllers": [
+        "16acd37309eb43699130bb7a5fa3b57a"
+      ]
+    }
+  },
+  "independentAudit": {
+    "status": "LIFECYCLE_RAW_AUDIT_PASS",
+    "journalBytes": 26612,
+    "journalSha256": "27b83610456da2dd7e39950f2a56a8ed8bbc2c75275c7709875cf81ff03fb8e9",
+    "events": 32,
+    "observations": 2,
+    "finiteLeases": 9,
+    "finiteWaitZero": 9,
+    "peakObservedOwnedRssBytes": 72585216,
+    "discoveredOnlyConfirmedAbsentUnknownExit": 1,
+    "scopeId": null,
+    "cleanupAccepted": true,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false
+  },
+  "errors": [],
+  "qualification": false,
+  "admissionStarted": false,
+  "caseTrajectories": 0,
+  "modelRequests": 0,
+  "freshHeldoutCases": 0,
+  "automaticRetries": 0,
+  "physicalOutput": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-mac-lifecycle-20261117/engineering-live-01"
+}

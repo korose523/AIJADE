@@ -1,0 +1,73 @@
+{
+  "schema": "aijade.ch7.finite-lifecycle-audit-integration.v1",
+  "status": "OFFLINE_ADAPTER_AND_LEGACY_CONTROLS_PASS",
+  "planSha256": "1599aa06b81a4a8ea97a36e70f5a76aec5b70eb5c43f8e687c5addfaf5c35c72",
+  "buildFreezePath": "experiments/ch7/mac-lifecycle-2026-11-17/frozen-build.json",
+  "files": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_audit.py",
+      "sha256": "055a3a684b2b8593e8352077ebb2f913c5f7f12f8f6bf8afcf57b21a66767f05",
+      "bytes": 31086
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_sequence_audit.py",
+      "sha256": "60d2599e79dc070c58e57d2b73cb6792b93cc2aba6916d0274963c9d535855f4",
+      "bytes": 51675
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_finite_lifecycle_integration.py",
+      "sha256": "87f886655831d94d4a9fe88290f81da1c64432ae12d670017d2f26b4b8c1c1b7",
+      "bytes": 15090
+    }
+  ],
+  "validation": {
+    "newAdapterControls": 20,
+    "legacySequenceControls": 24,
+    "logs": [
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-lifecycle-integration-01.log",
+        "sha256": "81f023fd9c97120913ee3fbe949e8519e8d41b68475f48915ca1128180aeecb2",
+        "tests": 17,
+        "status": "FAIL_ONE_TEST_EXPECTATION"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-lifecycle-integration-02.log",
+        "sha256": "794e738271a26ecbc67262cf092f6fca6bedcee913b1591f60e1fc51eda64091",
+        "tests": 17,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-lifecycle-integration-03.log",
+        "sha256": "2554fb48b2cb912fd40eff431f8de88efca26aad04e82ff75b92d05c7ab620bd",
+        "tests": 20,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-sequence-legacy-controls-01.log",
+        "sha256": "a802fcfa2af53eae65ed5271e0535a64dc204a012904e3b1e5eaeee749214efa",
+        "tests": 24,
+        "status": "PASS"
+      }
+    ],
+    "firstFailurePreserved": "The altered XML-independent journal fixture initially changed byte length, so the correct population refusal occurred before the expected SHA refusal. The next fixture used equal-length altered bytes; the parser was not relaxed."
+  },
+  "contract": {
+    "archiveResolver": "root/lifecycle-journal.jsonl, then root.parent/lifecycle-journal.jsonl, then declared local original path only. An existing malformed preferred copy refuses, never falls back. Symlink files refuse.",
+    "blockJournal": "Receipt lifecycleJournalBytes and lifecycleJournalSha256 bind an exact newline-closed prefix of the shared journal. Original prefix bytes are passed to every v3 guard and verify_lifecycle(scope_id=localScope); parent controller itself is excluded from that local scope cleanup.",
+    "sequenceJournal": "Receipt SHA binds the whole closed archive journal. Every block prefix must be an exact byte prefix of it. Parent runtime samples and all original block samples are merged by actual monotonic time for complete shared-journal independent lifecycle replay. Parent resource coverage is separately checked without merging away a gap.",
+    "idle": "verify_continuity independently replays all original idle rows and actual event/write times with archive bytes and the actual first parent runtime sample. It also binds phase receipts, top streaming counts, complete source map, schedule, last raw sample and runtime handoff anchor. Idle scopes/controllers must match the sequence.",
+    "identities": "P3 fixed plan SHA/new build namespace and exact14 observerSources hashes, live Q sources and used build map remain bound. v1/v2 conditional paths retain old APIs and existing rules.",
+    "resourceAndScoring": "Original resource thresholds, window registry, all rows, journals, scoring,opportunities and adverse C2 outcomes are unchanged.",
+    "terminalAssumption": "The new managed WAIT kernel-reaped semantics bind short-lived finite absence directly; idle empty ownership does not introduce owned DISCOVER events. Runtime global closure still rejects every unbound absence/discovery; no event is silently omitted."
+  },
+  "scope": {
+    "actualObserverCalls": 0,
+    "liveAdmissionOrQualification": false,
+    "modelsOrRenderer": false,
+    "networkRequests": 0,
+    "gitOrSvnMutation": false,
+    "rootRunnerModified": false,
+    "scientificQualification": false,
+    "mockedAdapterDelegates": "These source-integration controls do not pass the real scientific block auditor and do not establish backend qualification. Raw lifecycle/continuity modules retain their separate full-byte controls."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 3,
+  "kind": "mac-lifecycle-observed-idle-daemon-v3",
+  "daemon": {
+    "app": {
+      "pid": 669,
+      "createTime": 1794695519.392843,
+      "parentPid": 1,
+      "executable": "/Applications/Ollama.app/Contents/MacOS/Ollama",
+      "sha256": "a42e1fcb0cdf56fb09f565a0afbb65330e51343b36eb80486256de3e960f5f10",
+      "argvSha256": "74138b8864d66676adcb0e05ffb1828217610eef1cb0a52b2bbc2ba1f18e8a60",
+      "commandForm": "gui"
+    },
+    "serve": {
+      "pid": 701,
+      "createTime": 1794695525.96261,
+      "parentPid": 669,
+      "executable": "/Applications/Ollama.app/Contents/Resources/ollama",
+      "sha256": "5c3cf935be8d896433a5caefefc8857bc2bb9e32c77c35e7c3d38b7c5919822f",
+      "argvSha256": "1528ec037575f9504bd955405980cd646dfdadf9c481d9b2863ca24cb1dd188e",
+      "commandForm": "serve"
+    }
+  },
+  "listener": {
+    "address": "127.0.0.1",
+    "port": 11434,
+    "pid": 701
+  },
+  "api": {
+    "url": "http://127.0.0.1:11434/api/ps",
+    "timeoutSeconds": 0.5,
+    "maxBytes": 65536
+  },
+  "nativeHelper": {
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/native/mac_bulk_census",
+    "sha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+    "sourceSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+  },
+  "lifecycle": {
+    "moduleSha256": "4f8adce77c5a955b85e563b9ea535383af0fec51d710877e2e481c272d6e90d1",
+    "execShimSha256": "eec4acced93bcd7a2f0278d54a988ece9236dcfeb9af620f732ad15ae6b86c74",
+    "coordinationLockPath": "/Volumes/Untitled/AIJADE/.runtime/posix/locks/mac-lifecycle-d3f29817ad6b4b157a0c69a6ab49442ac93ffe88a288231c8a3648b3a331114a.lock",
+    "maxLockWaitSeconds": 1.25,
+    "maxObservationSeconds": 2.5
+  }
+}

@@ -1,0 +1,35 @@
+test_journal_wait_error_preserves_native_stdout_as_adverse (test_mac_lifecycle_native.NativeManagedLaunchControls.test_journal_wait_error_preserves_native_stdout_as_adverse) ... FAIL
+test_native_output_cap_still_refuses_and_reaps_fake (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_output_cap_still_refuses_and_reaps_fake) ... FAIL
+test_native_primitive_uses_identity_ready_register_release_actual_wait (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_primitive_uses_identity_ready_register_release_actual_wait) ... FAIL
+test_native_timeout_kills_only_owned_fake_and_keeps_wait_status (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_timeout_kills_only_owned_fake_and_keeps_wait_status) ... ok
+
+======================================================================
+FAIL: test_journal_wait_error_preserves_native_stdout_as_adverse (test_mac_lifecycle_native.NativeManagedLaunchControls.test_journal_wait_error_preserves_native_stdout_as_adverse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_mac_lifecycle_native.py", line 65, in test_journal_wait_error_preserves_native_stdout_as_adverse
+    self.assertEqual(r['stdout'],b'fixture-body')
+AssertionError: b'' != b'fixture-body'
+
+======================================================================
+FAIL: test_native_output_cap_still_refuses_and_reaps_fake (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_output_cap_still_refuses_and_reaps_fake)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_mac_lifecycle_native.py", line 58, in test_native_output_cap_still_refuses_and_reaps_fake
+    self.assertTrue(r['oversized'],r);self.assertTrue(r['cleanupKnown'],r)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'spawnedHelperPid': 73234, 'observerPid': 73217, 'exitCode': -9, 'timedOut': True, 'oversized': False, 'cleanupKnown': True, 'stdout': b'', 'stderrBytes': 0, 'managedLeaseId': 'd8778fbfdb4140fda18e685f954cdf26', 'durationSeconds': 0.5075455430196598}
+
+======================================================================
+FAIL: test_native_primitive_uses_identity_ready_register_release_actual_wait (test_mac_lifecycle_native.NativeManagedLaunchControls.test_native_primitive_uses_identity_ready_register_release_actual_wait)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_mac_lifecycle_native.py", line 37, in test_native_primitive_uses_identity_ready_register_release_actual_wait
+    self.assertEqual(r['exitCode'],0,r);self.assertTrue(r['cleanupKnown'],r)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -9 != 0 : {'spawnedHelperPid': 73238, 'observerPid': 73217, 'exitCode': -9, 'timedOut': True, 'oversized': False, 'cleanupKnown': True, 'stdout': b'', 'stderrBytes': 0, 'managedLeaseId': '96bf0ef13ec2447395813561c40be5c9', 'durationSeconds': 0.5082885800220538}
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.533s
+
+FAILED (failures=3)

@@ -1,0 +1,159 @@
+test_01_complete_launch_wait_native_absence_and_cleanup (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ERROR
+test_02_original_event_hash_tamper_refuses (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_03_coherently_rebound_source_substitution_refuses (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_04_nonzero_actual_wait_is_retained_adverse (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_05_absence_cannot_replace_missing_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_06_parent_wait_identity_cannot_be_substituted (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_07_wait_before_release_is_not_repaired_by_zero_exit (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_08_absence_requires_the_saved_native_frame_hash (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_09_absence_frame_must_follow_bound_actual_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_10_still_present_identity_is_not_absent_after_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_11_missing_persistent_root_refuses_without_fake_reparent (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_12_actual_changed_parent_is_rejected_from_native_graph (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_13_present_rss_unknown_never_zero_filled_by_wait0 (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_14_pid_reuse_does_not_inherit_finite_lease (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_15_dropping_active_view_lease_is_rejected (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_16_unknown_or_truncated_journal_is_not_a_favorable_prefix (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_17_cleanup_without_absence_is_not_completed_work (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+test_18_root_controller_receipt_binding_is_independent (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_19_unbound_new_controller_cannot_adopt_foreign_pid (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... ok
+test_20_native_api_validator_is_called_for_every_original_sample (test_lifecycle_audit_journal.LifecycleJournalAuditControls) ... FAIL
+
+======================================================================
+ERROR: test_01_complete_launch_wait_native_absence_and_cleanup (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 105, in test_01_complete_launch_wait_native_absence_and_cleanup
+    result = self.audit()
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 101, in audit
+    return a.verify_lifecycle(self.fixture.raw, self.fixture.rows, source_commit=Q,
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 243, in verify_lifecycle
+    require(view.get('leases') == projected, 'view omitted/changed active lifecycle leases')
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 22, in require
+    raise ValueError(message)
+ValueError: view omitted/changed active lifecycle leases
+
+======================================================================
+FAIL: test_04_nonzero_actual_wait_is_retained_adverse (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 124, in test_04_nonzero_actual_wait_is_retained_adverse
+    with self.assertRaisesRegex(ValueError, 'nonzero'): self.audit()
+AssertionError: "nonzero" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_08_absence_requires_the_saved_native_frame_hash (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 145, in test_08_absence_requires_the_saved_native_frame_hash
+    with self.assertRaisesRegex(ValueError, 'bound original complete native frame'): self.audit()
+AssertionError: "bound original complete native frame" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_09_absence_frame_must_follow_bound_actual_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 152, in test_09_absence_frame_must_follow_bound_actual_wait
+    with self.assertRaisesRegex(ValueError, 'predates actual finite wait'): self.audit()
+AssertionError: "predates actual finite wait" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_10_still_present_identity_is_not_absent_after_wait (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 161, in test_10_still_present_identity_is_not_absent_after_wait
+    with self.assertRaisesRegex(ValueError, 'present in raw census'): self.audit()
+AssertionError: "present in raw census" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_11_missing_persistent_root_refuses_without_fake_reparent (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 167, in test_11_missing_persistent_root_refuses_without_fake_reparent
+    with self.assertRaisesRegex(ValueError, 'persistent controller missing'): self.audit()
+AssertionError: "persistent controller missing" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_12_actual_changed_parent_is_rejected_from_native_graph (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 177, in test_12_actual_changed_parent_is_rejected_from_native_graph
+    with self.assertRaisesRegex(ValueError, 'registered process parent changed'): self.audit()
+AssertionError: "registered process parent changed" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_13_present_rss_unknown_never_zero_filled_by_wait0 (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 181, in test_13_present_rss_unknown_never_zero_filled_by_wait0
+    with self.assertRaisesRegex(ValueError, 'RSS unknown'): self.audit()
+AssertionError: "RSS unknown" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_14_pid_reuse_does_not_inherit_finite_lease (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 190, in test_14_pid_reuse_does_not_inherit_finite_lease
+    with self.assertRaisesRegex(ValueError, 'unleased discovered descendant'): self.audit()
+AssertionError: "unleased discovered descendant" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_17_cleanup_without_absence_is_not_completed_work (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 203, in test_17_cleanup_without_absence_is_not_completed_work
+    with self.assertRaisesRegex(ValueError, 'unconfirmed absent'): self.audit()
+AssertionError: "unconfirmed absent" does not match "view omitted/changed active lifecycle leases"
+
+======================================================================
+FAIL: test_20_native_api_validator_is_called_for_every_original_sample (test_lifecycle_audit_journal.LifecycleJournalAuditControls)
+----------------------------------------------------------------------
+ValueError: view omitted/changed active lifecycle leases
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py", line 217, in test_20_native_api_validator_is_called_for_every_original_sample
+    with self.assertRaisesRegex(ValueError, 'native/API evidence adverse'): self.audit()
+AssertionError: "native/API evidence adverse" does not match "view omitted/changed active lifecycle leases"
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.082s
+
+FAILED (failures=10, errors=1)

@@ -1,0 +1,86 @@
+{
+  "schema": "aijade.ch7.lifecycle-terminal-archive-tool-final-validation.v2",
+  "status": "READY_WITH_EXACT_RUNTIME_REFUSAL_BINDING",
+  "checkedAt": "2026-11-17T02:10:25.625569+00:00",
+  "files": [
+    {
+      "path": "audit.py",
+      "sha256": "741e447cdf63058a494c4c9af7f0b71aabfa06a97dc483cf249a7bf53eb17aa7",
+      "sizeBytes": 23552
+    },
+    {
+      "path": "terminal_replay.py",
+      "sha256": "a10753c8f470b36a1f449a84d792b5842512ceae21e779cf0e4c610b8da4059d",
+      "sizeBytes": 26303
+    },
+    {
+      "path": "refusal_negative_controls.py",
+      "sha256": "8d851a0779d30aa510b660ad4156503df5d0f6a62b4db830d842026f2cba2f51",
+      "sizeBytes": 9751
+    },
+    {
+      "path": "AUDIT-TOOLS.md",
+      "sha256": "cc3ff4846e38634a39a101b5a1990014587d72cd6113d00ccf305ac68680fe32",
+      "sizeBytes": 5234
+    },
+    {
+      "path": "check_wrapper_boundaries_04.py",
+      "sha256": "9ef790309adc4598d388e0a41363507d9f1ab0bca4ed812de318640774b67c2a",
+      "sizeBytes": 2728
+    },
+    {
+      "path": "check_runtime_binding_05.py",
+      "sha256": "527c49cb314542ef1cf5c6bbecc2ca012b14b39bc691915f3cfe0872b073a7dc",
+      "sizeBytes": 4148
+    },
+    {
+      "path": "terminal-replay-adaptation-provenance.json",
+      "sha256": "74a8428d4c6d4dc50bab66eac7b40b6200782589af62c99fcc2667fc1ac07ccc",
+      "sizeBytes": 820
+    }
+  ],
+  "packetManifestSha256": "ea6c32940112727907ea41f4d260a4a7a81f3cdc9233661d9b8a14472417feaa",
+  "priorFinalReceipt": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-tool-validation-final.json",
+    "sha256": "74b90420e2ed41aba66a521e2d6395e27764db771b7795d4e626d24a4d30aa63",
+    "preservedUnchanged": true
+  },
+  "fullControls03": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/archive-controls-03/report.json",
+    "sha256": "b13d63b324b4a6f13c0d95f162d32a967dbf8a3a2794b569220271c313487a8a",
+    "controls": 12,
+    "baselineAccepted": 12,
+    "rejected": 12,
+    "firstBaselineFreshRawPredicates": 294
+  },
+  "inputBoundary04": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/wrapper-boundary-controls-04/report.json",
+    "sha256": "5c516b0eb1291d2d7ebebba9405fae0c6df7a8df48a40cb866ab3ead7902eb8b",
+    "inputPredicateUnchangedBy05": true
+  },
+  "runtimeBinding05": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/runtime-binding-controls-05/report.json",
+    "sha256": "71ee0b2d481f7c0a53d83b64cf29e50d453d30a31f422eeb4c7011682a91709c",
+    "changedFunctions": [
+      "audit",
+      "runtime_refusal_check"
+    ],
+    "tracebackCompared": false,
+    "baselineAccepted": true,
+    "samePhraseAlteredErrorRejected": true,
+    "alteredSourceShaRejected": true,
+    "noOpRejected": true,
+    "diffPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/runtime-binding-05.diff",
+    "diffSha256": "2dc968aeb1c6146fa6a1ed94f50737068adb51299a4ebeda486ed610fbdb77b5",
+    "priorToolsSourceCapture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/staging/tool-source-before-runtime-binding-05"
+  },
+  "rawReplayAdapterByteIdenticalToFull03": true,
+  "negativeDriverByteIdenticalToFull03": true,
+  "noRepeated294Replay": true,
+  "originalPacketUnchanged": true,
+  "fullQualified": false,
+  "live19CorruptionControls": "NOT_RUN",
+  "newObserverNativeApiModelRendererWindowCalls": 0,
+  "ciCommand": "python3 -B refusal_negative_controls.py --root packet --repo \"$FROZEN_Q_REPO\" --output \"$NEW_AUDIT_OUTPUT_DIRECTORY\"",
+  "interpretation": "12 full coherent archive controls under03 plus separate narrow04 and05 wrapper checks. Final CI will execute the final tool source with all12 in one process; this receipt does not retroactively attribute the original full run to a changed wrapper."
+}

@@ -1,0 +1,102 @@
+{
+  "schema": "aijade.ch7.finite-lifecycle-ancestry-integration.v1",
+  "status": "OFFLINE_ANCESTRY_ADAPTER_AND_LEGACY_CONTROLS_PASS",
+  "files": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_audit.py",
+      "sha256": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd",
+      "bytes": 31339
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_sequence_audit.py",
+      "sha256": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0",
+      "bytes": 60869
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/finite_rejection_controls.py",
+      "sha256": "ae849eb9d15c4efcf3158adf99d9b1b029e5fde8cfd70afc6450de4772200127",
+      "bytes": 9565
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_finite_lifecycle_integration.py",
+      "sha256": "a2f6f61d4cc75efbc62ae3d254707f20c60acc2b69a46beddf2f75ff33662ece",
+      "bytes": 24877
+    }
+  ],
+  "validation": {
+    "newAdapterTests": 28,
+    "actualNativeApiJournalParserAdapterTests": 2,
+    "legacySequenceTests": 24,
+    "legacyCorruptionBaselineTests": 2,
+    "logs": [
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-lifecycle-integration-06.log",
+        "sha256": "ee15a031de40abd12a9926521558d04aaa9a02fa6af6470db8d43466468e1743",
+        "tests": 28,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-sequence-legacy-controls-02.log",
+        "sha256": "73c1eaf8a462e1d2e4e18c31b88286d745c14e891739372d530e8d8183576533",
+        "tests": 24,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/finite-corruption-legacy-baselines-01.log",
+        "sha256": "e179b15425a4907b0bdbab468b1030c2fdc94922a98b0b72a11715b7b19e2c25",
+        "tests": 2,
+        "status": "PASS"
+      }
+    ],
+    "nineteenLiveBlockMutationListPreserved": [
+      "missing-arm",
+      "duplicate-arm",
+      "retrieved-code",
+      "database-token",
+      "time-reversal",
+      "render-seal",
+      "hidden-durable-rows-coherent",
+      "changed-window-rebound",
+      "changed-denominator-rebound",
+      "failure-witness-coherent",
+      "replay-observation-coherent",
+      "unplanned-probe-coherent",
+      "embedded-build-revision",
+      "runtime-rebound",
+      "missing-owned-lease",
+      "provider-attempt-coherent",
+      "unknown-cleanup-coherent",
+      "unknown-process-cleanup",
+      "build-hashes-rebound"
+    ],
+    "actualLiveBlockMutationsExecuted": 0
+  },
+  "api": {
+    "finiteAudit": "verify(root,repo,*,ancestry_context=None); omitted context resolves the complete archived mother sequence. A v3 standalone block cannot qualify without that raw context.",
+    "typedContext": "lifecycle_ancestry_context(root,receipt) -> schema aijade.ch7.lifecycle-raw-context.v1 with sequenceReceipt, full journalBytes, ordered samples, rawStreams bytes and physical/logical payload hashes.",
+    "independentLifecycle": "verify_lifecycle(blockPrefix,localRaw,...,scope_id=localScope,ancestry_samples=fullContextRows,ancestry_journal=fullContextJournal). Principal prefix remains the sole cutoff/cleanup state; future full-journal state only verifies original ancestry frames.",
+    "antiMasking": "Local sample-ID population must equal that scope in the original context; every local canonical raw record must equal its original context record. Context parsed rows must themselves equal all preserved raw stream bytes, bound by logical payload hashes.",
+    "corruptionControls": "Only v3 captures the complete source context once, verifies the original baseline and every complete disposable baseline, copies the block journal prefix, then passes the same original context to all19 unchanged mutations. Context physical payload hashes are included in primaryUnchanged. Legacy verifier signatures are unchanged."
+  },
+  "requiredArchive": [
+    "sequence/receipt.json complete with exact embedded block receipts/source identities and full lifecycle journal SHA",
+    "sequence/lifecycle-journal.jsonl (closed full journal; block prefix must match receipt lifecycleJournalBytes+SHA)",
+    "sequence/process-observations.jsonl original parent raw stream",
+    "sequence/block-N/receipt.json for every declared block",
+    "sequence/block-N/telemetry.jsonl for every declared block",
+    "all original block evidence required by finite_audit and finite_rejection_controls; block lifecycle-journal.jsonl frozen prefix may be copied explicitly"
+  ],
+  "limits": [
+    "Whole sequence parent/block raw context is required; an isolated block export is insufficient for v3 ancestry audit.",
+    "Adapter and real serialized synthetic parser tests are engineering controls, not actual process observations or backend qualification.",
+    "The real19 live-block corruption controls remain conditional on an actually complete qualification; none were fabricated or counted here."
+  ],
+  "scope": {
+    "liveObserver": false,
+    "formalWindow": false,
+    "modelOrRenderer": false,
+    "network": false,
+    "gitOrSvnMutation": false,
+    "docsOrHistoricalRecordsModified": false
+  }
+}

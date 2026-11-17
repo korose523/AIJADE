@@ -1,0 +1,97 @@
+{
+  "schema": "aijade.ch7.lifecycle-independent-refused-launch-controls.v1",
+  "checkedAt": "2026-11-17T00:33:40.870526+00:00",
+  "status": "STRUCTURED_REFUSAL_AUDIT_CONTROLS_PASS_QUALIFICATION_ADVERSE_WHEN_REFUSED",
+  "planCommit": "9f3a5ead4ca63f489399907fe2e2a8d2aecbab68",
+  "ownedSources": [
+    {
+      "path": "experiments/ch7/lifecycle_audit.py",
+      "sourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/experiments/ch7/lifecycle_audit.py",
+      "snapshotPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/lifecycle-audit-refused-final-01/experiments/ch7/lifecycle_audit.py",
+      "sha256": "2c76d6a2eb39dc7413601922ff98775d86b00135885692c807bde3309b009657",
+      "sizeBytes": 52629
+    },
+    {
+      "path": "tests/shell/test_lifecycle_audit_journal.py",
+      "sourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_journal.py",
+      "snapshotPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/lifecycle-audit-refused-final-01/tests/shell/test_lifecycle_audit_journal.py",
+      "sha256": "51c595d6828c8f02e87386dedd1e57780c289532ab5e56bad595e24c5a3360bd",
+      "sizeBytes": 22109
+    },
+    {
+      "path": "tests/shell/test_lifecycle_audit_raw.py",
+      "sourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_raw.py",
+      "snapshotPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/lifecycle-audit-refused-final-01/tests/shell/test_lifecycle_audit_raw.py",
+      "sha256": "6610fc1701067577ffe5e30de41e355da117e9947cacf16bcd964df0372201fa",
+      "sizeBytes": 18579
+    },
+    {
+      "path": "tests/shell/test_lifecycle_audit_refused.py",
+      "sourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/worktree/tests/shell/test_lifecycle_audit_refused.py",
+      "snapshotPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/lifecycle-audit-refused-final-01/tests/shell/test_lifecycle_audit_refused.py",
+      "sha256": "cf7f11e7ffdb9d8e076b841ce9efe8b107ca299e0d29f4314a0450ad026088ff",
+      "sizeBytes": 6003
+    }
+  ],
+  "sourceSnapshot": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/lifecycle-audit-refused-final-01",
+    "indexPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/source-captures/lifecycle-audit-refused-final-01/source-index.json",
+    "indexSha256": "f13160d60270942dc2e1863eec6fcb47e62ac45ce56ecc22e1c52e029f74971c"
+  },
+  "controls": {
+    "tests": 83,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "original70Rerun": true,
+    "continuity": 22,
+    "journalAndScope": 30,
+    "fullRawAndNativeBinding": 18,
+    "refusedLaunchAndKernelReady": 13,
+    "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-refused-controls-02.log",
+    "logSha256": "220d9acf77631cca7bb13642a6631e8b6fb11483fbbc5b81e0fdc2a511b23b1f",
+    "previous82PassLog": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/lifecycle-refused-controls-01.log"
+  },
+  "structuredRefusalContracts": [
+    "LAUNCH_REFUSED is explicitly recognized and its closed evidence schema, source/run/writer/hash/order, attempt identity and actual typed evidence are independently checked. It is not treated merely as an unknown event.",
+    "Actual Popen PID/null, ready byte count/digest, at most two kernel identity reads, UNKNOWN/BOUND consistency, parent identity and any linked registered lease are validated. UNKNOWN birth plus wait0 cleanup remains UNKNOWN birth.",
+    "Actual wait source and cleanup status, process-group flag, launch/cleanup clocks and registered-attempt interval are checked; no refused unknown identity creates a successful FINITE_REGISTER or completed task.",
+    "The independent replayer returns launchRefusals; verify_lifecycle explicitly rejects qualification after valid refusal evidence. Cleanup success never changes that verdict.",
+    "Normal finite registrations require identityWitnessKind PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD; every finite shim SHA must equal the frozen policy source SHA. These are source-bound protocol witnesses, not cryptographic OS attestation.",
+    "Any nonempty launchRefusalArtifacts marker is explicitly adverse even without a journal refusal. Invalid marker types also reject. Full packet scanning for unlisted fallback sidecars remains the enclosing archive verifier responsibility.",
+    "Full serialized native/API/journal guard replay after a refusal is FAIL with LAUNCH_REFUSED, and independent verification remains adverse.",
+    "All preceding native managed-lease, ancestry scope/cutoff, timing, unknown RSS and historical-version boundaries remain intact."
+  ],
+  "newControls": [
+    "known wait0 cleans unknown birth but never qualifies it",
+    "pre-Popen refusal invents no PID or wait",
+    "coherently rebound BOUND label with different creation identities rejects",
+    "wrong actual Popen PID in kernel read rejects",
+    "cleanupKnown false with actual wait0 rejects",
+    "empty ready digest mismatch rejects",
+    "cleanup clock beyond event rejects",
+    "unrelated registered lease link rejects",
+    "fallback marker without journal event rejects",
+    "torn refusal record cannot become favorable prefix",
+    "child self-report marker cannot replace parent-held-ready kernel witness",
+    "kernel marker cannot waive frozen shim source SHA",
+    "full native guard explicitly FAILs after recognized refusal"
+  ],
+  "noNewMeasurements": true,
+  "scope": {
+    "nativeHelperRuns": 0,
+    "observerCalls": 0,
+    "APIRequests": 0,
+    "modelCalls": 0,
+    "rendererRuns": 0,
+    "scientificWindows": 0,
+    "docsEdited": false,
+    "blockEdited": false,
+    "rootHelpersEdited": false,
+    "oldFactsOrPacketsRejudged": false,
+    "gitCommitPerformed": false,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false,
+    "heldoutComparisonComplete": false
+  }
+}

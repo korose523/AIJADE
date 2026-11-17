@@ -42,9 +42,14 @@ jobs:
           python3 -m venv .runtime/finite-control-env
           .runtime/finite-control-env/bin/python -m pip install psutil==7.2.2
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_runtime.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_block_lifecycle.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_lifecycle_integration.py' -v
       - name: Verify prospective Mac process, version and complete-sequence controls without live services
         run: |
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_process_lifecycle*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_phase_continuity*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_lifecycle_*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_corruption_baselines.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_launcher.py' -v
@@ -113,3 +118,14 @@ jobs:
           mkdir -p .runtime/mac-bulk-refusal
           python3 -B experiments/ch7/mac-census-2026-11-16/audit.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/audit.json
           python3 -B experiments/ch7/mac-census-2026-11-16/refusal_negative_controls.py --root experiments/ch7/mac-census-2026-11-16/packet --repo .runtime/ch7-mac-bulk-source --output .runtime/mac-bulk-refusal/controls.json --temp-root .runtime/mac-bulk-refusal/disposable
+      - name: Materialize exact typed-lifecycle implementation for offline terminal replay
+        uses: actions/checkout@v7
+        with:
+          ref: 0c42cc29c64730131466af6b079a900005713cba
+          path: .runtime/ch7-mac-lifecycle-source
+          persist-credentials: false
+      - name: Fetch frozen lifecycle plan and binary publication
+        run: git -C .runtime/ch7-mac-lifecycle-source fetch --no-tags --depth=1 origin 9f3a5ead4ca63f489399907fe2e2a8d2aecbab68 efbcfa0196cbc69bd24cad5b03f01b5078898b7b
+      - name: Replay all lifecycle terminal evidence and twelve coherent archive corruptions
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-lifecycle-2026-11-17/refusal_negative_controls.py --root experiments/ch7/mac-lifecycle-2026-11-17/packet --repo .runtime/ch7-mac-lifecycle-source --output .runtime/mac-lifecycle-refusal-controls

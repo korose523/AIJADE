@@ -18,6 +18,9 @@ from comparison_manifest import FIELDS, REGISTRY_SHA256, window_registry
 
 PLAN_SHA256 = 'ca53a7df038b413bbefc6ca56195e16183620777d0391893b6419b21975bdfa2'
 CENSUS_PLAN_SHA256 = 'd8c5ed7cc58267571c5bdb1ee1cd1043eba9c6a3136f340677d69087575038b5'
+LIFECYCLE_PLAN_SHA256 = '1599aa06b81a4a8ea97a36e70f5a76aec5b70eb5c43f8e687c5addfaf5c35c72'
+LIFECYCLE_KIND = 'mac-lifecycle-observed-idle-daemon-v3'
+LIFECYCLE_BUILD_FREEZE_PATH = 'experiments/ch7/mac-lifecycle-2026-11-17/frozen-build.json'
 SHARED = ('implementationCommit', 'repositoryCommit', 'buildFreezeCommit',
           'buildFreezePath', 'inputPublicationCommit', 'dataPublicationManifestPath',
           'dataPublicationManifestSha256', 'addedDataPaths', 'processPolicyPath', 'processPolicySha256',
@@ -72,8 +75,10 @@ def utc(value):
     return parsed.timestamp()
 
 
-def _audit_block(root, repo):
+def _audit_block(root, repo, ancestry_context=None):
     from finite_audit import verify
+    if ancestry_context is not None:
+        return verify(root, repo, ancestry_context=ancestry_context)
     return verify(root, repo)
 
 
@@ -87,9 +92,222 @@ def _repository_binding(repo, q, i, manifest):
     return validate_repository_binding(repo, q, i, manifest, require_head=False)
 
 
-def _process_observation(observation, policy_sha, module_sha, policy):
+def _process_observation(observation, policy_sha, module_sha, policy, lifecycle_journal=None):
     from finite_runtime import validate_mac_observation
+    if policy.get('kind') == LIFECYCLE_KIND:
+        require(type(lifecycle_journal) is bytes, 'archived lifecycle bytes are required for v3 replay')
+        return validate_mac_observation(observation, policy_sha, module_sha, policy,
+                                        lifecycle_journal=lifecycle_journal)
     return validate_mac_observation(observation, policy_sha, module_sha, policy)
+
+
+def lifecycle_journal_bytes(root, receipt, *, prefix=False):
+    """Prefer archive-local immutable bytes; never prefer an old live path.
+
+    Block receipts bind a terminal prefix of the shared sequence journal. The
+    sequence receipt binds the whole closed journal. A malformed preferred copy
+    is adverse: it never causes a fallback to an unrelated live file.
+    """
+    root = Path(root)
+    candidates = [root / 'lifecycle-journal.jsonl', root.parent / 'lifecycle-journal.jsonl']
+    original = receipt.get('lifecycleJournalPath')
+    if original is not None:
+        require(type(original) is str and original and Path(original).is_absolute(),
+                'original lifecycle fallback must be a local absolute path')
+        candidates.append(Path(original))
+    selected = None
+    for candidate in candidates:
+        if candidate.exists() or candidate.is_symlink():
+            require(not candidate.is_symlink() and candidate.is_file(), 'unsafe lifecycle journal file')
+            if candidate not in candidates[:2]:
+                allowed = (Path('/Volumes/Untitled/AIJADE'), Path(__file__).resolve().parents[2])
+                require(any(candidate.resolve().is_relative_to(parent) for parent in allowed),
+                        'original lifecycle fallback is outside the project')
+            selected = candidate
+            break
+    require(selected is not None, 'archived lifecycle journal is missing')
+    body = selected.read_bytes()
+    if prefix:
+        size = integer(receipt.get('lifecycleJournalBytes'), 'block lifecycle prefix bytes', 1)
+        require(size <= len(body), 'block lifecycle prefix was truncated')
+        body = body[:size]
+    elif 'lifecycleJournalBytes' in receipt:
+        require(integer(receipt['lifecycleJournalBytes'], 'sequence journal bytes', 1) == len(body),
+                'sequence lifecycle population changed')
+    expected = receipt.get('lifecycleJournalSha256')
+    require(type(expected) is str and re.fullmatch('[0-9a-f]{64}', expected), 'lifecycle journal SHA missing')
+    require(body and body.endswith(b'\n') and hashlib.sha256(body).hexdigest() == expected,
+            'lifecycle journal bytes/SHA differ from terminal receipt')
+    return body
+
+
+def _v3_sources(value):
+    from finite_runtime import MAC_LIFECYCLE_SOURCES
+    sources = value.get('observerSources')
+    require(type(sources) is dict and set(sources) == set(MAC_LIFECYCLE_SOURCES),
+            'v3 observer dependency population changed')
+    require(all(type(v) is str and re.fullmatch('[0-9a-f]{64}', v) for v in sources.values()),
+            'v3 observer dependency hash missing')
+    require(sources['experiments/ch7/mac_process_guard_v3.py'] == value['observerModuleSha256'],
+            'v3 observer module/map identity differs')
+    return sources
+
+
+def lifecycle_ancestry_context(root, receipt):
+    """Read the complete archived sequence raw context, never a derived census.
+
+    Physical/logical payload hashes are retained for disposable corruption
+    controls. Context rows only locate original ancestry frames; they never
+    replace a block's own resource population or its terminal journal prefix.
+    """
+    from audit_retrieval_led import raw as archived_raw
+    root = Path(root)
+    sequence_root = None
+    for candidate in (root, root.parent):
+        path = candidate / 'receipt.json'
+        if path.is_file():
+            value = json.loads(path.read_bytes())
+            if value.get('schema') == 'aijade.ch7.finite-sequence-receipt.v1':
+                sequence_root, sequence = candidate, value
+                break
+    require(sequence_root is not None, 'complete archived sequence ancestry context missing')
+    require(sequence.get('status') == 'COMPLETE_FINITE_SEQUENCE_OBSERVATIONS',
+            'ancestry context sequence is incomplete')
+    for key in ('implementationCommit', 'repositoryCommit', 'buildFreezeCommit', 'buildFreezePath',
+                'processPolicySha256', 'observerModuleSha256', 'executionPlanSha256', 'observerSources'):
+        require(sequence.get(key) == receipt.get(key), 'ancestry context source/decision differs: ' + key)
+    count = 1 if sequence.get('purpose') == 'qualification_only' else 4
+    require(sequence.get('purpose') in ('qualification_only', 'confirmed_finite_heldout')
+            and sequence.get('plannedBlocks') == sequence.get('completedBlocks') == count,
+            'ancestry context block population changed')
+    directories = {p.name for p in sequence_root.iterdir() if p.is_dir() and p.name.startswith('block-')}
+    require(directories == {'block-' + str(i + 1) for i in range(count)}, 'ancestry context block directories incomplete')
+    payloads = {}
+    def payload(relative):
+        path = sequence_root / relative
+        physical = path if path.is_file() else path.with_suffix(path.suffix + '.gz')
+        require(physical.is_file() and not physical.is_symlink(), 'unsafe/missing ancestry context payload: ' + relative)
+        body = archived_raw(sequence_root, relative)
+        payloads[str(physical.resolve())] = dict(relativePath=relative,sha256=digest(physical), sizeBytes=physical.stat().st_size,
+                                               logicalSha256=hashlib.sha256(body).hexdigest(), logicalSizeBytes=len(body))
+        return body
+    require(json.loads(payload('receipt.json')) == sequence, 'ancestry context receipt changed while reading')
+    journal = lifecycle_journal_bytes(sequence_root, sequence)
+    require(payload('lifecycle-journal.jsonl') == journal, 'ancestry context journal is not the archived full journal')
+    samples = []; raw_streams = {}
+    def read_samples(relative):
+        body = payload(relative)
+        raw_streams[relative] = body
+        require(body and body.endswith(b'\n') and all(line.strip() for line in body.splitlines()),
+                'ancestry raw stream incomplete')
+        values = [json.loads(line) for line in body.splitlines()]
+        require(all(type(row) is dict for row in values), 'ancestry raw sample schema')
+        points = [real(row.get('monotonicSeconds'), 'ancestry sample start') for row in values]
+        require(all(b > a for a, b in zip(points, points[1:])), 'ancestry stream order reversed')
+        samples.extend(values)
+    read_samples('process-observations.jsonl')
+    embedded = sequence.get('blocks')
+    require(type(embedded) is list and len(embedded) == count, 'ancestry embedded block receipts incomplete')
+    for index in range(count):
+        relative = 'block-' + str(index + 1)
+        block = json.loads(payload(relative + '/receipt.json'))
+        require(block == embedded[index], 'ancestry block receipt differs from enclosing sequence')
+        read_samples(relative + '/telemetry.jsonl')
+    samples.sort(key=lambda row: row['monotonicSeconds'])
+    context = dict(schema='aijade.ch7.lifecycle-raw-context.v1', sequenceReceipt=sequence,
+                   journalBytes=journal, samples=samples, rawStreams=raw_streams, payloads=payloads)
+    _ancestry_local_samples(context, receipt, None)
+    return context
+
+
+def _ancestry_local_samples(context, receipt, local_samples):
+    require(type(context) is dict and context.get('schema') == 'aijade.ch7.lifecycle-raw-context.v1',
+            'typed ancestry raw context missing')
+    sequence = context.get('sequenceReceipt', {})
+    require(sequence.get('status') == 'COMPLETE_FINITE_SEQUENCE_OBSERVATIONS', 'ancestry source sequence is incomplete')
+    for key in ('implementationCommit', 'repositoryCommit', 'buildFreezeCommit', 'buildFreezePath',
+                'processPolicySha256', 'observerModuleSha256', 'executionPlanSha256', 'observerSources'):
+        require(sequence.get(key) == receipt.get(key), 'ancestry context identity mismatch: ' + key)
+    journal = context.get('journalBytes')
+    require(type(journal) is bytes and journal.endswith(b'\n')
+            and hashlib.sha256(journal).hexdigest() == sequence.get('lifecycleJournalSha256'),
+            'ancestry whole journal bytes differ from sequence receipt')
+    rows = context.get('samples')
+    require(type(rows) is list and rows, 'ancestry complete original samples missing')
+    streams = context.get('rawStreams')
+    count = 1 if sequence.get('purpose') == 'qualification_only' else 4
+    expected_streams = {'process-observations.jsonl'} | {'block-' + str(i + 1) + '/telemetry.jsonl' for i in range(count)}
+    require(type(streams) is dict and set(streams) == expected_streams, 'ancestry raw stream population changed')
+    payloads = context.get('payloads')
+    require(type(payloads) is dict and payloads, 'ancestry original payload hashes missing')
+    by_path = {}
+    for metadata in payloads.values():
+        relative = metadata.get('relativePath')
+        require(type(relative) is str and relative not in by_path, 'ancestry payload identity duplicated/missing')
+        by_path[relative] = metadata
+    require('lifecycle-journal.jsonl' in by_path
+            and by_path['lifecycle-journal.jsonl']['logicalSha256'] == hashlib.sha256(journal).hexdigest(),
+            'ancestry journal differs from its original payload hash')
+    original_rows = []
+    for relative,body in streams.items():
+        require(type(body) is bytes and body and body.endswith(b'\n'), 'ancestry stream raw bytes missing')
+        require(relative in by_path and by_path[relative]['logicalSha256'] == hashlib.sha256(body).hexdigest(),
+                'ancestry raw bytes differ from original payload hash')
+        values = [json.loads(line) for line in body.splitlines()]
+        points = [real(row.get('monotonicSeconds'), 'original ancestry stream start') for row in values]
+        require(all(b > a for a,b in zip(points,points[1:])), 'original ancestry stream reordered')
+        original_rows.extend(values)
+    original_rows.sort(key=lambda row: real(row.get('monotonicSeconds'), 'original ancestry sample clock'))
+    canonical = lambda row: json.dumps(row, sort_keys=True, separators=(',', ':'), allow_nan=False)
+    require(canonical(rows) == canonical(original_rows), 'ancestry parsed samples differ from original stream bytes')
+    by_id = {}
+    for row in rows:
+        require(type(row) is dict, 'ancestry raw row schema')
+        sid = row.get('processObservation', {}).get('sampleId')
+        require(type(sid) is str and re.fullmatch('[0-9a-f]{32}', sid) and sid not in by_id,
+                'ancestry original sample identity duplicated/missing')
+        by_id[sid] = row
+    if local_samples is not None:
+        scope = receipt.get('lifecycleScopeId')
+        expected = {sid for sid,row in by_id.items()
+                    if row.get('processObservation', {}).get('lifecycle', {}).get('scopeId') == scope}
+        actual = {row.get('processObservation', {}).get('sampleId') for row in local_samples}
+        require(actual == expected and len(actual) == len(local_samples), 'local raw population differs from ancestry context')
+        for row in local_samples:
+            sid = row['processObservation']['sampleId']
+            require(canonical(row) == canonical(by_id[sid]), 'local raw sample differs from its original ancestry context')
+    return rows, journal
+
+
+def _lifecycle_ownership(root, receipt, samples, policy, *, scoped, ancestry_context=None):
+    from lifecycle_audit import verify_lifecycle
+    journal = lifecycle_journal_bytes(root, receipt, prefix=scoped)
+    extra = {}
+    if ancestry_context is not None:
+        ancestry, full_journal = _ancestry_local_samples(ancestry_context, receipt, samples if scoped else None)
+        require(full_journal.startswith(journal), 'ancestry journal differs from the block terminal prefix')
+        extra = dict(ancestry_samples=ancestry, ancestry_journal=full_journal)
+    registry = load(root, 'owned-process-registry.json')
+    require(digest(root / 'owned-process-registry.json') == receipt['ownedProcessRegistrySha256'],
+            'owned lifecycle final bytes changed')
+    scope_id = receipt.get('lifecycleScopeId')
+    require(type(scope_id) is str and re.fullmatch('[0-9a-f]{32}', scope_id), 'lifecycle scope identity missing')
+    require(registry.get('schema') == 'aijade.process-lifecycle-final.v1'
+            and registry.get('status') == 'ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT'
+            and registry.get('scopeId') == scope_id and registry.get('scopeClosed') is True,
+            'lifecycle final scope/status changed')
+    require(all(registry.get(key) == [] for key in ('unresolvedFiniteLeases',
+                'unleasedDiscoveredIdentities', 'remainingIdentities')), 'lifecycle final has unresolved identities')
+    result = verify_lifecycle(journal, samples, source_commit=receipt['implementationCommit'],
+        policy_sha256=receipt['processPolicySha256'], policy=policy,
+        controller=receipt['controllerProcess'], require_cleanup=True,
+        scope_id=scope_id if scoped else None, **extra)
+    require(result.get('status') == 'LIFECYCLE_RAW_AUDIT_PASS' and result.get('cleanupAccepted') is True,
+            'independent lifecycle closure did not accept')
+    require(type(registry.get('knownFiniteLeases')) is list
+            and len(registry['knownFiniteLeases']) == result['finiteLeases'],
+            'lifecycle final finite population differs from raw journal')
+    return result
 
 
 def _fresh_observation(sample):
@@ -168,6 +386,8 @@ def _identity(value, purpose):
                 and '..' not in Path(path).parts, 'unsafe identity path: ' + key)
     for key in ('processPolicySha256', 'observerModuleSha256'):
         require(type(value[key]) is str and re.fullmatch('[0-9a-f]{64}', value[key]), 'invalid identity hash: ' + key)
+    if value['buildFreezePath'] == LIFECYCLE_BUILD_FREEZE_PATH:
+        _v3_sources(value)
     if purpose == 'qualification_only':
         require(value['repositoryCommit'] == value['implementationCommit'], 'qualification repository must be Q')
         require(all(value[key] is None for key in ('inputPublicationCommit', 'dataPublicationManifestPath',
@@ -185,7 +405,8 @@ def _identity(value, purpose):
 
 def expected_plan_sha256(value):
     from finite_runtime import MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH
-    paths={MAC_BUILD_FREEZE_PATH:PLAN_SHA256,MAC_CENSUS_BUILD_FREEZE_PATH:CENSUS_PLAN_SHA256}
+    paths={MAC_BUILD_FREEZE_PATH:PLAN_SHA256,MAC_CENSUS_BUILD_FREEZE_PATH:CENSUS_PLAN_SHA256,
+           LIFECYCLE_BUILD_FREEZE_PATH:LIFECYCLE_PLAN_SHA256}
     require(value.get('buildFreezePath') in paths,'unknown execution decision build path')
     return paths[value['buildFreezePath']]
 
@@ -194,6 +415,8 @@ def _same_identity(value, sequence, purpose):
     _identity(value, purpose)
     require(all(value[key] == sequence[key] for key in SHARED), 'mixed Q/B/I, policy or observer identities')
     require(value['executionPlanSha256'] == sequence['executionPlanSha256'] == expected_plan_sha256(sequence), 'wrong prospective execution plan')
+    if sequence['buildFreezePath'] == LIFECYCLE_BUILD_FREEZE_PATH:
+        require(_v3_sources(value) == _v3_sources(sequence), 'mixed v3 observer dependency identities')
 
 
 def _no_missing(receipt):
@@ -298,7 +521,7 @@ def reconstruct(rows, runtime, contract, registry):
     return result
 
 
-def _stream(samples, sequence, duration, policy, *, global_clock):
+def _stream(samples, sequence, duration, policy, *, global_clock, lifecycle_journal=None):
     require(type(samples) is list and len(samples) >= 2, 'missing resource/process coverage')
     epoch = real(sequence['sequenceEpochMonotonic'], 'sequence epoch')
     baseline = integer(sequence['initialSystemSwapUsedBytes'], 'sequence swap baseline')
@@ -315,7 +538,11 @@ def _stream(samples, sequence, duration, policy, *, global_clock):
         require(sid not in sample_ids, 'duplicate process sample'); sample_ids.add(sid)
         require(sample['processPolicySha256'] == sequence['processPolicySha256']
                 and sample['observerModuleSha256'] == sequence['observerModuleSha256'], 'sample observer identity changed')
-        _process_observation(observation, sequence['processPolicySha256'], sequence['observerModuleSha256'], policy)
+        if policy.get('kind') == LIFECYCLE_KIND:
+            _process_observation(observation, sequence['processPolicySha256'], sequence['observerModuleSha256'], policy,
+                                 lifecycle_journal=lifecycle_journal)
+        else:
+            _process_observation(observation, sequence['processPolicySha256'], sequence['observerModuleSha256'], policy)
         require(observation.get('status') == 'PASS' and observation.get('blockers') == [], 'process observation not accepted')
         owned = observation['ownedProcesses']; require(type(owned) is list and owned, 'owned process census missing')
         keys = [(row['pid'], row['createTime']) for row in owned]
@@ -378,7 +605,60 @@ def _fixed_phase(root, name, sequence, policy, duration, minimum_samples):
     return receipt, samples, start, end
 
 
-def _admission(root, sequence, policy):
+def _admission(root, sequence, policy, runtime_samples=None, lifecycle_journal=None):
+    if policy.get('kind') == LIFECYCLE_KIND:
+        from lifecycle_audit import verify_continuity
+        require(type(lifecycle_journal) is bytes, 'continuous preflight needs the archived lifecycle bytes')
+        require(digest(root / 'preflight-continuity.json') == sequence['preflightContinuitySha256']
+                and digest(root / 'phase-events.jsonl') == sequence['phaseEventsSha256'],
+                'continuous preflight/event bytes changed')
+        preflight = load(root, 'preflight-continuity.json')
+        require(preflight.get('schema') == 'aijade.ch7.phase-continuity-preflight.v1'
+                and preflight.get('status') == 'PREFLIGHT_COMPLETE_ADMITTED'
+                and preflight.get('windowReset') is False, 'streaming preflight not complete')
+        phases = preflight['phases']
+        expected = {'settling', 'admission'} if sequence['purpose'] == 'qualification_only' else {'admission'}
+        require(set(phases) == expected, 'wrong fixed preflight phases for this decision')
+        require(('settling' in expected) == (root / 'settling').exists(), 'undeclared/missing settling directory')
+        streams = {name: lines(root / name, 'telemetry.jsonl') for name in phases}
+        for name, phase in phases.items():
+            receipt = load(root / name, 'receipt.json')
+            _same_identity(receipt, sequence, sequence['purpose'])
+            require(all(receipt.get(key) == value for key, value in phase.items()),
+                    'phase receipt differs from streaming state')
+            require(receipt.get('lifecycleScopeId') == sequence.get('lifecycleScopeId')
+                    and receipt.get('controllerProcess') == sequence.get('controllerProcess'),
+                    'preflight phase changed its persistent controller/scope')
+            require(all(sample.get('processObservation', {}).get('lifecycle', {}).get('scopeId')
+                        == sequence.get('lifecycleScopeId') for sample in streams[name]),
+                    'idle observation belongs to another persistent scope')
+        events = lines(root, 'phase-events.jsonl')
+        result = verify_continuity(phases, streams, events, policy=policy,
+            runtime_samples=runtime_samples, runtime_epoch=sequence['sequenceEpochMonotonic'],
+            lifecycle_journal=lifecycle_journal)
+        require(result.get('status') == 'CONTINUITY_RAW_AUDIT_PASS', 'independent fixed-phase replay refused')
+        count = sum(len(value) for value in streams.values())
+        require(preflight.get('samples') == preflight.get('validatedSamples') == count
+                and preflight.get('eventCount') == len(events), 'preflight global population differs from raw')
+        require(preflight.get('maximumGlobalGapSeconds') == result['maximumGlobalSampleGapSeconds'],
+                'preflight maximum gap differs from raw')
+        first_name = 'settling' if 'settling' in phases else 'admission'
+        schedule = preflight.get('schedule', {})
+        require(schedule == dict(originMonotonic=phases[first_name]['phaseClock']['startMonotonic'],
+            intervalSeconds=2, maximumGapSeconds=3, settlingSeconds=600 if 'settling' in phases else 0,
+            admissionSeconds=120, intervalReset=False), 'continuous fixed schedule changed')
+        last = streams['admission'][-1]
+        require(preflight.get('lastSample') == dict(sampleId=last['sampleId'],globalIndex=last['globalIndex'],
+            monotonicSeconds=last['monotonicSeconds'],observationCompletedMonotonic=last['observationCompletedMonotonic']),
+            'last actual preflight sample differs')
+        anchor = preflight.get('runtimeHandoffAnchor', {})
+        require(all(anchor.get(key) == value for key,value in dict(lastSampleMonotonic=last['monotonicSeconds'],
+            lastSampleId=last['sampleId'],lastGlobalIndex=last['globalIndex'],
+            phaseEndMonotonic=phases['admission']['phaseClock']['endMonotonic']).items()), 'runtime handoff anchor changed')
+        recorded = real(anchor.get('handoffRecordedMonotonic'), 'actual handoff write completion')
+        require(anchor['phaseEndMonotonic'] <= recorded <= sequence['sequenceEpochMonotonic']
+                and recorded-last['monotonicSeconds'] <= 3, 'handoff record clocks lack raw continuity')
+        return result
     receipt, samples, start, end = _fixed_phase(root, 'admission', sequence, policy, 120, 60)
     require(all(s['availableBytes'] >= 4 * 1024**3 for s in samples), 'admission memory below limit')
     swap_range = max(s['swapUsedBytes'] for s in samples) - min(s['swapUsedBytes'] for s in samples)
@@ -421,6 +701,19 @@ def verify(root, repo):
     require(digest(repo / sequence['processPolicyPath']) == sequence['processPolicySha256'], 'observed process policy changed')
     require(digest(root / 'process-policy.json') == sequence['processPolicySha256'], 'sequence policy copy changed')
     policy = load(root, 'process-policy.json')
+    v3 = policy.get('kind') == LIFECYCLE_KIND
+    lifecycle_journal = None
+    ancestry_context = None
+    if v3:
+        from finite_runtime import load_mac_policy
+        require(sequence['buildFreezePath'] == LIFECYCLE_BUILD_FREEZE_PATH,
+                'v3 observer was rebound to a historical build freeze')
+        _, identities = load_mac_policy(repo, repo / sequence['processPolicyPath'], sequence['implementationCommit'])
+        require(identities['observerSources'] == _v3_sources(sequence)
+                and identities['observerModuleSha256'] == sequence['observerModuleSha256'],
+                'v3 complete source dependency map differs from Q')
+        lifecycle_journal = lifecycle_journal_bytes(root, sequence)
+        ancestry_context = lifecycle_ancestry_context(root, sequence)
     if purpose == 'confirmed_finite_heldout':
         require(digest(repo / sequence['dataPublicationManifestPath']) == sequence['dataPublicationManifestSha256'],
                 'published I manifest changed')
@@ -439,7 +732,7 @@ def verify(root, repo):
                          round2SemanticActCorrectness='NOT_MEASURED') for arm in ['C1', 'C2']}
     all_keys = []; all_cases = set(); databases = set(); block_results = []
     shared_input_hashes = None; previous_end = utc(sequence['startedAt']); previous_journal = None
-    construction_parent = None; block_controllers = []
+    construction_parent = None; block_controllers = []; lifecycle_block_samples = []
     for index in range(blocks):
         block = root / ('block-' + str(index + 1))
         require(not block.is_symlink() and block.resolve().parent == root, 'unsafe block location')
@@ -478,7 +771,7 @@ def verify(root, repo):
             construction_parent = parent
             require(sum(case['input']['conditions'] == ['C1', 'C2'] for case in runtime['cases']) == 5,
                     'unbalanced first-arm order')
-        audit = _audit_block(block, repo)
+        audit = (_audit_block(block, repo, ancestry_context=ancestry_context) if v3 else _audit_block(block, repo))
         require(audit['status'] == 'FINITE_DATAFLOW_AUDIT_PASS' and audit['casePairs'] == 10
                 and audit['measuredConditionRows'] == 20, 'strict block raw audit did not accept complete population')
         rebuilt = reconstruct(rows, runtime, contract, registry)
@@ -524,8 +817,17 @@ def verify(root, repo):
             require(previous_journal is None or point > previous_journal, 'global block journal time reversed')
             previous_journal = point
         telemetry = lines(block, 'telemetry.jsonl')
-        resource = _stream(telemetry, sequence, receipt['wallSeconds'], policy, global_clock=False)
-        ownership = _ownership(block, receipt, telemetry, [dict(pid=value['pid'], createTime=value['createTime']) for value in phases.values()])
+        if v3:
+            block_journal = lifecycle_journal_bytes(block, receipt, prefix=True)
+            require(lifecycle_journal.startswith(block_journal), 'block journal prefix differs from the enclosing sequence')
+            resource = _stream(telemetry, sequence, receipt['wallSeconds'], policy, global_clock=False,
+                               lifecycle_journal=block_journal)
+            ownership = _lifecycle_ownership(block, receipt, telemetry, policy, scoped=True,
+                                             ancestry_context=ancestry_context)
+            lifecycle_block_samples.extend(telemetry)
+        else:
+            resource = _stream(telemetry, sequence, receipt['wallSeconds'], policy, global_clock=False)
+            ownership = _ownership(block, receipt, telemetry, [dict(pid=value['pid'], createTime=value['createTime']) for value in phases.values()])
         block_results.append(dict(blockIndex=index, casePairs=10, measuredConditionRows=20,
             rawCasesSha256=digest(block / 'cases.json'), receiptSha256=digest(block / 'receipt.json'),
             independentlyReconstructed=rebuilt, resourceCoverage=resource, processOwnership=ownership))
@@ -538,11 +840,22 @@ def verify(root, repo):
         suitability = _audit_construction(repo, construction_parent)
         require(suitability['status'] == 'PASS_ALL_FORTY_BEFORE_MEASUREMENT' and suitability['casePairs'] == 40
                 and suitability['conditionRows'] == 80, 'four-block frozen construction not accepted')
-    admission = _admission(root, sequence, policy)
     global_samples = lines(root, 'process-observations.jsonl')
-    coverage = _stream(global_samples, sequence, sequence['wallSeconds'], policy, global_clock=True)
-    ownership = _ownership(root, sequence, global_samples, block_controllers)
-    return dict(schema='aijade.ch7.finite-sequence-audit.v1', status='FINITE_SEQUENCE_RAW_AUDIT_PASS',
+    if v3:
+        admission = _admission(root, sequence, policy, runtime_samples=global_samples,
+                               lifecycle_journal=lifecycle_journal)
+        coverage = _stream(global_samples, sequence, sequence['wallSeconds'], policy, global_clock=True,
+                           lifecycle_journal=lifecycle_journal)
+        # Every scope can supply absence/discovery witnesses.  The sequence's
+        # own resource stream still separately covers every startup/cleanup gap.
+        complete_runtime = sorted(global_samples + lifecycle_block_samples, key=lambda row: row['monotonicSeconds'])
+        ownership = _lifecycle_ownership(root, sequence, complete_runtime, policy, scoped=False,
+                                         ancestry_context=ancestry_context)
+    else:
+        admission = _admission(root, sequence, policy)
+        coverage = _stream(global_samples, sequence, sequence['wallSeconds'], policy, global_clock=True)
+        ownership = _ownership(root, sequence, global_samples, block_controllers)
+    result = dict(schema='aijade.ch7.finite-sequence-audit.v1', status='FINITE_SEQUENCE_RAW_AUDIT_PASS',
         strictAccepted=True, purpose=purpose, **{key: sequence[key] for key in SHARED},
         codeCommit=sequence['implementationCommit'], blocks=blocks, casePairs=pairs, measuredConditionRows=population,
         freshFiniteHeldoutPairs=pairs if purpose == 'confirmed_finite_heldout' else 0,
@@ -555,6 +868,9 @@ def verify(root, repo):
         formalHardwareQualification=False, independentHumanReview=False, round2SemanticActCorrectness='NOT_MEASURED',
         receiptSha256=digest(root / 'receipt.json'),
         interpretation='Complete finite constructed-case sequence, independently counted from raw rows under frozen windows; adverse C2 observations retained. No population uncertainty inference, hardware certificate, participant/visual/emotional outcome or independent human review.')
+    if v3:
+        result.update(observerSources=sequence['observerSources'], lifecycleJournalSha256=sequence['lifecycleJournalSha256'])
+    return result
 
 
 def main():
