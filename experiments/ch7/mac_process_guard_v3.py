@@ -85,6 +85,12 @@ def validate_policy(policy):
         raise ValueError('policy schema/kind')
     if policy.get('onlineReplayMode') not in (None, 'incremental-exact-prefix-v1'):
         raise ValueError('unrecognized online journal replay mode')
+    if policy.get('binaryAuthenticationMode') not in (None, 'full-read-exact-bytes-v1'):
+        raise ValueError('unrecognized binary authentication mode')
+    if policy.get('binaryAuthenticationMode') is not None:
+        expected_source=policy.get('binaryAuthenticationSourceSha256')
+        if not _hex(expected_source) or expected_source != _file_sha(Path(__file__).with_name('binary_authentication.py')):
+            raise ValueError('binary authentication source differs from policy')
     daemon = policy.get('daemon')
     if not isinstance(daemon, dict) or set(daemon) != {'app', 'serve'}:
         raise ValueError('policy must bind exactly app and serve')
@@ -141,16 +147,43 @@ def _command_form(executable, argv):
     return 'unknown'
 
 
-def _read_identity(pid):
+def _read_identity(pid, *, binary_authenticator=None):
     import psutil
     process = psutil.Process(pid)
     created = process.create_time()
     executable, argv, parent = process.exe(), process.cmdline(), process.ppid()
-    binary = _file_sha(executable)
+    binary = (_file_sha(executable) if binary_authenticator is None else binary_authenticator.sha256(executable))
     if psutil.Process(pid).create_time() != created:
         raise ValueError('PID reused during identity observation')
     return {'pid': pid, 'createTime': created, 'parentPid': parent, 'executable': executable,
             'sha256': binary, 'argvSha256': canonical_sha256(argv), 'commandForm': _command_form(executable, argv)}
+
+
+def new_binary_authenticator(policy):
+    """No prewarm: bind expected files; first actual snapshot authenticates them."""
+    if policy.get('binaryAuthenticationMode') is None:
+        return None
+    if policy.get('binaryAuthenticationMode') != 'full-read-exact-bytes-v1':
+        raise ValueError('binary authentication mode')
+    validate_policy(policy)
+    from binary_authentication import BinaryAuthenticator
+    expected = {item['executable']:item['sha256'] for item in policy['daemon'].values()}
+    return BinaryAuthenticator(expected)
+
+
+def _check_binary_authenticator(policy, value):
+    mode = policy.get('binaryAuthenticationMode')
+    if mode is None:
+        if value is not None: raise ValueError('binary authenticator without explicit policy')
+        return
+    if mode != 'full-read-exact-bytes-v1':
+        raise ValueError('binary authentication mode')
+    from binary_authentication import BinaryAuthenticator
+    if type(value) is not BinaryAuthenticator:
+        raise ValueError('actual full-read binary authenticator required')
+    expected = {item['executable']:item['sha256'] for item in policy['daemon'].values()}
+    if value.bindings() != expected:
+        raise ValueError('binary authenticator policy bindings differ')
 
 
 def build_policy(app_pid, serve_pid, helper_path):
@@ -649,7 +682,7 @@ def _normalize_roots(roots):
     return sorted(result, key=lambda x: x['pid'])
 
 
-def _snapshot(policy, roots, lifecycle):
+def _snapshot(policy, roots, lifecycle, *, binary_authenticator=None):
     graph_started=time.monotonic()
     graph=_read_processes(policy,lifecycle)
     result={'processGraph':graph,'daemon':{},'ownedProcesses':[],'errors':[],
@@ -660,7 +693,8 @@ def _snapshot(policy, roots, lifecycle):
         except Exception:result['errors'].append({'code':'NATIVE_COLLECTOR_WITNESS_UNKNOWN'})
     for role in ('app','serve'):
         try:
-            item=_read_identity(policy['daemon'][role]['pid'])
+            item=(_read_identity(policy['daemon'][role]['pid']) if binary_authenticator is None else
+                  _read_identity(policy['daemon'][role]['pid'],binary_authenticator=binary_authenticator))
             item['executablePathSha256']=_sha_bytes(item.pop('executable').encode());result['daemon'][role]=item
         except Exception as error:result['errors'].append({'code':'DAEMON_IDENTITY_READ_UNKNOWN','role':role,'errorClass':type(error).__name__})
     members=_owned_ids(graph['nodes'],roots)
@@ -692,6 +726,16 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
     try:
         validate_policy(policy)
         state=lifecycle_support.validate_view(observation['lifecycle'],lifecycle_journal,cursor=lifecycle_cursor)
+        if policy.get('binaryAuthenticationMode') is not None:
+            if observation.get('binaryAuthenticationMode') != policy['binaryAuthenticationMode']:
+                add('BINARY_AUTHENTICATION_MODE_MISMATCH','FAIL')
+            if not (observation.get('binaryAuthenticationModuleSha256') ==
+                    _file_sha(Path(__file__).with_name('binary_authentication.py')) ==
+                    policy['binaryAuthenticationSourceSha256']):
+                add('BINARY_AUTHENTICATION_SOURCE_MISMATCH','FAIL')
+            work=observation.get('binaryAuthenticationWork')
+            if type(work) is not dict or not work or not all(type(v) is int and v>=0 for v in work.values()):
+                add('BINARY_AUTHENTICATION_WORK_UNKNOWN')
         if state['launchRefusals']:add('LAUNCH_REFUSED','FAIL')
         if state.get('launchRefusalArtifacts'):add('LAUNCH_REFUSED_ARTIFACT_PRESENT','FAIL')
         controller=observation['lifecycle']['controllerIdentity']
@@ -863,7 +907,7 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
         return _decision(blockers)
 
 
-def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None):
+def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None, binary_authenticator=None):
     """Serialized bounded before/API/after with exact launch/wait journal prefix."""
     started=time.monotonic()
     result={'schemaVersion':SCHEMA,'sampleId':uuid.uuid4().hex,'startedMonotonic':started,
@@ -872,6 +916,7 @@ def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None):
         validate_policy(policy)
         if not isinstance(lifecycle,lifecycle_support.Registry):raise ValueError('actual registry required for capture')
         if str(lifecycle.lock_path)!=str(coordination_lock_path(policy)):raise ValueError('registry/capture lock differs')
+        _check_binary_authenticator(policy,binary_authenticator)
         lifecycle.bind_policy(policy)
         roots=_normalize_roots(owned_roots)
         result.update(observerModuleSha256=_file_sha(Path(__file__)),nativeSourceSha256=_file_sha(CENSUS_SOURCE),
@@ -882,9 +927,9 @@ def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None):
             policyCanonicalSha256=canonical_sha256(policy),ownedRoots=roots)
         with lifecycle_support.capture_lock(coordination_lock_path(policy)) as coordination:
             result['coordinationLock']=coordination
-            before=_snapshot(policy,roots,lifecycle)
+            before=_snapshot(policy,roots,lifecycle,**({'binary_authenticator':binary_authenticator} if binary_authenticator is not None else {}))
             api=_read_api(policy['api'])
-            after=_snapshot(policy,roots,lifecycle)
+            after=_snapshot(policy,roots,lifecycle,**({'binary_authenticator':binary_authenticator} if binary_authenticator is not None else {}))
             refs={lifecycle_support.key_from_node(x) for frame in (before,after) for x in frame['processGraph']['nodes']}
             result.update(evidence={'before':before,'api':api,'after':after},ownedProcesses=after['ownedProcesses'],
                           lifecycle=lifecycle.sample(refs))
@@ -894,6 +939,10 @@ def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None):
         # never repairs unknown RSS/API evidence. Avoid full-history replay twice.
         lifecycle.remember(result)
         result['lifecycle']=lifecycle.sample(refs)
+        if binary_authenticator is not None:
+            result.update(binaryAuthenticationMode=policy['binaryAuthenticationMode'],
+                binaryAuthenticationModuleSha256=_file_sha(Path(__file__).with_name('binary_authentication.py')),
+                binaryAuthenticationWork=binary_authenticator.statistics())
         result['finishedMonotonic']=time.monotonic()
         decision=validate_observation(policy,result,lifecycle_cursor=lifecycle_cursor)
     except Exception as error:

@@ -725,7 +725,7 @@ class Registry:
             shim=Path(__file__).with_name('lifecycle_exec.py')
             contexts.enter_context(capture_lock(self.lock_path))
             ready_r,ready_w=os.pipe();gate_r,gate_w=os.pipe()
-            process=subprocess.Popen([sys.executable,'-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
+            process=subprocess.Popen([sys.executable,'-S','-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
                 env=env,pass_fds=(ready_w,gate_r),**kwargs)
             os.close(ready_w);ready_w=-1;os.close(gate_r);gate_r=-1
             selected=selectors.DefaultSelector();selected.register(ready_r,selectors.EVENT_READ)

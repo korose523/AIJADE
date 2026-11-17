@@ -71,6 +71,7 @@ def main():
         capture_lock_path=guard.coordination_lock_path(policy)).activate()
     inner_cursor = life.ViewCursor()
     outer_cursor = life.ViewCursor()
+    binary_authenticator = guard.new_binary_authenticator(policy)
     errors, services, commands, tail_rows = [], [], [], []
     preflight = None
     origin = None
@@ -100,7 +101,7 @@ def main():
 
             def observed(owned_roots=None):
                 nonlocal active
-                process = guard.observe(policy, owned_roots=owned_roots or [], lifecycle=registry, lifecycle_cursor=inner_cursor)
+                process = guard.observe(policy, owned_roots=owned_roots or [], lifecycle=registry, lifecycle_cursor=inner_cursor, binary_authenticator=binary_authenticator)
                 process.update(ident)
                 active = dict(sampleId=process['sampleId'])
                 return dict(utc=datetime.now(timezone.utc).isoformat(), availableBytes=psutil.virtual_memory().available,
@@ -249,6 +250,7 @@ def main():
             tailPhaseEnteredMonotonic=tail_entered, tailThreadJoinedMonotonic=tail_joined,
             lifecycleJournalStable=tail_thread is None or not tail_thread.is_alive(),
             preflightCommands=commands, services=services, innerCursor=inner_cursor.statistics(), outerCursor=outer_cursor.statistics(),
+            binaryAuthenticationWork=binary_authenticator.statistics() if binary_authenticator is not None else None,
             registryFinal=final, lifecycleJournalPath=str(registry.path), lifecycleJournalBytes=len(journal), lifecycleJournalSha256=sha(journal),
             errors=errors, automaticRetries=0, **gates)
         write(root / 'receipt.json', receipt)

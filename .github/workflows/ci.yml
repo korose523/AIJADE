@@ -44,6 +44,7 @@ jobs:
         run: |
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_process_lifecycle*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_binary_authentication.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_phase_continuity*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_lifecycle_*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v

@@ -1,0 +1,107 @@
+{
+  "schema": "aijade.native-launch.readonly-timeout-diagnosis.v1",
+  "status": "CAUSE_UNRESOLVED_MINIMAL_FALSIFIABLE_DIAGNOSTIC_PROPOSED",
+  "checkedAt": "2026-11-17T04:56:43.457444+00:00",
+  "sourceQ3": "0c42cc29c64730131466af6b079a900005713cba",
+  "sourceE": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+  "sourceComparisons": [
+    {
+      "path": "tests/shell/test_mac_lifecycle_native.py",
+      "byteIdenticalQ3ToE": true,
+      "sha256": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef"
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec.py",
+      "byteIdenticalQ3ToE": true,
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py:_run_native",
+      "byteIdenticalQ3ToE": true,
+      "sha256": "f48d8b88cd8fc8f3b46715f5bf71b26aaa638cac42fe28d94de50b1f580ad03b"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/all-python-controls-source-bound.json",
+      "sha256": "fdc59f8beec7b0ecfa0771d0732621b57e36f31a6106ac8343816e446d544357",
+      "sizeBytes": 10786
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/all-python-controls-source-bound.log",
+      "sha256": "1547b18525468b38e6151c54a9066cf4ada867095ebbd78b6a1bf00b336c8082",
+      "sizeBytes": 61772
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/all-python-controls-source-bound.json",
+      "sha256": "8c6ce47edde3ae3f3bedc32d775d8e25dd27bb5d2ed91ec32d23e3d68f67637b",
+      "sizeBytes": 9631
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/all-python-controls-source-bound.log",
+      "sha256": "eb4e2a2c8171bf958938831711db655aae7889aa4136667a49a14f4219a01a0a",
+      "sizeBytes": 72356
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/all-python-controls-serial-02.json",
+      "sha256": "ec8572a6353f85ec06efc0cc3d72e661110d3d317fc9832e43c8671569b59ebb",
+      "sizeBytes": 9628
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/all-python-controls-serial-02.log",
+      "sha256": "e8e8199b00049617b9d13d83f3bd72914e6eff93c687727de473828412688db9",
+      "sizeBytes": 69626
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-01-native-fake.log",
+      "sha256": "01f897adcc4c400c9421976543b780f67fb420c208e8ac177ce5fae5bea2f71f",
+      "sizeBytes": 3448
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-controls-02-native-c-fake.log",
+      "sha256": "a5f626d071ceec3f3e1e7fec527c9e7e243243997ebec6bee1721ee886523663",
+      "sizeBytes": 3447
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-lifecycle-20261117/native-managed-diagnostic-01.log",
+      "sha256": "50552cb1e891bfc1ea195c9ab9fcba0d5e5c03fdec730722a8cd6de34354cb2d",
+      "sizeBytes": 1222
+    }
+  ],
+  "confirmed": [
+    "The C compiler subprocess completes inside helper() before _run_native starts its0.5second timer. Compilation itself is not part of the recorded0.508second native duration.",
+    "The fresh helper is a disposable C main that checks argc1, calls fputs and returns0. It invokes no sysctl, API, model, renderer or census.",
+    "The wrapper starts its timer before lifecycle.launch, so the limit includes Python ready shim startup, two parent kernel identity reads, REGISTER/RELEASE journal operations and fsync, gate release, execve/startup, pipe consumption and terminal wait. Finally kill/wait/journal cleanup can extend reported duration beyond0.5.",
+    "The actual preserved shim uses an absolute-path os.execve. It does not search PATH via execvpe for the target helper.",
+    "Both current failed positive results have a nonnull managedLeaseId, spawned PID, exitCode-9, timedOuttrue, cleanupKnowntrue and zero captured stdout/stderr. Thus Registry.launch returned after its identity-ready registration/release/gate operations; no launchRefusal is reported. These results do not identify the exact subsequent wait/pipe/exec delay.",
+    "The old Q3 source-bound351-test suite includes this primitive positive asPASS. Earlier pre-Q3 candidates also retain similar0.505–0.508 timeouts; those candidates are not relabelled as executions of finalQ3.",
+    "Current source-bound388 tests first fail two controls; the serial repeat still fails the native positive. Concurrency with the old294 replay is therefore not required for this observed failure, but serial execution does not prove absence of OS/filesystem/scheduling load.",
+    "The test file, shim and _run_native function are byte-identical from finalQ3 toE. Registry.launch adds a cache-usability check and Registry sync/append internals change; historical pass and source identity alone cannot exclude an indirect cost contribution."
+  ],
+  "notEstablished": [
+    "No preserved codesign, quarantine, syspolicyd/amfid/taskgated event or execution-stage trace establishes that macOS policy/signature assessment caused these timeouts.",
+    "Zero captured stdout does not prove C main was never entered. The fixture has no main-entry timestamp or explicit entry flush.",
+    "The RELEASE event clock is taken before its journal write/fsync completes, so RELEASE-to-WAIT is not pure C runtime or pure exec startup. A nonnull lease does not show how much of the total0.5second budget remained when launch returned.",
+    "Existing evidence does not separate executable assessment/page-in, scheduler delay, launch/identity IO, journal fsync, pipe handling and parent wait costs."
+  ],
+  "minimalFixedThreeCallDesign": [
+    "Freeze one separate engineering diagnostic before use. Compile exactly one fresh dummy binary once, retain source/compiler argv/results/binarySHA/path/inode/metadata, and invoke that same unchanged binary exactly three predetermined times through the unmodified _run_native with the unchanged0.5second limit. No real collector or qualification path.",
+    "Preserve every attempt, including timeout/refusal and absent execution. Do not stop after a favorable call, retry to obtain three passes, recompile between positions, or overwrite existing failing suites. Record attempt count separately from actual spawned/managed children.",
+    "Keep complete journal bytes, ready/register/release/wait events, exact PID/birth/parent, wrapper-call start/end and every returned raw result. Archive stdout bytes with SHA/size; stderrBytes is only a count unless actual stderr content is separately retained.",
+    "If this diagnostic plan is not yet frozen, an explicit source-bound launch-delegation recorder may timestamp before/after exactly one call to the real Registry.launch using in-memory records only. Do not alter its arguments, gate, waits, deadline or selector; disclose the instrumentation overhead. This bounds pre-return budget use without claiming a C-main entry time.",
+    "Do not invoke spctl assessment, signature verification, remove xattrs, disable protection, or pre-execute the helper before the first fixed call. Such interventions would change the first-use condition. Metadata can be retained as available; active assessment commands should be a later separately specified diagnostic, not an unrecorded warm-up.",
+    "After the three calls, an optional bounded read-only OS log extraction can look for assessment events tied to the exact time/PID/helperpath or binary identity. Preserve access failures/redactions. Missing log entries cannot exclude assessment."
+  ],
+  "interpretationRules": [
+    "First call adverse and later calls faster/PASS supports first-use or transient-cost sensitivity only. It is not proof of syspolicyd/signature causation.",
+    "If the launch-return measurement already consumes most/all0.5seconds, inspect ready/identity/journal stages before assigning the delay to target Mach-O execution. If ample budget remains after launch return and target first-use alone differs, target startup/exec/IO becomes a compatible hypothesis, still requiring corroboration.",
+    "If all three fail or failures occur at different positions, retain that result; it is not a reason to raise the limit or silently replace the fixture. A Q3-versusE same-binary comparison would require another separately frozen diagnostic, not extra calls inside the three-call plan.",
+    "Three fresh calls allPASS do not erase either current failed suite or prove the sporadic failure is fixed. The existing positive test remains a failed required control until its agreed disposition is addressed.",
+    "No dummy result establishes formal admission, native collector qualification, full backend readiness or permission to execute held-out cases."
+  ],
+  "sourceOrBudgetOrTestEdits": false,
+  "actualFixtureOrNativeOrObserverRuns": 0,
+  "actualSignatureOrSystemLogCommands": 0,
+  "paperEdits": false,
+  "independentHumanReview": false
+}

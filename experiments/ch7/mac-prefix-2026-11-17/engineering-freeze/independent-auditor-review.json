@@ -1,0 +1,64 @@
+{
+  "schema": "aijade.equal-load-audit-final-static-review.v1",
+  "status": "READY_PENDING_ACTUAL_ENGINEERING_RECORD",
+  "checkedAt": "2026-11-17T04:50:14.810808+00:00",
+  "scriptSha256": "049b347a3a6265cb6f9a096c6c5db633934b4863bf78d4d9a81c777e36aeec64",
+  "supersedesToolSha256": "55d7cee226b8eb91e151ffe9614597f09d5f1266aad42f71af6c238e74470dfe",
+  "oldClockControlsReceiptPreserved": true,
+  "oldClockControlsNotRerun": true,
+  "python": "3.9.6",
+  "syntax": "PASS",
+  "newIdentityAndTypeControls": 9,
+  "checks": [
+    {
+      "name": "exact controller birth/parent/interpreter positive",
+      "passed": true
+    },
+    {
+      "name": "wrong receipt parent PID",
+      "passed": true,
+      "actualReason": "controller PID/kernel birth/parent/interpreter differs from actual registered writer"
+    },
+    {
+      "name": "wrong kernel birth microsecond",
+      "passed": true,
+      "actualReason": "controller PID/kernel birth/parent/interpreter differs from actual registered writer"
+    },
+    {
+      "name": "wrong frozen interpreter executable SHA",
+      "passed": true,
+      "actualReason": "controller PID/kernel birth/parent/interpreter differs from actual registered writer"
+    },
+    {
+      "name": "false final-view controller identity",
+      "passed": true,
+      "actualReason": "controller PID/kernel birth/parent/interpreter differs from actual registered writer"
+    },
+    {
+      "name": "bool cannot substitute parent PID1",
+      "passed": true,
+      "actualReason": "controller PID/parent types"
+    },
+    {
+      "name": "bool cannot substitute creation time",
+      "passed": true,
+      "actualReason": "controller birth"
+    },
+    {
+      "name": "typed projection rejects bool as zero",
+      "passed": true
+    },
+    {
+      "name": "clock/count helpers reject boolean numeric values",
+      "passed": true
+    }
+  ],
+  "correctedHandoffSource": "receipt.services[359].callbackCompletedMonotonic",
+  "diskReceiptBinding": "exact typed9 disk fields plus4 measured post-write/post-callback receipt fields",
+  "stableJournalAndJoinedThreadRequired": true,
+  "controllerPathShaAndJournalParentBirthBound": true,
+  "parentControllerLaunchReapTerminal": "NOT_SUPPLIED_NOT_CHECKED; outside this audit",
+  "actualFullAuditRuns": 0,
+  "actualObserverNativeApiRendererModelRuns": 0,
+  "worktreeOrPaperEdits": false
+}

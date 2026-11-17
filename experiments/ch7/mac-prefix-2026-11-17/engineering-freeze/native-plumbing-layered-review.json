@@ -1,0 +1,116 @@
+{
+  "schema": "aijade.native-plumbing.layered-test-review.v1",
+  "status": "READY_FOR_NEW_E2_FREEZE_NOT_QUALIFIED",
+  "checkedAt": "2026-11-17T05:09:16.511233+00:00",
+  "oldCandidateCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+  "oldNativeTestSha256": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef",
+  "newNativeTestSha256": "4fb5163fbbc9707a09f94bc970b8bda2054292511f0f066730115e03f723e712",
+  "worktreeFile": "tests/shell/test_mac_lifecycle_native.py",
+  "tests": 6,
+  "passed": 6,
+  "failed": 0,
+  "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/native-plumbing-layered-controls-01.log",
+  "logSha256": "ae93fdb8cc3101a24652dcec5b518c1cc2eb0ff8f61610a1c4b412a101f36568",
+  "preservedMethods": {
+    "helper": true,
+    "run_helper": true,
+    "test_native_timeout_kills_only_owned_fake_and_keeps_wait_status": true,
+    "test_native_ready_refusal_keeps_failure_identity_without_direct_fallback": true,
+    "test_native_output_cap_refuses_and_reaps_exact_pipe_fixture": true,
+    "test_wait_error_keeps_already_received_raw_bytes_and_remains_adverse": true
+  },
+  "productionSourceFiles": [
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "ca2fe466737d773cd03cdd024f45154761ba7b96ad3dff49420db8b6a8a765a7",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/process_lifecycle.py",
+      "sha256": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/phase_continuity.py",
+      "sha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/finite_runtime.py",
+      "sha256": "ccd24a25eb54c69d2d61fb9dafad261c00f744f0e7c1d6ef7a91c4db5e7c5c9d",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/run_finite_sequence.py",
+      "sha256": "8b205f2ea8c7ffd66438de5e0304d6113e0324917933a6b78e03f295ab1a6639",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/run_finite_block.py",
+      "sha256": "462b192b67b806f92a9ceb3ecfafe25d73d991c849f8c3cf50d6303c2ca730e1",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/finite_audit.py",
+      "sha256": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/finite_sequence_audit.py",
+      "sha256": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0",
+      "unchangedFromE1": true
+    },
+    {
+      "path": "experiments/ch7/godot_local.py",
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+      "unchangedFromE1": true
+    }
+  ],
+  "production14UnchangedFromE1": true,
+  "noNewSkipOrXfail": true,
+  "existingPlatformGateUnchanged": true,
+  "nativeTimeoutBudgetSeconds": 0.5,
+  "budgetSourceUnchanged": true,
+  "changedMeasurementCondition": {
+    "oldPositive": "Freshly compiled C helper first launch plus nonempty stdout and argc1, under the same0.5second wrapper limit. E1 failures remain preserved.",
+    "newPositive": "Existing /usr/bin/true with no argument suffix, real capture lock/Registry/identity-ready exec/actual parent wait0. stdout is explicitly empty. This tests lifecycle plumbing, not newly compiled target startup or payload transport.",
+    "newTransportPositive": "Exactly25 predetermined bytes through real OS pipes and selectors, one FakeManaged delegation, no executable/process. Bytes/SHA/EOF/cleanup are checked; this is not a live collector or kernel-birth witness.",
+    "lostPositiveCoverage": "The system-true control does not self-check argc1 and does not supply nonempty live C stdout. It does not replace whole native evidence acceptance."
+  },
+  "retainedStrongAcceptanceGate": {
+    "status": "NOT_RUN_REQUIRED_BEFORE_ACCEPTANCE",
+    "description": "The complete engineering workload must independently accept all724 actual native collector invocations under unchanged per-call0.5seconds, with complete nonempty raw JSON, actual helper/source hashes, managed identity/parent wait/cleanup and the real collector argc1 check; whole362-sample service/lateness/deadline/continuity gates also remain mandatory. A single real-helper failure refuses engineering acceptance.",
+    "actualCollectorSourceArgcCheck": "experiments/ch7/mac_bulk_census.c:343-351"
+  },
+  "oldFailuresNotReclassified": true,
+  "newSourceFreezeRequired": true,
+  "actualCensusCollectorApiModelRendererQualificationInvocations": 0,
+  "actualDisposableActorTests": "One system-true plumbing invocation plus existing disposable C timeout and ready-refusal tests; all six controls run once, no warmup or favorable retry.",
+  "paperOrEvidenceFactEdits": false,
+  "independentHumanReview": false
+}

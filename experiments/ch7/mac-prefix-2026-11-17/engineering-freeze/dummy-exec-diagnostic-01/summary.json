@@ -1,0 +1,167 @@
+{
+  "schema": "aijade.ch7.dummy-native-exec-diagnostic.v1",
+  "status": "THREE_DUMMY_TRIALS_COMPLETE_WITH_REFUSALS",
+  "checkedAt": "2026-11-17T05:03:24.885855+00:00",
+  "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+  "planSha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+  "originalScriptSha256": "5c0397bb1b3e5a0109298f75c1b01c1e1870241496de5f645178367b5f65c616",
+  "compatibilityAmendmentSha256": "fb07f70b0ac0be2fe517ce4d9208b6b84fd6143a572908a7aa8c64bb73525130",
+  "compatibilityScriptSha256": "de0e6643bf52bd9ac357fb5b557b6c354e9e199fe3807f2c5096cad74a998082",
+  "binaryManifestSha256": "cfe7bb5af7ac6cf0269f678c136d69f7ec597be67cf6a41fd2d3387fcbd7148c",
+  "helperSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+  "helperSourceSha256": "81f12e6b651988a514a331e18438db00bcc5fae32bde29c030ed43051ed058fe",
+  "sourceFilesBefore": {
+    "experiments/ch7/mac_process_guard_v3.py": "ca2fe466737d773cd03cdd024f45154761ba7b96ad3dff49420db8b6a8a765a7",
+    "experiments/ch7/process_lifecycle.py": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "tests/shell/test_mac_lifecycle_native.py": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef"
+  },
+  "sourceFilesAfter": {
+    "experiments/ch7/mac_process_guard_v3.py": "ca2fe466737d773cd03cdd024f45154761ba7b96ad3dff49420db8b6a8a765a7",
+    "experiments/ch7/process_lifecycle.py": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "tests/shell/test_mac_lifecycle_native.py": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef"
+  },
+  "productionSourceUnchanged": true,
+  "compilationAttempts": 1,
+  "plannedTrials": 3,
+  "trialsAttempted": 3,
+  "intervalSleeps": [
+    {
+      "beforeTrial": 2,
+      "requestedSeconds": 1,
+      "startedMonotonic": 196334.63781879,
+      "completedMonotonic": 196335.645101934
+    },
+    {
+      "beforeTrial": 3,
+      "requestedSeconds": 1,
+      "startedMonotonic": 196335.943115834,
+      "completedMonotonic": 196336.95223457
+    }
+  ],
+  "nativeDeadlineSeconds": 0.5,
+  "compiledBinaryAgeAtFirstCallSeconds": 241.74548767501255,
+  "outcomes": [
+    {
+      "index": 1,
+      "status": "DUMMY_NATIVE_PLUMBING_REFUSED",
+      "nativeResult": {
+        "spawnedHelperPid": 93220,
+        "observerPid": 93214,
+        "exitCode": -9,
+        "timedOut": true,
+        "oversized": false,
+        "cleanupKnown": true,
+        "stdout": {
+          "encoding": "base64",
+          "data": "",
+          "sizeBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderrBytes": 0,
+        "managedLeaseId": "3bfcf6756a564a32a3a9610323ae7cb6",
+        "durationSeconds": 0.5083156740001868
+      },
+      "launchCallTiming": [
+        {
+          "startedMonotonic": 196334.107823252,
+          "returnedHandle": true,
+          "completedMonotonic": 196334.281177391,
+          "durationSeconds": 0.17335413899854757
+        }
+      ],
+      "journalSha256": "67f6a9ddf6dfffbea1e4e2a5b0810209fb113c280c4120c5898683f982c50e2b",
+      "errors": []
+    },
+    {
+      "index": 2,
+      "status": "DUMMY_NATIVE_PLUMBING_PASS",
+      "nativeResult": {
+        "spawnedHelperPid": 93221,
+        "observerPid": 93214,
+        "exitCode": 0,
+        "timedOut": false,
+        "oversized": false,
+        "cleanupKnown": true,
+        "stdout": {
+          "encoding": "base64",
+          "data": "c3ludGhldGljLW5hdGl2ZS1maXh0dXJlCg==",
+          "sizeBytes": 25,
+          "sha256": "587d2279622561b551124ce0b219e57a7d592fff664dbbf8322cc5bb35901755"
+        },
+        "stderrBytes": 0,
+        "managedLeaseId": "9aa89139e69f4b39937c405c72147172",
+        "durationSeconds": 0.17768994098878466
+      },
+      "launchCallTiming": [
+        {
+          "startedMonotonic": 196335.742728253,
+          "returnedHandle": true,
+          "completedMonotonic": 196335.903706744,
+          "durationSeconds": 0.16097849098150618
+        }
+      ],
+      "journalSha256": "5b604a8089e8b35b6d513129532036325500a3d4e9e931254be7666828115bf0",
+      "errors": []
+    },
+    {
+      "index": 3,
+      "status": "DUMMY_NATIVE_PLUMBING_PASS",
+      "nativeResult": {
+        "spawnedHelperPid": 93222,
+        "observerPid": 93214,
+        "exitCode": 0,
+        "timedOut": false,
+        "oversized": false,
+        "cleanupKnown": true,
+        "stdout": {
+          "encoding": "base64",
+          "data": "c3ludGhldGljLW5hdGl2ZS1maXh0dXJlCg==",
+          "sizeBytes": 25,
+          "sha256": "587d2279622561b551124ce0b219e57a7d592fff664dbbf8322cc5bb35901755"
+        },
+        "stderrBytes": 0,
+        "managedLeaseId": "66df33363a34491ea7895d99bf733a72",
+        "durationSeconds": 0.19626566101214848
+      },
+      "launchCallTiming": [
+        {
+          "startedMonotonic": 196337.052530145,
+          "returnedHandle": true,
+          "completedMonotonic": 196337.233188617,
+          "durationSeconds": 0.18065847200341523
+        }
+      ],
+      "journalSha256": "62662faf48bb30c3aa09d14b11631621214ece60fc3fb847646ad04f0a37ab06",
+      "errors": []
+    }
+  ],
+  "readOnlyMetadataStatuses": {
+    "xattrBefore": "READ_ONLY_METADATA_READ_COMPLETE",
+    "codesign": "UNKNOWN_METADATA",
+    "xattrAfter": "READ_ONLY_METADATA_READ_COMPLETE"
+  },
+  "priorPreparationFailures": [
+    {
+      "errorClass": "AttributeError",
+      "operation": "os.listxattr",
+      "helperExecutions": 0,
+      "compilations": 1
+    }
+  ],
+  "automaticRetries": 0,
+  "prewarmExecutions": 0,
+  "securityAttributeMutations": 0,
+  "engineeringFullLoadStarted": false,
+  "qualificationStarted": false,
+  "actualCensusCalls": 0,
+  "guardObserveCalls": 0,
+  "lsofCalls": 0,
+  "apiCalls": 0,
+  "modelRequests": 0,
+  "rendererCalls": 0,
+  "freshCases": 0,
+  "causalFirstExecutionEffectEstablished": false,
+  "interpretation": "One frozen compile, metadata compatibility pause before first helper execution, and three fixed-order dummy calls. Preparation delay and metadata/cache effects are confounded; no causal Mach-O or syspolicyd claim and no erasure of prior suite refusals."
+}

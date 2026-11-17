@@ -1,0 +1,117 @@
+{
+  "schema": "aijade.ch7.equal-load-protocol.v1",
+  "purpose": "ENGINEERING_ONLY_NOT_QUALIFICATION",
+  "planPath": "experiments/plans/2026-11-17-ch7-prefix-equal-load-engineering-02.md",
+  "planSha256": "f00a9509dbed430c2937b789b9a05e9daaf2a5141df1bb029b22058f120a3643",
+  "runnerPath": "experiments/ch7/run_equal_load.py",
+  "population": {
+    "settling": 300,
+    "admissionLike": 60,
+    "tail": 2,
+    "total": 362,
+    "native": 724,
+    "listener": 724,
+    "apiReads": 362,
+    "onlineDecisions": 724,
+    "preflightGit": 30,
+    "finite": 1478
+  },
+  "schedule": {
+    "intervalSeconds": 2,
+    "settlingSeconds": 600,
+    "admissionSeconds": 120,
+    "tailTargetsSeconds": [
+      720,
+      722
+    ],
+    "tailDeadlineSeconds": 724,
+    "firstTailJoinDeadlineSeconds": 727,
+    "tailCleanupSeconds": 10,
+    "parentTimeoutSeconds": 850,
+    "maxActualGapSeconds": 3,
+    "maxStartLatenessSeconds": 0.5,
+    "maxCompleteServiceSeconds": 2,
+    "wholeObservationSeconds": 2.5,
+    "nativeCallSeconds": 0.5,
+    "apiCallSeconds": 0.5,
+    "captureLockSeconds": 1.25,
+    "phaseDeadlinesSeconds": [
+      600,
+      720,
+      724
+    ]
+  },
+  "resources": {
+    "admissionMinimumAvailableBytes": 4294967296,
+    "admissionMaximumSwapRangeBytes": 67108864
+  },
+  "files": [
+    "settling/telemetry.jsonl",
+    "admission/telemetry.jsonl",
+    "tail/telemetry.jsonl",
+    "tail/events.jsonl",
+    "phase-events.jsonl",
+    "service-events.jsonl",
+    "lifecycle-journal.jsonl",
+    "process-policy.json",
+    "engineering-passport.json",
+    "preflight-continuity.json",
+    "receipt.json"
+  ],
+  "scientificGates": {
+    "qualificationStarted": false,
+    "backendQualified": false,
+    "scientificAdmission": false,
+    "formalHardwareQualification": false,
+    "independentHumanReview": false,
+    "flowBlocks": 0,
+    "modelRequests": 0,
+    "rendererRequests": 0,
+    "freshHeldoutCases": 0,
+    "seedConstructed": false
+  },
+  "integrityModel": "FULL_ACTUAL_OLD_PREFIX_READ_AND_EXACT_COMPARISON_EVERY_CALL; INCREMENTAL_PARSE_AND_ROLLING_SHA; FINAL_COLD_INDEPENDENT_REPLAY",
+  "automaticRetries": 0,
+  "overwritePriorAttempts": false,
+  "nativePreparation": {
+    "mode": "EXACT_PREVIOUSLY_PREPARED_AIJ_NATIVE_ARTIFACT",
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/native/mac_bulk_census",
+    "sha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+    "sourceSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+    "originalSourceCommit": "0c42cc29c64730131466af6b079a900005713cba",
+    "originalBuildPublication": "efbcfa0196cbc69bd24cad5b03f01b5078898b7b",
+    "coldStartAcceptanceClaim": false
+  },
+  "positiveControlScope": "Existing system C executable checks actual lifecycle; independent real pipe checks nonempty transport; actual724 collector calls remain mandatory.",
+  "engineeringAttempt": 2,
+  "policyPath": "configs/research/ch7-mac-prefix-v2-process-policy.json",
+  "runtimeSources": 15,
+  "preflightFiles": 28,
+  "shimInterpreterFlags": [
+    "-S",
+    "-B"
+  ],
+  "binaryAuthentication": {
+    "mode": "full-read-exact-bytes-v1",
+    "sourceSha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+    "maxFileCachedBytes": 134217728,
+    "maxTotalCachedBytes": 201326592,
+    "daemonContentBytes": {
+      "app": 59795424,
+      "serve": 78301616
+    },
+    "totalDistinctBaselineContentBytes": 138097040,
+    "actualReadBytesPerTick": 276194080,
+    "firstBaselineInsideFirstMeasuredSnapshot": true,
+    "constructorReadsDaemonBytes": false,
+    "statisticsMeaning": "ATTEMPTED_WORK_NOT_RSS_OR_ACCEPTANCE"
+  },
+  "priorEngineeringRefusal": {
+    "sourceCommit": "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb",
+    "freezeCommit": "bb2c25b808c1c3f604e081b5fa4da4d4f76af84d",
+    "passportSha256": "5755e4942768002eed52762a432c947bc6279ac945fcc8d7f9d0bb579da939e2",
+    "coreSha256": "04f724d851349d2c9ae608effa87aebcc5c46531cc79b8ea6445d4cfe8746098",
+    "accepted": false
+  },
+  "expectedFinalJournalEvents": 4437
+}

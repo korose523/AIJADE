@@ -34,7 +34,7 @@ MAC_LIFECYCLE_BUILD_FREEZE_PATH='experiments/ch7/mac-lifecycle-2026-11-17/frozen
 MAC_LIFECYCLE_KIND='mac-lifecycle-observed-idle-daemon-v3'
 MAC_PLANS=(MAC_PLAN,MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN)
 MAC_LIFECYCLE_SOURCES=tuple('experiments/ch7/'+name for name in (
-    'mac_process_guard_v3.py','process_lifecycle.py','lifecycle_exec.py',
+    'mac_process_guard_v3.py','process_lifecycle.py','lifecycle_exec.py','binary_authentication.py',
     'phase_continuity.py','lifecycle_audit.py','mac_process_guard.py',
     'mac_process_guard_v2.py','mac_bulk_census.c','finite_runtime.py',
     'run_finite_sequence.py','run_finite_block.py','finite_audit.py',
@@ -283,13 +283,19 @@ def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None
 
 
 def online_lifecycle_cursors(policy):
-    """Independent raw-byte replay states; never share the producer's state."""
-    if policy is None or policy.get('onlineReplayMode') is None:
+    """Independent journal states; live file authentication never caches a verdict."""
+    if policy is None:
         return {}, {}
-    require(policy.get('kind')==MAC_LIFECYCLE_KIND and
-            policy['onlineReplayMode']=='incremental-exact-prefix-v1', 'unsupported online replay mode')
-    from process_lifecycle import ViewCursor
-    return dict(lifecycle_cursor=ViewCursor()), dict(lifecycle_cursor=ViewCursor())
+    inner,outer={},{}
+    if policy.get('onlineReplayMode') is not None:
+        require(policy.get('kind')==MAC_LIFECYCLE_KIND and
+                policy['onlineReplayMode']=='incremental-exact-prefix-v1','unsupported online replay mode')
+        from process_lifecycle import ViewCursor
+        inner['lifecycle_cursor'],outer['lifecycle_cursor']=ViewCursor(),ViewCursor()
+    if policy.get('binaryAuthenticationMode') is not None:
+        require(policy.get('kind')==MAC_LIFECYCLE_KIND,'binary authentication policy kind')
+        inner['binary_authenticator']=mac_observer(policy).new_binary_authenticator(policy)
+    return inner,outer
 
 
 def validate_coverage(samples,duration=None,minimum_samples=None,max_gap=3):

@@ -1,0 +1,380 @@
+{
+  "schema": "aijade.ch7.dummy-native-exec-trial.v1",
+  "index": 1,
+  "status": "DUMMY_NATIVE_PLUMBING_REFUSED",
+  "trialStartedMonotonic": 196334.013868245,
+  "callStartedMonotonic": 196334.1077663,
+  "callCompletedMonotonic": 196334.616117736,
+  "trialCompletedMonotonic": 196334.629775457,
+  "nativeDeadlineSeconds": 0.5,
+  "manifestSha256": "cfe7bb5af7ac6cf0269f678c136d69f7ec597be67cf6a41fd2d3387fcbd7148c",
+  "helperSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+  "captureLock": {
+    "schema": "aijade.lifecycle.capture-lock.v1",
+    "pathSha256": "1fd759e509c9325b8868bb54d06951b206014a5eda8883f6bcdd1f29e20639da",
+    "maxWaitSeconds": 1.25,
+    "state": "HELD_AND_RELEASED",
+    "waitSeconds": 0.0020869889995083213,
+    "acquiredMonotonic": 196334.107760812,
+    "nested": false,
+    "initialIdentity": {
+      "device": 16777235,
+      "inode": 199712,
+      "regular": true,
+      "singleLink": true,
+      "ownedByCurrentUser": true
+    },
+    "finalIdentity": {
+      "device": 16777235,
+      "inode": 199712,
+      "regular": true,
+      "singleLink": true,
+      "ownedByCurrentUser": true
+    },
+    "releasedMonotonic": 196334.616179745
+  },
+  "nativeResult": {
+    "spawnedHelperPid": 93220,
+    "observerPid": 93214,
+    "exitCode": -9,
+    "timedOut": true,
+    "oversized": false,
+    "cleanupKnown": true,
+    "stdout": {
+      "encoding": "base64",
+      "data": "",
+      "sizeBytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderrBytes": 0,
+    "managedLeaseId": "3bfcf6756a564a32a3a9610323ae7cb6",
+    "durationSeconds": 0.5083156740001868
+  },
+  "launchCallTiming": [
+    {
+      "startedMonotonic": 196334.107823252,
+      "returnedHandle": true,
+      "completedMonotonic": 196334.281177391,
+      "durationSeconds": 0.17335413899854757
+    }
+  ],
+  "registryFinal": {
+    "schema": "aijade.process-lifecycle-final.v1",
+    "status": "UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE",
+    "scopeId": "c77ec18ff5ec4d328682fe7165f79e0c",
+    "scopeClosed": true,
+    "knownFiniteLeases": [
+      {
+        "commandSha256": "46843a76e9b9156b22ba7b03671da4da4726bda8397bd2566445443f678f0735",
+        "executableSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+        "identity": {
+          "createTimeMicros": 1794891801703555,
+          "parentPid": 93214,
+          "pid": 93220
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "3bfcf6756a564a32a3a9610323ae7cb6",
+        "parentIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "readyMonotonic": 196334.269565602,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 3,
+        "registerMonotonic": 196334.276487565,
+        "releaseSeq": 4,
+        "waitSeq": 5,
+        "exitCode": -9,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794891801703555,
+            "parentPid": 93214,
+            "pid": 93220
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794891800884752,
+            "parentPid": 46644,
+            "pid": 93214
+          },
+          "eventSeq": 5,
+          "reapedMonotonic": 196334.612202237,
+          "exitCode": -9
+        },
+        "releaseMonotonic": 196334.280321752,
+        "reapedMonotonic": 196334.612202237,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      }
+    ],
+    "unresolvedFiniteLeases": [
+      {
+        "commandSha256": "46843a76e9b9156b22ba7b03671da4da4726bda8397bd2566445443f678f0735",
+        "executableSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+        "identity": {
+          "createTimeMicros": 1794891801703555,
+          "parentPid": 93214,
+          "pid": 93220
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "3bfcf6756a564a32a3a9610323ae7cb6",
+        "parentIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "readyMonotonic": 196334.269565602,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 3,
+        "registerMonotonic": 196334.276487565,
+        "releaseSeq": 4,
+        "waitSeq": 5,
+        "exitCode": -9,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794891801703555,
+            "parentPid": 93214,
+            "pid": 93220
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794891800884752,
+            "parentPid": 46644,
+            "pid": 93214
+          },
+          "eventSeq": 5,
+          "reapedMonotonic": 196334.612202237,
+          "exitCode": -9
+        },
+        "releaseMonotonic": 196334.280321752,
+        "reapedMonotonic": 196334.612202237,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      }
+    ],
+    "launchRefusals": [],
+    "launchRefusalArtifacts": [],
+    "localDiscoveredIdentities": [],
+    "unleasedDiscoveredIdentities": [],
+    "remainingIdentities": [
+      {
+        "createTimeMicros": 1794891801703555,
+        "parentPid": 93214,
+        "pid": 93220
+      }
+    ],
+    "lifecycleView": {
+      "schema": "aijade.process-lifecycle-view.v1",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/dummy-exec-diagnostic-01/trial-1/lifecycle-journal.jsonl",
+      "journalBytes": 4760,
+      "journalSha256": "67f6a9ddf6dfffbea1e4e2a5b0810209fb113c280c4120c5898683f982c50e2b",
+      "lastSequence": 6,
+      "scopeId": "c77ec18ff5ec4d328682fe7165f79e0c",
+      "controllerIdentity": {
+        "pid": 93214,
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644
+      },
+      "leases": [
+        {
+          "commandSha256": "2cd28adbc38e27429801447d30cbb0dc54253401ff92547001d47f705e6135d9",
+          "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+          "identity": {
+            "createTimeMicros": 1794891800884752,
+            "parentPid": 46644,
+            "pid": 93214
+          },
+          "leaseId": "907503e133e8405d8d04a6063f833a53",
+          "parentIdentity": null,
+          "readyMonotonic": 196334.094869683,
+          "role": "controller",
+          "stageId": "dummy-exec-diagnostic-trial-1",
+          "registerSeq": 1,
+          "registerMonotonic": 196334.097658268,
+          "releaseSeq": null,
+          "waitSeq": null,
+          "exitCode": null,
+          "absence": null
+        }
+      ],
+      "referencedIdentities": [],
+      "launchRefusalArtifacts": [],
+      "controllers": [
+        "907503e133e8405d8d04a6063f833a53"
+      ]
+    }
+  },
+  "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/dummy-exec-diagnostic-01/trial-1/lifecycle-journal.jsonl",
+  "journalSha256": "67f6a9ddf6dfffbea1e4e2a5b0810209fb113c280c4120c5898683f982c50e2b",
+  "journalBytes": 4760,
+  "journalEvents": 6,
+  "exactJournalEvents": [
+    {
+      "data": {
+        "commandSha256": "2cd28adbc38e27429801447d30cbb0dc54253401ff92547001d47f705e6135d9",
+        "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+        "identity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "leaseId": "907503e133e8405d8d04a6063f833a53",
+        "parentIdentity": null,
+        "readyMonotonic": 196334.094869683,
+        "role": "controller",
+        "stageId": "dummy-exec-diagnostic-trial-1"
+      },
+      "event": "CONTROLLER_REGISTER",
+      "monotonicSeconds": 196334.097658268,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 1,
+      "sha256": "71c45c17ab3e37197cdb80dd39342d7eb72d581bdf06b4441bb076b4136f8380",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "controllerIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "parentLeaseId": null,
+        "scopeId": "c77ec18ff5ec4d328682fe7165f79e0c",
+        "stageId": "dummy-exec-diagnostic-trial-1"
+      },
+      "event": "SCOPE_OPEN",
+      "monotonicSeconds": 196334.10290957,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "71c45c17ab3e37197cdb80dd39342d7eb72d581bdf06b4441bb076b4136f8380",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 2,
+      "sha256": "f1accd7a08ed13b4ae67e0d12584d3201bf3adc22a5992e56df9b6a2674db8cc",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "commandSha256": "46843a76e9b9156b22ba7b03671da4da4726bda8397bd2566445443f678f0735",
+        "executableSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+        "identity": {
+          "createTimeMicros": 1794891801703555,
+          "parentPid": 93214,
+          "pid": 93220
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "3bfcf6756a564a32a3a9610323ae7cb6",
+        "parentIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "readyMonotonic": 196334.269565602,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census"
+      },
+      "event": "FINITE_REGISTER",
+      "monotonicSeconds": 196334.276487565,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "f1accd7a08ed13b4ae67e0d12584d3201bf3adc22a5992e56df9b6a2674db8cc",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 3,
+      "sha256": "afd1c499c7cef8a3d7b1eabee178280a17f1fb86ae84291604a2a513608b0ee1",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "leaseId": "3bfcf6756a564a32a3a9610323ae7cb6"
+      },
+      "event": "RELEASE",
+      "monotonicSeconds": 196334.280321752,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "afd1c499c7cef8a3d7b1eabee178280a17f1fb86ae84291604a2a513608b0ee1",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 4,
+      "sha256": "a5b8878fd0d1080c3d1efc30648930e573744031c9b64c47a301f363aaf02c6d",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "exitCode": -9,
+        "identity": {
+          "createTimeMicros": 1794891801703555,
+          "parentPid": 93214,
+          "pid": 93220
+        },
+        "leaseId": "3bfcf6756a564a32a3a9610323ae7cb6",
+        "reapedMonotonic": 196334.612202237,
+        "waitSource": "Popen.wait"
+      },
+      "event": "WAIT",
+      "monotonicSeconds": 196334.614498511,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "a5b8878fd0d1080c3d1efc30648930e573744031c9b64c47a301f363aaf02c6d",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 5,
+      "sha256": "25e11b21a91590a72a50a43ca24527424646501f355a45384155df4221374669",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "scopeId": "c77ec18ff5ec4d328682fe7165f79e0c"
+      },
+      "event": "SCOPE_CLOSE",
+      "monotonicSeconds": 196334.621754143,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "25e11b21a91590a72a50a43ca24527424646501f355a45384155df4221374669",
+      "runId": "95f6e94193fb4008aff9ae267f503f73",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 6,
+      "sha256": "ea5ff1b02a9e7430408c202027c509d6c4c99bd91e8905c74f8b09ec86e562a0",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    }
+  ],
+  "errors": [],
+  "stderrPayloadAvailable": false,
+  "stderrLimit": "Original primitive retains stderr count only; compiler/codesign stderr complete.",
+  "actualSysctlCensus": false,
+  "guardObserveInvoked": false,
+  "qualification": false
+}

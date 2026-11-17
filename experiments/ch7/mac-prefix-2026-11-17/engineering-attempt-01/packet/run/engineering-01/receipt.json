@@ -1,0 +1,3716 @@
+{
+  "schema": "aijade.ch7.equal-load-result.v1",
+  "status": "ENGINEERING_EQUAL_LOAD_REFUSED",
+  "checkedAt": "2026-11-17T05:32:40.735857+00:00",
+  "sourceCommit": "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb",
+  "passportSha256": "5755e4942768002eed52762a432c947bc6279ac945fcc8d7f9d0bb579da939e2",
+  "runnerSha256": "7a0cccc8cd83a20c2523324c9ece5a65ebb2af938cd1bf0e5623cf2f3f83a185",
+  "policySha256": "e4972d319ef064237225f3d5906838d269d7cc0df008d847368517750dd80e32",
+  "sourceFiles": {
+    ".editorconfig": "65f15fcf24ab557f59e559ab600642d73fd91c99ce591606bc01875ee6912a90",
+    ".github/workflows/ci.yml": "a869c1990737fd43ffa4d5c6059b2934455811cdc17ab3e788caa464d2ae99d9",
+    "Aijade.slnx": "cfd0460a9d204265e3f2ee8cf0c255650d24eebedbfd5f509a1aebb9dfdf5637",
+    "Directory.Build.props": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af",
+    "Directory.Packages.props": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d",
+    "README.md": "c0784626d29032c467218841f7d9b83b511c4b93eba4561cb6af5de7f03898ce",
+    "configs/research/ch7-mac-prefix-process-policy.json": "e4972d319ef064237225f3d5906838d269d7cc0df008d847368517750dd80e32",
+    "experiments/ch7/finite_audit.py": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd",
+    "experiments/ch7/finite_runtime.py": "ccd24a25eb54c69d2d61fb9dafad261c00f744f0e7c1d6ef7a91c4db5e7c5c9d",
+    "experiments/ch7/finite_sequence_audit.py": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0",
+    "experiments/ch7/godot_local.py": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+    "experiments/ch7/lifecycle_audit.py": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "experiments/ch7/mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+    "experiments/ch7/mac_process_guard.py": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+    "experiments/ch7/mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+    "experiments/ch7/mac_process_guard_v3.py": "ca2fe466737d773cd03cdd024f45154761ba7b96ad3dff49420db8b6a8a765a7",
+    "experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+    "experiments/ch7/phase_continuity.py": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+    "experiments/ch7/process_lifecycle.py": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+    "experiments/ch7/run_equal_load.py": "7a0cccc8cd83a20c2523324c9ece5a65ebb2af938cd1bf0e5623cf2f3f83a185",
+    "experiments/ch7/run_finite_block.py": "462b192b67b806f92a9ceb3ecfafe25d73d991c849f8c3cf50d6303c2ca730e1",
+    "experiments/ch7/run_finite_sequence.py": "8b205f2ea8c7ffd66438de5e0304d6113e0324917933a6b78e03f295ab1a6639",
+    "experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md": "d52a9805b11b0929f5bb328837cb139f276034dc84ac9418501d57f03a188dc8",
+    "experiments/plans/2026-11-17-ch7-prefix-equal-load-engineering.md": "e2b4c740e15140536268057884bb586ab73fee3322b9e15e47885f48576c1cac",
+    "experiments/plans/2026-11-17-ch7-prefix-equal-load-protocol.json": "5f75a5fd5d6e8c33dd509ecdd198efab4468cfedf2acac2738a2ef12ff8541bb",
+    "global.json": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40",
+    "tools/dev-services.sh": "16270ce0d239663a8ac7228bbf03e19ebd6b98a54ab9a4ffd5681f99acc89e68"
+  },
+  "controllerProcess": {
+    "pid": 94755,
+    "createTime": 1794893531.072166,
+    "parentPid": 94751
+  },
+  "controllerSysExecutable": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python",
+  "originMonotonic": 198073.128010659,
+  "observations": 10,
+  "tailObservations": 0,
+  "tailThreadJoined": false,
+  "tailPhaseEnteredMonotonic": null,
+  "tailThreadJoinedMonotonic": null,
+  "lifecycleJournalStable": true,
+  "preflightCommands": [
+    {
+      "command": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "startedMonotonic": 198064.338586454,
+      "completedMonotonic": 198064.815443625,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "stdoutSha256": "8cb11fc356e05fda6d540278a352ba9eed1afa4270aa360d9cceaf659602df36",
+      "startedMonotonic": 198064.815495211,
+      "completedMonotonic": 198065.067357184,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:.editorconfig"
+      ],
+      "stdoutSha256": "65f15fcf24ab557f59e559ab600642d73fd91c99ce591606bc01875ee6912a90",
+      "startedMonotonic": 198065.067394032,
+      "completedMonotonic": 198065.364233251,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:.github/workflows/ci.yml"
+      ],
+      "stdoutSha256": "a869c1990737fd43ffa4d5c6059b2934455811cdc17ab3e788caa464d2ae99d9",
+      "startedMonotonic": 198065.364330077,
+      "completedMonotonic": 198065.645304238,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:Aijade.slnx"
+      ],
+      "stdoutSha256": "cfd0460a9d204265e3f2ee8cf0c255650d24eebedbfd5f509a1aebb9dfdf5637",
+      "startedMonotonic": 198065.645367533,
+      "completedMonotonic": 198065.924653209,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:Directory.Build.props"
+      ],
+      "stdoutSha256": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af",
+      "startedMonotonic": 198065.924687882,
+      "completedMonotonic": 198066.183405016,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:Directory.Packages.props"
+      ],
+      "stdoutSha256": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d",
+      "startedMonotonic": 198066.183449817,
+      "completedMonotonic": 198066.457693318,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:README.md"
+      ],
+      "stdoutSha256": "c0784626d29032c467218841f7d9b83b511c4b93eba4561cb6af5de7f03898ce",
+      "startedMonotonic": 198066.457752019,
+      "completedMonotonic": 198066.732987572,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:configs/research/ch7-mac-prefix-process-policy.json"
+      ],
+      "stdoutSha256": "e4972d319ef064237225f3d5906838d269d7cc0df008d847368517750dd80e32",
+      "startedMonotonic": 198066.733096711,
+      "completedMonotonic": 198066.982270174,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/finite_audit.py"
+      ],
+      "stdoutSha256": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd",
+      "startedMonotonic": 198066.982319673,
+      "completedMonotonic": 198067.248797668,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/finite_runtime.py"
+      ],
+      "stdoutSha256": "ccd24a25eb54c69d2d61fb9dafad261c00f744f0e7c1d6ef7a91c4db5e7c5c9d",
+      "startedMonotonic": 198067.249150012,
+      "completedMonotonic": 198067.515156155,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/finite_sequence_audit.py"
+      ],
+      "stdoutSha256": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0",
+      "startedMonotonic": 198067.515319563,
+      "completedMonotonic": 198067.812244361,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/godot_local.py"
+      ],
+      "stdoutSha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+      "startedMonotonic": 198067.812596988,
+      "completedMonotonic": 198068.150838853,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/lifecycle_audit.py"
+      ],
+      "stdoutSha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+      "startedMonotonic": 198068.15094925,
+      "completedMonotonic": 198068.456360527,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/lifecycle_exec.py"
+      ],
+      "stdoutSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "startedMonotonic": 198068.456730279,
+      "completedMonotonic": 198068.760795926,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/mac_bulk_census.c"
+      ],
+      "stdoutSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "startedMonotonic": 198068.760828274,
+      "completedMonotonic": 198069.054911756,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/mac_process_guard.py"
+      ],
+      "stdoutSha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "startedMonotonic": 198069.055002178,
+      "completedMonotonic": 198069.352725003,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/mac_process_guard_v2.py"
+      ],
+      "stdoutSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "startedMonotonic": 198069.352999436,
+      "completedMonotonic": 198069.663396735,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/mac_process_guard_v3.py"
+      ],
+      "stdoutSha256": "ca2fe466737d773cd03cdd024f45154761ba7b96ad3dff49420db8b6a8a765a7",
+      "startedMonotonic": 198069.663616014,
+      "completedMonotonic": 198069.974286786,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json"
+      ],
+      "stdoutSha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+      "startedMonotonic": 198069.974732741,
+      "completedMonotonic": 198070.286606165,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/phase_continuity.py"
+      ],
+      "stdoutSha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+      "startedMonotonic": 198070.286990932,
+      "completedMonotonic": 198070.563781974,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/process_lifecycle.py"
+      ],
+      "stdoutSha256": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+      "startedMonotonic": 198070.563876442,
+      "completedMonotonic": 198070.847639538,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/run_equal_load.py"
+      ],
+      "stdoutSha256": "7a0cccc8cd83a20c2523324c9ece5a65ebb2af938cd1bf0e5623cf2f3f83a185",
+      "startedMonotonic": 198070.848087638,
+      "completedMonotonic": 198071.134848015,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/run_finite_block.py"
+      ],
+      "stdoutSha256": "462b192b67b806f92a9ceb3ecfafe25d73d991c849f8c3cf50d6303c2ca730e1",
+      "startedMonotonic": 198071.134941371,
+      "completedMonotonic": 198071.430216623,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/ch7/run_finite_sequence.py"
+      ],
+      "stdoutSha256": "8b205f2ea8c7ffd66438de5e0304d6113e0324917933a6b78e03f295ab1a6639",
+      "startedMonotonic": 198071.430420956,
+      "completedMonotonic": 198071.732872103,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md"
+      ],
+      "stdoutSha256": "d52a9805b11b0929f5bb328837cb139f276034dc84ac9418501d57f03a188dc8",
+      "startedMonotonic": 198071.733073423,
+      "completedMonotonic": 198072.044599201,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/plans/2026-11-17-ch7-prefix-equal-load-engineering.md"
+      ],
+      "stdoutSha256": "e2b4c740e15140536268057884bb586ab73fee3322b9e15e47885f48576c1cac",
+      "startedMonotonic": 198072.044688575,
+      "completedMonotonic": 198072.342194419,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:experiments/plans/2026-11-17-ch7-prefix-equal-load-protocol.json"
+      ],
+      "stdoutSha256": "5f75a5fd5d6e8c33dd509ecdd198efab4468cfedf2acac2738a2ef12ff8541bb",
+      "startedMonotonic": 198072.342425012,
+      "completedMonotonic": 198072.616598644,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:global.json"
+      ],
+      "stdoutSha256": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40",
+      "startedMonotonic": 198072.616628984,
+      "completedMonotonic": 198072.876993917,
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "git",
+        "show",
+        "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb:tools/dev-services.sh"
+      ],
+      "stdoutSha256": "16270ce0d239663a8ac7228bbf03e19ebd6b98a54ab9a4ffd5681f99acc89e68",
+      "startedMonotonic": 198072.877031689,
+      "completedMonotonic": 198073.126806892,
+      "exitCode": 0
+    }
+  ],
+  "services": [
+    {
+      "sampleId": "3a7402ab5f07416bbd836b56d6366339",
+      "globalIndex": 0,
+      "phase": "settling",
+      "scheduledMonotonic": 198073.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198073.129597284,
+      "callbackStartedMonotonic": 198075.013937989,
+      "phaseEventWriteCompletedMonotonic": 198075.014008771,
+      "startLatenessSeconds": 0.0015866249741520733,
+      "diagnosticWriteCompletedMonotonic": 198075.014742087,
+      "callbackCompletedMonotonic": 198075.014750576,
+      "serviceCompletedMonotonic": 198075.014750576,
+      "fullServiceSeconds": 1.8851532920089085
+    },
+    {
+      "sampleId": "09490fc373914da9ad3cb544b76f918c",
+      "globalIndex": 1,
+      "phase": "settling",
+      "scheduledMonotonic": 198075.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198075.136554697,
+      "callbackStartedMonotonic": 198076.980052927,
+      "phaseEventWriteCompletedMonotonic": 198076.980093832,
+      "startLatenessSeconds": 0.008544037991669029,
+      "diagnosticWriteCompletedMonotonic": 198076.980126285,
+      "callbackCompletedMonotonic": 198076.980129628,
+      "serviceCompletedMonotonic": 198076.980129628,
+      "fullServiceSeconds": 1.8435749310010578
+    },
+    {
+      "sampleId": "4378158f1fbd4b929bc727a601140557",
+      "globalIndex": 2,
+      "phase": "settling",
+      "scheduledMonotonic": 198077.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198077.137790188,
+      "callbackStartedMonotonic": 198078.969796438,
+      "phaseEventWriteCompletedMonotonic": 198078.969860434,
+      "startLatenessSeconds": 0.009779528976650909,
+      "diagnosticWriteCompletedMonotonic": 198078.969902899,
+      "callbackCompletedMonotonic": 198078.969906558,
+      "serviceCompletedMonotonic": 198078.969906558,
+      "fullServiceSeconds": 1.8321163700020406
+    },
+    {
+      "sampleId": "75723408a488429bb1cd6bdd36914c23",
+      "globalIndex": 3,
+      "phase": "settling",
+      "scheduledMonotonic": 198079.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198079.134315722,
+      "callbackStartedMonotonic": 198081.031057617,
+      "phaseEventWriteCompletedMonotonic": 198081.031106488,
+      "startLatenessSeconds": 0.006305062997853383,
+      "diagnosticWriteCompletedMonotonic": 198081.031140231,
+      "callbackCompletedMonotonic": 198081.031142965,
+      "serviceCompletedMonotonic": 198081.031142965,
+      "fullServiceSeconds": 1.8968272429774515
+    },
+    {
+      "sampleId": "47d073a0d11141dda1c42435704ec71a",
+      "globalIndex": 4,
+      "phase": "settling",
+      "scheduledMonotonic": 198081.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198081.135937621,
+      "callbackStartedMonotonic": 198083.007548684,
+      "phaseEventWriteCompletedMonotonic": 198083.007619237,
+      "startLatenessSeconds": 0.007926961989142,
+      "diagnosticWriteCompletedMonotonic": 198083.00767803,
+      "callbackCompletedMonotonic": 198083.007681416,
+      "serviceCompletedMonotonic": 198083.007681416,
+      "fullServiceSeconds": 1.8717437949962914
+    },
+    {
+      "sampleId": "40f5776758e0457a8bd432aba0885033",
+      "globalIndex": 5,
+      "phase": "settling",
+      "scheduledMonotonic": 198083.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198083.136480116,
+      "callbackStartedMonotonic": 198085.067654563,
+      "phaseEventWriteCompletedMonotonic": 198085.067714548,
+      "startLatenessSeconds": 0.00846945698140189,
+      "diagnosticWriteCompletedMonotonic": 198085.067749194,
+      "callbackCompletedMonotonic": 198085.067752337,
+      "serviceCompletedMonotonic": 198085.067752337,
+      "fullServiceSeconds": 1.9312722210015636
+    },
+    {
+      "sampleId": "a3a86656a7f743dfb72b40ad6bef54ac",
+      "globalIndex": 6,
+      "phase": "settling",
+      "scheduledMonotonic": 198085.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198085.136928923,
+      "callbackStartedMonotonic": 198086.981473412,
+      "phaseEventWriteCompletedMonotonic": 198086.981522145,
+      "startLatenessSeconds": 0.008918263978557661,
+      "diagnosticWriteCompletedMonotonic": 198086.98155473,
+      "callbackCompletedMonotonic": 198086.981557599,
+      "serviceCompletedMonotonic": 198086.981557599,
+      "fullServiceSeconds": 1.844628676015418
+    },
+    {
+      "sampleId": "93f607bbac6743b8aefe0234e5fd4474",
+      "globalIndex": 7,
+      "phase": "settling",
+      "scheduledMonotonic": 198087.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198087.1353139,
+      "callbackStartedMonotonic": 198089.028792866,
+      "phaseEventWriteCompletedMonotonic": 198089.028847196,
+      "startLatenessSeconds": 0.007303241000045091,
+      "diagnosticWriteCompletedMonotonic": 198089.02888124,
+      "callbackCompletedMonotonic": 198089.028884079,
+      "serviceCompletedMonotonic": 198089.028884079,
+      "fullServiceSeconds": 1.893570178974187
+    },
+    {
+      "sampleId": "3cc5c05b61784c2e98f5ce33b94af7d3",
+      "globalIndex": 8,
+      "phase": "settling",
+      "scheduledMonotonic": 198089.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198089.13631799,
+      "callbackStartedMonotonic": 198091.053799535,
+      "phaseEventWriteCompletedMonotonic": 198091.053885182,
+      "startLatenessSeconds": 0.008307330979732797,
+      "diagnosticWriteCompletedMonotonic": 198091.05397467,
+      "callbackCompletedMonotonic": 198091.053995778,
+      "serviceCompletedMonotonic": 198091.053995778,
+      "fullServiceSeconds": 1.9176777880056761
+    },
+    {
+      "sampleId": "24d2561f4f8447f299377dfae214b9d8",
+      "globalIndex": 9,
+      "phase": "settling",
+      "scheduledMonotonic": 198091.128010659,
+      "deadlineMonotonic": 198673.128010659,
+      "sampleStartedMonotonic": 198091.135046328,
+      "callbackStartedMonotonic": 198093.177549967,
+      "phaseEventWriteCompletedMonotonic": 198093.177618951,
+      "startLatenessSeconds": 0.0070356689975596964,
+      "diagnosticWriteCompletedMonotonic": 198093.17765947,
+      "callbackCompletedMonotonic": 198093.177663386,
+      "serviceCompletedMonotonic": 198093.177663386,
+      "fullServiceSeconds": 2.0426170580030885
+    }
+  ],
+  "innerCursor": {
+    "calls": 10,
+    "parsedEvents": 212,
+    "parsedBytes": 175393,
+    "fullPrefixReadBytes": 1307226,
+    "fullPrefixComparedBytes": 1131833,
+    "hashUpdatedBytes": 175393,
+    "coldOldPrefixReplays": 0,
+    "snapshotCopies": 10,
+    "failures": 0,
+    "latestPrefixBytes": 175393,
+    "frontierScopes": 1,
+    "poisoned": false
+  },
+  "outerCursor": {
+    "calls": 10,
+    "parsedEvents": 212,
+    "parsedBytes": 175393,
+    "fullPrefixReadBytes": 1307226,
+    "fullPrefixComparedBytes": 1131833,
+    "hashUpdatedBytes": 175393,
+    "coldOldPrefixReplays": 0,
+    "snapshotCopies": 10,
+    "failures": 0,
+    "latestPrefixBytes": 175393,
+    "frontierScopes": 1,
+    "poisoned": false
+  },
+  "registryFinal": {
+    "schema": "aijade.process-lifecycle-final.v1",
+    "status": "ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT",
+    "scopeId": "cde364bbc0f840d4b1e21947b19528c1",
+    "scopeClosed": true,
+    "knownFiniteLeases": [
+      {
+        "commandSha256": "ac12ef7aad8674e18be7a7542fa88d72967b62fbf207da8ab2ef75c1b7428e1d",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893531844470,
+          "parentPid": 94755,
+          "pid": 94758
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "ff41aae6e166462988fc71cd615e706f",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198064.508365668,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 3,
+        "registerMonotonic": 198064.516581599,
+        "releaseSeq": 4,
+        "waitSeq": 5,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893531844470,
+            "parentPid": 94755,
+            "pid": 94758
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 5,
+          "reapedMonotonic": 198064.808686265,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198064.524771285,
+        "reapedMonotonic": 198064.808686265,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "23f3904a755e3e030eb84a084d27539110fa0ad5b806ccc473711d1c56b6ea48",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893532320015,
+          "parentPid": 94755,
+          "pid": 94759
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "e92f9fbfc12c4eaa9ee9536104081fd1",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198064.981278028,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 6,
+        "registerMonotonic": 198064.986992756,
+        "releaseSeq": 7,
+        "waitSeq": 8,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893532320015,
+            "parentPid": 94755,
+            "pid": 94759
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 8,
+          "reapedMonotonic": 198065.063929542,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198064.990373666,
+        "reapedMonotonic": 198065.063929542,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "33a65b9ac07c210236f7309a9563504c716819bbff5040dc7b7b6dbbbc43bca6",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893532570758,
+          "parentPid": 94755,
+          "pid": 94760
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "e43c2bcef291474c8cdd5d4227953999",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198065.234184445,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 9,
+        "registerMonotonic": 198065.242201029,
+        "releaseSeq": 10,
+        "waitSeq": 11,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893532570758,
+            "parentPid": 94755,
+            "pid": 94760
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 11,
+          "reapedMonotonic": 198065.351761763,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198065.24564804,
+        "reapedMonotonic": 198065.351761763,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "8ca7168bfc55944021c87c856da2c5c437002a307659c85c438ed8df50e7165f",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893532868753,
+          "parentPid": 94755,
+          "pid": 94761
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "714f8539860849eb8eb70d136c9546d7",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198065.530544573,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 12,
+        "registerMonotonic": 198065.535464885,
+        "releaseSeq": 13,
+        "waitSeq": 14,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893532868753,
+            "parentPid": 94755,
+            "pid": 94761
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 14,
+          "reapedMonotonic": 198065.643235422,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198065.537932969,
+        "reapedMonotonic": 198065.643235422,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "87766d20660772e59e9445e1426cd6371a70459c1d27355d2b77298e06e3c038",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893533148092,
+          "parentPid": 94755,
+          "pid": 94762
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "e8640fed66ae4e6e8df259eaa9a5b0e4",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198065.811570401,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 15,
+        "registerMonotonic": 198065.819670471,
+        "releaseSeq": 16,
+        "waitSeq": 17,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893533148092,
+            "parentPid": 94755,
+            "pid": 94762
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 17,
+          "reapedMonotonic": 198065.921787507,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198065.827439196,
+        "reapedMonotonic": 198065.921787507,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "0e4a2ed28f11741037ded39f28271e3ae20d1da001511cea83dc0112d9a7ca60",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893533426888,
+          "parentPid": 94755,
+          "pid": 94763
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "b16fdc8bb97a4000adaf1a0b90fe562f",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198066.074306307,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 18,
+        "registerMonotonic": 198066.080312018,
+        "releaseSeq": 19,
+        "waitSeq": 20,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893533426888,
+            "parentPid": 94755,
+            "pid": 94763
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 20,
+          "reapedMonotonic": 198066.180130559,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198066.082787189,
+        "reapedMonotonic": 198066.180130559,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "c72045d6faa4b0ab1faaed04def5bffa79e7fc93c72ad5aa0d224b9ce8b5f96b",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893533688178,
+          "parentPid": 94755,
+          "pid": 94765
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "723cf93b81404324953ff34910d86d4b",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198066.348709384,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 21,
+        "registerMonotonic": 198066.355409181,
+        "releaseSeq": 22,
+        "waitSeq": 23,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893533688178,
+            "parentPid": 94755,
+            "pid": 94765
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 23,
+          "reapedMonotonic": 198066.455685119,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198066.36155771,
+        "reapedMonotonic": 198066.455685119,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "55387cb5a139f42e06777dc76693c662330b2e15c772d855f81eb9fb77fcd003",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893533958874,
+          "parentPid": 94755,
+          "pid": 94766
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "b2f98bb4756f456e896fb66457038445",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198066.613867557,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 24,
+        "registerMonotonic": 198066.624491908,
+        "releaseSeq": 25,
+        "waitSeq": 26,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893533958874,
+            "parentPid": 94755,
+            "pid": 94766
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 26,
+          "reapedMonotonic": 198066.731122682,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198066.629400798,
+        "reapedMonotonic": 198066.731122682,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "bf7dd95096de8e8d51e49e16933fc0e327413aec48909b8b9fe9c6db6c3808b0",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893534234963,
+          "parentPid": 94755,
+          "pid": 94767
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "48deb786bdda4c3d9e3ae118ed3d0207",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198066.87618994,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 27,
+        "registerMonotonic": 198066.881564556,
+        "releaseSeq": 28,
+        "waitSeq": 29,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893534234963,
+            "parentPid": 94755,
+            "pid": 94767
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 29,
+          "reapedMonotonic": 198066.979662783,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198066.884250214,
+        "reapedMonotonic": 198066.979662783,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "38669c024485931abf9a96b9619f27ccee7def260ed5e04092bd76da93108f3a",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893534485860,
+          "parentPid": 94755,
+          "pid": 94768
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "798a398b85f44ff7930f5b7dd3c4e241",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198067.13118498,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 30,
+        "registerMonotonic": 198067.138306284,
+        "releaseSeq": 31,
+        "waitSeq": 32,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893534485860,
+            "parentPid": 94755,
+            "pid": 94768
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 32,
+          "reapedMonotonic": 198067.245881197,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198067.141804146,
+        "reapedMonotonic": 198067.245881197,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ffab499c2ee8d73df3822b9c66e40c9ff4f9feb444716899607aae82731fd729",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893534755593,
+          "parentPid": 94755,
+          "pid": 94769
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "4ff0a961589446fb9c7a76d920691dfd",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198067.398423494,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 33,
+        "registerMonotonic": 198067.403441971,
+        "releaseSeq": 34,
+        "waitSeq": 35,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893534755593,
+            "parentPid": 94755,
+            "pid": 94769
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 35,
+          "reapedMonotonic": 198067.51195458,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198067.407490389,
+        "reapedMonotonic": 198067.51195458,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "5557f1cca0ff97986d8238f5a592a8f1d32bfa9e7c80dc8c43e5cdb40bd44932",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893535017007,
+          "parentPid": 94755,
+          "pid": 94770
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "76912ca122f24330820d8dfd011f7831",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198067.679791125,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 36,
+        "registerMonotonic": 198067.689674707,
+        "releaseSeq": 37,
+        "waitSeq": 38,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893535017007,
+            "parentPid": 94755,
+            "pid": 94770
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 38,
+          "reapedMonotonic": 198067.809339272,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198067.693584331,
+        "reapedMonotonic": 198067.809339272,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75a76cae3b7574a4b0a2344752707e87915ee94fe7e7a7a076bdd680c76ae054",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893535318088,
+          "parentPid": 94755,
+          "pid": 94771
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "064820677c8541b497f72c0e27ed7464",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198068.004844976,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 39,
+        "registerMonotonic": 198068.015376356,
+        "releaseSeq": 40,
+        "waitSeq": 41,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893535318088,
+            "parentPid": 94755,
+            "pid": 94771
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 41,
+          "reapedMonotonic": 198068.147638046,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198068.02428413,
+        "reapedMonotonic": 198068.147638046,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "bbe4f566b2501986b14546fe7583d1e460d51c5816d740f2c0bacd5a064e6b3c",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893535655644,
+          "parentPid": 94755,
+          "pid": 94772
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "0ff74d5e1a714762aebc5645cc175bac",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198068.323897082,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 42,
+        "registerMonotonic": 198068.333244412,
+        "releaseSeq": 43,
+        "waitSeq": 44,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893535655644,
+            "parentPid": 94755,
+            "pid": 94772
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 44,
+          "reapedMonotonic": 198068.450429427,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198068.338049046,
+        "reapedMonotonic": 198068.450429427,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "121236e1ea99dd51b7606d94959508c27ad76074295ae1de0af51e734f5c4d34",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893535958536,
+          "parentPid": 94755,
+          "pid": 94773
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "1bc929d5fdd24158aea4a7c74c04d515",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198068.625206867,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 45,
+        "registerMonotonic": 198068.634152743,
+        "releaseSeq": 46,
+        "waitSeq": 47,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893535958536,
+            "parentPid": 94755,
+            "pid": 94773
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 47,
+          "reapedMonotonic": 198068.758115196,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198068.640205854,
+        "reapedMonotonic": 198068.758115196,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "23a866e45ffeae1779eeed5239fdde0987eb5cf6382fb42abc7a263d87ea1484",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893536266872,
+          "parentPid": 94755,
+          "pid": 94774
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "33f688042e384ebc9d2b10062b83d79d",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198068.927300138,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 48,
+        "registerMonotonic": 198068.932473012,
+        "releaseSeq": 49,
+        "waitSeq": 50,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893536266872,
+            "parentPid": 94755,
+            "pid": 94774
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 50,
+          "reapedMonotonic": 198069.050668315,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198068.935454384,
+        "reapedMonotonic": 198069.050668315,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "217057bc44bcc48f182d89cd008ca2e7f7a7576c7812aebf5a712b6b359498e3",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893536558266,
+          "parentPid": 94755,
+          "pid": 94775
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "29203ab023d34c6eb19109709acc2a8f",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198069.225099104,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 51,
+        "registerMonotonic": 198069.23566831,
+        "releaseSeq": 52,
+        "waitSeq": 53,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893536558266,
+            "parentPid": 94755,
+            "pid": 94775
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 53,
+          "reapedMonotonic": 198069.349001825,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198069.240291344,
+        "reapedMonotonic": 198069.349001825,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "54051fbf09e31247517a10f05f960378c5f9cb3cd3c7199382de766002b82659",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893536859077,
+          "parentPid": 94755,
+          "pid": 94776
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "90a96ba1c6cf460c8ffe8637d552f18c",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198069.537227433,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 54,
+        "registerMonotonic": 198069.546451547,
+        "releaseSeq": 55,
+        "waitSeq": 56,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893536859077,
+            "parentPid": 94755,
+            "pid": 94776
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 56,
+          "reapedMonotonic": 198069.661594676,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198069.550583109,
+        "reapedMonotonic": 198069.661594676,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "501c9ee418aa8bb88be32bf619cd89b03ecbf658d609e59ae6c72e6a75fb30cc",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893537165062,
+          "parentPid": 94755,
+          "pid": 94777
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "a05a2557dd894a3ca6984cd39f845393",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198069.8292211,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 57,
+        "registerMonotonic": 198069.838959885,
+        "releaseSeq": 58,
+        "waitSeq": 59,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893537165062,
+            "parentPid": 94755,
+            "pid": 94777
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 59,
+          "reapedMonotonic": 198069.971788239,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198069.842713231,
+        "reapedMonotonic": 198069.971788239,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "9425aa63c7497546e6ba16ac3aea655dc7829a9491d280096b4d3ea1cc62983e",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893537477338,
+          "parentPid": 94755,
+          "pid": 94780
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "0b0be000efd9471cafaec9d82670b000",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198070.139560489,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 60,
+        "registerMonotonic": 198070.146266059,
+        "releaseSeq": 61,
+        "waitSeq": 62,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893537477338,
+            "parentPid": 94755,
+            "pid": 94780
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 62,
+          "reapedMonotonic": 198070.283807674,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198070.152194601,
+        "reapedMonotonic": 198070.283807674,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ba5db1bbbef2b1d215d0eb01aa8d9ba0f0a044059465ad7b77539f26b3872770",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893537790512,
+          "parentPid": 94755,
+          "pid": 94781
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "2d26a6e266b64b57abbe03643f7e6aff",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198070.449874607,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 63,
+        "registerMonotonic": 198070.458473056,
+        "releaseSeq": 64,
+        "waitSeq": 65,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893537790512,
+            "parentPid": 94755,
+            "pid": 94781
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 65,
+          "reapedMonotonic": 198070.561659171,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198070.460976111,
+        "reapedMonotonic": 198070.561659171,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "9a3cd8b4b40531ce168b96905ae0f6ad7d26aed1d37d6ae8bab4eb892e4a8227",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893538065191,
+          "parentPid": 94755,
+          "pid": 94782
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "b01d76d573d1446daee2a38fc96c0451",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198070.728629284,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 66,
+        "registerMonotonic": 198070.737006661,
+        "releaseSeq": 67,
+        "waitSeq": 68,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893538065191,
+            "parentPid": 94755,
+            "pid": 94782
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 68,
+          "reapedMonotonic": 198070.84467792,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198070.740290336,
+        "reapedMonotonic": 198070.84467792,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "0714b1e5ed13332d9c74d122ba3d808050f192c482222332641182937a0b149b",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893538355518,
+          "parentPid": 94755,
+          "pid": 94783
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "c6fea968be1248b7b039462b71285cc9",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198071.011805722,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 69,
+        "registerMonotonic": 198071.017733615,
+        "releaseSeq": 70,
+        "waitSeq": 71,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893538355518,
+            "parentPid": 94755,
+            "pid": 94783
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 71,
+          "reapedMonotonic": 198071.132906379,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198071.024856063,
+        "reapedMonotonic": 198071.132906379,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "7e833e472f8437f067f160e1ec95313b9066fc20a72ec07407aa3e8cf9fcb01b",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893538637144,
+          "parentPid": 94755,
+          "pid": 94784
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "c2640514d0284c71b4a79de991703ed9",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198071.30815342,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 72,
+        "registerMonotonic": 198071.314014307,
+        "releaseSeq": 73,
+        "waitSeq": 74,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893538637144,
+            "parentPid": 94755,
+            "pid": 94784
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 74,
+          "reapedMonotonic": 198071.427918044,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198071.31634115,
+        "reapedMonotonic": 198071.427918044,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ef7fd2ed1c95e8df10b6a7268c61e6a2badff8c37565f6d9d58b1990f7c7a399",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893538931597,
+          "parentPid": 94755,
+          "pid": 94785
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "547205ee74894910a96cdfa4d0c25a5c",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198071.585537994,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 75,
+        "registerMonotonic": 198071.593038643,
+        "releaseSeq": 76,
+        "waitSeq": 77,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893538931597,
+            "parentPid": 94755,
+            "pid": 94785
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 77,
+          "reapedMonotonic": 198071.730930976,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198071.602163525,
+        "reapedMonotonic": 198071.730930976,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "4124d8db70ed682ffce7351d8381c0c2b5afcf58c083919f79cb83d6051454db",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893539235207,
+          "parentPid": 94755,
+          "pid": 94786
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "4913ed23dbe54d1a85d6e14cb2cf6e93",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198071.90608995,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 78,
+        "registerMonotonic": 198071.914182565,
+        "releaseSeq": 79,
+        "waitSeq": 80,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893539235207,
+            "parentPid": 94755,
+            "pid": 94786
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 80,
+          "reapedMonotonic": 198072.037705784,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198071.922242224,
+        "reapedMonotonic": 198072.037705784,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ce37b7cee6e4ca8fdb4629dac16333b183058b5177f9c68a4a9c319b9111cfb3",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893539552373,
+          "parentPid": 94755,
+          "pid": 94787
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "29e3341293d24c9c8a9a7ecc5b342cb3",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198072.226659642,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 81,
+        "registerMonotonic": 198072.232019506,
+        "releaseSeq": 82,
+        "waitSeq": 83,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893539552373,
+            "parentPid": 94755,
+            "pid": 94787
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 83,
+          "reapedMonotonic": 198072.337547403,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198072.234521001,
+        "reapedMonotonic": 198072.337547403,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "345c9b19ba362c30e4db4f4ffa61b4ed3d311b59742ac60de5e5e5c19e489363",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893539846025,
+          "parentPid": 94755,
+          "pid": 94788
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "e86e8fb913f24e6f9605d809e16f917c",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198072.498720438,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 84,
+        "registerMonotonic": 198072.504445013,
+        "releaseSeq": 85,
+        "waitSeq": 86,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893539846025,
+            "parentPid": 94755,
+            "pid": 94788
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 86,
+          "reapedMonotonic": 198072.614329691,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198072.512506624,
+        "reapedMonotonic": 198072.614329691,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "44ee0f01982c211a57ba2010058e06d5aec61e5bdf152010558f7e273ee35739",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893540120940,
+          "parentPid": 94755,
+          "pid": 94789
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "c8265a9e94e84cd0a337853255019182",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198072.769818277,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 87,
+        "registerMonotonic": 198072.778377188,
+        "releaseSeq": 88,
+        "waitSeq": 89,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893540120940,
+            "parentPid": 94755,
+            "pid": 94789
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 89,
+          "reapedMonotonic": 198072.873769457,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198072.785060994,
+        "reapedMonotonic": 198072.873769457,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "2d340dea28a7171f73bba9c719513ac2941737598bd9548e6ecea79b76a1d70e",
+        "executableSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+        "identity": {
+          "createTimeMicros": 1794893540378858,
+          "parentPid": 94755,
+          "pid": 94790
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "4f67844a222541fe8ce65940678cb8e4",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198073.024918443,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 90,
+        "registerMonotonic": 198073.030005857,
+        "releaseSeq": 91,
+        "waitSeq": 92,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893540378858,
+            "parentPid": 94755,
+            "pid": 94790
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 92,
+          "reapedMonotonic": 198073.124033189,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198073.033732091,
+        "reapedMonotonic": 198073.124033189,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893540643901,
+          "parentPid": 94755,
+          "pid": 94791
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "1f36aa9a595b49d0b89043ad609fe7ad",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198073.308519274,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 93,
+        "registerMonotonic": 198073.314667291,
+        "releaseSeq": 94,
+        "waitSeq": 95,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893540643901,
+            "parentPid": 94755,
+            "pid": 94791
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 95,
+          "reapedMonotonic": 198073.33792899,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198073.31867949,
+        "reapedMonotonic": 198073.33792899,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893541220882,
+          "parentPid": 94755,
+          "pid": 94792
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "24c4bde355a0402b8909c53e59684628",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198073.868184586,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 96,
+        "registerMonotonic": 198073.875939237,
+        "releaseSeq": 97,
+        "waitSeq": 98,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893541220882,
+            "parentPid": 94755,
+            "pid": 94792
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 98,
+          "reapedMonotonic": 198074.000783198,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198073.879825479,
+        "reapedMonotonic": 198074.000783198,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893541520648,
+          "parentPid": 94755,
+          "pid": 94794
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "f78fcc0f831c4a26adb7c68f90563791",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198074.173001776,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 99,
+        "registerMonotonic": 198074.182330545,
+        "releaseSeq": 100,
+        "waitSeq": 101,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893541520648,
+            "parentPid": 94755,
+            "pid": 94794
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 101,
+          "reapedMonotonic": 198074.205501771,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198074.1877909,
+        "reapedMonotonic": 198074.205501771,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893542135890,
+          "parentPid": 94755,
+          "pid": 94797
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "d53b7e6ed7cd4c7aa83ed587c2d9ca12",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198074.795367217,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 102,
+        "registerMonotonic": 198074.805088188,
+        "releaseSeq": 103,
+        "waitSeq": 104,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893542135890,
+            "parentPid": 94755,
+            "pid": 94797
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 104,
+          "reapedMonotonic": 198074.91260723,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198074.809228401,
+        "reapedMonotonic": 198074.91260723,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893542663795,
+          "parentPid": 94755,
+          "pid": 94799
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "c7c083ba1ba5484cbdc704425977a1b4",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198075.321612048,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 105,
+        "registerMonotonic": 198075.329012946,
+        "releaseSeq": 106,
+        "waitSeq": 107,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893542663795,
+            "parentPid": 94755,
+            "pid": 94799
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 107,
+          "reapedMonotonic": 198075.350009532,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198075.334493002,
+        "reapedMonotonic": 198075.350009532,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893543262508,
+          "parentPid": 94755,
+          "pid": 94800
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "91a753527c6340779d6af2f60d5d0162",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198075.926193225,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 108,
+        "registerMonotonic": 198075.931284062,
+        "releaseSeq": 109,
+        "waitSeq": 110,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893543262508,
+            "parentPid": 94755,
+            "pid": 94800
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 110,
+          "reapedMonotonic": 198076.048470505,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198075.934789064,
+        "reapedMonotonic": 198076.048470505,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893543560622,
+          "parentPid": 94755,
+          "pid": 94802
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "2ec36a0d967a4f178b0a319b271339ce",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198076.220746611,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 111,
+        "registerMonotonic": 198076.225927065,
+        "releaseSeq": 112,
+        "waitSeq": 113,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893543560622,
+            "parentPid": 94755,
+            "pid": 94802
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 113,
+          "reapedMonotonic": 198076.24271728,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198076.228379932,
+        "reapedMonotonic": 198076.24271728,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893544146337,
+          "parentPid": 94755,
+          "pid": 94803
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "61b17e415f6c42a585563c89ca8ce726",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198076.79182366,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 114,
+        "registerMonotonic": 198076.797364624,
+        "releaseSeq": 115,
+        "waitSeq": 116,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893544146337,
+            "parentPid": 94755,
+            "pid": 94803
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 116,
+          "reapedMonotonic": 198076.912246575,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198076.799727538,
+        "reapedMonotonic": 198076.912246575,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893544658100,
+          "parentPid": 94755,
+          "pid": 94805
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "947f4714c36b4815a294a075a8d68dcb",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198077.315006573,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 117,
+        "registerMonotonic": 198077.32104418,
+        "releaseSeq": 118,
+        "waitSeq": 119,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893544658100,
+            "parentPid": 94755,
+            "pid": 94805
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 119,
+          "reapedMonotonic": 198077.334518043,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198077.323587322,
+        "reapedMonotonic": 198077.334518043,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893545223246,
+          "parentPid": 94755,
+          "pid": 94806
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "ba886f8e8a124e8f9cc637a24483e43d",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198077.874402606,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 120,
+        "registerMonotonic": 198077.883085237,
+        "releaseSeq": 121,
+        "waitSeq": 122,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893545223246,
+            "parentPid": 94755,
+            "pid": 94806
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 122,
+          "reapedMonotonic": 198078.001730619,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198077.889159982,
+        "reapedMonotonic": 198078.001730619,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893545513561,
+          "parentPid": 94755,
+          "pid": 94808
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "b7b1bd89ced74e1580ad50e7d9a408d6",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198078.174968764,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 123,
+        "registerMonotonic": 198078.184051357,
+        "releaseSeq": 124,
+        "waitSeq": 125,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893545513561,
+            "parentPid": 94755,
+            "pid": 94808
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 125,
+          "reapedMonotonic": 198078.202734667,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198078.187263067,
+        "reapedMonotonic": 198078.202734667,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893546109201,
+          "parentPid": 94755,
+          "pid": 94809
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "57a1f57345a34deeaff5419354712bd9",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198078.766441204,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 126,
+        "registerMonotonic": 198078.772307576,
+        "releaseSeq": 127,
+        "waitSeq": 128,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893546109201,
+            "parentPid": 94755,
+            "pid": 94809
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 128,
+          "reapedMonotonic": 198078.891083927,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198078.77619676,
+        "reapedMonotonic": 198078.891083927,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893546653202,
+          "parentPid": 94755,
+          "pid": 94813
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "8b49c978c4d64ebb96e9c08c2c72a904",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198079.325285424,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 129,
+        "registerMonotonic": 198079.335594272,
+        "releaseSeq": 130,
+        "waitSeq": 131,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893546653202,
+            "parentPid": 94755,
+            "pid": 94813
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 131,
+          "reapedMonotonic": 198079.358110015,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198079.340762485,
+        "reapedMonotonic": 198079.358110015,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893547279820,
+          "parentPid": 94755,
+          "pid": 94814
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "9441364c996b45bcade05f989c3bc124",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198079.93070687,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 132,
+        "registerMonotonic": 198079.935955796,
+        "releaseSeq": 133,
+        "waitSeq": 134,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893547279820,
+            "parentPid": 94755,
+            "pid": 94814
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 134,
+          "reapedMonotonic": 198080.047400132,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198079.942570614,
+        "reapedMonotonic": 198080.047400132,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893547555812,
+          "parentPid": 94755,
+          "pid": 94816
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "04867754a4f64f51acc486c2d6950c18",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198080.215326653,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 135,
+        "registerMonotonic": 198080.223069518,
+        "releaseSeq": 136,
+        "waitSeq": 137,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893547555812,
+            "parentPid": 94755,
+            "pid": 94816
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 137,
+          "reapedMonotonic": 198080.236810449,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198080.225417242,
+        "reapedMonotonic": 198080.236810449,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893548157563,
+          "parentPid": 94755,
+          "pid": 94817
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "2c1feaffbbdb4c6982bc4f42cf547935",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198080.819596896,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 138,
+        "registerMonotonic": 198080.826654162,
+        "releaseSeq": 139,
+        "waitSeq": 140,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893548157563,
+            "parentPid": 94755,
+            "pid": 94817
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 140,
+          "reapedMonotonic": 198080.944646938,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198080.829912272,
+        "reapedMonotonic": 198080.944646938,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893548658781,
+          "parentPid": 94755,
+          "pid": 94819
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "99123b1f69034086b4ca27972b11ff29",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198081.315510053,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 141,
+        "registerMonotonic": 198081.32283417,
+        "releaseSeq": 142,
+        "waitSeq": 143,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893548658781,
+            "parentPid": 94755,
+            "pid": 94819
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 143,
+          "reapedMonotonic": 198081.340564664,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198081.327440771,
+        "reapedMonotonic": 198081.340564664,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893549257637,
+          "parentPid": 94755,
+          "pid": 94820
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "558130231df84ae5b59e65cc6ba65c36",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198081.920361493,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 144,
+        "registerMonotonic": 198081.92712704,
+        "releaseSeq": 145,
+        "waitSeq": 146,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893549257637,
+            "parentPid": 94755,
+            "pid": 94820
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 146,
+          "reapedMonotonic": 198082.041510043,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198081.930867539,
+        "reapedMonotonic": 198082.041510043,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893549554708,
+          "parentPid": 94755,
+          "pid": 94822
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "330ec68cab124ecf9381907c532e8532",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198082.22142583,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 147,
+        "registerMonotonic": 198082.226839801,
+        "releaseSeq": 148,
+        "waitSeq": 149,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893549554708,
+            "parentPid": 94755,
+            "pid": 94822
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 149,
+          "reapedMonotonic": 198082.243665668,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198082.229384647,
+        "reapedMonotonic": 198082.243665668,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893550151836,
+          "parentPid": 94755,
+          "pid": 94823
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "68cee4a2993e477fa24aee9247bd123a",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198082.811948763,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 150,
+        "registerMonotonic": 198082.82169931,
+        "releaseSeq": 151,
+        "waitSeq": 152,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893550151836,
+            "parentPid": 94755,
+            "pid": 94823
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 152,
+          "reapedMonotonic": 198082.928473963,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198082.825559437,
+        "reapedMonotonic": 198082.928473963,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893550653625,
+          "parentPid": 94755,
+          "pid": 94825
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "f329fa552c574ec7862945d8fc33b991",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198083.334950616,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 153,
+        "registerMonotonic": 198083.34271384,
+        "releaseSeq": 154,
+        "waitSeq": 155,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893550653625,
+            "parentPid": 94755,
+            "pid": 94825
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 155,
+          "reapedMonotonic": 198083.365630624,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198083.348701083,
+        "reapedMonotonic": 198083.365630624,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893551278294,
+          "parentPid": 94755,
+          "pid": 94826
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "d72ca67d5535462cab6d00be37cbe082",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198083.950256247,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 156,
+        "registerMonotonic": 198083.95819876,
+        "releaseSeq": 157,
+        "waitSeq": 158,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893551278294,
+            "parentPid": 94755,
+            "pid": 94826
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 158,
+          "reapedMonotonic": 198084.078992871,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198083.960842847,
+        "reapedMonotonic": 198084.078992871,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893551586376,
+          "parentPid": 94755,
+          "pid": 94828
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "63d73b9fc94c4410959191abc7a03052",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198084.248686619,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 159,
+        "registerMonotonic": 198084.261365689,
+        "releaseSeq": 160,
+        "waitSeq": 161,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893551586376,
+            "parentPid": 94755,
+            "pid": 94828
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 161,
+          "reapedMonotonic": 198084.285922041,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198084.265043788,
+        "reapedMonotonic": 198084.285922041,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893552209430,
+          "parentPid": 94755,
+          "pid": 94829
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "c26d523c7bd246f1b518f5060074b7a8",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198084.860069983,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 162,
+        "registerMonotonic": 198084.864869152,
+        "releaseSeq": 163,
+        "waitSeq": 164,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893552209430,
+            "parentPid": 94755,
+            "pid": 94829
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 164,
+          "reapedMonotonic": 198084.98593053,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198084.867536389,
+        "reapedMonotonic": 198084.98593053,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893552659917,
+          "parentPid": 94755,
+          "pid": 94831
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "7db5b1529eed43f39bbc26912a891707",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198085.327638011,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 165,
+        "registerMonotonic": 198085.332952575,
+        "releaseSeq": 166,
+        "waitSeq": 167,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893552659917,
+            "parentPid": 94755,
+            "pid": 94831
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 167,
+          "reapedMonotonic": 198085.352055285,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198085.33602711,
+        "reapedMonotonic": 198085.352055285,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893553243965,
+          "parentPid": 94755,
+          "pid": 94832
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "55511bad39c84e238bfe97e9712ceed4",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198085.889581827,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 168,
+        "registerMonotonic": 198085.897442086,
+        "releaseSeq": 169,
+        "waitSeq": 170,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893553243965,
+            "parentPid": 94755,
+            "pid": 94832
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 170,
+          "reapedMonotonic": 198086.021906094,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198085.901620816,
+        "reapedMonotonic": 198086.021906094,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893553530859,
+          "parentPid": 94755,
+          "pid": 94834
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "6439d59a71ae48368fdaf95c019929cd",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198086.186652034,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 171,
+        "registerMonotonic": 198086.197473703,
+        "releaseSeq": 172,
+        "waitSeq": 173,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893553530859,
+            "parentPid": 94755,
+            "pid": 94834
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 173,
+          "reapedMonotonic": 198086.221805611,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198086.202692542,
+        "reapedMonotonic": 198086.221805611,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893554128700,
+          "parentPid": 94755,
+          "pid": 94835
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "ed425a36e908427bb35d0d98113ceb78",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198086.778528003,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 174,
+        "registerMonotonic": 198086.783265937,
+        "releaseSeq": 175,
+        "waitSeq": 176,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893554128700,
+            "parentPid": 94755,
+            "pid": 94835
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 176,
+          "reapedMonotonic": 198086.897210144,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198086.790884488,
+        "reapedMonotonic": 198086.897210144,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893554677377,
+          "parentPid": 94755,
+          "pid": 94837
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "8f838244fce14294ae222dc2d5ae9bbc",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198087.332664983,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 177,
+        "registerMonotonic": 198087.339210094,
+        "releaseSeq": 178,
+        "waitSeq": 179,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893554677377,
+            "parentPid": 94755,
+            "pid": 94837
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 179,
+          "reapedMonotonic": 198087.362417693,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198087.343350006,
+        "reapedMonotonic": 198087.362417693,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893555285418,
+          "parentPid": 94755,
+          "pid": 94838
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "ee70ced538a94daa89d0fa5acfea931a",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198087.957433946,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 180,
+        "registerMonotonic": 198087.964357722,
+        "releaseSeq": 181,
+        "waitSeq": 182,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893555285418,
+            "parentPid": 94755,
+            "pid": 94838
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 182,
+          "reapedMonotonic": 198088.085262186,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198087.966892307,
+        "reapedMonotonic": 198088.085262186,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893555595326,
+          "parentPid": 94755,
+          "pid": 94840
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "7d3e11d1a23743c4ab240c19327fc7aa",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198088.252406076,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 183,
+        "registerMonotonic": 198088.259118627,
+        "releaseSeq": 184,
+        "waitSeq": 185,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893555595326,
+            "parentPid": 94755,
+            "pid": 94840
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 185,
+          "reapedMonotonic": 198088.27747952,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198088.263240636,
+        "reapedMonotonic": 198088.27747952,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893556171684,
+          "parentPid": 94755,
+          "pid": 94841
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "7c38642378064c8e8afc4e75d688a184",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198088.827908686,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 186,
+        "registerMonotonic": 198088.834242508,
+        "releaseSeq": 187,
+        "waitSeq": 188,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893556171684,
+            "parentPid": 94755,
+            "pid": 94841
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 188,
+          "reapedMonotonic": 198088.942673964,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198088.83922926,
+        "reapedMonotonic": 198088.942673964,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893556652972,
+          "parentPid": 94755,
+          "pid": 94843
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "cafb1d5c3d3743dfab7da45c6e61100b",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198089.296243514,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 189,
+        "registerMonotonic": 198089.303243268,
+        "releaseSeq": 190,
+        "waitSeq": 191,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893556652972,
+            "parentPid": 94755,
+            "pid": 94843
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 191,
+          "reapedMonotonic": 198089.324627625,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198089.308094223,
+        "reapedMonotonic": 198089.324627625,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893557223963,
+          "parentPid": 94755,
+          "pid": 94844
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "3c2c030210944473b7ab2cd8d5068299",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198089.879458565,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 192,
+        "registerMonotonic": 198089.885217346,
+        "releaseSeq": 193,
+        "waitSeq": 194,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893557223963,
+            "parentPid": 94755,
+            "pid": 94844
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 194,
+          "reapedMonotonic": 198090.00390731,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198089.892600678,
+        "reapedMonotonic": 198090.00390731,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893557521615,
+          "parentPid": 94755,
+          "pid": 94846
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "348fe451dfc148b397f3c4d1cd53bd78",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198090.223090647,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 195,
+        "registerMonotonic": 198090.232047175,
+        "releaseSeq": 196,
+        "waitSeq": 197,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893557521615,
+            "parentPid": 94755,
+            "pid": 94846
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 197,
+          "reapedMonotonic": 198090.261885508,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198090.23984923,
+        "reapedMonotonic": 198090.261885508,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893558178460,
+          "parentPid": 94755,
+          "pid": 94847
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "5ab2f0a22b31472781667f71b6ccd15e",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198090.837522362,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 198,
+        "registerMonotonic": 198090.846483566,
+        "releaseSeq": 199,
+        "waitSeq": 200,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893558178460,
+            "parentPid": 94755,
+            "pid": 94847
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 200,
+          "reapedMonotonic": 198090.96457562,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198090.85396145,
+        "reapedMonotonic": 198090.96457562,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893558652440,
+          "parentPid": 94755,
+          "pid": 94849
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "cb03d36a44a045adaaf4a30dd0344acc",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198091.324167143,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 201,
+        "registerMonotonic": 198091.331366805,
+        "releaseSeq": 202,
+        "waitSeq": 203,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893558652440,
+            "parentPid": 94755,
+            "pid": 94849
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 203,
+          "reapedMonotonic": 198091.357240815,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198091.336196552,
+        "reapedMonotonic": 198091.357240815,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893559310550,
+          "parentPid": 94755,
+          "pid": 94850
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "6ac446c7720140d789b2a6abb1f2b638",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198091.98756051,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 204,
+        "registerMonotonic": 198091.99724716,
+        "releaseSeq": 205,
+        "waitSeq": 206,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893559310550,
+            "parentPid": 94755,
+            "pid": 94850
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 206,
+          "reapedMonotonic": 198092.135367403,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198092.006233105,
+        "reapedMonotonic": 198092.135367403,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "ec198f98338101e7d3a6d790bf7ea80a70ee646aedc1069d0fa04bc88982c3e3",
+        "executableSha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+        "identity": {
+          "createTimeMicros": 1794893559648321,
+          "parentPid": 94755,
+          "pid": 94852
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "2cdffc96658a479397f9027d55276fd9",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198092.315770094,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 207,
+        "registerMonotonic": 198092.327266527,
+        "releaseSeq": 208,
+        "waitSeq": 209,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893559648321,
+            "parentPid": 94755,
+            "pid": 94852
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 209,
+          "reapedMonotonic": 198092.350610231,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198092.331162302,
+        "reapedMonotonic": 198092.350610231,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      },
+      {
+        "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+        "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+        "identity": {
+          "createTimeMicros": 1794893560270334,
+          "parentPid": 94755,
+          "pid": 94853
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "fdf54418f3c84015b920c7b2b4269279",
+        "parentIdentity": {
+          "createTimeMicros": 1794893531072166,
+          "parentPid": 94751,
+          "pid": 94755
+        },
+        "readyMonotonic": 198092.961662062,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "equal-load-engineering-only",
+        "registerSeq": 210,
+        "registerMonotonic": 198092.966909373,
+        "releaseSeq": 211,
+        "waitSeq": 212,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794893560270334,
+            "parentPid": 94755,
+            "pid": 94853
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "eventSeq": 212,
+          "reapedMonotonic": 198093.084099271,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 198092.971258323,
+        "reapedMonotonic": 198093.084099271,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      }
+    ],
+    "unresolvedFiniteLeases": [],
+    "launchRefusals": [],
+    "launchRefusalArtifacts": [],
+    "localDiscoveredIdentities": [],
+    "unleasedDiscoveredIdentities": [],
+    "remainingIdentities": [],
+    "lifecycleView": {
+      "schema": "aijade.process-lifecycle-view.v1",
+      "runId": "f294f3ee59864a6babf732b67ceeaa3d",
+      "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-prefix-20261117/engineering-01/lifecycle-journal.jsonl",
+      "journalBytes": 175982,
+      "journalSha256": "e2e26fda0a68357be70f88a5ab3120ce77bbeb03095701626e8646f7045eb8d2",
+      "lastSequence": 213,
+      "scopeId": "cde364bbc0f840d4b1e21947b19528c1",
+      "controllerIdentity": {
+        "pid": 94755,
+        "createTimeMicros": 1794893531072166,
+        "parentPid": 94751
+      },
+      "leases": [
+        {
+          "commandSha256": "913cc205e42a498a0243bf72381fceafb98a6dc4e48e0b32ca923327edd3862d",
+          "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+          "identity": {
+            "createTimeMicros": 1794893531072166,
+            "parentPid": 94751,
+            "pid": 94755
+          },
+          "leaseId": "949564907acf47ca9f54db650a1f18fb",
+          "parentIdentity": null,
+          "readyMonotonic": 198064.325080002,
+          "role": "controller",
+          "stageId": "equal-load-engineering-only",
+          "registerSeq": 1,
+          "registerMonotonic": 198064.329090588,
+          "releaseSeq": null,
+          "waitSeq": null,
+          "exitCode": null,
+          "absence": null
+        }
+      ],
+      "referencedIdentities": [],
+      "launchRefusalArtifacts": [],
+      "controllers": [
+        "949564907acf47ca9f54db650a1f18fb"
+      ]
+    }
+  },
+  "lifecycleJournalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-prefix-20261117/engineering-01/lifecycle-journal.jsonl",
+  "lifecycleJournalBytes": 175982,
+  "lifecycleJournalSha256": "e2e26fda0a68357be70f88a5ab3120ce77bbeb03095701626e8646f7045eb8d2",
+  "errors": [
+    "PreflightRefused: PREFLIGHT_CALLBACK_FAILED: ValueError: engineering full service exceeded two seconds"
+  ],
+  "automaticRetries": 0,
+  "qualificationStarted": false,
+  "backendQualified": false,
+  "scientificAdmission": false,
+  "formalHardwareQualification": false,
+  "independentHumanReview": false,
+  "flowBlocks": 0,
+  "modelRequests": 0,
+  "rendererRequests": 0,
+  "freshHeldoutCases": 0,
+  "seedConstructed": false
+}
