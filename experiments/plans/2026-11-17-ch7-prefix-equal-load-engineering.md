@@ -121,3 +121,34 @@ AI-assisted. Software reference, checked against the current arXiv record on
 "Scientific Agent Skills: A Library of Procedural Knowledge for Research Agents,"
 2026, https://doi.org/10.48550/arXiv.2609.00065. This cites workflow assistance;
 it is not empirical support for AIJADE's qualification or performance.
+
+
+Pre-load clarification following retained native fixture refusals
+----------------------------------------------------------------
++
+Before any complete engineering window, the original E source retained two
+source-bound Mac suite failures (two controls in the first parallel run, one
+control in the serial second run). Its new-compiled-C positive control mixed
+lifecycle plumbing with executable first-use timing. One separately frozen,
+single-compile diagnostic executed exactly three calls without prewarming or
+changing the 0.5-second budget: first REFUSED, then two PASS. These are ordered
+observations, not a causal finding about macOS or a repair of the first refusal.
+All original source, raw outputs, journals, plans and compatibility error remain.
+
+The revised small positive control uses the installed /usr/bin/true only for
+actual ready/birth/register/release/Popen.wait plumbing. A separate real-pipe
+control tests nonempty output without pretending to launch a process. The
+existing C timeout and ready-refusal controls remain unchanged. The former E
+source is not retrospectively marked PASS. No skip, expected-failure rule,
+prewarm or deadline increase is introduced.
+
+The complete load uses the exact previously prepared AIJADE native artifact
+at its original, immutable lifecycle-run path, with the same binary and C-source
+hashes as the historical load. This holds that preparation identity constant;
+it does not claim newly copied, newly compiled or installation-cold executables
+will satisfy the deadline. The unused byte-identical copy and its original
+candidate policy are retained. All 724 actual collector invocations still must
+individually meet 0.5 seconds, produce nonempty complete JSON and pass actual
+argv, source/hash, PID/birth, parent wait and cleanup checks. Any refusal ends the
+complete engineering attempt. A passing /usr/bin/true control cannot replace
+this actual native population, backend qualification or the heldout comparison.

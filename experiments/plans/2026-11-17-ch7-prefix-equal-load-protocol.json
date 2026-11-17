@@ -2,7 +2,7 @@
   "schema": "aijade.ch7.equal-load-protocol.v1",
   "purpose": "ENGINEERING_ONLY_NOT_QUALIFICATION",
   "planPath": "experiments/plans/2026-11-17-ch7-prefix-equal-load-engineering.md",
-  "planSha256": "da36c39935665f4bd0d0ce63d0e8d44d6c99d6b1311afc8480eb2e384728a094",
+  "planSha256": "e2b4c740e15140536268057884bb586ab73fee3322b9e15e47885f48576c1cac",
   "runnerPath": "experiments/ch7/run_equal_load.py",
   "population": {
     "settling": 300,
@@ -72,5 +72,15 @@
   },
   "integrityModel": "FULL_ACTUAL_OLD_PREFIX_READ_AND_EXACT_COMPARISON_EVERY_CALL; INCREMENTAL_PARSE_AND_ROLLING_SHA; FINAL_COLD_INDEPENDENT_REPLAY",
   "automaticRetries": 0,
-  "overwritePriorAttempts": false
+  "overwritePriorAttempts": false,
+  "nativePreparation": {
+    "mode": "EXACT_PREVIOUSLY_PREPARED_AIJ_NATIVE_ARTIFACT",
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/native/mac_bulk_census",
+    "sha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+    "sourceSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+    "originalSourceCommit": "0c42cc29c64730131466af6b079a900005713cba",
+    "originalBuildPublication": "efbcfa0196cbc69bd24cad5b03f01b5078898b7b",
+    "coldStartAcceptanceClaim": false
+  },
+  "positiveControlScope": "Existing system C executable checks actual lifecycle; independent real pipe checks nonempty transport; actual724 collector calls remain mandatory."
 }

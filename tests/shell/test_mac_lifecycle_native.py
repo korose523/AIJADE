@@ -1,4 +1,9 @@
-"""Disposable fake helpers test native launch plumbing; never call real sysctl."""
+"""Separate lifecycle plumbing, pipe transport and disposable C refusals.
+
+The real zero-exit plumbing control uses an existing system executable. Pipe
+transport has a process-free control. Fresh C actors remain for timeout and
+ready refusal; no control invokes the actual sysctl census collector.
+"""
 import hashlib
 import os
 from pathlib import Path
@@ -41,19 +46,33 @@ class NativeManagedLaunchControls(unittest.TestCase):
     def run_helper(self,path):
         with life.capture_lock(self.registry.lock_path):return guard._run_native(path,self.registry)
     def test_native_primitive_uses_identity_ready_register_release_actual_wait(self):
-        helper=self.helper('fputs("synthetic-native-fixture\\n",stdout)')
+        # This is the real identity-ready/exec/wait plumbing positive, not a
+        # fresh-Mach-O first-start or nonempty native-payload acceptance test.
+        # The production native collector still needs its complete bounded
+        # equal-load run, including its own argc==1 check and raw JSON output.
+        helper=Path('/usr/bin/true')
+        self.assertTrue(helper.is_file(),'required existing system plumbing executable')
         r=self.run_helper(helper)
         self.assertEqual(r['exitCode'],0,r);self.assertTrue(r['cleanupKnown'],r)
-        self.assertFalse(r['timedOut'],r);self.assertEqual(r['stdout'],b'synthetic-native-fixture\n')
+        self.assertFalse(r['timedOut'],r);self.assertEqual(r['stdout'],b'')
+        self.assertFalse(r['oversized'],r);self.assertEqual(r['stderrBytes'],0,r)
         self.assertLessEqual(r['durationSeconds'],guard.NATIVE_TIMEOUT,r)
-        lease=self.registry._state()['leases'][r['managedLeaseId']]
+        state=self.registry._state();lease=state['leases'][r['managedLeaseId']]
+        self.assertEqual(lease['role'],'finite')
         self.assertEqual(lease['identity']['pid'],r['spawnedHelperPid'])
+        self.assertIs(type(lease['identity']['createTimeMicros']),int)
+        self.assertGreater(lease['identity']['createTimeMicros'],0)
+        self.assertEqual(lease['identity']['parentPid'],self.registry.writer['pid'])
         self.assertEqual(lease['parentIdentity'],self.registry.writer)
         self.assertEqual(lease['stageId'],'observer-native-census')
         self.assertEqual(lease['commandSha256'],guard.canonical_sha256([str(helper)]))
         self.assertEqual(lease['executableSha256'],hashlib.sha256(helper.read_bytes()).hexdigest())
+        self.assertEqual(lease['identityWitnessKind'],'PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD')
         self.assertLess(lease['registerSeq'],lease['releaseSeq']);self.assertLess(lease['releaseSeq'],lease['waitSeq'])
         self.assertEqual(lease['absenceWitnessKind'],'PARENT_WAIT_REAPED')
+        waited=state['events'][lease['waitSeq']-1]
+        self.assertEqual(waited['event'],'WAIT');self.assertEqual(waited['data']['waitSource'],'Popen.wait')
+        self.assertEqual(waited['data']['identity'],lease['identity']);self.assertEqual(waited['data']['exitCode'],0)
     def test_native_timeout_kills_only_owned_fake_and_keeps_wait_status(self):
         helper=self.helper('struct timespec t={3,0};nanosleep(&t,0)')
         r=self.run_helper(helper)
@@ -71,6 +90,35 @@ class NativeManagedLaunchControls(unittest.TestCase):
 
 
 class NativeWaitErrorFixture(unittest.TestCase):
+    def test_nonempty_pipe_transport_captures_exact_25_bytes_without_a_process(self):
+        # This exercises actual selector/read/EOF handling on OS pipes. The
+        # single FakeManaged delegation is a transport fixture, not a native
+        # process, launch/birth witness or a live collector qualification.
+        body=b'native-pipe-fixture-body\n'
+        self.assertEqual(len(body),25)
+        out_r,out_w=os.pipe();err_r,err_w=os.pipe()
+        self.assertEqual(os.write(out_w,body),len(body));os.close(out_w);os.close(err_w)
+        class PipeManaged:
+            pid=999997;lease_id='a'*32;wait_calls=0
+            stdout=os.fdopen(out_r,'rb');stderr=os.fdopen(err_r,'rb')
+            def __init__(self):self.process=self
+            def poll(self):return 0
+            def wait(self,timeout=None):self.wait_calls+=1;return 0
+            def kill(self):raise AssertionError('completed pipe fixture must not be signalled')
+        process=PipeManaged();launches=[]
+        def launch(*args,**kwargs):launches.append((args,kwargs));return process
+        r=guard._run_native('/fixture-stdout-transport-not-executed',SimpleNamespace(launch=launch))
+        self.assertEqual(len(launches),1)
+        self.assertEqual(launches[0][0],(['/fixture-stdout-transport-not-executed'],))
+        self.assertIs(launches[0][1]['shell'],False)
+        self.assertEqual(r['stdout'],body)
+        self.assertEqual(hashlib.sha256(r['stdout']).hexdigest(),
+                         '08acf890088463054d512cce1180dfd9039b2b8407dd666457dcfd038a494d7b')
+        self.assertEqual(r['exitCode'],0);self.assertTrue(r['cleanupKnown'])
+        self.assertFalse(r['timedOut']);self.assertFalse(r['oversized'])
+        self.assertEqual(r['stderrBytes'],0);self.assertEqual(process.wait_calls,1)
+        self.assertLessEqual(r['durationSeconds'],guard.NATIVE_TIMEOUT)
+
     def test_native_output_cap_refuses_and_reaps_exact_pipe_fixture(self):
         # Isolate output accounting from executable startup. A cold ready-gate
         # delay is a timeout, never evidence that the output-cap path ran.
