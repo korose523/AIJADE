@@ -1,0 +1,399 @@
+{
+  "schema": "aijade.e4.offline-full-validation-probe-summary.v1",
+  "status": "OFFLINE_GUARD_VALIDATION_PROBE_NOT_RUNTIME_QUALIFICATION",
+  "resultPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/implementation/e4-full-validation-probe-01/result.json",
+  "resultSha256": "a58927edf8df4e700e8fb000cfe9837a4e76e2f5fcc47cc79db6b9b7aff7cd1b",
+  "scope": {
+    "derivedFixtures": true,
+    "nativeOrApiOrModelCalls": 0,
+    "newObservedWindows": 0,
+    "rawE3Unmodified": true,
+    "noNewTailPerRepeatedTiming": true,
+    "actualOriginalPhysicalFileReadsPerCall": true,
+    "actualSamplingAndFullServiceNotMeasured": true,
+    "backendQualified": false
+  },
+  "sources": {
+    "full_state_clone_cursor.py": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+    "mac_process_guard_v3.py": "ae6613db042b09149141b0bffccb0f04ded0ab9d8374b9e3f7927fdd63639d5b",
+    "finite_runtime.py": "96f5b56d51def50ac0930cb9084f21399df8a8fb442956fafbeccddcca7c359d",
+    "process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+  },
+  "results": [
+    {
+      "label": "E3DerivedSamePopulation",
+      "methods": {
+        "legacy": {
+          "bytes": 6286107,
+          "events": 7604,
+          "leases": 2535,
+          "initializationSeconds": 1.4649137749802321,
+          "medianPairValidationSeconds": 0.42455041900393553,
+          "maximumPairValidationSeconds": 0.4344050289946608,
+          "rawTimings": [
+            {
+              "repeat": 0,
+              "wallSeconds": 0.4344050289946608,
+              "cpuSeconds": 0.4279289999999998
+            },
+            {
+              "repeat": 1,
+              "wallSeconds": 0.42455041900393553,
+              "cpuSeconds": 0.41856399999999994
+            },
+            {
+              "repeat": 2,
+              "wallSeconds": 0.424489024997456,
+              "cpuSeconds": 0.4186259999999997
+            }
+          ],
+          "innerStatistics": {
+            "calls": 4,
+            "parsedEvents": 7604,
+            "parsedBytes": 6286107,
+            "fullPrefixReadBytes": 25144428,
+            "fullPrefixComparedBytes": 18858321,
+            "hashUpdatedBytes": 6286107,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "latestPrefixBytes": 6286107,
+            "frontierScopes": 1,
+            "poisoned": false
+          },
+          "outerStatistics": {
+            "calls": 4,
+            "parsedEvents": 7604,
+            "parsedBytes": 6286107,
+            "fullPrefixReadBytes": 25144428,
+            "fullPrefixComparedBytes": 18858321,
+            "hashUpdatedBytes": 6286107,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "latestPrefixBytes": 6286107,
+            "frontierScopes": 1,
+            "poisoned": false
+          }
+        },
+        "candidate": {
+          "bytes": 6286107,
+          "events": 7604,
+          "leases": 2535,
+          "initializationSeconds": 0.9468565389979631,
+          "medianPairValidationSeconds": 0.21740508402581327,
+          "maximumPairValidationSeconds": 0.2176079640048556,
+          "rawTimings": [
+            {
+              "repeat": 0,
+              "wallSeconds": 0.21740508402581327,
+              "cpuSeconds": 0.20925300000000036
+            },
+            {
+              "repeat": 1,
+              "wallSeconds": 0.21217565800179727,
+              "cpuSeconds": 0.20408999999999988
+            },
+            {
+              "repeat": 2,
+              "wallSeconds": 0.2176079640048556,
+              "cpuSeconds": 0.20915700000000026
+            }
+          ],
+          "innerStatistics": {
+            "calls": 4,
+            "parsedEvents": 7604,
+            "parsedBytes": 6286107,
+            "fullPrefixReadBytes": 25144428,
+            "fullPrefixComparedBytes": 18858321,
+            "hashUpdatedBytes": 6286107,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "cCloneSnapshots": 5,
+            "builtinColdStates": 1,
+            "builtinTailEvents": 0,
+            "builtinContainersChecked": 38032,
+            "bootstrapReceivedStates": 1,
+            "latestPrefixBytes": 6286107,
+            "frontierScopes": 1,
+            "poisoned": false
+          },
+          "outerStatistics": {
+            "calls": 3,
+            "parsedEvents": 0,
+            "parsedBytes": 0,
+            "fullPrefixReadBytes": 18858321,
+            "fullPrefixComparedBytes": 18858321,
+            "hashUpdatedBytes": 0,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 3,
+            "failures": 0,
+            "cCloneSnapshots": 3,
+            "builtinColdStates": 0,
+            "builtinTailEvents": 0,
+            "builtinContainersChecked": 3,
+            "bootstrapReceivedStates": 1,
+            "latestPrefixBytes": 6286107,
+            "frontierScopes": 1,
+            "poisoned": false
+          }
+        }
+      }
+    },
+    {
+      "label": "Synthetic14MiB",
+      "methods": {
+        "legacy": {
+          "bytes": 14719332,
+          "events": 17774,
+          "leases": 5925,
+          "initializationSeconds": 3.982333671010565,
+          "medianPairValidationSeconds": 1.2286463110067416,
+          "maximumPairValidationSeconds": 1.2502101279969793,
+          "rawTimings": [
+            {
+              "repeat": 0,
+              "wallSeconds": 1.1981047869776376,
+              "cpuSeconds": 1.182485999999999
+            },
+            {
+              "repeat": 1,
+              "wallSeconds": 1.2502101279969793,
+              "cpuSeconds": 1.1932940000000016
+            },
+            {
+              "repeat": 2,
+              "wallSeconds": 1.2286463110067416,
+              "cpuSeconds": 1.2070240000000005
+            }
+          ],
+          "innerStatistics": {
+            "calls": 4,
+            "parsedEvents": 17774,
+            "parsedBytes": 14719332,
+            "fullPrefixReadBytes": 58877328,
+            "fullPrefixComparedBytes": 44157996,
+            "hashUpdatedBytes": 14719332,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "latestPrefixBytes": 14719332,
+            "frontierScopes": 1,
+            "poisoned": false
+          },
+          "outerStatistics": {
+            "calls": 4,
+            "parsedEvents": 17774,
+            "parsedBytes": 14719332,
+            "fullPrefixReadBytes": 58877328,
+            "fullPrefixComparedBytes": 44157996,
+            "hashUpdatedBytes": 14719332,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "latestPrefixBytes": 14719332,
+            "frontierScopes": 1,
+            "poisoned": false
+          }
+        },
+        "candidate": {
+          "bytes": 14719332,
+          "events": 17774,
+          "leases": 5925,
+          "initializationSeconds": 2.359676012012642,
+          "medianPairValidationSeconds": 0.5274189840129111,
+          "maximumPairValidationSeconds": 0.5386653229943477,
+          "rawTimings": [
+            {
+              "repeat": 0,
+              "wallSeconds": 0.5386653229943477,
+              "cpuSeconds": 0.5208909999999989
+            },
+            {
+              "repeat": 1,
+              "wallSeconds": 0.5274189840129111,
+              "cpuSeconds": 0.5093829999999997
+            },
+            {
+              "repeat": 2,
+              "wallSeconds": 0.5193921409954783,
+              "cpuSeconds": 0.4963609999999967
+            }
+          ],
+          "innerStatistics": {
+            "calls": 4,
+            "parsedEvents": 17774,
+            "parsedBytes": 14719332,
+            "fullPrefixReadBytes": 58877328,
+            "fullPrefixComparedBytes": 44157996,
+            "hashUpdatedBytes": 14719332,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "cCloneSnapshots": 5,
+            "builtinColdStates": 1,
+            "builtinTailEvents": 0,
+            "builtinContainersChecked": 88882,
+            "bootstrapReceivedStates": 1,
+            "latestPrefixBytes": 14719332,
+            "frontierScopes": 1,
+            "poisoned": false
+          },
+          "outerStatistics": {
+            "calls": 3,
+            "parsedEvents": 0,
+            "parsedBytes": 0,
+            "fullPrefixReadBytes": 44157996,
+            "fullPrefixComparedBytes": 44157996,
+            "hashUpdatedBytes": 0,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 3,
+            "failures": 0,
+            "cCloneSnapshots": 3,
+            "builtinColdStates": 0,
+            "builtinTailEvents": 0,
+            "builtinContainersChecked": 3,
+            "bootstrapReceivedStates": 1,
+            "latestPrefixBytes": 14719332,
+            "frontierScopes": 1,
+            "poisoned": false
+          }
+        }
+      }
+    },
+    {
+      "label": "Synthetic15_4MiB",
+      "methods": {
+        "legacy": {
+          "bytes": 16194931,
+          "events": 19553,
+          "leases": 6518,
+          "initializationSeconds": 4.672815472004004,
+          "medianPairValidationSeconds": 1.4630614760098979,
+          "maximumPairValidationSeconds": 1.4727516909770202,
+          "rawTimings": [
+            {
+              "repeat": 0,
+              "wallSeconds": 1.4727516909770202,
+              "cpuSeconds": 1.4447599999999952
+            },
+            {
+              "repeat": 1,
+              "wallSeconds": 1.4433749289892148,
+              "cpuSeconds": 1.4198340000000016
+            },
+            {
+              "repeat": 2,
+              "wallSeconds": 1.4630614760098979,
+              "cpuSeconds": 1.4295160000000067
+            }
+          ],
+          "innerStatistics": {
+            "calls": 4,
+            "parsedEvents": 19553,
+            "parsedBytes": 16194931,
+            "fullPrefixReadBytes": 64779724,
+            "fullPrefixComparedBytes": 48584793,
+            "hashUpdatedBytes": 16194931,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "latestPrefixBytes": 16194931,
+            "frontierScopes": 1,
+            "poisoned": false
+          },
+          "outerStatistics": {
+            "calls": 4,
+            "parsedEvents": 19553,
+            "parsedBytes": 16194931,
+            "fullPrefixReadBytes": 64779724,
+            "fullPrefixComparedBytes": 48584793,
+            "hashUpdatedBytes": 16194931,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "latestPrefixBytes": 16194931,
+            "frontierScopes": 1,
+            "poisoned": false
+          }
+        },
+        "candidate": {
+          "bytes": 16194931,
+          "events": 19553,
+          "leases": 6518,
+          "initializationSeconds": 2.5433370390092023,
+          "medianPairValidationSeconds": 0.5644936189928558,
+          "maximumPairValidationSeconds": 0.564887683984125,
+          "rawTimings": [
+            {
+              "repeat": 0,
+              "wallSeconds": 0.564887683984125,
+              "cpuSeconds": 0.5542999999999978
+            },
+            {
+              "repeat": 1,
+              "wallSeconds": 0.5644936189928558,
+              "cpuSeconds": 0.554200999999999
+            },
+            {
+              "repeat": 2,
+              "wallSeconds": 0.5629508999991231,
+              "cpuSeconds": 0.5519669999999977
+            }
+          ],
+          "innerStatistics": {
+            "calls": 4,
+            "parsedEvents": 19553,
+            "parsedBytes": 16194931,
+            "fullPrefixReadBytes": 64779724,
+            "fullPrefixComparedBytes": 48584793,
+            "hashUpdatedBytes": 16194931,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 4,
+            "failures": 0,
+            "cCloneSnapshots": 5,
+            "builtinColdStates": 1,
+            "builtinTailEvents": 0,
+            "builtinContainersChecked": 97777,
+            "bootstrapReceivedStates": 1,
+            "latestPrefixBytes": 16194931,
+            "frontierScopes": 1,
+            "poisoned": false
+          },
+          "outerStatistics": {
+            "calls": 3,
+            "parsedEvents": 0,
+            "parsedBytes": 0,
+            "fullPrefixReadBytes": 48584793,
+            "fullPrefixComparedBytes": 48584793,
+            "hashUpdatedBytes": 0,
+            "coldOldPrefixReplays": 0,
+            "snapshotCopies": 3,
+            "failures": 0,
+            "cCloneSnapshots": 3,
+            "builtinColdStates": 0,
+            "builtinTailEvents": 0,
+            "builtinContainersChecked": 3,
+            "bootstrapReceivedStates": 1,
+            "latestPrefixBytes": 16194931,
+            "frontierScopes": 1,
+            "poisoned": false
+          }
+        }
+      }
+    }
+  ],
+  "sourceTests": {
+    "test_full_state_clone_cursor.py": "40ffa1b3ec1fabadb098777d5e37ce96f45bd8ca7f72dca672fe31c3d05b62fc",
+    "test_clone_cursor_glue.py": "e4aad12b4833a7dfb27b2390c968a7fa16e6b2564610de92a21a9fadf705f1ac"
+  },
+  "controls": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/implementation/e4-clone-controls-05-portable.log",
+    "exitCode": 0,
+    "tests": 16,
+    "passed": 16,
+    "liveOrNativeCalls": 0,
+    "originalProcessLifecycleSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+  }
+}
