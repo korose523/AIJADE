@@ -179,19 +179,23 @@ def _category(name):
     return 'other'
 
 
-def _run_native(path):
+def _run_native(path,lifecycle):
     """One owned child, immutable empty argv suffix, bounded pipes and deadline."""
     started = time.monotonic()
     result = {'spawnedHelperPid': None, 'observerPid': os.getpid(), 'exitCode': None,
               'timedOut': False, 'oversized': False, 'cleanupKnown': False,
-              'stdout': b'', 'stderrBytes': 0}
+              'stdout': b'', 'stderrBytes': 0,'managedLeaseId':None}
     process = None
     selector = selectors.DefaultSelector()
     output, error_bytes = bytearray(), 0
     try:
-        process = subprocess.Popen([str(path)], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE, shell=False)
+        remaining=started+NATIVE_TIMEOUT-time.monotonic()
+        if remaining<=0:raise TimeoutError('native setup deadline')
+        process = lifecycle.launch([str(path)],stage='observer-native-census',
+                                  ready_timeout=min(lifecycle_support.READY_SECONDS,remaining),
+                                  stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=False)
         result['spawnedHelperPid'] = process.pid
+        result['managedLeaseId']=process.lease_id
         for stream, kind in ((process.stdout, 'stdout'), (process.stderr, 'stderr')):
             os.set_blocking(stream.fileno(), False)
             selector.register(stream, selectors.EVENT_READ, kind)
@@ -217,14 +221,21 @@ def _run_native(path):
             except subprocess.TimeoutExpired: result['timedOut'] = True
     except Exception as error:
         result['errorClass'] = type(error).__name__
+        if time.monotonic()-started>=NATIVE_TIMEOUT:result['timedOut']=True
+        if hasattr(error,'lifecycleRefusal'):
+            result['launchRefusal']=error.lifecycleRefusal
+            result['spawnedHelperPid']=error.lifecycleRefusal.get('spawnedPid')
+        if hasattr(error,'lifecycleRefusalPath'):result['launchRefusalPath']=error.lifecycleRefusalPath
     finally:
         selector.close()
         if process is not None:
-            if process.poll() is None: process.kill()  # only this exact owned collector
+            if process.process.poll() is None: process.kill()  # only this exact identity-ready owned collector
             try:
                 result['exitCode'] = process.wait(timeout=0.2)
                 result['cleanupKnown'] = True
-            except subprocess.TimeoutExpired: result['cleanupKnown'] = False
+            except Exception as error:
+                result['cleanupKnown'] = False
+                result['cleanupErrorClass']=type(error).__name__
             for stream in (process.stdout, process.stderr):
                 if stream is not None: stream.close()
         result['stdout'], result['stderrBytes'] = bytes(output), error_bytes
@@ -400,7 +411,7 @@ def _parse_native_payload(policy, evidence):
     return nodes, collector
 
 
-def _read_processes(policy):
+def _read_processes(policy,lifecycle):
     expected = policy['nativeHelper']
     graph = {'schema': 'aijade.mac.bulk-process-graph.v2', 'nodes': [], 'errors': [], 'nativeCensus': {}}
     evidence = graph['nativeCensus']
@@ -411,7 +422,7 @@ def _read_processes(policy):
             raise ValueError('native helper/source changed before execution')
         with _capture_lock(expected['path']) as lock:
             evidence['captureLock'] = lock
-            result = _run_native(expected['path'])
+            result = _run_native(expected['path'],lifecycle)
             raw = result.pop('stdout')
             evidence.update(result)
             evidence.update({'stdoutBase64': base64.b64encode(raw).decode('ascii'), 'stdoutSha256': _sha_bytes(raw), 'stdoutBytes': len(raw),
@@ -620,7 +631,7 @@ def _normalize_roots(roots):
 
 def _snapshot(policy, roots, lifecycle):
     graph_started=time.monotonic()
-    graph=_read_processes(policy)
+    graph=_read_processes(policy,lifecycle)
     result={'processGraph':graph,'daemon':{},'ownedProcesses':[],'errors':[],
             'graphStartedMonotonic':graph_started,'graphCompletedMonotonic':time.monotonic()}
     collector=None
@@ -661,6 +672,8 @@ def validate_observation(policy, observation, lifecycle_journal=None):
     try:
         validate_policy(policy)
         state=lifecycle_support.validate_view(observation['lifecycle'],lifecycle_journal)
+        if state['launchRefusals']:add('LAUNCH_REFUSED','FAIL')
+        if state.get('launchRefusalArtifacts'):add('LAUNCH_REFUSED_ARTIFACT_PRESENT','FAIL')
         controller=observation['lifecycle']['controllerIdentity']
         all_native_identities=set()
         if observation.get('lifecycleModuleSha256') != policy['lifecycle']['moduleSha256']:
@@ -718,6 +731,21 @@ def validate_observation(policy, observation, lifecycle_journal=None):
                 raw_nodes, collector = parse_native_evidence(policy, graph['nativeCensus'])
                 if raw_nodes != nodes: add('BULK_DERIVED_POPULATION_MISMATCH', 'FAIL', phase=phase)
             except Exception: add('BULK_EVIDENCE_UNKNOWN', phase=phase)
+            if collector is not None:
+                native_lease=state['leases'].get(graph['nativeCensus'].get('managedLeaseId'))
+                expected_identity={key:collector[key] for key in ('pid','createTimeMicros','parentPid')}
+                if (native_lease is None or native_lease['role']!='finite'
+                    or native_lease['stageId']!='observer-native-census'
+                    or native_lease['identity']!=expected_identity
+                    or native_lease['parentIdentity']!=controller
+                    or collector['parentPid']!=graph['nativeCensus']['observerPid']
+                    or native_lease['commandSha256']!=canonical_sha256([policy['nativeHelper']['path']])
+                    or native_lease['executableSha256']!=policy['nativeHelper']['sha256']
+                    or native_lease['releaseSeq'] is None or native_lease['waitSeq'] is None
+                    or native_lease['exitCode']!=0
+                    or native_lease.get('absenceWitnessKind')!='PARENT_WAIT_REAPED'
+                    or native_lease['reapedMonotonic']>sample['graphCompletedMonotonic']):
+                    add('NATIVE_MANAGED_LIFECYCLE_BINDING_MISMATCH','FAIL',phase=phase)
             by_pid = {}
             for node in nodes:
                 pid = node['pid']

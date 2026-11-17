@@ -381,10 +381,15 @@ class LifecycleAdapterControls(unittest.TestCase):
         # the context index without replacing the principal resource population.
         jsonl(self.root/'process-observations.jsonl',[fixture.rows[0]])
         jsonl(block/'telemetry.jsonl',[fixture.rows[1]])
+        # Native before/after collectors now have ordinary finite leases too.
+        # Derive the final producer population from the actual fixture journal,
+        # rather than keeping the old one-task fixture assumption.
+        finite_leases=[value for value in full_raw.producer.replay_journal(fixture.raw)['leases'].values()
+                       if value['role']=='finite']
         registry=dict(schema='aijade.process-lifecycle-final.v1',
             status='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT',scopeId='2'*32,scopeClosed=True,
             unresolvedFiniteLeases=[],unleasedDiscoveredIdentities=[],remainingIdentities=[],
-            knownFiniteLeases=[{'syntheticNonExecutable':True}])
+            knownFiniteLeases=finite_leases)
         write(self.root/'owned-process-registry.json',registry)
         sequence['ownedProcessRegistrySha256']=digest((self.root/'owned-process-registry.json').read_bytes())
         write(self.root/'receipt.json',sequence)

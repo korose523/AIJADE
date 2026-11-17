@@ -52,6 +52,9 @@ class ManagedProcessControls(unittest.TestCase):
         with patch.object(life,'READY_SECONDS',0.):
             with self.assertRaisesRegex(ValueError,'identity-ready'):self.registry.launch(['/usr/bin/true'])
         self.assertFalse(any(v['role']=='finite' for v in self.registry._state()['leases'].values()))
+        refusal=self.registry._state()['launchRefusals'][0]
+        self.assertIsNone(refusal['spawnedPid']);self.assertEqual(refusal['identityStatus'],'UNKNOWN')
+        self.assertEqual(self.registry.final()['status'],'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE')
     def test_wait_timeout_has_owned_cleanup_and_recorded_signal(self):
         with self.assertRaises(subprocess.TimeoutExpired):
             self.registry.run([sys.executable,'-c','import time;time.sleep(3)'],timeout=.01)
@@ -120,6 +123,64 @@ class ManagedProcessControls(unittest.TestCase):
             graphCompletedMonotonic=now-.01))
         self.assertEqual(local.final()['status'],'ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT')
         self.assertEqual(self.registry.final()['status'],'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE')
+    def test_gated_kernel_identity_mismatch_is_retained_without_registration(self):
+        original=life.identity;reads=[]
+        def mismatch(pid=None):
+            value=original(pid)
+            if pid is not None:
+                reads.append(pid)
+                if len(reads)==2:value['createTimeMicros']+=1
+            return value
+        with patch.object(life,'identity',side_effect=mismatch):
+            with self.assertRaisesRegex(ValueError,'identity-ready kernel'):
+                self.registry.launch(['/usr/bin/true'])
+        state=self.registry._state();self.assertFalse(any(v['role']=='finite' for v in state['leases'].values()))
+        failure=state['launchRefusals'][0]
+        self.assertEqual(failure['identityStatus'],'UNKNOWN');self.assertEqual(len(failure['identityReads']),2)
+        self.assertTrue(failure['cleanupKnown']);self.assertIsInstance(failure['actualExitCode'],int)
+        self.assertIsNone(failure['registeredLeaseId']);self.assertGreater(failure['readyBytes'],0)
+        self.assertTrue(all(p.poll() is not None for p in self.registry.refused_processes))
+    def test_refusal_sidecar_preserves_evidence_if_journal_append_fails(self):
+        original=self.registry._append
+        def fault(name,data):
+            if name=='LAUNCH_REFUSED':raise OSError('controlled refused-event write fault')
+            return original(name,data)
+        with patch.object(self.registry,'_append',side_effect=fault):
+            with self.assertRaises(ValueError) as caught:
+                self.registry.launch(['/usr/bin/true'],ready_timeout=0)
+        artifact=Path(caught.exception.lifecycleRefusalPath)
+        self.assertTrue(artifact.is_file());self.assertEqual(len(self.registry.sample()['launchRefusalArtifacts']),1)
+        self.assertEqual(self.registry.final()['status'],'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE')
+    def test_refused_non_session_child_cleanup_never_signals_a_process_group(self):
+        # This directly owned disposable child represents a failed-before-lease
+        # handle. It is never adopted as a successful finite task.
+        p=subprocess.Popen([sys.executable,'-c','import time;time.sleep(3)'])
+        self.registry.refused_process_records.append(dict(handle=p,attemptId='d'*32,ownsProcessGroup=False))
+        try:
+            with patch.object(life.os,'killpg',side_effect=AssertionError('shared group must not be signalled')):
+                rows=self.registry.cleanup_refused(grace_seconds=.03,wait_seconds=.5)
+            self.assertTrue(rows[0]['cleanupKnown']);self.assertTrue(rows[0]['termSent'])
+            self.assertLess(rows[0]['actualExitCode'],0)
+        finally:
+            if p.poll() is None:p.kill()
+            p.wait(timeout=1)
+    def test_reaped_refused_session_leader_is_never_signalled_by_old_group_id(self):
+        p=subprocess.Popen(['/usr/bin/true'],start_new_session=True);p.wait(timeout=1)
+        self.registry.refused_process_records.append(dict(handle=p,attemptId='e'*32,ownsProcessGroup=True))
+        with patch.object(life.os,'killpg',side_effect=AssertionError('reaped group ID must not be used')):
+            rows=self.registry.cleanup_refused(grace_seconds=.01,wait_seconds=.1)
+        self.assertTrue(rows[0]['cleanupKnown']);self.assertFalse(rows[0]['termSent'])
+        self.assertTrue(rows[0]['groupMembersAbsentNotInferred'])
+    def test_live_owned_session_group_cleanup_checks_kernel_group_identity(self):
+        p=subprocess.Popen([sys.executable,'-c','import time;time.sleep(3)'],start_new_session=True)
+        self.registry.refused_process_records.append(dict(handle=p,attemptId='f'*32,ownsProcessGroup=True))
+        try:
+            rows=self.registry.cleanup_refused(grace_seconds=.03,wait_seconds=.5)
+            self.assertTrue(rows[0]['cleanupKnown']);self.assertTrue(rows[0]['termSent'])
+            self.assertLess(rows[0]['actualExitCode'],0)
+        finally:
+            if p.poll() is None:p.kill()
+            p.wait(timeout=1)
 
 
 if __name__=='__main__':unittest.main()

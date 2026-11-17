@@ -15,7 +15,7 @@ import psutil
 from finite_runtime import (validate_build, read_block_receipt, dispositions, BUILD_FREEZE_PATH,
     MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_observation,
     validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, OwnedRegistry,
-    MAC_LIFECYCLE_PLAN, setup_lifecycle, managed_check_output, finish_monitored_cleanup)
+    MAC_LIFECYCLE_PLAN, setup_lifecycle, managed_check_output, finish_monitored_cleanup, seal_refused_cleanup)
 
 GIB=1024**3
 
@@ -272,6 +272,14 @@ def _execute(a):
                 sequence['ownedControllerCleanupTimedOut']=True
         if active is not None:sequence['lastControllerExitCode']=active.poll()
     finally:
+        if v3:
+            try:
+                refused=seal_refused_cleanup(lifecycle,output)
+                if refused is not None:
+                    sequence['refusedProcessCleanupSha256']=hashlib.sha256((output/'launch-refused-process-cleanup.json').read_bytes()).hexdigest()
+                    reason=(reason+'; ' if reason else '')+'finite launch refused; cleanup cannot confer acceptance';sequence['status']='STOPPED'
+            except BaseException as error:
+                reason=(reason+'; ' if reason else '')+'refused-process cleanup: '+type(error).__name__+': '+str(error);sequence['status']='STOPPED'
         if monitor is not None:
             try:finish_monitored_cleanup(monitor,require_terminal_sample=v3)
             except ValueError as error:
@@ -330,6 +338,7 @@ def execute(a):
     finally:
         try:
             if lifecycle is not None:
+                refused=seal_refused_cleanup(lifecycle,a.output)
                 if not lifecycle.closed:lifecycle.close()
                 # The final immutable bytes include SCOPE_CLOSE. Blocks bind
                 # earlier prefixes of this exact shared append-only journal.
@@ -340,7 +349,11 @@ def execute(a):
                 receipt.update(lifecycleJournalSha256=hashlib.sha256(raw).hexdigest(),
                                lifecycleJournalBytes=len(raw),lifecycleJournalArchive='lifecycle-journal.jsonl',
                                lifecycleScopeId=lifecycle.scope_id,lifecycleJournalPath=str(lifecycle.path))
+                if refused is not None:
+                    receipt['refusedProcessCleanupSha256']=hashlib.sha256((a.output/'launch-refused-process-cleanup.json').read_bytes()).hexdigest()
+                    receipt['status']='STOPPED_REFUSED_LAUNCH'
                 write(a.output/'receipt.json',receipt)
+                if refused is not None:return 1
         except BaseException as error:
             if not existed:
                 a.output.mkdir(parents=True,exist_ok=True);path=a.output/'receipt.json'

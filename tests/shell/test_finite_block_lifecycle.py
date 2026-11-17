@@ -13,7 +13,7 @@ from unittest.mock import Mock, patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'experiments/ch7'))
 import run_finite_block as block
 
-BASE = Path('/Volumes/Untitled/AIJADE')
+REPO = Path(__file__).resolve().parents[2]
 
 
 class Registry:
@@ -34,7 +34,7 @@ class Registry:
 
 class BlockLifecycleControls(unittest.TestCase):
     def setUp(self):
-        scratch = BASE / '.runtime/posix/tmp'
+        scratch = REPO / '.runtime/tmp'
         scratch.mkdir(parents=True,exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(prefix='block-v3-controls-',dir=scratch)
         self.addCleanup(self.temp.cleanup)

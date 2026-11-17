@@ -120,6 +120,40 @@ class LifecycleRuntimeControls(unittest.TestCase):
         self.assertEqual(value['status'],'STOPPED_LIFECYCLE_FINALIZATION_ERROR')
         self.assertEqual(value['completedConditionRows'],20)
         self.assertIn('scope close unknown',value['reason'])
+    def test_failed_launch_cleanup_runs_once_and_cannot_accept_even_exit_zero(self):
+        output=self.root/'refused'
+        registry=SimpleNamespace(scope_id='f'*32,refused_process_records=[{'handle':object(),'attemptId':'e'*32,'ownsProcessGroup':False}],
+            cleanup_refused=Mock(return_value=[{'attemptId':'e'*32,'cleanupKnown':True,'actualExitCode':0,'errors':[]}]))
+        first=runtime.seal_refused_cleanup(registry,output)
+        raw=(output/'launch-refused-process-cleanup.json').read_bytes()
+        again=runtime.seal_refused_cleanup(registry,output)
+        registry.cleanup_refused.assert_called_once_with(grace_seconds=5.0,wait_seconds=1.0)
+        self.assertIs(first,again);self.assertFalse(first['workloadAccepted'])
+        self.assertEqual(first['status'],'CLEANED_REFUSED_PROCESSES_NOT_ACCEPTED')
+        self.assertEqual((output/'launch-refused-process-cleanup.json').read_bytes(),raw)
+    def test_failed_launch_cleanup_exception_is_retained_without_second_signal_batch(self):
+        registry=SimpleNamespace(scope_id='f'*32,refused_process_records=[{'handle':object(),'attemptId':'e'*32}],
+            cleanup_refused=Mock(side_effect=ValueError('controlled metadata unknown')))
+        first=runtime.seal_refused_cleanup(registry,self.root)
+        again=runtime.seal_refused_cleanup(registry,self.root)
+        registry.cleanup_refused.assert_called_once();self.assertEqual(first['status'],'UNKNOWN')
+        self.assertIn('controlled metadata unknown',first['errors'][0]);self.assertIs(first,again)
+    def test_sequence_cannot_return_success_after_failed_launch_was_cleaned(self):
+        out=self.root/'attempt';journal=self.root/'journal.jsonl';journal.write_bytes(b'initial-refused-fixture\n')
+        life=SimpleNamespace(path=journal,scope_id='f'*32,closed=False,
+            refused_process_records=[{'handle':object(),'attemptId':'e'*32,'ownsProcessGroup':False}],
+            cleanup_refused=Mock(return_value=[{'attemptId':'e'*32,'cleanupKnown':True,'actualExitCode':0,'errors':[]}]))
+        def close():life.closed=True
+        life.close=close
+        def apparent_complete(args):
+            out.mkdir();(out/'receipt.json').write_text(json.dumps({'status':'COMPLETE_FINITE_SEQUENCE_OBSERVATIONS','completedConditionRows':20}))
+            return 0
+        with patch.object(sequence,'setup_lifecycle',return_value=life),patch.object(sequence,'_execute',side_effect=apparent_complete):
+            self.assertEqual(sequence.execute(SimpleNamespace(output=out)),1)
+        value=json.loads((out/'receipt.json').read_bytes())
+        self.assertEqual(value['status'],'STOPPED_REFUSED_LAUNCH');self.assertEqual(value['completedConditionRows'],20)
+        self.assertEqual(value['refusedProcessCleanupSha256'],runtime.sha(out/'launch-refused-process-cleanup.json'))
+        life.cleanup_refused.assert_called_once()
     def test_existing_output_never_opens_new_lifecycle(self):
         out=self.root/'existing';out.mkdir();p=out/'receipt.json';p.write_bytes(b'{"historical":true}\n')
         with patch.object(sequence,'setup_lifecycle') as setup,patch.object(sequence,'_execute',side_effect=ValueError('no overwrite')):

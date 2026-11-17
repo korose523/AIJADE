@@ -41,7 +41,8 @@ class Fixture:
         add('SCOPE_OPEN', 11, dict(scopeId=SCOPE, controllerIdentity=ROOT, parentLeaseId=None, stageId='sequence'))
         add('FINITE_REGISTER', 12, dict(leaseId=L1, role='finite', stageId='task', identity=CHILD,
             parentIdentity=ROOT, commandSha256='f' * 64, executableSha256='e' * 64,
-            shimSha256='d' * 64, readyMonotonic=11.9))
+            shimSha256='d' * 64, readyMonotonic=11.9,
+            identityWitnessKind='PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD'))
         add('RELEASE', 12.1, dict(leaseId=L1))
         add('WAIT', 14, dict(leaseId=L1, identity=CHILD, exitCode=0, waitSource='Popen.wait', reapedMonotonic=13.9))
         add('ABSENCE', 16, dict(identity=CHILD, sampleId='5' * 32, phase='after', nativeStdoutSha256='7' * 64,

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """One resource-bounded block of the prospectively confirmed finite comparison or known-input qualification. No model calls.
 
-Requires Python 3.11+, psutil 7.2.2, a built clean AIJADE checkout, the existing
-MOSAIC client source copy, a local PMX asset and the archived two-program selection.
-The source copy is copied again before building; the original checkout is read-only.
+Requires Python 3.11+, psutil 7.2.2, a built clean AIJADE checkout, the prepared
+AIJADE-owned Godot backend, a local PMX asset and the archived program selection.
+The exact prebuilt renderer tree is copied and verified without a runtime rebuild.
 """
 import argparse
 import datetime as dt
@@ -22,7 +22,7 @@ import time
 import psutil
 from finite_runtime import (validate_build, cleanup_owned_databases, stop_owned_processes, dispositions,
     BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, MAC_LIFECYCLE_SOURCES, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry,
-    setup_lifecycle, managed_check_output, finish_monitored_cleanup)
+    setup_lifecycle, managed_check_output, finish_monitored_cleanup, seal_refused_cleanup)
 
 GIB = 1024 ** 3
 PLAN = '78785a5'
@@ -73,6 +73,10 @@ def finish_v3_owned_cleanup(roots, leases, docker, container, monitor, registry)
     except BaseException as error:
         errors.append('database cleanup: ' + type(error).__name__ + ': ' + str(error))
         databases = [dict(database=None, presentAfterProcessExit=None, remaining=None, error=errors[-1])]
+    try:
+        refused=seal_refused_cleanup(registry,Path(leases).parent)
+        if refused is not None:errors.append('finite launch refused; cleanup cannot confer acceptance')
+    except BaseException as error:errors.append('refused-process cleanup: '+type(error).__name__+': '+str(error))
     if monitor is not None:
         try:
             finish_monitored_cleanup(monitor, require_terminal_sample=True)
@@ -390,6 +394,7 @@ def _main(args):
             write(output/'owned-process-registry.json',registry_final)
             metadata['ownedProcessRegistrySha256']=sha(output/'owned-process-registry.json')
             if v3:
+                if (output/'launch-refused-process-cleanup.json').is_file():metadata['refusedProcessCleanupSha256']=sha(output/'launch-refused-process-cleanup.json')
                 journal=lifecycle.path.read_bytes()
                 metadata.update(lifecycleJournalBytes=len(journal),lifecycleJournalSha256=hashlib.sha256(journal).hexdigest())
             if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
@@ -439,6 +444,7 @@ def main(args):
     finally:
         if lifecycle is not None:
             try:
+                refused=seal_refused_cleanup(lifecycle,args.output)
                 if not lifecycle.closed:lifecycle.close()
                 if not existed:
                     path=args.output/'receipt.json'
@@ -447,7 +453,11 @@ def main(args):
                         journal=lifecycle.path.read_bytes()
                         receipt.update(lifecycleJournalPath=str(lifecycle.path),lifecycleScopeId=lifecycle.scope_id,
                                        lifecycleJournalBytes=len(journal),lifecycleJournalSha256=hashlib.sha256(journal).hexdigest())
+                        if refused is not None:
+                            receipt['refusedProcessCleanupSha256']=sha(args.output/'launch-refused-process-cleanup.json')
+                            receipt['status']='STOPPED_REFUSED_LAUNCH'
                         write(path,receipt)
+                        if refused is not None:return 1
             except BaseException as error:
                 if not existed:
                     args.output.mkdir(parents=True,exist_ok=True)

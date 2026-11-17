@@ -6,7 +6,7 @@ an exit status; only the direct owner's Popen.wait records a terminal outcome.
 """
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import copy
 import fcntl
 import hashlib
@@ -15,6 +15,7 @@ import math
 import os
 from pathlib import Path
 import selectors
+import signal
 import shutil
 import stat
 import subprocess
@@ -178,11 +179,13 @@ def replay_journal(raw, _prior=None):
     need(not raw or raw.endswith(b'\n'), 'truncated journal record')
     if _prior is None:
         events,leases,discovered,scopes=[],{},{},{}
+        refusals=[]
         identity_index={}
         previous,prior_mono,context=ZERO,-1.0,None
     else:
         events,leases,discovered,scopes=(_prior[k] for k in ('events','leases','discovered','scopes'))
         identity_index=_prior['identityIndex']
+        refusals=_prior['launchRefusals']
         previous=events[-1]['sha256'] if events else ZERO
         prior_mono=events[-1]['monotonicSeconds'] if events else -1.0
         context=(_prior['runId'],_prior['sourceCommit'],_prior['policySha256']) if events else None
@@ -299,10 +302,41 @@ def replay_journal(raw, _prior=None):
             scope = scopes[data['scopeId']]
             need(scope['controllerIdentity'] == event['writer'] and scope['closeSeq'] is None, 'invalid scope close')
             scope['closeSeq'] = event['seq']
+        elif name == 'LAUNCH_REFUSED':
+            owner_id=identity_index.get(identity_key(event['writer']))
+            need(owner_id is not None and leases[owner_id]['exitCode'] is None,'unowned refused-launch writer')
+            need(_hex(data.get('attemptId'),32) and type(data.get('stageId')) is str and data['stageId']
+                 and not any(v['attemptId']==data['attemptId'] for v in refusals),'refused attempt identity')
+            for field in ('commandSha256','executableSha256'):
+                need(data.get(field) is None or _hex(data[field]),'refused attempt command witness')
+            pid=data.get('spawnedPid')
+            need(pid is None or (type(pid) is int and pid>1),'refused spawned PID')
+            need(type(data.get('readyBytes')) is int and 0<=data['readyBytes']<=4097
+                 and _hex(data.get('readySha256')) and type(data.get('errorClass')) is str
+                 and data['errorClass'] and type(data.get('cleanupKnown')) is bool,'refused ready/error witness')
+            reads=data.get('identityReads')
+            need(type(reads) is list and len(reads)<=2,'refused identity read population')
+            for item in reads:
+                identity_key(item);need(item['pid']==pid and item['parentPid']==event['writer']['pid'],
+                                        'refused kernel identity does not bind spawned child')
+            need(data.get('identityStatus') in ('UNKNOWN','BOUND'),'refused identity status')
+            if data['identityStatus']=='BOUND':need(len(reads)==2 and reads[0]==reads[1],'refused bound identity not proven')
+            registered=data.get('registeredLeaseId')
+            need(registered is None or (registered==data['attemptId'] and registered in leases
+                 and leases[registered]['role']=='finite' and leases[registered]['identity']['pid']==pid
+                 and leases[registered]['parentIdentity']==event['writer']),'refused registration link')
+            if data.get('actualExitCode') is not None:
+                need(type(data['actualExitCode']) is int and data['cleanupKnown'] is True
+                     and data.get('waitSource')=='Popen.wait' and pid is not None,'refused actual wait witness')
+            else:need(data.get('waitSource') is None,'refused wait status unknown')
+            need(_number(data.get('startedMonotonic')) and _number(data.get('cleanupCompletedMonotonic'))
+                 and data['startedMonotonic']<=data['cleanupCompletedMonotonic']<=event['monotonicSeconds'],
+                 'refused launch/cleanup clocks')
+            refusals.append(dict(data,eventSeq=event['seq'],writer=event['writer']))
         else:
             raise ValueError('unknown lifecycle event')
         events.append(event); previous=event['sha256']; prior_mono=event['monotonicSeconds']
-    return dict(events=events,leases=leases,discovered=discovered,scopes=scopes,identityIndex=identity_index,
+    return dict(events=events,leases=leases,discovered=discovered,scopes=scopes,identityIndex=identity_index,launchRefusals=refusals,
                 runId=context[0] if context else None,sourceCommit=context[1] if context else None,
                 policySha256=context[2] if context else None,lastSequence=len(events),
                 bytes=len(raw),sha256=digest(raw))
@@ -344,6 +378,8 @@ def validate_view(view, journal_bytes=None):
     expected=[v for v in state['leases'].values() if v['absence'] is None or identity_key(v['identity']) in wanted]
     need(view['leases']==expected and view['controllers']==[v['leaseId'] for v in expected
          if v['identity']==view['controllerIdentity']],'lifecycle lease view projection differs')
+    state['launchRefusalArtifacts']=view.get('launchRefusalArtifacts',[])
+    need(type(state['launchRefusalArtifacts']) is list,'refused-launch artifact population')
     return state
 
 
@@ -402,6 +438,7 @@ class Registry:
         self.lock_path=project_path(capture_lock_path or (POSIX/'locks'/('lifecycle-'+digest(str(self.path).encode())+'.lock')))
         self._mutex=threading.RLock();self.handles=[];self.scope_id=uuid.uuid4().hex;self.closed=False
         self._cached_raw=b'';self._cached_state=None;self._cached_inode=None;self._policy=None
+        self.refused_processes=[];self.refused_process_records=[];self.launch_refusal_records=[]
         fd=_open_owned(self.path,os.O_RDWR|os.O_CREAT);os.close(fd)
         state=self._state()
         if state['events']:
@@ -490,56 +527,106 @@ class Registry:
         need(isinstance(process,ManagedProcess) and process.registry is self,'only an identity-ready owned handle may register')
         return self._lease(process.lease_id)
 
-    def launch(self,command,*,role='finite',stage=None,**kwargs):
-        need(not self.closed,'cannot launch after local persistent scope closes')
-        need(role in ('finite','controller') and type(command) in (list,tuple) and command
-             and all(type(x) is str and '\x00' not in x for x in command),'finite command schema')
-        need(not kwargs.get('shell') and not kwargs.get('preexec_fn') and not kwargs.get('pass_fds'), 'unsupported subprocess escape')
-        # A child controller is finite from this parent's perspective; its own
-        # nested Registry opens a local persistent scope while it is alive.
-        env=dict(os.environ if kwargs.get('env') is None else kwargs.pop('env'))
-        env.update(self.environment())
-        env['AIJADE_LIFECYCLE_STAGE']=stage or self.stage
-        executable=shutil.which(command[0],path=env.get('PATH')) if not Path(command[0]).is_absolute() else command[0]
-        need(executable is not None,'finite executable missing')
-        # Preserve the caller's absolute argv0: resolving a virtualenv Python
-        # symlink before exec would bypass its pyvenv.cfg and change the runtime.
-        executable=Path(executable).absolute()
-        executable_sha=digest(executable.resolve(strict=True).read_bytes())
-        ready_r,ready_w=os.pipe();gate_r,gate_w=os.pipe();process=None
-        lease_id=uuid.uuid4().hex;env['AIJADE_LIFECYCLE_PARENT_LEASE']=lease_id
-        shim=Path(__file__).with_name('lifecycle_exec.py')
+    def launch(self,command,*,role='finite',stage=None,ready_timeout=None,**kwargs):
+        attempt_id=uuid.uuid4().hex;started=time.monotonic()
+        process=None;registered=False;released=False;launched=False;raw=bytearray();reads=[];owns_group=False
+        ready_r=ready_w=gate_r=gate_w=-1;executable_sha=None;command_sha=None
+        contexts=ExitStack()
         try:
-            with capture_lock(self.lock_path):
-                process=subprocess.Popen([sys.executable,'-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
-                    env=env,pass_fds=(ready_w,gate_r),**kwargs)
-                os.close(ready_w);ready_w=-1;os.close(gate_r);gate_r=-1
-                selected=selectors.DefaultSelector();selected.register(ready_r,selectors.EVENT_READ)
-                raw=bytearray();deadline=time.monotonic()+READY_SECONDS
-                try:
-                    while b'\n' not in raw:
-                        remaining=deadline-time.monotonic();need(remaining>0,'identity-ready timeout')
-                        need(selected.select(remaining),'identity-ready timeout')
-                        block=os.read(ready_r,4097-len(raw));need(block,'identity-ready EOF')
-                        raw.extend(block);need(len(raw)<=4096,'identity-ready cap')
-                finally:selected.close()
-                ready=json.loads(bytes(raw));ident=ready['identity'];identity_key(ident)
-                need(ident['pid']==process.pid and ident['parentPid']==self.writer['pid']
-                     and identity(process.pid)==ident and _number(ready['readyMonotonic']), 'identity-ready mismatch')
-                self._append('FINITE_REGISTER',dict(leaseId=lease_id,role='finite',stageId=stage or self.stage,
-                    identity=ident,parentIdentity=self.writer,commandSha256=digest(canonical(list(command))),
-                    executableSha256=executable_sha,readyMonotonic=ready['readyMonotonic'],shimSha256=digest(shim.read_bytes())))
-                self._append('RELEASE',dict(leaseId=lease_id))
-                os.write(gate_w,b'1')
-            handle=ManagedProcess(self,process,lease_id);self.handles.append(handle);return handle
-        except BaseException:
+            need(not self.closed,'cannot launch after local persistent scope closes')
+            need(role in ('finite','controller') and type(command) in (list,tuple) and command
+                 and all(type(x) is str and '\x00' not in x for x in command),'finite command schema')
+            command_sha=digest(canonical(list(command)))
+            need(not kwargs.get('shell') and not kwargs.get('preexec_fn') and not kwargs.get('pass_fds'), 'unsupported subprocess escape')
+            need(type(kwargs.get('start_new_session',False)) is bool,'start_new_session must be explicit boolean')
+            owns_group=kwargs.get('start_new_session',False)
+            ready_budget=READY_SECONDS if ready_timeout is None else ready_timeout
+            need(_number(ready_budget) and 0<ready_budget<=READY_SECONDS,'identity-ready deadline invalid')
+            env=dict(os.environ if kwargs.get('env') is None else kwargs.pop('env'))
+            env.update(self.environment());env['AIJADE_LIFECYCLE_STAGE']=stage or self.stage
+            executable=shutil.which(command[0],path=env.get('PATH')) if not Path(command[0]).is_absolute() else command[0]
+            need(executable is not None,'finite executable missing')
+            # Preserve virtualenv argv0; hash its actual executable target.
+            executable=Path(executable).absolute();executable_sha=digest(executable.resolve(strict=True).read_bytes())
+            env['AIJADE_LIFECYCLE_PARENT_LEASE']=attempt_id
+            shim=Path(__file__).with_name('lifecycle_exec.py')
+            contexts.enter_context(capture_lock(self.lock_path))
+            ready_r,ready_w=os.pipe();gate_r,gate_w=os.pipe()
+            process=subprocess.Popen([sys.executable,'-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
+                env=env,pass_fds=(ready_w,gate_r),**kwargs)
+            os.close(ready_w);ready_w=-1;os.close(gate_r);gate_r=-1
+            selected=selectors.DefaultSelector();selected.register(ready_r,selectors.EVENT_READ)
+            deadline=time.monotonic()+ready_budget
+            try:
+                while b'\n' not in raw:
+                    remaining=deadline-time.monotonic();need(remaining>0,'identity-ready timeout')
+                    need(selected.select(remaining),'identity-ready timeout')
+                    block=os.read(ready_r,4097-len(raw));need(block,'identity-ready EOF')
+                    raw.extend(block);need(len(raw)<=4096,'identity-ready cap')
+            finally:selected.close()
+            ready=json.loads(bytes(raw),object_pairs_hook=_unique)
+            need(set(ready)=={'pid','parentPid','readyMonotonic'} and type(ready['pid']) is int
+                 and ready['pid']==process.pid and ready['parentPid']==self.writer['pid']
+                 and _number(ready['readyMonotonic']),'identity-ready report mismatch')
+            # The exact Popen child stays behind its gate for both kernel reads.
+            first=identity(process.pid);identity_key(first);reads.append(first)
+            second=identity(process.pid);identity_key(second);reads.append(second)
+            need(first['parentPid']==self.writer['pid'] and second==first
+                 and time.monotonic()<=deadline,'identity-ready kernel identity/deadline mismatch')
+            self._append('FINITE_REGISTER',dict(leaseId=attempt_id,role='finite',stageId=stage or self.stage,
+                identity=first,parentIdentity=self.writer,commandSha256=command_sha,executableSha256=executable_sha,
+                readyMonotonic=ready['readyMonotonic'],shimSha256=digest(shim.read_bytes()),
+                identityWitnessKind='PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD'))
+            registered=True
+            self._append('RELEASE',dict(leaseId=attempt_id));released=True
+            os.write(gate_w,b'1')
+            handle=ManagedProcess(self,process,attempt_id);self.handles.append(handle);launched=True;return handle
+        except BaseException as error:
+            exit_code=None;cleanup_known=process is None
             if process is not None:
-                if process.poll() is None:process.kill()
-                process.wait(timeout=.5)
+                self.refused_processes.append(process)
+                self.refused_process_records.append(dict(handle=process,attemptId=attempt_id,ownsProcessGroup=owns_group))
+                try:
+                    if process.poll() is None:process.kill()
+                    exit_code=process.wait(timeout=.5);cleanup_known=True
+                except BaseException:cleanup_known=False
+            data=dict(attemptId=attempt_id,stageId=stage if type(stage) is str and stage else self.stage,
+                commandSha256=command_sha,executableSha256=executable_sha,
+                spawnedPid=process.pid if process is not None else None,readyBytes=len(raw),readySha256=digest(bytes(raw)),
+                ownsProcessGroup=owns_group,
+                identityReads=reads,identityStatus='BOUND' if len(reads)==2 and reads[0]==reads[1] else 'UNKNOWN',
+                registeredLeaseId=attempt_id if registered else None,errorClass=type(error).__name__,
+                actualExitCode=exit_code,cleanupKnown=cleanup_known,waitSource='Popen.wait' if exit_code is not None else None,
+                startedMonotonic=started,cleanupCompletedMonotonic=time.monotonic())
+            self.launch_refusal_records.append(dict(data,writer=self.writer))
+            try:
+                if registered and released and exit_code is not None:
+                    lease=self._lease(attempt_id)
+                    if lease['waitSeq'] is None:
+                        self._append('WAIT',dict(leaseId=attempt_id,identity=lease['identity'],exitCode=exit_code,
+                            waitSource='Popen.wait',reapedMonotonic=data['cleanupCompletedMonotonic']))
+                self._append('LAUNCH_REFUSED',data)
+            except BaseException as journal_error:
+                artifact=self.path.with_name('launch-refused-'+attempt_id+'.json')
+                document=dict(schema='aijade.process-lifecycle-launch-refusal.v1',runId=self.run_id,writer=self.writer,
+                    sourceCommit=self.source_commit,policySha256=self.policy_sha256,data=data,
+                    journalAppendErrorClass=type(journal_error).__name__,qualificationAdverse=True)
+                try:
+                    fd=_open_owned(artifact,os.O_WRONLY|os.O_CREAT|os.O_EXCL)
+                    try:os.write(fd,canonical(document)+b'\n');os.fsync(fd)
+                    finally:os.close(fd)
+                    error.lifecycleRefusalPath=str(artifact)
+                except BaseException:pass
+            try:error.lifecycleRefusal=data
+            except BaseException:pass
             raise
         finally:
+            if process is not None and not launched:
+                for stream in (process.stdin,process.stdout,process.stderr):
+                    if stream is not None:stream.close()
             for fd in (ready_r,ready_w,gate_r,gate_w):
                 if fd>=0:os.close(fd)
+            contexts.close()
 
     def run(self,command,*,input=None,capture_output=False,timeout=None,check=False,**kwargs):
         if input is not None:need('stdin' not in kwargs,'stdin/input conflict');kwargs['stdin']=subprocess.PIPE
@@ -558,6 +645,61 @@ class Registry:
 
     def wait(self,process,timeout=None):return process.wait(timeout)
 
+    def cleanup_refused(self,grace_seconds=5.0,wait_seconds=1.0):
+        """Bounded owned-handle cleanup, never reconstruct a handle from a PID.
+
+        A known kernel reap is direct-child absence only. Group/descendant
+        absence still belongs to the observed ownership ledger, and every
+        refused launch remains adverse even after successful cleanup.
+        """
+        need(_number(grace_seconds) and 0<=grace_seconds<=5
+             and _number(wait_seconds) and 0<=wait_seconds<=1,'refused cleanup budget')
+        with self._mutex:items=list(self.refused_process_records)
+        started=time.monotonic();deadline=started+grace_seconds;final_deadline=deadline+wait_seconds
+        records=[]
+        def send(item,row,sig):
+            process=item['handle']
+            if process.poll() is not None:return
+            if item['ownsProcessGroup']:
+                need(os.getpgid(process.pid)==process.pid and os.getsid(process.pid)==process.pid,
+                     'refused child is not the owned live session/group leader')
+                os.killpg(process.pid,sig)
+            else:process.send_signal(sig)
+            row['termSent' if sig==signal.SIGTERM else 'killSent']=True
+        for item in items:
+            process=item['handle'];row=dict(attemptId=item['attemptId'],pid=process.pid,
+                ownsProcessGroup=item['ownsProcessGroup'],termSent=False,killSent=False,
+                actualExitCode=process.poll(),cleanupKnown=False,errors=[],startedMonotonic=started,
+                groupMembersAbsentNotInferred=True)
+            try:send(item,row,signal.SIGTERM)
+            except (OSError,ValueError) as error:row['errors'].append(type(error).__name__+': '+str(error))
+            records.append(row)
+        while any(item['handle'].poll() is None for item in items) and time.monotonic()<deadline:
+            time.sleep(min(.01,max(0,deadline-time.monotonic())))
+        for item,row in zip(items,records):
+            process=item['handle']
+            try:
+                send(item,row,signal.SIGKILL)
+                row['actualExitCode']=process.wait(timeout=max(0,final_deadline-time.monotonic()))
+                row['cleanupKnown']=True
+            except (OSError,ValueError,subprocess.SubprocessError) as error:
+                row['errors'].append(type(error).__name__+': '+str(error))
+            row.update(waitSource='Popen.wait' if row['cleanupKnown'] else None,
+                       finishedMonotonic=time.monotonic(),qualificationAdverse=True)
+        return records
+
+    def _refusal_artifacts(self):
+        rows=[]
+        for path in sorted(self.path.parent.glob('launch-refused-*.json')):
+            fd=_open_owned(path,os.O_RDONLY)
+            with os.fdopen(fd,'rb') as stream:raw=stream.read(65537)
+            need(len(raw)<=65536,'refused-launch artifact cap')
+            item=json.loads(raw,object_pairs_hook=_unique)
+            need(item.get('runId')==self.run_id and item.get('sourceCommit')==self.source_commit
+                 and item.get('policySha256')==self.policy_sha256,'refused-launch artifact context mismatch')
+            rows.append(dict(path=str(path),sha256=digest(raw)))
+        return rows
+
     def sample(self,identities=()):
         with self._mutex:
             state=self._state();wanted=set(identities)
@@ -565,6 +707,7 @@ class Registry:
             return dict(schema=VIEW_SCHEMA,runId=self.run_id,journalPath=str(self.path),journalBytes=len(self._cached_raw),
                 journalSha256=digest(self._cached_raw),lastSequence=state['lastSequence'],scopeId=self.scope_id,
                 controllerIdentity=self.writer,leases=leases,referencedIdentities=[list(v) for v in sorted(wanted)],
+                launchRefusalArtifacts=self._refusal_artifacts(),
                 controllers=[v['leaseId'] for v in leases if v['identity']==self.writer])
 
     @_synchronized
@@ -650,10 +793,15 @@ class Registry:
         local_discovered=[v for key,v in state['discovered'].items() if key not in all_managed and
                           (not v.get('ancestry') or any(identity_key(i) in mine for i in v['ancestry']))]
         unleased=[v for v in local_discovered if v.get('absence') is None]
+        refusals=[v for v in state['launchRefusals'] if identity_key(v['writer']) in mine]
+        if self.launch_refusal_records and not refusals:refusals=copy.deepcopy(self.launch_refusal_records)
+        artifacts=self._refusal_artifacts()
         self.close()
         return dict(schema='aijade.process-lifecycle-final.v1',status='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT'
-                    if not unknown and not unleased else 'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE',
+                    if not unknown and not unleased and not refusals and not artifacts else 'UNKNOWN_OR_ADVERSE_OWNED_LIFECYCLE',
                     scopeId=self.scope_id,scopeClosed=True,knownFiniteLeases=finite,unresolvedFiniteLeases=unknown,
+                    launchRefusals=refusals,
+                    launchRefusalArtifacts=artifacts,
                     localDiscoveredIdentities=local_discovered,
                     unleasedDiscoveredIdentities=unleased,remainingIdentities=[v['identity'] for v in unknown],
                     lifecycleView=self.sample())

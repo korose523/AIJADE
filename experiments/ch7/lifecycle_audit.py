@@ -86,7 +86,7 @@ def _journal_bytes(value):
 def _replay(raw, source_commit, policy_sha256):
     """Independent event/state reconstruction; never call the producer replayer."""
     require(hex_value(source_commit, 40) and hex_value(policy_sha256), 'lifecycle expected source identity')
-    events = []; leases = {}; scopes = {}; discovered = {}; previous = '0' * 64; last = -1
+    events = []; leases = {}; scopes = {}; discovered = {}; refusals = []; previous = '0' * 64; last = -1
     context = None
     for line in raw.splitlines():
         event = json.loads(line, object_pairs_hook=_unique,
@@ -123,6 +123,8 @@ def _replay(raw, source_commit, policy_sha256):
                 require(data.get('role') == 'finite' and authorized_writer and data.get('parentIdentity') == event['writer']
                         and data['identity']['parentPid'] == event['writer']['pid'] and hex_value(data.get('shimSha256')),
                         'finite task lacks exact authorized direct-parent/ready shim witness')
+                require(data.get('identityWitnessKind') == 'PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD',
+                        'finite identity lacks parent-held-ready kernel witness')
             leases[key] = dict(data, registerSeq=event['seq'], registerMonotonic=now,
                                releaseSeq=None, waitSeq=None, exitCode=None, absence=None)
         else:
@@ -200,10 +202,74 @@ def _replay(raw, source_commit, policy_sha256):
                 scope = scopes[data['scopeId']]
                 require(scope['controllerIdentity'] == event['writer'] and scope['closeSeq'] is None, 'scope closed by wrong writer/twice')
                 scope['closeSeq'] = event['seq']
+            elif kind == 'LAUNCH_REFUSED':
+                fields = {'attemptId','stageId','commandSha256','executableSha256','spawnedPid','readyBytes',
+                          'readySha256','ownsProcessGroup','identityReads','identityStatus','registeredLeaseId',
+                          'errorClass','actualExitCode','cleanupKnown','waitSource','startedMonotonic','cleanupCompletedMonotonic'}
+                require(set(data) == fields, 'refused launch closed evidence schema')
+                require(hex_value(data['attemptId'],32) and not any(v['attemptId'] == data['attemptId'] for v in refusals),
+                        'refused launch attempt identity duplicated/invalid')
+                require(type(data['stageId']) is str and data['stageId'].strip(), 'refused launch stage missing')
+                require(all(data[field] is None or hex_value(data[field]) for field in ('commandSha256','executableSha256')),
+                        'refused launch command/executable witness types')
+                pid = data['spawnedPid']
+                require(pid is None or (type(pid) is int and pid > 1), 'refused launch actual Popen PID invalid')
+                require(type(data['readyBytes']) is int and 0 <= data['readyBytes'] <= 4097
+                        and hex_value(data['readySha256']) and type(data['ownsProcessGroup']) is bool
+                        and type(data['cleanupKnown']) is bool and type(data['errorClass']) is str and data['errorClass'],
+                        'refused launch ready/cleanup evidence types')
+                if data['readyBytes'] == 0:
+                    require(data['readySha256'] == hashlib.sha256(b'').hexdigest(), 'empty refused ready-byte digest differs')
+                reads = data['identityReads']
+                require(type(reads) is list and len(reads) <= 2, 'refused launch identity read population')
+                for read in reads:
+                    identity(read)
+                    require(read['pid'] == pid and read['parentPid'] == event['writer']['pid'],
+                            'refused kernel read not bound to actual child and writer')
+                bound = len(reads) == 2 and reads[0] == reads[1]
+                require(data['identityStatus'] == ('BOUND' if bound else 'UNKNOWN'),
+                        'refused identity status overstates or hides kernel witness')
+                if pid is None:
+                    require(not reads and data['registeredLeaseId'] is None and data['actualExitCode'] is None
+                            and data['waitSource'] is None and data['cleanupKnown'] is True and data['readyBytes'] == 0,
+                            'unspawned refusal cannot claim child identity or wait')
+                if data['actualExitCode'] is None:
+                    require(data['waitSource'] is None and (pid is None or data['cleanupKnown'] is False),
+                            'refused cleanup cannot infer a successful absent wait')
+                else:
+                    require(type(data['actualExitCode']) is int and pid is not None and data['cleanupKnown'] is True
+                            and data['waitSource'] == 'Popen.wait', 'refused actual wait/cleanup witness invalid')
+                started = real(data['startedMonotonic'],'refused actual launch start')
+                ended = real(data['cleanupCompletedMonotonic'],'refused actual cleanup end')
+                require(started <= ended <= now, 'refused launch/cleanup chronology invalid')
+                registered = data['registeredLeaseId']
+                if registered is not None:
+                    lease = leases.get(registered)
+                    require(registered == data['attemptId'] and lease is not None and lease['role'] == 'finite'
+                            and bound and lease['identity'] == reads[0] and lease['parentIdentity'] == event['writer']
+                            and lease['stageId'] == data['stageId'] and lease['commandSha256'] == data['commandSha256']
+                            and lease['executableSha256'] == data['executableSha256'],
+                            'refused registration link is not the exact bound attempt')
+                    require(started <= lease['readyMonotonic'] <= lease['registerMonotonic'] <= ended,
+                            'refused registration lies outside this actual launch attempt')
+                    if lease['releaseSeq'] is not None and data['actualExitCode'] is not None:
+                        require(lease['waitSeq'] is not None and lease['exitCode'] == data['actualExitCode']
+                                and lease['reapedMonotonic'] <= ended, 'released refused attempt missing actual linked wait')
+                refusals.append(dict(data,eventSeq=event['seq'],writer=event['writer']))
             else:
                 raise ValueError('unknown lifecycle event: ' + str(kind))
         events.append(event); previous = event['sha256']; last = now
-    return dict(events=events, leases=leases, scopes=scopes, discovered=discovered, runId=context)
+    return dict(events=events, leases=leases, scopes=scopes, discovered=discovered, launchRefusals=refusals, runId=context)
+
+
+def _no_refusal_artifacts(view):
+    markers = view.get('launchRefusalArtifacts', [])
+    require(type(markers) is list, 'refused launch artifact population missing/invalid')
+    for marker in markers:
+        require(type(marker) is dict and set(marker) == {'path','sha256'} and type(marker['path']) is str
+                and Path(marker['path']).is_absolute() and hex_value(marker['sha256']),
+                'refused launch artifact binding invalid')
+    require(not markers, 'LAUNCH_REFUSED fallback artifact is adverse even without a journal event')
 
 
 def _raw_frames(observation, policy):
@@ -221,8 +287,41 @@ def _raw_frames(observation, policy):
         require(len({v['pid'] for v in nodes}) == len(nodes), 'native duplicate PID')
         result.append(dict(phase=phase, nodes=nodes, rows=frame['ownedProcesses'],
                            collector=collector, nativeSha256=graph['nativeCensus']['stdoutSha256'],
+                           nativeEvidence=graph['nativeCensus'],
                            graphStartedMonotonic=start, graphCompletedMonotonic=end))
     return result
+
+
+def _native_lease(frame, state, controller, policy):
+    """Bind this exact empty-argv collector call to unified ready/release/wait."""
+    collector = frame.get('collector')
+    if collector is None:
+        return None  # Only injected pure semantic fixtures omit native evidence.
+    evidence = frame.get('nativeEvidence', {})
+    lease_id = evidence.get('managedLeaseId')
+    require(hex_value(lease_id, 32), 'native collector unified managed lease missing')
+    lease = state['leases'].get(lease_id)
+    expected_identity = {k:collector[k] for k in ('pid','createTimeMicros','parentPid')}
+    require(lease is not None and lease['role'] == 'finite' and lease['stageId'] == 'observer-native-census'
+            and lease['identity'] == expected_identity and lease['parentIdentity'] == controller,
+            'native collector identity/owner/stage differs from unified managed lease')
+    require(evidence.get('spawnedHelperPid') == collector['pid'] and evidence.get('observerPid') == controller['pid']
+            and collector['parentPid'] == controller['pid'], 'native collector raw PID/parent differs from managed owner')
+    require(lease['commandSha256'] == hashlib.sha256(canonical([policy['nativeHelper']['path']])).hexdigest()
+            and lease['executableSha256'] == policy['nativeHelper']['sha256'],
+            'native collector command is not the frozen empty-argv helper')
+    require(evidence.get('sourceSha256Before') == evidence.get('sourceSha256After') == policy['nativeHelper']['sourceSha256']
+            and evidence.get('helperSha256Before') == evidence.get('helperSha256After') == policy['nativeHelper']['sha256'],
+            'native collector source/executable bytes differ from frozen binding')
+    require(lease['releaseSeq'] is not None and lease['waitSeq'] is not None and lease['exitCode'] == 0
+            and type(evidence.get('exitCode')) is int and evidence['exitCode'] == lease['exitCode']
+            and lease.get('absence',{}).get('witnessKind') == 'PARENT_WAIT_REAPED',
+            'native collector lacks exact released parent-wait kernel reap')
+    waited = state['events'][lease['waitSeq'] - 1]
+    require(frame['graphStartedMonotonic'] <= lease['registerMonotonic'] <= lease['releaseMonotonic']
+            <= lease['reapedMonotonic'] <= waited['monotonicSeconds'] <= frame['graphCompletedMonotonic'],
+            'native unified launch/wait lies outside its actual graph call')
+    return lease_id
 
 
 def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
@@ -235,6 +334,7 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
     never depends on a formerly live absolute journal path in a sample.
     """
     raw = _journal_bytes(journal); state = _replay(raw, source_commit, policy_sha256)
+    require(not state['launchRefusals'], 'LAUNCH_REFUSED evidence verified; qualification remains adverse')
     expected_shim = policy.get('lifecycle', {}).get('execShimSha256')
     require(hex_value(expected_shim), 'frozen identity-ready shim policy missing')
     require(all(v.get('shimSha256') == expected_shim for v in state['leases'].values() if v['role'] == 'finite'),
@@ -257,10 +357,12 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
     frames = {}; sample_ids = set(); seen_prefix_bytes = -1; peak = 0; observations = []; observed_owned = set()
     context_observations = {}
     context_rows = {}
+    native_leases = set()
     prior_sample_start = -1
     for outer in samples:
         observation = outer.get('processObservation')
         require(type(observation) is dict, 'missing original v3 observation')
+        _no_refusal_artifacts(observation.get('lifecycle',{}))
         sid = sample_id(outer)
         require(sid not in sample_ids, 'duplicate lifecycle sample identity')
         sample_ids.add(sid)
@@ -294,6 +396,9 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
         wanted_root = (roots[0]['pid'], round(real(roots[0].get('createTime'), 'sample root creation') * 1000000))
         require(wanted_root == identity(view['controllerIdentity']), 'sample persistent root differs from active scope')
         for frame in captured:
+            native_lease = _native_lease(frame, local, view['controllerIdentity'], policy)
+            require(native_lease is None or native_lease not in native_leases, 'native collector lease reused for another original capture')
+            if native_lease is not None:native_leases.add(native_lease)
             by_pid = {n['pid']:n for n in frame['nodes']}
             require(wanted_root[0] in by_pid and node_identity(by_pid[wanted_root[0]]) == wanted_root,
                     'required persistent controller missing/reused')
@@ -338,9 +443,7 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
                 key = (row['pid'], round(real(row.get('createTime'), 'RSS creation') * 1000000))
                 require(node_identity(by_pid[row['pid']]) == key and row['parentPid'] == by_pid[row['pid']]['parentPid']
                         and type(row.get('rssBytes')) is int and row['rssBytes'] >= 0, 'present owned RSS unknown/identity mismatch')
-                collector = frame.get('collector')
-                native_self = collector is not None and key == (collector['pid'], collector['createTimeMicros'])
-                require(key in known or native_self or key in state['discovered'],
+                require(key in known or key in state['discovered'],
                         'unrecorded discovered descendant lacks append-only ancestry evidence')
                 if key in known and known[key]['role'] == 'finite':
                     require(known[key]['releaseSeq'] is not None, 'finite process observed before identity-ready release')
@@ -358,12 +461,21 @@ def verify_lifecycle(journal, samples, *, source_commit, policy_sha256, policy,
     require(ancestry_samples is None or type(ancestry_samples) is list, 'ancestry sample population schema')
     for outer in ancestry_samples or []:
         sid = sample_id(outer); observation = outer.get('processObservation')
+        require(type(observation) is dict, 'missing original ancestry observation')
+        _no_refusal_artifacts(observation.get('lifecycle',{}))
         if sid in context_observations:
             require(canonical(outer) == context_rows[sid], 'conflicting original ancestry sample identity')
             continue
         _validate_sample(outer, policy, context_raw)
         captured = _raw_frames(observation, policy)
+        view = observation.get('lifecycle', {})
+        prefix_size = integer(view.get('journalBytes'), 'ancestry native journal prefix')
+        require(0 < prefix_size <= len(context_raw), 'ancestry native journal prefix missing')
+        native_state = _replay(context_raw[:prefix_size], source_commit, policy_sha256)
         for frame in captured:
+            native_lease = _native_lease(frame, native_state, view['controllerIdentity'], policy)
+            require(native_lease is None or native_lease not in native_leases, 'native collector lease reused in ancestry context')
+            if native_lease is not None:native_leases.add(native_lease)
             frames[(sid,frame['phase'])] = frame
         context_observations[sid] = observation
         context_rows[sid] = canonical(outer)
@@ -453,6 +565,7 @@ def _validate_sample(row, policy, lifecycle_journal=None):
     observation = row.get('processObservation')
     require(type(observation) is dict and observation.get('schemaVersion') == 3,
             'v3 original observation required')
+    _no_refusal_artifacts(observation.get('lifecycle',{}))
     decision = guard.validate_observation(policy, observation, lifecycle_journal=lifecycle_journal)
     require(decision.get('status') == 'PASS', 'raw v3 process evidence adverse')
     require(type(decision.get('ownedRssBytes')) is int and decision['ownedRssBytes'] >= 0,

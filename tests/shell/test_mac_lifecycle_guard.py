@@ -54,11 +54,29 @@ def rehash(events):
     return events
 
 
+def native_journal_events(events,p):
+    """Finite helper leases matching the two serialized native self witnesses."""
+    events=copy.deepcopy(events);writer=events[0]['writer']
+    for pid,lid,start in [(500,'c'*32,100.1),(501,'d'*32,100.7)]:
+        ident=dict(pid=pid,createTimeMicros=pid*1000000,parentPid=20)
+        rows=[('FINITE_REGISTER',dict(leaseId=lid,role='finite',stageId='observer-native-census',identity=ident,
+            parentIdentity=writer,commandSha256=guard.canonical_sha256([p['nativeHelper']['path']]),
+            executableSha256=p['nativeHelper']['sha256'],readyMonotonic=start+.0005),start+.001),
+            ('RELEASE',dict(leaseId=lid),start+.002),
+            ('WAIT',dict(leaseId=lid,identity=ident,exitCode=0,waitSource='Popen.wait',reapedMonotonic=start+.008),start+.009)]
+        for name,data,mono in rows:
+            events.append(dict(schema=life.EVENT_SCHEMA,seq=0,event=name,monotonicSeconds=mono,runId='1'*32,
+                writer=writer,sourceCommit='2'*40,policySha256='3'*64,data=data,previousSha256=life.ZERO,sha256=life.ZERO))
+    return rehash(sorted(events,key=lambda x:x['monotonicSeconds']))
+
+
 def fixture(finite=False,wait=True,exit_code=0,extra_before=(),extra_after=(),events=None,owned=True):
-    p=policy();events=events or journal_events(finite,wait,exit_code);raw=raw_events(events)
+    p=policy();events=native_journal_events(events or journal_events(finite,wait,exit_code),p);raw=raw_events(events)
     before_extra=[row(30,20)] if finite else []
     before=graph(p,native(extra=tuple(before_extra)+tuple(extra_before)))
     after=graph(p,native(extra=tuple(extra_after),collector_pid=501))
+    before['nativeCensus']['managedLeaseId']='c'*32
+    after['nativeCensus']['managedLeaseId']='d'*32
     def frame(g,start):
         members=guard._owned_ids(g['nodes'],[dict(pid=20,createTime=20.)]) if owned else set()
         rows=[dict(pid=n['pid'],createTime=n['createTime'],parentPid=n['parentPid'],
@@ -92,7 +110,7 @@ def fixture(finite=False,wait=True,exit_code=0,extra_before=(),extra_after=(),ev
 
 def discovered_fixture():
     p,o,_=fixture(extra_before=(row(40,20),))
-    events=journal_events();ident=dict(pid=40,createTimeMicros=40000000,parentPid=20)
+    events=native_journal_events(journal_events(),p);ident=dict(pid=40,createTimeMicros=40000000,parentPid=20)
     for name,phase,mono in [('DISCOVER','before',101.1),('DISCOVER_ABSENCE','after',101.2)]:
         frame=o['evidence'][phase]
         e=dict(schema=life.EVENT_SCHEMA,seq=len(events)+1,event=name,monotonicSeconds=mono,
@@ -190,6 +208,42 @@ class LifecycleGuardControls(unittest.TestCase):
             graphStartedMonotonic=2.1,graphCompletedMonotonic=2.2))
         events.insert(2,discovery);state=life.replay_journal(raw_events(rehash(events)))
         self.assertIn('6'*32,state['leases']);self.assertIn((30,30000000),state['discovered'])
+    def test_missing_native_managed_lease_is_adverse(self):
+        p,o,r=fixture();o['evidence']['before']['processGraph']['nativeCensus'].pop('managedLeaseId')
+        self.assertEqual(self.decision(p,o,r)['status'],'FAIL')
+    def test_wrong_native_lease_pid_or_stage_or_argv_is_adverse(self):
+        for field in ('identity','stageId','commandSha256','executableSha256'):
+            p,o,r=fixture();events=[json.loads(line) for line in r.splitlines()]
+            event=next(v for v in events if v['event']=='FINITE_REGISTER' and v['data']['leaseId']=='c'*32)
+            if field=='identity':
+                # Change a release target to the other valid finite helper rather
+                # than relying on a broken journal hash to reject substitution.
+                o['evidence']['before']['processGraph']['nativeCensus']['managedLeaseId']='d'*32
+                changed=r
+            else:
+                event['data'][field]='wrong-stage' if field=='stageId' else 'e'*64
+                events=rehash(events);changed=raw_events(events);state=life.replay_journal(changed)
+                o['lifecycle'].update(journalBytes=len(changed),journalSha256=life.digest(changed),lastSequence=len(events),
+                    leases=[v for v in state['leases'].values() if v['absence'] is None or
+                            life.identity_key(v['identity']) in {tuple(x) for x in o['lifecycle']['referencedIdentities']}])
+            self.assertEqual(self.decision(p,o,changed)['status'],'FAIL',field)
+    def test_refused_unknown_birth_with_zero_cleanup_cannot_become_success(self):
+        p,o,r=fixture();events=[json.loads(line) for line in r.splitlines()]
+        e=copy.deepcopy(events[-1]);e.update(event='LAUNCH_REFUSED',monotonicSeconds=100.8)
+        e['data']=dict(attemptId='e'*32,stageId='controlled-refusal',commandSha256='a'*64,executableSha256='b'*64,
+            spawnedPid=31,readyBytes=0,readySha256=life.digest(b''),identityReads=[],identityStatus='UNKNOWN',
+            registeredLeaseId=None,errorClass='ControlledIdentityFailure',actualExitCode=0,cleanupKnown=True,
+            waitSource='Popen.wait',startedMonotonic=100.75,cleanupCompletedMonotonic=100.79)
+        events=rehash(events+[e]);changed=raw_events(events);state=life.replay_journal(changed)
+        o['lifecycle'].update(journalBytes=len(changed),journalSha256=life.digest(changed),lastSequence=len(events),
+            leases=[v for v in state['leases'].values() if v['absence'] is None or
+                    life.identity_key(v['identity']) in {tuple(x) for x in o['lifecycle']['referencedIdentities']}])
+        d=self.decision(p,o,changed);self.assertEqual(d['status'],'FAIL')
+        self.assertIn('LAUNCH_REFUSED',[v['code'] for v in d['blockers']])
+        self.assertNotIn('e'*32,state['leases'])
+    def test_refusal_fallback_artifact_marker_remains_adverse(self):
+        p,o,r=fixture();o['lifecycle']['launchRefusalArtifacts']=[dict(path=str(life.POSIX/'tmp/launch-refused-fixture.json'),sha256='a'*64)]
+        self.assertEqual(self.decision(p,o,r)['status'],'FAIL')
 
 
 if __name__=='__main__':unittest.main()

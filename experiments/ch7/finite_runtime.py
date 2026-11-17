@@ -115,6 +115,35 @@ def wait_post_cleanup_sample(monitor, cleanup_monotonic):
 
 
 
+def seal_refused_cleanup(registry, output):
+    """Reap only failed-launch handles once; successful cleanup cannot accept them."""
+    if not getattr(registry,'refused_process_records',[]):return None
+    key='_root_refused_cleanup_receipt'
+    receipt=getattr(registry,key,None)
+    if receipt is None:
+        receipt=dict(schema='aijade.ch7.refused-launch-process-cleanup.v1',
+                     scopeId=registry.scope_id,status='UNKNOWN',rows=[],errors=[],
+                     startedMonotonic=time.monotonic(),workloadAccepted=False,
+                     plannedAttemptIds=[r['attemptId'] for r in registry.refused_process_records])
+        # Store before touching a handle. Finalization cannot retry the batch.
+        setattr(registry,key,receipt)
+        try:
+            receipt['rows']=registry.cleanup_refused(grace_seconds=5.0,wait_seconds=1.0)
+            require([r.get('attemptId') for r in receipt['rows']]==receipt['plannedAttemptIds'],
+                    'refused process cleanup population changed or incomplete')
+            if all(r.get('cleanupKnown') is True and not r.get('errors') for r in receipt['rows']):
+                receipt['status']='CLEANED_REFUSED_PROCESSES_NOT_ACCEPTED'
+        except BaseException as error:receipt['errors'].append(type(error).__name__+': '+str(error))
+        receipt['finishedMonotonic']=time.monotonic()
+    output=Path(output);output.mkdir(parents=True,exist_ok=True)
+    path=output/'launch-refused-process-cleanup.json'
+    raw=(json.dumps(receipt,indent=2)+'\n').encode()
+    if path.exists():require(path.read_bytes()==raw,'refused cleanup receipt changed')
+    else:
+        with path.open('xb') as stream:stream.write(raw)
+    return receipt
+
+
 def finish_monitored_cleanup(monitor, require_terminal_sample=False):
     errors=[]
     if require_terminal_sample:
