@@ -1,0 +1,32 @@
+{
+  "schema": "aijade.ch7.dummy-metadata-compatibility-amendment.v1",
+  "status": "FROZEN_BEFORE_FIRST_HELPER_EXECUTION",
+  "frozenAt": "2026-11-17T05:03:12.922828+00:00",
+  "originalPlanSha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+  "originalScriptSha256": "5c0397bb1b3e5a0109298f75c1b01c1e1870241496de5f645178367b5f65c616",
+  "compatibilityScriptSha256": "de0e6643bf52bd9ac357fb5b557b6c354e9e199fe3807f2c5096cad74a998082",
+  "compileReceiptSha256": "c4f238fb6f5961ad4a522bdb843929d4b7ee5a4b17ab25613dbcd09f26b4f834",
+  "compiledSourceSha256": "81f12e6b651988a514a331e18438db00bcc5fae32bde29c030ed43051ed058fe",
+  "compiledHelperSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+  "compilationAttempts": 1,
+  "helperExecutionsSoFar": 0,
+  "protocolUnchanged": {
+    "trials": [
+      1,
+      2,
+      3
+    ],
+    "betweenTrialSleepSeconds": 1,
+    "nativeDeadlineSeconds": 0.5,
+    "freshRegistryAndRealCaptureLock": true
+  },
+  "onlyCompatibilityChange": "Read-only bounded /usr/bin/xattr -l instead of unavailable Python os.listxattr; bounded codesign display; UNKNOWN_METADATA if unsupported/timeout/nonzero, never install or mutate security attributes.",
+  "noRecompile": true,
+  "noPrewarm": true,
+  "noSecurityAttributeChange": true,
+  "allThreeExecuteDespitePriorDummyRefusal": true,
+  "launchTimingMemoryProxyUnchanged": true,
+  "engineeringFullLoadStarted": false,
+  "qualificationStarted": false,
+  "scope": "Original fixed3 dummy sequence only. Metadata compatibility pause before first execution must be reported; no causal first-execution/OS-service conclusion."
+}
