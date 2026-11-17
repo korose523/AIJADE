@@ -1,0 +1,23 @@
+{
+  "schema": "aijade.listener.contract-description.v2",
+  "status": "INACTIVE_PURE_PREPARATION_NOT_INSTALLED",
+  "transcriptSchema": "aijade.listener.transcript.v2",
+  "mode": "complete-managed-lsof-transcript-v1",
+  "nativeMode": "native-ready-release-v1",
+  "exactCommand": ["/usr/sbin/lsof", "-nP", "-iTCP:11434", "-sTCP:LISTEN", "-FpfPtTn"],
+  "acceptance": {"maxWholeSeconds": 0.5, "maxStdoutBytes": 65536, "maxForensicBytesPerStream": 2097152},
+  "listenerPolicyClosedKeys": ["mode", "moduleSha256", "command", "executableSha256", "maxSeconds", "maxBytes"],
+  "nativePolicyClosedKeys": ["mode", "adapterSourceSha256", "sourcePath", "sourceSha256", "binaryPath", "binarySha256"],
+  "transcriptClosedKeys": ["schema", "mode", "argv", "stdout", "stderr", "returnCode", "exception", "startedMonotonic", "runCompletedMonotonic", "parseCompletedMonotonic", "sourcePins", "nativeLaunch"],
+  "captureClosedKeys": ["encoding", "dataBase64", "capturedBytes", "capturedSha256", "totalBytes", "totalSha256", "truncated"],
+  "sourcePinsClosedKeys": ["adapterSourceSha256", "shimSourceSha256", "shimSha256", "executableSha256", "parserSourceSha256", "callerSourceSha256"],
+  "outerClockClosedKeys": ["startedMonotonic", "finishedMonotonic"],
+  "phaseClockClosedKeys": ["requestStartedMonotonic", "captureRequestedMonotonic", "captureAcquiredMonotonic", "popenStartedMonotonic", "popenReturnedMonotonic", "readyReadCompletedMonotonic", "firstIdentityCompletedMonotonic", "secondIdentityCompletedMonotonic", "registerStartedMonotonic", "registerCompletedMonotonic", "releaseStartedMonotonic", "releaseCompletedMonotonic", "gateWrittenMonotonic", "postProvenanceCompletedMonotonic", "returnedMonotonic"],
+  "nativeLaunchClosedKeys": ["schema", "mode", "leaseId", "stageId", "role", "identity", "commandSha256", "executableSha256", "shimSha256", "adapterSourceSha256", "shimSourceSha256", "phaseClocks", "readyMonotonic", "actualReapedMonotonic", "waitEventMonotonic", "waitSequence", "exitCode", "waitSource", "captureLock", "sourceProofBefore", "sourceProofReady", "sourceProofAfter", "executedShimIdentity"],
+  "recordProjectionKeys": ["pid", "protocol", "family", "endpoint", "socketState"],
+  "canonicalPrerequisite": "existing source-validated complete journal state at actual observation cutoff; this module does not validate a journal",
+  "positiveSemantics": "frozen e918 projection, preserve all visible selected-port processes, IPv4/IPv6 and record multiplicity without filtering or deduplication",
+  "stricterMalformedRules": ["orphan or empty FD", "duplicate selected field", "incomplete record", "non-ASCII or NUL", "unknown tag", "non-TCP/family/state schema"],
+  "semanticOutcome": "derive all current raw bytes and OR-combined adverse reasons on every invocation; no prior-PASS cache",
+  "claimsExcluded": ["OS/global completeness", "live engineering acceptance", "qualification", "scientific acceptance", "causal lock-contention improvement"]
+}

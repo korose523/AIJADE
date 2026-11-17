@@ -1,0 +1,103 @@
+--- retained-E5/test_nested_launcher.py
++++ E6-native/test_nested_launcher.py
+@@ -18,6 +18,8 @@
+ from unittest import mock
+ 
+ HERE = Path(__file__).parent
++SCRATCH = Path(os.environ.get('AIJADE_NATIVE_LAUNCHER_TEST_SCRATCH',str(HERE/'.runtime/launcher-mocks')))
++SCRATCH.mkdir(parents=True,exist_ok=True)
+ SOURCE = HERE / 'launch_nested_load.py'
+ spec = importlib.util.spec_from_file_location('nested_load_parent', SOURCE)
+ parent = importlib.util.module_from_spec(spec)
+@@ -52,7 +54,7 @@
+ 
+ class Fixture:
+     def __init__(self, test):
+-        self.tmp = tempfile.TemporaryDirectory(prefix='parent-launcher-mock-', dir=HERE)
++        self.tmp = tempfile.TemporaryDirectory(prefix='parent-launcher-mock-', dir=SCRATCH)
+         test.addCleanup(self.tmp.cleanup)
+         self.root = Path(self.tmp.name)
+         self.repo = self.root / 'repo'
+@@ -66,7 +68,7 @@
+         self.wrapper.write_bytes(b'FIXTURE_WRAPPER_NOT_EXECUTED')
+         sources = {}
+         names = [*parent.OBSERVERS, parent.RUNNER_RELATIVE,
+-                 *['tests/shell/source-%02d.py' % index for index in range(6)]]
++                 *['tests/shell/source-%02d.py' % index for index in range(3)]]
+         for index, name in enumerate(names):
+             path = self.repo / name
+             path.parent.mkdir(parents=True, exist_ok=True)
+@@ -74,11 +76,22 @@
+             sources[name] = sha(path)
+         self.native = self.root / 'native-census'
+         self.native.write_bytes(b'FIXTURE_NATIVE_NOT_EXECUTED')
++        self.exec_shim=self.root/'native-exec-shim';self.exec_shim.write_bytes(b'FIXTURE_NATIVE_SHIM_NOT_EXECUTED');self.exec_shim.chmod(0o755)
++        self.lsof=self.root/'lsof-not-executed';self.lsof.write_bytes(b'FIXTURE_GLOBAL_LSOF_NOT_EXECUTED')
++        native_binding=dict(mode='native-ready-release-v1',
++            adapterSourceSha256=sources['experiments/ch7/native_exec_registry.py'],
++            sourcePath=str(self.repo/'experiments/ch7/lifecycle_exec_native.c'),
++            sourceSha256=sources['experiments/ch7/lifecycle_exec_native.c'],
++            binaryPath=str(self.exec_shim),binarySha256=sha(self.exec_shim))
++        listener_binding=dict(mode='complete-managed-lsof-transcript-v1',
++            moduleSha256=sources['experiments/ch7/listener_evidence.py'],command=list(parent.LSOF_ARGV),
++            executableSha256=sha(self.lsof),maxSeconds=.5,maxBytes=65536)
+         protocol_original=HERE/'testdata/nested-engineering-protocol.fixture.json'
+         self.protocol=json.loads(protocol_original.read_bytes())
+         self.protocol['runtime']['childStartupMaximumSeconds']=15
+         self.protocol.update(onlineReplayMode='owned-guard-state-exact-prefix-v1',onlineReplayInitializationMode='paired-source-verified-owned-state-v1')
+         self.protocol['onlineReplaySourceSha256']=sources['experiments/ch7/newowned_guard_cursor.py']
++        self.protocol.update(lifecycleExecMode='native-ready-release-v1',nativeExec=copy.deepcopy(native_binding),listenerEvidence=copy.deepcopy(listener_binding))
+         self.protocol_path=self.repo/'experiments/plans/mock-nested-protocol.json'
+         self.plan_path=self.repo/'experiments/plans/mock-nested-plan.md'
+         self.protocol_path.parent.mkdir(parents=True)
+@@ -92,8 +105,9 @@
+             binaryAuthenticationSourceSha256=sources['experiments/ch7/binary_authentication.py'],
+             nativeHelper=dict(path=str(self.native), sha256=sha(self.native),
+             sourceSha256=sources['experiments/ch7/mac_bulk_census.c']),
++            lifecycleExecMode='native-ready-release-v1',nativeExec=copy.deepcopy(native_binding),listenerEvidence=copy.deepcopy(listener_binding),
+             lifecycle=dict(moduleSha256=sources['experiments/ch7/process_lifecycle.py'],
+-                           execShimSha256=sources['experiments/ch7/lifecycle_exec.py']))
++                           execShimSha256=sha(self.exec_shim)))
+         policy_path = self.repo / 'configs/engineering-policy.json'
+         policy_path.parent.mkdir()
+         policy_path.write_text(json.dumps(policy))
+@@ -113,6 +127,7 @@
+             onlineReplayMode='owned-guard-state-exact-prefix-v1',
+             onlineReplayInitializationMode='paired-source-verified-owned-state-v1',
+             onlineReplaySourceSha256=sources['experiments/ch7/newowned_guard_cursor.py'],
++            lifecycleExecMode='native-ready-release-v1',nativeExec=copy.deepcopy(native_binding),listenerEvidence=copy.deepcopy(listener_binding),
+             observerSources={name: sources[name] for name in parent.OBSERVERS},
+             runnerSha256=sources[parent.RUNNER_RELATIVE], launcherSha256=sha(self.launcher),
+             runtimeWrapperSha256=sha(self.wrapper), pythonSha256=sha(self.python),
+@@ -122,7 +137,7 @@
+             runtime=copy.deepcopy(self.protocol['runtime']),
+             **{key:self.protocol[key] for key in ('prefixPaddingTaskCount','prefixPreparationMaximumSeconds',
+                'journalAcceptanceMaximumBytes','minimumDemonstratedPrefixBytes')},preflightCommands=commands)
+-        self.passport = self.root / 'engineering-03-passport.json'
++        self.passport = self.root / 'engineering-04-passport.json'
+         self.freeze()
+         self.bound = dict(pid=419001, createTime=1700000001.125,
+             createTimeMicros=1700000001125000, parentPid=os.getpid(), processGroup=419001)
+@@ -134,9 +149,10 @@
+         self.sequence = [0]
+         self.popen_exception = None
+         self.popen_objects = []
+-        for key, value in dict(BASE=self.root, C8=self.root, RUN=self.output, FIXED_PYTHON=self.python, WRAPPER=self.wrapper,
+-            RECORD=self.root/'engineering-03-launch.json', LOG=self.root/'engineering-03-launch.log',
+-            TERMINAL=self.root/'engineering-03-launch.terminal.json', __file__=str(self.launcher)).items():
++        for key, value in dict(BASE=self.root, C9=self.root, LAUNCHER_HOME=self.root, RUN=self.output, FIXED_PYTHON=self.python, WRAPPER=self.wrapper,
++            NATIVE_BINARY_SHA256=sha(self.exec_shim),LSOF_PATH=self.lsof,LSOF_SHA256=sha(self.lsof),
++            RECORD=self.root/'engineering-04-launch.json', LOG=self.root/'engineering-04-launch.log',
++            TERMINAL=self.root/'engineering-04-launch.terminal.json', __file__=str(self.launcher)).items():
+             patch = mock.patch.object(parent, key, value)
+             patch.start(); test.addCleanup(patch.stop)
+         patch = mock.patch.object(sys, 'executable', str(self.python))
+@@ -388,7 +404,7 @@
+         f=Fixture(self);old=f.root/'prior-prefix-engineering-launch.json';old.write_text('PRESERVED_PREFIX_ATTEMPT')
+         result=f.run();self.assertTrue(result['engineeringReportDelivered'])
+         self.assertEqual(old.read_text(),'PRESERVED_PREFIX_ATTEMPT')
+-        self.assertTrue((f.root/'engineering-03-launch.json').exists())
++        self.assertTrue((f.root/'engineering-04-launch.json').exists())
+         self.assertEqual(f.popen.call_count,1)
+ 
+     def test_29_auth_source_is_required_in_complete_nested_observer_closure(self):

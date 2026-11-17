@@ -1,0 +1,29 @@
+--- root-staged-before/setup_lifecycle
++++ native-dispatch-after/setup_lifecycle
+@@ -11,15 +11,24 @@
+     source=os.environ.get('AIJADE_GIT_COMMIT','')
+     require(re.fullmatch('[0-9a-f]{40}',source) is not None,'lifecycle Q identity missing')
+     policy_sha=hashlib.sha256(policy_raw).hexdigest()
++    native_mode=policy.get('lifecycleExecMode') is not None
+     if os.environ.get('AIJADE_LIFECYCLE_JOURNAL'):
+-        registry=from_environment()
++        if native_mode:
++            from native_exec_registry import activate_from_environment
++            registry=activate_from_environment(policy)
++        else:
++            registry=from_environment()
+         require(registry.source_commit==source and registry.policy_sha256==policy_sha,
+                 'inherited lifecycle source/policy mismatch')
+     else:
+         parent=args.output.resolve().parent;parent.mkdir(parents=True,exist_ok=True)
+         journal=parent/(args.output.name+'-lifecycle.jsonl')
+         require(not journal.exists(),'never reuse a prior lifecycle journal')
+-        registry=Registry(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
++        registry_factory=Registry
++        if native_mode:
++            from native_exec_registry import registry_for_policy
++            registry_factory=lambda *arguments,**options:registry_for_policy(policy,*arguments,**options)
++        registry=registry_factory(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
+             source_commit=source,policy_sha256=policy_sha,
+             capture_lock_path=guard.coordination_lock_path(policy))
+     registry.activate()

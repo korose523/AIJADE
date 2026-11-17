@@ -1,0 +1,26 @@
+{
+  "schema": "aijade.native-portable-test-ci-entrance.v1",
+  "commands": [
+    ".runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_native_integration.py' -v",
+    ".runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_listener_evidence.py' -v",
+    ".runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_native_exec_registry.py' -v"
+  ],
+  "requires": [
+    "psutil==7.2.2 in existing finite-control-env",
+    "existing clang or cc; fail CI prerequisite if unavailable rather than accept a skipped Native20 suite"
+  ],
+  "testCounts": [
+    45,
+    65,
+    20
+  ],
+  "globalListenerQueries": 0,
+  "artifactControls": "Native20 uses compiled self-contained C gate/echo fixtures and actual waits; neither lsof nor a model/renderer is executed.",
+  "defaultScratch": [
+    "<checkout>/.runtime/native-integration-controls",
+    "<checkout>/.runtime/native-exec-controls"
+  ],
+  "macLocalOverride": "AIJADE_NATIVE_TEST_SCRATCH=/Volumes/Untitled/AIJADE/.runtime/posix/tmp/native-ready-portable-controls",
+  "hardcodedResearchPathsInPortableEntrances": false,
+  "sourceBinding": "exact frozen e918 full source bytes plus exact function bytes are required; no fallback or skip"
+}

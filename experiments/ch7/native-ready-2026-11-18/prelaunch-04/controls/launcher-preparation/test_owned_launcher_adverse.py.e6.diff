@@ -1,0 +1,20 @@
+--- retained-E5/test_owned_launcher_adverse.py
++++ E6-native/test_owned_launcher_adverse.py
+@@ -22,7 +22,7 @@
+         self.rebind_source_fixture(f,str(f.protocol_path.relative_to(f.repo)))
+ 
+     def test_47_eighteenth_owned_observer_cannot_be_omitted(self):
+-        f=Fixture(self);self.assertEqual(len(parent.OBSERVERS),18)
++        f=Fixture(self);self.assertEqual(len(parent.OBSERVERS),21)
+         f.data['observerSources'].pop(OWNED);f.freeze()
+         with self.assertRaisesRegex(ValueError,'closure'):f.run()
+         f.popen.assert_not_called()
+@@ -35,7 +35,7 @@
+     def test_49_equal_population_wrong_eighteenth_observer_is_refused(self):
+         f=Fixture(self);value=f.data['observerSources'].pop(OWNED)
+         f.data['observerSources']['tests/shell/source-00.py']=value;f.freeze()
+-        self.assertEqual(len(f.data['observerSources']),18)
++        self.assertEqual(len(f.data['observerSources']),21)
+         with self.assertRaisesRegex(ValueError,'closure'):f.run()
+         f.popen.assert_not_called()
+ 

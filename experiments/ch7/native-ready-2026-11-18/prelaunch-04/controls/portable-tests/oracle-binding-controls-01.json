@@ -1,0 +1,27 @@
+{
+  "status": "FOUR_OFFLINE_BINDING_CONTROLS_PASS",
+  "passed": 4,
+  "failed": 0,
+  "osQueries": 0,
+  "cases": [
+    {
+      "case": "exact",
+      "result": "ACCEPTED_EXACT_SOURCE"
+    },
+    {
+      "case": "source-byte-change",
+      "result": "REJECTED_AS_EXPECTED",
+      "reason": "frozen listener source full SHA256 differs"
+    },
+    {
+      "case": "oracle-byte-change",
+      "result": "REJECTED_AS_EXPECTED",
+      "reason": "frozen listener oracle full SHA256 differs"
+    },
+    {
+      "case": "binding-sha-change",
+      "result": "REJECTED_AS_EXPECTED",
+      "reason": "frozen listener oracle binding differs: sourceSha256"
+    }
+  ]
+}
