@@ -22,6 +22,9 @@ import time
 
 BASE = Path('/Volumes/Untitled/AIJADE')
 ORACLE_SHA = 'ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef'
+PARSER_SHA = '93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65'
+REPLAY_MODE = 'full-state-c-clone-exact-prefix-v1'
+INITIALIZATION_MODE = 'paired-source-verified-journal-prefix-v1'
 
 
 def need(value, message):
@@ -185,6 +188,208 @@ def verify_loaded_module(module, repo, source_files):
     return name
 
 
+def exact(value, expected, message):
+    """JSON comparisons must not equate bool with int or int with float."""
+    need(type(value) is type(expected), message)
+    if type(value) is dict:
+        need(set(value) == set(expected), message)
+        for key in expected:
+            exact(value[key], expected[key], message)
+    elif type(value) is list:
+        need(len(value) == len(expected), message)
+        for item, wanted in zip(value, expected):
+            exact(item, wanted, message)
+    else:
+        need(value == expected, message)
+
+
+def verify_runtime_contract(runtime):
+    """E4 prospective startup is 15s; all other E3 runtime bounds remain."""
+    expected = dict(blocks=4, blockWorkSeconds=120, betweenBlockSeconds=4,
+        parentTailSeconds=4, parentMaximumSeconds=600, childStartupMaximumSeconds=15,
+        childCleanupMaximumSeconds=8, childWatchdogSeconds=145,
+        alignmentModes=['natural','parent-next-slot','natural','parent-next-slot'])
+    exact(runtime, expected, 'frozen E4 engineering runtime changed')
+    return expected
+
+
+def builtin_container_count(value):
+    """Independent supported-type/alias count, with no candidate clone code."""
+    seen, active = set(), set()
+    pending = [(value, False)]
+    while pending:
+        item, exiting = pending.pop()
+        kind = type(item)
+        if kind in (type(None), bool, int, str):
+            continue
+        if kind is float:
+            need(math.isfinite(item), 'nonfinite canonical initialization state')
+            continue
+        need(kind in (dict, list, tuple), 'unsupported canonical initialization state')
+        identity = id(item)
+        if exiting:
+            active.remove(identity)
+            seen.add(identity)
+            continue
+        need(identity not in active, 'cyclic canonical initialization state')
+        if identity in seen:
+            continue
+        active.add(identity)
+        pending.append((item, True))
+        children = [v for pair in item.items() for v in pair] if kind is dict else list(item)
+        pending.extend((v, False) for v in reversed(children))
+    return len(seen)
+
+
+def expected_initial_statistics(prefix_bytes, sequence, containers):
+    common = dict(calls=0, parsedEvents=0, parsedBytes=0, fullPrefixReadBytes=0,
+        fullPrefixComparedBytes=0, hashUpdatedBytes=0, coldOldPrefixReplays=0,
+        snapshotCopies=0, failures=0, latestPrefixBytes=prefix_bytes,
+        frontierScopes=1, poisoned=False, cCloneSnapshots=0, builtinColdStates=0,
+        builtinTailEvents=0, builtinContainersChecked=0, bootstrapReceivedStates=1)
+    outer = dict(common)
+    inner = dict(common, calls=1, parsedEvents=sequence, parsedBytes=prefix_bytes,
+        fullPrefixReadBytes=prefix_bytes, hashUpdatedBytes=prefix_bytes,
+        snapshotCopies=1, cCloneSnapshots=2, builtinColdStates=1,
+        builtinContainersChecked=containers)
+    return inner, outer
+
+
+def verify_initialization(scope_root, receipt, journal_path, index, oracle, parser,
+                          passport, *, owner, scope, earliest, latest, anchor,
+                          budget):
+    """Audit one real initialization, without executing the online candidate.
+
+    A single original-parser cold replay establishes exact initial counters.
+    Its logical state is crosschecked with the separate unchanged oracle and
+    historical index; each later sample still undergoes independent raw replay.
+    """
+    path = scope_root/'initialization.json'
+    raw = path.read_bytes()
+    core = decode(raw)
+    exact(receipt['initialization'], core, 'receipt/core initialization differs')
+    write = receipt['initializationWriteClock']
+    need(type(write) is dict and set(write) == {'startedMonotonic','completedMonotonic','sha256','path'}
+         and write['sha256'] == sha(raw) and write['path'] == str(path),
+         'actual initialization write bytes/path binding')
+    factory = real(core['factoryStartedMonotonic'], 'actual initialization factory start')
+    captured = real(core['viewCapturedMonotonic'], 'actual initialization view capture')
+    began = real(core['startedMonotonic'], 'actual bootstrap start')
+    ended = real(core['completedMonotonic'], 'actual bootstrap completion')
+    write_began = real(write['startedMonotonic'], 'actual initialization write start')
+    write_ended = real(write['completedMonotonic'], 'actual initialization write completion')
+    need(anchor <= earliest <= factory <= captured <= began <= ended <= write_began <= write_ended <= latest
+         and write_began == core['recordWriteStartedMonotonic']
+         and ended-began == core['elapsedSeconds'] and write_ended-anchor <= budget,
+         'full initialization factory/view/clone/write placement or preparation/startup budget')
+    exact(core['canonicalParserRuns'], 1, 'bootstrap canonical parser population')
+    exact(core['detachedCacheCloneOperations'], 2, 'bootstrap detached cache clone population')
+    exact(core['processObservationPerformed'], False, 'bootstrap hidden observation')
+    exact(core['nativeApiOrModelRequest'], False, 'bootstrap native/API/model request')
+    exact(core['verdictGranted'], False, 'bootstrap cached verdict')
+    exact(core['independentMutableReplayStates'], True, 'bootstrap mutable-state detachment claim')
+    need(core['schema'] == 'aijade.lifecycle.c-clone-bootstrap.v1'
+         and core['mode'] == passport['onlineReplayInitializationMode'] == INITIALIZATION_MODE
+         and passport['onlineReplayMode'] == REPLAY_MODE
+         and core['cursorSourceSha256'] == passport['sourceFiles']['experiments/ch7/full_state_clone_cursor.py']
+         == passport['onlineReplaySourceSha256']
+         and core['parserSourceSha256'] == PARSER_SHA,
+         'initialization mode/source identity mismatch')
+    view = core['initialView']
+    verify_scope_owner(view, scope, owner)
+    verify_scope_owner(core, scope, owner)
+    need(view['journalPath'] == core['journalPath'] == str(journal_path), 'initialization journal path differs')
+    prefix, indexed = index.prefix(core['prefixBytes'], core['prefixSha256'], core['lastSequence'])
+    exact(view['journalBytes'], len(prefix), 'initialization view byte boundary differs')
+    exact(view['lastSequence'], core['lastSequence'], 'initialization view event boundary differs')
+    need(view['journalSha256'] == sha(prefix) == core['prefixSha256']
+         and view['runId'] == core['runId'] == indexed['runId']
+         and core['sourceCommit'] == passport['sourceCommit']
+         and core['policySha256'] == passport['policySha256'], 'initialization original prefix/context differs')
+    independent = oracle._replay(prefix, passport['sourceCommit'], passport['policySha256'])
+    need(independent['events'][-1]['monotonicSeconds'] <= captured,
+         'initialization prefix contains an event after actual view capture')
+    exact(indexed, independent, 'initialization prefix independent oracle/index differs')
+    cold = parser.replay_journal(prefix)
+    for name in independent:
+        exact(cold[name], independent[name], 'initialization canonical parser/independent oracle differs: '+name)
+    projected = [v for v in independent['leases'].values() if v['absence'] is None]
+    exact(view['referencedIdentities'], [], 'journal-only initialization has process references')
+    exact(view['launchRefusalArtifacts'], [], 'initialization includes refused launch')
+    exact(view['leases'], projected, 'initialization exact lease projection differs')
+    exact(view['controllers'], [v['leaseId'] for v in projected if v['identity'] == owner],
+          'initialization controller projection differs')
+    live_scope = independent['scopes'][scope]
+    need(live_scope['closeSeq'] is None and live_scope['controllerIdentity'] == owner,
+         'initialization scope not open or owner differs')
+    node = journal_path.stat(follow_symlinks=False)
+    expected_source_origin = ['file', str(journal_path), node.st_dev, node.st_ino]
+    exact(core['sourceOrigin'], expected_source_origin, 'initialization actual file source origin differs')
+    cold['launchRefusalArtifacts'] = []
+    containers = builtin_container_count(cold)
+    initial_inner, initial_outer = expected_initial_statistics(len(prefix), core['lastSequence'], containers)
+    exact(core['innerStatistics'], initial_inner, 'initial inner parser/clone/full-read statistics differs')
+    exact(core['outerStatistics'], initial_outer, 'initial outer parser/clone/full-read statistics differs')
+    return dict(core=core, writeClock=write, path=str(path), sha256=sha(raw),
+        independentCanonicalContainerCount=containers, initialInnerStatistics=initial_inner,
+        initialOuterStatistics=initial_outer, prefixIndependentColdReplay=True)
+
+
+def verify_initialization_usage(initial, rows, receipt, index, passport):
+    """Derive all cumulative cursor costs from every actual original cutoff.
+
+    No producer counter is used to form expectations. In particular, the first
+    later callback must physically read the whole prefix, compare all bootstrap
+    bytes and independently parse the newly appended tail in both cursors.
+    """
+    core = initial['core']
+    need(type(rows) is list and rows, 'initialization has no subsequent actual samples')
+    previous_bytes, previous_seq = core['prefixBytes'], core['lastSequence']
+    inner, outer = dict(initial['initialInnerStatistics']), dict(initial['initialOuterStatistics'])
+    reference = dict(path=initial['path'], sha256=initial['sha256'], mode=INITIALIZATION_MODE,
+        prefixBytes=core['prefixBytes'],prefixSha256=core['prefixSha256'],lastSequence=core['lastSequence'],
+        sourceCommit=core['sourceCommit'],policySha256=core['policySha256'],scopeId=core['scopeId'],
+        cursorSourceSha256=core['cursorSourceSha256'])
+    first_tail = None
+    for position, row in enumerate(rows):
+        observation = row['processObservation']
+        view = observation['lifecycle']
+        need(observation['onlineReplayMode'] == passport['onlineReplayMode'] == REPLAY_MODE
+             and observation['onlineReplaySourceSha256'] == passport['onlineReplaySourceSha256']
+             and observation['onlineReplayInitializationMode'] == INITIALIZATION_MODE,
+             'original raw online replay source/mode differs')
+        exact(observation['onlineReplayPreparation'], reference, 'original raw initialization reference differs')
+        need(row['monotonicSeconds'] >= initial['writeClock']['completedMonotonic']
+             and view['scopeId'] == core['scopeId'], 'sample predates initialization write or changes scope')
+        prefix, state = index.prefix(view['journalBytes'],view['journalSha256'],view['lastSequence'])
+        count, sequence = len(prefix), view['lastSequence']
+        need(count >= previous_bytes and sequence >= previous_seq, 'post-initialization prefix regressed')
+        tail_bytes, tail_events = count-previous_bytes, sequence-previous_seq
+        if position == 0:
+            need(tail_bytes > 0 and tail_events > 0, 'first post-bootstrap sample did not validate actual new tail')
+            first_tail = dict(bytes=tail_bytes,events=tail_events)
+        checked = builtin_container_count(state['events'][previous_seq:sequence])
+        for stats in (inner, outer):
+            stats['calls'] += 1
+            stats['fullPrefixReadBytes'] += count
+            stats['fullPrefixComparedBytes'] += previous_bytes
+            stats['parsedEvents'] += tail_events
+            stats['parsedBytes'] += tail_bytes
+            stats['hashUpdatedBytes'] += tail_bytes
+            stats['snapshotCopies'] += 1
+            stats['cCloneSnapshots'] += 1
+            stats['builtinTailEvents'] += tail_events
+            stats['builtinContainersChecked'] += checked
+            stats['latestPrefixBytes'] = count
+        previous_bytes, previous_seq = count, sequence
+    exact(receipt['innerCursor'], inner, 'final inner actual prefix/read/compare/parser/clone counter population differs')
+    exact(receipt['outerCursor'], outer, 'final outer actual prefix/read/compare/parser/clone counter population differs')
+    return dict(initializationPath=initial['path'],initializationSha256=initial['sha256'],
+        initialPrefixBytes=core['prefixBytes'],initialSequence=core['lastSequence'],actualSamples=len(rows),
+        firstSampleNewTail=first_tail,expectedInnerStatistics=inner,expectedOuterStatistics=outer,
+        allOriginalPrefixesFullyReadAndCompared=True,allActualNewTailEventsIncluded=True)
+
+
 def verify_stream(prefix, root, receipt, measured, *, maximum_seconds, slots_maximum, epoch, baseline):
     raw_path = root/(prefix+'telemetry.jsonl' if prefix else 'process-observations.jsonl')
     diag_path = root/(prefix+'service-events.jsonl')
@@ -262,11 +467,8 @@ def main(args):
          and receipt['errors'] == [] and receipt['lifecycleJournalStable'] is True
          and receipt['passportSha256'] == args.passport_sha256, 'controller completion is not a complete stable engineering candidate')
     need(passport['prefixPaddingTaskCount'] == 2500 and passport['prefixPreparationMaximumSeconds']==900
-         and passport['minimumDemonstratedPrefixBytes'] == 14*1024**2
-         and passport['runtime'] == dict(blocks=4, blockWorkSeconds=120, betweenBlockSeconds=4,
-              parentTailSeconds=4, parentMaximumSeconds=600, childStartupMaximumSeconds=10,
-              childCleanupMaximumSeconds=8, childWatchdogSeconds=145,
-              alignmentModes=['natural','parent-next-slot','natural','parent-next-slot']), 'frozen engineering workload changed')
+         and passport['minimumDemonstratedPrefixBytes'] == 14*1024**2, 'frozen engineering workload changed')
+    verify_runtime_contract(passport['runtime'])
     source = passport['sourceCommit']
     need(receipt['sourceCommit'] == source and receipt['policySha256'] == passport['policySha256'], 'actual source/policy context')
     need(receipt['sourceFiles'] == passport['sourceFiles'], 'frozen source population differs')
@@ -274,7 +476,8 @@ def main(args):
     audit_relative='experiments/ch7/audit_nested_load.py'
     essentials={audit_relative,'experiments/ch7/nested_event_index.py','experiments/ch7/run_nested_load.py',
                 'experiments/ch7/measured_mac_monitor.py','experiments/ch7/mac_process_guard_v3.py',
-                'experiments/ch7/lifecycle_audit.py'}
+                'experiments/ch7/lifecycle_audit.py','experiments/ch7/process_lifecycle.py',
+                'experiments/ch7/full_state_clone_cursor.py'}
     need(essentials<=set(passport['sourceFiles']), 'complete producer-checked audit/observer source map required')
     need(Path(__file__).resolve()==repo/audit_relative and file_sha(Path(__file__))==passport['auditScriptSha256']
          ==passport['sourceFiles'][audit_relative], 'actual audit executable source identity mismatch')
@@ -290,13 +493,21 @@ def main(args):
     import mac_process_guard_v3 as guard
     import measured_mac_monitor as measured
     import nested_event_index as index_module
+    import process_lifecycle as canonical_parser
+    import full_state_clone_cursor as clone_module
     from nested_event_index import EventIndex, typed_equal
     need(sha(Path(oracle.__file__).read_bytes()) == ORACLE_SHA, 'wrong loaded independent cold oracle')
-    for module in (oracle,guard,measured,index_module):
+    for module in (oracle,guard,measured,index_module,canonical_parser,clone_module):
         verify_loaded_module(module,repo,passport['sourceFiles'])
+    need(file_sha(canonical_parser.__file__)==PARSER_SHA, 'original canonical parser source changed')
     policy = read(root/'process-policy.json')
     need(file_sha(root/'process-policy.json') == passport['policySha256']
          and (root/'process-policy.json').read_bytes() == git(repo, 'show', source+':'+passport['policyPath']), 'actual policy bytes')
+    need(policy['onlineReplayMode']==passport['onlineReplayMode']==REPLAY_MODE
+         and policy['onlineReplaySourceSha256']==passport['onlineReplaySourceSha256']
+         ==passport['sourceFiles']['experiments/ch7/full_state_clone_cursor.py']
+         and policy['onlineReplayInitializationMode']==passport['onlineReplayInitializationMode']==INITIALIZATION_MODE,
+         'frozen explicit E4 online replay source/initialization identity')
     journal=(root/'lifecycle-journal.jsonl').read_bytes()
     need(passport['minimumDemonstratedPrefixBytes'] <= len(journal) == receipt['lifecycleJournalBytes'] and sha(journal) == receipt['lifecycleJournalSha256']
          and len(journal) <= passport['journalAcceptanceMaximumBytes'] <= 16*1024**2-512*1024, 'bounded complete journal envelope')
@@ -327,6 +538,16 @@ def main(args):
     preflight_clock=read(root/'preflight-continuity.json')['schedule']['originMonotonic']
     verify_command_records(receipt['preflightCommands']+receipt['prefixPaddingCommands'],passport['preflightCommands'],
         source,2530,'combined-parent',parent_identity,complete,preflight_clock)
+    parent_initialization=verify_initialization(root,receipt,root/'lifecycle-journal.jsonl',index,oracle,
+        canonical_parser,passport,owner=parent_identity,scope=parent_scope,
+        earliest=receipt['prefixPaddingCommands'][-1]['completedMonotonic'], latest=preflight_clock,
+        anchor=receipt['preparationEpochMonotonic'],budget=900)
+    initialization_results=[verify_initialization_usage(parent_initialization,
+        settling+admission+parent_rows,receipt,index,passport)]
+    stage_events=jsonl(root/'stage-events.jsonl')
+    block_launches=[e for e in stage_events if e['event']=='block-launch-enter']
+    need(len(block_launches)==4 and [e['blockIndex'] for e in block_launches]==[0,1,2,3],
+         'complete actual block launch stage population')
     for n in range(4):
         block=root/('block-'+str(n+1));child=read(block/'receipt.json');ready=read(block/'ready.json')
         no_science(child)
@@ -348,12 +569,22 @@ def main(args):
         need(child['startedMonotonic']==ready['sourceStartupStartedMonotonic']==lease['releaseMonotonic']
              <=child['pythonEntryMonotonic']<=child['readyWriteStartedMonotonic']
              <=child['readyWriteCompletedMonotonic']
-             and child['readyWriteCompletedMonotonic']-lease['releaseMonotonic']<=10
+             and child['readyWriteCompletedMonotonic']-lease['releaseMonotonic']<=15
              and child['readyFileSha256']==file_sha(block/'ready.json')
              and ready['readyWriteStartedMonotonic']==child['readyWriteStartedMonotonic'],
              'full parent-release/import/source/monitor/ready-flush startup budget')
         verify_command_records(child['preflightCommands'],passport['preflightCommands'],source,30,False,
             lease['identity'],complete,child['readyWriteStartedMonotonic'])
+        child_initialization=verify_initialization(block,child,root/'lifecycle-journal.jsonl',index,oracle,
+            canonical_parser,passport,owner=lease['identity'],scope=child['scopeId'],
+            earliest=child['preflightCommands'][-1]['completedMonotonic'],
+            latest=child['engineeringAlignment']['waitStartedMonotonic'],
+            anchor=lease['releaseMonotonic'],budget=15)
+        need(child_initialization['writeClock']['completedMonotonic']<=terminal['scheduleOriginMonotonic']
+             <=child['readyWriteStartedMonotonic']<=child['readyWriteCompletedMonotonic']
+             and child['readyWriteCompletedMonotonic']-lease['releaseMonotonic']<=15,
+             'child initialization/monitor/full ready-write startup placement')
+        initialization_results.append(verify_initialization_usage(child_initialization,rows,child,index,passport))
         need(child['cleanupStartedMonotonic']>=terminal['scheduleOriginMonotonic']+120
              and rows[-1]['monotonicSeconds']>=child['cleanupStartedMonotonic']
              and lease['reapedMonotonic']-child['cleanupStartedMonotonic']<=8,
@@ -390,9 +621,16 @@ def main(args):
             for b in child_row['processObservation']['coordinationLocks'].values())
         if n in (1,3):
             need(peer_requests>=1,'predeclared aligned block did not exercise actual cross-stream lock contention')
+        launch_stage=real(block_launches[n]['monotonicSeconds'],'actual block launch stage entry')
+        need(parent_rows[0]['monotonicSeconds']<=launch_stage<=lease['readyMonotonic']<=lease['releaseMonotonic'],
+             'actual launch-stage/ready/release order or parent coverage')
         block_results.append(dict(blockIndex=n, stream=stream, actualServiceOverlaps=overlaps,
             crossStreamRequestsDuringPeerHeldLock=peer_requests,engineeringAlignment=alignment,
-            releaseMonotonic=lease['releaseMonotonic'], actualReapedMonotonic=lease['reapedMonotonic']))
+            releaseMonotonic=lease['releaseMonotonic'], actualReapedMonotonic=lease['reapedMonotonic'],
+            launchStageEnteredMonotonic=launch_stage,
+            preReleaseSecondsFromLaunchStage=lease['releaseMonotonic']-launch_stage,
+            actualElapsedThroughParentWaitFromLaunchStage=wait['waitReturnedMonotonic']-launch_stage,
+            launchStageClockScope='Includes the stage record writer before the runner watchdog anchor; descriptive actual overhead, not a replacement watchdog or total-completion certificate.'))
     all_rows=settling+admission+parent_rows+[r for rows in child_rows for r in rows]
     need(len(all_rows)<=916, 'complete frozen maximum original observation population')
     need(parent_rows[-1]['processObservation']['lifecycle']['journalBytes'] >= passport['minimumDemonstratedPrefixBytes']
@@ -459,7 +697,7 @@ def main(args):
              and 0<=start-(origin+2*n)<=.5 and service['fullServiceSeconds']==done-start<=2
              and service['phaseEventWriteCompletedMonotonic']<=service['diagnosticWriteCompletedMonotonic']<=done
              and done<=origin+(600 if n<300 else 720), 'full preflight service and fixed deadline')
-    events=jsonl(root/'stage-events.jsonl')
+    events=stage_events
     need(typed_equal(events,receipt['stageEvents']), 'actual stage event stream differs')
     preparing=[e for e in events if e['event']=='source-prefix-preparation-enter']
     prepared=[e for e in events if e['event']=='prefix-preload-complete']
@@ -468,6 +706,7 @@ def main(args):
          and preparing[0]['externalPreparationEpochMonotonic']==preparation_epoch
          <=preparing[0]['monotonicSeconds']<=receipt['preflightCommands'][0]['startedMonotonic']
          and receipt['prefixPaddingCommands'][-1]['completedMonotonic']<=prepared[0]['monotonicSeconds']<=preflight_clock
+         and parent_initialization['writeClock']['completedMonotonic']<=prepared[0]['monotonicSeconds']
          and prepared[0]['monotonicSeconds']-preparation_epoch<=900
          and prepared[0]['actualTasks']==2500, 'explicit unobserved engineering preparation boundary')
     gaps=[e for e in events if e['event']=='between-block-enter'];ends=[e for e in events if e['event']=='between-block-exit']
@@ -529,6 +768,8 @@ def main(args):
             actualParentWaitZero=len(finite),journalEvents=len(complete['events']),journalBytes=len(journal),
             maximumObservedPrefixBytes=max_prefix,maximumFiniteChainBytes=max(map(sum,chain_bytes.values())),nonFiniteEventBytes=nonfinite_bytes),
         continuity=continuity,independentOldOraclePrefixCrosschecks=crosschecks,
+        initializationAudits=initialization_results,
+        initializationMethod='One explicit source-pinned canonical replay and two detached states per scope; initialization prefix independently cold-replayed; every later original prefix/read/compare/tail and cumulative counter independently reconstructed.',
         actualNumericContextVerified=numeric_context,
         indexingMethod='Independent historical event versions; final and key-prefix exact typed comparison to unchanged full cold oracle; every raw sample cold guard and exact original prefix hash/view.',
         parentControllerTerminalEvidence='SEPARATE_IDENTITY_BOUND_LAUNCHER_REQUIRED_NOT_CHECKED_BY_THIS_SCRIPT',

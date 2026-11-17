@@ -50,6 +50,12 @@ MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/ma
 MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.trx'}
 
 
+def lifecycle_observer_sources(policy):
+    if policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1':
+        return MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py')
+    return MAC_LIFECYCLE_SOURCES
+
+
 def safe_relative(value):
     require(type(value) is str and value and '\\' not in value and ':' not in value, 'unsafe tracked relative path')
     parts=value.split('/')
@@ -260,7 +266,7 @@ def validate_mac_build_policy(policy,build):
     if mac_plan(policy) in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
         sources=build.get('observerSources')
         repo=Path(__file__).resolve().parents[2]
-        require(type(sources) is dict and set(sources)==set(MAC_LIFECYCLE_SOURCES)
+        require(type(sources) is dict and set(sources)==set(lifecycle_observer_sources(policy))
                 and all(sha(repo/name)==value for name,value in sources.items()),'v3 build observer source closure differs')
 
 
@@ -270,6 +276,8 @@ def load_mac_policy(repo,path,implementation):
     relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
     require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
     policy=json.loads(raw);plan=mac_plan(policy)
+    require(policy.get('onlineReplayMode')!='full-state-c-clone-exact-prefix-v1',
+            'C-clone replay requires a separately frozen new scientific execution decision; legacy plans cannot execute it')
     require((relative==MAC_PREFIX_POLICY_PATH)==(plan==MAC_PREFIX_PLAN),'prefix policy path/execution decision mismatch')
     if plan==MAC_PREFIX_PLAN:
         require(policy.get('onlineReplayMode')=='incremental-exact-prefix-v1'
@@ -289,7 +297,7 @@ def load_mac_policy(repo,path,implementation):
         require(sha(repo/'experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source differs from policy')
     dependencies={}
     if mac_plan(policy) in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
-        for relative_source in MAC_LIFECYCLE_SOURCES:
+        for relative_source in lifecycle_observer_sources(policy):
             source=repo/relative_source
             require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+relative_source),'lifecycle dependency differs from Q')
             dependencies[relative_source]=sha(source)
@@ -322,20 +330,52 @@ def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None
     return recalculated
 
 
-def online_lifecycle_cursors(policy):
+def online_lifecycle_cursors(policy, *, lifecycle=None, preparation_path=None):
     """Independent journal states; live file authentication never caches a verdict."""
     if policy is None:
         return {}, {}
     inner,outer={},{}
     if policy.get('onlineReplayMode') is not None:
-        require(policy.get('kind')==MAC_LIFECYCLE_KIND and
-                policy['onlineReplayMode']=='incremental-exact-prefix-v1','unsupported online replay mode')
-        from process_lifecycle import ViewCursor
-        inner['lifecycle_cursor'],outer['lifecycle_cursor']=ViewCursor(),ViewCursor()
+        require(policy.get('kind')==MAC_LIFECYCLE_KIND,'unsupported online replay policy kind')
+        if policy['onlineReplayMode']=='full-state-c-clone-exact-prefix-v1':
+            started=time.monotonic()
+            from process_lifecycle import Registry, project_path
+            require(isinstance(lifecycle,Registry) and preparation_path is not None,
+                    'C-clone cursor requires actual journal-only preparation before observation')
+            mac_observer(policy).validate_policy(policy)
+            from full_state_clone_cursor import bootstrap_pair
+            path=project_path(preparation_path)
+            require(path.name=='initialization.json' and path.parent.is_dir() and not path.exists(),
+                    'new exclusive scope initialization artifact required')
+            view=lifecycle.sample()
+            captured=time.monotonic()
+            first,second,record=bootstrap_pair(view)
+            record.update(factoryStartedMonotonic=started,viewCapturedMonotonic=captured,
+                          recordWriteStartedMonotonic=time.monotonic())
+            raw=(json.dumps(record,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
+            with path.open('xb') as stream:
+                stream.write(raw);stream.flush();os.fsync(stream.fileno())
+            completed=time.monotonic()
+            write_clock=dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),
+                startedMonotonic=record['recordWriteStartedMonotonic'],completedMonotonic=completed)
+            first.bind_preparation(record,write_clock);second.bind_preparation(record,write_clock)
+            inner['lifecycle_cursor'],outer['lifecycle_cursor']=first,second
+        else:
+            require(policy['onlineReplayMode']=='incremental-exact-prefix-v1','unsupported online replay mode')
+            from process_lifecycle import ViewCursor
+            inner['lifecycle_cursor'],outer['lifecycle_cursor']=ViewCursor(),ViewCursor()
     if policy.get('binaryAuthenticationMode') is not None:
         require(policy.get('kind')==MAC_LIFECYCLE_KIND,'binary authentication policy kind')
         inner['binary_authenticator']=mac_observer(policy).new_binary_authenticator(policy)
     return inner,outer
+
+
+def lifecycle_cursor_initialization(options):
+    cursor=options.get('lifecycle_cursor')
+    if cursor is None or type(cursor).__name__!='FullStateCloneCursor':return {}
+    from full_state_clone_cursor import FullStateCloneCursor
+    require(type(cursor) is FullStateCloneCursor,'actual source-bound C-clone cursor required')
+    return cursor.preparation_metadata()
 
 
 def validate_coverage(samples,duration=None,minimum_samples=None,max_gap=3):

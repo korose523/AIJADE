@@ -29,6 +29,8 @@ SCHEMA = 3
 KIND = 'mac-lifecycle-observed-idle-daemon-v3'
 SEGMENTED_MODE = 'segmented-census-mutation-v1'
 SEGMENTED_SCHEMA = 'aijade.mac.segmented-census-mutation.v1'
+CLONE_REPLAY_MODE = 'full-state-c-clone-exact-prefix-v1'
+CLONE_INITIALIZATION_MODE = 'paired-source-verified-journal-prefix-v1'
 API_URL = 'http://127.0.0.1:11434/api/ps'
 MAX_API_BYTES = 65536
 MAX_API_SECONDS = 0.5
@@ -91,8 +93,12 @@ def validate_policy(policy):
     if (policy.get('coordinationSchema') != SEGMENTED_SCHEMA if mode == SEGMENTED_MODE
             else 'coordinationSchema' in policy):
         raise ValueError('capture coordination schema/mode mismatch')
-    if policy.get('onlineReplayMode') not in (None, 'incremental-exact-prefix-v1'):
+    if policy.get('onlineReplayMode') not in (None, 'incremental-exact-prefix-v1', CLONE_REPLAY_MODE):
         raise ValueError('unrecognized online journal replay mode')
+    if policy.get('onlineReplayMode') == CLONE_REPLAY_MODE:
+        _clone_cursor_module(policy)
+    elif any(key in policy for key in ('onlineReplaySourceSha256','onlineReplayInitializationMode')):
+        raise ValueError('legacy replay policy cannot select C-clone initialization fields')
     if policy.get('binaryAuthenticationMode') not in (None, 'full-read-exact-bytes-v1'):
         raise ValueError('unrecognized binary authentication mode')
     if policy.get('binaryAuthenticationMode') is not None:
@@ -141,6 +147,34 @@ def validate_policy(policy):
     if config['coordinationLockPath'] != str(coordination_lock_path(policy)) or config['maxLockWaitSeconds'] != 1.25 or config['maxObservationSeconds'] != 2.5:
         raise ValueError('lifecycle observation coordination changed')
     canonical_sha256(policy)
+
+
+def _clone_cursor_module(policy):
+    import importlib
+    expected=Path(__file__).with_name('full_state_clone_cursor.py')
+    value=policy.get('onlineReplaySourceSha256')
+    if (not _hex(value) or value!=_file_sha(expected)
+            or policy.get('onlineReplayInitializationMode')!=CLONE_INITIALIZATION_MODE):
+        raise ValueError('C-clone cursor source/initialization differs from policy')
+    module=importlib.import_module('full_state_clone_cursor')
+    if (Path(module.__file__).resolve()!=expected.resolve() or module.MODE!=CLONE_REPLAY_MODE
+            or module.INITIALIZATION_MODE!=CLONE_INITIALIZATION_MODE):
+        raise ValueError('wrong actual C-clone cursor module')
+    return module
+
+
+def _lifecycle_view(policy,view,journal,cursor):
+    if policy.get('onlineReplayMode')==CLONE_REPLAY_MODE:
+        module=_clone_cursor_module(policy)
+        if cursor is not None:
+            if type(cursor) is not module.FullStateCloneCursor:
+                raise ValueError('new policy requires its exact source-bound C-clone cursor')
+            cursor.preparation_reference()
+            return cursor.validate_view(view,journal)
+        # Offline replay remains the complete original cold parser, with no
+        # initialization state or cached runtime verdict borrowed.
+        return lifecycle_support.validate_view(view,journal)
+    return lifecycle_support.validate_view(view,journal,cursor=cursor)
 
 
 def _command_form(executable, argv):
@@ -835,7 +869,30 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
     def add(code, severity='UNKNOWN', **fields): blockers.append({'code': code, 'severity': severity, **fields})
     try:
         validate_policy(policy)
-        state=lifecycle_support.validate_view(observation['lifecycle'],lifecycle_journal,cursor=lifecycle_cursor)
+        state=_lifecycle_view(policy,observation['lifecycle'],lifecycle_journal,lifecycle_cursor)
+        replay_keys=('onlineReplayMode','onlineReplaySourceSha256','onlineReplayInitializationMode','onlineReplayPreparation')
+        if policy.get('onlineReplayMode')==CLONE_REPLAY_MODE:
+            if (observation.get('onlineReplayMode')!=CLONE_REPLAY_MODE
+                    or observation.get('onlineReplaySourceSha256')!=policy['onlineReplaySourceSha256']
+                    or observation.get('onlineReplayInitializationMode')!=CLONE_INITIALIZATION_MODE):
+                add('CLONE_REPLAY_MODE_OR_SOURCE_MISMATCH','FAIL')
+            reference=observation.get('onlineReplayPreparation')
+            keys={'path','sha256','mode','prefixBytes','prefixSha256','lastSequence','scopeId','sourceCommit','policySha256','cursorSourceSha256'}
+            if (type(reference) is not dict or set(reference)!=keys
+                    or reference.get('mode')!=CLONE_INITIALIZATION_MODE
+                    or not _hex(reference.get('sha256')) or not _hex(reference.get('prefixSha256'))
+                    or reference.get('cursorSourceSha256')!=policy['onlineReplaySourceSha256']
+                    or type(reference.get('prefixBytes')) is not int or not 0<reference['prefixBytes']<=observation['lifecycle']['journalBytes']
+                    or type(reference.get('lastSequence')) is not int or not 0<reference['lastSequence']<=observation['lifecycle']['lastSequence']
+                    or reference.get('scopeId')!=observation['lifecycle']['scopeId']
+                    or reference.get('sourceCommit')!=state['sourceCommit']
+                    or reference.get('policySha256')!=state['policySha256']
+                    or type(reference.get('path')) is not str or not Path(reference['path']).is_absolute()
+                    or '..' in Path(reference['path']).parts or WORKSPACE not in Path(reference['path']).parents
+                    or Path(reference['path']).name!='initialization.json'):
+                add('CLONE_REPLAY_PREPARATION_CONTEXT_MISMATCH','FAIL')
+        elif any(key in observation for key in replay_keys):
+            add('LEGACY_REPLAY_MODE_SUBSTITUTION','FAIL')
         if policy.get('binaryAuthenticationMode') is not None:
             if observation.get('binaryAuthenticationMode') != policy['binaryAuthenticationMode']:
                 add('BINARY_AUTHENTICATION_MODE_MISMATCH','FAIL')
@@ -1034,6 +1091,13 @@ def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None, bi
         _check_binary_authenticator(policy,binary_authenticator)
         lifecycle.bind_policy(policy)
         roots=_normalize_roots(owned_roots)
+        if policy.get('onlineReplayMode')==CLONE_REPLAY_MODE:
+            module=_clone_cursor_module(policy)
+            if type(lifecycle_cursor) is not module.FullStateCloneCursor:
+                raise ValueError('actual new cursor required for C-clone observation')
+            result.update(onlineReplayMode=CLONE_REPLAY_MODE,onlineReplaySourceSha256=policy['onlineReplaySourceSha256'],
+                onlineReplayInitializationMode=CLONE_INITIALIZATION_MODE,
+                onlineReplayPreparation=lifecycle_cursor.preparation_reference())
         result.update(observerModuleSha256=_file_sha(Path(__file__)),nativeSourceSha256=_file_sha(CENSUS_SOURCE),
             nativeHelperSha256=policy['nativeHelper']['sha256'],preservedV1SourceSha256=_file_sha(Path(__file__).with_name('mac_process_guard.py')),
             preservedV2SourceSha256=_file_sha(Path(__file__).with_name('mac_process_guard_v2.py')),

@@ -78,7 +78,7 @@ def load(passport_path):
          'fixed full nested topology')
     need(runtime['alignmentModes'] == ['natural','parent-next-slot','natural','parent-next-slot'],
          'fixed natural/adversarial alignment population')
-    need(runtime['parentMaximumSeconds'] == 600 and runtime['childStartupMaximumSeconds'] == 10
+    need(runtime['parentMaximumSeconds'] == 600 and runtime['childStartupMaximumSeconds'] == 15
          and runtime['childCleanupMaximumSeconds'] == 8 and runtime['childWatchdogSeconds'] == 145,
          'fixed engineering wall/cleanup bounds')
     need(type(p['prefixPaddingTaskCount']) is int and p['prefixPaddingTaskCount'] == 2500,
@@ -101,6 +101,9 @@ def load(passport_path):
     need(policy.get('coordinationMode') == 'segmented-census-mutation-v1'
          and policy.get('coordinationSchema') == 'aijade.mac.segmented-census-mutation.v1',
          'new explicit segmented protocol required')
+    need(policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1'
+         and policy.get('onlineReplayInitializationMode')=='paired-source-verified-journal-prefix-v1',
+         'new explicitly prepared C-clone cursor protocol required')
     need(sha(Path(policy['nativeHelper']['path']).read_bytes()) == policy['nativeHelper']['sha256'], 'native helper bytes')
     ident = dict(processPolicyPath=p['policyPath'], processPolicySha256=sha(policy_raw),
                  observerModuleSha256=sha(Path(guard.__file__).read_bytes()), observerSources=p['observerSources'])
@@ -128,9 +131,12 @@ def commands(registry, passport, repo, count, *, padding=False, records=None, de
     return result
 
 
-def callbacks(registry, guard, life, policy, ident, validator):
-    inner, outer = life.ViewCursor(), life.ViewCursor()
-    authenticator = guard.new_binary_authenticator(policy)
+def callbacks(registry, guard, life, policy, ident, validator, preparation_path):
+    from finite_runtime import online_lifecycle_cursors, lifecycle_cursor_initialization
+    inner_options,outer_options=online_lifecycle_cursors(policy,lifecycle=registry,preparation_path=preparation_path)
+    inner,outer=inner_options['lifecycle_cursor'],outer_options['lifecycle_cursor']
+    authenticator=inner_options.get('binary_authenticator')
+    initialization=lifecycle_cursor_initialization(inner_options)
     def observed(owned=True):
         process = guard.observe(policy, owned_roots=registry.roots() if owned else [], lifecycle=registry,
                                 lifecycle_cursor=inner, binary_authenticator=authenticator)
@@ -140,7 +146,7 @@ def callbacks(registry, guard, life, policy, ident, validator):
                     processObservation=process, **ident)
     def validate(item):
         validator(item, ident['processPolicySha256'], ident['observerModuleSha256'], policy, lifecycle_cursor=outer)
-    return observed, validate, inner, outer, authenticator
+    return observed, validate, inner, outer, authenticator, initialization
 
 
 def wait_until(deadline, monitor):
@@ -175,12 +181,14 @@ def child(passport_path, index):
     cleanup_anchor = None
     ready_started = ready_completed = None
     alignment = None
-    observed, validate, inner, outer, authenticator = callbacks(registry, guard, life, policy, ident, validator)
+    observed=validate=inner=outer=authenticator=None
+    initialization={}
     def interrupted(signum, frame):
         raise RuntimeError('owned_engineering_child_signal_'+str(signum))
     signal.signal(signal.SIGTERM, interrupted)
     try:
         commands(registry, p, repo, 30, records=proof, deadline=started+p['runtime']['childStartupMaximumSeconds'])
+        observed,validate,inner,outer,authenticator,initialization=callbacks(registry,guard,life,policy,ident,validator,block/'initialization.json')
         need(clock()-started <= p['runtime']['childStartupMaximumSeconds'], 'actual child source startup exceeded fixed bound')
         epoch = float(os.environ['AIJADE_NESTED_EPOCH'])
         baseline = int(os.environ['AIJADE_NESTED_SWAP_BASELINE'])
@@ -254,8 +262,8 @@ def child(passport_path, index):
             cleanupStartedMonotonic=cleanup_anchor, completedMonotonic=clock(),
             preflightCommands=proof, registryFinal=final, errors=errors,
             lifecycleJournalStable=monitor is None or not monitor.thread.is_alive(),
-            innerCursor=inner.statistics(), outerCursor=outer.statistics(),
-            binaryAuthenticationWork=authenticator.statistics(), **flags())
+            innerCursor=inner.statistics() if inner is not None else None, outerCursor=outer.statistics() if outer is not None else None,
+            binaryAuthenticationWork=authenticator.statistics() if authenticator is not None else None, **initialization, **flags())
         write(block/'receipt.json', receipt)
     need(not errors, 'real nested child refused; no replacement')
 
@@ -276,7 +284,8 @@ def main(passport_path):
     registry = life.Registry(root/'lifecycle-journal.jsonl', [(controller['pid'],controller['createTime'])],
         stage='nested-load-sequence', source_commit=p['sourceCommit'], policy_sha256=p['policySha256'],
         capture_lock_path=guard.coordination_lock_path(policy)).activate()
-    observed, validate, inner, outer, authenticator = callbacks(registry, guard, life, policy, ident, validator)
+    observed=validate=inner=outer=authenticator=None
+    initialization={}
     errors, proofs, padding, blocks, preflight_services = [], [], [], [], []
     monitor, active, final, preflight, epoch, baseline = None, None, None, None, None, None
     phases = []
@@ -297,6 +306,8 @@ def main(passport_path):
         preparation_deadline = preparation_epoch+p['prefixPreparationMaximumSeconds']
         commands(registry, p, repo, 30, records=proofs, deadline=preparation_deadline)
         commands(registry, p, repo, p['prefixPaddingTaskCount'], padding=True, records=padding, deadline=preparation_deadline)
+        observed,validate,inner,outer,authenticator,initialization=callbacks(registry,guard,life,policy,ident,validator,root/'initialization.json')
+        need(clock()<=preparation_deadline, 'actual cursor initialization exceeded fixed source/prefix preparation deadline')
         event('prefix-preload-complete', actualTasks=len(padding), journalBytes=registry.path.stat().st_size)
         from phase_continuity import run_preflight, PreflightRefused
         rows = {}
@@ -449,8 +460,8 @@ def main(passport_path):
             nestedTerminalMonotonic=clock(), stageEvents=phases,
             lifecycleJournalPath=str(registry.path), lifecycleJournalSha256=sha(journal), lifecycleJournalBytes=len(journal),
             registryFinal=final, errors=errors, lifecycleJournalStable=monitor is None or not monitor.thread.is_alive(),
-            innerCursor=inner.statistics(), outerCursor=outer.statistics(),
-            binaryAuthenticationWork=authenticator.statistics(), **flags())
+            innerCursor=inner.statistics() if inner is not None else None, outerCursor=outer.statistics() if outer is not None else None,
+            binaryAuthenticationWork=authenticator.statistics() if authenticator is not None else None, **initialization, **flags())
         write(root/'receipt.json', receipt)
         print(json.dumps({k:v for k,v in receipt.items() if k not in ('sourceFiles','preflightCommands','prefixPaddingCommands',
               'preflightServices','nestedBlocks','stageEvents','registryFinal')}, allow_nan=False), flush=True)
