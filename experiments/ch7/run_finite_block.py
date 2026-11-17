@@ -21,7 +21,7 @@ import time
 
 import psutil
 from finite_runtime import (validate_build, cleanup_owned_databases, stop_owned_processes, dispositions,
-    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, MAC_LIFECYCLE_SOURCES, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, online_lifecycle_cursors, MacMonitor, OwnedRegistry,
+    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, MAC_LIFECYCLE_SOURCES, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, online_lifecycle_cursors, lifecycle_observer_sources, MacMonitor, OwnedRegistry,
     setup_lifecycle, managed_check_output, finish_monitored_cleanup, seal_refused_cleanup)
 
 GIB = 1024 ** 3
@@ -116,7 +116,7 @@ def _main(args):
         assert args.execution_plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy)
         validate_mac_build_policy(policy,build)
         observe=mac_observer(policy).observe
-    inner_cursor_options, outer_cursor_options = online_lifecycle_cursors(policy)
+    inner_cursor_options, outer_cursor_options = {}, {}
     metadata=dict(binding,buildFreezeCommit=args.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
@@ -151,6 +151,9 @@ def _main(args):
         assert sha(repo/row['path']) == row['sha256'], 'Previously frozen policy/source changed'
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
+    inner_cursor_options, outer_cursor_options = online_lifecycle_cursors(policy,lifecycle=lifecycle,preparation_path=output/'initialization.json')
+    from finite_runtime import lifecycle_cursor_initialization
+    metadata.update(lifecycle_cursor_initialization(inner_cursor_options))
     source_copy = output / 'renderer-source'
     # The client was built before the fixed unloaded phase. Retain its exact loaded DLLs.
     shutil.copytree(args.client, source_copy,
@@ -197,7 +200,7 @@ def _main(args):
             [repo/'experiments/ch7/godot_local.py'] +
             list((repo/'tests/Aijade.Tests').glob('ResearchFinite*.cs'))+
             ([repo/'experiments/ch7/mac_process_guard.py'] + ([repo/'experiments/ch7/mac_process_guard_v2.py',repo/'experiments/ch7/mac_bulk_census.c'] if mac_plan(policy)!=MAC_PLAN else []) if mac else []) +
-            ([repo/relative for relative in MAC_LIFECYCLE_SOURCES] if v3 else []))},
+            ([repo/relative for relative in lifecycle_observer_sources(policy)] if v3 else []))},
         constructionFreezeCommit=runtime['constructionFreezeCommit'], purpose=runtime['purpose'],
         runtimeRepositoryPath=str(args.manifest.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,
         scoringRepositoryPath=str(args.scoring.resolve().relative_to(repo)) if runtime['purpose']=='confirmed_finite_heldout' else None,

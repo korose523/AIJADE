@@ -1,0 +1,1664 @@
+{
+  "schema": "aijade.ch7.native-ready-control-evidence.v1",
+  "categories": {
+    "cursorControls": [
+      "controls/baseline-source.json",
+      "controls/compile-01.json",
+      "controls/compile-01.stdout",
+      "controls/compile-01.stderr",
+      "controls/component-handoff-01.json",
+      "controls/component-plan-01-before-runtime-enforcement.json",
+      "controls/component-plan-02.json",
+      "controls/component-population-refusal-checkpoint.json",
+      "controls/component-pre-query-filesystem-checkpoint.json",
+      "controls/component_probe.py",
+      "controls/component-01.log",
+      "controls/component-first-actual-invocation.log",
+      "controls/first-native-phase-analysis.json",
+      "controls/first-execution-position-decision.json",
+      "controls/first-execution-position-decision.before-exact-scalar-read.json",
+      "controls/source-review-01.json",
+      "controls/native-launch-exact.diff",
+      "controls/original-launch.py.txt",
+      "controls/native-launch.py.txt",
+      "controls/native-controls-01.log",
+      "controls/native-controls-02.log",
+      "controls/test_component_capture.py",
+      "controls/component-capture-controls-01.log",
+      "controls/prepare-integration.py",
+      "controls/integration-preparation-01.log",
+      "controls/production-application-01.json",
+      "controls/actual-policy-source-check-01.json",
+      "controls/portable-tests-application-01.json",
+      "controls/launcher-source-application-01.json",
+      "controls/native-audit-application-01.json",
+      "controls/prospective-native-ready-engineering.before-component-position.md",
+      "controls/prospective-native-ready-engineering.draft.md",
+      "controls/actual-w5-integration-45-01.log",
+      "controls/actual-w5-integration-45-02.log",
+      "controls/actual-w5-listener-65-01.log",
+      "controls/actual-w5-listener-65-02.log",
+      "controls/actual-w5-native-20-01.log",
+      "controls/actual-w5-native-20-02.log",
+      "controls/actual-w5-launcher-81-01.log",
+      "controls/actual-w5-launcher-81-02.log",
+      "controls/actual-w5-native-audit-30-01.log",
+      "controls/final-source-review-01.json",
+      "controls/actual-w5-controls-summary-01.json",
+      "controls/review-wording-precision-note-01.json",
+      "controls/ci-source-application-01.json",
+      "controls/integration-tests/CONTROL-RESULT.json",
+      "controls/integration-tests/HANDOFF.json",
+      "controls/integration-tests/controls-01.log",
+      "controls/integration-tests/controls-02.log",
+      "controls/integration-tests/controls-03.log",
+      "controls/integration-tests/controls-04.log",
+      "controls/integration-tests/controls-05.log",
+      "controls/integration-tests/fixture-source-map.json",
+      "controls/integration-tests/guard.before-cold-colocation-fix-02.py",
+      "controls/integration-tests/guard.before-formal-shared-proof-04.py",
+      "controls/integration-tests/guard.superseded-physical-cold-colocation-03.py",
+      "controls/integration-tests/owned13-01.log",
+      "controls/integration-tests/owned13-02.log",
+      "controls/integration-tests/owned13-03.log",
+      "controls/integration-tests/setup-lifecycle-dispatch.diff",
+      "controls/integration-tests/source-deltas.json",
+      "controls/integration-tests/test_native_integration.before-fixture-fix-01.py",
+      "controls/integration-tests/test_native_integration.py",
+      "controls/audit-controls/CONTROL-RESULT.json",
+      "controls/audit-controls/HANDOFF.json",
+      "controls/audit-controls/audit.before-native-e6-01.py",
+      "controls/audit-controls/controls-01.log",
+      "controls/audit-controls/integration_fixtures.py",
+      "controls/audit-controls/portable-controls-02.log",
+      "controls/audit-controls/portable-preservation.json",
+      "controls/audit-controls/publishing-path-manifest.json",
+      "controls/audit-controls/source-materialization.json",
+      "controls/audit-controls/test_native_audit.py",
+      "controls/listener-evidence/CONTROL-RESULT.json",
+      "controls/listener-evidence/HANDOFF.json",
+      "controls/listener-evidence/README.md",
+      "controls/listener-evidence/contract.json",
+      "controls/listener-evidence/controls-01.log",
+      "controls/listener-evidence/controls-02.log",
+      "controls/listener-evidence/controls-03.log",
+      "controls/listener-evidence/frozen_e918_oracle.py",
+      "controls/listener-evidence/listener_evidence.py",
+      "controls/listener-evidence/oracle-source-binding.json",
+      "controls/listener-evidence/test_listener_evidence.py",
+      "controls/portable-tests/HANDOFF.json",
+      "controls/portable-tests/README.md",
+      "controls/portable-tests/RESULT.json",
+      "controls/portable-tests/ci-commands.json",
+      "controls/portable-tests/integration-controls-01.log",
+      "controls/portable-tests/integration-controls-02.log",
+      "controls/portable-tests/listener-controls-01.log",
+      "controls/portable-tests/native-controls-01.log",
+      "controls/portable-tests/oracle-binding-controls-01.json",
+      "controls/portable-tests/preservation-check.json",
+      "controls/portable-tests/publishing-path-manifest.json",
+      "controls/portable-tests/test_listener_evidence.py.portability.diff",
+      "controls/portable-tests/test_native_exec_registry.py.portability.diff",
+      "controls/portable-tests/test_native_integration.py.portability.diff",
+      "controls/portable-tests/verification-source-map.json",
+      "controls/ci-preparation/CONTROL-RESULT.json",
+      "controls/ci-preparation/HANDOFF.json",
+      "controls/ci-preparation/ci-structural-review.json",
+      "controls/ci-preparation/e5-companion-scope-01.log",
+      "controls/ci-preparation/e5-companion-scope-02.log",
+      "controls/ci-preparation/e5-packet-verify-01.log",
+      "controls/ci-preparation/mac-scoped-01.log",
+      "controls/ci-preparation/mac-scoped-02.log",
+      "controls/ci-preparation/mac-scoped-03-exclusive.log",
+      "controls/ci-preparation/materialize-e5-01.log",
+      "controls/ci-preparation/nested-scoped-01.log",
+      "controls/ci-preparation/nested-scoped-02.log",
+      "controls/ci-preparation/old-preservation-proof.json",
+      "controls/ci-preparation/publishing-path-manifest.json",
+      "controls/integration/preparation-01.json",
+      "controls/integration-tests/before-source-01/finite_runtime.py",
+      "controls/integration-tests/before-source-01/mac_process_guard_v3.py",
+      "controls/integration-tests/before-source-01/manifest.json",
+      "controls/integration-tests/before-source-01/newowned_guard_cursor.py",
+      "controls/integration-tests/before-source-01/run_nested_load.py",
+      "controls/integration-tests/factory-fixture-legacy-env/policy.json",
+      "controls/integration-tests/factory-fixture-legacy-fresh/policy.json",
+      "controls/integration-tests/factory-fixture-native-env/policy.json",
+      "controls/integration-tests/factory-fixture-native-fresh/policy.json",
+      "controls/integration-tests/fixture-repo/experiments/ch7/audit_nested_load.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/binary_authentication.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/finite_audit.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/finite_runtime.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/finite_sequence_audit.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/full_state_clone_cursor.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/godot_local.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/lifecycle_audit.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/lifecycle_exec.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/lifecycle_exec_native.c",
+      "controls/integration-tests/fixture-repo/experiments/ch7/listener_evidence.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/mac_bulk_census.c",
+      "controls/integration-tests/fixture-repo/experiments/ch7/mac_process_guard.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/mac_process_guard_v2.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/mac_process_guard_v3.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/measured_mac_monitor.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/native_exec_registry.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/nested_event_index.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/phase_continuity.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/run_finite_block.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/run_finite_sequence.py",
+      "controls/integration-tests/fixture-repo/experiments/ch7/run_nested_load.py",
+      "controls/integration-tests/fixture-repo/mock-native-policy.json",
+      "controls/integration-tests/fixture-repo/tests/shell/frozen_e918_oracle.py",
+      "controls/integration-tests/fixture-repo/tests/shell/pure_listener_fixtures.py",
+      "controls/integration-tests/fixture-repo/tests/shell/test_mac_bulk_census.py",
+      "controls/integration-tests/fixture-repo/tests/shell/test_mac_lifecycle_guard.py",
+      "controls/integration-tests/fixture-repo/tests/shell/test_mac_process_guard.py",
+      "controls/integration-tests/fixture-repo/tests/shell/test_owned_guard_cursor.py",
+      "controls/integration-tests/fixture-repo/tests/shell/test_process_lifecycle_cursor.py",
+      "controls/integration-tests/fixture-repo/tests/shell/test_segmented_capture.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/audit_nested_load.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/binary_authentication.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/finite_audit.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/finite_runtime.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/finite_sequence_audit.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/full_state_clone_cursor.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/godot_local.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/lifecycle_audit.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/lifecycle_exec.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/lifecycle_exec_native.c",
+      "controls/audit-controls/fixture-repo/experiments/ch7/listener_evidence.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/mac_bulk_census.c",
+      "controls/audit-controls/fixture-repo/experiments/ch7/mac_process_guard.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/mac_process_guard_v2.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/mac_process_guard_v3.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/measured_mac_monitor.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/native_exec_registry.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/nested_event_index.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/newowned_guard_cursor.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/phase_continuity.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/process_lifecycle.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/run_finite_block.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/run_finite_sequence.py",
+      "controls/audit-controls/fixture-repo/experiments/ch7/run_nested_load.py",
+      "controls/audit-controls/fixture-repo/tests/fixtures/native-e6/binding.json",
+      "controls/audit-controls/fixture-repo/tests/fixtures/native-e6/e5_guard_source.py",
+      "controls/audit-controls/fixture-repo/tests/shell/frozen_e918_oracle.py",
+      "controls/audit-controls/fixture-repo/tests/shell/pure_listener_fixtures.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_listener_evidence.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_mac_bulk_census.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_mac_lifecycle_guard.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_mac_process_guard.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_native_audit.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_native_exec_registry.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_native_integration.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_owned_guard_cursor.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_process_lifecycle_cursor.py",
+      "controls/audit-controls/fixture-repo/tests/shell/test_segmented_capture.py",
+      "controls/audit-controls/fixture-repo/tests/shell/verify_frozen_listener_oracle.py",
+      "controls/audit-controls/publish/tests/shell/test_native_audit.py",
+      "controls/portable-tests/originals/frozen_e918_oracle.py",
+      "controls/portable-tests/originals/pure_listener_fixtures.py",
+      "controls/portable-tests/originals/test_listener_evidence.py",
+      "controls/portable-tests/originals/test_native_exec_registry.py",
+      "controls/portable-tests/originals/test_native_integration.py",
+      "controls/portable-tests/publish/tests/fixtures/native-e6/binding.json",
+      "controls/portable-tests/publish/tests/fixtures/native-e6/e5_guard_source.py",
+      "controls/portable-tests/publish/tests/shell/frozen_e918_oracle.py",
+      "controls/portable-tests/publish/tests/shell/pure_listener_fixtures.py",
+      "controls/portable-tests/publish/tests/shell/test_listener_evidence.py",
+      "controls/portable-tests/publish/tests/shell/test_native_exec_registry.py",
+      "controls/portable-tests/publish/tests/shell/test_native_integration.py",
+      "controls/portable-tests/publish/tests/shell/verify_frozen_listener_oracle.py",
+      "controls/ci-preparation/before/.github/workflows/ci.yml",
+      "controls/ci-preparation/before/tests/shell/run_versioned_mac_controls.py",
+      "controls/ci-preparation/before-first-scoped-fix/run_versioned_mac_controls.py",
+      "controls/ci-preparation/before-first-scoped-fix/run_versioned_nested_controls.py",
+      "controls/ci-preparation/before-first-scoped-fix/versioned_nested_scope.py",
+      "controls/ci-preparation/publish/.github/workflows/ci.yml",
+      "controls/ci-preparation/publish/tests/shell/run_versioned_mac_controls.py",
+      "controls/ci-preparation/publish/tests/shell/run_versioned_nested_controls.py",
+      "controls/ci-preparation/publish/tests/shell/versioned_nested_scope.py",
+      "controls/candidate/experiments/ch7/native_exec_registry.py",
+      "controls/candidate/experiments/ch7/lifecycle_exec_native.c",
+      "controls/candidate/experiments/ch7/process_lifecycle.py",
+      "controls/candidate/experiments/ch7/lifecycle_exec.py",
+      "controls/candidate/experiments/ch7/lifecycle_audit.py",
+      "controls/candidate/tests/shell/test_native_exec_registry.py"
+    ],
+    "pairedBootstrapProbe": [
+      "controls/component-handoff-01.json",
+      "controls/component-plan-01-before-runtime-enforcement.json",
+      "controls/component-plan-02.json",
+      "controls/component-population-refusal-checkpoint.json",
+      "controls/component-pre-query-filesystem-checkpoint.json",
+      "controls/component_probe.py",
+      "controls/component-01.log",
+      "controls/component-first-actual-invocation.log",
+      "controls/first-native-phase-analysis.json",
+      "controls/first-execution-position-decision.json",
+      "controls/first-execution-position-decision.before-exact-scalar-read.json",
+      "controls/test_component_capture.py",
+      "controls/component-capture-controls-01.log",
+      "controls/prospective-native-ready-engineering.before-component-position.md",
+      "controls/actual-w5-integration-45-02.log",
+      "controls/integration-tests/CONTROL-RESULT.json",
+      "controls/integration-tests/owned13-01.log",
+      "controls/integration-tests/owned13-02.log",
+      "controls/integration-tests/owned13-03.log",
+      "controls/ci-preparation/before-first-scoped-fix/run_versioned_mac_controls.py",
+      "controls/ci-preparation/before-first-scoped-fix/run_versioned_nested_controls.py",
+      "controls/ci-preparation/before-first-scoped-fix/versioned_nested_scope.py",
+      "component/00-legacy.json",
+      "component/00-native.json",
+      "component/01-legacy.json",
+      "component/01-native.json",
+      "component/02-legacy.json",
+      "component/02-native.json",
+      "component/03-legacy.json",
+      "component/03-native.json",
+      "component/04-legacy.json",
+      "component/04-native.json",
+      "component/05-legacy.json",
+      "component/05-native.json",
+      "component/06-legacy.json",
+      "component/06-native.json",
+      "component/07-legacy.json",
+      "component/07-native.json",
+      "component/08-legacy.json",
+      "component/08-native.json",
+      "component/09-legacy.json",
+      "component/09-native.json",
+      "component/plan-copy.json",
+      "component/preparation.json",
+      "component/queries-started.json",
+      "component/result.json",
+      "component/legacy/lifecycle-journal.jsonl",
+      "component/legacy/process-policy.json",
+      "component/native/lifecycle-journal.jsonl",
+      "component/native/process-policy.json"
+    ],
+    "launcherControls": [
+      "controls/launcher-preparation/README.md",
+      "controls/launcher-preparation/contract.json",
+      "controls/launcher-preparation/launch_nested_load.py",
+      "controls/launcher-preparation/launch_nested_load.py.e6.diff",
+      "controls/launcher-preparation/launcher-controls-01.log",
+      "controls/launcher-preparation/launcher-controls-02.log",
+      "controls/launcher-preparation/launcher-controls-03-final.log",
+      "controls/launcher-preparation/launcher-controls-final.json",
+      "controls/launcher-preparation/launcher-controls-native-final.log",
+      "controls/launcher-preparation/test_native_launcher_adverse.py",
+      "controls/launcher-preparation/test_nested_launcher.py",
+      "controls/launcher-preparation/test_nested_launcher.py.e6.diff",
+      "controls/launcher-preparation/test_owned_launcher_adverse.py",
+      "controls/launcher-preparation/test_owned_launcher_adverse.py.e6.diff",
+      "controls/launcher-preparation/testdata/nested-engineering-protocol.fixture.json"
+    ],
+    "retainedHistory": [
+      "retained-history/e5-refusal-publication.json",
+      "retained-history/e5-independent-negative-audit-01.json",
+      "retained-history/listener-cause-precision-correction-01.json",
+      "retained-history/e6-auditor-readonly-review-01.json"
+    ]
+  },
+  "files": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/baseline-source.json",
+      "name": "controls/baseline-source.json",
+      "sha256": "b7f1034eecc526a85505f3e4e192660431e627c8364bdae2b958facc7453fddf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/compile-01.json",
+      "name": "controls/compile-01.json",
+      "sha256": "be398978f110f38eb0b49fcbabcf0a1996bdb9c19082d87cd024a66adc656d7d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/compile-01.stdout",
+      "name": "controls/compile-01.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/compile-01.stderr",
+      "name": "controls/compile-01.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-handoff-01.json",
+      "name": "controls/component-handoff-01.json",
+      "sha256": "02015065ea041eb94cf6250114d81f2bab44d33898a0c1737a21ad9febba41ee"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-plan-01-before-runtime-enforcement.json",
+      "name": "controls/component-plan-01-before-runtime-enforcement.json",
+      "sha256": "732769d42e325b264c45951797ff9f005cdb84e566f20736ca9ad2903c3d778a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-plan-02.json",
+      "name": "controls/component-plan-02.json",
+      "sha256": "ef27a276e661acc2b71584d771ea1f03c6988970687bd67b80f5961bf18b61e1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-population-refusal-checkpoint.json",
+      "name": "controls/component-population-refusal-checkpoint.json",
+      "sha256": "65ca623948bc190a08dc9f8ef1835929447e1ba79d60a3adb5f70407fb0a4398"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-pre-query-filesystem-checkpoint.json",
+      "name": "controls/component-pre-query-filesystem-checkpoint.json",
+      "sha256": "d0a2d531897db9f3fd8977a2d0ca92c09d5aa75ab7b151fb1995fbb1d587c634"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component_probe.py",
+      "name": "controls/component_probe.py",
+      "sha256": "2e3dd1c535553f423eb4f73da5b116500411988bfbc9bc7de55c040d83f5406d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-01.log",
+      "name": "controls/component-01.log",
+      "sha256": "0a06e7c5b870591eea9aae79c57c2f9c510d154950942c569d42a7c8b6068cd7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-first-actual-invocation.log",
+      "name": "controls/component-first-actual-invocation.log",
+      "sha256": "3e45c22edbb749be53f39c34d42abf93c30eddde3c6f23ab08d4186fb7e036dc"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/first-native-phase-analysis.json",
+      "name": "controls/first-native-phase-analysis.json",
+      "sha256": "231cea77851772efa224f2593314148b706d94bba022310a746dcfd7966b4ef6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/first-execution-position-decision.json",
+      "name": "controls/first-execution-position-decision.json",
+      "sha256": "5353c8b8fcaf123c24f9887fe07f8afb5582ac720dc92de6916325485ac50d3c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/first-execution-position-decision.before-exact-scalar-read.json",
+      "name": "controls/first-execution-position-decision.before-exact-scalar-read.json",
+      "sha256": "9979a8d91de5c28e06325a3133f2d668a0d25ef5b1d80f41c033bc341bf927b6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/source-review-01.json",
+      "name": "controls/source-review-01.json",
+      "sha256": "6351418c3b6632cf9419cdfd0302b736a81d9053a096fd4a0bb0bfbf36f8ec3f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/native-launch-exact.diff",
+      "name": "controls/native-launch-exact.diff",
+      "sha256": "26ec656578a9fe8b60ab0d884189768664dfadb76d32c831bfca5772f001f2d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/original-launch.py.txt",
+      "name": "controls/original-launch.py.txt",
+      "sha256": "883b3db02df0dc420aa114664046f839868506a51129a05da869f2f699bd6e60"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/native-launch.py.txt",
+      "name": "controls/native-launch.py.txt",
+      "sha256": "ff2e542ce2750463cd0af9176cf909f14d4667f3da3db060d9929a90c867f5cf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/native-controls-01.log",
+      "name": "controls/native-controls-01.log",
+      "sha256": "ccc9d8d203baebb9939804e4380be004ce288b152ccfc630e22f8a9cda8c9b24"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/native-controls-02.log",
+      "name": "controls/native-controls-02.log",
+      "sha256": "426e9e9a37ffbb3626e1091662f5a254067b4b8d6bb59e0cc6e64c6260661bec"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/test_component_capture.py",
+      "name": "controls/test_component_capture.py",
+      "sha256": "30fc86293b4b0d42735a922818b55b1fc64984fec3a650514ef0599d8384a982"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/component-capture-controls-01.log",
+      "name": "controls/component-capture-controls-01.log",
+      "sha256": "a1588dc900f07cf31ac29e14e8886d4f3a9323579b35a9484c688bc78d624a16"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/prepare-integration.py",
+      "name": "controls/prepare-integration.py",
+      "sha256": "ea151eb00693d00c8fb80ed3eaab267b6e533fbf515dd8f6328aa96d9fca549b"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-preparation-01.log",
+      "name": "controls/integration-preparation-01.log",
+      "sha256": "a0d93ea0a742b33594e0c7d67b49f7f3a9e69ab73f39aefcd65b215fb62950b8"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/production-application-01.json",
+      "name": "controls/production-application-01.json",
+      "sha256": "6d31ef628ee4b80e1fec789e5c027664ad47c27d9b944e22f649de2df98816fa"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-policy-source-check-01.json",
+      "name": "controls/actual-policy-source-check-01.json",
+      "sha256": "0e64f39f0072e7d43f7ce676610da592c241bcc058f08f5bce921357c62cb994"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests-application-01.json",
+      "name": "controls/portable-tests-application-01.json",
+      "sha256": "4de91df28148cee062fd673ca8093238ec565aa4461b494e8c20d20ec938b2b4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-source-application-01.json",
+      "name": "controls/launcher-source-application-01.json",
+      "sha256": "fdca198c10f018b82a1dfecdc4eb47390ae4145a8d7cf0cca9c3f28138f190a7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/native-audit-application-01.json",
+      "name": "controls/native-audit-application-01.json",
+      "sha256": "15dc83417e6353afe8dba3bfa03c4eecb8abd3c5a1b7f80f3c249ac20381ee18"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/prospective-native-ready-engineering.before-component-position.md",
+      "name": "controls/prospective-native-ready-engineering.before-component-position.md",
+      "sha256": "3f1c26a8e17c9bc2848afdf16f8e6c977ae82ae3179a2f08e2bdee9f57101f2d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/prospective-native-ready-engineering.draft.md",
+      "name": "controls/prospective-native-ready-engineering.draft.md",
+      "sha256": "b323575c5a6749480f9a8e3271a4153fa2e985ce7d3bdd1f6446203c001e38bc"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-integration-45-01.log",
+      "name": "controls/actual-w5-integration-45-01.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-integration-45-02.log",
+      "name": "controls/actual-w5-integration-45-02.log",
+      "sha256": "4fd5b307837fa2e856b325981e03a01fb53b175d99969a9202ff8a9d730c9c43"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-listener-65-01.log",
+      "name": "controls/actual-w5-listener-65-01.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-listener-65-02.log",
+      "name": "controls/actual-w5-listener-65-02.log",
+      "sha256": "9fa1dd974a3347a7739056c32cbc6aaadbe2c21db7294f87f6c80ebdde85403c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-native-20-01.log",
+      "name": "controls/actual-w5-native-20-01.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-native-20-02.log",
+      "name": "controls/actual-w5-native-20-02.log",
+      "sha256": "31d13f17762f784820ffa04b5a2dfa01133b6d3b43adf14d60b1808ef35e2ce4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-launcher-81-01.log",
+      "name": "controls/actual-w5-launcher-81-01.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-launcher-81-02.log",
+      "name": "controls/actual-w5-launcher-81-02.log",
+      "sha256": "646526d98a6699667649e314c8668d994242c3e0a03200bfbf29b9e6dc5f81c7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-native-audit-30-01.log",
+      "name": "controls/actual-w5-native-audit-30-01.log",
+      "sha256": "a2ed454aff7f86d45efe94fa2f63caa3670dc62cab379de222475332bd06660e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/final-source-review-01.json",
+      "name": "controls/final-source-review-01.json",
+      "sha256": "d71767b97875cf435683d670667476be9b7f8cdf8562e8ee085c1a64b22e5378"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-controls-summary-01.json",
+      "name": "controls/actual-w5-controls-summary-01.json",
+      "sha256": "176c77d387a471ce3a660f462333f7d4a96f7c1f39e59161bacf1eca73f4ab54"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/review-wording-precision-note-01.json",
+      "name": "controls/review-wording-precision-note-01.json",
+      "sha256": "7170998c79977596df71c5620204ffc40565219b2251bc7e1b5117c6de162406"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-source-application-01.json",
+      "name": "controls/ci-source-application-01.json",
+      "sha256": "118fd2c389c3040a86dd66ae3440678294d81e086642a639307d3e3cceb4e77d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/CONTROL-RESULT.json",
+      "name": "controls/integration-tests/CONTROL-RESULT.json",
+      "sha256": "0c215f458660b5dbab7413e4e0fa305c96ea8f34ab938cedd02badcec56c2220"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/HANDOFF.json",
+      "name": "controls/integration-tests/HANDOFF.json",
+      "sha256": "fe59d82248d7aab7becbbf5b9d8f4783cebecd68c1f10a0084abff6f887d1080"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/controls-01.log",
+      "name": "controls/integration-tests/controls-01.log",
+      "sha256": "002ec72506670d6f308cf3f205521e7e6bc43ec7101b2e8325ff04402b42ccef"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/controls-02.log",
+      "name": "controls/integration-tests/controls-02.log",
+      "sha256": "ec31ab4d16d1f082e7bb5c0fe7f02512d6ecd88f486c487869accfc5c6a318c9"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/controls-03.log",
+      "name": "controls/integration-tests/controls-03.log",
+      "sha256": "fefa5126bc65558789c21867ccba3d31d52b8d1c4563a07d9712bf289e867636"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/controls-04.log",
+      "name": "controls/integration-tests/controls-04.log",
+      "sha256": "73f3249f9b48d6052ff7add357a94ae7422cf0b58707f9c1206df425d0d915b1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/controls-05.log",
+      "name": "controls/integration-tests/controls-05.log",
+      "sha256": "701734782773c01022ac3855dcd3496f3c435684404790a731d32e54d3af7aad"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-source-map.json",
+      "name": "controls/integration-tests/fixture-source-map.json",
+      "sha256": "c848501e4e041db9764b74a1b655c325c0f6a54e02b310ff0108d55a60cc4581"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/guard.before-cold-colocation-fix-02.py",
+      "name": "controls/integration-tests/guard.before-cold-colocation-fix-02.py",
+      "sha256": "1d65f8ba08a8bd95662734230ba251ab35f16b4a1644fc41c33aebc2722ee32a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/guard.before-formal-shared-proof-04.py",
+      "name": "controls/integration-tests/guard.before-formal-shared-proof-04.py",
+      "sha256": "02dc0ff367cbee74a1a08df2db5aad6cd12e0c7f47d74736ad77f95380963474"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/guard.superseded-physical-cold-colocation-03.py",
+      "name": "controls/integration-tests/guard.superseded-physical-cold-colocation-03.py",
+      "sha256": "5e7ff956e14cb5ff08c62a7850b6983b2584fe9bf0149d41885ead174053b3d4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/owned13-01.log",
+      "name": "controls/integration-tests/owned13-01.log",
+      "sha256": "ff5ae93467a058341f80a473b68d070f8619391d2ee0767881e3d8f777998fca"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/owned13-02.log",
+      "name": "controls/integration-tests/owned13-02.log",
+      "sha256": "2dadcd48e53e76a6007325ca39f098d17701f4bea84086e7031499df2c5c0ceb"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/owned13-03.log",
+      "name": "controls/integration-tests/owned13-03.log",
+      "sha256": "ee6d681c49eaf0737975796ffb3c1bbdeec5a5fbc96a4aabd261a3a670834ccd"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/setup-lifecycle-dispatch.diff",
+      "name": "controls/integration-tests/setup-lifecycle-dispatch.diff",
+      "sha256": "2a7a9691322fd9c60404a83d9e2c0c06f78e32ddfa28492f3c08255fc02e41d7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/source-deltas.json",
+      "name": "controls/integration-tests/source-deltas.json",
+      "sha256": "af5a55a3859eac14805f70978e369a0811dbfbac8fe593318f250b3bae6e1f0a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.before-fixture-fix-01.py",
+      "name": "controls/integration-tests/test_native_integration.before-fixture-fix-01.py",
+      "sha256": "3a8d3a340c5cb08dad9065866202cb43def4c6563af218ff5516ecac5b144415"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py",
+      "name": "controls/integration-tests/test_native_integration.py",
+      "sha256": "f4761287c7d870635076190952485369e4002d0ef83ba17541ecb75dc394d979"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/CONTROL-RESULT.json",
+      "name": "controls/audit-controls/CONTROL-RESULT.json",
+      "sha256": "4e2bebedbaf874d481cad307063dbfb228920725f4463c67d9960eb002b8eb2c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/HANDOFF.json",
+      "name": "controls/audit-controls/HANDOFF.json",
+      "sha256": "5084a917472d95ccb257ebf11a7a70eebb2399e3105335bd733aa0b0af7c333f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/audit.before-native-e6-01.py",
+      "name": "controls/audit-controls/audit.before-native-e6-01.py",
+      "sha256": "88a3d165f1e47ed1fd533011f7858a58c519105f5f1caa3eb0bb384a3204cd11"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/controls-01.log",
+      "name": "controls/audit-controls/controls-01.log",
+      "sha256": "d4e426e0a378488ca58476dccc30ee7a9efae514034df00a9f1ce54687509511"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/integration_fixtures.py",
+      "name": "controls/audit-controls/integration_fixtures.py",
+      "sha256": "f4761287c7d870635076190952485369e4002d0ef83ba17541ecb75dc394d979"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/portable-controls-02.log",
+      "name": "controls/audit-controls/portable-controls-02.log",
+      "sha256": "67be46367ccd8aec73558de3d07843528ab8baef3410400a341f18b351910da6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/portable-preservation.json",
+      "name": "controls/audit-controls/portable-preservation.json",
+      "sha256": "f1d4bf31db8fe1c8b2b692659191979fd55c85e6171e59478f18e5f34a0f594c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/publishing-path-manifest.json",
+      "name": "controls/audit-controls/publishing-path-manifest.json",
+      "sha256": "715383aed02af1ee96b6ef791116ce56cef11305325c81c0caf483db71e2add5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/source-materialization.json",
+      "name": "controls/audit-controls/source-materialization.json",
+      "sha256": "7ee60b5b58e68cc2933e3d6a32b21ddd87a84cb2d8e2940c95c13ab899b3a592"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/test_native_audit.py",
+      "name": "controls/audit-controls/test_native_audit.py",
+      "sha256": "39884d10efb98ce7591339850ee3238dd4b620ce6465152beab5c541c1c013f2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/CONTROL-RESULT.json",
+      "name": "controls/listener-evidence/CONTROL-RESULT.json",
+      "sha256": "669f9bebbe0f5ae1eef356b01f7a1269ba29e9f43f68d175fc506227be9566b1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/HANDOFF.json",
+      "name": "controls/listener-evidence/HANDOFF.json",
+      "sha256": "e998088164e5e9012c1608aa3ae00a482038128f9137e25d0953a218e1ea144a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/README.md",
+      "name": "controls/listener-evidence/README.md",
+      "sha256": "f00b5df653dde63ee85022910dc83db26a36d0f9434175e188fa027df051b726"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/contract.json",
+      "name": "controls/listener-evidence/contract.json",
+      "sha256": "33e085fd8f347a567244bd5197a8d54e14a53f7d04099904f9f3be8df8cd35d9"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/controls-01.log",
+      "name": "controls/listener-evidence/controls-01.log",
+      "sha256": "5c1c5b112facf0cd67cd99eec12313d0cf689efbbee23ca178d3c3768782e431"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/controls-02.log",
+      "name": "controls/listener-evidence/controls-02.log",
+      "sha256": "6c75940767524a12be14c136550eb8c8e1ddcb106124c1de065c33dd6cfa4f45"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/controls-03.log",
+      "name": "controls/listener-evidence/controls-03.log",
+      "sha256": "a872150640be1bbacf79ea2ed3ac044b0c5568d7f9794627677d58431f1df595"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/frozen_e918_oracle.py",
+      "name": "controls/listener-evidence/frozen_e918_oracle.py",
+      "sha256": "d1f7424d4b39ede392f29bc9976ec0795ae7f76a80db73f113879cc0e445bd64"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/listener_evidence.py",
+      "name": "controls/listener-evidence/listener_evidence.py",
+      "sha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/oracle-source-binding.json",
+      "name": "controls/listener-evidence/oracle-source-binding.json",
+      "sha256": "a8b9d7bf6ce2193c4830fd6aebf3e6971cc9be6affa5c3b41433bdebb86f27ac"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/listener-evidence/test_listener_evidence.py",
+      "name": "controls/listener-evidence/test_listener_evidence.py",
+      "sha256": "14d98005db520bb0c598cd488d63aff43e6928e673a860d8206db8c41e5e83d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/README.md",
+      "name": "controls/launcher-preparation/README.md",
+      "sha256": "28bc8815f748d7d73b49156e5b835667a4bf7ce4c7e5e5884d421ada871b64a6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/contract.json",
+      "name": "controls/launcher-preparation/contract.json",
+      "sha256": "d2405cfcac0fe1a6bd1e550f96fec15fc656094c64a41b610984859e7f643cd3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launch_nested_load.py",
+      "name": "controls/launcher-preparation/launch_nested_load.py",
+      "sha256": "0e0222e961bd5d5be6e78567c2afbd6a535f317f8e21fb34098cccb7b40e2f43"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launch_nested_load.py.e6.diff",
+      "name": "controls/launcher-preparation/launch_nested_load.py.e6.diff",
+      "sha256": "0d93438b56d747bfbe2acf306bba9ee07e73d2f836487cc659b73cd2a26e7891"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launcher-controls-01.log",
+      "name": "controls/launcher-preparation/launcher-controls-01.log",
+      "sha256": "e375aaa8cb562523592ea7dc96e5cc356d487987c8f1ed127b049f3a098548cf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launcher-controls-02.log",
+      "name": "controls/launcher-preparation/launcher-controls-02.log",
+      "sha256": "58b297cc818f14895be41ace4162d054b9e5a58f50ed20f3bd87aa0dae136790"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launcher-controls-03-final.log",
+      "name": "controls/launcher-preparation/launcher-controls-03-final.log",
+      "sha256": "8efb36e6010d98b1ad52a9e85119673ccb70fff739840e7143e5979296234324"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launcher-controls-final.json",
+      "name": "controls/launcher-preparation/launcher-controls-final.json",
+      "sha256": "f73278fc6c4dd1a56518b9edc4fd58c3af1fd785f0d536ccdd0c23d18025897a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launcher-controls-native-final.log",
+      "name": "controls/launcher-preparation/launcher-controls-native-final.log",
+      "sha256": "8efb36e6010d98b1ad52a9e85119673ccb70fff739840e7143e5979296234324"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/test_native_launcher_adverse.py",
+      "name": "controls/launcher-preparation/test_native_launcher_adverse.py",
+      "sha256": "95b6f694866d7348c92d24a4ddb872297372b951a3efebf10d20007990d4e250"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/test_nested_launcher.py",
+      "name": "controls/launcher-preparation/test_nested_launcher.py",
+      "sha256": "d5f146106fc828940be1fc721d9b6f6edb3307ba2af13a345db3eebea8c8edf9"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/test_nested_launcher.py.e6.diff",
+      "name": "controls/launcher-preparation/test_nested_launcher.py.e6.diff",
+      "sha256": "8990e5b77c36e75f44bfab0edc0654234588b7767e072b4150de4316b18f51af"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/test_owned_launcher_adverse.py",
+      "name": "controls/launcher-preparation/test_owned_launcher_adverse.py",
+      "sha256": "ec8e8dd9fbf0ce1e716eb8330d7711ab3d1a14b6656b17b497bb48c333084fe9"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/test_owned_launcher_adverse.py.e6.diff",
+      "name": "controls/launcher-preparation/test_owned_launcher_adverse.py.e6.diff",
+      "sha256": "fa1f9dcfd29edda40a85197ce387d82f63d47cf36d8e1dbc2f661f01a5669030"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/HANDOFF.json",
+      "name": "controls/portable-tests/HANDOFF.json",
+      "sha256": "3bc1152c70fbaf152fd88cac04dbcd5d1fd02a3a692d42a5e9fb1a4d47d0ff37"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/README.md",
+      "name": "controls/portable-tests/README.md",
+      "sha256": "ba88d2f5504d3575071d60609ea73a3ad4873b2f41cf43fa224d1b339e35fdd7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/RESULT.json",
+      "name": "controls/portable-tests/RESULT.json",
+      "sha256": "1d8d04132ebf6ea7849fc9d21518c0000ad3ea95873732aef823d52e4e6b2306"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/ci-commands.json",
+      "name": "controls/portable-tests/ci-commands.json",
+      "sha256": "4be60f6ead37a3e091b0c97ba429eaa1617bfced8a44a88ea3929d018e3239d3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/integration-controls-01.log",
+      "name": "controls/portable-tests/integration-controls-01.log",
+      "sha256": "dfa09472241d51b648b270f1d6d9a901de48caf752fe5f7231f598fe632c20c1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/integration-controls-02.log",
+      "name": "controls/portable-tests/integration-controls-02.log",
+      "sha256": "1e8e69f0907c2e718e67ab0f482828d81417ec10237bb7ac187aac3e04bee5ba"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/listener-controls-01.log",
+      "name": "controls/portable-tests/listener-controls-01.log",
+      "sha256": "09707be3a3e5fa129d83c016c7ffc70dce1886a20bcd53934e45c6a5d54642eb"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/native-controls-01.log",
+      "name": "controls/portable-tests/native-controls-01.log",
+      "sha256": "bff9e64c95668922ed8f69fc5f692dafa551645ee5539b5b9be7530a1a293c61"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/oracle-binding-controls-01.json",
+      "name": "controls/portable-tests/oracle-binding-controls-01.json",
+      "sha256": "610c7e8f3e2aaea1b744dc20988aa9086606ff4d1f2b2987fb10a6dae3b79965"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/preservation-check.json",
+      "name": "controls/portable-tests/preservation-check.json",
+      "sha256": "fdd555ecc285fac1ee9f8ab82ea080c112f9279afe444e6ff500af84124d0ef8"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publishing-path-manifest.json",
+      "name": "controls/portable-tests/publishing-path-manifest.json",
+      "sha256": "4d10361f4c4c38d3a0fe20f83a3c70e8ae388125fc69d7a0d5ef89878327cb52"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/test_listener_evidence.py.portability.diff",
+      "name": "controls/portable-tests/test_listener_evidence.py.portability.diff",
+      "sha256": "b77e35ad29655ec549d8c3881f063dd2748ab90ab69ce7eb20cc3a18901351da"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/test_native_exec_registry.py.portability.diff",
+      "name": "controls/portable-tests/test_native_exec_registry.py.portability.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/test_native_integration.py.portability.diff",
+      "name": "controls/portable-tests/test_native_integration.py.portability.diff",
+      "sha256": "acb95334277d14e45701b2b00a0bd832db5deb8e5f739f17e1098e20762480c3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/verification-source-map.json",
+      "name": "controls/portable-tests/verification-source-map.json",
+      "sha256": "33984eb4f9a759bcc672846dc28503267469fab55d1c8358bc639f33561002eb"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/CONTROL-RESULT.json",
+      "name": "controls/ci-preparation/CONTROL-RESULT.json",
+      "sha256": "225663fa21a12f0c9c5c2a877485f5acc66593e6a68b80cf6f08499e52369ea2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/HANDOFF.json",
+      "name": "controls/ci-preparation/HANDOFF.json",
+      "sha256": "3f7e7f7d652883023d9e6d3fb9f35390a1b1df81acf7bf9f6eac801acf4a458e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/ci-structural-review.json",
+      "name": "controls/ci-preparation/ci-structural-review.json",
+      "sha256": "14634e6154ddd6d357524aae14ca1d75338dd1b30aabe5206c24fdc622f4946d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/e5-companion-scope-01.log",
+      "name": "controls/ci-preparation/e5-companion-scope-01.log",
+      "sha256": "69daec07013491f5e632768fac1336eb0008491f828775ddea714c476f00a277"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/e5-companion-scope-02.log",
+      "name": "controls/ci-preparation/e5-companion-scope-02.log",
+      "sha256": "d6a316eed060fc99e02ede173206902b949d6d4839e6180c7bd2f882791b2434"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/e5-packet-verify-01.log",
+      "name": "controls/ci-preparation/e5-packet-verify-01.log",
+      "sha256": "86266aef811736174e0332d4764f8a66ec80c255ddfbfc006869ec8623953ec5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/mac-scoped-01.log",
+      "name": "controls/ci-preparation/mac-scoped-01.log",
+      "sha256": "bba4e2a4444137e0607c3467ae0c9ce3c81dc4c8368df844ae457f5ed6215df8"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/mac-scoped-02.log",
+      "name": "controls/ci-preparation/mac-scoped-02.log",
+      "sha256": "98a3c1c83ce97b562a4232174c25791a3c55b59ac81eca07a2e945088f1e89db"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/mac-scoped-03-exclusive.log",
+      "name": "controls/ci-preparation/mac-scoped-03-exclusive.log",
+      "sha256": "148b292fb8adbe11e05ee36488b347406c8c3471fdaacc408b99e963ca7110ab"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/materialize-e5-01.log",
+      "name": "controls/ci-preparation/materialize-e5-01.log",
+      "sha256": "06bac9ad348f6e811fdd89f4c5f0064ba12b946fd752224b1922f152d00d9efe"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/nested-scoped-01.log",
+      "name": "controls/ci-preparation/nested-scoped-01.log",
+      "sha256": "b0b6eae705a3f62b56082f11de1331110b88a1ec026050591241a64eb86b9955"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/nested-scoped-02.log",
+      "name": "controls/ci-preparation/nested-scoped-02.log",
+      "sha256": "d8db07d4887c851bb226b90a501450e96ebcc23c1d4dc63a071a158d0201a79a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/old-preservation-proof.json",
+      "name": "controls/ci-preparation/old-preservation-proof.json",
+      "sha256": "d3b640d37292f6eb05e5b5bf52ad09a2b0642e57e0b1bb2a2ee0fed7a66d3c8e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publishing-path-manifest.json",
+      "name": "controls/ci-preparation/publishing-path-manifest.json",
+      "sha256": "ab4e5348f648410124e496e6d2b51cb3239e49c8116e074193694acac46c344f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/testdata/nested-engineering-protocol.fixture.json",
+      "name": "controls/launcher-preparation/testdata/nested-engineering-protocol.fixture.json",
+      "sha256": "23ef2ef115114578d8a0feb18a59be5bf48086958198e281c779926474039f43"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration/preparation-01.json",
+      "name": "controls/integration/preparation-01.json",
+      "sha256": "2abf7f45cf5a27e3ecc13093c9a9b614bcd8ea1dfa009f42f9defd3c641b4adc"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/before-source-01/finite_runtime.py",
+      "name": "controls/integration-tests/before-source-01/finite_runtime.py",
+      "sha256": "41cb05ed5ec20aac5cefec30077f2e3250996de553a6b52f7dcc4de0020aa3e7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/before-source-01/mac_process_guard_v3.py",
+      "name": "controls/integration-tests/before-source-01/mac_process_guard_v3.py",
+      "sha256": "e22744e2868f67785d7f203828cdb63155d4f06a12491c0fcc461285831754c5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/before-source-01/manifest.json",
+      "name": "controls/integration-tests/before-source-01/manifest.json",
+      "sha256": "9ff97a22a7525a3dea493d60581ae1239edfa45ea353aa5dc0ce1c26e5788f4f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/before-source-01/newowned_guard_cursor.py",
+      "name": "controls/integration-tests/before-source-01/newowned_guard_cursor.py",
+      "sha256": "463976aac81ae602f3f6455bb8331476a05f7f8b7666f84b3184805c8c1f5717"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/before-source-01/run_nested_load.py",
+      "name": "controls/integration-tests/before-source-01/run_nested_load.py",
+      "sha256": "6270726ca3ac844be8a53fa504a95875428c29fab87024660301b2ed780d7f0c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/factory-fixture-legacy-env/policy.json",
+      "name": "controls/integration-tests/factory-fixture-legacy-env/policy.json",
+      "sha256": "f9243c7dcc5ddd4c902706290c9b42ba19c0250e80b6bf513217c9c8989e8c60"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/factory-fixture-legacy-fresh/policy.json",
+      "name": "controls/integration-tests/factory-fixture-legacy-fresh/policy.json",
+      "sha256": "f9243c7dcc5ddd4c902706290c9b42ba19c0250e80b6bf513217c9c8989e8c60"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/factory-fixture-native-env/policy.json",
+      "name": "controls/integration-tests/factory-fixture-native-env/policy.json",
+      "sha256": "b441b468385747e3544c93a10b4fdfbc8f21b84042d48f0ba62465d91f4677a5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/factory-fixture-native-fresh/policy.json",
+      "name": "controls/integration-tests/factory-fixture-native-fresh/policy.json",
+      "sha256": "b441b468385747e3544c93a10b4fdfbc8f21b84042d48f0ba62465d91f4677a5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/audit_nested_load.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/audit_nested_load.py",
+      "sha256": "88a3d165f1e47ed1fd533011f7858a58c519105f5f1caa3eb0bb384a3204cd11"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/binary_authentication.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/binary_authentication.py",
+      "sha256": "b87fd94186c805ca7639d3e7ac4cc2ca93c4319a194ab6c3932ee221710bc4d4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/finite_audit.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/finite_audit.py",
+      "sha256": "133d4f7bad0788bac104091e4051d2a0332bd9771944068d2317efb8c4e019b1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/finite_runtime.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/finite_runtime.py",
+      "sha256": "19767302ff1fa9843390fb435ad6f404a5178de86ca981347fbc0ee1010b78de"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/finite_sequence_audit.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/finite_sequence_audit.py",
+      "sha256": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/full_state_clone_cursor.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/full_state_clone_cursor.py",
+      "sha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/godot_local.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/godot_local.py",
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/lifecycle_audit.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/lifecycle_exec.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/lifecycle_exec_native.c",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/lifecycle_exec_native.c",
+      "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/listener_evidence.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/listener_evidence.py",
+      "sha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/mac_bulk_census.c",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/mac_process_guard.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/mac_process_guard_v2.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/mac_process_guard_v3.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "95b45589d609ae031bde2b912e63b64304eeb58e4c67a8c64b2f4fd42298f0fd"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/measured_mac_monitor.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/measured_mac_monitor.py",
+      "sha256": "27c4a16511b5f27009e9550ecc425998d48a5d4f25e57d5b7f174463ce6fa0e5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/native_exec_registry.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/native_exec_registry.py",
+      "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/nested_event_index.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/nested_event_index.py",
+      "sha256": "dde7acfc55738000ae01566878768ad796b721439aaab8ecafa13dac1a7babcf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py",
+      "sha256": "463976aac81ae602f3f6455bb8331476a05f7f8b7666f84b3184805c8c1f5717"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/phase_continuity.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/phase_continuity.py",
+      "sha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py",
+      "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/run_finite_block.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/run_finite_block.py",
+      "sha256": "4650dfd296af798bf5b410a705c1d5690e8107eded3e04790b9f15eba3d258df"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/run_finite_sequence.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/run_finite_sequence.py",
+      "sha256": "a05e1542a613b840b220d8e7060547ee65730e3b5bbce6e217c493a0e03c8b9d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/run_nested_load.py",
+      "name": "controls/integration-tests/fixture-repo/experiments/ch7/run_nested_load.py",
+      "sha256": "383109abcd5bebb9dd34b7fb11f7778d9d637a2f5169fc1b2989cc51e7079911"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/mock-native-policy.json",
+      "name": "controls/integration-tests/fixture-repo/mock-native-policy.json",
+      "sha256": "4c5b3b852bbabd0aa5eeffdac5f0ce1827c84352f27265c60a18ad7f29837ece"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/frozen_e918_oracle.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/frozen_e918_oracle.py",
+      "sha256": "d1f7424d4b39ede392f29bc9976ec0795ae7f76a80db73f113879cc0e445bd64"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/pure_listener_fixtures.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/pure_listener_fixtures.py",
+      "sha256": "14d98005db520bb0c598cd488d63aff43e6928e673a860d8206db8c41e5e83d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/test_mac_bulk_census.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/test_mac_bulk_census.py",
+      "sha256": "8383e68f197ed9f42ca505961c8ec7af435336c4e22348a50923cb72c03d7573"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/test_mac_lifecycle_guard.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/test_mac_lifecycle_guard.py",
+      "sha256": "e282852f288a7327d3745456c134f3821e44f95abdca2bdd189b7a0cfd73a776"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/test_mac_process_guard.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/test_mac_process_guard.py",
+      "sha256": "e4a49e250259e177fb8500546ccb2a151cc64f57b218133d0244d6772e0ccd88"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/test_owned_guard_cursor.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/test_owned_guard_cursor.py",
+      "sha256": "ec7d60f87a40891a40d6d913cc93e9e7543eae145b762daeafb0edee196dfb4a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/test_process_lifecycle_cursor.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/test_process_lifecycle_cursor.py",
+      "sha256": "47f03830032616558408ff7dd7aefb480d6628beb344cae32dbd98a76502df3e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/tests/shell/test_segmented_capture.py",
+      "name": "controls/integration-tests/fixture-repo/tests/shell/test_segmented_capture.py",
+      "sha256": "dfef5cb4105094ba101b44fbb2cc1a3bf313b95121875417e56ba897b49b972c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/audit_nested_load.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/audit_nested_load.py",
+      "sha256": "1a246bdebb510d4ab88808f3ed31dc46ae381c44da7f61b6046ad45df422e96a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/binary_authentication.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/binary_authentication.py",
+      "sha256": "b87fd94186c805ca7639d3e7ac4cc2ca93c4319a194ab6c3932ee221710bc4d4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/finite_audit.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/finite_audit.py",
+      "sha256": "133d4f7bad0788bac104091e4051d2a0332bd9771944068d2317efb8c4e019b1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/finite_runtime.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/finite_runtime.py",
+      "sha256": "19767302ff1fa9843390fb435ad6f404a5178de86ca981347fbc0ee1010b78de"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/finite_sequence_audit.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/finite_sequence_audit.py",
+      "sha256": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/full_state_clone_cursor.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/full_state_clone_cursor.py",
+      "sha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/godot_local.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/godot_local.py",
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/lifecycle_audit.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/lifecycle_exec.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/lifecycle_exec_native.c",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/lifecycle_exec_native.c",
+      "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/listener_evidence.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/listener_evidence.py",
+      "sha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/mac_bulk_census.c",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/mac_process_guard.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/mac_process_guard_v2.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/mac_process_guard_v3.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "95b45589d609ae031bde2b912e63b64304eeb58e4c67a8c64b2f4fd42298f0fd"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/measured_mac_monitor.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/measured_mac_monitor.py",
+      "sha256": "27c4a16511b5f27009e9550ecc425998d48a5d4f25e57d5b7f174463ce6fa0e5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/native_exec_registry.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/native_exec_registry.py",
+      "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/nested_event_index.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/nested_event_index.py",
+      "sha256": "dde7acfc55738000ae01566878768ad796b721439aaab8ecafa13dac1a7babcf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/newowned_guard_cursor.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/newowned_guard_cursor.py",
+      "sha256": "463976aac81ae602f3f6455bb8331476a05f7f8b7666f84b3184805c8c1f5717"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/phase_continuity.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/phase_continuity.py",
+      "sha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/process_lifecycle.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/process_lifecycle.py",
+      "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/run_finite_block.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/run_finite_block.py",
+      "sha256": "4650dfd296af798bf5b410a705c1d5690e8107eded3e04790b9f15eba3d258df"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/run_finite_sequence.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/run_finite_sequence.py",
+      "sha256": "a05e1542a613b840b220d8e7060547ee65730e3b5bbce6e217c493a0e03c8b9d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/experiments/ch7/run_nested_load.py",
+      "name": "controls/audit-controls/fixture-repo/experiments/ch7/run_nested_load.py",
+      "sha256": "383109abcd5bebb9dd34b7fb11f7778d9d637a2f5169fc1b2989cc51e7079911"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/fixtures/native-e6/binding.json",
+      "name": "controls/audit-controls/fixture-repo/tests/fixtures/native-e6/binding.json",
+      "sha256": "cbd2581df102151875d73ee29e57833868d20061905da1ca0a07381c9e39fb55"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/fixtures/native-e6/e5_guard_source.py",
+      "name": "controls/audit-controls/fixture-repo/tests/fixtures/native-e6/e5_guard_source.py",
+      "sha256": "e918de7431e3f27af2e03017a2f504bf00d85a6a08bf05d7ba5fcd3e14291035"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/frozen_e918_oracle.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/frozen_e918_oracle.py",
+      "sha256": "d1f7424d4b39ede392f29bc9976ec0795ae7f76a80db73f113879cc0e445bd64"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/pure_listener_fixtures.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/pure_listener_fixtures.py",
+      "sha256": "14d98005db520bb0c598cd488d63aff43e6928e673a860d8206db8c41e5e83d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_listener_evidence.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_listener_evidence.py",
+      "sha256": "59171b7c5237ea50b0f83eb4d99b9a190a89b74fd64ab3006c8e5f1873a552e3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_mac_bulk_census.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_mac_bulk_census.py",
+      "sha256": "8383e68f197ed9f42ca505961c8ec7af435336c4e22348a50923cb72c03d7573"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_mac_lifecycle_guard.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_mac_lifecycle_guard.py",
+      "sha256": "e282852f288a7327d3745456c134f3821e44f95abdca2bdd189b7a0cfd73a776"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_mac_process_guard.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_mac_process_guard.py",
+      "sha256": "e4a49e250259e177fb8500546ccb2a151cc64f57b218133d0244d6772e0ccd88"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_native_audit.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_native_audit.py",
+      "sha256": "b96feb9e0a662bb65c7384857bc281fab886029e657ebe5faedbf3cd19a43eb5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_native_exec_registry.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_native_exec_registry.py",
+      "sha256": "96c3783e36fa9711566a5a2e0917417ed4f35c61fea2dbeae8558e9bbfd58aa5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_native_integration.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_native_integration.py",
+      "sha256": "c67f6b1345916162783bb66ec682c886d8cc13a5ffa9645c41806b2b2ce2e5a0"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_owned_guard_cursor.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_owned_guard_cursor.py",
+      "sha256": "ec7d60f87a40891a40d6d913cc93e9e7543eae145b762daeafb0edee196dfb4a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_process_lifecycle_cursor.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_process_lifecycle_cursor.py",
+      "sha256": "47f03830032616558408ff7dd7aefb480d6628beb344cae32dbd98a76502df3e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/test_segmented_capture.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/test_segmented_capture.py",
+      "sha256": "dfef5cb4105094ba101b44fbb2cc1a3bf313b95121875417e56ba897b49b972c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/fixture-repo/tests/shell/verify_frozen_listener_oracle.py",
+      "name": "controls/audit-controls/fixture-repo/tests/shell/verify_frozen_listener_oracle.py",
+      "sha256": "158a4b5b424280f454b40abee74925a02c0932c9e459ee1ca35c2b1708f19fd4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/publish/tests/shell/test_native_audit.py",
+      "name": "controls/audit-controls/publish/tests/shell/test_native_audit.py",
+      "sha256": "b96feb9e0a662bb65c7384857bc281fab886029e657ebe5faedbf3cd19a43eb5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/originals/frozen_e918_oracle.py",
+      "name": "controls/portable-tests/originals/frozen_e918_oracle.py",
+      "sha256": "d1f7424d4b39ede392f29bc9976ec0795ae7f76a80db73f113879cc0e445bd64"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/originals/pure_listener_fixtures.py",
+      "name": "controls/portable-tests/originals/pure_listener_fixtures.py",
+      "sha256": "14d98005db520bb0c598cd488d63aff43e6928e673a860d8206db8c41e5e83d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/originals/test_listener_evidence.py",
+      "name": "controls/portable-tests/originals/test_listener_evidence.py",
+      "sha256": "14d98005db520bb0c598cd488d63aff43e6928e673a860d8206db8c41e5e83d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/originals/test_native_exec_registry.py",
+      "name": "controls/portable-tests/originals/test_native_exec_registry.py",
+      "sha256": "96c3783e36fa9711566a5a2e0917417ed4f35c61fea2dbeae8558e9bbfd58aa5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/originals/test_native_integration.py",
+      "name": "controls/portable-tests/originals/test_native_integration.py",
+      "sha256": "f4761287c7d870635076190952485369e4002d0ef83ba17541ecb75dc394d979"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/fixtures/native-e6/binding.json",
+      "name": "controls/portable-tests/publish/tests/fixtures/native-e6/binding.json",
+      "sha256": "cbd2581df102151875d73ee29e57833868d20061905da1ca0a07381c9e39fb55"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/fixtures/native-e6/e5_guard_source.py",
+      "name": "controls/portable-tests/publish/tests/fixtures/native-e6/e5_guard_source.py",
+      "sha256": "e918de7431e3f27af2e03017a2f504bf00d85a6a08bf05d7ba5fcd3e14291035"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/shell/frozen_e918_oracle.py",
+      "name": "controls/portable-tests/publish/tests/shell/frozen_e918_oracle.py",
+      "sha256": "d1f7424d4b39ede392f29bc9976ec0795ae7f76a80db73f113879cc0e445bd64"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/shell/pure_listener_fixtures.py",
+      "name": "controls/portable-tests/publish/tests/shell/pure_listener_fixtures.py",
+      "sha256": "14d98005db520bb0c598cd488d63aff43e6928e673a860d8206db8c41e5e83d1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/shell/test_listener_evidence.py",
+      "name": "controls/portable-tests/publish/tests/shell/test_listener_evidence.py",
+      "sha256": "59171b7c5237ea50b0f83eb4d99b9a190a89b74fd64ab3006c8e5f1873a552e3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/shell/test_native_exec_registry.py",
+      "name": "controls/portable-tests/publish/tests/shell/test_native_exec_registry.py",
+      "sha256": "96c3783e36fa9711566a5a2e0917417ed4f35c61fea2dbeae8558e9bbfd58aa5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/shell/test_native_integration.py",
+      "name": "controls/portable-tests/publish/tests/shell/test_native_integration.py",
+      "sha256": "c67f6b1345916162783bb66ec682c886d8cc13a5ffa9645c41806b2b2ce2e5a0"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/portable-tests/publish/tests/shell/verify_frozen_listener_oracle.py",
+      "name": "controls/portable-tests/publish/tests/shell/verify_frozen_listener_oracle.py",
+      "sha256": "158a4b5b424280f454b40abee74925a02c0932c9e459ee1ca35c2b1708f19fd4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/before/.github/workflows/ci.yml",
+      "name": "controls/ci-preparation/before/.github/workflows/ci.yml",
+      "sha256": "d350cf6a511cd3dde76f66129970a1e1d2d101faeb43201f227425fb3d075a9c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/before/tests/shell/run_versioned_mac_controls.py",
+      "name": "controls/ci-preparation/before/tests/shell/run_versioned_mac_controls.py",
+      "sha256": "5c2fe699951d3ee609968fa817a665b24b98fbb98da692f0c1bfce20ca93d1ae"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/before-first-scoped-fix/run_versioned_mac_controls.py",
+      "name": "controls/ci-preparation/before-first-scoped-fix/run_versioned_mac_controls.py",
+      "sha256": "51d223d7fde9c738f02033d4d441dfb014b3e2d5b9fb29cbbfbcbdef5c30281f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/before-first-scoped-fix/run_versioned_nested_controls.py",
+      "name": "controls/ci-preparation/before-first-scoped-fix/run_versioned_nested_controls.py",
+      "sha256": "d5f422d60a1087bd288476b5c003dd999dc1911023954ce1fd25c857140bccbf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/before-first-scoped-fix/versioned_nested_scope.py",
+      "name": "controls/ci-preparation/before-first-scoped-fix/versioned_nested_scope.py",
+      "sha256": "c06a309908c39cbcd0a8c77b10f6c240262e2d074f95b1c136c22ecce8cc6d71"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/.github/workflows/ci.yml",
+      "name": "controls/ci-preparation/publish/.github/workflows/ci.yml",
+      "sha256": "c1d2e378d05351fe076109dc75a07941e8438b37d4e8b3cfae1888e6b5a810cd"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/run_versioned_mac_controls.py",
+      "name": "controls/ci-preparation/publish/tests/shell/run_versioned_mac_controls.py",
+      "sha256": "b58dd3fe052ef6c0d727513afe26beb97cdb6f82ab30b3c6213cf80378966a6b"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/run_versioned_nested_controls.py",
+      "name": "controls/ci-preparation/publish/tests/shell/run_versioned_nested_controls.py",
+      "sha256": "e9a6b39bbc65dff4fa14b585213af976768a7a8ce1351c140e4f4badaef915a0"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/versioned_nested_scope.py",
+      "name": "controls/ci-preparation/publish/tests/shell/versioned_nested_scope.py",
+      "sha256": "9315ac054d3a9b05dfc7bad89e96b35b0b37f26cd46d9e61e0cf67edb02e45cd"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/native_exec_registry.py",
+      "name": "controls/candidate/experiments/ch7/native_exec_registry.py",
+      "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/lifecycle_exec_native.c",
+      "name": "controls/candidate/experiments/ch7/lifecycle_exec_native.c",
+      "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/process_lifecycle.py",
+      "name": "controls/candidate/experiments/ch7/process_lifecycle.py",
+      "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/lifecycle_exec.py",
+      "name": "controls/candidate/experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/lifecycle_audit.py",
+      "name": "controls/candidate/experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/tests/shell/test_native_exec_registry.py",
+      "name": "controls/candidate/tests/shell/test_native_exec_registry.py",
+      "sha256": "96c3783e36fa9711566a5a2e0917417ed4f35c61fea2dbeae8558e9bbfd58aa5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/00-legacy.json",
+      "name": "component/00-legacy.json",
+      "sha256": "2499c42ffeecb9c0f5e37ed618d7d9831a771b7f72e8267a550f868ef78ba468"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/00-native.json",
+      "name": "component/00-native.json",
+      "sha256": "c19b495df71065f1a1281a6952447104d69c4386aec41b77d3b70cbce18de1d5"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/01-legacy.json",
+      "name": "component/01-legacy.json",
+      "sha256": "ffe55ea20ce547a8537d2799fd6a1fde74d5b2caea252d0e6fc72f0028cfcb3b"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/01-native.json",
+      "name": "component/01-native.json",
+      "sha256": "a71fc45d0edea5de62f838abf7d56ed9d129d4165a7c11a5a4a42f6691762906"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/02-legacy.json",
+      "name": "component/02-legacy.json",
+      "sha256": "165f0a85a50a1e40a5d000b6ac214d44daf4a15a5f5a0a1cf879ec64d70716d2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/02-native.json",
+      "name": "component/02-native.json",
+      "sha256": "c5043d510afc0bfd724d723c06933da727a6ddbd1a6c767a47cd9b7fec8213c3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/03-legacy.json",
+      "name": "component/03-legacy.json",
+      "sha256": "7847894e70d10ddc0aeac423d4b9fc688ab6bad235a25658b3a7ebb2fe33a8fa"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/03-native.json",
+      "name": "component/03-native.json",
+      "sha256": "0db16f69752c7005c15177f2009d5c0297ee50fd84028e445d5815a2fb3ce030"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/04-legacy.json",
+      "name": "component/04-legacy.json",
+      "sha256": "8f883203efea4e9cf3549c3f42146509db2490ac534eedddcf63b90e97545d8d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/04-native.json",
+      "name": "component/04-native.json",
+      "sha256": "9c25b7bea966fcf57e891824076b3deb6ccadb9bf4a39a48732f91f3c43d9554"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/05-legacy.json",
+      "name": "component/05-legacy.json",
+      "sha256": "fcd0a6744c310cf3c406f7e1c41ef12f40672393a52d85361c0ee28b20d00f5f"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/05-native.json",
+      "name": "component/05-native.json",
+      "sha256": "9731d9ab65d0a4a95cdd9560f31bc054c4cb1125d25eccb4c6833846f4fbf9cf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/06-legacy.json",
+      "name": "component/06-legacy.json",
+      "sha256": "71fa614b2044b67dfafb9b18d1f9bc6a2b38dc31d457f66266d53753fb981bce"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/06-native.json",
+      "name": "component/06-native.json",
+      "sha256": "c4256c8f7d96d9bcba2f4f9754627f3d611acc3d3d060aab483e705ff170a631"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/07-legacy.json",
+      "name": "component/07-legacy.json",
+      "sha256": "f58f87f8e5380ce0391045e79f12990c97c2ee34b37a7bb4eb19e2f85fed4711"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/07-native.json",
+      "name": "component/07-native.json",
+      "sha256": "40708f66a10c9d3cdfa5d1e25d07358083a8f1439eb9c56718fd40dd6161d97b"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/08-legacy.json",
+      "name": "component/08-legacy.json",
+      "sha256": "85dbcd0735ac60d79aab44e792623c00dc46d5804dc0ef92bc75ceec6509fbc3"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/08-native.json",
+      "name": "component/08-native.json",
+      "sha256": "bcfdafc3736fc2e634c6341896bf2fbfe99ac1c1d54051ac7881c962c1a596e2"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/09-legacy.json",
+      "name": "component/09-legacy.json",
+      "sha256": "948e49d2a11651af4255a9befa9912558dd3fa88f85db85905aaf2f4f6ef630e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/09-native.json",
+      "name": "component/09-native.json",
+      "sha256": "964f148caf5b6b0e7386fb0d01fa1df15a9b0b29a8591deb8f5ea73459600b5a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/plan-copy.json",
+      "name": "component/plan-copy.json",
+      "sha256": "ef27a276e661acc2b71584d771ea1f03c6988970687bd67b80f5961bf18b61e1"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/preparation.json",
+      "name": "component/preparation.json",
+      "sha256": "e91bca15ce57cb37d9c91d2da14aea04a55125a07e60b037ea385ea3a20c9b6c"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/queries-started.json",
+      "name": "component/queries-started.json",
+      "sha256": "59a79395368d44d92d9f073956709fdae43bf4f73f458d5b14ab0ae6e1f2c963"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/result.json",
+      "name": "component/result.json",
+      "sha256": "f121da1060acc9959dfdfe0a4c5d075cc009d88d7c8958df81dc23246d454c0e"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/legacy/lifecycle-journal.jsonl",
+      "name": "component/legacy/lifecycle-journal.jsonl",
+      "sha256": "28f873a3442adf9fb7b76a34c1eb7a6b898f14c5f4d70dad8f82998fd6fb305d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/legacy/process-policy.json",
+      "name": "component/legacy/process-policy.json",
+      "sha256": "4bab798807b4df4015efbe3f4262e112a242d20d0da85e0882eb00db6d169b37"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/native/lifecycle-journal.jsonl",
+      "name": "component/native/lifecycle-journal.jsonl",
+      "sha256": "92aa55001dcb85dd8c1cbf4cf923b071c6451456b9dce27a3953f511ce4f7149"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/native/process-policy.json",
+      "name": "component/native/process-policy.json",
+      "sha256": "7976c389ea427c19e787b7bc67289024e5164d80cf727fd67f0a908ca9635485"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/e5-refusal-publication.json",
+      "name": "retained-history/e5-refusal-publication.json",
+      "sha256": "5a6162375d92c46755ef68c24f16d4b1d242ffe452fd238fc0ea13998fe85946"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/e5-independent-negative-audit-01.json",
+      "name": "retained-history/e5-independent-negative-audit-01.json",
+      "sha256": "b402372a7428098e04e9bf76a87ca16bee7995d46e4cda84a9cd3d8b599dc56d"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/audit/listener-cause-precision-correction-01.json",
+      "name": "retained-history/listener-cause-precision-correction-01.json",
+      "sha256": "72ea1100610fe86739ddc5d29c3ec8140d94a610f5fd2619441aa5a6e89dacdf"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/papers/e5-final-staging/e6-auditor-readonly-review-01.json",
+      "name": "retained-history/e6-auditor-readonly-review-01.json",
+      "sha256": "be4b4bf8f8b57e22c1f9daef436c7216c05e5d31ab449ae98a6016e4d4adea1f"
+    }
+  ],
+  "scope": "Actual preparation and retained adverse component; unit controls are not load acceptance."
+}

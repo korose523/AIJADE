@@ -1,0 +1,387 @@
+test_01_cold_and_both_private_owners_actually_invoke_native_witness (__main__.NativeIntegrationTests.test_01_cold_and_both_private_owners_actually_invoke_native_witness) ... ERROR
+test_02_actual_full_core_and_current_predicate_AST (__main__.NativeIntegrationTests.test_02_actual_full_core_and_current_predicate_AST) ... ok
+test_03_deadline_epsilon_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_03_deadline_epsilon_never_passes_cold_or_warm) ... ERROR
+test_04_raw_hash_change_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_04_raw_hash_change_never_passes_cold_or_warm) ... ERROR
+test_05_native_lease_change_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_05_native_lease_change_never_passes_cold_or_warm) ... ERROR
+test_06_native_source_change_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_06_native_source_change_never_passes_cold_or_warm) ... ERROR
+test_07_coarse_legacy_listener_cannot_satisfy_native (__main__.NativeIntegrationTests.test_07_coarse_legacy_listener_cannot_satisfy_native) ... ERROR
+test_08_derived_records_cannot_hide_other_visible_listener (__main__.NativeIntegrationTests.test_08_derived_records_cannot_hide_other_visible_listener) ... ERROR
+test_09_wrong_native_flag_rejected (__main__.NativeIntegrationTests.test_09_wrong_native_flag_rejected) ... ERROR
+test_10_no_owned_mode_rejected (__main__.NativeIntegrationTests.test_10_no_owned_mode_rejected) ... ERROR
+test_11_native_fields_without_flag_rejected (__main__.NativeIntegrationTests.test_11_native_fields_without_flag_rejected) ... ERROR
+test_12_native_sources_closed_deduplicated (__main__.NativeIntegrationTests.test_12_native_sources_closed_deduplicated) ... ERROR
+test_13_no_actual_binary_needed_for_cold_policy_check (__main__.NativeIntegrationTests.test_13_no_actual_binary_needed_for_cold_policy_check) ... ERROR
+test_14_wrapper_preserves_exact_full_global_command_and_handle (__main__.NativeIntegrationTests.test_14_wrapper_preserves_exact_full_global_command_and_handle) ... ERROR
+test_15_timeout_retains_partial_and_unknown_total (__main__.NativeIntegrationTests.test_15_timeout_retains_partial_and_unknown_total) ... ERROR
+test_16_timeout_and_poll_cleanup_and_evidence_errors_all_retained (__main__.NativeIntegrationTests.test_16_timeout_and_poll_cleanup_and_evidence_errors_all_retained) ... ERROR
+test_17_kill_failure_preserves_capture_exception (__main__.NativeIntegrationTests.test_17_kill_failure_preserves_capture_exception) ... ERROR
+test_18_forensic_large_complete_is_prefix_with_known_total_only (__main__.NativeIntegrationTests.test_18_forensic_large_complete_is_prefix_with_known_total_only) ... ERROR
+test_19_complete_stderr_retained_at_exit_zero (__main__.NativeIntegrationTests.test_19_complete_stderr_retained_at_exit_zero) ... ERROR
+test_20_expired_source_check_does_not_launch (__main__.NativeIntegrationTests.test_20_expired_source_check_does_not_launch) ... ERROR
+test_21_prefix_or_and_cleanup_failure_still_unknown (__main__.NativeIntegrationTests.test_21_prefix_or_and_cleanup_failure_still_unknown) ... ERROR
+test_22_native_flags_on_unknown_replay_not_accepted_by_sourceclosure (__main__.NativeIntegrationTests.test_22_native_flags_on_unknown_replay_not_accepted_by_sourceclosure) ... ERROR
+
+======================================================================
+ERROR: test_01_cold_and_both_private_owners_actually_invoke_native_witness (__main__.NativeIntegrationTests.test_01_cold_and_both_private_owners_actually_invoke_native_witness)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 147, in test_01_cold_and_both_private_owners_actually_invoke_native_witness
+    values=make_fixture()
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_03_deadline_epsilon_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_03_deadline_epsilon_never_passes_cold_or_warm)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 163, in test_03_deadline_epsilon_never_passes_cold_or_warm
+    values=make_fixture();frame=values[1]['evidence']['before'];frame['listenerReadClock']['finishedMonotonic']=100.64000000000001
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_04_raw_hash_change_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_04_raw_hash_change_never_passes_cold_or_warm)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 167, in test_04_raw_hash_change_never_passes_cold_or_warm
+    values=make_fixture();values[1]['evidence']['before']['listener']['transcript']['stdout']['capturedSha256']='0'*64
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_05_native_lease_change_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_05_native_lease_change_never_passes_cold_or_warm)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 171, in test_05_native_lease_change_never_passes_cold_or_warm
+    values=make_fixture();values[1]['evidence']['before']['listener']['transcript']['nativeLaunch']['leaseId']='0'*32
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_06_native_source_change_never_passes_cold_or_warm (__main__.NativeIntegrationTests.test_06_native_source_change_never_passes_cold_or_warm)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 175, in test_06_native_source_change_never_passes_cold_or_warm
+    values=make_fixture();values[1]['evidence']['before']['listener']['transcript']['sourcePins']['callerSourceSha256']='0'*64
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_07_coarse_legacy_listener_cannot_satisfy_native (__main__.NativeIntegrationTests.test_07_coarse_legacy_listener_cannot_satisfy_native)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 179, in test_07_coarse_legacy_listener_cannot_satisfy_native
+    values=make_fixture();values[1]['evidence']['before']['listener'].pop('transcript')
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_08_derived_records_cannot_hide_other_visible_listener (__main__.NativeIntegrationTests.test_08_derived_records_cannot_hide_other_visible_listener)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 183, in test_08_derived_records_cannot_hide_other_visible_listener
+    values=make_fixture();values[1]['evidence']['before']['listener']['records'].append(dict(pid=99))
+           ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_09_wrong_native_flag_rejected (__main__.NativeIntegrationTests.test_09_wrong_native_flag_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 187, in test_09_wrong_native_flag_rejected
+    p,*_=make_fixture();p['lifecycleExecMode']='unknown'
+         ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_10_no_owned_mode_rejected (__main__.NativeIntegrationTests.test_10_no_owned_mode_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 191, in test_10_no_owned_mode_rejected
+    p,*_=make_fixture();p['onlineReplayMode']='incremental-exact-prefix-v1'
+         ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_11_native_fields_without_flag_rejected (__main__.NativeIntegrationTests.test_11_native_fields_without_flag_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 195, in test_11_native_fields_without_flag_rejected
+    p,*_=make_fixture();p.pop('lifecycleExecMode')
+         ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_12_native_sources_closed_deduplicated (__main__.NativeIntegrationTests.test_12_native_sources_closed_deduplicated)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 200, in test_12_native_sources_closed_deduplicated
+    p,*_=make_fixture();sources=runtime.lifecycle_observer_sources(p)
+         ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_13_no_actual_binary_needed_for_cold_policy_check (__main__.NativeIntegrationTests.test_13_no_actual_binary_needed_for_cold_policy_check)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 206, in test_13_no_actual_binary_needed_for_cold_policy_check
+    p,*_=make_fixture()
+         ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_14_wrapper_preserves_exact_full_global_command_and_handle (__main__.NativeIntegrationTests.test_14_wrapper_preserves_exact_full_global_command_and_handle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 212, in test_14_wrapper_preserves_exact_full_global_command_and_handle
+    t,reg=self.capture(process)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_15_timeout_retains_partial_and_unknown_total (__main__.NativeIntegrationTests.test_15_timeout_retains_partial_and_unknown_total)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 219, in test_15_timeout_retains_partial_and_unknown_total
+    process=FakeProcess(error=error);t,_=self.capture(process)
+                                         ^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_16_timeout_and_poll_cleanup_and_evidence_errors_all_retained (__main__.NativeIntegrationTests.test_16_timeout_and_poll_cleanup_and_evidence_errors_all_retained)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 228, in test_16_timeout_and_poll_cleanup_and_evidence_errors_all_retained
+    t,_=self.capture(process,evidence_error=LookupError('fixture evidence'))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_17_kill_failure_preserves_capture_exception (__main__.NativeIntegrationTests.test_17_kill_failure_preserves_capture_exception)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 236, in test_17_kill_failure_preserves_capture_exception
+    t,_=self.capture(process)
+        ^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_18_forensic_large_complete_is_prefix_with_known_total_only (__main__.NativeIntegrationTests.test_18_forensic_large_complete_is_prefix_with_known_total_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 240, in test_18_forensic_large_complete_is_prefix_with_known_total_only
+    raw=b'x'*(listener.MAX_FORENSIC+1);t,_=self.capture(FakeProcess(out=raw))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_19_complete_stderr_retained_at_exit_zero (__main__.NativeIntegrationTests.test_19_complete_stderr_retained_at_exit_zero)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 246, in test_19_complete_stderr_retained_at_exit_zero
+    t,_=self.capture(FakeProcess(err=b'warning'))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_20_expired_source_check_does_not_launch (__main__.NativeIntegrationTests.test_20_expired_source_check_does_not_launch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 251, in test_20_expired_source_check_does_not_launch
+    process=FakeProcess();t,reg=self.capture(process,clock=[0.,.5000001,.5000002,.5000003])
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_21_prefix_or_and_cleanup_failure_still_unknown (__main__.NativeIntegrationTests.test_21_prefix_or_and_cleanup_failure_still_unknown)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 257, in test_21_prefix_or_and_cleanup_failure_still_unknown
+    t,_=self.capture(FakeProcess(error=error,wait_error=RuntimeError('no actual wait')))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 128, in capture
+    p,_,_,_,_=make_fixture();reg=FakeRegistry(process)
+              ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+======================================================================
+ERROR: test_22_native_flags_on_unknown_replay_not_accepted_by_sourceclosure (__main__.NativeIntegrationTests.test_22_native_flags_on_unknown_replay_not_accepted_by_sourceclosure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 265, in test_22_native_flags_on_unknown_replay_not_accepted_by_sourceclosure
+    p,*_=make_fixture();p['onlineReplayMode']='future'
+         ^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/test_native_integration.py", line 90, in make_fixture
+    a.bind_preparation(record,writer);b.bind_preparation(record,writer)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/newowned_guard_cursor.py", line 227, in bind_preparation
+    need(write_clock['startedMonotonic']<=write_clock['completedMonotonic']
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/integration-tests/fixture-repo/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: initialization writer placement differs
+
+----------------------------------------------------------------------
+Ran 22 tests in 1.740s
+
+FAILED (errors=21)

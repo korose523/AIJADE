@@ -1,0 +1,127 @@
+{
+  "method": "legacy",
+  "transcript": {
+    "schema": "aijade.listener.transcript.v2",
+    "mode": "complete-managed-lsof-transcript-v1",
+    "argv": [
+      "/usr/sbin/lsof",
+      "-nP",
+      "-iTCP:11434",
+      "-sTCP:LISTEN",
+      "-FpfPtTn"
+    ],
+    "stdout": {
+      "encoding": "base64",
+      "dataBase64": "cDcwMQpmNAp0SVB2NApQVENQCm4xMjcuMC4wLjE6MTE0MzQKVFNUPUxJU1RFTgpUUVI9MApUUVM9MAo=",
+      "capturedBytes": 59,
+      "capturedSha256": "e6fd8fa525d558f98aa88f08df2589f400a21136e62e950f9494b0e49a0622e4",
+      "totalBytes": 59,
+      "totalSha256": "e6fd8fa525d558f98aa88f08df2589f400a21136e62e950f9494b0e49a0622e4",
+      "truncated": false
+    },
+    "stderr": {
+      "encoding": "base64",
+      "dataBase64": "",
+      "capturedBytes": 0,
+      "capturedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "totalBytes": 0,
+      "totalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": false
+    },
+    "returnCode": 0,
+    "exception": null,
+    "startedMonotonic": 246471.383814449,
+    "runCompletedMonotonic": 246471.691107285,
+    "parseCompletedMonotonic": 246471.691195803,
+    "sourcePins": {
+      "adapterSourceSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+      "shimSourceSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+      "parserSourceSha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2",
+      "callerSourceSha256": "2e3dd1c535553f423eb4f73da5b116500411988bfbc9bc7de55c040d83f5406d"
+    },
+    "nativeLaunch": null
+  },
+  "outerClock": {
+    "startedMonotonic": 246471.383814449,
+    "finishedMonotonic": 246471.691339029
+  },
+  "outcome": {
+    "state": "OBSERVED",
+    "records": [
+      {
+        "pid": 701,
+        "family": "IPv4",
+        "protocol": "TCP",
+        "endpoint": "127.0.0.1:11434",
+        "socketState": "LISTEN"
+      }
+    ]
+  },
+  "preliminaryMeasuredSemanticResult": {
+    "state": "OBSERVED",
+    "records": [
+      {
+        "pid": 701,
+        "family": "IPv4",
+        "protocol": "TCP",
+        "endpoint": "127.0.0.1:11434",
+        "socketState": "LISTEN"
+      }
+    ]
+  },
+  "sourceBeforeVerified": true,
+  "sourceAfterVerified": true,
+  "actualManagedLeaseId": "c87b977920dc44d3b2c3b9c07416ccd7",
+  "actualLease": {
+    "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+    "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+    "identity": {
+      "createTimeMicros": 1794941940178465,
+      "parentPid": 90950,
+      "pid": 90993
+    },
+    "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+    "leaseId": "c87b977920dc44d3b2c3b9c07416ccd7",
+    "parentIdentity": {
+      "createTimeMicros": 1794941931653841,
+      "parentPid": 46644,
+      "pid": 90950
+    },
+    "readyMonotonic": 246471.524660347,
+    "role": "finite",
+    "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "stageId": "listener-component",
+    "registerSeq": 18945,
+    "registerMonotonic": 246471.543208146,
+    "releaseSeq": 18946,
+    "waitSeq": 18947,
+    "exitCode": 0,
+    "absence": {
+      "witnessKind": "PARENT_WAIT_REAPED",
+      "identity": {
+        "createTimeMicros": 1794941940178465,
+        "parentPid": 90950,
+        "pid": 90993
+      },
+      "parentIdentity": {
+        "createTimeMicros": 1794941931653841,
+        "parentPid": 46644,
+        "pid": 90950
+      },
+      "eventSeq": 18947,
+      "reapedMonotonic": 246471.657510303,
+      "exitCode": 0
+    },
+    "releaseMonotonic": 246471.559473693,
+    "reapedMonotonic": 246471.657510303,
+    "absenceWitnessKind": "PARENT_WAIT_REAPED"
+  },
+  "observedJournalBytes": 15636799,
+  "observedJournalSha256": "2f8b2cb29fba679ddb8e76c9476089e3e5a69adeaf5125773aba8124d8280626",
+  "observedLastSequence": 18947,
+  "wholeSeconds": 0.3075245800137054,
+  "oldBaselineNativeProvenanceNotClaimed": true,
+  "repeat": 6
+}

@@ -1,0 +1,402 @@
+{
+  "actualE4RecordModified": false,
+  "actualPrefixMaximumBytes": 15705576,
+  "actualPrefixMinimumBytes": 14195064,
+  "allRecordComponentTimings": {
+    "legacyInner": {
+      "calls": 153,
+      "maximumSeconds": 0.6139289859856945,
+      "medianSeconds": 0.28195709400461055,
+      "minimumSeconds": 0.24343805099488236,
+      "totalSeconds": 47.21578649029834
+    },
+    "legacyOuter": {
+      "calls": 153,
+      "maximumSeconds": 0.6353682040062267,
+      "medianSeconds": 0.28894118501921184,
+      "minimumSeconds": 0.24496219301363453,
+      "totalSeconds": 48.448721640976146
+    },
+    "ownedInner": {
+      "calls": 153,
+      "maximumSeconds": 0.39226183798746206,
+      "medianSeconds": 0.10391744101070799,
+      "minimumSeconds": 0.08230548098799773,
+      "totalSeconds": 20.804292417044053
+    },
+    "ownedOuter": {
+      "calls": 153,
+      "maximumSeconds": 0.3689990059938282,
+      "medianSeconds": 0.08834111600299366,
+      "minimumSeconds": 0.07746615499490872,
+      "totalSeconds": 18.077844044892117
+    }
+  },
+  "atLeast14MiBComponentTimings": {
+    "legacyInner": {
+      "calls": 104,
+      "maximumSeconds": 0.6139289859856945,
+      "medianSeconds": 0.2925576879933942,
+      "minimumSeconds": 0.24343805099488236,
+      "totalSeconds": 32.900007998163346
+    },
+    "legacyOuter": {
+      "calls": 104,
+      "maximumSeconds": 0.6353682040062267,
+      "medianSeconds": 0.29673624300630763,
+      "minimumSeconds": 0.25485826400108635,
+      "totalSeconds": 33.88657381103258
+    },
+    "ownedInner": {
+      "calls": 104,
+      "maximumSeconds": 0.39226183798746206,
+      "medianSeconds": 0.1068506395095028,
+      "minimumSeconds": 0.09241402300540358,
+      "totalSeconds": 15.264474995958153
+    },
+    "ownedOuter": {
+      "calls": 104,
+      "maximumSeconds": 0.3689990059938282,
+      "medianSeconds": 0.09015807902324013,
+      "minimumSeconds": 0.08107935902080499,
+      "totalSeconds": 12.47765988993342
+    }
+  },
+  "backendQualified": false,
+  "causalSpeedupClaim": false,
+  "completeDecisionsCompared": 612,
+  "completeServiceMeasured": false,
+  "concurrentReviewExcluded": false,
+  "conditionCallsEach": 153,
+  "conditionOrder": "per-record legacy/owned order alternates; both independent roles evaluated each time",
+  "derivation": "Explicit source/policy/ref/owner recontextualization; optional completed synthetic pre-observation finite chains. No future actual WAIT is moved earlier.",
+  "derivedJournalBytes": 15706167,
+  "derivedJournalEvents": 18957,
+  "docsEdited": false,
+  "finalCursorStatistics": {
+    "legacyInner": {
+      "bootstrapReceivedStates": 1,
+      "builtinColdStates": 1,
+      "builtinContainersChecked": 93106,
+      "builtinTailEvents": 1836,
+      "cCloneSnapshots": 155,
+      "calls": 154,
+      "coldOldPrefixReplays": 0,
+      "failures": 0,
+      "frontierScopes": 1,
+      "fullPrefixComparedBytes": 2285877718,
+      "fullPrefixReadBytes": 2301583294,
+      "hashUpdatedBytes": 15705576,
+      "latestPrefixBytes": 15705576,
+      "parsedBytes": 15705576,
+      "parsedEvents": 18956,
+      "poisoned": false,
+      "snapshotCopies": 154
+    },
+    "legacyOuter": {
+      "bootstrapReceivedStates": 1,
+      "builtinColdStates": 0,
+      "builtinContainersChecked": 7497,
+      "builtinTailEvents": 1836,
+      "cCloneSnapshots": 153,
+      "calls": 153,
+      "coldOldPrefixReplays": 0,
+      "failures": 0,
+      "frontierScopes": 1,
+      "fullPrefixComparedBytes": 2285877718,
+      "fullPrefixReadBytes": 2287398167,
+      "hashUpdatedBytes": 1520449,
+      "latestPrefixBytes": 15705576,
+      "parsedBytes": 1520449,
+      "parsedEvents": 1836,
+      "poisoned": false,
+      "snapshotCopies": 153
+    },
+    "ownedInner": {
+      "bootstrapReceivedStates": 1,
+      "builtinColdStates": 1,
+      "builtinContainersChecked": 93106,
+      "builtinTailEvents": 1836,
+      "calls": 154,
+      "coldOldPrefixReplays": 0,
+      "detachedDecisionCanonicalBytes": 10557,
+      "detachedDecisionCopies": 153,
+      "failures": 0,
+      "frontierScopes": 1,
+      "fullPrefixComparedBytes": 2285877718,
+      "fullPrefixReadBytes": 2301583294,
+      "guardEvaluations": 153,
+      "hashUpdatedBytes": 15705576,
+      "initializationStateClones": 0,
+      "latestPrefixBytes": 15705576,
+      "ownerId": "9d201305a3d8407c99ded55803eb4bad",
+      "ownerRole": "inner",
+      "parsedBytes": 15705576,
+      "parsedEvents": 18956,
+      "poisoned": false,
+      "privateStateValidations": 154,
+      "retainedEvents": 18956,
+      "retainedLeases": 6319,
+      "snapshotCopies": 0
+    },
+    "ownedOuter": {
+      "bootstrapReceivedStates": 1,
+      "builtinColdStates": 0,
+      "builtinContainersChecked": 7497,
+      "builtinTailEvents": 1836,
+      "calls": 153,
+      "coldOldPrefixReplays": 0,
+      "detachedDecisionCanonicalBytes": 10557,
+      "detachedDecisionCopies": 153,
+      "failures": 0,
+      "frontierScopes": 1,
+      "fullPrefixComparedBytes": 2285877718,
+      "fullPrefixReadBytes": 2287398167,
+      "guardEvaluations": 153,
+      "hashUpdatedBytes": 1520449,
+      "initializationStateClones": 1,
+      "latestPrefixBytes": 15705576,
+      "ownerId": "f9d469b5d74b4f7cb21f594ace17778c",
+      "ownerRole": "outer",
+      "parsedBytes": 1520449,
+      "parsedEvents": 1836,
+      "poisoned": false,
+      "privateStateValidations": 153,
+      "retainedEvents": 18956,
+      "retainedLeases": 6319,
+      "snapshotCopies": 0
+    }
+  },
+  "fullEngineeringAccepted": false,
+  "heldoutComparisonRun": false,
+  "independentColdOracleSha256": "c0d3248de674c0ff545e04fa26997349c9c38dcc2016fe50086aac05310dc42d",
+  "legacyReplayJournalSha256": "62ed42d28d07feb62efeb6c2b2c887ae52a2ccb70e4466d29330f72068aadd06",
+  "nativeApiModelRequests": 0,
+  "newRealChildProcesses": 0,
+  "originalDecisionCoreAstUnchanged": true,
+  "originalInputsAfter": {
+    "initialization.json": {
+      "sha256": "4933ce6753124d7f633fc4059aacdb8d971f552301c51388d259b1cfd6872369",
+      "sizeBytes": 4017
+    },
+    "lifecycle-journal.jsonl": {
+      "sha256": "5bbea7649a9c9f5ebec1c1a0dd82693f4b28fdcfa3afa2854e0734723c3c7d7d",
+      "sizeBytes": 7795321
+    },
+    "process-policy.json": {
+      "sha256": "66b5a54af64bf40bb341853cf230d6d969e951221001b57c5724cbb4383fa5e1",
+      "sizeBytes": 2329
+    },
+    "receipt.json": {
+      "sha256": "ecf41429696eadb6873ec16a0aed68bbe491680eb0e672b56070dab09fc22bf9",
+      "sizeBytes": 6133720
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "92c355ddbeb500eb4f3924ef0583d41b2f63a810a6198ef0ae82ce88dc9aaa64",
+      "sizeBytes": 66926629
+    }
+  },
+  "originalInputsBefore": {
+    "initialization.json": {
+      "sha256": "4933ce6753124d7f633fc4059aacdb8d971f552301c51388d259b1cfd6872369",
+      "sizeBytes": 4017
+    },
+    "lifecycle-journal.jsonl": {
+      "sha256": "5bbea7649a9c9f5ebec1c1a0dd82693f4b28fdcfa3afa2854e0734723c3c7d7d",
+      "sizeBytes": 7795321
+    },
+    "process-policy.json": {
+      "sha256": "66b5a54af64bf40bb341853cf230d6d969e951221001b57c5724cbb4383fa5e1",
+      "sizeBytes": 2329
+    },
+    "receipt.json": {
+      "sha256": "ecf41429696eadb6873ec16a0aed68bbe491680eb0e672b56070dab09fc22bf9",
+      "sizeBytes": 6133720
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "92c355ddbeb500eb4f3924ef0583d41b2f63a810a6198ef0ae82ce88dc9aaa64",
+      "sizeBytes": 66926629
+    }
+  },
+  "originalSourceCommit": "8231d8b9d67e5188787b69225a72145f2d4c5a63",
+  "ownedInitialization": {
+    "canonicalParserRuns": 1,
+    "completeCanonicalHistoryRetained": true,
+    "completedMonotonic": 239334.707446869,
+    "controllerIdentity": {
+      "createTimeMicros": 1794931848326628,
+      "parentPid": 73754,
+      "pid": 73807
+    },
+    "cursorSourceSha256": "1d5013ce4e4ae7b00a560fa4c290ea82dfb4b04be112de322567854dac33b0a2",
+    "detachedCacheCloneOperations": 1,
+    "elapsedSeconds": 1.8743697379832156,
+    "factoryStartedMonotonic": 239332.833037782,
+    "guardPredicateAstSha256": "81f098fc92bffb77e5c1938e23b5284def002edd91ed130909ec788cafa9a343",
+    "guardSourceSha256": "e918de7431e3f27af2e03017a2f504bf00d85a6a08bf05d7ba5fcd3e14291035",
+    "independentMutableReplayStates": true,
+    "initialView": {
+      "controllerIdentity": {
+        "createTimeMicros": 1794931848326628,
+        "parentPid": 73754,
+        "pid": 73807
+      },
+      "controllers": [
+        "893715a3406746bd909949243a7126b8"
+      ],
+      "journalBytes": 14185127,
+      "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/replays/owned-guard/replay-large153-02/derived-owned-replay.jsonl",
+      "journalSha256": "e7ef0e3e8e933e35c5156243b0dfd08f80ff719ca9181b6602cf7c7194c057ff",
+      "lastSequence": 17120,
+      "launchRefusalArtifacts": [],
+      "leases": [
+        {
+          "absence": null,
+          "commandSha256": "2a2197bf10ef1b18d6a7a8ca81a4b90e3eefc280b5983a392fcc96cfbbc13666",
+          "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+          "exitCode": null,
+          "identity": {
+            "createTimeMicros": 1794931848326628,
+            "parentPid": 73754,
+            "pid": 73807
+          },
+          "leaseId": "893715a3406746bd909949243a7126b8",
+          "parentIdentity": null,
+          "readyMonotonic": 236380.412782522,
+          "registerMonotonic": 236380.416619699,
+          "registerSeq": 1,
+          "releaseSeq": null,
+          "role": "controller",
+          "stageId": "nested-load-sequence",
+          "waitSeq": null
+        }
+      ],
+      "referencedIdentities": [],
+      "runId": "f0b2e88f88d04b72a70ade750ad1db23",
+      "schema": "aijade.process-lifecycle-view.v1",
+      "scopeId": "037a1d9ad9964ec4afb8cf24c81475f4"
+    },
+    "innerOwner": {
+      "bornMonotonic": 239332.83515939,
+      "controllerIdentity": {
+        "createTimeMicros": 1794931848326628,
+        "parentPid": 73754,
+        "pid": 73807
+      },
+      "ownerId": "9d201305a3d8407c99ded55803eb4bad",
+      "role": "inner",
+      "scopeId": "037a1d9ad9964ec4afb8cf24c81475f4"
+    },
+    "innerStatistics": {
+      "bootstrapReceivedStates": 1,
+      "builtinColdStates": 1,
+      "builtinContainersChecked": 85609,
+      "builtinTailEvents": 0,
+      "calls": 1,
+      "coldOldPrefixReplays": 0,
+      "detachedDecisionCanonicalBytes": 0,
+      "detachedDecisionCopies": 0,
+      "failures": 0,
+      "frontierScopes": 1,
+      "fullPrefixComparedBytes": 0,
+      "fullPrefixReadBytes": 14185127,
+      "guardEvaluations": 0,
+      "hashUpdatedBytes": 14185127,
+      "initializationStateClones": 0,
+      "latestPrefixBytes": 14185127,
+      "ownerId": "9d201305a3d8407c99ded55803eb4bad",
+      "ownerRole": "inner",
+      "parsedBytes": 14185127,
+      "parsedEvents": 17120,
+      "poisoned": false,
+      "privateStateValidations": 1,
+      "retainedEvents": 17120,
+      "retainedLeases": 5707,
+      "snapshotCopies": 0
+    },
+    "inputViewKind": "EXPLICIT_PRECOMPUTED_OFFLINE_VIEW_NO_PROCESS_SAMPLE",
+    "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/replays/owned-guard/replay-large153-02/derived-owned-replay.jsonl",
+    "lastSequence": 17120,
+    "legacyCloneSourceSha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+    "mode": "paired-source-verified-owned-state-v1",
+    "nativeApiOrModelRequest": false,
+    "outerOwner": {
+      "bornMonotonic": 239334.323297935,
+      "controllerIdentity": {
+        "createTimeMicros": 1794931848326628,
+        "parentPid": 73754,
+        "pid": 73807
+      },
+      "ownerId": "f9d469b5d74b4f7cb21f594ace17778c",
+      "role": "outer",
+      "scopeId": "037a1d9ad9964ec4afb8cf24c81475f4"
+    },
+    "outerStatistics": {
+      "bootstrapReceivedStates": 1,
+      "builtinColdStates": 0,
+      "builtinContainersChecked": 0,
+      "builtinTailEvents": 0,
+      "calls": 0,
+      "coldOldPrefixReplays": 0,
+      "detachedDecisionCanonicalBytes": 0,
+      "detachedDecisionCopies": 0,
+      "failures": 0,
+      "frontierScopes": 1,
+      "fullPrefixComparedBytes": 0,
+      "fullPrefixReadBytes": 0,
+      "guardEvaluations": 0,
+      "hashUpdatedBytes": 0,
+      "initializationStateClones": 1,
+      "latestPrefixBytes": 14185127,
+      "ownerId": "f9d469b5d74b4f7cb21f594ace17778c",
+      "ownerRole": "outer",
+      "parsedBytes": 0,
+      "parsedEvents": 0,
+      "poisoned": false,
+      "privateStateValidations": 0,
+      "retainedEvents": 17120,
+      "retainedLeases": 5707,
+      "snapshotCopies": 0
+    },
+    "parserSourceSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "perEvaluationFullStateCopies": 0,
+    "policySha256": "487348358d0f14d79abed2be3a25f2fa64030378a7f703b159e9437ff6c75dc7",
+    "prefixBytes": 14185127,
+    "prefixSha256": "e7ef0e3e8e933e35c5156243b0dfd08f80ff719ca9181b6602cf7c7194c057ff",
+    "processObservationPerformed": false,
+    "recordWriteStartedMonotonic": 239334.707454126,
+    "runId": "f0b2e88f88d04b72a70ade750ad1db23",
+    "schema": "aijade.lifecycle.owned-guard-bootstrap.v1",
+    "scopeId": "037a1d9ad9964ec4afb8cf24c81475f4",
+    "sourceCommit": "8231d8b9d67e5188787b69225a72145f2d4c5a63",
+    "sourceOrigin": [
+      "file",
+      "/Volumes/Untitled/AIJADE/.runtime/posix/replays/owned-guard/replay-large153-02/derived-owned-replay.jsonl",
+      16777235,
+      324987
+    ],
+    "startedMonotonic": 239332.833077131,
+    "verdictGranted": false,
+    "viewCapturedMonotonic": 239332.833075782
+  },
+  "ownedReplayJournalSha256": "38839c3235be5750ffa73dd809041f42fca69df39b16b09fa00ccb3a556a7b1b",
+  "paddingFiniteTasks": 3176,
+  "prefixAtLeast14MiBRecords": 104,
+  "privateRuntimeDirectory": "/Volumes/Untitled/AIJADE/.runtime/posix/replays/owned-guard/replay-large153-02",
+  "rawRecords": 153,
+  "replayScriptSha256": "1a327dd12ba07747732c8fe9df24b3c4e85ca38855e449721d7e0cca3c37890d",
+  "schema": "aijade.ch7.owned-guard-e4-offline-replay.v1",
+  "seedConstructed": false,
+  "sourceFileIdentities": {
+    "binary_authentication.py": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+    "finite_runtime.py": "4b14999812dcd9a1caf9b5597292e839010cd00ea70536255c700930f3c8acf3",
+    "full_state_clone_cursor.py": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+    "mac_process_guard_v3.py": "e918de7431e3f27af2e03017a2f504bf00d85a6a08bf05d7ba5fcd3e14291035",
+    "newowned_guard_cursor.py": "1d5013ce4e4ae7b00a560fa4c290ea82dfb4b04be112de322567854dac33b0a2",
+    "process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "run_nested_load.py": "0ac8dad72557b8eaae80ad77de9b5c988d5b142d3d17240b1c9bc074c2597f82"
+  },
+  "status": "COMPLETE_153_TYPED_DECISIONS_MATCH_INDEPENDENT_QE3_COLD_ORACLE_NOT_LIVE_ACCEPTANCE",
+  "totalFiniteTasks": 6318,
+  "worktreeEdited": false
+}

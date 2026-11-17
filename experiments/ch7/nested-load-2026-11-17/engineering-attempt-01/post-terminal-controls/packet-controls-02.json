@@ -1,0 +1,110 @@
+{
+  "schema": "aijade.ch7.e3-post-terminal-packet-controls.v1",
+  "status": "NINE_ADVERSARIAL_POST_TERMINAL_CONTROLS_PASS",
+  "checkedAt": "2026-11-17T15:17:14.455879+00:00",
+  "controls": [
+    {
+      "control": "missing-original-empty-admission",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "exact physical packet file population differs",
+      "actualError": "exact physical packet file population differs",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/01-missing-original-empty-admission",
+      "mutatedManifestSha256": "75f8d31201824cf437a7142e160a9aab43d49f0c7e9a507cd47fb89df5d3a56b"
+    },
+    {
+      "control": "corrupt-physical-original",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "physical packet hash/size differs",
+      "actualError": "physical packet hash/size differs: run/engineering-01/preflight-continuity.json",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/02-corrupt-physical-original",
+      "mutatedManifestSha256": "75f8d31201824cf437a7142e160a9aab43d49f0c7e9a507cd47fb89df5d3a56b"
+    },
+    {
+      "control": "coherent-service-number-promotion",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "coherently changed negative summary numbers",
+      "actualError": "coherently changed negative summary numbers differ from retained original raw records",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/03-coherent-service-number-promotion",
+      "mutatedManifestSha256": "c01da43e1a92657cdf2f8b5f697ceb10a4951c9a0787150d1d936a95970a8e5d"
+    },
+    {
+      "control": "coherent-bool-zero-substitution",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "coherently changed negative summary numbers",
+      "actualError": "coherently changed negative summary numbers differ from retained original raw records",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/04-coherent-bool-zero-substitution",
+      "mutatedManifestSha256": "ff7bcd5fc21ec79c9e11e4f44ad9eef5e008b7cdb1d332aa73b915d882cd6a02"
+    },
+    {
+      "control": "coherent-backend-gate-promotion",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "negative engineering archive promoted scientific scope",
+      "actualError": "negative engineering archive promoted scientific scope",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/05-coherent-backend-gate-promotion",
+      "mutatedManifestSha256": "bdce4d8703f3e465681bd2dd05af96614c346004e18ea2ad2305a94b63cf8fe3"
+    },
+    {
+      "control": "coherent-truncated-original-prefix",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "retained original sample cutoff hash/event count differs",
+      "actualError": "retained original sample cutoff hash/event count differs",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/06-coherent-truncated-original-prefix",
+      "mutatedManifestSha256": "68bb6cf1345f1527da70a7f6a95ec140af9c5056fbfa6ba9b8d4231d74cc7c7c"
+    },
+    {
+      "control": "coherent-original-stream-pass-erasure",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "original first-sample PASS was changed",
+      "actualError": "original first-sample PASS was changed",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/07-coherent-original-stream-pass-erasure",
+      "mutatedManifestSha256": "2ed99c5299303fc4e6f2d2248d8a8304e1d90624f19091d8328c2d7e3b8b88bf"
+    },
+    {
+      "control": "coherent-source-map-omission",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "original passport and frozen source closure population differ",
+      "actualError": "original passport and frozen source closure population differ",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/08-coherent-source-map-omission",
+      "mutatedManifestSha256": "354dfd7d883bbe66076d9579640f91c0a89223f6559bd3756ed6579176490f38"
+    },
+    {
+      "control": "coherent-old-refusal-replacement",
+      "baselineAccepted": true,
+      "mutationNonNoOp": true,
+      "expectedPredicate": "immutable old P4 refusal summary differs",
+      "actualError": "immutable old P4 refusal summary differs",
+      "status": "REJECTED_EXPECTED_PREDICATE",
+      "fixture": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/archive-tools/packet-controls-02-fixtures/09-coherent-old-refusal-replacement",
+      "mutatedManifestSha256": "2a60acde730914e72a4c0f1d353c70eb63ef5853c9a352b9566ba38e71af7d8d"
+    }
+  ],
+  "discovered": 9,
+  "passed": 9,
+  "failed": 0,
+  "actualPrimaryPacket": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/audit/engineering-01-packet",
+  "actualPrimaryManifestSha256": "75f8d31201824cf437a7142e160a9aab43d49f0c7e9a507cd47fb89df5d3a56b",
+  "originalPrimaryUnchanged": true,
+  "independentColdNegativeAuditUnmodified": true,
+  "controlSourceSha256": "22b749a0086b2aef8919dfba88d93e91a75271c0e23c87f865190e766e9ee806",
+  "verifierSourceSha256": "5879bbeb82ccdcd0da7ea60df1345bcd027fcfbabb31e2299985c150e58c70e7",
+  "commonSourceSha256": "2518e2a8fbb9c58f4eda029d4b14f0e77015136254ff262b1e75eccdc4c174b4",
+  "scope": "Copied post-terminal archive integrity/semantics controls; no new live observation or scientific qualification.",
+  "backendQualified": false,
+  "independentHumanReview": false
+}

@@ -1,0 +1,32 @@
+test_actual_factory_writes_one_core_record_and_real_closed_writer_clock (test_clone_cursor_glue.CloneGlueControls.test_actual_factory_writes_one_core_record_and_real_closed_writer_clock) ... ok
+test_legacy_factory_preserves_old_type_and_does_not_write_initializer (test_clone_cursor_glue.CloneGlueControls.test_legacy_factory_preserves_old_type_and_does_not_write_initializer) ... ok
+test_new_factory_requires_real_registry_and_fresh_record (test_clone_cursor_glue.CloneGlueControls.test_new_factory_requires_real_registry_and_fresh_record) ... ok
+test_new_policy_cannot_use_old_runtime_cursor_or_unbound_candidate (test_clone_cursor_glue.CloneGlueControls.test_new_policy_cannot_use_old_runtime_cursor_or_unbound_candidate) ... ok
+test_new_raw_guard_is_recomputed_both_runtime_and_original_cold_path (test_clone_cursor_glue.CloneGlueControls.test_new_raw_guard_is_recomputed_both_runtime_and_original_cold_path) ... FAIL
+test_wrong_policy_source_initializer_and_legacy_field_substitution_refuse (test_clone_cursor_glue.CloneGlueControls.test_wrong_policy_source_initializer_and_legacy_field_substitution_refuse) ... ok
+test_wrong_raw_mode_or_preparation_scope_or_cutoff_refuse (test_clone_cursor_glue.CloneGlueControls.test_wrong_raw_mode_or_preparation_scope_or_cutoff_refuse) ... ok
+test_artifact_type_violation_poisons_without_executing_hooks (test_full_state_clone_cursor.FullStateCloneControls.test_artifact_type_violation_poisons_without_executing_hooks) ... ok
+test_every_original_prefix_matches_legacy_complete_detached_contract (test_full_state_clone_cursor.FullStateCloneControls.test_every_original_prefix_matches_legacy_complete_detached_contract) ... ok
+test_exact_parser_source_is_mandatory (test_full_state_clone_cursor.FullStateCloneControls.test_exact_parser_source_is_mandatory) ... ok
+test_new_tail_is_checked_independently_and_old_scope_uses_its_own_prefix (test_full_state_clone_cursor.FullStateCloneControls.test_new_tail_is_checked_independently_and_old_scope_uses_its_own_prefix) ... ok
+test_paired_bootstrap_is_one_parse_and_two_detached_mutable_states (test_full_state_clone_cursor.FullStateCloneControls.test_paired_bootstrap_is_one_parse_and_two_detached_mutable_states) ... ok
+test_rehashed_old_mutation_and_scope_regression_poison (test_full_state_clone_cursor.FullStateCloneControls.test_rehashed_old_mutation_and_scope_regression_poison) ... ok
+test_returned_mutation_preserves_internal_aliases_but_not_cache_aliases (test_full_state_clone_cursor.FullStateCloneControls.test_returned_mutation_preserves_internal_aliases_but_not_cache_aliases) ... ok
+test_same_prefix_changed_view_is_not_cached_verdict (test_full_state_clone_cursor.FullStateCloneControls.test_same_prefix_changed_view_is_not_cached_verdict) ... ok
+test_unsupported_types_or_cycles_never_reach_marshal_load (test_full_state_clone_cursor.FullStateCloneControls.test_unsupported_types_or_cycles_never_reach_marshal_load) ... ok
+
+======================================================================
+FAIL: test_new_raw_guard_is_recomputed_both_runtime_and_original_cold_path (test_clone_cursor_glue.CloneGlueControls.test_new_raw_guard_is_recomputed_both_runtime_and_original_cold_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/tests/shell/test_clone_cursor_glue.py", line 54, in test_new_raw_guard_is_recomputed_both_runtime_and_original_cold_path
+    self.assertEqual(result['status'],'PASS',result)
+AssertionError: 'UNKNOWN' != 'PASS'
+- UNKNOWN
++ PASS
+ : {'status': 'UNKNOWN', 'blockers': [{'code': 'OBSERVATION_SCHEMA_OR_POLICY_UNKNOWN', 'severity': 'UNKNOWN'}], 'ownedProcesses': [], 'ownedRssBytes': None}
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.169s
+
+FAILED (failures=1)

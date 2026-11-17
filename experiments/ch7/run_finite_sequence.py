@@ -14,7 +14,7 @@ import time
 import psutil
 from finite_runtime import (validate_build, read_block_receipt, dispositions, BUILD_FREEZE_PATH,
     MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_observation,
-    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, online_lifecycle_cursors, OwnedRegistry,
+    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, online_lifecycle_cursors, lifecycle_observer_sources, OwnedRegistry,
     MAC_LIFECYCLE_PLAN, setup_lifecycle, managed_check_output, finish_monitored_cleanup, seal_refused_cleanup)
 
 GIB=1024**3
@@ -63,7 +63,7 @@ def _execute(a):
         require(plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy),'policy/plan/build decision mismatch')
         validate_mac_build_policy(policy,build)
         observe=mac_observer(policy).observe
-    inner_cursor_options, outer_cursor_options = online_lifecycle_cursors(policy)
+    inner_cursor_options, outer_cursor_options = {}, {}
     metadata=dict(binding,buildFreezeCommit=a.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
@@ -71,6 +71,9 @@ def _execute(a):
     if qualification:
         require(plan.name in ['2026-11-16-ch7-relocated-runtime-qualification.md',*MAC_PLANS] and a.settle_seconds==600,'new known qualification requires its one fixed settling phase')
     output.mkdir(parents=True);(output/'admission').mkdir()
+    inner_cursor_options, outer_cursor_options = online_lifecycle_cursors(policy,lifecycle=lifecycle,preparation_path=output/'initialization.json')
+    from finite_runtime import lifecycle_cursor_initialization
+    metadata.update(lifecycle_cursor_initialization(inner_cursor_options))
     planned=[m['cases'][i]['input']['caseId']+'/'+arm for m in inputs for i in range(10) for arm in m['cases'][i]['input']['conditions']]
     prepared=dict(status='PREPARED_NO_MEASUREMENT',codeCommit=implementation,purpose=inputs[0]['purpose'],
         plannedPairs=len(planned)//2,plannedConditionRows=len(planned),plannedBlocks=len(inputs),completedBlocks=0,

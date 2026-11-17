@@ -48,15 +48,25 @@ class _Approved:
 
 
 def _compare(block, approved, index, offset):
-    """Compare arbitrary short-read boundaries without joining/copying baseline."""
+    """Compare all equal bytes in C, including arbitrary short-read boundaries.
+
+    Full approved chunks are compared directly, without slicing or joining the
+    immutable baseline. Only a partial reference requires a temporary bytes
+    slice; it is consumed within one expression and is at most _CHUNK_BYTES.
+    The actual read block is never sliced. A mismatch still enters the caller's
+    existing full-SHA fallback, and no stream read or metadata check is skipped.
+    """
     position = 0
-    view = memoryview(block)
     while position < len(block):
         if index >= len(approved.chunks):
             return False, index, offset
         reference = approved.chunks[index]
         length = min(len(block) - position, len(reference) - offset)
-        if view[position:position + length] != memoryview(reference)[offset:offset + length]:
+        if offset == 0 and length == len(reference):
+            equal = block.startswith(reference, position, position + length)
+        else:
+            equal = block.startswith(reference[offset:offset + length], position, position + length)
+        if not equal:
             return False, index, offset
         position += length
         offset += length

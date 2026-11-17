@@ -1,0 +1,180 @@
+--- retained-E5/launch_nested_load.py
++++ E6-native/launch_nested_load.py
+@@ -23,23 +23,35 @@
+ import psutil
+ 
+ BASE = Path('/Volumes/Untitled/AIJADE')
+-C8 = BASE / '.research/runs/ch7-owned-state-20261118'
++C9 = BASE / '.research/runs/ch7-native-ready-20261118'
++LAUNCHER_HOME = C9 / 'launcher-preparation'
+ FIXED_PYTHON = BASE / '.runtime/python-envs/p2-tokenizer/bin/python'
+ WRAPPER = BASE / '.runtime/run-local.sh'
+ RUNNER_RELATIVE = 'experiments/ch7/run_nested_load.py'
+-RECORD = C8 / 'engineering-03-launch.json'
+-LOG = C8 / 'engineering-03-launch.log'
+-TERMINAL = C8 / 'engineering-03-launch.terminal.json'
+-RUN = BASE / '.runtime/posix/runs/ch7-owned-state-20261118/engineering-03'
++RECORD = C9 / 'engineering-04-launch.json'
++LOG = C9 / 'engineering-04-launch.log'
++TERMINAL = C9 / 'engineering-04-launch.terminal.json'
++RUN = BASE / '.runtime/posix/runs/ch7-native-ready-20261118/engineering-04'
+ WATCHDOG_SECONDS = 2250
+ SIGNAL_WAIT_SECONDS = 5
+ MAX_RECEIPT_BYTES = 16 * 1024 * 1024
++NATIVE_MODE = 'native-ready-release-v1'
++NATIVE_BINARY_SHA256 = 'c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa'
++LSOF_PATH = Path('/usr/sbin/lsof')
++LSOF_SHA256 = 'ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a'
++LSOF_ARGV = ['/usr/sbin/lsof', '-nP', '-iTCP:11434', '-sTCP:LISTEN', '-FpfPtTn']
++DEVELOPMENT_BASIS = dict(status='NATIVE_READY_COMPONENT_NOT_ALL_PASS', legacyComplete=10,
++    nativeComplete=9, attemptsPerHalf=10, firstNativeWholeSeconds=0.5640400309930556,
++    componentResultSha256='f121da1060acc9959dfdfe0a4c5d075cc009d88d7c8958df81dc23246d454c0e',
++    sameArtifactFirstPerRunUse='First of existing30 Git proofs within900 preparation; child first use within30 proofs/15 startup.',
++    additionalWarmup=False, listenerDeadlineExemption=False, coldArtifactFirstEverExecutionClaim=False,
++    qualificationGranted=False, fullNestedEngineeringStillRequired=True)
+ OBSERVERS = tuple('experiments/ch7/' + name for name in (
+     'mac_process_guard_v3.py', 'process_lifecycle.py', 'lifecycle_exec.py',
+     'phase_continuity.py', 'lifecycle_audit.py', 'mac_process_guard.py',
+     'mac_process_guard_v2.py', 'mac_bulk_census.c', 'finite_runtime.py',
+     'run_finite_sequence.py', 'run_finite_block.py', 'finite_audit.py',
+-    'finite_sequence_audit.py', 'godot_local.py', 'binary_authentication.py', 'measured_mac_monitor.py', 'full_state_clone_cursor.py', 'newowned_guard_cursor.py'))
++    'finite_sequence_audit.py', 'godot_local.py', 'binary_authentication.py', 'measured_mac_monitor.py', 'full_state_clone_cursor.py', 'newowned_guard_cursor.py', 'native_exec_registry.py', 'lifecycle_exec_native.c', 'listener_evidence.py'))
+ FALSE_GATES = dict(scientificAcceptance=False, qualificationStarted=False,
+     backendQualified=False, scientificAdmission=False,
+     formalHardwareQualification=False, independentHumanReview=False,
+@@ -68,6 +80,64 @@
+         for block in iter(lambda: stream.read(1024 * 1024), b''):
+             value.update(block)
+     return value.hexdigest()
++
++
++def stable_binary_sha(path, *, native=False):
++    """Complete byte read with before/after/current metadata; never execute."""
++    path=Path(path)
++    need(path.is_absolute() and path==path.resolve() and not path.is_symlink(), 'native/lsof binary canonical path')
++    descriptor=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
++    try:
++        before=os.fstat(descriptor)
++        need(stat.S_ISREG(before.st_mode), 'native/lsof binary must be regular')
++        if native:
++            need(before.st_uid==os.getuid() and before.st_nlink==1 and stat.S_IMODE(before.st_mode)==0o755,
++                 'native binary owner/link/exact0755 mode differs')
++        value=hashlib.sha256()
++        while block:=os.read(descriptor,1024*1024):value.update(block)
++        after=os.fstat(descriptor);current=os.stat(path,follow_symlinks=False)
++        def identity(item):return (item.st_dev,item.st_ino,item.st_size,item.st_mtime_ns,item.st_mode,item.st_uid,item.st_nlink)
++        need(identity(before)==identity(after)==identity(current), 'native/lsof binary changed during complete read')
++        return value.hexdigest()
++    finally:os.close(descriptor)
++
++
++def native_bindings(policy,protocol,passport,repo,sources,observers):
++    """One exact native/listener contract, all three published inputs agree."""
++    need(all(value.get('lifecycleExecMode')==NATIVE_MODE for value in (policy,protocol,passport)),
++         'explicit three-way native exec mode required')
++    fields={'mode','adapterSourceSha256','sourcePath','sourceSha256','binaryPath','binarySha256'}
++    bindings=[value.get('nativeExec') for value in (policy,protocol,passport)]
++    need(all(type(value) is dict and set(value)==fields for value in bindings)
++         and bindings[0]==bindings[1]==bindings[2], 'closed three-way native exec binding differs')
++    native=bindings[0]
++    need(native['mode']==NATIVE_MODE, 'native binding mode differs')
++    for field in ('adapterSourceSha256','sourceSha256','binarySha256'):hash_value(native[field])
++    adapter='experiments/ch7/native_exec_registry.py';source='experiments/ch7/lifecycle_exec_native.c'
++    need(native['adapterSourceSha256']==sources[adapter]==observers[adapter]==file_sha(repo/adapter),
++         'native adapter source pin differs')
++    need(canonical_path(native['sourcePath'])==repo/source and native['sourceSha256']==sources[source]
++         ==observers[source]==file_sha(repo/source), 'native C source pin/path differs')
++    binary=canonical_path(native['binaryPath'])
++    need(stable_binary_sha(binary,native=True)==native['binarySha256']==NATIVE_BINARY_SHA256,
++         'actual native binary fixed SHA differs')
++    need(policy.get('lifecycle',{}).get('execShimSha256')==native['binarySha256'],
++         'native lifecycle shim pin differs; legacy fallback forbidden')
++    fields={'mode','moduleSha256','command','executableSha256','maxSeconds','maxBytes'}
++    bindings=[value.get('listenerEvidence') for value in (policy,protocol,passport)]
++    need(all(type(value) is dict and set(value)==fields for value in bindings)
++         and bindings[0]==bindings[1]==bindings[2], 'closed three-way listener evidence differs')
++    listener=bindings[0];module='experiments/ch7/listener_evidence.py'
++    need(listener['mode']=='complete-managed-lsof-transcript-v1' and type(listener['command']) is list
++         and listener['command']==LSOF_ARGV and all(type(v) is str for v in listener['command'])
++         and type(listener['maxSeconds']) is float and listener['maxSeconds']==.5
++         and type(listener['maxBytes']) is int and listener['maxBytes']==65536,
++         'unchanged global listener argv/whole deadline/cap required')
++    need(hash_value(listener['moduleSha256'])==sources[module]==observers[module]==file_sha(repo/module),
++         'listener transcript source pin differs')
++    need(hash_value(listener['executableSha256'])==LSOF_SHA256==stable_binary_sha(LSOF_PATH),
++         'actual global lsof fixed executable SHA differs')
++    return {adapter,source,module}
+ 
+ 
+ def unique(pairs):
+@@ -148,7 +218,7 @@
+ 
+ def preflight(passport_path, expected_sha):
+     path = canonical_path(passport_path)
+-    need(path == C8 / 'engineering-03-passport.json', 'one independent nested passport required; never reuse another attempt')
++    need(path == C9 / 'engineering-04-passport.json', 'one independent nested passport required; never reuse another attempt')
+     need(path.is_file(), 'passport missing')
+     raw = path.read_bytes()
+     need(digest(raw) == hash_value(expected_sha), 'passport differs from external frozen SHA256')
+@@ -160,7 +230,7 @@
+     need(repo.is_dir() and not output.exists(), 'missing repo or existing engineering output')
+     need(output == RUN, 'one independent owned-state engineering output required')
+     need(not any(path.exists() for path in (RECORD, LOG, TERMINAL)), 'attempt artifacts exist; never retry')
+-    need(Path(__file__).resolve() == C8 / 'launch_nested_load.py', 'unexpected launcher location')
++    need(Path(__file__).resolve() == LAUNCHER_HOME / 'launch_nested_load.py', 'unexpected launcher location')
+     need(file_sha(Path(__file__)) == hash_value(passport['launcherSha256']), 'launcher source differs')
+     need(file_sha(canonical_path(WRAPPER)) == hash_value(passport['runtimeWrapperSha256']), 'runtime wrapper differs')
+     # Keep the venv entry path, not its resolved SDK target, as executable argv.
+@@ -192,7 +262,7 @@
+          and passport['minimumDemonstratedPrefixBytes']==protocol['minimumDemonstratedPrefixBytes']
+          and WATCHDOG_SECONDS==protocol['outerWatchdogSeconds'],'passport differs from prospective protocol')
+     need(protocol['runtime']['childStartupMaximumSeconds']==15,
+-         'E5 retains the explicit fifteen-second startup acceptance budget')
++         'E6 retains the explicit fifteen-second startup acceptance budget')
+     observers = passport['observerSources']
+     need(type(observers) is dict and set(observers) == set(OBSERVERS)
+          and all(sources.get(name) == expected for name, expected in observers.items()), 'observer dependency closure differs')
+@@ -222,14 +292,15 @@
+          ==hash_value(protocol.get('onlineReplaySourceSha256'))
+          ==hash_value(passport.get('onlineReplaySourceSha256')),
+          'owned-state source pin differs')
++    native_proof_sources=native_bindings(policy,protocol,passport,repo,sources,observers)
+     auth_pin = hash_value(policy.get('binaryAuthenticationSourceSha256'))
+     need(auth_pin == sources[auth_relative] == observers[auth_relative]
+          == file_sha(canonical_path(repo / auth_relative)), 'binary authentication source pin differs')
+     native = policy['nativeHelper']
+     need(file_sha(canonical_path(native['path'])) == hash_value(native['sha256']), 'native helper differs')
+     need(file_sha(repo / 'experiments/ch7/mac_bulk_census.c') == hash_value(native['sourceSha256']), 'native C source differs')
+-    for name, key in (('process_lifecycle.py', 'moduleSha256'), ('lifecycle_exec.py', 'execShimSha256')):
+-        need(file_sha(repo / 'experiments/ch7' / name) == hash_value(policy['lifecycle'][key]), 'lifecycle/shim source differs')
++    need(file_sha(repo/'experiments/ch7/process_lifecycle.py')==hash_value(policy['lifecycle']['moduleSha256']),
++         'lifecycle source differs')
+     commands = passport['preflightCommands']
+     need(type(commands) is list and len(commands) == 30, 'preflight30 commands required')
+     for item in commands:
+@@ -253,6 +324,7 @@
+              'distinct actual source proof hashes required')
+         proved.add(name)
+     need(owned_relative in proved, 'owned-state source must be proved by an actual Git show command')
++    need(native_proof_sources <= proved, 'all three native/listener source modules require actual Git show proofs')
+     for item in metadata:
+         wanted=digest(b'') if item['arguments'][0]=='status' else digest((passport['sourceCommit']+'\n').encode())
+         need(item['stdoutSha256']==wanted, 'exact metadata proof digest required')
+@@ -373,7 +445,7 @@
+         runtimeWrapperSha256=file_sha(WRAPPER), pythonEntry=str(FIXED_PYTHON), pythonSha256=file_sha(FIXED_PYTHON),
+         command=context['command'], cwd=str(context['repo']), output=str(context['output']),
+         parentProcess=parent, controllerProcess=None, startNewSession=True,
+-        watchdogSeconds=WATCHDOG_SECONDS, automaticRetries=0, **FALSE_GATES)
++        watchdogSeconds=WATCHDOG_SECONDS, automaticRetries=0, developmentComponentBasis=DEVELOPMENT_BASIS, **FALSE_GATES)
+     record_fd = exclusive(RECORD)
+     save_fd(record_fd, RECORD, record)
+     process = bound = report = exit_code = None
+@@ -455,7 +527,7 @@
+             elapsedSeconds=time.monotonic() - started, runnerReport=report,
+             errors=errors, automaticRetries=0, engineeringReportDelivered=delivered,
+             independentEngineeringReplayAccepted=False, wholeProcessGroupCleanupClaimed=False,
+-            table7_3='NOT_RUN', **FALSE_GATES)
++            table7_3='NOT_RUN', developmentComponentBasis=DEVELOPMENT_BASIS, **FALSE_GATES)
+         try:
+             save_new(TERMINAL, terminal)
+         finally:

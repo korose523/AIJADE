@@ -1,0 +1,11 @@
+--- E4-stage-before-startup10
++++ E4-prospective-startup15
+@@ -78,7 +78,7 @@
+          'fixed full nested topology')
+     need(runtime['alignmentModes'] == ['natural','parent-next-slot','natural','parent-next-slot'],
+          'fixed natural/adversarial alignment population')
+-    need(runtime['parentMaximumSeconds'] == 600 and runtime['childStartupMaximumSeconds'] == 10
++    need(runtime['parentMaximumSeconds'] == 600 and runtime['childStartupMaximumSeconds'] == 15
+          and runtime['childCleanupMaximumSeconds'] == 8 and runtime['childWatchdogSeconds'] == 145,
+          'fixed engineering wall/cleanup bounds')
+     need(type(p['prefixPaddingTaskCount']) is int and p['prefixPaddingTaskCount'] == 2500,

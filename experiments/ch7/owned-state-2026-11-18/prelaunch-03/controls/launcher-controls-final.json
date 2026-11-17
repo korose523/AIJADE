@@ -1,0 +1,72 @@
+{
+  "schema": "aijade.ch7.owned-parent-launcher-controls.v1",
+  "status": "MOCKED_PARENT_LAUNCHER_OWNED_CONTROLS_PASS_NOT_LIVE_VALIDATION",
+  "passed": 60,
+  "failed": 0,
+  "distinctTests": 60,
+  "inheritedE4Controls": 46,
+  "newOwnedControls": 14,
+  "newRealChildren": 0,
+  "newObserverRequests": 0,
+  "launcherSha256": "22de69b2d4434b39e0110ae699b7d6001c3cf1f8780569fde7df443ceacddae4",
+  "testSha256": "1e32dfe1eac377d2f3d6ab910334d7b9049c2bf1dfadd0f1329553e29582d04c",
+  "additionalTestSha256": "97f4a6a8d76bcce0d66d64ba9b8336129c6ef0ab7fc4cb30f3b4b028e221c442",
+  "fixtureSha256": "23ef2ef115114578d8a0feb18a59be5bf48086958198e281c779926474039f43",
+  "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/launcher-controls-owned-final.log",
+  "logSha256": "8ff127ebb95f29315d7e6c29a3d1068db1afa96b007813aed33b096a543d383e",
+  "sourceFiles": {
+    "launch_nested_load.py": "22de69b2d4434b39e0110ae699b7d6001c3cf1f8780569fde7df443ceacddae4",
+    "test_nested_launcher.py": "1e32dfe1eac377d2f3d6ab910334d7b9049c2bf1dfadd0f1329553e29582d04c",
+    "test_owned_launcher_adverse.py": "97f4a6a8d76bcce0d66d64ba9b8336129c6ef0ab7fc4cb30f3b4b028e221c442",
+    "testdata/nested-engineering-protocol.fixture.json": "23ef2ef115114578d8a0feb18a59be5bf48086958198e281c779926474039f43"
+  },
+  "testFiles": {
+    "test_nested_launcher.py": "1e32dfe1eac377d2f3d6ab910334d7b9049c2bf1dfadd0f1329553e29582d04c",
+    "test_owned_launcher_adverse.py": "97f4a6a8d76bcce0d66d64ba9b8336129c6ef0ab7fc4cb30f3b4b028e221c442"
+  },
+  "execution": {
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118",
+      "-p",
+      "test_*launcher*.py",
+      "-v"
+    ],
+    "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/launcher-controls-03-portable-deduplicated.log",
+    "exitCode": 0
+  },
+  "sourceContract": {
+    "mode": "owned-guard-state-exact-prefix-v1",
+    "initializationMode": "paired-source-verified-owned-state-v1",
+    "cursorModule": "experiments/ch7/newowned_guard_cursor.py",
+    "observers": 18,
+    "proofCommands": 30,
+    "distinctSourceProofs": 28,
+    "newOwnedSourceProofRequired": true,
+    "legacyCloneObserverRequired": true,
+    "childStartupMaximumSeconds": 15,
+    "otherE4BudgetsUnchanged": true,
+    "attempt": "engineering-03",
+    "run": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-owned-state-20261118/engineering-03"
+  },
+  "preservedHistory": {
+    "E4LauncherSha256": "5a5f4d4d429f046303bdbbc95e38991a45b809105c797ff8e73fbfc193410082",
+    "E4TestSha256": "89b2331b66f19126ac6fbd39aa8d9dcd7565cbacfc17f84392cc98137156001c",
+    "initial46PassLog": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/launcher-controls-01.log",
+    "duplicateDiscoveryLog": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/launcher-controls-02.log",
+    "duplicateDiscoveryResult": "106 executions passed: 46 inherited tests were discovered twice; final namespace import yields 60 unique tests. No production source or control assertion was changed to deduplicate."
+  },
+  "scope": {
+    "W5ChangedByThisTask": false,
+    "publishedByThisTask": false,
+    "realEngineeringValidation": false,
+    "backendQualified": false,
+    "scientificAcceptance": false,
+    "allLocalProcessesStopped": true
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "aijade.e6.native-parent-launcher-contract.v1",
+  "actualExecutionPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/launcher-preparation/launch_nested_load.py",
+  "recordParent": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118",
+  "recordNames": [
+    "engineering-04-launch.json",
+    "engineering-04-launch.log",
+    "engineering-04-launch.terminal.json"
+  ],
+  "run": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/engineering-04",
+  "observers": 21,
+  "newObserverModules": [
+    "experiments/ch7/native_exec_registry.py",
+    "experiments/ch7/lifecycle_exec_native.c",
+    "experiments/ch7/listener_evidence.py"
+  ],
+  "nativeMode": "native-ready-release-v1",
+  "nativeTopField": "lifecycleExecMode",
+  "nativeExecClosedFields": [
+    "mode",
+    "adapterSourceSha256",
+    "sourcePath",
+    "sourceSha256",
+    "binaryPath",
+    "binarySha256"
+  ],
+  "listenerEvidenceClosedFields": [
+    "mode",
+    "moduleSha256",
+    "command",
+    "executableSha256",
+    "maxSeconds",
+    "maxBytes"
+  ],
+  "threeWayBinding": [
+    "policy",
+    "protocol",
+    "passport"
+  ],
+  "sourcePathRequirement": "exact repo/experiments/ch7/lifecycle_exec_native.c; canonical, colocated with actual adapter source",
+  "nativeBinarySha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+  "nativeBinaryMetadata": "regular single-link inode, current UID, exact0755, before/after/current metadata stability; no execution by launcher preflight",
+  "lsofSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+  "lsofArguments": [
+    "/usr/sbin/lsof",
+    "-nP",
+    "-iTCP:11434",
+    "-sTCP:LISTEN",
+    "-FpfPtTn"
+  ],
+  "listenerBounds": {
+    "maxSeconds": 0.5,
+    "maxBytes": 65536
+  },
+  "proofPopulation": {
+    "total": 30,
+    "metadata": 2,
+    "distinctActualSourceShows": 28,
+    "mandatoryNewModules": 3,
+    "ownedSourceAlsoStillRequired": true,
+    "allOtherClosureBodiesVerifiedAgainstActualGit": true
+  },
+  "allE5BudgetsAndTopologyUnchanged": true,
+  "qualificationActivated": false,
+  "futureQ": null,
+  "futurePassportSha256": null
+}

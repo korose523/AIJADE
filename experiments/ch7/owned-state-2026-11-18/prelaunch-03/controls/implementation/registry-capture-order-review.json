@@ -1,0 +1,41 @@
+{
+  "schema": "aijade.e5.registry-capture-order-review.v1",
+  "status": "PROPOSED_ABBA_PATH_REFUTED_FOR_PINNED_SOURCE",
+  "sourceCommit": "8231d8b9d67e5188787b69225a72145f2d4c5a63",
+  "lifecycleSourceSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+  "actualOrder": [
+    "shared capture flock",
+    "Registry._mutex in _append",
+    "journal flock"
+  ],
+  "launchHasSynchronizedDecorator": false,
+  "runHasSynchronizedDecorator": false,
+  "decoratedRegistryMethods": [
+    "remember",
+    "close"
+  ],
+  "inverseCaptureInsidePrivateMethodsFound": false,
+  "recommendedProductionChange": "NONE on the refuted premise; do not introduce private-mutex-before-capture observer path against existing capture-before-private launch.",
+  "controls": {
+    "tests": 4,
+    "passed": 4,
+    "usesActualRegistryLaunchAppendAndCaptureLock": true,
+    "usesRealRLockAndNativeFlock": true,
+    "PopenMockedBeforeAnyOSSpawn": true,
+    "allThreadsBoundedJoined": true,
+    "log": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/registry-capture-order-controls-02.log",
+    "preservedFailureLog": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/registry-capture-order-controls-01.log",
+    "preservedFailureReason": "NTFS fixture mode was rejected by the actual owner/mode/link guard. Scratch moved to authorized project APFS; no source guard weakened."
+  },
+  "scope": {
+    "doesNotProveAllSchedules": true,
+    "observedWindows": 0,
+    "nativeCollectorApiModelCalls": 0,
+    "W5SourceChanged": false
+  },
+  "artifacts": {
+    "sourceorderingdesign.md": "eba8bea4e1d96e26149aad694a763091fd81c694d63079fa79d29d8945730801",
+    "tests/shell/test_registry_capture_order.py": "c0649f276482f39f8248ab4a63c0efb31d225a7d9729391191062406d27b4fea",
+    "registry-capture-order-controls-02.log": "3bc5cf013c1b66a5355af72d8d92531be08bc07d378251559fac03144df3f584"
+  }
+}

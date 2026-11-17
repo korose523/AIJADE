@@ -1,0 +1,640 @@
+{
+  "schema": "aijade.ch7.e5-partial-cold-negative-audit.v1",
+  "status": "REFUSED_NESTED_PARTIAL_RECORDS_INVENTORIED_NOT_ENGINEERING_ACCEPTED",
+  "sourceCommit": "48299b12847c11d5a629b0292ea19d57fe771cd4",
+  "checkedAt": "2026-11-17T18:23:11.804740+00:00",
+  "writerStabilityAccepted": true,
+  "writerStabilityProofSha256": "f0af3f35600d93481a84f3f384bce9a775f3e2f8990463572973c9b0a3916216",
+  "parentTerminalSha256": "a6b92b37817aa8266c7b3795a5c1e911aeb4c627b4a5072a8b0c30bef648f4df",
+  "inputFiles": {
+    "admission/telemetry.jsonl": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "engineering-passport.json": {
+      "sha256": "b8464857fa019dcdf2d9d5979ba033c4796e86934b26c664e1dcc866c58ab3dd",
+      "bytes": 48361
+    },
+    "initialization.json": {
+      "sha256": "9ca4d76f3a9149de6c7749839fb72edca702c7ef638e2aea29d35a4ef3f4db43",
+      "bytes": 5557
+    },
+    "lifecycle-journal.jsonl": {
+      "sha256": "99cc0d256b407cfa32660a996636b19fe4a3c721049240f31dce520e323da87c",
+      "bytes": 8003816
+    },
+    "phase-events.jsonl": {
+      "sha256": "a8f517c9a5f68a4d20e6c6f275b30e4c1572532db2b83caa876dbd5065113bd3",
+      "bytes": 71209
+    },
+    "preflight-continuity.json": {
+      "sha256": "a66d0fccf7b8072a4173f4e4e15a660cbd1a574cf5a9ac2436d5bb9d9d289bd6",
+      "bytes": 1552
+    },
+    "preflight-service-events.jsonl": {
+      "sha256": "4d75a85cda6aba245f14e68731ecaf1a9a778a532dc188e980996f083a49a698",
+      "bytes": 39352
+    },
+    "process-policy.json": {
+      "sha256": "7c655acfd565b3eaae3af2c79701e306809481fcb26abef804bbdbcd90375405",
+      "bytes": 2325
+    },
+    "receipt.json": {
+      "sha256": "115b844d69bdfb0be8109144b2f9293be956b4573e6463b0a68d06cdce1b2f0e",
+      "bytes": 6278170
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "5cd7f4c10fd0cdc4e95853a71424bab0b57f52a2709870f663671be03064dfe4",
+      "bytes": 76431499
+    },
+    "stage-events.jsonl": {
+      "sha256": "1688fa6748ea6bb3e74fc7fe7ab5f14d2deb807940a1e4ef92641c97c875ac59",
+      "bytes": 390
+    }
+  },
+  "originalDirectoryState": {
+    "exists": true,
+    "files": {
+      "admission/telemetry.jsonl": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "engineering-passport.json": {
+        "sha256": "b8464857fa019dcdf2d9d5979ba033c4796e86934b26c664e1dcc866c58ab3dd",
+        "bytes": 48361
+      },
+      "initialization.json": {
+        "sha256": "9ca4d76f3a9149de6c7749839fb72edca702c7ef638e2aea29d35a4ef3f4db43",
+        "bytes": 5557
+      },
+      "lifecycle-journal.jsonl": {
+        "sha256": "99cc0d256b407cfa32660a996636b19fe4a3c721049240f31dce520e323da87c",
+        "bytes": 8003816
+      },
+      "phase-events.jsonl": {
+        "sha256": "a8f517c9a5f68a4d20e6c6f275b30e4c1572532db2b83caa876dbd5065113bd3",
+        "bytes": 71209
+      },
+      "preflight-continuity.json": {
+        "sha256": "a66d0fccf7b8072a4173f4e4e15a660cbd1a574cf5a9ac2436d5bb9d9d289bd6",
+        "bytes": 1552
+      },
+      "preflight-service-events.jsonl": {
+        "sha256": "4d75a85cda6aba245f14e68731ecaf1a9a778a532dc188e980996f083a49a698",
+        "bytes": 39352
+      },
+      "process-policy.json": {
+        "sha256": "7c655acfd565b3eaae3af2c79701e306809481fcb26abef804bbdbcd90375405",
+        "bytes": 2325
+      },
+      "receipt.json": {
+        "sha256": "115b844d69bdfb0be8109144b2f9293be956b4573e6463b0a68d06cdce1b2f0e",
+        "bytes": 6278170
+      },
+      "settling/telemetry.jsonl": {
+        "sha256": "5cd7f4c10fd0cdc4e95853a71424bab0b57f52a2709870f663671be03064dfe4",
+        "bytes": 76431499
+      },
+      "stage-events.jsonl": {
+        "sha256": "1688fa6748ea6bb3e74fc7fe7ab5f14d2deb807940a1e4ef92641c97c875ac59",
+        "bytes": 390
+      }
+    },
+    "directories": [
+      {
+        "path": "",
+        "empty": false
+      },
+      {
+        "path": "admission",
+        "empty": false
+      },
+      {
+        "path": "settling",
+        "empty": false
+      }
+    ],
+    "emptyFiles": [
+      "admission/telemetry.jsonl"
+    ]
+  },
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "d350cf6a511cd3dde76f66129970a1e1d2d101faeb43201f227425fb3d075a9c",
+      "bytes": 12572
+    },
+    {
+      "path": "Aijade.slnx",
+      "sha256": "cfd0460a9d204265e3f2ee8cf0c255650d24eebedbfd5f509a1aebb9dfdf5637",
+      "bytes": 1469
+    },
+    {
+      "path": "Directory.Build.props",
+      "sha256": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af",
+      "bytes": 1163
+    },
+    {
+      "path": "Directory.Packages.props",
+      "sha256": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d",
+      "bytes": 1530
+    },
+    {
+      "path": "README.md",
+      "sha256": "c0784626d29032c467218841f7d9b83b511c4b93eba4561cb6af5de7f03898ce",
+      "bytes": 14663
+    },
+    {
+      "path": "configs/research/ch7-mac-owned-state-engineering-process-policy.json",
+      "sha256": "7c655acfd565b3eaae3af2c79701e306809481fcb26abef804bbdbcd90375405",
+      "bytes": 2325
+    },
+    {
+      "path": "experiments/ch7/audit_nested_load.py",
+      "sha256": "88a3d165f1e47ed1fd533011f7858a58c519105f5f1caa3eb0bb384a3204cd11",
+      "bytes": 58564
+    },
+    {
+      "path": "experiments/ch7/binary_authentication.py",
+      "sha256": "b87fd94186c805ca7639d3e7ac4cc2ca93c4319a194ab6c3932ee221710bc4d4",
+      "bytes": 10451
+    },
+    {
+      "path": "experiments/ch7/finite_audit.py",
+      "sha256": "133d4f7bad0788bac104091e4051d2a0332bd9771944068d2317efb8c4e019b1",
+      "bytes": 32726
+    },
+    {
+      "path": "experiments/ch7/finite_runtime.py",
+      "sha256": "4b14999812dcd9a1caf9b5597292e839010cd00ea70536255c700930f3c8acf3",
+      "bytes": 41475
+    },
+    {
+      "path": "experiments/ch7/finite_sequence_audit.py",
+      "sha256": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696",
+      "bytes": 62171
+    },
+    {
+      "path": "experiments/ch7/full_state_clone_cursor.py",
+      "sha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+      "bytes": 13263
+    },
+    {
+      "path": "experiments/ch7/godot_local.py",
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+      "bytes": 1008
+    },
+    {
+      "path": "experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+      "bytes": 53328
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "bytes": 1005
+    },
+    {
+      "path": "experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "bytes": 16530
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "bytes": 26263
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "bytes": 45772
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "e918de7431e3f27af2e03017a2f504bf00d85a6a08bf05d7ba5fcd3e14291035",
+      "bytes": 77528
+    },
+    {
+      "path": "experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json",
+      "sha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+      "bytes": 79889
+    },
+    {
+      "path": "experiments/ch7/measured_mac_monitor.py",
+      "sha256": "27c4a16511b5f27009e9550ecc425998d48a5d4f25e57d5b7f174463ce6fa0e5",
+      "bytes": 14567
+    },
+    {
+      "path": "experiments/ch7/nested-load-2026-11-17/freeze/source-freeze-preparation.json",
+      "sha256": "f9e12d32779b58724a67c0aecba9cde5856e6534828b7a76ae44f7e54e38b007",
+      "bytes": 1275
+    },
+    {
+      "path": "experiments/ch7/nested-load-2026-11-17/freeze/static-chain-bound.json",
+      "sha256": "1c9b4ee1f886e556343a3382f824d5c731dc82713fa39c19d1f42db7830510be",
+      "bytes": 2200
+    },
+    {
+      "path": "experiments/ch7/nested-load-2026-11-17/freeze/static_chain_bound.py",
+      "sha256": "4f744970f04945d1684f3af5f85aa2768b4860997c383d44ec7e0464cb7f2e23",
+      "bytes": 4055
+    },
+    {
+      "path": "experiments/ch7/nested_event_index.py",
+      "sha256": "dde7acfc55738000ae01566878768ad796b721439aaab8ecafa13dac1a7babcf",
+      "bytes": 6174
+    },
+    {
+      "path": "experiments/ch7/newowned_guard_cursor.py",
+      "sha256": "1d5013ce4e4ae7b00a560fa4c290ea82dfb4b04be112de322567854dac33b0a2",
+      "bytes": 18957
+    },
+    {
+      "path": "experiments/ch7/owned-state-2026-11-18/freeze/launch_nested_load.py",
+      "sha256": "22de69b2d4434b39e0110ae699b7d6001c3cf1f8780569fde7df443ceacddae4",
+      "bytes": 26791
+    },
+    {
+      "path": "experiments/ch7/owned-state-2026-11-18/freeze/test_nested_launcher.py",
+      "sha256": "1e32dfe1eac377d2f3d6ab910334d7b9049c2bf1dfadd0f1329553e29582d04c",
+      "bytes": 28511
+    },
+    {
+      "path": "experiments/ch7/owned-state-2026-11-18/freeze/test_owned_launcher_adverse.py",
+      "sha256": "97f4a6a8d76bcce0d66d64ba9b8336129c6ef0ab7fc4cb30f3b4b028e221c442",
+      "bytes": 5838
+    },
+    {
+      "path": "experiments/ch7/owned-state-2026-11-18/freeze/testdata/nested-engineering-protocol.fixture.json",
+      "sha256": "23ef2ef115114578d8a0feb18a59be5bf48086958198e281c779926474039f43",
+      "bytes": 3219
+    },
+    {
+      "path": "experiments/ch7/phase_continuity.py",
+      "sha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+      "bytes": 16219
+    },
+    {
+      "path": "experiments/ch7/process_lifecycle.py",
+      "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+      "bytes": 58249
+    },
+    {
+      "path": "experiments/ch7/run_finite_block.py",
+      "sha256": "4650dfd296af798bf5b410a705c1d5690e8107eded3e04790b9f15eba3d258df",
+      "bytes": 30772
+    },
+    {
+      "path": "experiments/ch7/run_finite_sequence.py",
+      "sha256": "a05e1542a613b840b220d8e7060547ee65730e3b5bbce6e217c493a0e03c8b9d",
+      "bytes": 28920
+    },
+    {
+      "path": "experiments/ch7/run_nested_load.py",
+      "sha256": "0ac8dad72557b8eaae80ad77de9b5c988d5b142d3d17240b1c9bc074c2597f82",
+      "bytes": 29582
+    },
+    {
+      "path": "experiments/plans/2026-11-18-ch7-owned-state-engineering.md",
+      "sha256": "96596d5c652e5f5e373a63d051854a53b36aee5c8704b5e375da32303f512477",
+      "bytes": 10707
+    },
+    {
+      "path": "experiments/plans/2026-11-18-ch7-owned-state-protocol.json",
+      "sha256": "1962a43ffeddcc6493f2e6b0a77e34a6d6692e80ce7ecc85f83624c7250ad785",
+      "bytes": 3232
+    },
+    {
+      "path": "global.json",
+      "sha256": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40",
+      "bytes": 81
+    },
+    {
+      "path": "tests/shell/run_versioned_mac_controls.py",
+      "sha256": "5c2fe699951d3ee609968fa817a665b24b98fbb98da692f0c1bfce20ca93d1ae",
+      "bytes": 11241
+    },
+    {
+      "path": "tests/shell/test_binary_c_compare.py",
+      "sha256": "ff2ff8041400357fae2f0b7b7f7a97a8a4ce8144f2763bfce1d475a9d0c46f14",
+      "bytes": 10861
+    },
+    {
+      "path": "tests/shell/test_mac_prefix_decision.py",
+      "sha256": "c7bf0d390f21405ad37a1d0a0e6d499b60704fa0d3c9013c3c83fbf68b073caf",
+      "bytes": 24581
+    },
+    {
+      "path": "tests/shell/test_measured_mac_monitor.py",
+      "sha256": "dee535f2285ec0e4d5906a5b0456e787c2415ee3e05533ab5c1870321d666b85",
+      "bytes": 8060
+    },
+    {
+      "path": "tests/shell/test_nested_event_index.py",
+      "sha256": "3eecfc5c25631a4a627bbcb7836600efa7c5d58be2a9beda0f9b4896544ef840",
+      "bytes": 5616
+    },
+    {
+      "path": "tests/shell/test_nested_load_audit.py",
+      "sha256": "285181a2e056c6854ee4883921dbe08c85fdfd85097d251367ebb708b690e441",
+      "bytes": 10213
+    },
+    {
+      "path": "tests/shell/test_nested_owned_initialization_audit.py",
+      "sha256": "8d75e89563445224cdaeebc2ed82bd30d44cd91747422d5a1656ef51467e9c47",
+      "bytes": 18681
+    },
+    {
+      "path": "tests/shell/test_owned_guard_cursor.py",
+      "sha256": "ec7d60f87a40891a40d6d913cc93e9e7543eae145b762daeafb0edee196dfb4a",
+      "bytes": 11322
+    },
+    {
+      "path": "tests/shell/test_segmented_capture.py",
+      "sha256": "dfef5cb4105094ba101b44fbb2cc1a3bf313b95121875417e56ba897b49b972c",
+      "bytes": 17733
+    },
+    {
+      "path": "tools/dev-services.sh",
+      "sha256": "16270ce0d239663a8ac7228bbf03e19ebd6b98a54ab9a4ffd5681f99acc89e68",
+      "bytes": 1121
+    }
+  ],
+  "numbers": {
+    "originalRunFiles": 11,
+    "settlingRawSamples": 174,
+    "settlingRawGuardColdPass": 173,
+    "settlingRawGuardColdUnknown": 1,
+    "settlingOriginalStreamValidationPass": 173,
+    "settlingOriginalStreamValidationRefused": 1,
+    "settlingCompleteEngineeringServicePass": 173,
+    "settlingCompleteServiceClockWithinTwoSeconds": 174,
+    "settlingControllerValidatedSamples": 173,
+    "settlingPlannedSlots": 300,
+    "settlingUnattemptedSlots": 126,
+    "admissionPlannedSlots": 60,
+    "admissionRawSamples": 0,
+    "originalPhaseEventRecords": 175,
+    "originalPreflightServiceRecords": 174,
+    "nestedRuntimeSamples": 0,
+    "nestedBlocksStarted": 0,
+    "nestedBlocksCompleted": 0,
+    "sourceProofGitTasks": 30,
+    "prefixPaddingGitTasks": 2500,
+    "actualGitFiniteTasks": 2530,
+    "nativeCaptures": 348,
+    "listenerFiniteTasks": 348,
+    "finiteLeases": 3226,
+    "finiteActualParentWaitZero": 3226,
+    "journalEvents": 9681,
+    "finalJournalBytes": 8003816,
+    "originalSampleJournalCutoffBytes": 8003226,
+    "originalSampleJournalCutoffEvents": 9680,
+    "fullServiceSeconds": 1.4176597030018456,
+    "startLatenessSeconds": 0.009624236001400277,
+    "rawCaptureSeconds": 1.4117111789819319,
+    "outerValidatorSeconds": 3.467398346401751e-05,
+    "rawWriteSeconds": 0.005751971999416128,
+    "beforeLockHeldSeconds": 0.7672353629895952,
+    "afterLockHeldSeconds": 0.4187295560259372,
+    "beforeLockRequestToAcquireSeconds": 0.004223208001349121,
+    "afterLockRequestToAcquireSeconds": 0.003771979972952977,
+    "actualPreparationSeconds": 436.20280633098446,
+    "initializationSeconds": 0.8050904629926663,
+    "initializationThroughWriteSeconds": 0.8290608449897263,
+    "initializationPrefixBytes": 6276132,
+    "initializationPrefixEvents": 7592,
+    "actualLastElapsedSeconds": 346.0096242360014,
+    "actualControllerExitCode": 1,
+    "innerActualGuardEvaluations": 174,
+    "outerActualGuardEvaluations": 173,
+    "innerDetachedDecisionCanonicalBytes": 12089,
+    "outerDetachedDecisionCanonicalBytes": 11937,
+    "finalOuterValidatorCalledCursor": false,
+    "originalLastOwnedRssBytes": null,
+    "maximumFiniteChainBytes": 2483,
+    "nonFiniteEventBytes": 2271,
+    "modelRequests": 0,
+    "rendererRequests": 0
+  },
+  "allRawColdDetailsSha256": "03b9eeda1d0ccdee95f9cd8f0b055f092710435852b8f6e1c3b8c18bbeb67655",
+  "initializationAudit": {
+    "schema": "aijade.ch7.posthoc-adverse-owned-counter-audit.v1",
+    "results": {
+      "inner": {
+        "actualCalls": 174,
+        "finalStatistics": {
+          "calls": 175,
+          "parsedEvents": 9680,
+          "parsedBytes": 8003226,
+          "fullPrefixReadBytes": 1249444299,
+          "fullPrefixComparedBytes": 1241441073,
+          "hashUpdatedBytes": 8003226,
+          "coldOldPrefixReplays": 0,
+          "snapshotCopies": 0,
+          "failures": 0,
+          "builtinColdStates": 1,
+          "builtinTailEvents": 2088,
+          "builtinContainersChecked": 46495,
+          "bootstrapReceivedStates": 1,
+          "initializationStateClones": 0,
+          "privateStateValidations": 175,
+          "guardEvaluations": 174,
+          "detachedDecisionCopies": 174,
+          "detachedDecisionCanonicalBytes": 12089,
+          "latestPrefixBytes": 8003226,
+          "frontierScopes": 1,
+          "poisoned": false,
+          "retainedEvents": 9680,
+          "retainedLeases": 3227,
+          "ownerId": "d76a20aa27ae4c34a0a6e85ca09c7990",
+          "ownerRole": "inner"
+        }
+      },
+      "outer": {
+        "actualCalls": 173,
+        "finalStatistics": {
+          "calls": 173,
+          "parsedEvents": 2076,
+          "parsedBytes": 1717171,
+          "fullPrefixReadBytes": 1235164941,
+          "fullPrefixComparedBytes": 1233447770,
+          "hashUpdatedBytes": 1717171,
+          "coldOldPrefixReplays": 0,
+          "snapshotCopies": 0,
+          "failures": 0,
+          "builtinColdStates": 0,
+          "builtinTailEvents": 2076,
+          "builtinContainersChecked": 8477,
+          "bootstrapReceivedStates": 1,
+          "initializationStateClones": 1,
+          "privateStateValidations": 173,
+          "guardEvaluations": 173,
+          "detachedDecisionCopies": 173,
+          "detachedDecisionCanonicalBytes": 11937,
+          "latestPrefixBytes": 7993303,
+          "frontierScopes": 1,
+          "poisoned": false,
+          "retainedEvents": 9668,
+          "retainedLeases": 3223,
+          "ownerId": "ebe3d8c857304b4783a606d0f2119bd8",
+          "ownerRole": "outer"
+        }
+      }
+    },
+    "actualCompleteRawDecisions": 174,
+    "positiveDispatcherCanaryCalls": 1,
+    "adverseDispatcherCanaryCalls": 0,
+    "actualSourceShortCircuit": "Original validate_mac_observation requires raw PASS before resolving mac_observer or calling outer cursor",
+    "originalStreamRefusalPreserved": true,
+    "all174InitializationReferencesVerified": true,
+    "engineeringAccepted": false
+  },
+  "ownedPredicateProof": {
+    "predicateAstSha256": "81f098fc92bffb77e5c1938e23b5284def002edd91ed130909ec788cafa9a343",
+    "originalCoreAstSha256": "b6bc9b54ba40d04503cbee3ad71ddfe64acdd6724abf47f8f01c50693b49c30b"
+  },
+  "keyIndependentOldOraclePrefixCrosschecks": [
+    {
+      "globalIndex": 0,
+      "bytes": 6286055,
+      "events": 7604,
+      "sha256": "da7537ae2ade4a1845089acc68132348b6b9bcb260cafa943e93ae85b4755032",
+      "exactTypedStateMatch": true
+    },
+    {
+      "globalIndex": 173,
+      "bytes": 8003226,
+      "events": 9680,
+      "sha256": "d063bfd36af737744ee9ebe8c74f2081dc97121408ccaa12a786b01b45a0d7d8",
+      "exactTypedStateMatch": true
+    }
+  ],
+  "auditMethod": "FrozenE5 method: independent original full oracle final once via EventIndex plus initialization/first/last key-prefix exact typed crosschecks; every174 complete raw guard original full cold replay and every actual prefix hash/view/index. No production PASS cache.",
+  "originalFrozenCompleteAuditorAttempt": "e5-frozen-full-audit-01.attempt.json; original88a3 rejected partial producer; no original source or acceptance gate changed",
+  "actualAdversePredicate": "ORIGINAL_RAW_UNKNOWN_LISTENER_BEFORE_AND_STREAM_REFUSAL",
+  "actualServiceClockWithinTwoSeconds": true,
+  "originalProducerErrors": [
+    "PreflightRefused: INVALID_SAMPLE: ValueError: process observation adverse or unknown",
+    "complete terminal journal did not reach frozen minimum prefix envelope"
+  ],
+  "originalParentErrors": [
+    "report delivery adverse: ValueError: unknown controller identity or nonzero actual wait"
+  ],
+  "descriptiveDistributions": {
+    "fullServiceSeconds": {
+      "n": 174,
+      "minimum": 0.9731440860196017,
+      "median": 1.0130717740103137,
+      "p95": 1.074291308246029,
+      "p99": 1.201837911711483,
+      "maximum": 1.4176597030018456,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "rawCaptureSeconds": {
+      "n": 174,
+      "minimum": 0.9200335369969252,
+      "median": 0.9570083660073578,
+      "p95": 1.005396941844083,
+      "p99": 1.1432323882399955,
+      "maximum": 1.4117111789819319,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "outerValidatorSeconds": {
+      "n": 174,
+      "minimum": 3.467398346401751e-05,
+      "median": 0.050900665009976365,
+      "p95": 0.058861259049444926,
+      "p99": 0.09085734266555007,
+      "maximum": 0.15358454899978824,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "rawWriteSeconds": {
+      "n": 174,
+      "minimum": 0.0034273610217496753,
+      "median": 0.004890254989732057,
+      "p95": 0.005845338734798133,
+      "p99": 0.014027638888219646,
+      "maximum": 0.0642715519934427,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "startLatenessSeconds": {
+      "n": 174,
+      "minimum": 0.0004777839931193739,
+      "median": 0.007881135490606539,
+      "p95": 0.009969803995045368,
+      "p99": 0.01002231359569123,
+      "maximum": 0.010063182999147102,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "beforeLockHeldSeconds": {
+      "n": 174,
+      "minimum": 0.3589332030096557,
+      "median": 0.3736642279982334,
+      "p95": 0.38748869549744996,
+      "p99": 0.39834654800972236,
+      "maximum": 0.7672353629895952,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "afterLockHeldSeconds": {
+      "n": 174,
+      "minimum": 0.3590572570101358,
+      "median": 0.37506786749872845,
+      "p95": 0.39117355270864207,
+      "p99": 0.4231414059642704,
+      "maximum": 0.4750776469882112,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "beforeLockRequestToAcquireSeconds": {
+      "n": 174,
+      "minimum": 0.0031494239810854197,
+      "median": 0.004099829995539039,
+      "p95": 0.00455020439112559,
+      "p99": 0.004989919081854171,
+      "maximum": 0.005389895988628268,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    },
+    "afterLockRequestToAcquireSeconds": {
+      "n": 174,
+      "minimum": 0.003209002985386178,
+      "median": 0.004090771486517042,
+      "p95": 0.004465615752269514,
+      "p99": 0.004703479905438144,
+      "maximum": 0.005134234990691766,
+      "quantileMethod": "linear interpolation at (n-1)*p; descriptive original records"
+    }
+  },
+  "retainedNulls": {
+    "settlingElapsedSeconds": null,
+    "settlingEndMonotonic": null,
+    "nestedEpochMonotonic": null,
+    "runtimeHandoffAnchor": null
+  },
+  "completeEngineeringAuditAccepted": false,
+  "scope": {
+    "terminalRecordIntegrityAccepted": true,
+    "fullEngineeringEnvelopeAccepted": false,
+    "all174OriginalRawColdDecisionsExactlyReproduced": true,
+    "actualOriginalRawGuardsColdPass": 173,
+    "actualOriginalRawColdUnknown": 1,
+    "actualCompleteServicesAccepted": 173,
+    "completeSettlingAccepted": false,
+    "dualNestedLoadExecuted": false,
+    "backendQualified": false,
+    "formalHardwareQualification": false,
+    "independentHumanReview": false,
+    "authorApproval": false,
+    "scientificAcceptance": false,
+    "seedConstructed": false,
+    "heldoutComparisonComplete": false,
+    "table7_3": "NOT_RUN"
+  },
+  "interpretation": "173 raw/stream records passed. Final index173 independently replays UNKNOWN with LISTENER_OBSERVATION_UNKNOWN before, RSSNone and streamREFUSED; its full service1.417659703s is within2s. All174 service clocks meet2s, but settling stops with126 unattempted slots and60 admission slots. Inner evaluates174; outer validates173 because original wrapper refuses the adverse last raw before its cursor. No nested controllers or qualification ran; these single-stream data prove neither lock-contention repair nor a causal speedup.",
+  "originalProducerFieldsModified": false,
+  "fullPassAuditorInvoked": true,
+  "frozenFullPassAuditorAccepted": false,
+  "currentSdkBytesRechecked": false,
+  "noNewObserverOrModelOrRenderer": true,
+  "noWholeMachineOrProcessGroupCleanupClaim": true,
+  "actualAll174FullColdDecisionsSha256": "ebe8f5923ffdceb689d23febad9bb7e83c27a8fe48ee21840f1db2b2de0aabf8"
+}

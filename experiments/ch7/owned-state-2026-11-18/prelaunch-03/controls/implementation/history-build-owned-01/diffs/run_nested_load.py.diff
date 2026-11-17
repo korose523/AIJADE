@@ -1,0 +1,14 @@
+--- Q8231/run_nested_load.py
++++ E5-STAGED/run_nested_load.py
+@@ -101,8 +101,9 @@
+     need(policy.get('coordinationMode') == 'segmented-census-mutation-v1'
+          and policy.get('coordinationSchema') == 'aijade.mac.segmented-census-mutation.v1',
+          'new explicit segmented protocol required')
+-    need(policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1'
+-         and policy.get('onlineReplayInitializationMode')=='paired-source-verified-journal-prefix-v1',
++    need((policy.get('onlineReplayMode'),policy.get('onlineReplayInitializationMode')) in (
++         ('full-state-c-clone-exact-prefix-v1','paired-source-verified-journal-prefix-v1'),
++         ('owned-guard-state-exact-prefix-v1','paired-source-verified-owned-state-v1')),
+          'new explicitly prepared C-clone cursor protocol required')
+     need(sha(Path(policy['nativeHelper']['path']).read_bytes()) == policy['nativeHelper']['sha256'], 'native helper bytes')
+     ident = dict(processPolicyPath=p['policyPath'], processPolicySha256=sha(policy_raw),

@@ -27,6 +27,10 @@ jobs:
       AIJADE_TEST_DATABASE_URL: postgres://aijade:aijade@127.0.0.1:55432/aijade
     steps:
       - uses: actions/checkout@v7
+      - name: Match the Mac observer AST and source-control toolchain
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12.14'
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
@@ -54,10 +58,23 @@ jobs:
           git fetch --no-tags --depth=1 origin 147564c9db812c1a9e5ae07992d9aa282399a310 8acfa99d061f1c41197fac2a1c243b3b347bcfef 42fc728ade94c60b0d24575b9510b69dd2048676 5d020ccbf54c16965b4a1fe3467b3d8d726d23f8
           .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-v4-2026-11-17/qualification-attempt-01/verify_archive.py --repo . --controls
       - name: Verify prospective Mac process, version and complete-sequence controls without live services
+        env:
+          AIJADE_E4_AUDIT_SOURCE: "${{ github.workspace }}/experiments/ch7/nested-copy-2026-11-18/engineering-attempt-02/packet/source/experiments/ch7/audit_nested_load.py"
         run: |
-          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
+          .runtime/finite-control-env/bin/python -B -c 'import hashlib, os; from pathlib import Path; p = Path(os.environ["AIJADE_E4_AUDIT_SOURCE"]); assert hashlib.sha256(p.read_bytes()).hexdigest() == "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7"; print("Version scope: unchanged E4 tests use exact frozen11d5 audit; new owned tests use current source")'
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_segmented_capture.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_measured_mac_monitor.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_full_state_clone_cursor.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_clone_cursor_glue.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_owned_guard_cursor.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s experiments/ch7/owned-state-2026-11-18/freeze -p 'test_*launcher*.py' -v
+          .runtime/finite-control-env/bin/python -B tests/shell/run_versioned_nested_controls.py
+          .runtime/finite-control-env/bin/python -B tests/shell/run_versioned_mac_controls.py
+          .runtime/finite-control-env/bin/python -B experiments/ch7/nested-load-2026-11-17/engineering-attempt-01/post-terminal-controls/verify_e3_packet.py --packet "$GITHUB_WORKSPACE/experiments/ch7/nested-load-2026-11-17/engineering-attempt-01/packet"
+          .runtime/finite-control-env/bin/python -B experiments/ch7/nested-copy-2026-11-18/engineering-attempt-02/packet/archive-tools/verify_e4_packet.py --packet "$GITHUB_WORKSPACE/experiments/ch7/nested-copy-2026-11-18/engineering-attempt-02/packet"
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_process_lifecycle*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_binary_authentication.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_binary_c_compare.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_phase_continuity*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_lifecycle_*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v
@@ -66,6 +83,22 @@ jobs:
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_sequence_parent.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_construction_binding.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_backend_preflight.py' -v
+      - name: Verify retained E5 refusal packet and exact recorded fifteen adverse controls
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/owned-state-2026-11-18/engineering-attempt-03/post-terminal-controls/verify_e5_packet.py --packet "$GITHUB_WORKSPACE/experiments/ch7/owned-state-2026-11-18/engineering-attempt-03/packet"
+          .runtime/finite-control-env/bin/python -B tests/shell/versioned_nested_scope.py --repo . --verify-companions
+      - name: Verify complete retained E6 Native refusal without live services
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/packet/archive-tools/verify_e6_packet.py --packet experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/packet
+          .runtime/finite-control-env/bin/python -B experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/post-terminal-controls/verify_e6_recorded_controls.py --packet experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/packet
+      - name: Verify native READY, full listener transcripts and current independent native audit controls
+        run: |
+          .runtime/finite-control-env/bin/python -B -c 'import shutil; assert shutil.which("cc"), "Native source controls require an available C compiler; skipping them is not acceptance"'
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_native_integration.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_listener_evidence.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_native_exec_registry.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_native_audit.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s experiments/ch7/native-ready-2026-11-18/freeze -p 'test_*launcher*.py' -v
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions

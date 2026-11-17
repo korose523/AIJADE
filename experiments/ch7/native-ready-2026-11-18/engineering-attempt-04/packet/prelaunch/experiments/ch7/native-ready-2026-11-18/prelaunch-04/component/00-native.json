@@ -1,0 +1,283 @@
+{
+  "method": "native",
+  "transcript": {
+    "schema": "aijade.listener.transcript.v2",
+    "mode": "complete-managed-lsof-transcript-v1",
+    "argv": [
+      "/usr/sbin/lsof",
+      "-nP",
+      "-iTCP:11434",
+      "-sTCP:LISTEN",
+      "-FpfPtTn"
+    ],
+    "stdout": {
+      "encoding": "base64",
+      "dataBase64": "cDcwMQpmNAp0SVB2NApQVENQCm4xMjcuMC4wLjE6MTE0MzQKVFNUPUxJU1RFTgpUUVI9MApUUVM9MAo=",
+      "capturedBytes": 59,
+      "capturedSha256": "e6fd8fa525d558f98aa88f08df2589f400a21136e62e950f9494b0e49a0622e4",
+      "totalBytes": 59,
+      "totalSha256": "e6fd8fa525d558f98aa88f08df2589f400a21136e62e950f9494b0e49a0622e4",
+      "truncated": false
+    },
+    "stderr": {
+      "encoding": "base64",
+      "dataBase64": "",
+      "capturedBytes": 0,
+      "capturedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "totalBytes": 0,
+      "totalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "truncated": false
+    },
+    "returnCode": 0,
+    "exception": {
+      "class": "TimeoutExpired",
+      "message": "Command '['/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native', '6', '7', '--', '/usr/sbin/lsof', '-nP', '-iTCP:11434', '-sTCP:LISTEN', '-FpfPtTn']' timed out after 0.0030540449952241033 seconds"
+    },
+    "startedMonotonic": 246467.941030121,
+    "runCompletedMonotonic": 246468.486430305,
+    "parseCompletedMonotonic": 246468.486505366,
+    "sourcePins": {
+      "adapterSourceSha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+      "shimSourceSha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+      "shimSha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+      "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+      "parserSourceSha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2",
+      "callerSourceSha256": "2e3dd1c535553f423eb4f73da5b116500411988bfbc9bc7de55c040d83f5406d"
+    },
+    "nativeLaunch": {
+      "schema": "aijade.lifecycle.native-launch.v1",
+      "mode": "native-ready-release-v1",
+      "leaseId": "c1d2269e63af4661b3c33817cf078525",
+      "stageId": "listener-component",
+      "role": "finite",
+      "phaseClocks": {
+        "requestStartedMonotonic": 246467.948495013,
+        "captureRequestedMonotonic": 246467.962618747,
+        "captureAcquiredMonotonic": 246467.966558289,
+        "popenStartedMonotonic": 246467.966588616,
+        "popenReturnedMonotonic": 246467.972092761,
+        "readyReadCompletedMonotonic": 246468.316797817,
+        "firstIdentityCompletedMonotonic": 246468.317218214,
+        "secondIdentityCompletedMonotonic": 246468.317678195,
+        "registerStartedMonotonic": 246468.328968905,
+        "registerCompletedMonotonic": 246468.348397965,
+        "releaseStartedMonotonic": 246468.348398935,
+        "releaseCompletedMonotonic": 246468.362293537,
+        "gateWrittenMonotonic": 246468.362302111,
+        "postProvenanceCompletedMonotonic": 246468.373939653,
+        "returnedMonotonic": 246468.374158334
+      },
+      "sourceProofBefore": {
+        "adapter": {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/native_exec_registry.py",
+          "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+          "device": 922746884,
+          "inode": 754185,
+          "sizeBytes": 17718,
+          "mtimeNs": 1794940814322470000,
+          "mode": 493
+        },
+        "source": {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/lifecycle_exec_native.c",
+          "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+          "device": 922746884,
+          "inode": 754176,
+          "sizeBytes": 3690,
+          "mtimeNs": 1794940497967836000,
+          "mode": 493
+        },
+        "binary": {
+          "path": "/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native",
+          "sha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+          "device": 16777235,
+          "inode": 339583,
+          "sizeBytes": 33856,
+          "mtimeNs": 1794940653791608158,
+          "mode": 493
+        }
+      },
+      "adapterSourceSha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+      "shimSourceSha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+      "shimSha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+      "captureLock": {
+        "schema": "aijade.lifecycle.capture-lock.v1",
+        "pathSha256": "09e141f5d6b70fd8e3c0056e65353568cd2e92e3128a85d6fe09a41d5329655f",
+        "maxWaitSeconds": 1.25,
+        "state": "HELD_AND_RELEASED",
+        "waitSeconds": 0.002150576008716598,
+        "acquiredMonotonic": 246467.96654992,
+        "nested": false,
+        "initialIdentity": {
+          "device": 16777235,
+          "inode": 339826,
+          "regular": true,
+          "singleLink": true,
+          "ownedByCurrentUser": true
+        },
+        "finalIdentity": {
+          "device": 16777235,
+          "inode": 339826,
+          "regular": true,
+          "singleLink": true,
+          "ownedByCurrentUser": true
+        },
+        "releasedMonotonic": 246468.374135515
+      },
+      "readyMonotonic": 246468.316678663,
+      "executedShimIdentity": {
+        "pid": 90966,
+        "createTimeMicros": 1794941936741259,
+        "parentPid": 90950,
+        "executable": "/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native",
+        "argvSha256": "8c066897feb70c7d0d94425a581198ffa894e3abcc6da1fc7cef205f05c153c6"
+      },
+      "sourceProofReady": {
+        "adapter": {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/native_exec_registry.py",
+          "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+          "device": 922746884,
+          "inode": 754185,
+          "sizeBytes": 17718,
+          "mtimeNs": 1794940814322470000,
+          "mode": 493
+        },
+        "source": {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/lifecycle_exec_native.c",
+          "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+          "device": 922746884,
+          "inode": 754176,
+          "sizeBytes": 3690,
+          "mtimeNs": 1794940497967836000,
+          "mode": 493
+        },
+        "binary": {
+          "path": "/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native",
+          "sha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+          "device": 16777235,
+          "inode": 339583,
+          "sizeBytes": 33856,
+          "mtimeNs": 1794940653791608158,
+          "mode": 493
+        }
+      },
+      "identity": {
+        "pid": 90966,
+        "createTimeMicros": 1794941936741259,
+        "parentPid": 90950
+      },
+      "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+      "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+      "sourceProofAfter": {
+        "adapter": {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/native_exec_registry.py",
+          "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+          "device": 922746884,
+          "inode": 754185,
+          "sizeBytes": 17718,
+          "mtimeNs": 1794940814322470000,
+          "mode": 493
+        },
+        "source": {
+          "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/candidate/experiments/ch7/lifecycle_exec_native.c",
+          "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+          "device": 922746884,
+          "inode": 754176,
+          "sizeBytes": 3690,
+          "mtimeNs": 1794940497967836000,
+          "mode": 493
+        },
+        "binary": {
+          "path": "/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native",
+          "sha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+          "device": 16777235,
+          "inode": 339583,
+          "sizeBytes": 33856,
+          "mtimeNs": 1794940653791608158,
+          "mode": 493
+        }
+      },
+      "waitSequence": 18929,
+      "exitCode": 0,
+      "actualReapedMonotonic": 246468.446151678,
+      "waitEventMonotonic": 246468.454037084,
+      "waitSource": "Popen.wait"
+    }
+  },
+  "outerClock": {
+    "startedMonotonic": 246467.941030121,
+    "finishedMonotonic": 246468.505070152
+  },
+  "outcome": {
+    "state": "UNKNOWN",
+    "code": "LISTENER_EVIDENCE_UNKNOWN",
+    "reasons": [
+      "INTERNAL_CALL_DEADLINE_EXCEEDED",
+      "WHOLE_CALL_DEADLINE_EXCEEDED",
+      "CAPTURE_EXCEPTION_TimeoutExpired"
+    ],
+    "records": []
+  },
+  "preliminaryMeasuredSemanticResult": {
+    "state": "UNKNOWN",
+    "code": "LISTENER_EVIDENCE_UNKNOWN",
+    "reasons": [
+      "INTERNAL_CALL_DEADLINE_EXCEEDED",
+      "WHOLE_CALL_DEADLINE_EXCEEDED",
+      "CAPTURE_EXCEPTION_TimeoutExpired"
+    ],
+    "records": []
+  },
+  "sourceBeforeVerified": true,
+  "sourceAfterVerified": true,
+  "actualManagedLeaseId": "c1d2269e63af4661b3c33817cf078525",
+  "actualLease": {
+    "commandSha256": "75d1f732488117912ceacc60bd64e7ec9b2bb88a339a0518cdca26a5f2c1d396",
+    "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+    "identity": {
+      "createTimeMicros": 1794941936741259,
+      "parentPid": 90950,
+      "pid": 90966
+    },
+    "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+    "leaseId": "c1d2269e63af4661b3c33817cf078525",
+    "parentIdentity": {
+      "createTimeMicros": 1794941931653841,
+      "parentPid": 46644,
+      "pid": 90950
+    },
+    "readyMonotonic": 246468.316678663,
+    "role": "finite",
+    "shimSha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+    "stageId": "listener-component",
+    "registerSeq": 18927,
+    "registerMonotonic": 246468.339748571,
+    "releaseSeq": 18928,
+    "waitSeq": 18929,
+    "exitCode": 0,
+    "absence": {
+      "witnessKind": "PARENT_WAIT_REAPED",
+      "identity": {
+        "createTimeMicros": 1794941936741259,
+        "parentPid": 90950,
+        "pid": 90966
+      },
+      "parentIdentity": {
+        "createTimeMicros": 1794941931653841,
+        "parentPid": 46644,
+        "pid": 90950
+      },
+      "eventSeq": 18929,
+      "reapedMonotonic": 246468.446151678,
+      "exitCode": 0
+    },
+    "releaseMonotonic": 246468.358985241,
+    "reapedMonotonic": 246468.446151678,
+    "absenceWitnessKind": "PARENT_WAIT_REAPED"
+  },
+  "observedJournalBytes": 15621909,
+  "observedJournalSha256": "a3c64417aae17d8d86f3947512aa141fc0fc00862c86744584f276a8530541fb",
+  "observedLastSequence": 18929,
+  "wholeSeconds": 0.5640400309930556,
+  "oldBaselineNativeProvenanceNotClaimed": false,
+  "repeat": 0
+}

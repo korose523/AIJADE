@@ -1,0 +1,101 @@
+def launch(self,command,*,role='finite',stage=None,ready_timeout=None,**kwargs):
+        attempt_id=uuid.uuid4().hex;started=time.monotonic()
+        process=None;registered=False;released=False;launched=False;raw=bytearray();reads=[];owns_group=False
+        ready_r=ready_w=gate_r=gate_w=-1;executable_sha=None;command_sha=None
+        contexts=ExitStack()
+        try:
+            self._require_cache_usable()
+            need(not self.closed,'cannot launch after local persistent scope closes')
+            need(role in ('finite','controller') and type(command) in (list,tuple) and command
+                 and all(type(x) is str and '\x00' not in x for x in command),'finite command schema')
+            command_sha=digest(canonical(list(command)))
+            need(not kwargs.get('shell') and not kwargs.get('preexec_fn') and not kwargs.get('pass_fds'), 'unsupported subprocess escape')
+            need(type(kwargs.get('start_new_session',False)) is bool,'start_new_session must be explicit boolean')
+            owns_group=kwargs.get('start_new_session',False)
+            ready_budget=READY_SECONDS if ready_timeout is None else ready_timeout
+            need(_number(ready_budget) and 0<ready_budget<=READY_SECONDS,'identity-ready deadline invalid')
+            env=dict(os.environ if kwargs.get('env') is None else kwargs.pop('env'))
+            env.update(self.environment());env['AIJADE_LIFECYCLE_STAGE']=stage or self.stage
+            executable=shutil.which(command[0],path=env.get('PATH')) if not Path(command[0]).is_absolute() else command[0]
+            need(executable is not None,'finite executable missing')
+            # Preserve virtualenv argv0; hash its actual executable target.
+            executable=Path(executable).absolute();executable_sha=digest(executable.resolve(strict=True).read_bytes())
+            env['AIJADE_LIFECYCLE_PARENT_LEASE']=attempt_id
+            shim=Path(__file__).with_name('lifecycle_exec.py')
+            contexts.enter_context(capture_lock(self.lock_path))
+            ready_r,ready_w=os.pipe();gate_r,gate_w=os.pipe()
+            process=subprocess.Popen([sys.executable,'-S','-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
+                env=env,pass_fds=(ready_w,gate_r),**kwargs)
+            os.close(ready_w);ready_w=-1;os.close(gate_r);gate_r=-1
+            selected=selectors.DefaultSelector();selected.register(ready_r,selectors.EVENT_READ)
+            deadline=time.monotonic()+ready_budget
+            try:
+                while b'\n' not in raw:
+                    remaining=deadline-time.monotonic();need(remaining>0,'identity-ready timeout')
+                    need(selected.select(remaining),'identity-ready timeout')
+                    block=os.read(ready_r,4097-len(raw));need(block,'identity-ready EOF')
+                    raw.extend(block);need(len(raw)<=4096,'identity-ready cap')
+            finally:selected.close()
+            ready=json.loads(bytes(raw),object_pairs_hook=_unique)
+            need(set(ready)=={'pid','parentPid','readyMonotonic'} and type(ready['pid']) is int
+                 and ready['pid']==process.pid and ready['parentPid']==self.writer['pid']
+                 and _number(ready['readyMonotonic']),'identity-ready report mismatch')
+            # The exact Popen child stays behind its gate for both kernel reads.
+            first=identity(process.pid);identity_key(first);reads.append(first)
+            second=identity(process.pid);identity_key(second);reads.append(second)
+            need(first['parentPid']==self.writer['pid'] and second==first
+                 and time.monotonic()<=deadline,'identity-ready kernel identity/deadline mismatch')
+            self._append('FINITE_REGISTER',dict(leaseId=attempt_id,role='finite',stageId=stage or self.stage,
+                identity=first,parentIdentity=self.writer,commandSha256=command_sha,executableSha256=executable_sha,
+                readyMonotonic=ready['readyMonotonic'],shimSha256=digest(shim.read_bytes()),
+                identityWitnessKind='PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD'))
+            registered=True
+            self._append('RELEASE',dict(leaseId=attempt_id));released=True
+            os.write(gate_w,b'1')
+            handle=ManagedProcess(self,process,attempt_id);self.handles.append(handle);launched=True;return handle
+        except BaseException as error:
+            exit_code=None;cleanup_known=process is None
+            if process is not None:
+                self.refused_processes.append(process)
+                self.refused_process_records.append(dict(handle=process,attemptId=attempt_id,ownsProcessGroup=owns_group))
+                try:
+                    if process.poll() is None:process.kill()
+                    exit_code=process.wait(timeout=.5);cleanup_known=True
+                except BaseException:cleanup_known=False
+            data=dict(attemptId=attempt_id,stageId=stage if type(stage) is str and stage else self.stage,
+                commandSha256=command_sha,executableSha256=executable_sha,
+                spawnedPid=process.pid if process is not None else None,readyBytes=len(raw),readySha256=digest(bytes(raw)),
+                ownsProcessGroup=owns_group,
+                identityReads=reads,identityStatus='BOUND' if len(reads)==2 and reads[0]==reads[1] else 'UNKNOWN',
+                registeredLeaseId=attempt_id if registered else None,errorClass=type(error).__name__,
+                actualExitCode=exit_code,cleanupKnown=cleanup_known,waitSource='Popen.wait' if exit_code is not None else None,
+                startedMonotonic=started,cleanupCompletedMonotonic=time.monotonic())
+            self.launch_refusal_records.append(dict(data,writer=self.writer))
+            try:
+                if registered and released and exit_code is not None:
+                    lease=self._lease(attempt_id)
+                    if lease['waitSeq'] is None:
+                        self._append('WAIT',dict(leaseId=attempt_id,identity=lease['identity'],exitCode=exit_code,
+                            waitSource='Popen.wait',reapedMonotonic=data['cleanupCompletedMonotonic']))
+                self._append('LAUNCH_REFUSED',data)
+            except BaseException as journal_error:
+                artifact=self.path.with_name('launch-refused-'+attempt_id+'.json')
+                document=dict(schema='aijade.process-lifecycle-launch-refusal.v1',runId=self.run_id,writer=self.writer,
+                    sourceCommit=self.source_commit,policySha256=self.policy_sha256,data=data,
+                    journalAppendErrorClass=type(journal_error).__name__,qualificationAdverse=True)
+                try:
+                    fd=_open_owned(artifact,os.O_WRONLY|os.O_CREAT|os.O_EXCL)
+                    try:os.write(fd,canonical(document)+b'\n');os.fsync(fd)
+                    finally:os.close(fd)
+                    error.lifecycleRefusalPath=str(artifact)
+                except BaseException:pass
+            try:error.lifecycleRefusal=data
+            except BaseException:pass
+            raise
+        finally:
+            if process is not None and not launched:
+                for stream in (process.stdin,process.stdout,process.stderr):
+                    if stream is not None:stream.close()
+            for fd in (ready_r,ready_w,gate_r,gate_w):
+                if fd>=0:os.close(fd)
+            contexts.close()

@@ -1,0 +1,111 @@
+--- preserved-E4/launch_nested_load.py
++++ E5/launch_nested_load.py
+@@ -23,13 +23,14 @@
+ import psutil
+ 
+ BASE = Path('/Volumes/Untitled/AIJADE')
+-C4 = BASE / '.research/runs/ch7-nested-copy-20261118'
++C8 = BASE / '.research/runs/ch7-owned-state-20261118'
+ FIXED_PYTHON = BASE / '.runtime/python-envs/p2-tokenizer/bin/python'
+ WRAPPER = BASE / '.runtime/run-local.sh'
+ RUNNER_RELATIVE = 'experiments/ch7/run_nested_load.py'
+-RECORD = C4 / 'engineering-02-launch.json'
+-LOG = C4 / 'engineering-02-launch.log'
+-TERMINAL = C4 / 'engineering-02-launch.terminal.json'
++RECORD = C8 / 'engineering-03-launch.json'
++LOG = C8 / 'engineering-03-launch.log'
++TERMINAL = C8 / 'engineering-03-launch.terminal.json'
++RUN = BASE / '.runtime/posix/runs/ch7-owned-state-20261118/engineering-03'
+ WATCHDOG_SECONDS = 2250
+ SIGNAL_WAIT_SECONDS = 5
+ MAX_RECEIPT_BYTES = 16 * 1024 * 1024
+@@ -38,7 +39,7 @@
+     'phase_continuity.py', 'lifecycle_audit.py', 'mac_process_guard.py',
+     'mac_process_guard_v2.py', 'mac_bulk_census.c', 'finite_runtime.py',
+     'run_finite_sequence.py', 'run_finite_block.py', 'finite_audit.py',
+-    'finite_sequence_audit.py', 'godot_local.py', 'binary_authentication.py', 'measured_mac_monitor.py', 'full_state_clone_cursor.py'))
++    'finite_sequence_audit.py', 'godot_local.py', 'binary_authentication.py', 'measured_mac_monitor.py', 'full_state_clone_cursor.py', 'newowned_guard_cursor.py'))
+ FALSE_GATES = dict(scientificAcceptance=False, qualificationStarted=False,
+     backendQualified=False, scientificAdmission=False,
+     formalHardwareQualification=False, independentHumanReview=False,
+@@ -147,7 +148,7 @@
+ 
+ def preflight(passport_path, expected_sha):
+     path = canonical_path(passport_path)
+-    need(path == C4 / 'engineering-02-passport.json', 'one independent nested passport required; never reuse another attempt')
++    need(path == C8 / 'engineering-03-passport.json', 'one independent nested passport required; never reuse another attempt')
+     need(path.is_file(), 'passport missing')
+     raw = path.read_bytes()
+     need(digest(raw) == hash_value(expected_sha), 'passport differs from external frozen SHA256')
+@@ -157,8 +158,9 @@
+     need(re.fullmatch('[0-9a-f]{40}', passport.get('sourceCommit', '')) is not None, 'full engineering source commit required')
+     repo, output = canonical_path(passport['repo']), canonical_path(passport['output'])
+     need(repo.is_dir() and not output.exists(), 'missing repo or existing engineering output')
++    need(output == RUN, 'one independent owned-state engineering output required')
+     need(not any(path.exists() for path in (RECORD, LOG, TERMINAL)), 'attempt artifacts exist; never retry')
+-    need(Path(__file__).resolve() == C4 / 'launch_nested_load.py', 'unexpected launcher location')
++    need(Path(__file__).resolve() == C8 / 'launch_nested_load.py', 'unexpected launcher location')
+     need(file_sha(Path(__file__)) == hash_value(passport['launcherSha256']), 'launcher source differs')
+     need(file_sha(canonical_path(WRAPPER)) == hash_value(passport['runtimeWrapperSha256']), 'runtime wrapper differs')
+     # Keep the venv entry path, not its resolved SDK target, as executable argv.
+@@ -190,7 +192,7 @@
+          and passport['minimumDemonstratedPrefixBytes']==protocol['minimumDemonstratedPrefixBytes']
+          and WATCHDOG_SECONDS==protocol['outerWatchdogSeconds'],'passport differs from prospective protocol')
+     need(protocol['runtime']['childStartupMaximumSeconds']==15,
+-         'E4 requires its explicit fifteen-second startup acceptance budget')
++         'E5 retains the explicit fifteen-second startup acceptance budget')
+     observers = passport['observerSources']
+     need(type(observers) is dict and set(observers) == set(OBSERVERS)
+          and all(sources.get(name) == expected for name, expected in observers.items()), 'observer dependency closure differs')
+@@ -207,15 +209,19 @@
+          and policy.get('coordinationSchema')=='aijade.mac.segmented-census-mutation.v1'
+          and policy.get('purpose')=='engineering_real_nested_only'
+          and 'executionDecision' not in policy, 'explicit engineering-only segmented policy required')
+-    clone_relative='experiments/ch7/full_state_clone_cursor.py'
+-    need(policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1'
+-         and policy.get('onlineReplayInitializationMode')=='paired-source-verified-journal-prefix-v1'
++    owned_relative='experiments/ch7/newowned_guard_cursor.py'
++    need(policy.get('onlineReplayMode')=='owned-guard-state-exact-prefix-v1'
++         and policy.get('onlineReplayInitializationMode')=='paired-source-verified-owned-state-v1'
+          and protocol.get('onlineReplayMode')==policy['onlineReplayMode']
+-         and protocol.get('onlineReplayInitializationMode')==policy['onlineReplayInitializationMode'],
+-         'explicit full-state clone initialization mode required')
+-    need(hash_value(policy.get('onlineReplaySourceSha256'))==sources[clone_relative]
+-         ==observers[clone_relative]==file_sha(canonical_path(repo/clone_relative)),
+-         'full-state clone source pin differs')
++         and protocol.get('onlineReplayInitializationMode')==policy['onlineReplayInitializationMode']
++         and passport.get('onlineReplayMode')==policy['onlineReplayMode']
++         and passport.get('onlineReplayInitializationMode')==policy['onlineReplayInitializationMode'],
++         'explicit owned-state initialization mode required')
++    need(hash_value(policy.get('onlineReplaySourceSha256'))==sources[owned_relative]
++         ==observers[owned_relative]==file_sha(canonical_path(repo/owned_relative))
++         ==hash_value(protocol.get('onlineReplaySourceSha256'))
++         ==hash_value(passport.get('onlineReplaySourceSha256')),
++         'owned-state source pin differs')
+     auth_pin = hash_value(policy.get('binaryAuthenticationSourceSha256'))
+     need(auth_pin == sources[auth_relative] == observers[auth_relative]
+          == file_sha(canonical_path(repo / auth_relative)), 'binary authentication source pin differs')
+@@ -233,6 +239,23 @@
+              and not any(ord(char) < 32 for char in value) for value in args), 'preflight argv')
+         need(args[0] in ('rev-parse', 'status', 'show'), 'preflight must be an allowed read-only Git command')
+         hash_value(item['stdoutSha256'])
++    shows = [item for item in commands if item['arguments'][0] == 'show']
++    metadata = [item for item in commands if item['arguments'][0] != 'show']
++    need(len(shows)==28 and {tuple(item['arguments']) for item in metadata}=={
++         ('status','--porcelain'),('rev-parse','HEAD')} and len(metadata)==2,
++         'exact two metadata and twenty-eight source proof commands required')
++    proved = set()
++    for item in shows:
++        args=item['arguments']
++        need(len(args)==2 and args[1].startswith('{SOURCE}:'), 'exact source-proof Git show form required')
++        name=relative(args[1][len('{SOURCE}:'):])
++        need(name not in proved and sources.get(name)==item['stdoutSha256'],
++             'distinct actual source proof hashes required')
++        proved.add(name)
++    need(owned_relative in proved, 'owned-state source must be proved by an actual Git show command')
++    for item in metadata:
++        wanted=digest(b'') if item['arguments'][0]=='status' else digest((passport['sourceCommit']+'\n').encode())
++        need(item['stdoutSha256']==wanted, 'exact metadata proof digest required')
+     command = [str(WRAPPER), str(FIXED_PYTHON), '-B', str(runner), '--passport', str(path)]
+     return dict(passport=passport, passportPath=path, passportRaw=raw, repo=repo,
+                 output=output, command=command)

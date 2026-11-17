@@ -1,0 +1,62 @@
+{
+  "status": "ARCHIVE_TOOLS_PREPARATION_ONLY_NO_RUN_DATA_READ",
+  "schema": "aijade.ch7.nested-archive-config.v1",
+  "required": [
+    "repo",
+    "sourceCommit",
+    "runRoot",
+    "packetRoot",
+    "packetReceiptPath",
+    "passportPath",
+    "parentLaunchRecord",
+    "parentTerminal",
+    "parentLog",
+    "launcherSource",
+    "finalCiPath",
+    "independentAudit",
+    "rootDisposition",
+    "writerStability",
+    "rootAdditionalWriterClosure",
+    "causePrecisionCorrection",
+    "provisionalResultState",
+    "outcomeKind",
+    "artifacts"
+  ],
+  "outcomeKind": [
+    "complete-engineering-accepted",
+    "partial-refusal"
+  ],
+  "artifacts": "Each {path,packetPath,role}; required roles source-publication/passport-publication/launch-preflight/source-closure/preparation-history. Add all actual audit logs/checkpoints/controls and original before-live CI/preparation failures explicitly.",
+  "source": "Original passport sourceFiles, all extracted from actual sourceCommit Git objects; default requireWorkingSourceMatch=true; no HEAD substitution.",
+  "disposition": {
+    "schema": "aijade.ch7.e5-root-disposition.v1",
+    "required": [
+      "sourceCommit",
+      "independentAuditSha256",
+      "writerStabilityProofSha256",
+      "engineeringAccepted",
+      "numbers",
+      "scope"
+    ]
+  },
+  "rootDispositionScope": {
+    "backendQualified": false,
+    "scientificAcceptance": false,
+    "formalHardwareQualification": false,
+    "independentHumanReview": false,
+    "authorApproval": false,
+    "seedConstructed": false,
+    "heldoutComparisonComplete": false,
+    "currentProductInheritsResearchQualification": false
+  },
+  "partialScope": "Structural retained-record inventory only; actual started children derive from journal leases, never completed receipt population; outcome-specific cold negative analysis requires later explicit implementation.",
+  "requiredAcceptedInitializerArtifacts": [
+    "initialization.json",
+    "block-1/initialization.json",
+    "block-2/initialization.json",
+    "block-3/initialization.json",
+    "block-4/initialization.json"
+  ],
+  "actualArchivesCreated": 0,
+  "scientificCasesCreated": 0
+}

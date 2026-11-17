@@ -1,0 +1,64 @@
+{
+  "schema": "aijade.ch7.e4-startup15-audit-controls.v1",
+  "status": "EIGHTEEN_INITIALIZATION_AND_TWENTYTWO_RETAINED_SYNTHETIC_CONTROLS_PASS",
+  "audit": {
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/audit_nested_load.py",
+    "sha256": "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7",
+    "bytes": 54076
+  },
+  "controls": {
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/tests/shell/test_nested_initialization_audit.py",
+    "sha256": "a261ea7c3e20f857b880cd6310d7452e1bc585464f273eae70996d888dff95a6",
+    "bytes": 14859
+  },
+  "log": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/audit/e4-candidate/startup15-controls-01.log",
+    "sha256": "31e685f28b4fb66617c3eb67d45e9b625615c0b0cea69b846b65eb723436b641",
+    "bytes": 7483
+  },
+  "retainedBeforeTenSources": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/audit/e4-candidate/before-startup15-audit_nested_load.py",
+      "sha256": "33a6c190dff3d685539ad6712825da213d71ab60722a87a764681068b88f7514",
+      "bytes": 52876
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-20261117/audit/e4-candidate/before-startup15-test_nested_initialization_audit.py",
+      "sha256": "962971862a148fec5b805fbe9621859e7cd139351c03d8f33450e16fcc990465",
+      "bytes": 12296
+    }
+  ],
+  "initializationControls": 18,
+  "retainedAuditAndIndexControls": 22,
+  "newFocusedBoundaryControls": {
+    "exactFifteenRuntimeAccepted": true,
+    "coherentOldTenRuntimeRefused": true,
+    "syntheticActualWriteClock14_9Accepted": true,
+    "syntheticActualWriteClock15_001Refused": true,
+    "unchangedParentWriteClock899_9Accepted": true,
+    "unchangedParentWriteClock900_001Refused": true
+  },
+  "prospectiveBudgetChange": {
+    "e4Only": true,
+    "beforeSeconds": 10,
+    "afterSeconds": 15,
+    "beforeSourcePublicFreeze": true,
+    "beforeLiveEngineering": true
+  },
+  "unchangedRuntimeBounds": {
+    "parentPreparationSeconds": 900,
+    "parentRuntimeSeconds": 600,
+    "childWatchdogSeconds": 145,
+    "childMonitorSeconds": 128,
+    "maximumObservations": 916,
+    "maximumFiniteChains": 6318,
+    "maximumFullServiceSeconds": 2,
+    "maximumLockSeconds": 1.25
+  },
+  "addedDescriptiveEvidence": "Each actual block-launch stage entry through RELEASE and parent wait; stage entry precedes watchdog anchor, descriptive actual overhead only, not a substituted watchdog or completion guarantee.",
+  "scope": "Synthetic journal and pure replay/clone controls only; 14 pre-existing generic initializer controls plus 4 new E4 fifteen-second/unchanged-parent controls, not a live timing measurement.",
+  "liveObservationStarted": false,
+  "backendQualified": false,
+  "seedConstructed": false,
+  "heldoutComparisonComplete": false
+}

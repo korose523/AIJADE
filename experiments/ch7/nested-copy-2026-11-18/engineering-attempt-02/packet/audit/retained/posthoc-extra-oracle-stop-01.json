@@ -1,0 +1,26 @@
+{
+  "schema": "aijade.ch7.e4-posthoc-extra-oracle-stop.v1",
+  "status": "POSTHOC_EXTRA_ORACLE_AUDIT_INCOMPLETE_NOT_MEASUREMENT_FAILURE",
+  "exactOwnedAuditWorker": {
+    "pid": 77701,
+    "createTime": 1794933337.043208,
+    "parentPid": 46644,
+    "argv": [
+      ".runtime/python-envs/p2-tokenizer/bin/python",
+      "-B",
+      ".research/runs/ch7-nested-copy-20261118/audit/audit_actual_e4_refusal.py"
+    ],
+    "cwd": "/Volumes/Untitled/AIJADE"
+  },
+  "signal": "SIGINT",
+  "signalMonotonic": 238133.289783135,
+  "sourceSha256": "1b7a011254e351c440d70987cb9ff2b6da9120107e553870987a42171b58da88",
+  "preservedSource": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/audit/audit_actual_e4_refusal.extra-oracle-01.py",
+  "preservedLog": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/audit/e4-independent-negative-audit-01.log",
+  "actualCompleteCheckpointSamples": 10,
+  "exactTotalCompletedUnknown": true,
+  "reason": "Extra old O(N^2) oracle repeat at all153 prefixes exceeded the frozen audit method; return to final plus initialization/first/last key cold oracle with every original raw guard and prefix/view still audited.",
+  "originalEngineeringMeasurementChanged": false,
+  "originalRefusalRetained": true,
+  "fullPassAuditorInvoked": false
+}

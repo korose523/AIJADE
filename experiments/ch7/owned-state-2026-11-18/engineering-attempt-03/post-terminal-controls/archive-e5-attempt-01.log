@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/archive-tools/archive_e5_packet.py", line 256, in <module>
+    run(args.config)
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/archive-tools/archive_e5_packet.py", line 52, in run
+    c=read(path(config_path));need(c['schema']=='aijade.ch7.nested-archive-config.v1','archive config schema')
+           ^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/archive-tools/packet_common.py", line 47, in path
+    need(p.is_absolute() and p==p.resolve() and p.is_relative_to(BASE),'canonical AIJADE path required')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/archive-tools/packet_common.py", line 18, in need
+    raise ValueError(message)
+ValueError: canonical AIJADE path required

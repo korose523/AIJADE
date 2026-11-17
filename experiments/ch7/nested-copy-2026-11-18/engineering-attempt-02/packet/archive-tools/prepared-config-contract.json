@@ -1,0 +1,103 @@
+{
+  "status": "POST_TERMINAL_E4_ARCHIVE_TOOLS_READY_FOR_ROOT_SOURCE_REVIEW_NOT_EXECUTED",
+  "schema": "aijade.ch7.nested-archive-config.v1",
+  "required": [
+    "repo",
+    "sourceCommit",
+    "runRoot",
+    "packetRoot",
+    "packetReceiptPath",
+    "passportPath",
+    "parentLaunchRecord",
+    "parentTerminal",
+    "parentLog",
+    "launcherSource",
+    "finalCiPath",
+    "independentAudit",
+    "rootDisposition",
+    "writerStability",
+    "outcomeKind",
+    "artifacts"
+  ],
+  "outcomeKind": [
+    "complete-engineering-accepted",
+    "partial-refusal"
+  ],
+  "artifacts": "Each {path,packetPath,role}; required roles source-publication/passport-publication/launch-preflight/source-closure/preparation-history. Add all actual audit logs/checkpoints/controls and original before-live CI/preparation failures explicitly.",
+  "source": "Original passport sourceFiles, all extracted from actual sourceCommit Git objects; default requireWorkingSourceMatch=true; no HEAD substitution.",
+  "disposition": {
+    "schema": "aijade.ch7.nested-engineering-root-disposition.v1",
+    "required": [
+      "sourceCommit",
+      "independentAuditSha256",
+      "parentTerminalSha256",
+      "engineeringEnvelopeAccepted",
+      "numbers",
+      "scope"
+    ]
+  },
+  "rootDispositionScope": {
+    "backendQualified": false,
+    "scientificAcceptance": false,
+    "formalHardwareQualification": false,
+    "independentHumanReview": false,
+    "authorApproval": false,
+    "seedConstructed": false,
+    "heldoutComparisonComplete": false,
+    "currentProductInheritsResearchQualification": false
+  },
+  "partialScope": "Structural retained-record inventory only; actual started children derive from journal leases, never completed receipt population; outcome-specific cold negative analysis requires later explicit implementation.",
+  "requiredAcceptedInitializerArtifacts": [
+    "initialization.json",
+    "block-1/initialization.json",
+    "block-2/initialization.json",
+    "block-3/initialization.json",
+    "block-4/initialization.json"
+  ],
+  "actualArchivesCreated": 0,
+  "scientificCasesCreated": 0,
+  "actualDataArchiveCreated": false,
+  "actualPacketCreated": false,
+  "sourceBeforeE4": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/archive-tools/source-before-e4/archive_e3_packet.py",
+      "sha256": "922ef43e87ac258202e0741efe711b7edad113a3fd5fc72b23bf59f791eb483a"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/archive-tools/source-before-e4/packet_common.py",
+      "sha256": "2518e2a8fbb9c58f4eda029d4b14f0e77015136254ff262b1e75eccdc4c174b4"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/archive-tools/source-before-e4/verify_e3_packet.py",
+      "sha256": "5879bbeb82ccdcd0da7ea60df1345bcd027fcfbabb31e2299985c150e58c70e7"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/archive-tools/source-before-e4/inspect_partial_nested_refusal.py",
+      "sha256": "f3fdd88961c2a27b6b9a3830af7ad305f20598f103fb03473144292cc50f4e94"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "archive_e4_packet.py",
+      "sha256": "f9a9ed1898f27d6a0b5958d5b227d935afe9875838392747c33341843570b09c"
+    },
+    {
+      "path": "e4_refusal_semantics.py",
+      "sha256": "3b12a1aa9a382ad2566fb6ebe841b040e51668be4f764daa144292ec1385c093"
+    },
+    {
+      "path": "inspect_partial_nested_refusal.py",
+      "sha256": "dc70697a78b49dacf091131abd1776a4c46ba75221176f603240da384acfd672"
+    },
+    {
+      "path": "packet_common.py",
+      "sha256": "77752c7e8c4a2a4c46b95fd3c2823cbce2a87493d2ce9937f0ba168753ee2ea4"
+    },
+    {
+      "path": "verify_e4_packet.py",
+      "sha256": "5879bbeb82ccdcd0da7ea60df1345bcd027fcfbabb31e2299985c150e58c70e7"
+    }
+  ],
+  "independentAuditRequired": "Complete actual full audit for full acceptance; result-specific E4 cold refusal audit or v2 structural negative only for partial. Root disposition and writer closure separate.",
+  "readinessLimit": "Source syntax checked; actual config, packet execution and adversarial transport controls still pending root review."
+}

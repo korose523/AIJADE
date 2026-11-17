@@ -1,0 +1,62 @@
+{
+  "schema": "aijade.ch7.e6-root-packet-review.v1",
+  "status": "INDEPENDENT_ROOT_PACKET_AND_RECORDED_CONTROLS_REVIEW_PASS_NOT_QUALIFICATION",
+  "checkedAt": "2026-11-17T21:33:38.556024+00:00",
+  "packetManifestSha256": "ce57621f16befad3b90329fde4aace4e3aab28f122968aa07e1d8e1b6a5152a9",
+  "summarySha256": "4068e2ffd21c46296955c46800da82d0d33405255fdd38e42ba8e2ed245edecc",
+  "independentAuditSha256": "7a88ba47d285bf827d7415449a9a91a44d22b0424af715cf829df23a86f0237d",
+  "rootDispositionSha256": "efde6a66cd6371babe6542ffc71fa1f9adca46813ac38e2a51af3ebce4408e81",
+  "rootAdditionalWriterClosureSha256": "04e2a53f9be525dbe86a3e1a85a8ef0fa14ff7eb124bc7200c1297412ce212d3",
+  "packetPayloadFiles": 581,
+  "packetFilesIncludingManifest": 582,
+  "logicalFiles": 478,
+  "originalFileMappings": 99,
+  "all55NativeScalarTypesAndValuesPreserved": true,
+  "postTerminalAdverseControls": {
+    "passed": 17,
+    "failed": 0,
+    "positiveCases": 1,
+    "coherentlyManifestedAdverseCases": 16,
+    "actualSuiteRuns": 1,
+    "original15Preserved": true,
+    "reportSha256": "b1d98ed33773cde90a3e2487b87519e8d0f1b3de61b10424f9d452358bea6adf",
+    "sourceSha256": "1319b3dada88891d87c1cf221b30216a1e0de045ab81d6ba4a33519bd68e1f30",
+    "logSha256": "ee6407ede999d16019aa9f84217ad6c88bd3b3c2214602f9d25df46cf1785a6e"
+  },
+  "companionsManifestSha256": "a80a8b120785b18aa5f71f27049b735a2b943c2286f540ba48ff584c90670e80",
+  "rootPython312PrimaryLogSha256": "ee210d4f597ae6070fb720109fa4884613661d0f35a812f2f8f7695ddcc604a8",
+  "rootPython312RecordedBindingLogSha256": "202216760d939d23b53cc0f1f78e62f3bfefcba584456f8f0d216e132d2766a8",
+  "rootBindingReexecutesSeventeen": false,
+  "retainedPriorPackets": [
+    {
+      "attempt": "E3",
+      "path": "experiments/ch7/nested-load-2026-11-17/engineering-attempt-01/packet/packet-manifest.json",
+      "sha256": "75f8d31201824cf437a7142e160a9aab43d49f0c7e9a507cd47fb89df5d3a56b",
+      "manifestBytesUnchanged": true,
+      "newKernelOrColdReplay": false
+    },
+    {
+      "attempt": "E4",
+      "path": "experiments/ch7/nested-copy-2026-11-18/engineering-attempt-02/packet/packet-manifest.json",
+      "sha256": "819cde4e8f7b8197f74181ec2ac6ec5d2ef82aeda6a6d56e1c949617de917e59",
+      "manifestBytesUnchanged": true,
+      "newKernelOrColdReplay": false
+    },
+    {
+      "attempt": "E5",
+      "path": "experiments/ch7/owned-state-2026-11-18/engineering-attempt-03/packet/packet-manifest.json",
+      "sha256": "0c0338bfa3b2b8862cf4e5aff4aae3baa28b1ede8a9ad0c5ab8e9a238a51b83e",
+      "manifestBytesUnchanged": true,
+      "newKernelOrColdReplay": false
+    }
+  ],
+  "originalCompleteAuditorRefused": true,
+  "engineeringAccepted": false,
+  "backendQualified": false,
+  "scientificAcceptance": false,
+  "independentHumanReview": false,
+  "authorApproval": false,
+  "heldoutComparisonComplete": false,
+  "newMeasurementOrSeed": false,
+  "notes": "Portable closure and negative replay integrity do not supply complete nested stress. Inactive follow-up is preparation only; all actual deadline failures, skipped outer call, nulls and unattempted slots remain."
+}

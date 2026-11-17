@@ -1,0 +1,40 @@
+{
+  "schema": "aijade.native-e6-auditor-preparation-result.v1",
+  "status": "CURRENT_NATIVE_AUDITOR_PURE_CONTROLS_PASS_NOT_INSTALLED",
+  "pythonVersion": "3.12.14",
+  "newSourceSha256": "1a246bdebb510d4ab88808f3ed31dc46ae381c44da7f61b6046ad45df422e96a",
+  "originalE5AuditSha256": "88a3d165f1e47ed1fd533011f7858a58c519105f5f1caa3eb0bb384a3204cd11",
+  "changedOriginalFunctions": [
+    "verify_command_records",
+    "main"
+  ],
+  "addedFunctions": [
+    "verify_first_native_proof",
+    "verify_native_contract",
+    "verify_native_final_leases"
+  ],
+  "otherOriginalFunctionBodiesPreserved": 26,
+  "testCases": 30,
+  "runs": {
+    "controls-01.log": {
+      "sha256": "d4e426e0a378488ca58476dccc30ee7a9efae514034df00a9f1ce54687509511",
+      "tests": 30
+    },
+    "portable-controls-02.log": {
+      "sha256": "67be46367ccd8aec73558de3d07843528ab8baef3410400a341f18b351910da6",
+      "tests": 30
+    }
+  },
+  "independentAiAssistedReadonlyReview": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/papers/e5-final-staging/e6-auditor-readonly-review-01.json",
+    "sha256": "be4b4bf8f8b57e22c1f9daef436c7216c05e5d31ab449ae98a6016e4d4adea1f"
+  },
+  "portableTestSource": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/audit-controls/publish/tests/shell/test_native_audit.py",
+  "portableTestSha256": "b96feb9e0a662bb65c7384857bc281fab886029e657ebe5faedbf3cd19a43eb5",
+  "actualNativeCtorCalls": 0,
+  "actualListenerQueries": 0,
+  "actualGitCommands": 0,
+  "newModelQueries": 0,
+  "allProcessesEnded": true,
+  "W5Edits": false
+}

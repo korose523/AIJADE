@@ -50,6 +50,19 @@ MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/ma
 MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.trx'}
 
 
+def lifecycle_observer_sources(policy):
+    require(policy.get('lifecycleExecMode') is not None or not any(key in policy for key in ('nativeExec','listenerEvidence')),
+            'native observer fields require explicit native execution mode')
+    if policy.get('lifecycleExecMode') is not None:
+        require(policy.get('lifecycleExecMode')=='native-ready-release-v1' and policy.get('onlineReplayMode')=='owned-guard-state-exact-prefix-v1','native execution requires explicit owned observer mode')
+        return tuple(dict.fromkeys(MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py','experiments/ch7/newowned_guard_cursor.py','experiments/ch7/native_exec_registry.py','experiments/ch7/lifecycle_exec_native.c','experiments/ch7/listener_evidence.py')))
+    if policy.get('onlineReplayMode')=='owned-guard-state-exact-prefix-v1':
+        return tuple(dict.fromkeys(MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py','experiments/ch7/newowned_guard_cursor.py')))
+    if policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1':
+        return MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py')
+    return MAC_LIFECYCLE_SOURCES
+
+
 def safe_relative(value):
     require(type(value) is str and value and '\\' not in value and ':' not in value, 'unsafe tracked relative path')
     parts=value.split('/')
@@ -94,15 +107,24 @@ def setup_lifecycle(args, stage):
     source=os.environ.get('AIJADE_GIT_COMMIT','')
     require(re.fullmatch('[0-9a-f]{40}',source) is not None,'lifecycle Q identity missing')
     policy_sha=hashlib.sha256(policy_raw).hexdigest()
+    native_mode=policy.get('lifecycleExecMode') is not None
     if os.environ.get('AIJADE_LIFECYCLE_JOURNAL'):
-        registry=from_environment()
+        if native_mode:
+            from native_exec_registry import activate_from_environment
+            registry=activate_from_environment(policy)
+        else:
+            registry=from_environment()
         require(registry.source_commit==source and registry.policy_sha256==policy_sha,
                 'inherited lifecycle source/policy mismatch')
     else:
         parent=args.output.resolve().parent;parent.mkdir(parents=True,exist_ok=True)
         journal=parent/(args.output.name+'-lifecycle.jsonl')
         require(not journal.exists(),'never reuse a prior lifecycle journal')
-        registry=Registry(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
+        registry_factory=Registry
+        if native_mode:
+            from native_exec_registry import registry_for_policy
+            registry_factory=lambda *arguments,**options:registry_for_policy(policy,*arguments,**options)
+        registry=registry_factory(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
             source_commit=source,policy_sha256=policy_sha,
             capture_lock_path=guard.coordination_lock_path(policy))
     registry.activate()
@@ -260,7 +282,7 @@ def validate_mac_build_policy(policy,build):
     if mac_plan(policy) in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
         sources=build.get('observerSources')
         repo=Path(__file__).resolve().parents[2]
-        require(type(sources) is dict and set(sources)==set(MAC_LIFECYCLE_SOURCES)
+        require(type(sources) is dict and set(sources)==set(lifecycle_observer_sources(policy))
                 and all(sha(repo/name)==value for name,value in sources.items()),'v3 build observer source closure differs')
 
 
@@ -270,6 +292,8 @@ def load_mac_policy(repo,path,implementation):
     relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
     require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
     policy=json.loads(raw);plan=mac_plan(policy)
+    require(policy.get('onlineReplayMode') not in ('full-state-c-clone-exact-prefix-v1','owned-guard-state-exact-prefix-v1'),
+            'C-clone replay requires a separately frozen new scientific execution decision; legacy plans cannot execute it')
     require((relative==MAC_PREFIX_POLICY_PATH)==(plan==MAC_PREFIX_PLAN),'prefix policy path/execution decision mismatch')
     if plan==MAC_PREFIX_PLAN:
         require(policy.get('onlineReplayMode')=='incremental-exact-prefix-v1'
@@ -289,7 +313,7 @@ def load_mac_policy(repo,path,implementation):
         require(sha(repo/'experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source differs from policy')
     dependencies={}
     if mac_plan(policy) in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
-        for relative_source in MAC_LIFECYCLE_SOURCES:
+        for relative_source in lifecycle_observer_sources(policy):
             source=repo/relative_source
             require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+relative_source),'lifecycle dependency differs from Q')
             dependencies[relative_source]=sha(source)
@@ -322,20 +346,79 @@ def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None
     return recalculated
 
 
-def online_lifecycle_cursors(policy):
+def online_lifecycle_cursors(policy, *, lifecycle=None, preparation_path=None):
     """Independent journal states; live file authentication never caches a verdict."""
     if policy is None:
         return {}, {}
     inner,outer={},{}
     if policy.get('onlineReplayMode') is not None:
-        require(policy.get('kind')==MAC_LIFECYCLE_KIND and
-                policy['onlineReplayMode']=='incremental-exact-prefix-v1','unsupported online replay mode')
-        from process_lifecycle import ViewCursor
-        inner['lifecycle_cursor'],outer['lifecycle_cursor']=ViewCursor(),ViewCursor()
+        require(policy.get('kind')==MAC_LIFECYCLE_KIND,'unsupported online replay policy kind')
+        if policy['onlineReplayMode']=='owned-guard-state-exact-prefix-v1':
+            started=time.monotonic()
+            from process_lifecycle import Registry, project_path
+            require(isinstance(lifecycle,Registry) and preparation_path is not None,
+                    'owned guard requires actual journal-only preparation before observation')
+            mac_observer(policy).validate_policy(policy)
+            from newowned_guard_cursor import bootstrap_pair
+            path=project_path(preparation_path)
+            require(path.name=='initialization.json' and path.parent.is_dir() and not path.exists(),
+                    'new exclusive owned guard initialization artifact required')
+            view=lifecycle.sample()
+            captured=time.monotonic()
+            first,second,record=bootstrap_pair(view)
+            record.update(factoryStartedMonotonic=started,viewCapturedMonotonic=captured,
+                          recordWriteStartedMonotonic=time.monotonic())
+            raw=(json.dumps(record,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
+            with path.open('xb') as stream:
+                stream.write(raw);stream.flush();os.fsync(stream.fileno())
+            completed=time.monotonic()
+            write_clock=dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),
+                startedMonotonic=record['recordWriteStartedMonotonic'],completedMonotonic=completed)
+            first.bind_preparation(record,write_clock);second.bind_preparation(record,write_clock)
+            inner['lifecycle_cursor'],outer['lifecycle_cursor']=first,second
+        elif policy['onlineReplayMode']=='full-state-c-clone-exact-prefix-v1':
+            started=time.monotonic()
+            from process_lifecycle import Registry, project_path
+            require(isinstance(lifecycle,Registry) and preparation_path is not None,
+                    'C-clone cursor requires actual journal-only preparation before observation')
+            mac_observer(policy).validate_policy(policy)
+            from full_state_clone_cursor import bootstrap_pair
+            path=project_path(preparation_path)
+            require(path.name=='initialization.json' and path.parent.is_dir() and not path.exists(),
+                    'new exclusive scope initialization artifact required')
+            view=lifecycle.sample()
+            captured=time.monotonic()
+            first,second,record=bootstrap_pair(view)
+            record.update(factoryStartedMonotonic=started,viewCapturedMonotonic=captured,
+                          recordWriteStartedMonotonic=time.monotonic())
+            raw=(json.dumps(record,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
+            with path.open('xb') as stream:
+                stream.write(raw);stream.flush();os.fsync(stream.fileno())
+            completed=time.monotonic()
+            write_clock=dict(path=str(path),sha256=hashlib.sha256(raw).hexdigest(),
+                startedMonotonic=record['recordWriteStartedMonotonic'],completedMonotonic=completed)
+            first.bind_preparation(record,write_clock);second.bind_preparation(record,write_clock)
+            inner['lifecycle_cursor'],outer['lifecycle_cursor']=first,second
+        else:
+            require(policy['onlineReplayMode']=='incremental-exact-prefix-v1','unsupported online replay mode')
+            from process_lifecycle import ViewCursor
+            inner['lifecycle_cursor'],outer['lifecycle_cursor']=ViewCursor(),ViewCursor()
     if policy.get('binaryAuthenticationMode') is not None:
         require(policy.get('kind')==MAC_LIFECYCLE_KIND,'binary authentication policy kind')
         inner['binary_authenticator']=mac_observer(policy).new_binary_authenticator(policy)
     return inner,outer
+
+
+def lifecycle_cursor_initialization(options):
+    cursor=options.get('lifecycle_cursor')
+    if cursor is not None and type(cursor).__name__=='OwnedGuardCursor':
+        from newowned_guard_cursor import OwnedGuardCursor
+        require(type(cursor) is OwnedGuardCursor,'exact source-bound owned guard cursor required')
+        return cursor.preparation_metadata()
+    if cursor is None or type(cursor).__name__!='FullStateCloneCursor':return {}
+    from full_state_clone_cursor import FullStateCloneCursor
+    require(type(cursor) is FullStateCloneCursor,'actual source-bound C-clone cursor required')
+    return cursor.preparation_metadata()
 
 
 def validate_coverage(samples,duration=None,minimum_samples=None,max_gap=3):

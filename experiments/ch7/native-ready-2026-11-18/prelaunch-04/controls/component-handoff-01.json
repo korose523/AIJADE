@@ -1,0 +1,383 @@
+{
+  "schema": "aijade.native-ready.standalone-component-handoff.v1",
+  "status": "NATIVE_READY_COMPONENT_NOT_ALL_PASS_NO_ENGINEERING_ACCEPTANCE",
+  "baselineCommit": "48299b12847c11d5a629b0292ea19d57fe771cd4",
+  "candidateAdapterSha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+  "candidateCSourceSha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+  "candidateBinaryPath": "/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native",
+  "candidateBinarySha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+  "originalLifeAndPythonShimAndOracleUnchanged": true,
+  "controls": {
+    "nativeStandalonePassed": 20,
+    "nativeStandaloneFailed": 0,
+    "captureMockPassed": 3,
+    "captureMockFailed": 0,
+    "parserPurePassed": 65,
+    "parserPureFailed": 0
+  },
+  "actualFixedComponent": {
+    "planSha256": "ef27a276e661acc2b71584d771ea1f03c6988970687bd67b80f5961bf18b61e1",
+    "resultPath": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/result.json",
+    "resultSha256": "f121da1060acc9959dfdfe0a4c5d075cc009d88d7c8958df81dc23246d454c0e",
+    "resultProcessExitCode": 0,
+    "exitZeroMeansMeasurementsCompleteNotAllDeadlinePass": true,
+    "globalLsofProcesses": 20,
+    "legacyGlobalLsofProcesses": 10,
+    "nativeGlobalLsofProcesses": 10,
+    "automaticRetries": 0,
+    "allHandlesTerminated": true,
+    "summary": {
+      "legacy": {
+        "attempts": 10,
+        "actualGlobalLsofProcesses": 10,
+        "observedCompleteWithinWholeDeadline": 10,
+        "unknown": 0,
+        "medianWholeSeconds": 0.30639753700233996,
+        "maximumWholeSeconds": 0.312470265023876,
+        "nativeIndependentTranscriptObserved": null,
+        "allMeasurementsSeconds": [
+          0.27431800798512995,
+          0.2956512999953702,
+          0.3043123410025146,
+          0.3115100800059736,
+          0.3068490799923893,
+          0.312470265023876,
+          0.3075245800137054,
+          0.3059459940122906,
+          0.3032726259843912,
+          0.3071797340235207
+        ]
+      },
+      "native": {
+        "attempts": 10,
+        "actualGlobalLsofProcesses": 10,
+        "observedCompleteWithinWholeDeadline": 9,
+        "unknown": 1,
+        "medianWholeSeconds": 0.2656271214946173,
+        "maximumWholeSeconds": 0.5640400309930556,
+        "nativeIndependentTranscriptObserved": 9,
+        "allMeasurementsSeconds": [
+          0.5640400309930556,
+          0.26654537898139097,
+          0.2647283720143605,
+          0.257079891016474,
+          0.2704690780083183,
+          0.2713015500048641,
+          0.2572884089895524,
+          0.26472962999832816,
+          0.264467239001533,
+          0.26652461299090646
+        ]
+      }
+    },
+    "preparation": {
+      "legacy": {
+        "initialActualProducerBytes": 1685,
+        "initialActualProducerSha256": "0c8e021a09a7bee02d0b06149f98bfc0bea4f6632ea044f1293163355dc6b53e",
+        "syntheticPriorChains": 6308,
+        "syntheticPriorEventSequences": [
+          3,
+          18926
+        ],
+        "actualPriorPopenRuns": 0,
+        "syntheticWaitSourceIsFixtureEncodingNotObservedWait": true,
+        "prefixBytes": 15619428,
+        "prefixSha256": "7b1fb12fc913bd24a10cb233d9423a750f7d3a056bb31e5065489fc195a6926c",
+        "lastSequence": 18926,
+        "maximumSyntheticChainBytes": 2489,
+        "canonicalPreparationStartedMonotonic": 246464.276621449,
+        "canonicalPreparationCompletedMonotonic": 246465.577379483,
+        "generationManifestScope": "Original first two producer events plus explicitly synthetic prior finite events; no padding fields."
+      },
+      "native": {
+        "initialActualProducerBytes": 1684,
+        "initialActualProducerSha256": "1ace456b3666ea109632394703ebae1a7cccb36b8259c848f5a9ba107d108887",
+        "syntheticPriorChains": 6308,
+        "syntheticPriorEventSequences": [
+          3,
+          18926
+        ],
+        "actualPriorPopenRuns": 0,
+        "syntheticWaitSourceIsFixtureEncodingNotObservedWait": true,
+        "prefixBytes": 15619427,
+        "prefixSha256": "46a8cf2e95c6cd0ce45c20ecf2f900395405105b65de3e379a918165ca59c8d2",
+        "lastSequence": 18926,
+        "maximumSyntheticChainBytes": 2489,
+        "canonicalPreparationStartedMonotonic": 246466.281911621,
+        "canonicalPreparationCompletedMonotonic": 246467.626496261,
+        "generationManifestScope": "Original first two producer events plus explicitly synthetic prior finite events; no padding fields."
+      }
+    },
+    "finalCanonical": {
+      "legacy": {
+        "finalBytes": 15644242,
+        "finalSha256": "28f873a3442adf9fb7b76a34c1eb7a6b898f14c5f4d70dad8f82998fd6fb305d",
+        "finalEvents": 18956,
+        "syntheticPriorChains": 6308,
+        "actualFiniteChains": 10,
+        "totalFiniteChains": 6318,
+        "allActualPopenHandlesTerminated": true
+      },
+      "native": {
+        "finalBytes": 15644243,
+        "finalSha256": "92aa55001dcb85dd8c1cbf4cf923b071c6451456b9dce27a3953f511ce4f7149",
+        "finalEvents": 18956,
+        "syntheticPriorChains": 6308,
+        "actualFiniteChains": 10,
+        "totalFiniteChains": 6318,
+        "allActualPopenHandlesTerminated": true
+      }
+    },
+    "full15_5MiBUpperEnvelopeCovered": false
+  },
+  "replayScope": {
+    "canonicalReplay": "Original93e producer parser independently cold-executed for every measured prefix; not claimed to be code-independent ffbf oracle execution.",
+    "listenerTranscriptSemantics": "Separate pure45617 listener parser/verifier, native9OBSERVED/firstUNKNOWN, with canonical state reconstructed cold.",
+    "fullIndependentEngineeringAuditComplete": false
+  },
+  "implementationContract": {
+    "mode": "native-ready-release-v1",
+    "module": "native_exec_registry.py",
+    "CSource": "lifecycle_exec_native.c",
+    "policyTopModeField": "lifecycleExecMode",
+    "nativeExecClosedKeys": [
+      "mode",
+      "adapterSourceSha256",
+      "sourcePath",
+      "sourceSha256",
+      "binaryPath",
+      "binarySha256"
+    ],
+    "policyShimBinding": "lifecycle.execShimSha256 == nativeExec.binarySha256",
+    "factoryAPI": [
+      "registry_for_policy",
+      "activate_from_environment"
+    ],
+    "managedHandleClass": "Original process_lifecycle.ManagedProcess",
+    "detachedEvidenceAPI": "evidence_for_handle(handle)",
+    "guardIntegrationPerformed": false
+  },
+  "initialSetupFailure": {
+    "preQueryFilesystemFailurePreserved": true,
+    "globalQueriesBeforeFix": 0,
+    "sourceOrPlanChangedForFilesystemPrerequisite": false,
+    "measuredRetry": false
+  },
+  "files": {
+    "candidate/experiments/ch7/native_exec_registry.py": {
+      "bytes": 17718,
+      "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f"
+    },
+    "candidate/experiments/ch7/lifecycle_exec_native.c": {
+      "bytes": 3690,
+      "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35"
+    },
+    "candidate/experiments/ch7/process_lifecycle.py": {
+      "bytes": 58249,
+      "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+    },
+    "candidate/experiments/ch7/lifecycle_exec.py": {
+      "bytes": 1005,
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    "candidate/experiments/ch7/lifecycle_audit.py": {
+      "bytes": 53328,
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+    },
+    "candidate/tests/shell/test_native_exec_registry.py": {
+      "bytes": 19011,
+      "sha256": "96c3783e36fa9711566a5a2e0917417ed4f35c61fea2dbeae8558e9bbfd58aa5"
+    },
+    "native-controls-01.log": {
+      "bytes": 2449,
+      "sha256": "ccc9d8d203baebb9939804e4380be004ce288b152ccfc630e22f8a9cda8c9b24"
+    },
+    "native-controls-02.log": {
+      "bytes": 3445,
+      "sha256": "426e9e9a37ffbb3626e1091662f5a254067b4b8d6bb59e0cc6e64c6260661bec"
+    },
+    "component-capture-controls-01.log": {
+      "bytes": 554,
+      "sha256": "a1588dc900f07cf31ac29e14e8886d4f3a9323579b35a9484c688bc78d624a16"
+    },
+    "component_probe.py": {
+      "bytes": 17071,
+      "sha256": "2e3dd1c535553f423eb4f73da5b116500411988bfbc9bc7de55c040d83f5406d"
+    },
+    "component-plan-02.json": {
+      "bytes": 3850,
+      "sha256": "ef27a276e661acc2b71584d771ea1f03c6988970687bd67b80f5961bf18b61e1"
+    },
+    "component-population-refusal-checkpoint.json": {
+      "bytes": 532,
+      "sha256": "65ca623948bc190a08dc9f8ef1835929447e1ba79d60a3adb5f70407fb0a4398"
+    },
+    "component-pre-query-filesystem-checkpoint.json": {
+      "bytes": 540,
+      "sha256": "d0a2d531897db9f3fd8977a2d0ca92c09d5aa75ab7b151fb1995fbb1d587c634"
+    },
+    "component-01.log": {
+      "bytes": 702,
+      "sha256": "0a06e7c5b870591eea9aae79c57c2f9c510d154950942c569d42a7c8b6068cd7"
+    },
+    "component-first-actual-invocation.log": {
+      "bytes": 2032,
+      "sha256": "3e45c22edbb749be53f39c34d42abf93c30eddde3c6f23ab08d4186fb7e036dc"
+    },
+    "first-native-phase-analysis.json": {
+      "bytes": 2102,
+      "sha256": "231cea77851772efa224f2593314148b706d94bba022310a746dcfd7966b4ef6"
+    },
+    "native-launch-exact.diff": {
+      "bytes": 7328,
+      "sha256": "26ec656578a9fe8b60ab0d884189768664dfadb76d32c831bfca5772f001f2d1"
+    },
+    "source-review-01.json": {
+      "bytes": 2153,
+      "sha256": "6351418c3b6632cf9419cdfd0302b736a81d9053a096fd4a0bb0bfbf36f8ec3f"
+    },
+    "listener-evidence/listener_evidence.py": {
+      "bytes": 24787,
+      "sha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2"
+    },
+    "listener-evidence/HANDOFF.json": {
+      "bytes": 3498,
+      "sha256": "e998088164e5e9012c1608aa3ae00a482038128f9137e25d0953a218e1ea144a"
+    }
+  },
+  "rawComponentFiles": {
+    "00-legacy.json": {
+      "bytes": 4209,
+      "sha256": "2499c42ffeecb9c0f5e37ed618d7d9831a771b7f72e8267a550f868ef78ba468"
+    },
+    "00-native.json": {
+      "bytes": 11534,
+      "sha256": "c19b495df71065f1a1281a6952447104d69c4386aec41b77d3b70cbce18de1d5"
+    },
+    "01-legacy.json": {
+      "bytes": 4208,
+      "sha256": "ffe55ea20ce547a8537d2799fd6a1fde74d5b2caea252d0e6fc72f0028cfcb3b"
+    },
+    "01-native.json": {
+      "bytes": 11437,
+      "sha256": "a71fc45d0edea5de62f838abf7d56ed9d129d4165a7c11a5a4a42f6691762906"
+    },
+    "02-legacy.json": {
+      "bytes": 4207,
+      "sha256": "165f0a85a50a1e40a5d000b6ac214d44daf4a15a5f5a0a1cf879ec64d70716d2"
+    },
+    "02-native.json": {
+      "bytes": 11433,
+      "sha256": "c5043d510afc0bfd724d723c06933da727a6ddbd1a6c767a47cd9b7fec8213c3"
+    },
+    "03-legacy.json": {
+      "bytes": 4208,
+      "sha256": "7847894e70d10ddc0aeac423d4b9fc688ab6bad235a25658b3a7ebb2fe33a8fa"
+    },
+    "03-native.json": {
+      "bytes": 11434,
+      "sha256": "0db16f69752c7005c15177f2009d5c0297ee50fd84028e445d5815a2fb3ce030"
+    },
+    "04-legacy.json": {
+      "bytes": 4206,
+      "sha256": "8f883203efea4e9cf3549c3f42146509db2490ac534eedddcf63b90e97545d8d"
+    },
+    "04-native.json": {
+      "bytes": 11428,
+      "sha256": "9c25b7bea966fcf57e891824076b3deb6ccadb9bf4a39a48732f91f3c43d9554"
+    },
+    "05-legacy.json": {
+      "bytes": 4205,
+      "sha256": "fcd0a6744c310cf3c406f7e1c41ef12f40672393a52d85361c0ee28b20d00f5f"
+    },
+    "05-native.json": {
+      "bytes": 11434,
+      "sha256": "9731d9ab65d0a4a95cdd9560f31bc054c4cb1125d25eccb4c6833846f4fbf9cf"
+    },
+    "06-legacy.json": {
+      "bytes": 4208,
+      "sha256": "71fa614b2044b67dfafb9b18d1f9bc6a2b38dc31d457f66266d53753fb981bce"
+    },
+    "06-native.json": {
+      "bytes": 11436,
+      "sha256": "c4256c8f7d96d9bcba2f4f9754627f3d611acc3d3d060aab483e705ff170a631"
+    },
+    "07-legacy.json": {
+      "bytes": 4203,
+      "sha256": "f58f87f8e5380ce0391045e79f12990c97c2ee34b37a7bb4eb19e2f85fed4711"
+    },
+    "07-native.json": {
+      "bytes": 11434,
+      "sha256": "40708f66a10c9d3cdfa5d1e25d07358083a8f1439eb9c56718fd40dd6161d97b"
+    },
+    "08-legacy.json": {
+      "bytes": 4208,
+      "sha256": "85dbcd0735ac60d79aab44e792623c00dc46d5804dc0ef92bc75ceec6509fbc3"
+    },
+    "08-native.json": {
+      "bytes": 11435,
+      "sha256": "bcfdafc3736fc2e634c6341896bf2fbfe99ac1c1d54051ac7881c962c1a596e2"
+    },
+    "09-legacy.json": {
+      "bytes": 4208,
+      "sha256": "948e49d2a11651af4255a9befa9912558dd3fa88f85db85905aaf2f4f6ef630e"
+    },
+    "09-native.json": {
+      "bytes": 11437,
+      "sha256": "964f148caf5b6b0e7386fb0d01fa1df15a9b0b29a8591deb8f5ea73459600b5a"
+    },
+    "legacy/capture.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "legacy/lifecycle-journal.jsonl": {
+      "bytes": 15644242,
+      "sha256": "28f873a3442adf9fb7b76a34c1eb7a6b898f14c5f4d70dad8f82998fd6fb305d"
+    },
+    "legacy/process-policy.json": {
+      "bytes": 675,
+      "sha256": "4bab798807b4df4015efbe3f4262e112a242d20d0da85e0882eb00db6d169b37"
+    },
+    "native/capture.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "native/lifecycle-journal.jsonl": {
+      "bytes": 15644243,
+      "sha256": "92aa55001dcb85dd8c1cbf4cf923b071c6451456b9dce27a3953f511ce4f7149"
+    },
+    "native/process-policy.json": {
+      "bytes": 1364,
+      "sha256": "7976c389ea427c19e787b7bc67289024e5164d80cf727fd67f0a908ca9635485"
+    },
+    "plan-copy.json": {
+      "bytes": 3850,
+      "sha256": "ef27a276e661acc2b71584d771ea1f03c6988970687bd67b80f5961bf18b61e1"
+    },
+    "preparation.json": {
+      "bytes": 1778,
+      "sha256": "e91bca15ce57cb37d9c91d2da14aea04a55125a07e60b037ea385ea3a20c9b6c"
+    },
+    "queries-started.json": {
+      "bytes": 721,
+      "sha256": "59a79395368d44d92d9f073956709fdae43bf4f73f458d5b14ab0ae6e1f2c963"
+    },
+    "result.json": {
+      "bytes": 185324,
+      "sha256": "f121da1060acc9959dfdfe0a4c5d075cc009d88d7c8958df81dc23246d454c0e"
+    }
+  },
+  "scope": {
+    "W5Edits": 0,
+    "sourcePublication": false,
+    "newEngineeringWindows": 0,
+    "qualificationStarted": false,
+    "backendQualified": false,
+    "scientificAcceptance": false,
+    "newHeldoutSeed": false,
+    "heldoutComparisonComplete": false,
+    "newApiOrModelOrRendererRequests": 0,
+    "allLocalProcessesStopped": true
+  },
+  "nextStep": "Root prospective E6 preparation only; no qualification, all-pass, full-envelope, or cold-start claim. Original first failure and all twenty rows remain immutable."
+}

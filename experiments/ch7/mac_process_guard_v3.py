@@ -27,6 +27,12 @@ import process_lifecycle as lifecycle_support
 
 SCHEMA = 3
 KIND = 'mac-lifecycle-observed-idle-daemon-v3'
+SEGMENTED_MODE = 'segmented-census-mutation-v1'
+SEGMENTED_SCHEMA = 'aijade.mac.segmented-census-mutation.v1'
+CLONE_REPLAY_MODE = 'full-state-c-clone-exact-prefix-v1'
+CLONE_INITIALIZATION_MODE = 'paired-source-verified-journal-prefix-v1'
+OWNED_REPLAY_MODE = 'owned-guard-state-exact-prefix-v1'
+OWNED_INITIALIZATION_MODE = 'paired-source-verified-owned-state-v1'
 API_URL = 'http://127.0.0.1:11434/api/ps'
 MAX_API_BYTES = 65536
 MAX_API_SECONDS = 0.5
@@ -83,8 +89,20 @@ def validate_policy(policy):
     """Raise ValueError for an unsafe or incomplete predeclared policy."""
     if not isinstance(policy, dict) or type(policy.get('schemaVersion')) is not int or policy['schemaVersion'] != SCHEMA or policy.get('kind') != KIND:
         raise ValueError('policy schema/kind')
-    if policy.get('onlineReplayMode') not in (None, 'incremental-exact-prefix-v1'):
+    mode = policy.get('coordinationMode')
+    if mode not in (None, SEGMENTED_MODE):
+        raise ValueError('unrecognized capture coordination mode')
+    if (policy.get('coordinationSchema') != SEGMENTED_SCHEMA if mode == SEGMENTED_MODE
+            else 'coordinationSchema' in policy):
+        raise ValueError('capture coordination schema/mode mismatch')
+    if policy.get('onlineReplayMode') not in (None, 'incremental-exact-prefix-v1', CLONE_REPLAY_MODE, OWNED_REPLAY_MODE):
         raise ValueError('unrecognized online journal replay mode')
+    if policy.get('onlineReplayMode') == OWNED_REPLAY_MODE:
+        _owned_cursor_module(policy)
+    elif policy.get('onlineReplayMode') == CLONE_REPLAY_MODE:
+        _clone_cursor_module(policy)
+    elif any(key in policy for key in ('onlineReplaySourceSha256','onlineReplayInitializationMode')):
+        raise ValueError('legacy replay policy cannot select C-clone initialization fields')
     if policy.get('binaryAuthenticationMode') not in (None, 'full-read-exact-bytes-v1'):
         raise ValueError('unrecognized binary authentication mode')
     if policy.get('binaryAuthenticationMode') is not None:
@@ -128,11 +146,187 @@ def validate_policy(policy):
     config = policy.get('lifecycle')
     if not isinstance(config,dict) or set(config) != {'moduleSha256','execShimSha256','coordinationLockPath','maxLockWaitSeconds','maxObservationSeconds'}:
         raise ValueError('lifecycle policy identity missing')
-    if config['moduleSha256'] != _file_sha(Path(lifecycle_support.__file__)) or config['execShimSha256'] != _file_sha(Path(__file__).with_name('lifecycle_exec.py')):
+    if config['moduleSha256'] != _file_sha(Path(lifecycle_support.__file__)):
+        raise ValueError('lifecycle module/shim changed')
+    if policy.get('lifecycleExecMode') is not None:
+        module=_native_exec_module(policy)
+        module._policy_binding(policy)
+        _native_listener_module(policy)
+    elif ('nativeExec' in policy or 'listenerEvidence' in policy
+          or config['execShimSha256'] != _file_sha(Path(__file__).with_name('lifecycle_exec.py'))):
         raise ValueError('lifecycle module/shim changed')
     if config['coordinationLockPath'] != str(coordination_lock_path(policy)) or config['maxLockWaitSeconds'] != 1.25 or config['maxObservationSeconds'] != 2.5:
         raise ValueError('lifecycle observation coordination changed')
     canonical_sha256(policy)
+
+
+def _native_exec_module(policy):
+    import importlib
+    if (policy.get('lifecycleExecMode')!='native-ready-release-v1'
+            or policy.get('onlineReplayMode')!=OWNED_REPLAY_MODE
+            or policy.get('coordinationMode')!=SEGMENTED_MODE):
+        raise ValueError('unknown explicit native execution mode')
+    module=importlib.import_module('native_exec_registry')
+    if Path(module.__file__).resolve()!=Path(__file__).with_name('native_exec_registry.py').resolve():
+        raise ValueError('exact colocated native Registry required')
+    binding=module._policy_binding(policy)
+    if Path(binding['sourcePath']).name!='lifecycle_exec_native.c':
+        raise ValueError('native C source basename differs')
+    if (binding['adapterSourceSha256']!=_file_sha(Path(module.__file__))
+            or binding['sourceSha256']!=_file_sha(Path(__file__).with_name('lifecycle_exec_native.c'))):
+        raise ValueError('native adapter/source differs from policy')
+    for name in ('sourcePath','binaryPath'):
+        value=Path(binding[name])
+        if not value.is_absolute() or '..' in value.parts or WORKSPACE not in value.parents:
+            raise ValueError('native artifact path outside workspace')
+    return module
+
+
+def _native_listener_module(policy):
+    import importlib
+    module=importlib.import_module('listener_evidence')
+    expected=Path(__file__).with_name('listener_evidence.py')
+    if Path(module.__file__).resolve()!=expected.resolve():
+        raise ValueError('exact colocated listener evidence module required')
+    module._policy(policy,_file_sha(expected),_file_sha(Path(__file__)))
+    return module
+
+
+def _read_native_listener(policy,lifecycle):
+    """Capture complete original global command; never replay a prior verdict."""
+    started=time.monotonic()
+    native_module=_native_exec_module(policy);evidence_module=_native_listener_module(policy)
+    process=None;out=err=b'';exception=None;native=None;returncode=None;communicated=False
+    def record_error(error,label):
+        nonlocal exception
+        detail=label+': '+type(error).__name__+': '+str(error)
+        if exception is None:exception={'class':type(error).__name__,'message':detail}
+        else:exception['message']+='; '+detail
+    try:
+        if type(lifecycle) is not native_module.NativeExecRegistry:
+            raise ValueError('native policy requires actual native Registry')
+        remaining=.5-(time.monotonic()-started)
+        if remaining<=0:raise TimeoutError('listener source checks consumed deadline')
+        process=lifecycle.launch(evidence_module.ARGV,stage='observer-listener',
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE,ready_timeout=min(lifecycle_support.READY_SECONDS,remaining))
+        remaining=.5-(time.monotonic()-started)
+        if remaining<=0:raise TimeoutError('listener native startup consumed deadline')
+        out,err=process.communicate(timeout=remaining)
+        communicated=True
+        returncode=process.returncode
+    except Exception as error:
+        record_error(error,'capture')
+        # TimeoutExpired only carries a prefix, not the complete pipe stream.
+        # Retain it before any cleanup operation can fail independently.
+        if isinstance(getattr(error,'output',None),bytes):out=error.output
+        if isinstance(getattr(error,'stderr',None),bytes):err=error.stderr
+        if process is not None:
+            try:
+                if process.poll() is None:process.kill()
+            except Exception as cleanup_error:record_error(cleanup_error,'owned cleanup signal')
+            try:returncode=process.wait(timeout=1)
+            except Exception as cleanup_error:record_error(cleanup_error,'actual owned cleanup wait')
+    if process is not None:
+        try:native=native_module.evidence_for_handle(process)
+        except Exception as error:record_error(error,'native wait evidence')
+    completed=time.monotonic()
+    transcript=dict(schema=evidence_module.SCHEMA,mode=evidence_module.MODE,argv=list(evidence_module.ARGV),
+        stdout=evidence_module.encode_capture(out[:evidence_module.MAX_FORENSIC],truncated=not communicated or len(out)>evidence_module.MAX_FORENSIC,total_bytes=len(out) if communicated else None),
+        stderr=evidence_module.encode_capture(err[:evidence_module.MAX_FORENSIC],truncated=not communicated or len(err)>evidence_module.MAX_FORENSIC,total_bytes=len(err) if communicated else None),
+        returnCode=returncode,exception=exception,startedMonotonic=started,
+        runCompletedMonotonic=completed,parseCompletedMonotonic=completed,
+        sourcePins=dict(adapterSourceSha256=policy['nativeExec']['adapterSourceSha256'],
+            shimSourceSha256=policy['nativeExec']['sourceSha256'],shimSha256=policy['nativeExec']['binarySha256'],
+            executableSha256=policy['listenerEvidence']['executableSha256'],
+            parserSourceSha256=_file_sha(Path(evidence_module.__file__)),callerSourceSha256=_file_sha(Path(__file__))),
+        nativeLaunch=native)
+    try:evidence_module.parse_global_stdout(out)
+    except Exception:pass
+    transcript['parseCompletedMonotonic']=time.monotonic()
+    return transcript
+
+
+def _validate_native_listener_frames(policy,observation,state,add):
+    module=_native_listener_module(policy)
+    for phase in ('before','after'):
+        frame=observation['evidence'][phase];listener=frame['listener']
+        transcript=listener.get('transcript')
+        try:
+            native=transcript['nativeLaunch'];clocks=native['phaseClocks'];lock=native['captureLock']
+            outer=observation['coordinationLocks'][phase]
+            if (type(lock) is not dict or type(outer) is not dict or type(lock.get('nested')) is not bool
+                    or type(lock.get('waitSeconds')) is not float or not _hex(lock.get('pathSha256'))
+                    or not _hex(outer.get('pathSha256'))
+                    or not all(_finite(outer.get(k)) for k in ('acquiredMonotonic','releasedMonotonic'))
+                    or type(clocks) is not dict or not all(_finite(clocks.get(k)) for k in
+                        ('requestStartedMonotonic','captureRequestedMonotonic','captureAcquiredMonotonic','returnedMonotonic'))):
+                raise ValueError('native shared-lock witness schema')
+            expected_path=_sha_bytes(policy['lifecycle']['coordinationLockPath'].encode())
+            if (lock['nested'] is not True or lock['waitSeconds']!=0.0
+                    or lock['pathSha256']!=outer['pathSha256'] or lock['pathSha256']!=expected_path
+                    or not all(outer['acquiredMonotonic']<=clocks[k]<=outer['releasedMonotonic'] for k in
+                        ('requestStartedMonotonic','captureRequestedMonotonic','captureAcquiredMonotonic','returnedMonotonic'))):
+                add('NATIVE_LISTENER_SHARED_LOCK_BINDING_MISMATCH','FAIL',phase=phase)
+        except (KeyError,TypeError,ValueError,AttributeError):
+            add('NATIVE_LISTENER_SHARED_LOCK_EVIDENCE_UNKNOWN',phase=phase)
+        try:
+            native=transcript['nativeLaunch'];lease=state['leases'][native['leaseId']]
+            controller=observation['lifecycle']['controllerIdentity'];parent=lease['parentIdentity']
+            lifecycle_support.identity_key(controller);lifecycle_support.identity_key(parent)
+            lifecycle_support.identity_key(native['identity'])
+            if parent!=controller or native['identity']['parentPid']!=controller['pid']:
+                add('NATIVE_LISTENER_CONTROLLER_OWNER_MISMATCH','FAIL',phase=phase)
+        except (KeyError,TypeError,ValueError,AttributeError):
+            add('NATIVE_LISTENER_CONTROLLER_OWNER_UNKNOWN',phase=phase)
+        result=module.verify_transcript(transcript,state,policy,
+            parser_source_sha256=_file_sha(Path(module.__file__)),caller_source_sha256=_file_sha(Path(__file__)),
+            outer_clock=frame['listenerReadClock'])
+        if result['state']!='OBSERVED':
+            add('NATIVE_LISTENER_EVIDENCE_UNKNOWN',phase=phase,reasons=result.get('reasons',[]))
+        elif listener.get('state')!='OBSERVED' or listener.get('records')!=result['records']:
+            add('NATIVE_LISTENER_DERIVED_RESULT_MISMATCH','FAIL',phase=phase)
+
+
+def _clone_cursor_module(policy):
+    import importlib
+    expected=Path(__file__).with_name('full_state_clone_cursor.py')
+    value=policy.get('onlineReplaySourceSha256')
+    if (not _hex(value) or value!=_file_sha(expected)
+            or policy.get('onlineReplayInitializationMode')!=CLONE_INITIALIZATION_MODE):
+        raise ValueError('C-clone cursor source/initialization differs from policy')
+    module=importlib.import_module('full_state_clone_cursor')
+    if (Path(module.__file__).resolve()!=expected.resolve() or module.MODE!=CLONE_REPLAY_MODE
+            or module.INITIALIZATION_MODE!=CLONE_INITIALIZATION_MODE):
+        raise ValueError('wrong actual C-clone cursor module')
+    return module
+
+
+def _owned_cursor_module(policy):
+    import importlib
+    expected=Path(__file__).with_name('newowned_guard_cursor.py')
+    if (not _hex(policy.get('onlineReplaySourceSha256'))
+        or policy['onlineReplaySourceSha256']!=_file_sha(expected)
+        or policy.get('onlineReplayInitializationMode')!=OWNED_INITIALIZATION_MODE):
+        raise ValueError('owned guard cursor source/initialization differs from policy')
+    module=importlib.import_module('newowned_guard_cursor')
+    if (Path(module.__file__).resolve()!=expected.resolve() or module.MODE!=OWNED_REPLAY_MODE
+        or module.INITIALIZATION_MODE!=OWNED_INITIALIZATION_MODE):
+        raise ValueError('wrong actual owned guard module')
+    return module
+
+
+def _lifecycle_view(policy,view,journal,cursor):
+    if policy.get('onlineReplayMode')==CLONE_REPLAY_MODE:
+        module=_clone_cursor_module(policy)
+        if cursor is not None:
+            if type(cursor) is not module.FullStateCloneCursor:
+                raise ValueError('new policy requires its exact source-bound C-clone cursor')
+            cursor.preparation_reference()
+            return cursor.validate_view(view,journal)
+        # Offline replay remains the complete original cold parser, with no
+        # initialization state or cached runtime verdict borrowed.
+        return lifecycle_support.validate_view(view,journal)
+    return lifecycle_support.validate_view(view,journal,cursor=cursor)
 
 
 def _command_form(executable, argv):
@@ -682,7 +876,23 @@ def _normalize_roots(roots):
     return sorted(result, key=lambda x: x['pid'])
 
 
-def _snapshot(policy, roots, lifecycle, *, binary_authenticator=None):
+def _daemon_snapshot(policy, *, binary_authenticator=None):
+    """Read actual daemon identities and complete executable bytes, without a mutation lock."""
+    result = dict(daemon={}, errors=[])
+    started = time.monotonic()
+    for role in ('app', 'serve'):
+        try:
+            item = (_read_identity(policy['daemon'][role]['pid']) if binary_authenticator is None else
+                    _read_identity(policy['daemon'][role]['pid'], binary_authenticator=binary_authenticator))
+            item['executablePathSha256'] = _sha_bytes(item.pop('executable').encode())
+            result['daemon'][role] = item
+        except Exception as error:
+            result['errors'].append({'code':'DAEMON_IDENTITY_READ_UNKNOWN','role':role,'errorClass':type(error).__name__})
+    result['daemonIdentityReadClock'] = dict(startedMonotonic=started, finishedMonotonic=time.monotonic())
+    return result
+
+
+def _snapshot(policy, roots, lifecycle, *, binary_authenticator=None, daemon_sample=None):
     graph_started=time.monotonic()
     graph=_read_processes(policy,lifecycle)
     result={'processGraph':graph,'daemon':{},'ownedProcesses':[],'errors':[],
@@ -691,12 +901,18 @@ def _snapshot(policy, roots, lifecycle, *, binary_authenticator=None):
     if not graph['errors']:
         try:_,collector=parse_native_evidence(policy,graph['nativeCensus'])
         except Exception:result['errors'].append({'code':'NATIVE_COLLECTOR_WITNESS_UNKNOWN'})
-    for role in ('app','serve'):
-        try:
-            item=(_read_identity(policy['daemon'][role]['pid']) if binary_authenticator is None else
-                  _read_identity(policy['daemon'][role]['pid'],binary_authenticator=binary_authenticator))
-            item['executablePathSha256']=_sha_bytes(item.pop('executable').encode());result['daemon'][role]=item
-        except Exception as error:result['errors'].append({'code':'DAEMON_IDENTITY_READ_UNKNOWN','role':role,'errorClass':type(error).__name__})
+    if daemon_sample is None:
+        for role in ('app','serve'):
+            try:
+                item=(_read_identity(policy['daemon'][role]['pid']) if binary_authenticator is None else
+                      _read_identity(policy['daemon'][role]['pid'],binary_authenticator=binary_authenticator))
+                item['executablePathSha256']=_sha_bytes(item.pop('executable').encode());result['daemon'][role]=item
+            except Exception as error:result['errors'].append({'code':'DAEMON_IDENTITY_READ_UNKNOWN','role':role,'errorClass':type(error).__name__})
+    else:
+        result['daemon'] = daemon_sample['daemon']
+        result['errors'].extend(daemon_sample['errors'])
+        result['daemonIdentityReadClock'] = daemon_sample['daemonIdentityReadClock']
+        rss_started = time.monotonic()
     members=_owned_ids(graph['nodes'],roots)
     for node in graph['nodes']:
         if node['pid'] not in members:continue
@@ -708,8 +924,102 @@ def _snapshot(policy, roots, lifecycle, *, binary_authenticator=None):
         except Exception as error:
             result['errors'].append({'code':'OWNED_PROCESS_RSS_UNKNOWN','pid':node['pid'],'errorClass':type(error).__name__})
     result['ownedProcesses'].sort(key=lambda x:x['pid'])
-    result['listener']=_read_listeners(lifecycle)
+    if daemon_sample is not None:
+        result['ownedRssReadClock'] = dict(startedMonotonic=rss_started, finishedMonotonic=time.monotonic())
+        listener_started = time.monotonic()
+    if policy.get('lifecycleExecMode') is not None:
+        if daemon_sample is None:listener_started=time.monotonic()
+        transcript=_read_native_listener(policy,lifecycle)
+        module=_native_listener_module(policy)
+        preliminary_clock=dict(startedMonotonic=listener_started,finishedMonotonic=time.monotonic())
+        result['listener']=module.derive_outcome(transcript,preliminary_clock)
+        outer_clock=dict(startedMonotonic=listener_started,finishedMonotonic=time.monotonic())
+        if outer_clock['finishedMonotonic']-listener_started>.5:
+            reasons=result['listener'].get('reasons',[])
+            if 'WHOLE_CALL_DEADLINE_EXCEEDED' not in reasons:reasons=reasons+['WHOLE_CALL_DEADLINE_EXCEEDED']
+            result['listener']=dict(state='UNKNOWN',code='LISTENER_EVIDENCE_UNKNOWN',reasons=reasons,records=[])
+        result['listener']['transcript']=transcript
+        result['listenerReadClock']=outer_clock
+    else:
+        result['listener']=_read_listeners(lifecycle)
+        if daemon_sample is not None:
+            result['listenerReadClock'] = dict(startedMonotonic=listener_started, finishedMonotonic=time.monotonic())
     return result
+
+
+def _validate_segmented_coordination(policy, observation, start, end, add):
+    """Validate recorded per-snapshot exclusion, never invent a whole-observation lock."""
+    if (observation.get('coordinationMode') != SEGMENTED_MODE
+            or observation.get('coordinationSchema') != SEGMENTED_SCHEMA
+            or 'coordinationLock' in observation):
+        add('SEGMENTED_COORDINATION_SCHEMA_OR_MODE_MISMATCH', 'FAIL')
+        return
+    locks = observation.get('coordinationLocks')
+    if type(locks) is not dict or set(locks) != {'before', 'after'}:
+        add('SEGMENTED_COORDINATION_LOCK_POPULATION_MISMATCH', 'FAIL')
+        return
+    clocks = {}
+    identities = []
+    path_sha = _sha_bytes(str(coordination_lock_path(policy)).encode())
+    for phase in ('before', 'after'):
+        lock = locks[phase]
+        if (type(lock) is not dict or lock.get('schema') != 'aijade.lifecycle.capture-lock.v1'
+                or lock.get('state') != 'HELD_AND_RELEASED' or lock.get('pathSha256') != path_sha
+                or lock.get('maxWaitSeconds') != 1.25 or lock.get('nested') is not False):
+            add('SEGMENTED_COORDINATION_LOCK_UNKNOWN', 'FAIL', phase=phase)
+            continue
+        initial, final = lock.get('initialIdentity'), lock.get('finalIdentity')
+        if (type(initial) is not dict or initial != final
+                or type(initial.get('device')) is not int or initial['device'] < 0
+                or type(initial.get('inode')) is not int or initial['inode'] <= 0
+                or any(initial.get(k) is not True for k in ('regular','singleLink','ownedByCurrentUser'))):
+            add('SEGMENTED_COORDINATION_LOCK_IDENTITY_UNKNOWN', 'FAIL', phase=phase)
+            continue
+        identities.append(initial)
+        requested, acquired, released, wait = (lock.get(key) for key in
+            ('requestStartedMonotonic','acquiredMonotonic','releasedMonotonic','waitSeconds'))
+        if (not all(_finite(value) for value in (requested,acquired,released,wait))
+                or not start <= requested <= acquired <= released <= end or not 0 <= wait <= acquired-requested <= 1.25
+                or acquired-requested > 1.25
+                or released-acquired > 1.25):
+            add('SEGMENTED_COORDINATION_LOCK_CLOCK_UNKNOWN', 'FAIL', phase=phase)
+            continue
+        frame = observation['evidence'][phase]
+        frame_clocks = []
+        for name in ('daemonIdentityReadClock','ownedRssReadClock','listenerReadClock'):
+            value = frame.get(name)
+            if (type(value) is not dict or set(value) != {'startedMonotonic','finishedMonotonic'}
+                    or not all(_finite(value.get(key)) for key in value)
+                    or not start <= value['startedMonotonic'] <= value['finishedMonotonic'] <= end):
+                add('SEGMENTED_SNAPSHOT_CLOCK_UNKNOWN', 'FAIL', phase=phase, clock=name)
+                break
+            frame_clocks.append(value)
+        if len(frame_clocks) != 3:
+            continue
+        daemon, rss, listener = frame_clocks
+        began, completed = frame.get('graphStartedMonotonic'), frame.get('graphCompletedMonotonic')
+        if (not all(_finite(value) for value in (began,completed))
+                or not daemon['finishedMonotonic'] <= requested <= acquired <= began <= completed
+                    <= rss['startedMonotonic'] <= rss['finishedMonotonic']
+                    <= listener['startedMonotonic'] <= listener['finishedMonotonic'] <= released):
+            add('SEGMENTED_SNAPSHOT_OUTSIDE_MUTATION_LOCK', 'FAIL', phase=phase)
+            continue
+        clocks[phase] = dict(daemon=daemon, acquired=acquired, released=released)
+    if len(identities) == 2 and identities[0] != identities[1]:
+        add('SEGMENTED_COORDINATION_LOCK_REPLACED_BETWEEN_PHASES', 'FAIL')
+    api = observation.get('segmentedApiClock')
+    if (type(api) is not dict or set(api) != {'startedMonotonic','finishedMonotonic'}
+            or not all(_finite(api.get(key)) for key in api)
+            or not start <= api['startedMonotonic'] <= api['finishedMonotonic'] <= end
+            or api['finishedMonotonic']-api['startedMonotonic'] > policy['api']['timeoutSeconds']):
+        add('SEGMENTED_API_CLOCK_UNKNOWN', 'FAIL')
+    elif len(clocks) == 2:
+        if not (clocks['before']['released'] <= api['startedMonotonic'] <= api['finishedMonotonic']
+                <= clocks['after']['daemon']['startedMonotonic']):
+            add('SEGMENTED_BEFORE_API_AFTER_ORDER_MISMATCH', 'FAIL')
+        duration = observation['evidence']['api'].get('durationSeconds')
+        if not _finite(duration) or duration > api['finishedMonotonic']-api['startedMonotonic']:
+            add('SEGMENTED_API_DURATION_OUTSIDE_ENVELOPE', 'FAIL')
 
 
 def _decision(blockers, owned=None):
@@ -719,33 +1029,51 @@ def _decision(blockers, owned=None):
             'ownedRssBytes': sum(x['rssBytes'] for x in rows) if status == 'PASS' and owned is not None else None}
 
 
-def validate_observation(policy, observation, lifecycle_journal=None, *, lifecycle_cursor=None):
+def _guard_decision_from_validated_lifecycle(policy, observation, state):
     """Recompute from recorded facts, not claimed PASS or derived RSS totals."""
     blockers = []
-    def add(code, severity='UNKNOWN', **fields): blockers.append({'code': code, 'severity': severity, **fields})
+
+    def add(code, severity='UNKNOWN', **fields):
+        blockers.append({'code': code, 'severity': severity, **fields})
     try:
-        validate_policy(policy)
-        state=lifecycle_support.validate_view(observation['lifecycle'],lifecycle_journal,cursor=lifecycle_cursor)
+        replay_keys = ('onlineReplayMode', 'onlineReplaySourceSha256', 'onlineReplayInitializationMode', 'onlineReplayPreparation')
+        if policy.get('onlineReplayMode') in (CLONE_REPLAY_MODE, OWNED_REPLAY_MODE):
+            if observation.get('onlineReplayMode') != policy['onlineReplayMode'] or observation.get('onlineReplaySourceSha256') != policy['onlineReplaySourceSha256'] or observation.get('onlineReplayInitializationMode') != policy['onlineReplayInitializationMode']:
+                add('CLONE_REPLAY_MODE_OR_SOURCE_MISMATCH', 'FAIL')
+            reference = observation.get('onlineReplayPreparation')
+            keys = {'path', 'sha256', 'mode', 'prefixBytes', 'prefixSha256', 'lastSequence', 'scopeId', 'sourceCommit', 'policySha256', 'cursorSourceSha256'}
+            if policy.get('onlineReplayMode') == OWNED_REPLAY_MODE:
+                keys |= {'ownerId', 'ownerRole', 'pairedOwnerId', 'guardPredicateAstSha256'}
+            if type(reference) is not dict or set(reference) != keys or reference.get('mode') != policy['onlineReplayInitializationMode'] or (not _hex(reference.get('sha256'))) or (not _hex(reference.get('prefixSha256'))) or (reference.get('cursorSourceSha256') != policy['onlineReplaySourceSha256']) or (type(reference.get('prefixBytes')) is not int) or (not 0 < reference['prefixBytes'] <= observation['lifecycle']['journalBytes']) or (type(reference.get('lastSequence')) is not int) or (not 0 < reference['lastSequence'] <= observation['lifecycle']['lastSequence']) or (reference.get('scopeId') != observation['lifecycle']['scopeId']) or (reference.get('sourceCommit') != state['sourceCommit']) or (reference.get('policySha256') != state['policySha256']) or (type(reference.get('path')) is not str) or (not Path(reference['path']).is_absolute()) or ('..' in Path(reference['path']).parts) or (WORKSPACE not in Path(reference['path']).parents) or (Path(reference['path']).name != 'initialization.json'):
+                add('CLONE_REPLAY_PREPARATION_CONTEXT_MISMATCH', 'FAIL')
+        elif any((key in observation for key in replay_keys)):
+            add('LEGACY_REPLAY_MODE_SUBSTITUTION', 'FAIL')
+        if policy.get('onlineReplayMode') == OWNED_REPLAY_MODE:
+            reference = observation.get('onlineReplayPreparation')
+            if type(reference) is not dict or reference.get('ownerRole') != 'inner' or (not lifecycle_support._hex(reference.get('ownerId'), 32)) or (not lifecycle_support._hex(reference.get('pairedOwnerId'), 32)) or (reference.get('ownerId') == reference.get('pairedOwnerId')) or (reference.get('guardPredicateAstSha256') != _owned_cursor_module(policy).GUARD_PREDICATE_AST_SHA256):
+                add('OWNED_REPLAY_OWNER_OR_PREDICATE_MISMATCH', 'FAIL')
+            if policy.get('lifecycleExecMode') is not None:
+                _validate_native_listener_frames(policy,observation,state,add)
         if policy.get('binaryAuthenticationMode') is not None:
             if observation.get('binaryAuthenticationMode') != policy['binaryAuthenticationMode']:
-                add('BINARY_AUTHENTICATION_MODE_MISMATCH','FAIL')
-            if not (observation.get('binaryAuthenticationModuleSha256') ==
-                    _file_sha(Path(__file__).with_name('binary_authentication.py')) ==
-                    policy['binaryAuthenticationSourceSha256']):
-                add('BINARY_AUTHENTICATION_SOURCE_MISMATCH','FAIL')
-            work=observation.get('binaryAuthenticationWork')
-            if type(work) is not dict or not work or not all(type(v) is int and v>=0 for v in work.values()):
+                add('BINARY_AUTHENTICATION_MODE_MISMATCH', 'FAIL')
+            if not observation.get('binaryAuthenticationModuleSha256') == _file_sha(Path(__file__).with_name('binary_authentication.py')) == policy['binaryAuthenticationSourceSha256']:
+                add('BINARY_AUTHENTICATION_SOURCE_MISMATCH', 'FAIL')
+            work = observation.get('binaryAuthenticationWork')
+            if type(work) is not dict or not work or (not all((type(v) is int and v >= 0 for v in work.values()))):
                 add('BINARY_AUTHENTICATION_WORK_UNKNOWN')
-        if state['launchRefusals']:add('LAUNCH_REFUSED','FAIL')
-        if state.get('launchRefusalArtifacts'):add('LAUNCH_REFUSED_ARTIFACT_PRESENT','FAIL')
-        controller=observation['lifecycle']['controllerIdentity']
-        all_native_identities=set()
+        if state['launchRefusals']:
+            add('LAUNCH_REFUSED', 'FAIL')
+        if state.get('launchRefusalArtifacts'):
+            add('LAUNCH_REFUSED_ARTIFACT_PRESENT', 'FAIL')
+        controller = observation['lifecycle']['controllerIdentity']
+        all_native_identities = set()
         if observation.get('lifecycleModuleSha256') != policy['lifecycle']['moduleSha256']:
-            add('LIFECYCLE_MODULE_IDENTITY_MISMATCH','FAIL')
+            add('LIFECYCLE_MODULE_IDENTITY_MISMATCH', 'FAIL')
         if observation.get('preservedV2SourceSha256') != _file_sha(Path(__file__).with_name('mac_process_guard_v2.py')):
-            add('PRESERVED_V2_IDENTITY_MISMATCH','FAIL')
+            add('PRESERVED_V2_IDENTITY_MISMATCH', 'FAIL')
         if observation.get('lifecyclePolicySha256') != state['policySha256']:
-            add('LIFECYCLE_POLICY_CONTEXT_MISMATCH','FAIL')
+            add('LIFECYCLE_POLICY_CONTEXT_MISMATCH', 'FAIL')
         if not isinstance(observation, dict) or observation.get('schemaVersion') != SCHEMA:
             raise ValueError('observation schema')
         if observation.get('policyCanonicalSha256') != canonical_sha256(policy):
@@ -758,21 +1086,27 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
             add('NATIVE_HELPER_IDENTITY_MISMATCH', 'FAIL')
         if observation.get('preservedV1SourceSha256') != _file_sha(Path(__file__).with_name('mac_process_guard.py')):
             add('PRESERVED_V1_IDENTITY_MISMATCH', 'FAIL')
-        if not isinstance(observation.get('sampleId'), str) or len(observation['sampleId']) != 32 or any(c not in '0123456789abcdef' for c in observation['sampleId']):
+        if not isinstance(observation.get('sampleId'), str) or len(observation['sampleId']) != 32 or any((c not in '0123456789abcdef' for c in observation['sampleId'])):
             add('SAMPLE_ID_MISSING')
-        start, end = observation.get('startedMonotonic'), observation.get('finishedMonotonic')
-        if not _finite(start) or not _finite(end) or start < 0 or end < start or end - start > 2.5:
+        start, end = (observation.get('startedMonotonic'), observation.get('finishedMonotonic'))
+        if not _finite(start) or not _finite(end) or start < 0 or (end < start) or (end - start > 2.5):
             add('SAMPLE_CLOCK_UNKNOWN')
         roots = _normalize_roots(observation['ownedRoots'])
-        if roots and (len(roots)!=1 or roots[0]['pid']!=controller['pid'] or round(roots[0]['createTime']*1000000)!=controller['createTimeMicros']):
-            add('LOCAL_CONTROLLER_ROOT_BINDING_MISMATCH','FAIL')
-        lock=observation['coordinationLock']
-        if lock.get('schema')!='aijade.lifecycle.capture-lock.v1' or lock.get('state')!='HELD_AND_RELEASED' or lock.get('pathSha256')!=_sha_bytes(str(coordination_lock_path(policy)).encode()) or lock.get('maxWaitSeconds')!=1.25:
-            add('WHOLE_OBSERVATION_LOCK_UNKNOWN')
-        elif not _finite(lock.get('waitSeconds')) or not 0<=lock['waitSeconds']<=1.25 or lock.get('initialIdentity')!=lock.get('finalIdentity') or type(lock['initialIdentity'].get('device')) is not int or lock['initialIdentity']['device']<0 or type(lock['initialIdentity'].get('inode')) is not int or lock['initialIdentity']['inode']<=0 or any(lock['initialIdentity'].get(k) is not True for k in ('regular','singleLink','ownedByCurrentUser')):
-            add('WHOLE_OBSERVATION_LOCK_IDENTITY_OR_WAIT_UNKNOWN')
+        if roots and (len(roots) != 1 or roots[0]['pid'] != controller['pid'] or round(roots[0]['createTime'] * 1000000) != controller['createTimeMicros']):
+            add('LOCAL_CONTROLLER_ROOT_BINDING_MISMATCH', 'FAIL')
+        if policy.get('coordinationMode') == SEGMENTED_MODE:
+            _validate_segmented_coordination(policy, observation, start, end, add)
+        else:
+            if any((key in observation for key in ('coordinationMode', 'coordinationSchema', 'coordinationLocks', 'segmentedApiClock'))):
+                add('LEGACY_COORDINATION_MODE_SUBSTITUTION', 'FAIL')
+            lock = observation['coordinationLock']
+            if lock.get('schema') != 'aijade.lifecycle.capture-lock.v1' or lock.get('state') != 'HELD_AND_RELEASED' or lock.get('pathSha256') != _sha_bytes(str(coordination_lock_path(policy)).encode()) or (lock.get('maxWaitSeconds') != 1.25):
+                add('WHOLE_OBSERVATION_LOCK_UNKNOWN')
+            elif not _finite(lock.get('waitSeconds')) or not 0 <= lock['waitSeconds'] <= 1.25 or lock.get('initialIdentity') != lock.get('finalIdentity') or (type(lock['initialIdentity'].get('device')) is not int) or (lock['initialIdentity']['device'] < 0) or (type(lock['initialIdentity'].get('inode')) is not int) or (lock['initialIdentity']['inode'] <= 0) or any((lock['initialIdentity'].get(k) is not True for k in ('regular', 'singleLink', 'ownedByCurrentUser'))):
+                add('WHOLE_OBSERVATION_LOCK_IDENTITY_OR_WAIT_UNKNOWN')
         expected_pids = {x['pid'] for x in policy['daemon'].values()}
-        if expected_pids.intersection(x['pid'] for x in roots): add('DAEMON_CANNOT_BE_OWNED', 'FAIL')
+        if expected_pids.intersection((x['pid'] for x in roots)):
+            add('DAEMON_CANNOT_BE_OWNED', 'FAIL')
         evidence = observation['evidence']
         owned_after = []
         owned_before = []
@@ -780,12 +1114,16 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
             sample = evidence[phase]
             if not isinstance(sample.get('daemon'), dict) or set(sample['daemon']) != {'app', 'serve'}:
                 raise ValueError('daemon evidence coverage')
-            if not isinstance(sample.get('errors'), list): raise ValueError('missing snapshot error coverage')
-            if sample.get('errors'): add('SNAPSHOT_READ_UNKNOWN', phase=phase)
+            if not isinstance(sample.get('errors'), list):
+                raise ValueError('missing snapshot error coverage')
+            if sample.get('errors'):
+                add('SNAPSHOT_READ_UNKNOWN', phase=phase)
             graph = sample['processGraph']
-            if not isinstance(graph.get('errors'), list): raise ValueError('missing process error coverage')
-            if graph.get('errors'): add('PROCESS_READ_UNKNOWN', phase=phase)
-            if not _finite(sample.get('graphStartedMonotonic')) or not _finite(sample.get('graphCompletedMonotonic')) or not start<=sample['graphStartedMonotonic']<=sample['graphCompletedMonotonic']<=end:
+            if not isinstance(graph.get('errors'), list):
+                raise ValueError('missing process error coverage')
+            if graph.get('errors'):
+                add('PROCESS_READ_UNKNOWN', phase=phase)
+            if not _finite(sample.get('graphStartedMonotonic')) or not _finite(sample.get('graphCompletedMonotonic')) or (not start <= sample['graphStartedMonotonic'] <= sample['graphCompletedMonotonic'] <= end):
                 raise ValueError('native graph Python clock envelope')
             nodes = graph.get('nodes')
             if graph.get('schema') != 'aijade.mac.bulk-process-graph.v2' or not isinstance(nodes, list):
@@ -793,57 +1131,57 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
             collector = None
             try:
                 raw_nodes, collector = parse_native_evidence(policy, graph['nativeCensus'])
-                if raw_nodes != nodes: add('BULK_DERIVED_POPULATION_MISMATCH', 'FAIL', phase=phase)
-            except Exception: add('BULK_EVIDENCE_UNKNOWN', phase=phase)
+                if raw_nodes != nodes:
+                    add('BULK_DERIVED_POPULATION_MISMATCH', 'FAIL', phase=phase)
+            except Exception:
+                add('BULK_EVIDENCE_UNKNOWN', phase=phase)
             if collector is not None:
-                native_lease=state['leases'].get(graph['nativeCensus'].get('managedLeaseId'))
-                expected_identity={key:collector[key] for key in ('pid','createTimeMicros','parentPid')}
-                if (native_lease is None or native_lease['role']!='finite'
-                    or native_lease['stageId']!='observer-native-census'
-                    or native_lease['identity']!=expected_identity
-                    or native_lease['parentIdentity']!=controller
-                    or collector['parentPid']!=graph['nativeCensus']['observerPid']
-                    or native_lease['commandSha256']!=canonical_sha256([policy['nativeHelper']['path']])
-                    or native_lease['executableSha256']!=policy['nativeHelper']['sha256']
-                    or native_lease['releaseSeq'] is None or native_lease['waitSeq'] is None
-                    or native_lease['exitCode']!=0
-                    or native_lease.get('absenceWitnessKind')!='PARENT_WAIT_REAPED'
-                    or native_lease['reapedMonotonic']>sample['graphCompletedMonotonic']):
-                    add('NATIVE_MANAGED_LIFECYCLE_BINDING_MISMATCH','FAIL',phase=phase)
+                native_lease = state['leases'].get(graph['nativeCensus'].get('managedLeaseId'))
+                expected_identity = {key: collector[key] for key in ('pid', 'createTimeMicros', 'parentPid')}
+                if native_lease is None or native_lease['role'] != 'finite' or native_lease['stageId'] != 'observer-native-census' or (native_lease['identity'] != expected_identity) or (native_lease['parentIdentity'] != controller) or (collector['parentPid'] != graph['nativeCensus']['observerPid']) or (native_lease['commandSha256'] != canonical_sha256([policy['nativeHelper']['path']])) or (native_lease['executableSha256'] != policy['nativeHelper']['sha256']) or (native_lease['releaseSeq'] is None) or (native_lease['waitSeq'] is None) or (native_lease['exitCode'] != 0) or (native_lease.get('absenceWitnessKind') != 'PARENT_WAIT_REAPED') or (native_lease['reapedMonotonic'] > sample['graphCompletedMonotonic']):
+                    add('NATIVE_MANAGED_LIFECYCLE_BINDING_MISMATCH', 'FAIL', phase=phase)
             by_pid = {}
             for node in nodes:
                 pid = node['pid']
-                if type(pid) is not int or pid < 0 or pid in by_pid or type(node.get('parentPid')) is not int or node['parentPid'] < 0 or not _finite(node.get('createTime')) or node['createTime'] < 0 or node.get('category') not in ('other', 'dotnet', 'godot', 'ollama'):
+                if type(pid) is not int or pid < 0 or pid in by_pid or (type(node.get('parentPid')) is not int) or (node['parentPid'] < 0) or (not _finite(node.get('createTime'))) or (node['createTime'] < 0) or (node.get('category') not in ('other', 'dotnet', 'godot', 'ollama')):
                     raise ValueError('invalid process evidence')
                 by_pid[pid] = node
             for node in nodes:
                 parent = by_pid.get(node['parentPid'])
-                if parent and parent['createTime'] > node['createTime']: add('PROCESS_PARENT_IDENTITY_UNKNOWN', phase=phase, pid=node['pid'])
-                if node['parentPid'] > 0 and parent is None: add('PROCESS_PARENT_COVERAGE_UNKNOWN', phase=phase, pid=node['pid'])
-                seen, ancestor = {node['pid']}, node['parentPid']
+                if parent and parent['createTime'] > node['createTime']:
+                    add('PROCESS_PARENT_IDENTITY_UNKNOWN', phase=phase, pid=node['pid'])
+                if node['parentPid'] > 0 and parent is None:
+                    add('PROCESS_PARENT_COVERAGE_UNKNOWN', phase=phase, pid=node['pid'])
+                seen, ancestor = ({node['pid']}, node['parentPid'])
                 while ancestor > 0 and ancestor in by_pid:
                     if ancestor in seen:
-                        add('PROCESS_ANCESTRY_CYCLE', phase=phase, pid=node['pid']); break
-                    seen.add(ancestor); ancestor = by_pid[ancestor]['parentPid']
-            all_native_identities.update(lifecycle_support.key_from_node(x) for x in nodes)
-            members=_typed_members(nodes,roots,state,controller,sample,collector,add,phase)
+                        add('PROCESS_ANCESTRY_CYCLE', phase=phase, pid=node['pid'])
+                        break
+                    seen.add(ancestor)
+                    ancestor = by_pid[ancestor]['parentPid']
+            all_native_identities.update((lifecycle_support.key_from_node(x) for x in nodes))
+            members = _typed_members(nodes, roots, state, controller, sample, collector, add, phase)
             for role, expected in policy['daemon'].items():
                 actual = sample['daemon'].get(role)
                 if not isinstance(actual, dict):
-                    add('DAEMON_IDENTITY_UNKNOWN', phase=phase, role=role); continue
-                if type(actual.get('pid')) is not int or type(actual.get('parentPid')) is not int or not _finite(actual.get('createTime')):
+                    add('DAEMON_IDENTITY_UNKNOWN', phase=phase, role=role)
+                    continue
+                if type(actual.get('pid')) is not int or type(actual.get('parentPid')) is not int or (not _finite(actual.get('createTime'))):
                     raise ValueError('daemon evidence types')
                 wanted = {key: expected[key] for key in ('pid', 'createTime', 'parentPid', 'sha256', 'argvSha256', 'commandForm')}
                 wanted['executablePathSha256'] = _sha_bytes(expected['executable'].encode())
-                if actual != wanted: add('DAEMON_IDENTITY_MISMATCH', 'FAIL', phase=phase, role=role)
+                if actual != wanted:
+                    add('DAEMON_IDENTITY_MISMATCH', 'FAIL', phase=phase, role=role)
                 node = by_pid.get(expected['pid'])
-                if not node: add('DAEMON_CENSUS_MISSING', phase=phase, role=role)
-                elif any(node[key] != expected[key] for key in ('createTime', 'parentPid')) or node['category'] != 'ollama':
+                if not node:
+                    add('DAEMON_CENSUS_MISSING', phase=phase, role=role)
+                elif any((node[key] != expected[key] for key in ('createTime', 'parentPid'))) or node['category'] != 'ollama':
                     add('DAEMON_CENSUS_MISMATCH', 'FAIL', phase=phase, role=role)
             descendants = set(expected_pids)
             while True:
                 new = {x['pid'] for x in nodes if x['parentPid'] in descendants and x['pid'] not in descendants}
-                if not new: break
+                if not new:
+                    break
                 descendants.update(new)
             for pid in sorted(descendants - expected_pids):
                 add('UNEXPECTED_DAEMON_DESCENDANT', 'FAIL', phase=phase, pid=pid)
@@ -857,46 +1195,51 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
                 add('OWNED_RSS_COVERAGE_INCOMPLETE', phase=phase)
             else:
                 for row in rows:
-                    if type(row.get('rssBytes')) is not int or row['rssBytes'] < 0 or any(row[key] != by_pid[row['pid']][key] for key in ('createTime', 'parentPid')):
+                    if type(row.get('rssBytes')) is not int or row['rssBytes'] < 0 or any((row[key] != by_pid[row['pid']][key] for key in ('createTime', 'parentPid'))):
                         add('OWNED_RSS_IDENTITY_UNKNOWN', phase=phase)
                     if row.get('rssSource') == 'native-collector-self':
-                        if collector is None or row['pid'] != collector['pid'] or by_pid[row['pid']].get('createTimeMicros') != collector['createTimeMicros'] or row['parentPid'] != collector['parentPid'] or row['rssBytes'] != collector['rssBytes']:
+                        if collector is None or row['pid'] != collector['pid'] or by_pid[row['pid']].get('createTimeMicros') != collector['createTimeMicros'] or (row['parentPid'] != collector['parentPid']) or (row['rssBytes'] != collector['rssBytes']):
                             add('NATIVE_SELF_RSS_WITNESS_UNKNOWN', phase=phase)
                     elif row.get('rssSource') != 'psutil-live' or (collector is not None and row['pid'] == collector['pid']):
                         add('OWNED_RSS_SOURCE_UNKNOWN', phase=phase)
-            if phase == 'before': owned_before = rows
+            if phase == 'before':
+                owned_before = rows
             else:
                 owned_after = rows
                 for previous in owned_before:
                     still_present = by_pid.get(previous['pid'])
-                    if still_present and still_present['createTime'] == previous['createTime'] and still_present['parentPid'] != previous['parentPid'] and previous['pid'] not in members:
+                    if still_present and still_present['createTime'] == previous['createTime'] and (still_present['parentPid'] != previous['parentPid']) and (previous['pid'] not in members):
                         add('OWNED_PROCESS_REPARENTED_OUTSIDE_CLOSURE', 'FAIL', phase=phase, pid=previous['pid'])
             listener = sample['listener']
-            if not isinstance(listener, dict): raise ValueError('listener evidence type')
-            if listener.get('state') != 'OBSERVED': add('LISTENER_OBSERVATION_UNKNOWN', phase=phase)
-            elif not isinstance(listener.get('records'), list) or len(listener['records']) != 1 or not isinstance(listener['records'][0], dict) or type(listener['records'][0].get('pid')) is not int or listener['records'] != [{'pid': policy['listener']['pid'], 'protocol': 'TCP', 'family': 'IPv4', 'endpoint': '127.0.0.1:11434', 'socketState': 'LISTEN'}]:
+            if not isinstance(listener, dict):
+                raise ValueError('listener evidence type')
+            if listener.get('state') != 'OBSERVED':
+                add('LISTENER_OBSERVATION_UNKNOWN', phase=phase)
+            elif not isinstance(listener.get('records'), list) or len(listener['records']) != 1 or (not isinstance(listener['records'][0], dict)) or (type(listener['records'][0].get('pid')) is not int) or (listener['records'] != [{'pid': policy['listener']['pid'], 'protocol': 'TCP', 'family': 'IPv4', 'endpoint': '127.0.0.1:11434', 'socketState': 'LISTEN'}]):
                 add('LISTENER_IDENTITY_MISMATCH', 'FAIL', phase=phase)
         if observation['lifecycle']['referencedIdentities'] != [list(x) for x in sorted(all_native_identities)]:
-            add('LIFECYCLE_REFERENCED_IDENTITY_POPULATION_MISMATCH','FAIL')
+            add('LIFECYCLE_REFERENCED_IDENTITY_POPULATION_MISMATCH', 'FAIL')
         api = evidence['api']
         duration = api.get('durationSeconds')
         if not _finite(duration) or duration < 0 or duration > policy['api']['timeoutSeconds']:
             add('API_DEADLINE_UNKNOWN')
-        if api.get('state') == 'NONEMPTY': add('MODEL_LOADED', 'FAIL')
-        elif api.get('state') != 'EMPTY': add('API_IDLE_UNKNOWN')
+        if api.get('state') == 'NONEMPTY':
+            add('MODEL_LOADED', 'FAIL')
+        elif api.get('state') != 'EMPTY':
+            add('API_IDLE_UNKNOWN')
         else:
             try:
-                if not isinstance(api.get('emptyBodyBase64'), str) or len(api['emptyBodyBase64']) > ((policy['api']['maxBytes'] + 2) // 3) * 4:
+                if not isinstance(api.get('emptyBodyBase64'), str) or len(api['emptyBodyBase64']) > (policy['api']['maxBytes'] + 2) // 3 * 4:
                     raise ValueError('empty API evidence cap')
                 raw = base64.b64decode(api['emptyBodyBase64'], validate=True)
                 parsed = json.loads(raw, object_pairs_hook=_json_unique)
-                if parsed != {'models': []} or set(parsed) != {'models'} or type(api.get('httpStatus')) is not int or api['httpStatus'] != 200 or type(api.get('modelCount')) is not int or api['modelCount'] != 0 or type(api.get('bytes')) is not int or api['bytes'] != len(raw) or len(raw) > policy['api']['maxBytes'] or api.get('bodySha256') != _sha_bytes(raw):
+                if parsed != {'models': []} or set(parsed) != {'models'} or type(api.get('httpStatus')) is not int or (api['httpStatus'] != 200) or (type(api.get('modelCount')) is not int) or (api['modelCount'] != 0) or (type(api.get('bytes')) is not int) or (api['bytes'] != len(raw)) or (len(raw) > policy['api']['maxBytes']) or (api.get('bodySha256') != _sha_bytes(raw)):
                     raise ValueError('empty API evidence changed')
             except Exception:
                 add('API_EMPTY_EVIDENCE_INVALID', 'FAIL')
         if observation.get('ownedProcesses') != owned_after:
             add('DERIVED_OWNED_PROCESS_LIST_MISMATCH', 'FAIL')
-        decision = _decision(blockers, owned_after if all(type(x.get('rssBytes')) is int and x['rssBytes'] >= 0 for x in owned_after) else [])
+        decision = _decision(blockers, owned_after if all((type(x.get('rssBytes')) is int and x['rssBytes'] >= 0 for x in owned_after)) else [])
         if 'status' in observation and observation['status'] != decision['status']:
             add('CLAIMED_STATUS_MISMATCH', 'FAIL')
         if 'ownedRssBytes' in observation and observation['ownedRssBytes'] != decision['ownedRssBytes']:
@@ -907,8 +1250,23 @@ def validate_observation(policy, observation, lifecycle_journal=None, *, lifecyc
         return _decision(blockers)
 
 
+def validate_observation(policy,observation,lifecycle_journal=None,*,lifecycle_cursor=None):
+    """Recompute recorded evidence; owned mode returns only private-state decisions."""
+    try:
+        if policy.get('onlineReplayMode')==OWNED_REPLAY_MODE and lifecycle_cursor is not None:
+            module=_owned_cursor_module(policy)
+            if type(lifecycle_cursor) is not module.OwnedGuardCursor:
+                raise ValueError('exact owned guard cursor required')
+            return lifecycle_cursor.evaluate(policy,observation,lifecycle_journal)
+        validate_policy(policy)
+        state=_lifecycle_view(policy,observation['lifecycle'],lifecycle_journal,lifecycle_cursor)
+        return _guard_decision_from_validated_lifecycle(policy,observation,state)
+    except Exception:
+        return _decision([{'code':'OBSERVATION_SCHEMA_OR_POLICY_UNKNOWN','severity':'UNKNOWN'}])
+
+
 def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None, binary_authenticator=None):
-    """Serialized bounded before/API/after with exact launch/wait journal prefix."""
+    """Bounded before/API/after with explicit whole or segmented mutation exclusion."""
     started=time.monotonic()
     result={'schemaVersion':SCHEMA,'sampleId':uuid.uuid4().hex,'startedMonotonic':started,
             'observerModuleSha256':None,'ownedProcesses':[]}
@@ -919,20 +1277,54 @@ def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None, bi
         _check_binary_authenticator(policy,binary_authenticator)
         lifecycle.bind_policy(policy)
         roots=_normalize_roots(owned_roots)
+        if policy.get('onlineReplayMode')==OWNED_REPLAY_MODE:
+            module=_owned_cursor_module(policy)
+            if type(lifecycle_cursor) is not module.OwnedGuardCursor or lifecycle_cursor.owner_role!='inner':
+                raise ValueError('exact inner owned guard cursor required for observation')
+            result.update(onlineReplayMode=OWNED_REPLAY_MODE,onlineReplaySourceSha256=policy['onlineReplaySourceSha256'],
+                onlineReplayInitializationMode=OWNED_INITIALIZATION_MODE,
+                onlineReplayPreparation=lifecycle_cursor.preparation_reference())
+        elif policy.get('onlineReplayMode')==CLONE_REPLAY_MODE:
+            module=_clone_cursor_module(policy)
+            if type(lifecycle_cursor) is not module.FullStateCloneCursor:
+                raise ValueError('actual new cursor required for C-clone observation')
+            result.update(onlineReplayMode=CLONE_REPLAY_MODE,onlineReplaySourceSha256=policy['onlineReplaySourceSha256'],
+                onlineReplayInitializationMode=CLONE_INITIALIZATION_MODE,
+                onlineReplayPreparation=lifecycle_cursor.preparation_reference())
         result.update(observerModuleSha256=_file_sha(Path(__file__)),nativeSourceSha256=_file_sha(CENSUS_SOURCE),
             nativeHelperSha256=policy['nativeHelper']['sha256'],preservedV1SourceSha256=_file_sha(Path(__file__).with_name('mac_process_guard.py')),
             preservedV2SourceSha256=_file_sha(Path(__file__).with_name('mac_process_guard_v2.py')),
             lifecycleModuleSha256=_file_sha(Path(lifecycle_support.__file__)),lifecyclePolicySha256=lifecycle.policy_sha256,
             observerClockKind='python.time.monotonic',bulkNameScope='kinfo_proc.p_comm; at-limit flags retained; not full executable names',
             policyCanonicalSha256=canonical_sha256(policy),ownedRoots=roots)
-        with lifecycle_support.capture_lock(coordination_lock_path(policy)) as coordination:
-            result['coordinationLock']=coordination
-            before=_snapshot(policy,roots,lifecycle,**({'binary_authenticator':binary_authenticator} if binary_authenticator is not None else {}))
-            api=_read_api(policy['api'])
-            after=_snapshot(policy,roots,lifecycle,**({'binary_authenticator':binary_authenticator} if binary_authenticator is not None else {}))
+        options = {'binary_authenticator':binary_authenticator} if binary_authenticator is not None else {}
+        if policy.get('coordinationMode') == SEGMENTED_MODE:
+            result.update(coordinationMode=SEGMENTED_MODE, coordinationSchema=SEGMENTED_SCHEMA, coordinationLocks={})
+            def segmented_snapshot(phase):
+                daemon = _daemon_snapshot(policy, **options)
+                requested = time.monotonic()
+                with lifecycle_support.capture_lock(coordination_lock_path(policy)) as coordination:
+                    coordination['requestStartedMonotonic'] = requested
+                    result['coordinationLocks'][phase] = coordination
+                    frame = _snapshot(policy, roots, lifecycle, daemon_sample=daemon, **options)
+                return frame
+            before = segmented_snapshot('before')
+            api_started = time.monotonic()
+            api = _read_api(policy['api'])
+            result['segmentedApiClock'] = dict(startedMonotonic=api_started, finishedMonotonic=time.monotonic())
+            after = segmented_snapshot('after')
             refs={lifecycle_support.key_from_node(x) for frame in (before,after) for x in frame['processGraph']['nodes']}
             result.update(evidence={'before':before,'api':api,'after':after},ownedProcesses=after['ownedProcesses'],
                           lifecycle=lifecycle.sample(refs))
+        else:
+            with lifecycle_support.capture_lock(coordination_lock_path(policy)) as coordination:
+                result['coordinationLock']=coordination
+                before=_snapshot(policy,roots,lifecycle,**options)
+                api=_read_api(policy['api'])
+                after=_snapshot(policy,roots,lifecycle,**options)
+                refs={lifecycle_support.key_from_node(x) for frame in (before,after) for x in frame['processGraph']['nodes']}
+                result.update(evidence={'before':before,'api':api,'after':after},ownedProcesses=after['ownedProcesses'],
+                              lifecycle=lifecycle.sample(refs))
         result['finishedMonotonic']=time.monotonic()
         # remember independently parses native evidence and reconstructs the
         # exact local ancestry. Recording those facts is not a PASS grant and

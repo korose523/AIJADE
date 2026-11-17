@@ -1,0 +1,13 @@
+--- originals/test_listener_evidence.py
++++ tests/shell/test_listener_evidence.py
+@@ -1,4 +1,10 @@
+ """Pure fabricated-byte/clock/canonical-state fixtures; no child or OS query."""
++from pathlib import Path
++import sys
++REPO=Path(__file__).resolve().parents[2]
++sys.path[:0]=[str(REPO/'experiments/ch7'),str(REPO/'tests/shell')]
++from verify_frozen_listener_oracle import verify_frozen_oracle
++verify_frozen_oracle(REPO)
+ import base64
+ import copy
+ import json

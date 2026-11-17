@@ -1,0 +1,24 @@
+{
+  "status": "CI_MODULE_INVENTORY_FIX_ONLY_NO_RESEARCH_CHANGE",
+  "failedSource": "f7ca54739f61538d12bb8ead2e37a270a80ae1fe",
+  "failedCi": 44163557471,
+  "failedDotnet": {
+    "failed": 1,
+    "passed": 681,
+    "skipped": 31,
+    "total": 713
+  },
+  "failure": "ProjectScopeTests.Every_module_directory_is_declared: tests/fixtures",
+  "path": "configs/project-scope.json",
+  "beforeSha256": "0276ae138b5ca8861c2a3f56661239ad49199bde5ee836ec93d02fccd9cbf611",
+  "afterSha256": "36b3be885416a0fa10df1ca9ed7efa3e427bcfb85c5fa15f1c2e937eba25ee2b",
+  "onlyJsonDelta": {
+    "appendModule": {
+      "path": "tests/fixtures",
+      "line": "tests"
+    }
+  },
+  "allPriorScopeValuesPreserved": true,
+  "originalTestBodiesUntouched": true,
+  "engineeringAttempts": 0
+}

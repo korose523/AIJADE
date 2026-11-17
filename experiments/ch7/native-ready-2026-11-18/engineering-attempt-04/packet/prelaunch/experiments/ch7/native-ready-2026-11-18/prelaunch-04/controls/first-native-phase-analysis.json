@@ -1,0 +1,33 @@
+{
+  "schema": "aijade.native-ready.first-component-adverse-analysis.v1",
+  "status": "FIRST_NATIVE_COMPONENT_REFUSAL_PRESERVED_NO_RETRY",
+  "repeat": 0,
+  "method": "native",
+  "rawRecordPath": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-native-ready-20261118/component-01/00-native.json",
+  "rawRecordSha256": "c19b495df71065f1a1281a6952447104d69c4386aec41b77d3b70cbce18de1d5",
+  "completeWholeSeconds": 0.5640400309930556,
+  "outcome": {
+    "state": "UNKNOWN",
+    "code": "LISTENER_EVIDENCE_UNKNOWN",
+    "reasons": [
+      "INTERNAL_CALL_DEADLINE_EXCEEDED",
+      "WHOLE_CALL_DEADLINE_EXCEEDED",
+      "CAPTURE_EXCEPTION_TimeoutExpired"
+    ],
+    "records": []
+  },
+  "actualExitCode": 0,
+  "stdoutCompleteBytes": 59,
+  "stderrCompleteBytes": 0,
+  "popenReturnedToReadyReadSeconds": 0.3447050560207572,
+  "popenReturnedToDeclaredReadySeconds": 0.34458590199938044,
+  "declaredReadyToParentReadSeconds": 0.00011915402137674391,
+  "releaseGateToActualReapSeconds": 0.08384956701775081,
+  "actualReapPastWholeDeadlineSeconds": 0.0051215570128988475,
+  "nextNativePopenToReadyReadSeconds": 0.00383174599846825,
+  "interpretation": "The first measured native call spent0.344705056s after Popen returned and before READY was read; C-declared READY is only119microseconds earlier. Full global lsof output was captured, stderr empty, actual wait returned0, but the fixed whole0.5s operation and remaining actual-wait deadline were exceeded. The record identifies the delayed phase, not its OS-level cause. No Gatekeeper/dyld/scheduler attribution is proven.",
+  "noColdArtifactClaim": true,
+  "sourceChangedAfterMeasurement": false,
+  "additionalListenerQueries": 0,
+  "prospectiveWorkflowOnly": "Any future E6 plan must explicitly show same-artifact first per-run use in original30Gitproofs within900preparation/1sREADY (child30proofs within15startup), without added warmup, listener deadline exemption, deletion of this failure, or cold-start validation claim. All first lsof calls after original2530preparation tasks still owe0.5s and whole2s; full real nested engineering remains mandatory."
+}

@@ -1,0 +1,69 @@
+test_actual_append_completes_while_other_thread_holds_capture (test_registry_capture_order.RegistryCaptureOrderControls.test_actual_append_completes_while_other_thread_holds_capture) ... ERROR
+test_actual_launch_reaches_shared_capture_without_holding_private_mutex (test_registry_capture_order.RegistryCaptureOrderControls.test_actual_launch_reaches_shared_capture_without_holding_private_mutex) ... ERROR
+test_actual_source_has_no_mutex_before_capture_in_launch_or_run (test_registry_capture_order.RegistryCaptureOrderControls.test_actual_source_has_no_mutex_before_capture_in_launch_or_run) ... ERROR
+test_two_actual_launches_same_registry_serialize_without_inverse_mutex (test_registry_capture_order.RegistryCaptureOrderControls.test_two_actual_launches_same_registry_serialize_without_inverse_mutex) ... ERROR
+
+======================================================================
+ERROR: test_actual_append_completes_while_other_thread_holds_capture (test_registry_capture_order.RegistryCaptureOrderControls.test_actual_append_completes_while_other_thread_holds_capture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/tests/shell/test_registry_capture_order.py", line 43, in setUp
+    r._append('CONTROLLER_REGISTER',dict(leaseId='4'*32,role='controller',stageId='fixture',identity=r.writer,
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 646, in _append
+    fd=_open_owned(self.path,os.O_RDWR)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 113, in _open_owned
+    need(stat.S_ISREG(item.st_mode) and item.st_uid == os.getuid() and item.st_nlink == 1
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: unsafe lifecycle file owner/type/mode/link count
+
+======================================================================
+ERROR: test_actual_launch_reaches_shared_capture_without_holding_private_mutex (test_registry_capture_order.RegistryCaptureOrderControls.test_actual_launch_reaches_shared_capture_without_holding_private_mutex)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/tests/shell/test_registry_capture_order.py", line 43, in setUp
+    r._append('CONTROLLER_REGISTER',dict(leaseId='4'*32,role='controller',stageId='fixture',identity=r.writer,
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 646, in _append
+    fd=_open_owned(self.path,os.O_RDWR)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 113, in _open_owned
+    need(stat.S_ISREG(item.st_mode) and item.st_uid == os.getuid() and item.st_nlink == 1
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: unsafe lifecycle file owner/type/mode/link count
+
+======================================================================
+ERROR: test_actual_source_has_no_mutex_before_capture_in_launch_or_run (test_registry_capture_order.RegistryCaptureOrderControls.test_actual_source_has_no_mutex_before_capture_in_launch_or_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/tests/shell/test_registry_capture_order.py", line 43, in setUp
+    r._append('CONTROLLER_REGISTER',dict(leaseId='4'*32,role='controller',stageId='fixture',identity=r.writer,
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 646, in _append
+    fd=_open_owned(self.path,os.O_RDWR)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 113, in _open_owned
+    need(stat.S_ISREG(item.st_mode) and item.st_uid == os.getuid() and item.st_nlink == 1
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: unsafe lifecycle file owner/type/mode/link count
+
+======================================================================
+ERROR: test_two_actual_launches_same_registry_serialize_without_inverse_mutex (test_registry_capture_order.RegistryCaptureOrderControls.test_two_actual_launches_same_registry_serialize_without_inverse_mutex)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-owned-state-20261118/implementation/tests/shell/test_registry_capture_order.py", line 43, in setUp
+    r._append('CONTROLLER_REGISTER',dict(leaseId='4'*32,role='controller',stageId='fixture',identity=r.writer,
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 646, in _append
+    fd=_open_owned(self.path,os.O_RDWR)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 113, in _open_owned
+    need(stat.S_ISREG(item.st_mode) and item.st_uid == os.getuid() and item.st_nlink == 1
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py", line 48, in need
+    raise ValueError(message)
+ValueError: unsafe lifecycle file owner/type/mode/link count
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.120s
+
+FAILED (errors=4)
