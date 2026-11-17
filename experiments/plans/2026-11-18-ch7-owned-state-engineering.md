@@ -29,8 +29,11 @@ E5 makes two substantive changes. Exact binary authentication still performs
 actual complete opens/reads to EOF, complete equality checks, metadata/identity
 checks and the original complete SHA mismatch fallback. Only its hot comparison
 uses the native bytes comparison rather than elementwise memoryview comparison;
-partial reference allocation is bounded by one existing read chunk. Both daemon
-captures still occur within the same measured lock segments. The independent
+partial reference allocation is bounded by one existing read chunk. Both complete daemon
+binary captures remain outside the shared capture-lock segments, as in the
+retained segmented implementation; their actual time remains inside each full
+measured callback service. This comparison change reduces service overhead and
+does not by itself shorten a capture-lock hold or demonstrate contention repair. The independent
 source hash and all counters are frozen, and altered bytes/identity/EOF fail.
 
 Second, two privately owned canonical journal states replace repeated full-state
