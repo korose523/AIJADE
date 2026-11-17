@@ -45,6 +45,10 @@ jobs:
       - name: Replay retained prefix-engineering refusal with coherent semantic controls
         run: |
           .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls
+      - name: Verify complete P4 refusal records and adversarial controls without Mac services
+        run: |
+          git fetch --no-tags --depth=1 origin 147564c9db812c1a9e5ae07992d9aa282399a310 8acfa99d061f1c41197fac2a1c243b3b347bcfef 42fc728ade94c60b0d24575b9510b69dd2048676 5d020ccbf54c16965b4a1fe3467b3d8d726d23f8
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-v4-2026-11-17/qualification-attempt-01/verify_archive.py --repo . --controls
       - name: Verify prospective Mac process, version and complete-sequence controls without live services
         run: |
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v

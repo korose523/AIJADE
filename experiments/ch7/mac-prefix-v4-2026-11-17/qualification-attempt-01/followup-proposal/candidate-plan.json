@@ -1,0 +1,99 @@
+{
+  "schema": "aijade.ch7.scheduling-analysis-candidate.v1",
+  "status": "DRAFT_ANALYSIS_ONLY_NO_EXECUTION_AUTHORIZATION",
+  "createdAt": "2026-11-17T10:44:13.011005+00:00",
+  "consumedScientificDecision": "mac-prefix-v4",
+  "consumedImplementationCommit": "147564c9db812c1a9e5ae07992d9aa282399a310",
+  "consumedBuildFreezeCommit": "8acfa99d061f1c41197fac2a1c243b3b347bcfef",
+  "consumedAttemptStatus": "STOPPED",
+  "originalOutcomeUnchanged": true,
+  "diagnosis": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/analysis/runtime-lock-contention-diagnosis-01.json",
+    "sha256": "eead1ace4ec04ffdb59ed4798d1c1b0fea40887983c71da0556ca56072ee19d9"
+  },
+  "timingDistinction": {
+    "captureCriticalSeconds": 1.4372957790037617,
+    "guardObserveSeconds": 1.6352402319898829,
+    "outerObserveSeconds": 1.6354568169917911,
+    "fullWriterAndOuterValidationCost": "Not separately reconstructable from this one raw runtime sample; not substituted by guard duration."
+  },
+  "unchangedLimits": {
+    "nominalSamplePeriodSeconds": 2,
+    "maximumCoordinationWaitSeconds": 1.25,
+    "maximumCompleteObservationSeconds": 2.5,
+    "maximumActualStartGapSeconds": 3,
+    "globalWallAndResourceBudgets": "Unchanged; all queue/writer/cleanup time must remain visible."
+  },
+  "candidate": {
+    "sourcePath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/analysis/scheduling-candidate-v1/locked_schedule_candidate.py",
+    "sourceSha256": "908247903b59843d6e857f8100629fcd7bf0c32527d7bbee7412bcdd402570e9",
+    "type": "Process-free feasibility refusal and single-scope dummy reservation prototype",
+    "profileCapacityVerdict": "REFUSED_BEFORE_STAGE_UNSCHEDULABLE_PROFILE for the repeated actual two-stream critical-service profile",
+    "multiScopeAdapterImplemented": false,
+    "realNestedLoadResolved": false,
+    "usesVirtualTimeOnly": true,
+    "liveProcessOrObservationEntryPoint": false
+  },
+  "requiredNextResearchDecision": [
+    "Publish a separate prospective engineering plan; the consumed P4 namespace and attempt must not reopen.",
+    "Choose a versioned complete-observation topology and prove exact raw source/ownership/RSS/ancestry semantics; no silent scope removal.",
+    "Freeze implementation, all source/policy/helper hashes, complete nested-load population, actual clocks/deadlines, queue/writer/cleanup records and independent cold auditor before any real engineering run.",
+    "Exercise true parent+child monitor topology and continuous finite preflight/launch/release/wait load, not merely another singleton observation stream.",
+    "Only after separately accepted engineering evidence and a new scientific decision may another known qualification be considered; fresh cases remain gated."
+  ],
+  "preservedEvidence": {
+    "engineeringE02": "Accepted only in its original single-controller full-load scope; no inheritance to nested business concurrency.",
+    "nativeFirstUseRefusalsPreserved": true,
+    "earlierP3RefusalsPreserved": true,
+    "table7_3": "NOT_RUN",
+    "knownDisposition": {
+      "completed": 0,
+      "inFlight": 0,
+      "unknown": 0,
+      "unattempted": 20
+    }
+  },
+  "prohibitedShortcuts": [
+    "Increase 1.25/2.5/3-second limits",
+    "Move actual observation entry/queue/writer cost outside recorded budgets",
+    "Retimestamp planned entries as actual observations",
+    "Disable one required monitor without a new reviewed protocol",
+    "Reuse a shared raw frame as two independent observations",
+    "Retry the consumed P4 until a favorable phase occurs",
+    "Generate fresh cases or seed before accepted qualification/construction freeze"
+  ],
+  "controls": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/analysis/scheduling-candidate-v1/controls-01.json",
+    "sha256": "f1205f4aaabaa2fca3d3f8e5adfdc37e311bb9af150057669023962447e49c05",
+    "passed": 15,
+    "failed": 0,
+    "realClockSleeps": 0,
+    "realFlockOperations": 0,
+    "subprocesses": 0,
+    "observerNativeApiRendererModelCalls": 0
+  },
+  "productionSourceUnchanged": {
+    "experiments/ch7/mac_process_guard_v3.py": true,
+    "experiments/ch7/process_lifecycle.py": true,
+    "experiments/ch7/lifecycle_exec.py": true,
+    "experiments/ch7/binary_authentication.py": true,
+    "experiments/ch7/phase_continuity.py": true,
+    "experiments/ch7/lifecycle_audit.py": true,
+    "experiments/ch7/mac_process_guard.py": true,
+    "experiments/ch7/mac_process_guard_v2.py": true,
+    "experiments/ch7/mac_bulk_census.c": true,
+    "experiments/ch7/finite_runtime.py": true,
+    "experiments/ch7/run_finite_sequence.py": true,
+    "experiments/ch7/run_finite_block.py": true,
+    "experiments/ch7/finite_audit.py": true,
+    "experiments/ch7/finite_sequence_audit.py": true,
+    "experiments/ch7/godot_local.py": true
+  },
+  "scope": {
+    "newPlanPublished": false,
+    "newEngineeringOrScienceWindow": false,
+    "seedConstructed": false,
+    "freshCases": 0,
+    "backendQualified": false
+  }
+}

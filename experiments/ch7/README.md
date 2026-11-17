@@ -234,3 +234,16 @@ input-freeze build revision `6b6e157`. It retains the generated assembly metadat
 and exact used binary hash: the build preceded committing the identical authored
 files. No clean-checkout or bitwise rebuild equivalence is claimed. Both actual
 runs use the same frozen binaries; CI checks this distinction separately.
+
+
+## 17 November: prefix engineering and the subsequent scientific refusal
+
+See [the current scope and architecture](../../docs/CH7-PREFIX-QUALIFICATION-20261117.md)
+and [the complete P4 refusal packet](mac-prefix-v4-2026-11-17/qualification-attempt-01/packet/README.md).
+Engineering attempt 02 accepted its complete 362-observation single-controller
+workload. The separately frozen P4 qualification validated all 300 settling and
+60 admission samples, then refused block-1 launch before spawning a PID because
+of capture-lock contention. Its 20 known conditions remain unattempted. The
+full runtime/lifecycle gates remain refused, no fresh seed exists and Table 7.3
+is NOT_RUN. The archived fake-clock scheduling proposal is not a live fix or
+evidence of complete nested-workload qualification. All earlier refusals remain.

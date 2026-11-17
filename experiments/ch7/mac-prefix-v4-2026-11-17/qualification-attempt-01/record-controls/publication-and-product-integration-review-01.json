@@ -1,0 +1,92 @@
+{
+  "schema": "aijade.ch7.publication-integration-readonly-review.v1",
+  "status": "FIXED_OBJECT_AND_THREE_WAY_PREPARATION_REVIEW_PASS_NOT_PUBLISHED",
+  "createdAt": "2026-11-17T10:53:44.600670+00:00",
+  "scripts": {
+    "publish-reviewed-refusal.py": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/publish-reviewed-refusal.py",
+      "sha256": "bbbcc8ae973d3c7cd3be9ad6bff4445b4a083d2e0ee448628f0c6869a8816e3f",
+      "sizeBytes": 5568
+    },
+    "integrate-reviewed-research.py": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/integrate-reviewed-research.py",
+      "sha256": "857b0daa6632706307605c76be9e948edee2ea05d797396d43fb9709b973c0f6",
+      "sizeBytes": 5189
+    }
+  },
+  "fixedObjects": {
+    "implementationCommit": "147564c9db812c1a9e5ae07992d9aa282399a310",
+    "publicationParent": "5d020ccbf54c16965b4a1fe3467b3d8d726d23f8",
+    "parentIsDescendantOfQ": true,
+    "qToParentChanges": [
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/build-prerequisites.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/frozen-build.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/godot-project-writes-only.sb",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/native-build.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/prepared-renderer-full-tree.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/qualification-fixed-launch.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/qualification-inputs/runtime-manifest.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/qualification-inputs/scoring-manifest.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/qualification-inputs/selection.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/qualification-prelaunch-integrity.json",
+      "A\texperiments/ch7/mac-prefix-v4-2026-11-17/qualification-prelaunch.json"
+    ],
+    "allElevenAreNewMetadataOnly": true,
+    "researchBase": "888d70c86249af1109093898a03d8091eb397d6c",
+    "productBase": "8dc79ec0067144861172963901c21855b5d47940",
+    "researchBaseToCurrentMetadataParentPaths": 230,
+    "productCollisions": [
+      ".github/workflows/ci.yml"
+    ],
+    "productModeCollisions": []
+  },
+  "pureMergeFixture": {
+    "directory": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/analysis/publication-merge-file-fixture-01",
+    "command": "git merge-file -p product base research",
+    "exitCode": 0,
+    "mergedSha256": "9ba2d39bf3838e0b0b867715df82bce635b36102a10098f977b245fcfddab8e9",
+    "productExclusiveLinePopulation": 13,
+    "allProductExclusiveLinesPreserved": true,
+    "stageVoiceHistoricalManifestLinesPreserved": [
+      "      - name: Verify native local voice protocol, cancellation and cleanup",
+      "      - name: Verify Chapter 7 complete staged development qualification and retained failed attempt",
+      "          path: .runtime/historical-manifest",
+      "      - name: Verify unchanged historical packet and pinned source without qualifying current product code",
+      "        run: python3 -B tools/verify-historical-manifest.py --snapshot .runtime/historical-manifest",
+      "      - name: Verify conditional live manifest dataflow, retained swap stop and fixed idle admission",
+      "        run: python3 experiments/ch7/live-manifest-2026-11-12/verify_archive.py",
+      "      - name: Fetch frozen bulk-census plan, build and historical objects"
+    ],
+    "newResearchStepAndExplicitQBPFetchPreserved": true
+  },
+  "codeReview": {
+    "researchPublicationUsesAlternateIndexAndKeepsWorktreeHeadQ": true,
+    "packetPhysicalLogicalHashClosureCheckedBeforeBlobCreation": true,
+    "proposalLivesOnlyUnderIsolatedFollowupPrefix": true,
+    "newResearchBranchUsesAbsentRemoteCheckAndLocalCreateOnlyCAS": true,
+    "changedRawRemoteBytesAndResearchRefAreReadBack": true,
+    "integrationUsesM3TreeAsBaseNotWholeResearchReset": true,
+    "integrationRefusesResearchDeletions": true,
+    "onlyReviewedWorkflowCollisionCanThreeWayMerge": true,
+    "previewMustExactlyEqualPublishReport": true,
+    "nonDeltaProductBlobsAndModesChecked": true,
+    "normalFastForwardPushAndCleanCheckoutVerification": true
+  },
+  "remainingChecks": [
+    "Final standalone verifier must exist and its actual CLI match the installed CI step; it was not yet materialized when first reviewed.",
+    "After final packet/proposal freeze, retain exact hashes and review the eventual S4-to-M3 delta before using --publish.",
+    "The integrator compares colliding delta file contents, not a generic product-only mode delta. Actual fixed metadata-parent delta currently has zero mode collisions; re-evaluate if final S4 changes that fact."
+  ],
+  "scope": {
+    "networkRequests": 0,
+    "actualPublisherInvocations": 0,
+    "gitCommitsCreated": 0,
+    "refsUpdated": 0,
+    "pushes": 0,
+    "checkouts": 0,
+    "mergesIntoWorkingTree": 0,
+    "onlyGitMergeFileTemporaryFixture": true,
+    "scientificOrRendererOrModelCalls": 0,
+    "sourceScriptsModified": false
+  }
+}
