@@ -26,8 +26,15 @@ PARSER_SHA = '93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65'
 REPLAY_MODE = 'owned-guard-state-exact-prefix-v1'
 INITIALIZATION_MODE = 'paired-source-verified-owned-state-v1'
 LEGACY_CLONE_SHA = '0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584'
-GUARD_PREDICATE_AST_SHA = '81f098fc92bffb77e5c1938e23b5284def002edd91ed130909ec788cafa9a343'
+GUARD_PREDICATE_AST_SHA = 'abc29b40650ffecaacfb3d601c2736504a06c491a1494329d494d9cdb50bb6bb'
 GUARD_ORIGINAL_CORE_AST_SHA = 'b6bc9b54ba40d04503cbee3ad71ddfe64acdd6724abf47f8f01c50693b49c30b'
+NATIVE_MODE = 'native-ready-release-v1'
+LISTENER_MODE = 'complete-managed-lsof-transcript-v1'
+NATIVE_PHASES = ('requestStartedMonotonic','captureRequestedMonotonic','captureAcquiredMonotonic',
+    'popenStartedMonotonic','popenReturnedMonotonic','readyReadCompletedMonotonic',
+    'firstIdentityCompletedMonotonic','secondIdentityCompletedMonotonic','registerStartedMonotonic',
+    'registerCompletedMonotonic','releaseStartedMonotonic','releaseCompletedMonotonic',
+    'gateWrittenMonotonic','postProvenanceCompletedMonotonic','returnedMonotonic')
 
 
 def need(value, message):
@@ -107,7 +114,7 @@ def no_science(receipt):
          and all(type(receipt[k]) is int and receipt[k] == 0 for k in zero), 'engineering scope promoted or typed zero changed')
 
 
-def verify_command_records(records, expected_commands, source, count, padding, owner, state, end_boundary):
+def verify_command_records(records, expected_commands, source, count, padding, owner, state, end_boundary, *, native_context=None):
     need(type(records) is list and len(records)==count, 'complete original source-command population')
     actual=[v for v in state['leases'].values() if v['role']=='finite' and v['parentIdentity']==owner
             and v['commandSha256'] in {sha(canonical(['git',*[arg.replace('{SOURCE}',source) for arg in e['arguments']]]))
@@ -115,6 +122,7 @@ def verify_command_records(records, expected_commands, source, count, padding, o
     # Caller combines parent proof+padding so the complete owner sequence has
     # one actual lease per original command record, including repeated argv.
     need(len(actual)==count,'actual source-command parent lease population')
+    first_native=[]
     for index,(record,lease) in enumerate(zip(records,actual)):
         expected=expected_commands[index%30]
         command=['git',*[arg.replace('{SOURCE}',source) for arg in expected['arguments']]]
@@ -128,6 +136,142 @@ def verify_command_records(records, expected_commands, source, count, padding, o
         need(record['startedMonotonic']<=lease['readyMonotonic']<=lease['registerMonotonic']
              <=lease['releaseMonotonic']<=lease['reapedMonotonic']<=record['completedMonotonic']<=end_boundary,
              'actual source command launch/release/parent-wait clock binding')
+        if native_context is not None:
+            present='firstNativeProofLaunchEvidence' in record or 'firstNativeProofEvidenceCompletedMonotonic' in record
+            if index==0 and expected_padding is False:
+                need(present,'first actual native source proof phase evidence missing')
+                first_native.append(verify_first_native_proof(record,lease,state,owner,native_context,end_boundary))
+            else:
+                need(not present,'extra native diagnostic is not the first non-padding proof')
+    return first_native if native_context is not None else None
+
+
+def verify_native_contract(passport, policy, repo, *, guard, runtime, native, listener):
+    """Pure source/policy/passport closure; never construct or run a Registry."""
+    need(policy.get('lifecycleExecMode')==passport.get('lifecycleExecMode')==NATIVE_MODE,
+         'frozen explicit native lifecycle mode differs')
+    exact(passport.get('nativeExec'),policy.get('nativeExec'),'native policy/passport binding differs')
+    exact(passport.get('listenerEvidence'),policy.get('listenerEvidence'),'listener policy/passport binding differs')
+    guard.validate_policy(policy)
+    source=passport['sourceFiles'];binding=policy['nativeExec'];capture=policy['listenerEvidence']
+    dependencies={'native_exec_registry.py':binding['adapterSourceSha256'],
+                  'lifecycle_exec_native.c':binding['sourceSha256'],
+                  'listener_evidence.py':capture['moduleSha256']}
+    for name,expected in dependencies.items():
+        relative='experiments/ch7/'+name
+        need(source.get(relative)==expected==file_sha(repo/relative),'native source three-way binding differs: '+name)
+    need(binding['binarySha256']==policy['lifecycle']['execShimSha256']
+         and capture['executableSha256']==passport['toolExecutableSha256']['lsof'],
+         'native shim or listener executable passport binding differs')
+    need(capture['mode']==LISTENER_MODE and capture['command']==listener.ARGV,
+         'exact complete original global listener command/mode differs')
+    actual=runtime.lifecycle_observer_sources(policy)
+    need(len(actual)==len(set(actual))==21,'complete native observer dependency population')
+    exact(passport['observerSources'],{name:source[name] for name in actual},'native complete observer source closure differs')
+    for module in (native,listener,runtime):verify_loaded_module(module,repo,source)
+    return dict(policy=policy,passport=passport,observerSourceCount=len(actual))
+
+
+def verify_native_final_leases(state, context):
+    expected=context['policy']['nativeExec']['binarySha256']
+    finite=[v for v in state['leases'].values() if v['role']=='finite']
+    need(all(type(v.get('shimSha256')) is str and v['shimSha256']==expected for v in finite),
+         'complete original finite population does not use the frozen native shim')
+    return len(finite)
+
+
+def verify_first_native_proof(record, lease, state, owner, context, end_boundary):
+    """Independently bind the first existing Git proof, with no extra command."""
+    policy,passport=context['policy'],context['passport'];binding=policy['nativeExec']
+    value=record['firstNativeProofLaunchEvidence']
+    fields={'schema','mode','leaseId','stageId','role','identity','commandSha256','executableSha256',
+        'shimSha256','adapterSourceSha256','shimSourceSha256','phaseClocks','readyMonotonic',
+        'actualReapedMonotonic','waitEventMonotonic','waitSequence','exitCode','waitSource',
+        'captureLock','sourceProofBefore','sourceProofReady','sourceProofAfter','executedShimIdentity'}
+    need(type(value) is dict and set(value)==fields and value['schema']=='aijade.lifecycle.native-launch.v1'
+         and value['mode']==NATIVE_MODE,'first native proof schema/mode')
+    for key in ('leaseId','stageId','role','identity','commandSha256','executableSha256','shimSha256','readyMonotonic'):
+        exact(value[key],lease[key],'first native proof original lease binding: '+key)
+    exact(lease['parentIdentity'],owner,'first native proof belongs to another controller')
+    need(value['role']=='finite' and value['commandSha256']==sha(canonical(record['command']))
+         and value['executableSha256']==passport['toolExecutableSha256']['git']
+         and value['adapterSourceSha256']==binding['adapterSourceSha256']
+         and value['shimSourceSha256']==binding['sourceSha256']
+         and value['shimSha256']==binding['binarySha256'],'first native proof command/source/executable')
+    phases=value['phaseClocks']
+    need(type(phases) is dict and set(phases)==set(NATIVE_PHASES),'first native proof complete phase population')
+    clocks=[real(record['startedMonotonic'],'first native source proof start')]+[
+        real(phases[k],'first native proof actual phase clock') for k in NATIVE_PHASES]
+    need(all(a<=b for a,b in zip(clocks,clocks[1:])),'first native proof phase order')
+    completed=real(record['completedMonotonic'],'first native source proof complete')
+    diagnostic=real(record['firstNativeProofEvidenceCompletedMonotonic'],'first native proof diagnostic complete')
+    ready=real(value['readyMonotonic'],'first native proof declared READY')
+    reaped=real(value['actualReapedMonotonic'],'first native proof actual Popen.wait')
+    waited=real(value['waitEventMonotonic'],'first native proof actual WAIT event')
+    need(phases['popenStartedMonotonic']<=ready<=phases['readyReadCompletedMonotonic']
+         and phases['returnedMonotonic']<=completed<=diagnostic<=end_boundary
+         and phases['gateWrittenMonotonic']<=reaped<=waited<=completed,
+         'first native proof actual READY/run/reap/diagnostic envelope')
+    exact(value['waitSequence'],lease['waitSeq'],'first native proof canonical WAIT sequence')
+    exact(value['actualReapedMonotonic'],lease['reapedMonotonic'],'first native proof canonical reap clock')
+    exact(value['exitCode'],0,'first native proof actual zero exit')
+    need(value['waitSource']=='Popen.wait','first native proof actual direct parent wait source')
+    events={}
+    for event in state['events']:
+        if event['data'].get('leaseId')==lease['leaseId'] and event['event'] in ('FINITE_REGISTER','RELEASE','WAIT'):
+            need(event['event'] not in events,'first native proof duplicate canonical event')
+            events[event['event']]=event
+    need(set(events)=={'FINITE_REGISTER','RELEASE','WAIT'},'first native proof missing canonical trace')
+    reg,release,wait=(events[k] for k in ('FINITE_REGISTER','RELEASE','WAIT'))
+    for event in (reg,release,wait):exact(event['writer'],owner,'first native proof canonical writer')
+    need(type(value['waitSequence']) is int and reg['seq']==lease['registerSeq']<release['seq']==lease['releaseSeq']
+         <wait['seq']==value['waitSequence'] and wait['monotonicSeconds']==waited
+         and phases['registerStartedMonotonic']<=reg['monotonicSeconds']<=phases['registerCompletedMonotonic']
+         and phases['releaseStartedMonotonic']<=release['monotonicSeconds']<=phases['releaseCompletedMonotonic'],
+         'first native proof canonical trace phase binding')
+    proof_fields={'path','sha256','device','inode','sizeBytes','mtimeNs','mode'}
+    for key in ('sourceProofBefore','sourceProofReady','sourceProofAfter'):
+        proof=value[key]
+        need(type(proof) is dict and set(proof)=={'adapter','source','binary'},'first native proof source population')
+        for name,expected in [('adapter',binding['adapterSourceSha256']),('source',binding['sourceSha256']),('binary',binding['binarySha256'])]:
+            item=proof[name]
+            need(type(item) is dict and set(item)==proof_fields and type(item['path']) is str
+                 and item['path'].startswith('/') and '..' not in Path(item['path']).parts
+                 and item['sha256']==expected and all(type(item[k]) is int and item[k]>=0
+                     for k in ('device','inode','sizeBytes','mtimeNs','mode'))
+                 and item['inode']>0 and item['sizeBytes']>0,'first native proof source identity/schema')
+        need(proof['source']['path']==binding['sourcePath'] and proof['binary']['path']==binding['binaryPath']
+             and str(Path(proof['adapter']['path']).with_name('lifecycle_exec_native.c'))==binding['sourcePath']
+             and Path(proof['adapter']['path']).name=='native_exec_registry.py'
+             and proof['binary']['mode']==0o755,'first native proof original logical source/binary paths')
+    exact(value['sourceProofBefore'],value['sourceProofReady'],'first native proof READY source generation')
+    exact(value['sourceProofBefore'],value['sourceProofAfter'],'first native proof final source generation')
+    executed=value['executedShimIdentity']
+    need(type(executed) is dict and set(executed)=={'pid','createTimeMicros','parentPid','executable','argvSha256'},
+         'first native proof executed gated image schema')
+    exact({k:executed[k] for k in ('pid','createTimeMicros','parentPid')},lease['identity'],
+          'first native proof executed gated image identity')
+    need(executed['executable']==binding['binaryPath'] and type(executed['argvSha256']) is str
+         and len(executed['argvSha256'])==64 and all(c in '0123456789abcdef' for c in executed['argvSha256']),
+         'first native proof executed shim image/argv')
+    lock=value['captureLock']
+    need(type(lock) is dict and set(lock)=={'schema','pathSha256','maxWaitSeconds','state','waitSeconds',
+         'acquiredMonotonic','nested','initialIdentity','finalIdentity','releasedMonotonic'}
+         and lock['schema']=='aijade.lifecycle.capture-lock.v1' and lock['nested'] is False
+         and lock['state']=='HELD_AND_RELEASED' and type(lock['maxWaitSeconds']) is float and lock['maxWaitSeconds']==1.25
+         and lock['pathSha256']==sha(policy['lifecycle']['coordinationLockPath'].encode())
+         and real(lock['waitSeconds'],'first native proof capture wait')<=1.25,
+         'first native proof own capture lock schema/path')
+    need(phases['captureRequestedMonotonic']<=real(lock['acquiredMonotonic'],'first native capture acquired')
+         <=phases['captureAcquiredMonotonic'] and phases['postProvenanceCompletedMonotonic']
+         <=real(lock['releasedMonotonic'],'first native capture released')<=phases['returnedMonotonic'],
+         'first native proof own capture lock clock envelope')
+    ident=lock['initialIdentity'];exact(ident,lock['finalIdentity'],'first native capture inode changed')
+    need(type(ident) is dict and set(ident)=={'device','inode','regular','singleLink','ownedByCurrentUser'}
+         and type(ident['device']) is int and ident['device']>=0 and type(ident['inode']) is int and ident['inode']>0
+         and all(ident[k] is True for k in ('regular','singleLink','ownedByCurrentUser')),'first native capture lock identity')
+    return dict(leaseId=lease['leaseId'],actualWaitSequence=value['waitSequence'],
+                commandSha256=value['commandSha256'],diagnosticCompletedMonotonic=diagnostic)
 
 
 def verify_numeric_context(events):
@@ -556,11 +700,23 @@ def main(args):
          ==passport['sourceFiles']['experiments/ch7/newowned_guard_cursor.py']
          and policy['onlineReplayInitializationMode']==passport['onlineReplayInitializationMode']==INITIALIZATION_MODE,
          'frozen explicit E5 online replay source/initialization identity')
+    native_context=None
+    if policy.get('lifecycleExecMode') is not None:
+        import native_exec_registry as native_module
+        import listener_evidence as listener_module
+        import finite_runtime as runtime_module
+        native_context=verify_native_contract(passport,policy,repo,guard=guard,runtime=runtime_module,
+                                              native=native_module,listener=listener_module)
+    else:
+        need(not any(k in policy or k in passport for k in ('nativeExec','listenerEvidence')),
+             'legacy policy/passport carries native proof fields')
+    need(native_context is not None,'this separately frozen E6 auditor requires explicit native proof mode')
     journal=(root/'lifecycle-journal.jsonl').read_bytes()
     need(passport['minimumDemonstratedPrefixBytes'] <= len(journal) == receipt['lifecycleJournalBytes'] and sha(journal) == receipt['lifecycleJournalSha256']
          and len(journal) <= passport['journalAcceptanceMaximumBytes'] <= 16*1024**2-512*1024, 'bounded complete journal envelope')
     index = EventIndex(journal, oracle._replay, source, passport['policySha256'])
     complete=index.state(len(index.events))
+    native_finite_count=verify_native_final_leases(complete,native_context)
     numeric_context=verify_numeric_context(complete['events'])
     finite=[v for v in complete['leases'].values() if v['role']=='finite']
     need(all(v['releaseSeq'] is not None and v['waitSeq'] is not None and type(v['exitCode']) is int and v['exitCode']==0
@@ -584,8 +740,8 @@ def main(args):
          and parent_identity['createTimeMicros']==round(receipt['controllerProcess']['createTime']*1000000)
          and root_record['data']['executableSha256']==passport['pythonSha256'], 'actual parent process/source interpreter identity')
     preflight_clock=read(root/'preflight-continuity.json')['schedule']['originMonotonic']
-    verify_command_records(receipt['preflightCommands']+receipt['prefixPaddingCommands'],passport['preflightCommands'],
-        source,2530,'combined-parent',parent_identity,complete,preflight_clock)
+    native_first_proofs=verify_command_records(receipt['preflightCommands']+receipt['prefixPaddingCommands'],passport['preflightCommands'],
+        source,2530,'combined-parent',parent_identity,complete,preflight_clock,native_context=native_context)
     parent_initialization=verify_initialization(root,receipt,root/'lifecycle-journal.jsonl',index,oracle,
         canonical_parser,passport,owner=parent_identity,scope=parent_scope,
         earliest=receipt['prefixPaddingCommands'][-1]['completedMonotonic'], latest=preflight_clock,
@@ -620,8 +776,8 @@ def main(args):
              and child['readyFileSha256']==file_sha(block/'ready.json')
              and ready['readyWriteStartedMonotonic']==child['readyWriteStartedMonotonic'],
              'full parent-release/import/source/monitor/ready-flush startup budget')
-        verify_command_records(child['preflightCommands'],passport['preflightCommands'],source,30,False,
-            lease['identity'],complete,child['readyWriteStartedMonotonic'])
+        native_first_proofs+=verify_command_records(child['preflightCommands'],passport['preflightCommands'],source,30,False,
+            lease['identity'],complete,child['readyWriteStartedMonotonic'],native_context=native_context)
         child_initialization=verify_initialization(block,child,root/'lifecycle-journal.jsonl',index,oracle,
             canonical_parser,passport,owner=lease['identity'],scope=child['scopeId'],
             earliest=child['preflightCommands'][-1]['completedMonotonic'],
@@ -821,6 +977,9 @@ def main(args):
             maximumObservedPrefixBytes=max_prefix,maximumFiniteChainBytes=max(map(sum,chain_bytes.values())),nonFiniteEventBytes=nonfinite_bytes),
         continuity=continuity,independentOldOraclePrefixCrosschecks=crosschecks,
         initializationAudits=initialization_results,ownedGuardPredicateProof=predicate_proof,
+        nativeLifecycleContract=dict(mode=NATIVE_MODE,observerSources=native_context['observerSourceCount'],
+            finiteNativeShimBindings=native_finite_count,firstExistingSourceProofs=native_first_proofs,
+            listenerMode=LISTENER_MODE,listenerWholeCallMaximumSeconds=.5,listenerMaximumStdoutBytes=65536),
         initializationMethod='One source-pinned canonical replay retained by inner owner plus one detached initialization clone for outer owner; no per-evaluation state-return copies; all actual prefixes/tails, owner references and complete decision canonical logical bytes independently reconstructed.',
         actualNumericContextVerified=numeric_context,
         indexingMethod='Independent historical event versions; final and key-prefix exact typed comparison to unchanged full cold oracle; every raw sample cold guard and exact original prefix hash/view.',

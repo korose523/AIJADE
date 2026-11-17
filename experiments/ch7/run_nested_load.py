@@ -126,6 +126,21 @@ def commands(registry, passport, repo, count, *, padding=False, records=None, de
             need(record['stdoutSha256'] == expected['stdoutSha256'], 'actual source-bound Git stdout differs')
             need(deadline is None or clock() <= deadline, 'source/prefix command exceeded fixed preparation deadline')
             record['status'] = 'COMPLETE'
+            if not padding and index==0 and getattr(registry,'_native_binding',{}).get('mode')=='native-ready-release-v1':
+                from native_exec_registry import NativeExecRegistry,evidence_for_handle
+                from process_lifecycle import canonical
+                need(type(registry) is NativeExecRegistry,'first native proof requires its actual Registry')
+                with registry._mutex:
+                    need(bool(registry.handles),'first native proof managed handle missing')
+                    handle=registry.handles[-1]
+                    launch=getattr(handle,'native_launch_evidence',None)
+                    need(getattr(handle,'registry',None) is registry and type(launch) is dict
+                         and launch.get('commandSha256')==sha(canonical(command))
+                         and launch.get('stageId')==registry.stage,
+                         'last managed handle does not bind this completed first native proof')
+                    record['firstNativeProofLaunchEvidence']=evidence_for_handle(handle)
+                record['firstNativeProofEvidenceCompletedMonotonic']=clock()
+                need(deadline is None or clock()<=deadline,'first native proof evidence exceeded fixed preparation deadline')
         except BaseException as error:
             record.update(status='REFUSED', completedMonotonic=clock(), error=type(error).__name__+': '+str(error))
             raise
@@ -169,7 +184,11 @@ def child(passport_path, index):
     need(type(index) is int and 0 <= index < 4, 'block index')
     block = root/('block-'+str(index+1))
     block.mkdir()
-    registry = life.from_environment()
+    if policy.get('lifecycleExecMode') is not None:
+        from native_exec_registry import activate_from_environment
+        registry=activate_from_environment(policy)
+    else:
+        registry = life.from_environment()
     need(registry is not None and registry.source_commit == p['sourceCommit']
          and registry.policy_sha256 == p['policySha256'] and registry.parent_lease_id is not None,
          'actual inherited source-bound parent lease required')
@@ -282,7 +301,11 @@ def main(passport_path):
     (root/'engineering-passport.json').write_bytes(raw)
     (root/'process-policy.json').write_bytes(policy_raw)
     controller = parent_identity()
-    registry = life.Registry(root/'lifecycle-journal.jsonl', [(controller['pid'],controller['createTime'])],
+    registry_factory=life.Registry
+    if policy.get('lifecycleExecMode') is not None:
+        from native_exec_registry import registry_for_policy
+        registry_factory=lambda *args,**kwargs:registry_for_policy(policy,*args,**kwargs)
+    registry = registry_factory(root/'lifecycle-journal.jsonl', [(controller['pid'],controller['createTime'])],
         stage='nested-load-sequence', source_commit=p['sourceCommit'], policy_sha256=p['policySha256'],
         capture_lock_path=guard.coordination_lock_path(policy)).activate()
     observed=validate=inner=outer=authenticator=None

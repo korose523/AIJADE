@@ -146,11 +146,145 @@ def validate_policy(policy):
     config = policy.get('lifecycle')
     if not isinstance(config,dict) or set(config) != {'moduleSha256','execShimSha256','coordinationLockPath','maxLockWaitSeconds','maxObservationSeconds'}:
         raise ValueError('lifecycle policy identity missing')
-    if config['moduleSha256'] != _file_sha(Path(lifecycle_support.__file__)) or config['execShimSha256'] != _file_sha(Path(__file__).with_name('lifecycle_exec.py')):
+    if config['moduleSha256'] != _file_sha(Path(lifecycle_support.__file__)):
+        raise ValueError('lifecycle module/shim changed')
+    if policy.get('lifecycleExecMode') is not None:
+        module=_native_exec_module(policy)
+        module._policy_binding(policy)
+        _native_listener_module(policy)
+    elif ('nativeExec' in policy or 'listenerEvidence' in policy
+          or config['execShimSha256'] != _file_sha(Path(__file__).with_name('lifecycle_exec.py'))):
         raise ValueError('lifecycle module/shim changed')
     if config['coordinationLockPath'] != str(coordination_lock_path(policy)) or config['maxLockWaitSeconds'] != 1.25 or config['maxObservationSeconds'] != 2.5:
         raise ValueError('lifecycle observation coordination changed')
     canonical_sha256(policy)
+
+
+def _native_exec_module(policy):
+    import importlib
+    if (policy.get('lifecycleExecMode')!='native-ready-release-v1'
+            or policy.get('onlineReplayMode')!=OWNED_REPLAY_MODE
+            or policy.get('coordinationMode')!=SEGMENTED_MODE):
+        raise ValueError('unknown explicit native execution mode')
+    module=importlib.import_module('native_exec_registry')
+    if Path(module.__file__).resolve()!=Path(__file__).with_name('native_exec_registry.py').resolve():
+        raise ValueError('exact colocated native Registry required')
+    binding=module._policy_binding(policy)
+    if Path(binding['sourcePath']).name!='lifecycle_exec_native.c':
+        raise ValueError('native C source basename differs')
+    if (binding['adapterSourceSha256']!=_file_sha(Path(module.__file__))
+            or binding['sourceSha256']!=_file_sha(Path(__file__).with_name('lifecycle_exec_native.c'))):
+        raise ValueError('native adapter/source differs from policy')
+    for name in ('sourcePath','binaryPath'):
+        value=Path(binding[name])
+        if not value.is_absolute() or '..' in value.parts or WORKSPACE not in value.parents:
+            raise ValueError('native artifact path outside workspace')
+    return module
+
+
+def _native_listener_module(policy):
+    import importlib
+    module=importlib.import_module('listener_evidence')
+    expected=Path(__file__).with_name('listener_evidence.py')
+    if Path(module.__file__).resolve()!=expected.resolve():
+        raise ValueError('exact colocated listener evidence module required')
+    module._policy(policy,_file_sha(expected),_file_sha(Path(__file__)))
+    return module
+
+
+def _read_native_listener(policy,lifecycle):
+    """Capture complete original global command; never replay a prior verdict."""
+    started=time.monotonic()
+    native_module=_native_exec_module(policy);evidence_module=_native_listener_module(policy)
+    process=None;out=err=b'';exception=None;native=None;returncode=None;communicated=False
+    def record_error(error,label):
+        nonlocal exception
+        detail=label+': '+type(error).__name__+': '+str(error)
+        if exception is None:exception={'class':type(error).__name__,'message':detail}
+        else:exception['message']+='; '+detail
+    try:
+        if type(lifecycle) is not native_module.NativeExecRegistry:
+            raise ValueError('native policy requires actual native Registry')
+        remaining=.5-(time.monotonic()-started)
+        if remaining<=0:raise TimeoutError('listener source checks consumed deadline')
+        process=lifecycle.launch(evidence_module.ARGV,stage='observer-listener',
+            stdout=subprocess.PIPE,stderr=subprocess.PIPE,ready_timeout=min(lifecycle_support.READY_SECONDS,remaining))
+        remaining=.5-(time.monotonic()-started)
+        if remaining<=0:raise TimeoutError('listener native startup consumed deadline')
+        out,err=process.communicate(timeout=remaining)
+        communicated=True
+        returncode=process.returncode
+    except Exception as error:
+        record_error(error,'capture')
+        # TimeoutExpired only carries a prefix, not the complete pipe stream.
+        # Retain it before any cleanup operation can fail independently.
+        if isinstance(getattr(error,'output',None),bytes):out=error.output
+        if isinstance(getattr(error,'stderr',None),bytes):err=error.stderr
+        if process is not None:
+            try:
+                if process.poll() is None:process.kill()
+            except Exception as cleanup_error:record_error(cleanup_error,'owned cleanup signal')
+            try:returncode=process.wait(timeout=1)
+            except Exception as cleanup_error:record_error(cleanup_error,'actual owned cleanup wait')
+    if process is not None:
+        try:native=native_module.evidence_for_handle(process)
+        except Exception as error:record_error(error,'native wait evidence')
+    completed=time.monotonic()
+    transcript=dict(schema=evidence_module.SCHEMA,mode=evidence_module.MODE,argv=list(evidence_module.ARGV),
+        stdout=evidence_module.encode_capture(out[:evidence_module.MAX_FORENSIC],truncated=not communicated or len(out)>evidence_module.MAX_FORENSIC,total_bytes=len(out) if communicated else None),
+        stderr=evidence_module.encode_capture(err[:evidence_module.MAX_FORENSIC],truncated=not communicated or len(err)>evidence_module.MAX_FORENSIC,total_bytes=len(err) if communicated else None),
+        returnCode=returncode,exception=exception,startedMonotonic=started,
+        runCompletedMonotonic=completed,parseCompletedMonotonic=completed,
+        sourcePins=dict(adapterSourceSha256=policy['nativeExec']['adapterSourceSha256'],
+            shimSourceSha256=policy['nativeExec']['sourceSha256'],shimSha256=policy['nativeExec']['binarySha256'],
+            executableSha256=policy['listenerEvidence']['executableSha256'],
+            parserSourceSha256=_file_sha(Path(evidence_module.__file__)),callerSourceSha256=_file_sha(Path(__file__))),
+        nativeLaunch=native)
+    try:evidence_module.parse_global_stdout(out)
+    except Exception:pass
+    transcript['parseCompletedMonotonic']=time.monotonic()
+    return transcript
+
+
+def _validate_native_listener_frames(policy,observation,state,add):
+    module=_native_listener_module(policy)
+    for phase in ('before','after'):
+        frame=observation['evidence'][phase];listener=frame['listener']
+        transcript=listener.get('transcript')
+        try:
+            native=transcript['nativeLaunch'];clocks=native['phaseClocks'];lock=native['captureLock']
+            outer=observation['coordinationLocks'][phase]
+            if (type(lock) is not dict or type(outer) is not dict or type(lock.get('nested')) is not bool
+                    or type(lock.get('waitSeconds')) is not float or not _hex(lock.get('pathSha256'))
+                    or not _hex(outer.get('pathSha256'))
+                    or not all(_finite(outer.get(k)) for k in ('acquiredMonotonic','releasedMonotonic'))
+                    or type(clocks) is not dict or not all(_finite(clocks.get(k)) for k in
+                        ('requestStartedMonotonic','captureRequestedMonotonic','captureAcquiredMonotonic','returnedMonotonic'))):
+                raise ValueError('native shared-lock witness schema')
+            expected_path=_sha_bytes(policy['lifecycle']['coordinationLockPath'].encode())
+            if (lock['nested'] is not True or lock['waitSeconds']!=0.0
+                    or lock['pathSha256']!=outer['pathSha256'] or lock['pathSha256']!=expected_path
+                    or not all(outer['acquiredMonotonic']<=clocks[k]<=outer['releasedMonotonic'] for k in
+                        ('requestStartedMonotonic','captureRequestedMonotonic','captureAcquiredMonotonic','returnedMonotonic'))):
+                add('NATIVE_LISTENER_SHARED_LOCK_BINDING_MISMATCH','FAIL',phase=phase)
+        except (KeyError,TypeError,ValueError,AttributeError):
+            add('NATIVE_LISTENER_SHARED_LOCK_EVIDENCE_UNKNOWN',phase=phase)
+        try:
+            native=transcript['nativeLaunch'];lease=state['leases'][native['leaseId']]
+            controller=observation['lifecycle']['controllerIdentity'];parent=lease['parentIdentity']
+            lifecycle_support.identity_key(controller);lifecycle_support.identity_key(parent)
+            lifecycle_support.identity_key(native['identity'])
+            if parent!=controller or native['identity']['parentPid']!=controller['pid']:
+                add('NATIVE_LISTENER_CONTROLLER_OWNER_MISMATCH','FAIL',phase=phase)
+        except (KeyError,TypeError,ValueError,AttributeError):
+            add('NATIVE_LISTENER_CONTROLLER_OWNER_UNKNOWN',phase=phase)
+        result=module.verify_transcript(transcript,state,policy,
+            parser_source_sha256=_file_sha(Path(module.__file__)),caller_source_sha256=_file_sha(Path(__file__)),
+            outer_clock=frame['listenerReadClock'])
+        if result['state']!='OBSERVED':
+            add('NATIVE_LISTENER_EVIDENCE_UNKNOWN',phase=phase,reasons=result.get('reasons',[]))
+        elif listener.get('state')!='OBSERVED' or listener.get('records')!=result['records']:
+            add('NATIVE_LISTENER_DERIVED_RESULT_MISMATCH','FAIL',phase=phase)
 
 
 def _clone_cursor_module(policy):
@@ -793,9 +927,23 @@ def _snapshot(policy, roots, lifecycle, *, binary_authenticator=None, daemon_sam
     if daemon_sample is not None:
         result['ownedRssReadClock'] = dict(startedMonotonic=rss_started, finishedMonotonic=time.monotonic())
         listener_started = time.monotonic()
-    result['listener']=_read_listeners(lifecycle)
-    if daemon_sample is not None:
-        result['listenerReadClock'] = dict(startedMonotonic=listener_started, finishedMonotonic=time.monotonic())
+    if policy.get('lifecycleExecMode') is not None:
+        if daemon_sample is None:listener_started=time.monotonic()
+        transcript=_read_native_listener(policy,lifecycle)
+        module=_native_listener_module(policy)
+        preliminary_clock=dict(startedMonotonic=listener_started,finishedMonotonic=time.monotonic())
+        result['listener']=module.derive_outcome(transcript,preliminary_clock)
+        outer_clock=dict(startedMonotonic=listener_started,finishedMonotonic=time.monotonic())
+        if outer_clock['finishedMonotonic']-listener_started>.5:
+            reasons=result['listener'].get('reasons',[])
+            if 'WHOLE_CALL_DEADLINE_EXCEEDED' not in reasons:reasons=reasons+['WHOLE_CALL_DEADLINE_EXCEEDED']
+            result['listener']=dict(state='UNKNOWN',code='LISTENER_EVIDENCE_UNKNOWN',reasons=reasons,records=[])
+        result['listener']['transcript']=transcript
+        result['listenerReadClock']=outer_clock
+    else:
+        result['listener']=_read_listeners(lifecycle)
+        if daemon_sample is not None:
+            result['listenerReadClock'] = dict(startedMonotonic=listener_started, finishedMonotonic=time.monotonic())
     return result
 
 
@@ -904,6 +1052,8 @@ def _guard_decision_from_validated_lifecycle(policy, observation, state):
             reference = observation.get('onlineReplayPreparation')
             if type(reference) is not dict or reference.get('ownerRole') != 'inner' or (not lifecycle_support._hex(reference.get('ownerId'), 32)) or (not lifecycle_support._hex(reference.get('pairedOwnerId'), 32)) or (reference.get('ownerId') == reference.get('pairedOwnerId')) or (reference.get('guardPredicateAstSha256') != _owned_cursor_module(policy).GUARD_PREDICATE_AST_SHA256):
                 add('OWNED_REPLAY_OWNER_OR_PREDICATE_MISMATCH', 'FAIL')
+            if policy.get('lifecycleExecMode') is not None:
+                _validate_native_listener_frames(policy,observation,state,add)
         if policy.get('binaryAuthenticationMode') is not None:
             if observation.get('binaryAuthenticationMode') != policy['binaryAuthenticationMode']:
                 add('BINARY_AUTHENTICATION_MODE_MISMATCH', 'FAIL')

@@ -51,6 +51,11 @@ MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.t
 
 
 def lifecycle_observer_sources(policy):
+    require(policy.get('lifecycleExecMode') is not None or not any(key in policy for key in ('nativeExec','listenerEvidence')),
+            'native observer fields require explicit native execution mode')
+    if policy.get('lifecycleExecMode') is not None:
+        require(policy.get('lifecycleExecMode')=='native-ready-release-v1' and policy.get('onlineReplayMode')=='owned-guard-state-exact-prefix-v1','native execution requires explicit owned observer mode')
+        return tuple(dict.fromkeys(MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py','experiments/ch7/newowned_guard_cursor.py','experiments/ch7/native_exec_registry.py','experiments/ch7/lifecycle_exec_native.c','experiments/ch7/listener_evidence.py')))
     if policy.get('onlineReplayMode')=='owned-guard-state-exact-prefix-v1':
         return tuple(dict.fromkeys(MAC_LIFECYCLE_SOURCES+('experiments/ch7/measured_mac_monitor.py','experiments/ch7/full_state_clone_cursor.py','experiments/ch7/newowned_guard_cursor.py')))
     if policy.get('onlineReplayMode')=='full-state-c-clone-exact-prefix-v1':
@@ -102,15 +107,24 @@ def setup_lifecycle(args, stage):
     source=os.environ.get('AIJADE_GIT_COMMIT','')
     require(re.fullmatch('[0-9a-f]{40}',source) is not None,'lifecycle Q identity missing')
     policy_sha=hashlib.sha256(policy_raw).hexdigest()
+    native_mode=policy.get('lifecycleExecMode') is not None
     if os.environ.get('AIJADE_LIFECYCLE_JOURNAL'):
-        registry=from_environment()
+        if native_mode:
+            from native_exec_registry import activate_from_environment
+            registry=activate_from_environment(policy)
+        else:
+            registry=from_environment()
         require(registry.source_commit==source and registry.policy_sha256==policy_sha,
                 'inherited lifecycle source/policy mismatch')
     else:
         parent=args.output.resolve().parent;parent.mkdir(parents=True,exist_ok=True)
         journal=parent/(args.output.name+'-lifecycle.jsonl')
         require(not journal.exists(),'never reuse a prior lifecycle journal')
-        registry=Registry(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
+        registry_factory=Registry
+        if native_mode:
+            from native_exec_registry import registry_for_policy
+            registry_factory=lambda *arguments,**options:registry_for_policy(policy,*arguments,**options)
+        registry=registry_factory(journal,[(os.getpid(),psutil.Process().create_time())],stage=stage,
             source_commit=source,policy_sha256=policy_sha,
             capture_lock_path=guard.coordination_lock_path(policy))
     registry.activate()

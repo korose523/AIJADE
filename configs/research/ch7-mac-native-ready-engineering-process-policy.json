@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 3,
+  "kind": "mac-lifecycle-observed-idle-daemon-v3",
+  "daemon": {
+    "app": {
+      "pid": 669,
+      "createTime": 1794695519.392843,
+      "parentPid": 1,
+      "executable": "/Applications/Ollama.app/Contents/MacOS/Ollama",
+      "sha256": "a42e1fcb0cdf56fb09f565a0afbb65330e51343b36eb80486256de3e960f5f10",
+      "argvSha256": "74138b8864d66676adcb0e05ffb1828217610eef1cb0a52b2bbc2ba1f18e8a60",
+      "commandForm": "gui"
+    },
+    "serve": {
+      "pid": 701,
+      "createTime": 1794695525.96261,
+      "parentPid": 669,
+      "executable": "/Applications/Ollama.app/Contents/Resources/ollama",
+      "sha256": "5c3cf935be8d896433a5caefefc8857bc2bb9e32c77c35e7c3d38b7c5919822f",
+      "argvSha256": "1528ec037575f9504bd955405980cd646dfdadf9c481d9b2863ca24cb1dd188e",
+      "commandForm": "serve"
+    }
+  },
+  "listener": {
+    "address": "127.0.0.1",
+    "port": 11434,
+    "pid": 701
+  },
+  "api": {
+    "url": "http://127.0.0.1:11434/api/ps",
+    "timeoutSeconds": 0.5,
+    "maxBytes": 65536
+  },
+  "nativeHelper": {
+    "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-lifecycle-20261117/native/mac_bulk_census",
+    "sha256": "2d780ee3b3c0061b9109e805ceed0dbbe186cf2922ecd5ba94c5e3cd6c9bdbca",
+    "sourceSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+  },
+  "lifecycle": {
+    "moduleSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "execShimSha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa",
+    "coordinationLockPath": "/Volumes/Untitled/AIJADE/.runtime/posix/locks/mac-lifecycle-d3f29817ad6b4b157a0c69a6ab49442ac93ffe88a288231c8a3648b3a331114a.lock",
+    "maxLockWaitSeconds": 1.25,
+    "maxObservationSeconds": 2.5
+  },
+  "coordinationMode": "segmented-census-mutation-v1",
+  "coordinationSchema": "aijade.mac.segmented-census-mutation.v1",
+  "onlineReplayMode": "owned-guard-state-exact-prefix-v1",
+  "binaryAuthenticationMode": "full-read-exact-bytes-v1",
+  "binaryAuthenticationSourceSha256": "b87fd94186c805ca7639d3e7ac4cc2ca93c4319a194ab6c3932ee221710bc4d4",
+  "purpose": "engineering_real_nested_only",
+  "onlineReplayInitializationMode": "paired-source-verified-owned-state-v1",
+  "onlineReplaySourceSha256": "463976aac81ae602f3f6455bb8331476a05f7f8b7666f84b3184805c8c1f5717",
+  "lifecycleExecMode": "native-ready-release-v1",
+  "nativeExec": {
+    "mode": "native-ready-release-v1",
+    "adapterSourceSha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+    "sourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/lifecycle_exec_native.c",
+    "sourceSha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+    "binaryPath": "/Volumes/Untitled/AIJADE/.runtime/posix/native-ready-20261118/cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35/lifecycle-exec-native",
+    "binarySha256": "c8e678bd28e5511c7209172d7df3281c79fd28c3be4bbe1f731f4bcc8b6d45aa"
+  },
+  "listenerEvidence": {
+    "mode": "complete-managed-lsof-transcript-v1",
+    "moduleSha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2",
+    "command": [
+      "/usr/sbin/lsof",
+      "-nP",
+      "-iTCP:11434",
+      "-sTCP:LISTEN",
+      "-FpfPtTn"
+    ],
+    "executableSha256": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a",
+    "maxSeconds": 0.5,
+    "maxBytes": 65536
+  }
+}

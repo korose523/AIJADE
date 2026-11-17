@@ -5,18 +5,20 @@ The historical ten-blob and 34-function claims use original Git source bytes.
 Thirty-three current function bodies must still match their original constants;
 the explicitly versioned cursor factory has separate current behaviour controls.
 No historical golden hash is replaced to match the new implementation.
-Current E5 binary bytes and owned predicate/API claims have separate checks.
+Current implementation binary bytes and versioned owned/native predicate/API claims have separate checks.
 """
 import ast
 import hashlib
 import importlib
+import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
-REPO=Path(__file__).resolve().parents[2]
+REPO=Path(os.environ.get('AIJADE_VERSIONED_CONTROL_REPO',str(Path(__file__).resolve().parents[2]))).resolve()
 Q4='147564c9db812c1a9e5ae07992d9aa282399a310'
 TEST='tests/shell/test_mac_prefix_decision.py'
 TARGET='test_mac_prefix_decision.EngineeringSourceByteControls.test_all_ten_accepted_engineering_core_blobs_are_exactly_preserved'
@@ -27,6 +29,7 @@ ORIGINAL_BINARY_SHA='f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a
 POLICY_FIXTURE_PREFIX='test_mac_prefix_decision.PrefixQPolicyControls.'
 POLICY_FIXTURE_CONFIG='configs/research/ch7-mac-prefix-v2-process-policy.json'
 CURRENT_PREDICATE_AST_SHA='81f098fc92bffb77e5c1938e23b5284def002edd91ed130909ec788cafa9a343'
+NATIVE_PREDICATE_AST_SHA='abc29b40650ffecaacfb3d601c2736504a06c491a1494329d494d9cdb50bb6bb'
 ORIGINAL_GUARD_CORE_AST_SHA='b6bc9b54ba40d04503cbee3ad71ddfe64acdd6724abf47f8f01c50693b49c30b'
 
 
@@ -175,7 +178,24 @@ class CurrentOwnedGuardSourceControls(unittest.TestCase):
         self.assertIn('evaluate',methods);self.assertNotIn('validate_view',methods)
 
 
+class CurrentNativeGuardSourceControls(unittest.TestCase):
+    """New native prefix assertion; the original E5 predicate remains separate."""
+    def test_current_native_predicate_and_owned_constant_match_without_changing_old_core(self):
+        tree=ast.parse((REPO/'experiments/ch7/mac_process_guard_v3.py').read_bytes())
+        node=next(n for n in tree.body if isinstance(n,ast.FunctionDef)
+                  and n.name=='_guard_decision_from_validated_lifecycle')
+        self.assertEqual(hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest(),NATIVE_PREDICATE_AST_SHA)
+        branch=next(n for n in node.body if isinstance(n,ast.Try))
+        self.assertEqual(hashlib.sha256(ast.dump(ast.Module(body=branch.body[3:],type_ignores=[]),include_attributes=False).encode()).hexdigest(),ORIGINAL_GUARD_CORE_AST_SHA)
+        owned=ast.parse((REPO/'experiments/ch7/newowned_guard_cursor.py').read_bytes())
+        assignment=next(n for n in owned.body if isinstance(n,ast.Assign) and any(
+            isinstance(t,ast.Name) and t.id=='GUARD_PREDICATE_AST_SHA256' for t in n.targets))
+        self.assertEqual(ast.literal_eval(assignment.value),NATIVE_PREDICATE_AST_SHA)
+
+
 def main():
+    scratch=REPO/'.runtime/scoped-control-tmp';scratch.mkdir(parents=True,exist_ok=True)
+    tempfile.tempdir=str(scratch);os.environ['TMPDIR']=str(scratch)
     sys.path.insert(0,str(REPO/'tests/shell'))
     suite=unittest.defaultTestLoader.discover(str(REPO/'tests/shell'),pattern='test_mac_*.py')
     module=importlib.import_module('test_mac_prefix_decision')
@@ -190,12 +210,19 @@ def main():
         CurrentPrefixPolicyFixtureCase(case,module) if case.id().startswith(POLICY_FIXTURE_PREFIX) else case
         for case in selected)
     scoped.addTest(CurrentUnchangedFunctionBytes())
-    scoped.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(CurrentOwnedGuardSourceControls))
+    from versioned_nested_scope import materialize_e5_source,verify_materialized_e5
+    e5_root=materialize_e5_source(REPO)
+    for case in walk(unittest.defaultTestLoader.loadTestsFromTestCase(CurrentOwnedGuardSourceControls)):
+        if case.id().endswith('.test_current_owned_predicate_and_original_full_decision_core_ast_are_pinned'):
+            scoped.addTest(HistoricalBlobCase(case,sys.modules[__name__],e5_root))
+        else:scoped.addTest(case)
+    scoped.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(CurrentNativeGuardSourceControls))
     print('Historical ten-blob/34-function claims: exact Q4 '+Q4+
-          '; current33 unchanged bodies checked separately; new cursor factory and E5 owned/binary/predicate API have current controls.'+
+          '; current33 unchanged bodies checked separately; original E5 predicate81f uses all48 frozen sources; current native predicateabc and setup/factory behaviour have separate controls.'+
           ' Current fresh-Git prefix fixtures='+str(len(fixture_cases))+
           ' derive only binary source f2e -> actualb87 inside each case; original configs/tests/production predicates unchanged.',flush=True)
     result=unittest.TextTestRunner(verbosity=2).run(scoped)
+    verify_materialized_e5(e5_root)
     return 0 if result.wasSuccessful() else 1
 
 
