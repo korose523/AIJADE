@@ -1,0 +1,205 @@
+{
+  "schema": "aijade.ch7.equal-load-full-replay-checkpoint.v1",
+  "status": "COMPLETE_ORIGINAL_RAW_REPLAY_PASS",
+  "inputFiles": {
+    "admission/telemetry.jsonl": {
+      "sha256": "4e90207771532f4ea2836e3ed3bcc88d293a4f01b1318ed6a37e28e82c8a8a49",
+      "sizeBytes": 26159586
+    },
+    "engineering-passport.json": {
+      "sha256": "9475830e6973bbb1e81c508505898c3cc24e340816dfdaa83dac2c44d73c0f22",
+      "sizeBytes": 13439
+    },
+    "lifecycle-journal.jsonl": {
+      "sha256": "6d03842e4e58257e664e52eabec670e9d001f40622a2202a8f78cde1d8a16758",
+      "sizeBytes": 3671601
+    },
+    "phase-events.jsonl": {
+      "sha256": "b5548ff409190768d7b0d7345fd60d563e130c71df4b3ba48f3123ee67cfbdb6",
+      "sizeBytes": 147885
+    },
+    "preflight-continuity.json": {
+      "sha256": "0c5d3c5301235f3f969499a2794e7abb135054aa2da7915ca199b9b60be864c0",
+      "sizeBytes": 2436
+    },
+    "process-policy.json": {
+      "sha256": "dd01b7ddab57ebbadc46d87529d27dcca70f65fb57d18fca746dfee609927ad9",
+      "sizeBytes": 1978
+    },
+    "receipt.json": {
+      "sha256": "d5f297378b588beff30f75265853827b3e62bd1e619d484d503ef51645f51e67",
+      "sizeBytes": 2590515
+    },
+    "service-events.jsonl": {
+      "sha256": "39913b0c718cce9ad3171643095b12ce94b507e97aef9a2c9b37a99f4f62b994",
+      "sizeBytes": 128737
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "e0062388373b9b14234f51a0c6a4719823cb8381b439453416f1d75aa24ca18d",
+      "sizeBytes": 130858030
+    },
+    "tail/events.jsonl": {
+      "sha256": "e96c85b64e1181ec08a2a74c53da2a87656b4c4a27ecb0685a969536653adc00",
+      "sizeBytes": 768
+    },
+    "tail/telemetry.jsonl": {
+      "sha256": "cdfed51b26c21699bcef3e94facc9413454baa741f9783f5b18f5bc986669386",
+      "sizeBytes": 886526
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "d1eadfae7ba3169909002cad9888a5bef900da18ad92a171b2e38dea72eb1557",
+      "sizeBytes": 8913
+    },
+    {
+      "path": "Aijade.slnx",
+      "sha256": "cfd0460a9d204265e3f2ee8cf0c255650d24eebedbfd5f509a1aebb9dfdf5637",
+      "sizeBytes": 1469
+    },
+    {
+      "path": "Directory.Build.props",
+      "sha256": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af",
+      "sizeBytes": 1163
+    },
+    {
+      "path": "Directory.Packages.props",
+      "sha256": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d",
+      "sizeBytes": 1530
+    },
+    {
+      "path": "README.md",
+      "sha256": "c0784626d29032c467218841f7d9b83b511c4b93eba4561cb6af5de7f03898ce",
+      "sizeBytes": 14663
+    },
+    {
+      "path": "configs/research/ch7-mac-prefix-v2-process-policy.json",
+      "sha256": "dd01b7ddab57ebbadc46d87529d27dcca70f65fb57d18fca746dfee609927ad9",
+      "sizeBytes": 1978
+    },
+    {
+      "path": "experiments/ch7/binary_authentication.py",
+      "sha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+      "sizeBytes": 9909
+    },
+    {
+      "path": "experiments/ch7/finite_audit.py",
+      "sha256": "95fc39d93a96e6755bd1378c14ebf70406a88028856e69404b5013a29fcf16cd",
+      "sizeBytes": 31339
+    },
+    {
+      "path": "experiments/ch7/finite_runtime.py",
+      "sha256": "4eeccee85138a891c4ab63879b04e9c05de53928077725ee551700ae5f926b58",
+      "sizeBytes": 33739
+    },
+    {
+      "path": "experiments/ch7/finite_sequence_audit.py",
+      "sha256": "cd9cad9b75a9c543355a07a435388bde9e603ae0703877ec781bb0cc1db870c0",
+      "sizeBytes": 60869
+    },
+    {
+      "path": "experiments/ch7/godot_local.py",
+      "sha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+      "sizeBytes": 1008
+    },
+    {
+      "path": "experiments/ch7/lifecycle_audit.py",
+      "sha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+      "sizeBytes": 53328
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec.py",
+      "sha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+      "sizeBytes": 1005
+    },
+    {
+      "path": "experiments/ch7/mac_bulk_census.c",
+      "sha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+      "sizeBytes": 16530
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard.py",
+      "sha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+      "sizeBytes": 26263
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v2.py",
+      "sha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+      "sizeBytes": 45772
+    },
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "6da78ff6884a2390d5fa8a291237d5ff57dedf451445653711f586ed11d68629",
+      "sizeBytes": 61378
+    },
+    {
+      "path": "experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json",
+      "sha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+      "sizeBytes": 79889
+    },
+    {
+      "path": "experiments/ch7/phase_continuity.py",
+      "sha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+      "sizeBytes": 16219
+    },
+    {
+      "path": "experiments/ch7/process_lifecycle.py",
+      "sha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+      "sizeBytes": 58249
+    },
+    {
+      "path": "experiments/ch7/run_equal_load.py",
+      "sha256": "24fbcfebaf1099b095632ddc237bf707351cd0fe797a044c0ca17fba2a3d5e43",
+      "sizeBytes": 15373
+    },
+    {
+      "path": "experiments/ch7/run_finite_block.py",
+      "sha256": "462b192b67b806f92a9ceb3ecfafe25d73d991c849f8c3cf50d6303c2ca730e1",
+      "sizeBytes": 30341
+    },
+    {
+      "path": "experiments/ch7/run_finite_sequence.py",
+      "sha256": "8b205f2ea8c7ffd66438de5e0304d6113e0324917933a6b78e03f295ab1a6639",
+      "sizeBytes": 28632
+    },
+    {
+      "path": "experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md",
+      "sha256": "d52a9805b11b0929f5bb328837cb139f276034dc84ac9418501d57f03a188dc8",
+      "sizeBytes": 12715
+    },
+    {
+      "path": "experiments/plans/2026-11-17-ch7-prefix-equal-load-engineering-02.md",
+      "sha256": "f00a9509dbed430c2937b789b9a05e9daaf2a5141df1bb029b22058f120a3643",
+      "sizeBytes": 8473
+    },
+    {
+      "path": "experiments/plans/2026-11-17-ch7-prefix-equal-load-protocol-02.json",
+      "sha256": "e73d74a2e74d54458fc30256ee27512b3c29c292e386a6ecd3ea8187e792113e",
+      "sizeBytes": 4054
+    },
+    {
+      "path": "global.json",
+      "sha256": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40",
+      "sizeBytes": 81
+    },
+    {
+      "path": "tools/dev-services.sh",
+      "sha256": "16270ce0d239663a8ac7228bbf03e19ebd6b98a54ab9a4ffd5681f99acc89e68",
+      "sizeBytes": 1121
+    }
+  ],
+  "passportSha256": "9475830e6973bbb1e81c508505898c3cc24e340816dfdaa83dac2c44d73c0f22",
+  "auditScriptSha256": "049b347a3a6265cb6f9a096c6c5db633934b4863bf78d4d9a81c777e36aeec64",
+  "rawReplay": {
+    "samples": 362,
+    "guardDecisions": {
+      "PASS": 362
+    },
+    "nativeCaptures": 724,
+    "scopes": 1,
+    "fullReplayErrors": []
+  },
+  "journalSha256": "6d03842e4e58257e664e52eabec670e9d001f40622a2202a8f78cde1d8a16758",
+  "journalBytes": 3671601
+}
