@@ -1,0 +1,57 @@
+--- originals/test_native_integration.py
++++ tests/shell/test_native_integration.py
+@@ -19,7 +19,10 @@
+ from unittest.mock import patch
+ 
+ HERE=Path(__file__).resolve().parent
+-REPO=HERE/'fixture-repo'; P=REPO/'experiments/ch7'
++REPO=Path(os.environ.get('AIJADE_NATIVE_INTEGRATION_REPO',str(Path(__file__).resolve().parents[2]))).resolve()
++P=REPO/'experiments/ch7'
++SCRATCH=Path(os.environ.get('AIJADE_NATIVE_INTEGRATION_SCRATCH',str(REPO/'.runtime/native-integration-controls')))
++SCRATCH.mkdir(parents=True,exist_ok=True)
+ sys.path[:0]=[str(P),str(REPO/'tests/shell')]
+ import process_lifecycle as life
+ import mac_process_guard_v3 as guard
+@@ -29,12 +32,14 @@
+ import finite_runtime as runtime
+ import run_nested_load as runner
+ import pure_listener_fixtures as pure
++from verify_frozen_listener_oracle import verify_frozen_oracle
++verify_frozen_oracle(REPO)
+ from test_segmented_capture import segmented_fixture
+ from test_mac_lifecycle_guard import rehash,raw_events
+ 
+ 
+ def make_fixture(*,logical_repo=None,sibling_phase=None):
+-    logical_p=P if logical_repo is None else Path(logical_repo)
++    logical_p=life.BASE/'.runtime/posix/NATIVE_TEST_ORIGIN/experiments/ch7' if logical_repo is None else Path(logical_repo)
+     p,o,raw=segmented_fixture()
+     p.update(onlineReplayMode=owned.MODE,onlineReplayInitializationMode=owned.INITIALIZATION_MODE,
+         onlineReplaySourceSha256=guard._file_sha(P/'newowned_guard_cursor.py'),
+@@ -280,7 +285,7 @@
+         import psutil
+         p=make_fixture()[0] if native_mode else segmented_fixture()[0]
+         label=('native' if native_mode else 'legacy')+('-env' if inherited else '-fresh')
+-        folder=HERE/('factory-fixture-'+label);folder.mkdir(exist_ok=True)
++        folder=SCRATCH/('factory-fixture-'+label);folder.mkdir(exist_ok=True)
+         path=folder/'policy.json';raw=(json.dumps(p,sort_keys=True)+'\n').encode();path.write_bytes(raw)
+         class Registry:
+             source_commit='2'*40
+@@ -328,7 +333,7 @@
+         self.assertIn('WHOLE_CALL_DEADLINE_EXCEEDED',frame['listener']['reasons'])
+ 
+     def test_29_scientific_loader_still_refuses_owned_native_on_legacy_plan(self):
+-        p,*_=make_fixture();path=REPO/'mock-native-policy.json';raw=json.dumps(p,sort_keys=True).encode();path.write_bytes(raw)
++        p,*_=make_fixture();path=SCRATCH/'mock-native-policy.json';raw=json.dumps(p,sort_keys=True).encode();path.write_bytes(raw)
+         with patch.object(runtime,'git_bytes',return_value=raw):
+             with self.assertRaisesRegex(ValueError,'separately frozen new scientific execution decision'):
+                 runtime.load_mac_policy(REPO,path,'2'*40)
+@@ -409,7 +414,7 @@
+             guard.validate_policy(p)
+ 
+     def test_38_exact_historical_runtime_population_and_separate_setup_dispatch(self):
+-        path=HERE.parent/'integration/candidate/tests/shell/test_mac_prefix_decision.py'
++        path=REPO/'tests/shell/test_mac_prefix_decision.py'
+         tree=ast.parse(path.read_bytes());cls=next(n for n in tree.body if isinstance(n,ast.ClassDef) and n.name=='EngineeringSourceByteControls')
+         assignment=next(n for n in cls.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='ORIGINAL_RUNTIME_FUNCTIONS' for t in n.targets))
+         expected=ast.literal_eval(assignment.value);body=(P/'finite_runtime.py').read_bytes();lines=body.splitlines(keepends=True);actual={}

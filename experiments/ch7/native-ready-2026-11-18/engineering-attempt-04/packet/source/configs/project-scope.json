@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "updated": "2026-11-16",
+  "scope": "docs/PROJECT-SCOPE.md",
+  "decision": "docs/decisions/ADR-004.md",
+  "priority": "AIJADE emotional companionship product first; research apparatus and archived results remain separate",
+  "lines": {
+    "research": {
+      "name": "Research line: the apparatus and artefacts of the dissertation's Chapters 4-7",
+      "mayReference": ["research", "shared"]
+    },
+    "shared": {
+      "name": "Shared foundation: used by the research line and the product",
+      "mayReference": ["shared"]
+    },
+    "product": {
+      "name": "Companion product: primary development line; includes Web/MAUI and private chat bots",
+      "mayReference": ["shared", "product"]
+    },
+    "tests": {
+      "name": "Tests of all lines",
+      "mayReference": ["research", "shared", "product"]
+    }
+  },
+  "modules": [
+    { "path": "src/Aijade.Research", "line": "research", "chapters": [5, 6, 7] },
+    { "path": "tools/Aijade.Experiments", "line": "research", "chapters": [4, 5, 6] },
+    { "path": "tools/Aijade.Rqc", "line": "research", "chapters": [5] },
+    { "path": "tools/Aijade.MacPreflight", "line": "research", "chapters": [5] },
+    { "path": "tools/Aijade.Substrate", "line": "research", "chapters": [5] },
+    { "path": "tools/Aijade.P1", "line": "research", "chapters": [4] },
+    { "path": "tools/Aijade.Mutation", "line": "research", "chapters": [4] },
+    { "path": "tools/data", "line": "research" },
+    { "path": "tools/p3_longmemeval", "line": "research", "chapters": [6] },
+    { "path": "experiments", "line": "research" },
+
+    { "path": "src/Aijade.Core", "line": "shared" },
+    {
+      "path": "src/Aijade.Memory",
+      "line": "shared",
+      "researchObjects": ["src/Aijade.Memory/BioticMemory.cs", "src/Aijade.Memory/BioticMemory.Subsystems.cs", "src/Aijade.Memory/V9", "src/Aijade.Memory/Contracts"]
+    },
+    { "path": "src/Aijade.Learning", "line": "shared" },
+    { "path": "src/Aijade.Telemetry", "line": "shared" },
+    { "path": "src/Aijade.Providers", "line": "shared" },
+    { "path": "src/Aijade.Growth", "line": "shared" },
+
+    { "path": "src/Aijade.Server", "line": "product", "researchObjects": ["src/Aijade.Server/V9", "src/Aijade.Server/Memory/MemoryLibrary.cs"] },
+    { "path": "src/Aijade.Integrations", "line": "product", "researchObjects": ["src/Aijade.Integrations/Renderer"] },
+    { "path": "src/Aijade.Client", "line": "product", "researchObjects": ["src/Aijade.Client/Chat/MemoryContext.cs"] },
+    { "path": "src/Aijade.UI", "line": "product" },
+    { "path": "src/Aijade.Web", "line": "product" },
+    { "path": "src/Aijade.Maui", "line": "product" },
+    { "path": "src/Aijade.Bots", "line": "product" },
+    { "path": "src/Aijade.ComputerUse", "line": "product" },
+    { "path": "integrations/browser-extension", "line": "product" },
+    { "path": "integrations/vscode", "line": "product" },
+    { "path": "integrations/claude-code", "line": "product" },
+    { "path": "tools/minecraft", "line": "product" },
+    { "path": "tools/mmd-bundle", "line": "product" },
+    { "path": "brand", "line": "product" },
+
+    { "path": "tests/Aijade.Tests", "line": "tests" },
+    { "path": "tests/Aijade.E2E", "line": "tests" },
+    { "path": "tests/shell", "line": "tests" },
+    { "path": "tests/fixtures", "line": "tests" }
+  ],
+  "frozen": [
+    {
+      "path": "src/Aijade.Client/Chat/MemoryContext.cs",
+      "sha256": "c025f1b97fc8801cd84b19b5ab170c396dd87c68557befbd5353e0d2dc4ca75d",
+      "until": "P3-E (the product's delivery path, Chapter 6) is run and archived",
+      "ifChanged": "only when it must change: record it in docs/STATUS.md, list it as a deviation of P3-E, then update this hash"
+    },
+    {
+      "path": "src/Aijade.Server/Memory/MemoryLibrary.cs",
+      "sha256": "c39f92aecf247985b4a37cd1d573f2bbef816576b0357d1219910edaf120fbaf",
+      "until": "P3-E (the product's delivery path, Chapter 6) is run and archived",
+      "ifChanged": "only when it must change: record it in docs/STATUS.md, list it as a deviation of P3-E, then update this hash"
+    }
+  ]
+}

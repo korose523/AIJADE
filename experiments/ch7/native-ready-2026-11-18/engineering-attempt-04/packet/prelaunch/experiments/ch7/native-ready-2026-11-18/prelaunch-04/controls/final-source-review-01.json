@@ -1,0 +1,281 @@
+{
+  "schema": "aijade.native-final-source-readonly-review.v1",
+  "status": "NO_BLOCKING_SOURCE_OR_CONTRACT_DEFECT_FOUND_SCOPE_LIMITED",
+  "reviewedAt": "2026-11-17T19:46:42.248758+00:00",
+  "reviewer": "independent AI-assisted source review; not author/human approval",
+  "repo": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree",
+  "output": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/final-source-review-01.json",
+  "source7": [
+    {
+      "path": "experiments/ch7/mac_process_guard_v3.py",
+      "sha256": "95b45589d609ae031bde2b912e63b64304eeb58e4c67a8c64b2f4fd42298f0fd",
+      "matchesAppliedHandoff": true
+    },
+    {
+      "path": "experiments/ch7/newowned_guard_cursor.py",
+      "sha256": "463976aac81ae602f3f6455bb8331476a05f7f8b7666f84b3184805c8c1f5717",
+      "matchesAppliedHandoff": true
+    },
+    {
+      "path": "experiments/ch7/finite_runtime.py",
+      "sha256": "19767302ff1fa9843390fb435ad6f404a5178de86ca981347fbc0ee1010b78de",
+      "matchesAppliedHandoff": true
+    },
+    {
+      "path": "experiments/ch7/run_nested_load.py",
+      "sha256": "383109abcd5bebb9dd34b7fb11f7778d9d637a2f5169fc1b2989cc51e7079911",
+      "matchesAppliedHandoff": true
+    },
+    {
+      "path": "experiments/ch7/native_exec_registry.py",
+      "sha256": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+      "matchesAppliedHandoff": true
+    },
+    {
+      "path": "experiments/ch7/lifecycle_exec_native.c",
+      "sha256": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+      "matchesAppliedHandoff": true
+    },
+    {
+      "path": "experiments/ch7/listener_evidence.py",
+      "sha256": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2",
+      "matchesAppliedHandoff": true
+    }
+  ],
+  "additionalFrozenFiles": [
+    {
+      "path": "experiments/ch7/audit_nested_load.py",
+      "sha256": "1a246bdebb510d4ab88808f3ed31dc46ae381c44da7f61b6046ad45df422e96a"
+    },
+    {
+      "path": "experiments/ch7/native-ready-2026-11-18/freeze/launch_nested_load.py",
+      "sha256": "0e0222e961bd5d5be6e78567c2afbd6a535f317f8e21fb34098cccb7b40e2f43"
+    },
+    {
+      "path": "experiments/plans/2026-11-18-ch7-native-ready-engineering.md",
+      "sha256": "dbeebb7b7e191d75494e1fa19219a4ea0953c5e9b7938aa56af242e439f77e0e"
+    },
+    {
+      "path": "experiments/plans/2026-11-18-ch7-native-ready-protocol.json",
+      "sha256": "1834704c64e4659b78a14298a8e87cd8f6b0bad1f474b36bf0a0e64d7ebb7ef8"
+    },
+    {
+      "path": "configs/research/ch7-mac-native-ready-engineering-process-policy.json",
+      "sha256": "5d4b64240cf3c450c7175b157f18d507a657482664452298170e73805a2349c4"
+    }
+  ],
+  "applicationHandoffSha256": "6d31ef628ee4b80e1fec789e5c027664ad47c27d9b944e22f649de2df98816fa",
+  "auditHandoffSha256": "5084a917472d95ccb257ebf11a7a70eebb2399e3105335bd733aa0b0af7c333f",
+  "launcherPrivateSha256": "0e0222e961bd5d5be6e78567c2afbd6a535f317f8e21fb34098cccb7b40e2f43",
+  "preservedSources": {
+    "process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "full_state_clone_cursor.py": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+    "lifecycle_audit.py": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+    "binary_authentication.py": "b87fd94186c805ca7639d3e7ac4cc2ca93c4319a194ab6c3932ee221710bc4d4"
+  },
+  "guardAst": {
+    "interpreterVersion": "3.12.14",
+    "predicateSha256": "abc29b40650ffecaacfb3d601c2736504a06c491a1494329d494d9cdb50bb6bb",
+    "completeHistoricalCoreSha256": "b6bc9b54ba40d04503cbee3ad71ddfe64acdd6724abf47f8f01c50693b49c30b"
+  },
+  "policyProtocolExactNativeAndReplayBinding": true,
+  "checks": [
+    {
+      "id": "first-native-existing-proof",
+      "status": "PASS",
+      "evidence": [
+        "run_nested_load.py:114-146",
+        "run_nested_load.py:180-214",
+        "run_nested_load.py:291-337",
+        "audit_nested_load.py:117-146",
+        "audit_nested_load.py:183-277"
+      ],
+      "finding": "Parent and each child explicitly select NativeExecRegistry before any finite command. First per-scope native execution remains index0 of the original30 Git proof commands; detached phase evidence is read from that already completed exact handle, without a new Popen. Parent30+2500 tasks remain inside900s; child30 proofs and initialization/alignment/ready flush remain inside15s. No extra warmup or phase reset is present."
+    },
+    {
+      "id": "unchanged-acceptance-gates",
+      "status": "PASS",
+      "evidence": [
+        "protocol numeric fields",
+        "mac_process_guard_v3.py:195-252",
+        "mac_process_guard_v3.py:895-947",
+        "mac_process_guard_v3.py:1268-1345",
+        "run_nested_load.py:360-367",
+        "audit_nested_load.py:899-907"
+      ],
+      "finding": "Full listener outer frame retains0.5s including source checks, launch/read/actual wait/evidence/parsing and derive cost. Complete observation remains2.5s; complete measured service2s; capture wait and held observation segment1.25s, coverage3s. Adverse cleanup can exceed a failed operation deadline but retains exception/UNKNOWN and cannot become an accepted sample."
+    },
+    {
+      "id": "global-listener-completeness",
+      "status": "PASS",
+      "evidence": [
+        "listener_evidence.py:16-18 and parser/strict verifier",
+        "mac_process_guard_v3.py:195-252",
+        "mac_process_guard_v3.py:895-947",
+        "launcher:105-140"
+      ],
+      "finding": "Exact global argv remains /usr/sbin/lsof -nP -iTCP:11434 -sTCP:LISTEN -FpfPtTn. No expected-PID filter, deduplication, socket-owner surrogate or previous-good fallback is introduced. Complete transcript/raw stdout/stderr/caps/clocks/native lease proof are required; malformed, partial, late or unknown evidence refuses."
+    },
+    {
+      "id": "all-finite-leases-and-waits",
+      "status": "PASS",
+      "evidence": [
+        "native_exec_registry.py:74-316",
+        "audit_nested_load.py:175-180",
+        "audit_nested_load.py:936-968"
+      ],
+      "finding": "All new-mode finite launches use one policy-bound native shim. Independent audit requires that shim on every finite lease, direct-owner Popen.wait0, exact2650 Git+4 child+2native+2listener per observation population, no undeclared finite task,6318/2560-byte/65536-other-byte bounds. Original ManagedProcess and canonical event parser remain exact."
+    },
+    {
+      "id": "continuous-stages-and-actual-controllers",
+      "status": "PASS",
+      "evidence": [
+        "run_nested_load.py:180-289",
+        "run_nested_load.py:330-431",
+        "audit_nested_load.py:752-923"
+      ],
+      "finding": "Original300+60 uninterrupted slots precede actual parent runtime and four actual OS child controllers. Auditor binds scope/parent lease/birth, RELEASE startup anchor, actual parent wait, child cleanup, complete parent lifetime coverage, three gaps/tail, four service overlaps, aligned-block cross-scope contention,900/600/145/128/15/8/3s bounds and14MiB actual last parent/block4 prefixes. Four-block completion cannot be fabricated from preparation controls."
+    },
+    {
+      "id": "shared-lock-direction",
+      "status": "PASS",
+      "evidence": [
+        "process_lifecycle.py:124-169",
+        "process_lifecycle.py:641-670",
+        "native_exec_registry.py:104-189",
+        "mac_process_guard_v3.py:1297-1317"
+      ],
+      "finding": "Actual source order remains shared capture_lock then Registry._mutex/journal append; NativeExecRegistry.launch has no outer private-mutex acquisition while waiting for capture. Inside an observer snapshot its same-thread native launch reenters the exact lock; peer OS scopes still contend on flock. Reaper/evidence/sample private paths do not acquire capture_lock. No actual private->capture/capture->private ABBA cycle was found. This source finding does not certify measured contention latency."
+    },
+    {
+      "id": "source-binding-and-legacy-boundaries",
+      "status": "PASS",
+      "evidence": [
+        "finite_runtime.py:97-132",
+        "finite_runtime.py:349-386",
+        "newowned_guard_cursor.py:1-110",
+        "launcher:85-140 and219-333",
+        "audit_nested_load.py:641-713"
+      ],
+      "finding": "Policy/protocol native and replay leaves agree exactly. Launcher enforces closed three-way passport binding,21 exact observers, all actual source/Git blobs, native C colocated source, fixed native binary owner/single-link0755/full SHA, lsof SHA, exactly28 distinct Git source proofs including three new modules plus two metadata proofs. Legacy default source and separate scientific-loader gates remain; engineering policy has no executionDecision."
+    },
+    {
+      "id": "history-and-adverse-component-preserved",
+      "status": "PASS",
+      "evidence": [
+        "plan preserved adverse evidence/component sections",
+        "protocol retainedE3/E4/E5 pins",
+        "actual packet-manifest SHA checks"
+      ],
+      "finding": "E3/E4/E5 packet manifest bytes match retained pins. E5 source/e918 and original parser93/shimECD/clone0da/coldoracleffbf remain available. E6 plan and launcher retain component native9/10 and first0.564040031 UNKNOWN; no cold-first-ever or ALL_PASS claim, retry or deletion is introduced. Current review did not reread every historical raw payload body."
+    },
+    {
+      "id": "independent-replay-closure",
+      "status": "PASS",
+      "evidence": [
+        "audit_nested_load.py:641-718",
+        "audit_nested_load.py:842-895",
+        "newowned_guard_cursor.py source-bound private state",
+        "guard predicate/core AST recomputation using pinned3.12.14"
+      ],
+      "finding": "Auditor authenticates loaded modules/current fixed Git source, independently replays full canonical prefixes with original cold oracle/index crosschecks, binds initializations/counters/owners, invokes complete source-owned guard core and native transcript verifier, and rejects partial/adverse receipts. Predicate abc29 and complete historical core b6bc9 match under pinned3.12.14. AST dumps are interpreter-version-dependent; a system3.9 dump is not used as a source mismatch verdict."
+    }
+  ],
+  "blockers": [],
+  "blockingItemCount": 0,
+  "existingActualControlLogs": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-integration-45-02.log",
+      "sha256": "4fd5b307837fa2e856b325981e03a01fb53b175d99969a9202ff8a9d730c9c43",
+      "passed": 45,
+      "failed": 0,
+      "readOnlyExistingLog": true,
+      "rerunByThisReview": false
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-listener-65-02.log",
+      "sha256": "9fa1dd974a3347a7739056c32cbc6aaadbe2c21db7294f87f6c80ebdde85403c",
+      "passed": 65,
+      "failed": 0,
+      "readOnlyExistingLog": true,
+      "rerunByThisReview": false
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-native-20-02.log",
+      "sha256": "31d13f17762f784820ffa04b5a2dfa01133b6d3b43adf14d60b1808ef35e2ce4",
+      "passed": 20,
+      "failed": 0,
+      "readOnlyExistingLog": true,
+      "rerunByThisReview": false
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-launcher-81-02.log",
+      "sha256": "646526d98a6699667649e314c8668d994242c3e0a03200bfbf29b9e6dc5f81c7",
+      "passed": 81,
+      "failed": 0,
+      "readOnlyExistingLog": true,
+      "rerunByThisReview": false
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/actual-w5-native-audit-30-01.log",
+      "sha256": "a2ed454aff7f86d45efe94fa2f63caa3670dc62cab379de222475332bd06660e",
+      "passed": 30,
+      "failed": 0,
+      "readOnlyExistingLog": true,
+      "rerunByThisReview": false
+    }
+  ],
+  "historicalManifestPins": [
+    {
+      "attempt": "E3",
+      "path": "experiments/ch7/nested-load-2026-11-17/engineering-attempt-01/packet/packet-manifest.json",
+      "sha256": "75f8d31201824cf437a7142e160a9aab43d49f0c7e9a507cd47fb89df5d3a56b",
+      "matchesProtocolPin": true
+    },
+    {
+      "attempt": "E4",
+      "path": "experiments/ch7/nested-copy-2026-11-18/engineering-attempt-02/packet/packet-manifest.json",
+      "sha256": "819cde4e8f7b8197f74181ec2ac6ec5d2ef82aeda6a6d56e1c949617de917e59",
+      "matchesProtocolPin": true
+    },
+    {
+      "attempt": "E5",
+      "path": "experiments/ch7/owned-state-2026-11-18/engineering-attempt-03/packet/packet-manifest.json",
+      "sha256": "0c0338bfa3b2b8862cf4e5aff4aae3baa28b1ede8a9ad0c5ab8e9a238a51b83e",
+      "matchesProtocolPin": true
+    }
+  ],
+  "nonBlockingNotes": [
+    {
+      "kind": "wording",
+      "finding": "protocol startupBudgetInterpretation still says retained for E5; actual E6 numeric bound is15 and the plan/launcher correctly state no further expansion. Optional wording clarity only, not a gate/source discrepancy."
+    }
+  ],
+  "unverifiedOrPendingScope": [
+    "Final Qe6 Git commit and successful exact-source CI, actual frozen passport, additive public prelaunch/readback and exclusive namespace checks are outside this source review and remain required before dispatch.",
+    "Native/lsof binary current OS/kernel identities were not queried here; launcher/actual source-bound captures must establish their declared identities at execution.",
+    "No new complete engineering window, backend qualification, heldout seed or40-pair comparison was performed or certified by this review.",
+    "Historical manifest pins and preserved key sources were checked; no new full historical-payload readback or transport acceptance was performed."
+  ],
+  "activity": {
+    "productionFilesModified": false,
+    "newTestsRun": 0,
+    "newFiniteLaunches": 0,
+    "newOsObservationRequests": 0,
+    "newGlobalListenerQueries": 0,
+    "newApiQueries": 0,
+    "newModelQueries": 0,
+    "nativeArtifactExecuted": false,
+    "gitMutation": false,
+    "onlyNewOutputUnderC9": true,
+    "allReviewToolProcessesEndedOnReturn": true
+  },
+  "gates": {
+    "engineeringAccepted": false,
+    "backendQualified": false,
+    "scientificAcceptance": false,
+    "independentHumanReview": false,
+    "heldoutComparisonComplete": false
+  }
+}

@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/versioned_nested_scope.py", line 149, in <module>
+    result=verify_companion_receipt(args.repo) if args.verify_companions else dict(sourceRoot=str(materialize_e5_source(args.repo)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/versioned_nested_scope.py", line 141, in verify_companion_receipt
+    ('packet_semantics.py','semanticsSourceSha256')]:checked_file(folder/name,value[key])
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/versioned_nested_scope.py", line 58, in checked_file
+    need(not path.is_symlink() and path.is_file(),'missing or symlink scope source')
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-native-ready-20261118/ci-preparation/publish/tests/shell/versioned_nested_scope.py", line 32, in need
+    if not value:raise ValueError(message)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: missing or symlink scope source

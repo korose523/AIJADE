@@ -1,0 +1,90 @@
+{
+  "schema": "aijade.native-e6-ci-scoped-control-result.v1",
+  "status": "CI_AND_VERSION_SCOPES_VERIFIED_WITH_ALL_DEVELOPMENT_FAILURES_RETAINED",
+  "pythonVersion": "3.12.14",
+  "actualSourceRepository": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree",
+  "macControlsPassedInFirstAndExclusiveRuns": 173,
+  "nestedControlsPassed": 40,
+  "originalE5ControlsPassed": 24,
+  "companionSourcesActuallyVerified": 6,
+  "recordedCompanionControlsVerifiedNotRerun": 15,
+  "publicE5PacketVerifierExitCode": 0,
+  "logs": {
+    "mac-scoped-01.log": {
+      "sha256": "bba4e2a4444137e0607c3467ae0c9ce3c81dc4c8368df844ae457f5ed6215df8",
+      "bytes": 30251,
+      "tests": [
+        173
+      ],
+      "containsFailure": false
+    },
+    "mac-scoped-02.log": {
+      "sha256": "98a3c1c83ce97b562a4232174c25791a3c55b59ac81eca07a2e945088f1e89db",
+      "bytes": 33707,
+      "tests": [
+        173
+      ],
+      "containsFailure": true
+    },
+    "mac-scoped-03-exclusive.log": {
+      "sha256": "148b292fb8adbe11e05ee36488b347406c8c3471fdaacc408b99e963ca7110ab",
+      "bytes": 30251,
+      "tests": [
+        173
+      ],
+      "containsFailure": false
+    },
+    "nested-scoped-01.log": {
+      "sha256": "b0b6eae705a3f62b56082f11de1331110b88a1ec026050591241a64eb86b9955",
+      "bytes": 38120,
+      "tests": [
+        40
+      ],
+      "containsFailure": true
+    },
+    "nested-scoped-02.log": {
+      "sha256": "d8db07d4887c851bb226b90a501450e96ebcc23c1d4dc63a071a158d0201a79a",
+      "bytes": 12737,
+      "tests": [
+        40,
+        24
+      ],
+      "containsFailure": false
+    },
+    "e5-companion-scope-01.log": {
+      "sha256": "69daec07013491f5e632768fac1336eb0008491f828775ddea714c476f00a277",
+      "bytes": 1260,
+      "tests": [],
+      "containsFailure": true
+    },
+    "e5-companion-scope-02.log": {
+      "sha256": "d6a316eed060fc99e02ede173206902b949d6d4839e6180c7bd2f882791b2434",
+      "bytes": 267,
+      "tests": [],
+      "containsFailure": false
+    },
+    "e5-packet-verify-01.log": {
+      "sha256": "86266aef811736174e0332d4764f8a66ec80c255ddfbfc006869ec8623953ec5",
+      "bytes": 1030,
+      "tests": [],
+      "containsFailure": false
+    },
+    "materialize-e5-01.log": {
+      "sha256": "06bac9ad348f6e811fdd89f4c5f0064ba12b946fd752224b1922f152d00d9efe",
+      "bytes": 164,
+      "tests": [],
+      "containsFailure": false
+    }
+  },
+  "sourceFailureDisposition": [
+    "nested01: independent E4 spec loader was not explicitly set; fixed wrapper env only; original tests unchanged",
+    "companion01: actual semantic helper filename is e5_refusal_semantics.py; mapping corrected after actual failure",
+    "mac02: two unchanged disposable half-second controls failed during a concurrent run; same final source passed exclusive173; no unique cause or stability claim"
+  ],
+  "noThresholdRelaxation": true,
+  "noOriginalGoldenOrTestRewrite": true,
+  "trackedW5Edits": false,
+  "ignoredRuntimeTestMaterializations": true,
+  "allProcessesEnded": true,
+  "newLiveEngineeringWindows": 0
+}

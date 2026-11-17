@@ -1,0 +1,45 @@
+{
+  "schema": "aijade.native-integration-control-result.v1",
+  "status": "PASS_PORTABLE_MOCK_INTEGRATION_ONLY",
+  "pythonVersion": "3.12.14",
+  "sourceSha256": {
+    "mac_process_guard_v3.py": "95b45589d609ae031bde2b912e63b64304eeb58e4c67a8c64b2f4fd42298f0fd",
+    "newowned_guard_cursor.py": "463976aac81ae602f3f6455bb8331476a05f7f8b7666f84b3184805c8c1f5717",
+    "finite_runtime.py": "19767302ff1fa9843390fb435ad6f404a5178de86ca981347fbc0ee1010b78de",
+    "run_nested_load.py": "383109abcd5bebb9dd34b7fb11f7778d9d637a2f5169fc1b2989cc51e7079911",
+    "native_exec_registry.py": "26ab2acfd68c490157efb7f1e09ac3f0c3b6d7f264276d3bc9c1e8fba015038f",
+    "lifecycle_exec_native.c": "cfa635d6d3259eed46f873e4d5e4ca54a5e7a3d897b71c6d4737d4a46c89ba35",
+    "listener_evidence.py": "45617a0a4ee8cec0c10f76151adfe4bd82f9fab4ca67dcd5b78b0f3a444ac2f2",
+    "process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "full_state_clone_cursor.py": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584"
+  },
+  "integrationTests": 45,
+  "unchangedOwnedTests": 13,
+  "logs": {
+    "controls-05.log": {
+      "tests": 45,
+      "sha256": "701734782773c01022ac3855dcd3496f3c435684404790a731d32e54d3af7aad"
+    },
+    "owned13-03.log": {
+      "tests": 13,
+      "sha256": "ee6d681c49eaf0737975796ffb3c1bbdeec5a5fbc96a4aabd261a3a670834ccd"
+    }
+  },
+  "allFixtureSourceBytesEqualCurrentStagedSource": true,
+  "newOSListenerQueries": 0,
+  "actualNativeChildren": 0,
+  "actualGitCalls": 0,
+  "newModelQueries": 0,
+  "activeScientificDispatchAdded": false,
+  "guardPredicateAstSha256": "abc29b40650ffecaacfb3d601c2736504a06c491a1494329d494d9cdb50bb6bb",
+  "originalCompleteCoreAstSha256": "b6bc9b54ba40d04503cbee3ad71ddfe64acdd6724abf47f8f01c50693b49c30b",
+  "historicalRuntimePopulation": 34,
+  "currentHistoricalBodiesExact": 33,
+  "setupLifecycleSeparateDispatchDelta": true,
+  "developmentFailures": [
+    "controls-01 used invalid fixture initialization writer clock=1 and was correctly refused; original failing test and log retained; controls-02 onward fixed only fixture initialization clock",
+    "a local backup draft used an incorrect target directory and failed before writing",
+    "the first receipt draft used Python3.9 AST FunctionDef layout rather than target3.12 and its AST assertion correctly failed; no product source or source constant was changed"
+  ],
+  "allProcessesEnded": true
+}

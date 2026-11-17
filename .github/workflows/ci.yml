@@ -83,6 +83,10 @@ jobs:
         run: |
           .runtime/finite-control-env/bin/python -B experiments/ch7/owned-state-2026-11-18/engineering-attempt-03/post-terminal-controls/verify_e5_packet.py --packet "$GITHUB_WORKSPACE/experiments/ch7/owned-state-2026-11-18/engineering-attempt-03/packet"
           .runtime/finite-control-env/bin/python -B tests/shell/versioned_nested_scope.py --repo . --verify-companions
+      - name: Verify complete retained E6 Native refusal without live services
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/packet/archive-tools/verify_e6_packet.py --packet experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/packet
+          .runtime/finite-control-env/bin/python -B experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/post-terminal-controls/verify_e6_recorded_controls.py --packet experiments/ch7/native-ready-2026-11-18/engineering-attempt-04/packet
       - name: Verify native READY, full listener transcripts and current independent native audit controls
         run: |
           .runtime/finite-control-env/bin/python -B -c 'import shutil; assert shutil.which("cc"), "Native source controls require an available C compiler; skipping them is not acceptance"'

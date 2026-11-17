@@ -8,6 +8,37 @@ require exact-source CI, a separately published passport and complete public
 byte verification before one actual engineering window. They cannot create a
 fresh Chapter 7 seed or held-out case.
 
+
+## Actual E6 outcome: refused before nested load
+
+The single frozen window ended with controller exit 1 and an actual enclosing
+parent wait, without watchdog expiry or signals. All 168 raw observations were
+retained: 167 PASS and one UNKNOWN/REFUSED. There were 167 complete accepted
+services, 3,202 finite actual waits returning 0, and 9,609 canonical events.
+The final complete service was 2.2452560660021845 seconds, above 2 seconds;
+the complete after-listener call was 0.581139005 seconds, above 0.5 seconds.
+Its 59-byte stdout still described the expected listener; stderr was empty,
+return code was 0 and exception was null. Full transcript timing identifies
+deadline rejection; it does not establish a missing port or a unique kernel or
+filesystem cause. The two lock-held segments remained below 1.25 seconds.
+
+The independent audit cold-reproduced every one of the 168 raw decisions and
+all 336 Native transcripts. Its complete negative inventory is distinct from
+the original frozen complete auditor, which actually refused the incomplete
+candidate. Inner guard evaluations were 168; outer evaluations were 167, with
+no fictitious final outer call. Unknown RSS and four null endpoints remain.
+There were 132 unattempted settling slots and 60 unattempted admission slots;
+no nested child, model, renderer, qualification, seed or held-out case was run.
+
+See the [complete E6 packet](engineering-attempt-04/packet/) and
+[post-terminal portable controls](engineering-attempt-04/post-terminal-controls/).
+The [inactive follow-up](../../plans/2026-11-18-ch7-producer-cost-attribution-followup.md)
+requires measured producer-cost attribution and another actual source freeze;
+it authorizes no window or qualification. The producer did not copy its whole
+historical state per lookup. User-space read-byte counters include OS cache and
+do not measure device traffic. Its original reaped clock includes a lease read
+after Popen.wait, so that interval is not pure lsof/kernel time.
+
 ```mermaid
 flowchart TD
     Seq[Sequence controller and observer] --> Global[Shared capture coordination]
