@@ -1,0 +1,41 @@
+{
+  "status": "SOURCE_CONTEXT_AND_LOADED_MODULE_GATES_CLOSED_22_SYNTHETIC_CONTROLS_PASS_NOT_LIVE",
+  "files": [
+    {
+      "path": "experiments/ch7/run_nested_load.py",
+      "sha256": "b58ba839f48bb3e5ceb5b62ad23003a81723c857f3a3c9b093749483d2ac4ab3",
+      "bytes": 28319
+    },
+    {
+      "path": "experiments/ch7/audit_nested_load.py",
+      "sha256": "5b40e84c3ea13355a665b9341e1848b67f74c93e70a5fded9a599b9b3c7c78f9",
+      "bytes": 38174
+    },
+    {
+      "path": "experiments/ch7/nested_event_index.py",
+      "sha256": "dde7acfc55738000ae01566878768ad796b721439aaab8ecafa13dac1a7babcf",
+      "bytes": 6174
+    },
+    {
+      "path": "tests/shell/test_nested_event_index.py",
+      "sha256": "3eecfc5c25631a4a627bbcb7836600efa7c5d58be2a9beda0f9b4896544ef840",
+      "bytes": 5616
+    },
+    {
+      "path": "tests/shell/test_nested_load_audit.py",
+      "sha256": "bb6307c687c11320f7695ea36df024ac92c7d35c0629b29e9d9e28d3f076f077",
+      "bytes": 10264
+    }
+  ],
+  "controls": {
+    "discovered": 22,
+    "passed": 22,
+    "failed": 0,
+    "scope": "Synthetic source-level controls; no live observer or workload"
+  },
+  "priorSourcesRetained": "source-before-context-02",
+  "preparationClock": "External actual Popen-before epoch; 900 includes import/load/policy/Registry initialization; root launcher must independently bind receipt to actual launch record",
+  "requiredPassportField": "auditScriptSha256 must equal actual repo audit script SHA and sourceFiles audit entry",
+  "engineeringWindowRun": false,
+  "backendQualified": false
+}
