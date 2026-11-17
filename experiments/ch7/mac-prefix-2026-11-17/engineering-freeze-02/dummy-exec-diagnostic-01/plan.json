@@ -1,0 +1,95 @@
+{
+  "schema": "aijade.ch7.dummy-native-exec-prospective-plan.v1",
+  "status": "FROZEN_BEFORE_ONE_COMPILATION_AND_THREE_EXECUTIONS",
+  "frozenAt": "2026-11-17T04:58:46.068285+00:00",
+  "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+  "scriptPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/dummy-exec-diagnostic-01/run-diagnostic.py",
+  "scriptSha256": "5c0397bb1b3e5a0109298f75c1b01c1e1870241496de5f645178367b5f65c616",
+  "sourceFiles": {
+    "experiments/ch7/mac_process_guard_v3.py": "ca2fe466737d773cd03cdd024f45154761ba7b96ad3dff49420db8b6a8a765a7",
+    "experiments/ch7/process_lifecycle.py": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "tests/shell/test_mac_lifecycle_native.py": "3d753fa0d8e749d0e26e601d6845291fbd18f44f505e208cb6b957adfa7933ef"
+  },
+  "helperSourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/dummy-exec-diagnostic-01/fake-native-helper.c",
+  "helperSourceSha256": "81f12e6b651988a514a331e18438db00bcc5fae32bde29c030ed43051ed058fe",
+  "helperSourceBase64": "I2RlZmluZSBfUE9TSVhfQ19TT1VSQ0UgMjAwODA5TAojaW5jbHVkZSA8c3RkaW8uaD4KI2luY2x1ZGUgPHRpbWUuaD4KaW50IG1haW4oaW50IGFyZ2MsY2hhciAqKmFyZ3Ypeyh2b2lkKWFyZ3Y7aWYoYXJnYyE9MSlyZXR1cm4gODtmcHV0cygic3ludGhldGljLW5hdGl2ZS1maXh0dXJlXG4iLHN0ZG91dCk7cmV0dXJuIDA7fQo=",
+  "helperPath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/dummy-exec-diagnostic-01/fake-native-helper",
+  "compiler": "/usr/bin/cc",
+  "compilerSha256": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+  "compilationAttempts": 1,
+  "compileArguments": [
+    "-std=c11",
+    "-O1",
+    "SOURCE",
+    "-o",
+    "HELPER"
+  ],
+  "compileTimeoutSeconds": 30,
+  "binaryManifestBeforeFirstExecution": true,
+  "readOnlyMetadata": [
+    "os.listxattr/getxattr/stat before and after all3",
+    "codesign --display --verbose=4 before manifest"
+  ],
+  "metadataReadsAreNotHelperExecutions": true,
+  "securityAttributeMutations": 0,
+  "resigningOrSigningCommands": 0,
+  "prewarmExecutions": 0,
+  "trials": [
+    1,
+    2,
+    3
+  ],
+  "betweenTrialsSeconds": 1,
+  "intervalDefinition": "one-second sleep after prior trial record completes; actual sleep clocks retained; no reset of any0.5 native deadline",
+  "nativeDeadlineSeconds": 0.5,
+  "sameHelperSha256EveryTrial": true,
+  "separateRegistryAndCaptureLockEveryTrial": true,
+  "call": "with life.capture_lock(registry.lock_path): guard._run_native(helper,registry)",
+  "registrySourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+  "registryPolicySha": "this plan byteSHA; diagnostic-only binding, not production process-observation policy",
+  "launchTimingProxy": "in-memory monotonic before/after a single unchanged delegation to Registry.launch; no I/O/no argument changes/no fallback",
+  "continueAllThreeAfterDummyRefusal": true,
+  "compileFailureEndsWithoutInventedTrials": true,
+  "expectedStdoutBase64": "c3ludGhldGljLW5hdGl2ZS1maXh0dXJlCg==",
+  "passCriteria": [
+    "exitCode exactly0",
+    "cleanupKnown true",
+    "timedOut false",
+    "oversized false",
+    "stdout exact synthetic-native-fixture newline",
+    "stderrBytes exactly0",
+    "durationSeconds <=0.5",
+    "actual parent birth/gate FINITE_REGISTER/RELEASE/Popen.wait-zero in source-bound journal",
+    "final owned identities known absent and scope closed",
+    "same source/helper bytes throughout"
+  ],
+  "knownEvidenceLimits": [
+    "Registry.launch elapsed includes executable hash, Python ready shim, parent birth/gate, journal append/fsync, release and handle construction; it does not locate C main.",
+    "RELEASE timestamp precedes its fsync/actual gate write; release-to-WAIT is not C execution duration.",
+    "Unchanged _run_native retains stdout bytes and stderr count, not stderr payload. Full compiler/codesign stderr is saved.",
+    "Fixed-order repeats of one new Mach-O on one host may show order association; no syspolicyd/OS causal inference without correlated OS logs.",
+    "All3 passing cannot erase the two prior suite native timeout failures or qualify E4/full backend.",
+    "Metadata reads may touch filesystem caches; they are declared and do not execute the helper or change security attributes."
+  ],
+  "priorSerialControlReceipt": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/all-python-controls-serial-02.json",
+    "sha256": "ec8572a6353f85ec06efc0cc3d72e661110d3d317fc9832e43c8671569b59ebb"
+  },
+  "forbidden": {
+    "realSysctlCensus": true,
+    "guardObserve": true,
+    "lsof": true,
+    "api": true,
+    "model": true,
+    "renderer": true,
+    "businessFlow": true,
+    "cases": true,
+    "deadlineRelaxation": true,
+    "productionSourceEdits": true,
+    "qualification": true,
+    "automaticRetries": true
+  },
+  "qualificationStarted": false,
+  "engineeringFullLoadStarted": false
+}

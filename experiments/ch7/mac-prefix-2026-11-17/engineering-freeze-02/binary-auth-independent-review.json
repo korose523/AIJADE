@@ -1,0 +1,73 @@
+{
+  "schema": "aijade.ch7.binary-authentication-independent-review.v1",
+  "checkedAt": "2026-11-17T06:06:25.066518+00:00",
+  "status": "READY_PENDING_FULL_SUITE_AND_NEW_FROZEN_ENGINEERING_ATTEMPT",
+  "reviewer": "AI-assisted independent static review and offline integration controls",
+  "repository": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/worktree",
+  "sources": {
+    "experiments/ch7/binary_authentication.py": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+    "experiments/ch7/mac_process_guard_v3.py": "6da78ff6884a2390d5fa8a291237d5ff57dedf451445653711f586ed11d68629",
+    "experiments/ch7/finite_runtime.py": "4eeccee85138a891c4ab63879b04e9c05de53928077725ee551700ae5f926b58",
+    "tests/shell/test_mac_binary_authentication.py": "fa373fc60c5c7fe06ec5961f4c6874e47a961791407106356ec045f10fe6e43b"
+  },
+  "scope": {
+    "productionSourcesEdited": false,
+    "ownedTestOnly": "tests/shell/test_mac_binary_authentication.py",
+    "actualDaemonSdkRead": false,
+    "observerInvoked": false,
+    "nativeInvoked": false,
+    "apiInvoked": false,
+    "modelInvoked": false,
+    "newEngineeringWindowRun": false,
+    "newQualificationRun": false,
+    "independentHumanReview": false,
+    "authorApprovalClaimed": false
+  },
+  "review": {
+    "blockingFindings": [],
+    "equivalenceDomain": "Frozen canonical absolute daemon paths bound to expected SHA values; the class rejects unbound or noncanonical paths and is not a drop-in authenticator for an unrestricted path domain.",
+    "actualRead": "Each authentication opens the actual path with O_NOFOLLOW, reads it to EOF and checks the same dev/inode/size/mtime fields before/after/current as the cold guard. Reusing a digest requires exact actual-byte equality with an immutable approved baseline; no metadata-only or claimed-hash shortcut is accepted.",
+    "stableChanges": "Stable same-size edits, truncation or growth return the actual current SHA rather than the old approved digest. Changed content does not replace the approved baseline. The caller retains its original expected-SHA mismatch refusal.",
+    "unstableChanges": "Read-time identity/metadata instability remains a refusal. Both paths retain the cold read method non-atomic interval limitations; neither proves uninterrupted executable immutability.",
+    "contextBinding": "Policy requires explicit mode plus actual binary-authentication module SHA pin. Raw/current/policy module SHAs must agree. Exact class and exact detached path-to-expected-SHA bindings are checked. Cold default adds no new pin requirement.",
+    "instanceLifetime": "Factory creates one authenticator only in the inner observer context. Outer journal cursor is a distinct instance and has no binary baseline. Construction does not read/prewarm daemon files; first approved baseline work remains inside the first actual snapshot.",
+    "otherEvidence": "Process birth/parent/argv remain fresh reads and are not cached. Authentication metadata is not an observation verdict cache; raw native/API/RSS/lifecycle and source evidence remain independently replayed.",
+    "caps": "Per-file 128 MiB and total 192 MiB bound retained baseline payload; over-cap files still receive one full actual SHA pass. Caps do not truncate input or assert an RSS limit.",
+    "savedDaemonPayloadBytes": 138097040,
+    "payloadProvenance": "Sum of previously retained binary sizes 59,795,424 and 78,301,616 bytes, not a new SDK read or process RSS measurement. Python/chunk/index overhead and transient buffers are additional.",
+    "statistics": "Diagnostic counters never authorize PASS. equalBytesAuthenticated is a conservative count of fully equal read blocks, not exact memcmp work or avoided I/O. SHA/equality counters can include work in calls later refused for instability. They do not establish CPU causality or end-to-end speedup."
+  },
+  "tests": {
+    "status": "PASS",
+    "tests": 11,
+    "failures": 0,
+    "errors": 0,
+    "elapsedSeconds": 0.575,
+    "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/mac-binary-authentication-integration-01.log",
+    "logSha256": "19090c8f74bd5ece3c9f21c2f514fb546886c18b6aa27a80befdb9ad85b8855c",
+    "conditions": "Pure small fake daemon files under REPO/.runtime/tmp and mocked psutil.Process; archived synthetic native/API/journal evidence is parsed by real validators. No daemon SDK files or live collector/API are read.",
+    "coverage": [
+      "cold/warm complete app and serve identity equality and repeated EOF reads",
+      "same-size actual byte mutation with restored mtime returns cold actual SHA and preserves expected baseline",
+      "parent/argv changes and PID birth reuse remain adverse on a warm binary baseline",
+      "one inner authenticator, separate outer cursor and no daemon constructor prewarm",
+      "default cold policy compatibility and explicit mode requirement",
+      "unknown mode, wrong type/subclass and wrong expected-path bindings refuse",
+      "policy pin missing/wrong/type-invalid refuses",
+      "raw mode or raw/current/policy source disagreement refuses",
+      "non-integer/negative/empty diagnostic work remains UNKNOWN with null RSS",
+      "valid authentication metadata cannot preserve PASS for changed API evidence"
+    ]
+  },
+  "evidenceBoundary": {
+    "engineering01": "Permanently REFUSED; no result is relabelled or overwritten.",
+    "engineering02": "NOT_RUN at review time; a separate source/passport and full fixed attempt remain required.",
+    "remainingAcceptance": "Unchanged 362 actual observations, 724 real native helper captures, exact full population/byte/source/parent-WAIT closure, full service <=2 s, native <=0.5 s, observation <=2.5 s, start lateness <=0.5 s and global gaps <=3 s. Offline tests alone do not close these gates.",
+    "engineeringAccepted": false,
+    "formalHardwareQualification": false,
+    "fullFiniteDriverQualified": false,
+    "heldoutComparisonComplete": false,
+    "table7_3": "NOT_RUN",
+    "newFormalQualificationPlan": "NOT_CREATED"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "aijade.ch7.prefix-refusal-portable-wrapper-readiness.v1",
+  "status": "READY_RECORDS_ONLY_BASELINE_AND_3_COHERENT_CONTROLS_PASS",
+  "checkedAt": "2026-11-17T06:31:16.150611+00:00",
+  "candidateFiles": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/portable-refusal-wrapper/verify_archive.py",
+      "sizeBytes": 26562,
+      "sha256": "423663585bb1e0424bd947960d811a298a6f01a0ceeb4927a1b708815cef8461"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/portable-refusal-wrapper/README.md",
+      "sizeBytes": 3557,
+      "sha256": "46afabb6fd128ff206d3bfcab2bee825213089e0735bdc287c8b98996debafa1"
+    }
+  ],
+  "destinationAfterRootMetadataAdoption": "experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/{verify_archive.py,README.md}",
+  "worktreeFilesCurrentlyPresent": false,
+  "sourceCommitUsedForReplay": "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb",
+  "engineeringFreezeCommit": "bb2c25b808c1c3f604e081b5fa4da4d4f76af84d",
+  "controls": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/portable-refusal-controls-01.json",
+    "sizeBytes": 34842,
+    "sha256": "5673a86737a0d48b22fc4a75440534c19d5c5ebc0eb4f26194fb36a62613cffb"
+  },
+  "log": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/portable-refusal-controls-01.log",
+    "sizeBytes": 646,
+    "sha256": "a86a51ec8d07465969083ce8ad0645661582c66bb612f948b05968fc935bb3cf"
+  },
+  "baselineOriginalWholePacketAccepted": true,
+  "eachControlCopyWholeBaselineAccepted": true,
+  "coherentSemanticControls": [
+    {
+      "baselineAccepted": true,
+      "manifestCoherentlyRebound": true,
+      "mutationWasEffective": true,
+      "name": "summary_population",
+      "reason": "ValueError: summary/core47 typed equality",
+      "reboundManifestSha256": "9eaf602f4114168801ae2d0f46ede1d600c4af7b074bfd06b8c45fe7bbff3d8c",
+      "rejected": true
+    },
+    {
+      "baselineAccepted": true,
+      "manifestCoherentlyRebound": true,
+      "mutationWasEffective": true,
+      "name": "coherent_planned_denominator",
+      "reason": "ValueError: computed/core47 values or types differ",
+      "reboundManifestSha256": "6ea650023947d7ea482cd67e437d6426925dd88b780f95a7936195e64e6a2262",
+      "rejected": true
+    },
+    {
+      "baselineAccepted": true,
+      "manifestCoherentlyRebound": true,
+      "mutationWasEffective": true,
+      "name": "coherent_bool_zero",
+      "reason": "ValueError: computed/core47 values or types differ",
+      "reboundManifestSha256": "1311576edef9d68a1183e635c7d9d879bbfe742248d4ca5a766cd280acb715cc",
+      "rejected": true
+    }
+  ],
+  "controlsWereSemanticAfterReboundManifestProof": true,
+  "packetPhysicalBytesStillMatchOriginalManifest": true,
+  "recordsScope": {
+    "sourceGitBlobsVerified": 28,
+    "rawColdReplayed": 10,
+    "phaseAccepted": 9,
+    "controllerActualParentWaitExit": 1,
+    "finiteActualParentWaitZero": 70,
+    "coreNumericFieldsTypedEqual": 47,
+    "qualified": false,
+    "engineeringAccepted": false,
+    "currentLiveNativeBytesRechecked": false,
+    "currentLiveInterpreterBytesRechecked": false,
+    "currentLiveWrapperOrLauncherBytesRechecked": false,
+    "originalMacPhysicalVerification": "HISTORICALLY_RECORDED_NOT_REEXECUTED",
+    "currentE03CodeUsed": false
+  },
+  "codeReview": {
+    "kind": "AI-assisted independent read-only code review, not human certification",
+    "reviewer": "paper_revision subagent",
+    "result": "No blocking issues found",
+    "scope": "Pinned old-script SHA; five exact-count/shape AST adaptations; source28 and frozen Git blobs; full raw/clock/lifecycle/47-type/parent-wait predicates retained; physical outputs explicitly recorded/NOT_RECHECKED; actual negative reasons semantic after coherent manifest proof. Reviewer did not run wrapper, Git or replay and changed no files."
+  },
+  "onlyProcessCreationPermittedByWrapper": "Fixed local git --no-replace-objects -C REPO show B5-or-F:path; no fetch/network/authentication",
+  "newObserverNativeApiModelRendererOrCaseCalls": 0,
+  "noNewQualificationOrEngineeringWindow": true,
+  "noPacketOrOriginalScriptModification": true,
+  "rootAdoptionBoundary": "Candidate remains only C4. Root may publish F2 metadata independently and then materialize these two files/add CLI to CI; this does not replace the already committed E03 runtime identity."
+}

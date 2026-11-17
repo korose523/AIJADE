@@ -1,0 +1,93 @@
+{
+  "schema": "aijade.ch7.exact-byte-binary-authenticator-readiness.v1",
+  "status": "SOURCE_AND_26_DISPOSABLE_FILE_CONTROLS_PASS_NO_LIVE_MEASUREMENT",
+  "checkedAt": "2026-11-17T05:54:25.938348+00:00",
+  "files": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/worktree/experiments/ch7/binary_authentication.py",
+      "sha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+      "sizeBytes": 9909
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/worktree/tests/shell/test_binary_authentication.py",
+      "sha256": "750449e592a8d3e9229393887a6e51605c75d2276072b394d18df19afeddc17f",
+      "sizeBytes": 16590
+    }
+  ],
+  "sourceSnapshot": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/binary-authentication-final-source",
+  "publicApi": [
+    "BinaryAuthenticator(expected, max_total_bytes=192*1024**2, max_file_bytes=128*1024**2)",
+    "sha256(path) -> actual-or-approved-SHA str after full actual EOF read",
+    "bindings() -> detached dict of canonical absolute paths to expected SHA",
+    "statistics() -> detached dict of int-only diagnostic counters"
+  ],
+  "acceptanceInvariants": [
+    "Every call performs a real O_NOFOLLOW open and full read to EOF. No stat-only or previous-PASS shortcut.",
+    "First approval requires a single physical pass through actual bytes, stable original guard dev/inode/size/mtime checks and exact expected SHA match.",
+    "Approved baseline holds immutable bytes chunks, frozen structure and expected-SHA/path context. Expected mapping and returned bindings/stats are detached.",
+    "Later matching reads compare every actual byte; return previously verified SHA only after EOF, complete equality and stable metadata.",
+    "Stable changed/truncated/grown content receives its actual SHA in the same physical read pass. Equal already-read prefix may seed SHA from immutable authenticated baseline; changed content never replaces baseline.",
+    "Original before/after/current dev/inode/size/mtime_ns instability, nonregular/symlink/IO errors still refuse; IO failures never return a cached successful digest.",
+    "Per-file/total cap overflow retains complete single-pass actual SHA and no cache. Short reads are coalesced, so tuple length is at most ceil(approved size/1MiB)."
+  ],
+  "controls": {
+    "passed": 26,
+    "log": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/binary-authentication-controls-02.log",
+      "sha256": "f8786c983b53f66e4d5eae193db557f03163afec09f0c5d2728c67c307468c93",
+      "sizeBytes": 4647
+    },
+    "categories": [
+      "full real read even on cache hit and unchanged metadata",
+      "same-size changed bytes with restored mtime",
+      "late cross-chunk actual-SHA prefix seeding without rereading file",
+      "stable truncation/empty/growth and unchanged approved baseline",
+      "inode replacement same/different bytes",
+      "original expected mapping mutation and new-context expected SHA",
+      "cross-path refusal and separate bound paths",
+      "unapproved first digest never becomes a hit",
+      "detached typed stats and bindings",
+      "per-file/total/zero cap full-hash fallbacks",
+      "arbitrary short read boundaries, cross-boundary mismatch and one-byte bounded immutable chunks",
+      "initial/hit read failure, concurrent metadata instability",
+      "underreported stat size cannot bypass buffering cap",
+      "symlink/nonregular/path/SHA/cap-type refusal"
+    ]
+  },
+  "firstAttemptPreserved": {
+    "log": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/binary-authentication-controls-01.log",
+      "sha256": "b7b0914da0f6eebffd049c8f96138d2b087857adcda722709fff1f5d5d4266a2",
+      "sizeBytes": 5548
+    },
+    "source": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/binary-authentication-controls-01-source",
+    "result": "24 passed; one fixture error because original fdopen reports IsADirectoryError before the explicit regular check. The final fixture accepts OSError/ValueError refusal; fdopen failure now explicitly closes any still-open descriptor. No read or acceptance condition was relaxed."
+  },
+  "independentReview": {
+    "reviewer": "parallel AI code review; not independent human validation",
+    "scope": "Single-pass mismatch/truncation/growth SHA equivalence, caps, binding/immutability and original stability semantics read-only reviewed; final bounded short-read coalescing delta separately notified."
+  },
+  "diagnosticsBoundary": [
+    "equalBytesAuthenticated counts complete matching read blocks, a conservative equal-prefix-byte count. It is not the exact CPU memcmp work or a reduction in I/O.",
+    "sha256Bytes counts SHA input bytes, including already-authenticated immutable prefix on mismatch. It is a diagnostic, never an acceptance grant."
+  ],
+  "integrationBoundary": [
+    "Only explicit new binaryAuthenticationMode=full-read-exact-bytes-v1 should route exactly bound daemon paths; require actual BinaryAuthenticator class and bindings()==policy daemon executable/SHA map.",
+    "Unbound source/native/module/shim checks remain cold or must be explicitly bound. Never catch an authentication error and reuse an old digest.",
+    "Original cold guard/replay interfaces remain unchanged; this task edits neither guard, lifecycle, runtime, policy nor Git.",
+    "Content read/comparison remains O(bytes); persistent approved payload RAM can be about138,097,040B for the two daemon binaries, plus bounded chunks/metadata/read buffer per authenticator. Multiple instances/processes multiply that footprint.",
+    "No isolated SHA timing, site-startup profile, observer/native/API call, full equivalent-load validation or scientific qualification was performed. Benefit and full-load feasibility remain UNKNOWN."
+  ],
+  "executionBoundary": {
+    "newObserverCalls": 0,
+    "newNativeCalls": 0,
+    "newApiCalls": 0,
+    "newDummyProcesses": 0,
+    "newTimingProfiles": 0,
+    "newEngineeringWindows": 0,
+    "newQualificationWindows": 0,
+    "newCases": 0,
+    "sourceEditsOnlyOwnedNewModuleAndTest": true
+  },
+  "readyForRoot": "READY; no pending owned code correction. Stop owned edits/commands after this receipt; root owns integration, source-bound complete regression and future freeze."
+}

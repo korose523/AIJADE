@@ -1,0 +1,329 @@
+{
+  "schema": "aijade.ch7.dummy-native-exec-trial.v1",
+  "index": 2,
+  "status": "DUMMY_NATIVE_PLUMBING_PASS",
+  "trialStartedMonotonic": 196335.648257534,
+  "callStartedMonotonic": 196335.742687451,
+  "callCompletedMonotonic": 196335.92038784,
+  "trialCompletedMonotonic": 196335.93598705,
+  "nativeDeadlineSeconds": 0.5,
+  "manifestSha256": "cfe7bb5af7ac6cf0269f678c136d69f7ec597be67cf6a41fd2d3387fcbd7148c",
+  "helperSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+  "captureLock": {
+    "schema": "aijade.lifecycle.capture-lock.v1",
+    "pathSha256": "f94a5aac7cd6e34948fb95408a19e4ba80ca94989c1901ad93f3b5d9fda2eba2",
+    "maxWaitSeconds": 1.25,
+    "state": "HELD_AND_RELEASED",
+    "waitSeconds": 0.0016045210068114102,
+    "acquiredMonotonic": 196335.742684225,
+    "nested": false,
+    "initialIdentity": {
+      "device": 16777235,
+      "inode": 199715,
+      "regular": true,
+      "singleLink": true,
+      "ownedByCurrentUser": true
+    },
+    "finalIdentity": {
+      "device": 16777235,
+      "inode": 199715,
+      "regular": true,
+      "singleLink": true,
+      "ownedByCurrentUser": true
+    },
+    "releasedMonotonic": 196335.920421654
+  },
+  "nativeResult": {
+    "spawnedHelperPid": 93221,
+    "observerPid": 93214,
+    "exitCode": 0,
+    "timedOut": false,
+    "oversized": false,
+    "cleanupKnown": true,
+    "stdout": {
+      "encoding": "base64",
+      "data": "c3ludGhldGljLW5hdGl2ZS1maXh0dXJlCg==",
+      "sizeBytes": 25,
+      "sha256": "587d2279622561b551124ce0b219e57a7d592fff664dbbf8322cc5bb35901755"
+    },
+    "stderrBytes": 0,
+    "managedLeaseId": "9aa89139e69f4b39937c405c72147172",
+    "durationSeconds": 0.17768994098878466
+  },
+  "launchCallTiming": [
+    {
+      "startedMonotonic": 196335.742728253,
+      "returnedHandle": true,
+      "completedMonotonic": 196335.903706744,
+      "durationSeconds": 0.16097849098150618
+    }
+  ],
+  "registryFinal": {
+    "schema": "aijade.process-lifecycle-final.v1",
+    "status": "ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT",
+    "scopeId": "63ce42712508479abb5acf8e09ed897c",
+    "scopeClosed": true,
+    "knownFiniteLeases": [
+      {
+        "commandSha256": "46843a76e9b9156b22ba7b03671da4da4726bda8397bd2566445443f678f0735",
+        "executableSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+        "identity": {
+          "createTimeMicros": 1794891803336142,
+          "parentPid": 93214,
+          "pid": 93221
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "9aa89139e69f4b39937c405c72147172",
+        "parentIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "readyMonotonic": 196335.89460745,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census",
+        "registerSeq": 3,
+        "registerMonotonic": 196335.89943687,
+        "releaseSeq": 4,
+        "waitSeq": 5,
+        "exitCode": 0,
+        "absence": {
+          "witnessKind": "PARENT_WAIT_REAPED",
+          "identity": {
+            "createTimeMicros": 1794891803336142,
+            "parentPid": 93214,
+            "pid": 93221
+          },
+          "parentIdentity": {
+            "createTimeMicros": 1794891800884752,
+            "parentPid": 46644,
+            "pid": 93214
+          },
+          "eventSeq": 5,
+          "reapedMonotonic": 196335.915784992,
+          "exitCode": 0
+        },
+        "releaseMonotonic": 196335.90292761,
+        "reapedMonotonic": 196335.915784992,
+        "absenceWitnessKind": "PARENT_WAIT_REAPED"
+      }
+    ],
+    "unresolvedFiniteLeases": [],
+    "launchRefusals": [],
+    "launchRefusalArtifacts": [],
+    "localDiscoveredIdentities": [],
+    "unleasedDiscoveredIdentities": [],
+    "remainingIdentities": [],
+    "lifecycleView": {
+      "schema": "aijade.process-lifecycle-view.v1",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/dummy-exec-diagnostic-01/trial-2/lifecycle-journal.jsonl",
+      "journalBytes": 4757,
+      "journalSha256": "5b604a8089e8b35b6d513129532036325500a3d4e9e931254be7666828115bf0",
+      "lastSequence": 6,
+      "scopeId": "63ce42712508479abb5acf8e09ed897c",
+      "controllerIdentity": {
+        "pid": 93214,
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644
+      },
+      "leases": [
+        {
+          "commandSha256": "2cd28adbc38e27429801447d30cbb0dc54253401ff92547001d47f705e6135d9",
+          "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+          "identity": {
+            "createTimeMicros": 1794891800884752,
+            "parentPid": 46644,
+            "pid": 93214
+          },
+          "leaseId": "ef867684be8045578322bac4c4ccb97f",
+          "parentIdentity": null,
+          "readyMonotonic": 196335.731604063,
+          "role": "controller",
+          "stageId": "dummy-exec-diagnostic-trial-2",
+          "registerSeq": 1,
+          "registerMonotonic": 196335.735019403,
+          "releaseSeq": null,
+          "waitSeq": null,
+          "exitCode": null,
+          "absence": null
+        }
+      ],
+      "referencedIdentities": [],
+      "launchRefusalArtifacts": [],
+      "controllers": [
+        "ef867684be8045578322bac4c4ccb97f"
+      ]
+    }
+  },
+  "journalPath": "/Volumes/Untitled/AIJADE/.runtime/posix/research/ch7-prefix-20261117/dummy-exec-diagnostic-01/trial-2/lifecycle-journal.jsonl",
+  "journalSha256": "5b604a8089e8b35b6d513129532036325500a3d4e9e931254be7666828115bf0",
+  "journalBytes": 4757,
+  "journalEvents": 6,
+  "exactJournalEvents": [
+    {
+      "data": {
+        "commandSha256": "2cd28adbc38e27429801447d30cbb0dc54253401ff92547001d47f705e6135d9",
+        "executableSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+        "identity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "leaseId": "ef867684be8045578322bac4c4ccb97f",
+        "parentIdentity": null,
+        "readyMonotonic": 196335.731604063,
+        "role": "controller",
+        "stageId": "dummy-exec-diagnostic-trial-2"
+      },
+      "event": "CONTROLLER_REGISTER",
+      "monotonicSeconds": 196335.735019403,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 1,
+      "sha256": "1eae27ab641355c586d34fa8bdb80ef571138af354efce395f397fa6122902ad",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "controllerIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "parentLeaseId": null,
+        "scopeId": "63ce42712508479abb5acf8e09ed897c",
+        "stageId": "dummy-exec-diagnostic-trial-2"
+      },
+      "event": "SCOPE_OPEN",
+      "monotonicSeconds": 196335.738135677,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "1eae27ab641355c586d34fa8bdb80ef571138af354efce395f397fa6122902ad",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 2,
+      "sha256": "348d279e9349c8244b4d05866febd8641019c25db20d71996e68f44a01072e2d",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "commandSha256": "46843a76e9b9156b22ba7b03671da4da4726bda8397bd2566445443f678f0735",
+        "executableSha256": "e2bfa5dc6417e0d082f0ebd91505d6774e97e1c1a020a50bae1be043d512b029",
+        "identity": {
+          "createTimeMicros": 1794891803336142,
+          "parentPid": 93214,
+          "pid": 93221
+        },
+        "identityWitnessKind": "PARENT_KERNEL_IDENTITY_WHILE_READY_GATE_HELD",
+        "leaseId": "9aa89139e69f4b39937c405c72147172",
+        "parentIdentity": {
+          "createTimeMicros": 1794891800884752,
+          "parentPid": 46644,
+          "pid": 93214
+        },
+        "readyMonotonic": 196335.89460745,
+        "role": "finite",
+        "shimSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "stageId": "observer-native-census"
+      },
+      "event": "FINITE_REGISTER",
+      "monotonicSeconds": 196335.89943687,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "348d279e9349c8244b4d05866febd8641019c25db20d71996e68f44a01072e2d",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 3,
+      "sha256": "dda42f065b79a08f8a43a9ee6b312c2a764dfaa34d186afc307086fa9046ee0d",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "leaseId": "9aa89139e69f4b39937c405c72147172"
+      },
+      "event": "RELEASE",
+      "monotonicSeconds": 196335.90292761,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "dda42f065b79a08f8a43a9ee6b312c2a764dfaa34d186afc307086fa9046ee0d",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 4,
+      "sha256": "8aadbb1c221026f9f9c1ba54b9bfda935a0222c95eaf05b86a15d908af64fc43",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "exitCode": 0,
+        "identity": {
+          "createTimeMicros": 1794891803336142,
+          "parentPid": 93214,
+          "pid": 93221
+        },
+        "leaseId": "9aa89139e69f4b39937c405c72147172",
+        "reapedMonotonic": 196335.915784992,
+        "waitSource": "Popen.wait"
+      },
+      "event": "WAIT",
+      "monotonicSeconds": 196335.919302288,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "8aadbb1c221026f9f9c1ba54b9bfda935a0222c95eaf05b86a15d908af64fc43",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 5,
+      "sha256": "c1c4770aad4fc7513e8abcb7780c5c084a7e279b3cd8472d69694ab6a305c8f1",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    },
+    {
+      "data": {
+        "scopeId": "63ce42712508479abb5acf8e09ed897c"
+      },
+      "event": "SCOPE_CLOSE",
+      "monotonicSeconds": 196335.925237727,
+      "policySha256": "f6252b32661b8e3305743b8957fb3211f83bb26a1d67c5a1f73710c7db01173c",
+      "previousSha256": "c1c4770aad4fc7513e8abcb7780c5c084a7e279b3cd8472d69694ab6a305c8f1",
+      "runId": "548cd8fd522c404cad93707bbe52d1c0",
+      "schema": "aijade.process-lifecycle-event.v1",
+      "seq": 6,
+      "sha256": "505e1fd9ce6e9729f8bdf91511a96c965bfd68e6c6204ad9777a0912e339cab2",
+      "sourceCommit": "19f40f923d61d0200bdb26aa79f5e0d962ee7863",
+      "writer": {
+        "createTimeMicros": 1794891800884752,
+        "parentPid": 46644,
+        "pid": 93214
+      }
+    }
+  ],
+  "errors": [],
+  "stderrPayloadAvailable": false,
+  "stderrLimit": "Original primitive retains stderr count only; compiler/codesign stderr complete.",
+  "actualSysctlCensus": false,
+  "guardObserveInvoked": false,
+  "qualification": false
+}
