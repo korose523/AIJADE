@@ -21,6 +21,7 @@ CENSUS_PLAN_SHA256 = 'd8c5ed7cc58267571c5bdb1ee1cd1043eba9c6a3136f340677d6908757
 LIFECYCLE_PLAN_SHA256 = '1599aa06b81a4a8ea97a36e70f5a76aec5b70eb5c43f8e687c5addfaf5c35c72'
 LIFECYCLE_KIND = 'mac-lifecycle-observed-idle-daemon-v3'
 LIFECYCLE_BUILD_FREEZE_PATH = 'experiments/ch7/mac-lifecycle-2026-11-17/frozen-build.json'
+PREFIX_BUILD_FREEZE_PATH = 'experiments/ch7/mac-prefix-v4-2026-11-17/frozen-build.json'
 SHARED = ('implementationCommit', 'repositoryCommit', 'buildFreezeCommit',
           'buildFreezePath', 'inputPublicationCommit', 'dataPublicationManifestPath',
           'dataPublicationManifestSha256', 'addedDataPaths', 'processPolicyPath', 'processPolicySha256',
@@ -386,8 +387,16 @@ def _identity(value, purpose):
                 and '..' not in Path(path).parts, 'unsafe identity path: ' + key)
     for key in ('processPolicySha256', 'observerModuleSha256'):
         require(type(value[key]) is str and re.fullmatch('[0-9a-f]{64}', value[key]), 'invalid identity hash: ' + key)
-    if value['buildFreezePath'] == LIFECYCLE_BUILD_FREEZE_PATH:
+    if value['buildFreezePath'] in (LIFECYCLE_BUILD_FREEZE_PATH, PREFIX_BUILD_FREEZE_PATH):
         _v3_sources(value)
+    if value['buildFreezePath'] == PREFIX_BUILD_FREEZE_PATH:
+        from finite_runtime import MAC_PREFIX_POLICY_PATH, MAC_PREFIX_DATA_PREFIX, MAC_PREFIX_PLAN_SHA256
+        require(value['processPolicyPath'] == MAC_PREFIX_POLICY_PATH, 'prefix policy path is not canonical')
+        require(value.get('executionPlanSha256') == MAC_PREFIX_PLAN_SHA256, 'wrong prospective prefix execution plan')
+        require(all(path.startswith(MAC_PREFIX_DATA_PREFIX) for path in paths), 'prefix I additions escaped their new data prefix')
+        manifest = value.get('dataPublicationManifestPath')
+        require(manifest is None or (type(manifest) is str and manifest.startswith(MAC_PREFIX_DATA_PREFIX)),
+                'prefix I manifest escaped its new data prefix')
     if purpose == 'qualification_only':
         require(value['repositoryCommit'] == value['implementationCommit'], 'qualification repository must be Q')
         require(all(value[key] is None for key in ('inputPublicationCommit', 'dataPublicationManifestPath',
@@ -404,9 +413,9 @@ def _identity(value, purpose):
 
 
 def expected_plan_sha256(value):
-    from finite_runtime import MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH
+    from finite_runtime import MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH,MAC_PREFIX_PLAN_SHA256
     paths={MAC_BUILD_FREEZE_PATH:PLAN_SHA256,MAC_CENSUS_BUILD_FREEZE_PATH:CENSUS_PLAN_SHA256,
-           LIFECYCLE_BUILD_FREEZE_PATH:LIFECYCLE_PLAN_SHA256}
+           LIFECYCLE_BUILD_FREEZE_PATH:LIFECYCLE_PLAN_SHA256,PREFIX_BUILD_FREEZE_PATH:MAC_PREFIX_PLAN_SHA256}
     require(value.get('buildFreezePath') in paths,'unknown execution decision build path')
     return paths[value['buildFreezePath']]
 
@@ -415,7 +424,7 @@ def _same_identity(value, sequence, purpose):
     _identity(value, purpose)
     require(all(value[key] == sequence[key] for key in SHARED), 'mixed Q/B/I, policy or observer identities')
     require(value['executionPlanSha256'] == sequence['executionPlanSha256'] == expected_plan_sha256(sequence), 'wrong prospective execution plan')
-    if sequence['buildFreezePath'] == LIFECYCLE_BUILD_FREEZE_PATH:
+    if sequence['buildFreezePath'] in (LIFECYCLE_BUILD_FREEZE_PATH, PREFIX_BUILD_FREEZE_PATH):
         require(_v3_sources(value) == _v3_sources(sequence), 'mixed v3 observer dependency identities')
 
 
@@ -701,12 +710,16 @@ def verify(root, repo):
     require(digest(repo / sequence['processPolicyPath']) == sequence['processPolicySha256'], 'observed process policy changed')
     require(digest(root / 'process-policy.json') == sequence['processPolicySha256'], 'sequence policy copy changed')
     policy = load(root, 'process-policy.json')
+    from finite_runtime import validate_mac_execution_identity, MAC_PREFIX_POLICY_PATH
+    if ('executionDecision' in policy or sequence['buildFreezePath'] == PREFIX_BUILD_FREEZE_PATH
+            or sequence['processPolicyPath'] == MAC_PREFIX_POLICY_PATH):
+        validate_mac_execution_identity(policy, sequence)
     v3 = policy.get('kind') == LIFECYCLE_KIND
     lifecycle_journal = None
     ancestry_context = None
     if v3:
-        from finite_runtime import load_mac_policy
-        require(sequence['buildFreezePath'] == LIFECYCLE_BUILD_FREEZE_PATH,
+        from finite_runtime import load_mac_policy, mac_build_path
+        require(sequence['buildFreezePath'] == mac_build_path(policy),
                 'v3 observer was rebound to a historical build freeze')
         _, identities = load_mac_policy(repo, repo / sequence['processPolicyPath'], sequence['implementationCommit'])
         require(identities['observerSources'] == _v3_sources(sequence)

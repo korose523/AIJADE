@@ -134,7 +134,8 @@ def _main(args):
         for path in [args.manifest,args.scoring,args.selection]:
             original = managed_check_output(['git','show',repository_commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
             assert hashlib.sha256(original).hexdigest() == sha(path), 'Uncommitted or changed finite input'
-        freeze = json.loads((repo/'experiments/ch7/finite-heldout/construction-freeze.json').read_text())
+        from finite_construction_binding import load_measurement_construction_freeze
+        freeze = load_measurement_construction_freeze(repo,runtime['constructionFreezeCommit'],args.manifest.parent.parent,sha(args.model),args,build)
         assert freeze['constructionFreezeCommit'] == runtime['constructionFreezeCommit']
         for relative, digest in freeze['sources'].items():
             assert sha(repo/relative) == digest, 'Construction-frozen source changed'

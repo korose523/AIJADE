@@ -1,0 +1,53 @@
+{
+  "schema": "aijade.ch7.prefix-construction-independent-review.v1",
+  "createdAt": "2026-11-17T08:36:00.492828+00:00",
+  "status": "BLOCKING_EVIDENCE_ASSOCIATION_GAPS_REPORTED",
+  "readOnly": true,
+  "codeChanged": false,
+  "confirmed": {
+    "newQMissingSidecarRefusesLegacyFallback": true,
+    "verifyBindingBeforeConstructDerive": true,
+    "verifyBindingBeforeSuitabilityExpectedDerive": true,
+    "coreConstructionAlgorithmUnchanged": true,
+    "blockRunnerExactlyTwoPreflightLinesOnly": true,
+    "blockRunnerOriginalSha256": "462b192b67b806f92a9ceb3ecfafe25d73d991c849f8c3cf50d6303c2ca730e1",
+    "blockRunnerCurrentSha256": "36bdb38d39ef1d56bbe887ef4fa67d8cb9fe3023b6c8446c0e3ee857ef711ed8",
+    "allOtherBlockBytesExact": true,
+    "protectedSourcePopulation": 331,
+    "protectedSourcesUnchanged": 331,
+    "oldControls19MutationNamesMatch": true,
+    "qualificationAndFormalIdentityFieldsCompatible": true
+  },
+  "issues": [
+    {
+      "id": "SUCCESS_SCHEMA_DISPOSITION_ERRORS",
+      "severity": "blocking-before-fix",
+      "finding": "Successful sequence producer omits dispositionErrors; strict get()==[] in first gate rejected genuine successful output.",
+      "rootReportedFix": "Use existing whole-audit compatible get(key,[]) and reject explicit None/nonempty; add producer-shaped positive and adverse controls."
+    },
+    {
+      "id": "CONTROL_RECORD_ATTEMPT_ASSOCIATION",
+      "severity": "blocking",
+      "finding": "Complete controls record currently has no mandatory association with the specific accepted sequence/block. Real output ancestryContextFiles already contains their SHA256 values.",
+      "minimumFix": "Require actual mother receipt context hash equals sequenceReceipt reference SHA, and actual block-1 receipt context hash equals blocksFromRaw[0].receiptSha256. Keep original 19 mutation implementations unchanged.",
+      "control": "Another structurally valid controls report from a different run, coherently rebind public references; must reject."
+    },
+    {
+      "id": "QUALIFIED_BACKEND_ASSET_CONTINUITY",
+      "severity": "blocking",
+      "finding": "freeze.modelSha256 currently only matches current caller input, not the qualified known asset. Known Godot/renderer/sandbox/asset hashes exist in block input-identities.json but are omitted from current referenced audit outputs; changed asset/backend can be accepted by coherently rewriting CF.",
+      "minimumFix": "Bind qualified input-identities exact SHA via offline block audit output and public evidence ref, then require CF backend/asset tuple equal that independently audited known identity before seed derivation. No timed code change needed.",
+      "control": "Same Q/B with coherent replacement asset or Godot/backend tuple in new CF/caller; must reject."
+    }
+  ],
+  "scope": {
+    "observerInvocations": 0,
+    "modelRequests": 0,
+    "rendererRequests": 0,
+    "seedDerived": false,
+    "newCases": 0,
+    "testsRunByReviewer": 0,
+    "sourceEdited": false
+  },
+  "note": "This report reviews source contracts and does not recertify synthetic fixture claims as scientific acceptance. Root owns fixes and final controls."
+}

@@ -17,6 +17,18 @@ from audit_retrieval_suffix import require, applied_hashes
 from finite_score import score_directory
 
 
+def prefix_backend_evidence(root,identity,*,expected_backend=None):
+    """Only the P4 result exports this already audited, exact-byte identity."""
+    from finite_construction_binding import decode, typed_equal, qualified_backend
+    body=raw(root,'input-identities.json')
+    require(typed_equal(decode(body),identity),'input identity changed during offline audit')
+    backend=qualified_backend(identity)
+    if expected_backend is not None:
+        require(typed_equal(backend,qualified_backend(expected_backend,closed=True)),
+                'actual formal backend differs from its qualified construction freeze')
+    return dict(inputIdentitiesSha256=sha(body),qualifiedBackend=backend)
+
+
 def validate_placements(row,finite,key,phase):
     op=finite['input']['operations'];trace=row['operationTrace']
     require(type(trace) is list,'missing concrete operation trace')
@@ -73,7 +85,8 @@ def verify(root, repo, *, ancestry_context=None):
     require(receipt['status'] == 'COMPLETE_FINITE_BLOCK_OBSERVATIONS' and receipt['codeCommit'] == identity['codeCommit'], 'execution status/source')
     from finite_runtime import (MAC_PLAN, MAC_PLANS, mac_plan, mac_build_path, MAC_BUILD_FREEZE_PATH, BUILD_FREEZE_PATH, safe_relative,
         validate_repository_binding, validate_mac_sample, validate_coverage, validate_owned_registry,
-        MAC_LIFECYCLE_KIND, MAC_LIFECYCLE_SOURCES, load_mac_policy, validate_mac_build_policy)
+        MAC_LIFECYCLE_KIND, MAC_LIFECYCLE_SOURCES, load_mac_policy, validate_mac_build_policy,
+        validate_mac_execution_identity)
     canonical_plan='experiments/plans/'+MAC_PLAN
     q_has_mac_plan=subprocess.run(['git','cat-file','-e',receipt['codeCommit']+':'+canonical_plan],cwd=repo,
                                   stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0
@@ -89,14 +102,15 @@ def verify(root, repo, *, ancestry_context=None):
         require(all(identity.get(key)==value for key,value in binding.items()),'repository I is not the declared additive data publication')
         require((repository_commit==identity['implementationCommit']) if runtime['purpose']=='qualification_only' else (repository_commit!=identity['implementationCommit']),'wrong qualification/formal Q/I role')
         policy_raw=raw(root,'process-policy.json');policy=json.loads(policy_raw)
+        validate_mac_execution_identity(policy,identity)
         v3=policy.get('kind')==MAC_LIFECYCLE_KIND
         if v3:
-            from finite_sequence_audit import lifecycle_journal_bytes, lifecycle_ancestry_context, _v3_sources, LIFECYCLE_PLAN_SHA256
+            from finite_sequence_audit import lifecycle_journal_bytes, lifecycle_ancestry_context, _v3_sources, expected_plan_sha256
             keys+=['observerSources','lifecycleScopeId']
             require(all(key in identity and receipt.get(key)==identity[key] for key in ('observerSources','lifecycleScopeId')),
                     'v3 dependency/scope identity missing or unequal')
             _v3_sources(identity)
-            require(identity['executionPlanSha256']==LIFECYCLE_PLAN_SHA256,'wrong prospective v3 execution plan')
+            require(identity['executionPlanSha256']==expected_plan_sha256(identity),'wrong prospective v3 execution plan')
             lifecycle_journal=lifecycle_journal_bytes(root,receipt,prefix=True)
             if ancestry_context is None:
                 ancestry_context=lifecycle_ancestry_context(root,receipt)
@@ -313,6 +327,14 @@ def verify(root, repo, *, ancestry_context=None):
                 round2SemanticActCorrectness='NOT_MEASURED', interpretation=scored['interpretation'])
     if mac:result.update({key:identity[key] for key in keys},codeCommit=receipt['codeCommit'],processObservationCount=len(telemetry))
     if v3:result['processLifecycle']=lifecycle_result
+    if mac and policy.get('executionDecision')=='mac-prefix-v4':
+        expected_backend=None
+        if runtime['purpose']=='confirmed_finite_heldout':
+            from finite_construction_binding import load_construction_freeze
+            inputs=(repo/safe_relative(identity['runtimeRepositoryPath'])).parent.parent
+            freeze=load_construction_freeze(repo,identity['implementationCommit'],inputs,identity['modelSha256'])
+            expected_backend=freeze['qualifiedBackend']
+        result.update(prefix_backend_evidence(root,identity,expected_backend=expected_backend))
     return result
 
 

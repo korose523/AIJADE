@@ -19,7 +19,9 @@ def signature(c):
 
 def verify(repo,inputs):
     construction=json.loads((inputs/'construction.json').read_text());freeze=construction['constructionFreezeCommit']
-    freeze_receipt=json.loads((repo/'experiments/ch7/finite-heldout/construction-freeze.json').read_text())
+    from finite_construction_binding import load_construction_freeze, SIDECAR
+    freeze_receipt=load_construction_freeze(repo,freeze,inputs,construction['modelSha256'])
+    versioned=freeze_receipt.get('schema')=='aijade.ch7.prefix-construction-freeze.v1'
     require(freeze_receipt['constructionFreezeCommit']==freeze,'different construction freeze')
     for rel,digest in freeze_receipt['sources'].items():
         require(sha((repo/rel).read_bytes())==digest,'construction source changed: '+rel)
@@ -27,7 +29,7 @@ def verify(repo,inputs):
     require(json.loads((repo/BANK).read_text())==bank(repo),'candidate rule/label drift')
     expected=derive_suite(repo,freeze,construction['modelSha256'])
     observed={str(p.relative_to(inputs)) for p in inputs.rglob('*') if p.is_file() and p.name!='suitability-acceptance.json'}
-    require(observed==set(expected),'missing/extra construction files')
+    require(observed==set(expected)|({SIDECAR} if versioned else set()),'missing/extra construction files')
     checks=[]
     for rel,value in expected.items():
         require(json.loads((inputs/rel).read_text())==value,'construction differs from frozen derivation: '+rel)

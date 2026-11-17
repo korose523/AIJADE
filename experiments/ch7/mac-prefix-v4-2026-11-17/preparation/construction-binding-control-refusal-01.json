@@ -1,0 +1,18 @@
+{
+  "status": "OFFLINE_FIXTURE_PREPARATION_ERROR_RETAINED",
+  "sourcePath": "tests/shell/test_prefix_construction_binding.py",
+  "tests": 11,
+  "errors": 1,
+  "failures": 0,
+  "elapsedSeconds": 55.587,
+  "errorTest": "test_source_omission_asset_and_chronology_cannot_be_rebound",
+  "error": "subprocess.CalledProcessError: git -c commit.gpgsign=false commit -qm 'synthetic qualification-binding fixture, no experiment' returned exit status 1",
+  "cause": "The coherent CF mutation intentionally left A evidence unchanged; the fixture tried to make a new A commit with an identical tree and did not permit an empty commit. Validation was not reached for that mutation.",
+  "correction": "Allow an empty publication commit in the disposable synthetic Git fixture. The actual CF mutation remains non-no-op. Production acceptance, source closure, counts, budgets and derivation are unchanged.",
+  "otherFixturePortabilityChanges": "Explicit project-local temporary directory and mapping only the authorized Mac boundary to the same disposable test workspace for Linux CI.",
+  "qualificationStarted": false,
+  "backendQualified": false,
+  "freshCasesGenerated": 0,
+  "actualSeedDerived": false,
+  "syntheticBindingFixturesOnly": true
+}

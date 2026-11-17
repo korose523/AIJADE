@@ -138,10 +138,28 @@ def derive_suite(repo, freeze, model_sha):
     return files
 
 
-def construct(repo, freeze, model_sha, output,acceptance_path=None,acceptance_commit=None,acceptance_repository_path=None):
+def construct(repo, freeze, model_sha, output,acceptance_path=None,acceptance_commit=None,acceptance_repository_path=None,
+              *, construction_binding_path=None):
     require(not output.exists(), 'case construction is single use')
     require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='', 'dirty construction checkout')
     require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==freeze, 'construction freeze is not current source')
+    from finite_construction_binding import new_decision_required, verify_binding, decode, SIDECAR
+    if new_decision_required(repo,freeze):
+        require(all(value is None for value in (acceptance_path,acceptance_commit,acceptance_repository_path)),
+                'prefix-v4 uses one complete A/CF binding, not partial legacy acceptance arguments')
+        require(construction_binding_path is not None,'prefix-v4 needs public A and construction-freeze bindings')
+        original=Path(construction_binding_path);path=original.resolve()
+        require(path.is_file() and not original.is_symlink() and path.is_relative_to(Path('/Volumes/Untitled/AIJADE')),
+                'construction binding must be a regular project-local file')
+        binding=decode(path.read_bytes())
+        verify_binding(repo,freeze,binding,model_sha)
+        # Reserve the unique output before the first real derivation. Any later
+        # failure leaves this original attempt visible and prevents a retry.
+        write_new(output/SIDECAR,binding)
+        for relative,value in derive_suite(repo,freeze,model_sha).items():write_new(output/relative,value)
+        return dict(binding,seedDerivedOnlyAfterPublishedAcceptance=True,
+                    seedDerivedOnlyAfterPublishedConstructionFreeze=True)
+    require(construction_binding_path is None,'legacy construction cannot use a prefix-v4 binding')
     binding=None
     if acceptance_path is not None:
         from finite_runtime import safe_relative, commit_id
@@ -168,9 +186,11 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('mode',choices=['bank','qualification','construct'])
     p.add_argument('--repo',type=Path,default=ROOT);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--freeze');p.add_argument('--model-sha256')
-    p.add_argument('--acceptance-path',type=Path);p.add_argument('--acceptance-commit');p.add_argument('--acceptance-repository-path');a=p.parse_args()
+    p.add_argument('--acceptance-path',type=Path);p.add_argument('--acceptance-commit');p.add_argument('--acceptance-repository-path')
+    p.add_argument('--construction-binding-path',type=Path);a=p.parse_args()
     if a.mode=='bank': write_new(a.output,bank(a.repo))
     elif a.mode=='qualification': qualify(a.repo,a.freeze,a.output)
     else:
-        binding=construct(a.repo,a.freeze,a.model_sha256,a.output,a.acceptance_path,a.acceptance_commit,a.acceptance_repository_path)
+        binding=construct(a.repo,a.freeze,a.model_sha256,a.output,a.acceptance_path,a.acceptance_commit,a.acceptance_repository_path,
+                          construction_binding_path=a.construction_binding_path)
         if binding is not None:print(json.dumps(binding,indent=2))

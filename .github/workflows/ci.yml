@@ -50,6 +50,9 @@ jobs:
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_corruption_baselines.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_launcher.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_sequence_parent.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_construction_binding.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_backend_preflight.py' -v
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions
@@ -120,3 +123,8 @@ jobs:
       - name: Replay all lifecycle terminal evidence and twelve coherent archive corruptions
         run: |
           .runtime/finite-control-env/bin/python -B experiments/ch7/mac-lifecycle-2026-11-17/refusal_negative_controls.py --root experiments/ch7/mac-lifecycle-2026-11-17/packet --repo .runtime/ch7-mac-lifecycle-source --output .runtime/mac-lifecycle-refusal-controls
+      - name: Fetch original prefix-engineering refusal and prior passport source objects
+        run: git fetch --no-tags --depth=1 origin b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb bb2c25b808c1c3f604e081b5fa4da4d4f76af84d
+      - name: Replay retained prefix-engineering refusal with coherent semantic controls
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls

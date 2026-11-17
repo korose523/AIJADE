@@ -32,7 +32,13 @@ MAC_CENSUS_BUILD_FREEZE_PATH='experiments/ch7/mac-census-2026-11-16/frozen-build
 MAC_LIFECYCLE_PLAN='2026-11-17-ch7-mac-lifecycle-continuity.md'
 MAC_LIFECYCLE_BUILD_FREEZE_PATH='experiments/ch7/mac-lifecycle-2026-11-17/frozen-build.json'
 MAC_LIFECYCLE_KIND='mac-lifecycle-observed-idle-daemon-v3'
-MAC_PLANS=(MAC_PLAN,MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN)
+MAC_PREFIX_DECISION='mac-prefix-v4'
+MAC_PREFIX_PLAN='2026-11-17-ch7-mac-prefix-v4-qualification.md'
+MAC_PREFIX_PLAN_SHA256='7aa91508eee3e728cadd8d25f8cdd122deb9a35d06a09901e8143d1e028d9d36'
+MAC_PREFIX_BUILD_FREEZE_PATH='experiments/ch7/mac-prefix-v4-2026-11-17/frozen-build.json'
+MAC_PREFIX_POLICY_PATH='configs/research/ch7-mac-prefix-v4-process-policy.json'
+MAC_PREFIX_DATA_PREFIX='experiments/ch7/mac-prefix-v4-2026-11-17/'
+MAC_PLANS=(MAC_PLAN,MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN)
 MAC_LIFECYCLE_SOURCES=tuple('experiments/ch7/'+name for name in (
     'mac_process_guard_v3.py','process_lifecycle.py','lifecycle_exec.py','binary_authentication.py',
     'phase_continuity.py','lifecycle_audit.py','mac_process_guard.py',
@@ -40,7 +46,7 @@ MAC_LIFECYCLE_SOURCES=tuple('experiments/ch7/'+name for name in (
     'run_finite_sequence.py','run_finite_block.py','finite_audit.py',
     'finite_sequence_audit.py','godot_local.py'))
 PROJECT_ROOT=Path('/Volumes/Untitled/AIJADE')
-MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/mac-census-2026-11-16/', 'experiments/ch7/mac-lifecycle-2026-11-17/', 'experiments/ch7/finite-heldout/')
+MAC_DATA_PREFIXES=('experiments/ch7/mac-formal-2026-11-16/', 'experiments/ch7/mac-census-2026-11-16/', 'experiments/ch7/mac-lifecycle-2026-11-17/', 'experiments/ch7/finite-heldout/', MAC_PREFIX_DATA_PREFIX)
 MAC_DATA_SUFFIXES={'.json','.jsonl','.md','.txt','.log','.csv','.tsv','.xml','.trx'}
 
 
@@ -77,11 +83,13 @@ def git_bytes(repo,*arguments):
 
 def setup_lifecycle(args, stage):
     """Open source-bound instrumentation before v3 controller preflight commands."""
-    if getattr(getattr(args,'execution_plan',None),'name',None) != MAC_LIFECYCLE_PLAN:return None
+    execution_plan=getattr(getattr(args,'execution_plan',None),'name',None)
+    if execution_plan not in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):return None
     import psutil
     from process_lifecycle import Registry, from_environment
     policy_raw=args.process_policy.read_bytes();policy=json.loads(policy_raw)
     require(policy.get('kind')==MAC_LIFECYCLE_KIND,'v3 execution/policy mismatch')
+    require(mac_plan(policy)==execution_plan,'lifecycle execution decision/plan mismatch')
     guard=mac_observer(policy);guard.validate_policy(policy)
     source=os.environ.get('AIJADE_GIT_COMMIT','')
     require(re.fullmatch('[0-9a-f]{40}',source) is not None,'lifecycle Q identity missing')
@@ -214,20 +222,42 @@ def mac_observer(policy):
 
 
 def mac_plan(policy):
+    if 'executionDecision' in policy:
+        require(policy.get('executionDecision')==MAC_PREFIX_DECISION and policy.get('kind')==MAC_LIFECYCLE_KIND,
+                'unknown or mixed execution decision')
+        return MAC_PREFIX_PLAN
     if policy.get('kind')==MAC_LIFECYCLE_KIND:return MAC_LIFECYCLE_PLAN
     return MAC_CENSUS_PLAN if policy.get('kind')=='mac-bulk-observed-idle-daemon-v2' else MAC_PLAN
 
 
 def mac_build_path(policy):
+    if mac_plan(policy)==MAC_PREFIX_PLAN:return MAC_PREFIX_BUILD_FREEZE_PATH
     if mac_plan(policy)==MAC_LIFECYCLE_PLAN:return MAC_LIFECYCLE_BUILD_FREEZE_PATH
     return MAC_CENSUS_BUILD_FREEZE_PATH if mac_plan(policy)==MAC_CENSUS_PLAN else MAC_BUILD_FREEZE_PATH
 
 
+def validate_mac_execution_identity(policy,value):
+    """Bind the new decision without reinterpreting a legacy observation kind."""
+    plan=mac_plan(policy)
+    require(value.get('buildFreezePath')==mac_build_path(policy),'execution decision/build-freeze path mismatch')
+    if plan==MAC_PREFIX_PLAN:
+        require(value.get('processPolicyPath')==MAC_PREFIX_POLICY_PATH,'prefix decision requires its canonical policy path')
+        require(value.get('executionPlanSha256')==MAC_PREFIX_PLAN_SHA256,'wrong prospective prefix execution plan')
+        require(all(type(path) is str and path.startswith(MAC_PREFIX_DATA_PREFIX)
+                    for path in value.get('addedDataPaths',[])),'prefix I additions escaped their new data prefix')
+        manifest=value.get('dataPublicationManifestPath')
+        require(manifest is None or (type(manifest) is str and manifest.startswith(MAC_PREFIX_DATA_PREFIX)),
+                'prefix I manifest escaped its new data prefix')
+    else:
+        require(value.get('processPolicyPath')!=MAC_PREFIX_POLICY_PATH,'new policy path lacks its explicit execution decision')
+    return plan
+
+
 def validate_mac_build_policy(policy,build):
-    if mac_plan(policy) in (MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN):
+    if mac_plan(policy) in (MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
         native=build.get('nativeCensus');expected=policy.get('nativeHelper')
         require(type(native) is dict and type(expected) is dict and all(native.get(key)==expected.get(key) for key in ('path','sha256','sourceSha256')),'native build and process-policy identity differ')
-    if mac_plan(policy)==MAC_LIFECYCLE_PLAN:
+    if mac_plan(policy) in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
         sources=build.get('observerSources')
         repo=Path(__file__).resolve().parents[2]
         require(type(sources) is dict and set(sources)==set(MAC_LIFECYCLE_SOURCES)
@@ -239,16 +269,26 @@ def load_mac_policy(repo,path,implementation):
     require(path.is_relative_to(repo) and path.is_file() and not original.is_symlink(),'explicit repository-local process policy required')
     relative=safe_relative(str(path.relative_to(repo)));raw=path.read_bytes()
     require(raw==git_bytes(repo,'show',implementation+':'+relative),'process policy differs from Q')
-    policy=json.loads(raw);guard=mac_observer(policy);guard.validate_policy(policy)
-    module=repo/'experiments/ch7'/('mac_process_guard_v3.py' if mac_plan(policy)==MAC_LIFECYCLE_PLAN else 'mac_process_guard_v2.py' if mac_plan(policy)==MAC_CENSUS_PLAN else 'mac_process_guard.py')
+    policy=json.loads(raw);plan=mac_plan(policy)
+    require((relative==MAC_PREFIX_POLICY_PATH)==(plan==MAC_PREFIX_PLAN),'prefix policy path/execution decision mismatch')
+    if plan==MAC_PREFIX_PLAN:
+        require(policy.get('onlineReplayMode')=='incremental-exact-prefix-v1'
+                and policy.get('binaryAuthenticationMode')=='full-read-exact-bytes-v1',
+                'prefix policy must retain its accepted replay/authentication modes')
+        plan_relative='experiments/plans/'+MAC_PREFIX_PLAN
+        plan_raw=git_bytes(repo,'show',implementation+':'+plan_relative)
+        require(hashlib.sha256(plan_raw).hexdigest()==MAC_PREFIX_PLAN_SHA256
+                and (repo/plan_relative).read_bytes()==plan_raw,'prefix plan differs from the published decision at Q')
+    guard=mac_observer(policy);guard.validate_policy(policy)
+    module=repo/'experiments/ch7'/('mac_process_guard_v3.py' if policy.get('kind')==MAC_LIFECYCLE_KIND else 'mac_process_guard_v2.py' if mac_plan(policy)==MAC_CENSUS_PLAN else 'mac_process_guard.py')
     require(module.read_bytes()==git_bytes(repo,'show',implementation+':'+str(module.relative_to(repo))),'observer module differs from Q')
-    if mac_plan(policy) in (MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN):
+    if mac_plan(policy) in (MAC_CENSUS_PLAN,MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
         for name in ('mac_process_guard.py','mac_bulk_census.c'):
             source=repo/'experiments/ch7'/name
             require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+str(source.relative_to(repo))),'observer dependency differs from Q')
         require(sha(repo/'experiments/ch7/mac_bulk_census.c')==policy['nativeHelper']['sourceSha256'],'native source differs from policy')
     dependencies={}
-    if mac_plan(policy)==MAC_LIFECYCLE_PLAN:
+    if mac_plan(policy) in (MAC_LIFECYCLE_PLAN,MAC_PREFIX_PLAN):
         for relative_source in MAC_LIFECYCLE_SOURCES:
             source=repo/relative_source
             require(source.read_bytes()==git_bytes(repo,'show',implementation+':'+relative_source),'lifecycle dependency differs from Q')
@@ -453,8 +493,8 @@ def validate_build(assembly, manifest, commit, repo=None, freeze_commit=None,fre
         frozen=managed_check_output(['git','show',freeze_commit+':'+freeze_path],cwd=repo)
         require(frozen==manifest.read_bytes(), 'pre-qualification public build freeze differs')
         if strict_publication:
-            require(freeze_path in (MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH,MAC_LIFECYCLE_BUILD_FREEZE_PATH),'new Mac qualification requires its separate build-freeze path')
-            if freeze_path in (MAC_CENSUS_BUILD_FREEZE_PATH,MAC_LIFECYCLE_BUILD_FREEZE_PATH):
+            require(freeze_path in (MAC_BUILD_FREEZE_PATH,MAC_CENSUS_BUILD_FREEZE_PATH,MAC_LIFECYCLE_BUILD_FREEZE_PATH,MAC_PREFIX_BUILD_FREEZE_PATH),'new Mac qualification requires its separate build-freeze path')
+            if freeze_path in (MAC_CENSUS_BUILD_FREEZE_PATH,MAC_LIFECYCLE_BUILD_FREEZE_PATH,MAC_PREFIX_BUILD_FREEZE_PATH):
                 native=build['nativeCensus'];helper=Path(native['path'])
                 require(helper.is_absolute() and helper.resolve().is_relative_to(PROJECT_ROOT.resolve()) and '..' not in helper.parts and not helper.is_symlink() and helper.is_file() and sha(helper)==native['sha256'],'native helper changed or outside project')
                 source='experiments/ch7/mac_bulk_census.c'
