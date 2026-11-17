@@ -1,0 +1,404 @@
+{
+  "schema": "aijade.ch7.nested-load-passport.v1",
+  "purpose": "ENGINEERING_ONLY_NOT_QUALIFICATION",
+  "sourceCommit": "8231d8b9d67e5188787b69225a72145f2d4c5a63",
+  "repo": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree",
+  "output": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-nested-copy-20261118/engineering-02",
+  "sourceFiles": {
+    ".github/workflows/ci.yml": "7195203a4f24ce493f0153b7f7093f641331c4970fa0ae93f66e306edde6a941",
+    "Aijade.slnx": "cfd0460a9d204265e3f2ee8cf0c255650d24eebedbfd5f509a1aebb9dfdf5637",
+    "Directory.Build.props": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af",
+    "Directory.Packages.props": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d",
+    "README.md": "c0784626d29032c467218841f7d9b83b511c4b93eba4561cb6af5de7f03898ce",
+    "configs/research/ch7-mac-nested-copy-engineering-process-policy.json": "66b5a54af64bf40bb341853cf230d6d969e951221001b57c5724cbb4383fa5e1",
+    "experiments/ch7/audit_nested_load.py": "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7",
+    "experiments/ch7/binary_authentication.py": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+    "experiments/ch7/finite_audit.py": "133d4f7bad0788bac104091e4051d2a0332bd9771944068d2317efb8c4e019b1",
+    "experiments/ch7/finite_runtime.py": "96f5b56d51def50ac0930cb9084f21399df8a8fb442956fafbeccddcca7c359d",
+    "experiments/ch7/finite_sequence_audit.py": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696",
+    "experiments/ch7/full_state_clone_cursor.py": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+    "experiments/ch7/godot_local.py": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+    "experiments/ch7/lifecycle_audit.py": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "experiments/ch7/mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+    "experiments/ch7/mac_process_guard.py": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+    "experiments/ch7/mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+    "experiments/ch7/mac_process_guard_v3.py": "ae6613db042b09149141b0bffccb0f04ded0ab9d8374b9e3f7927fdd63639d5b",
+    "experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+    "experiments/ch7/measured_mac_monitor.py": "27c4a16511b5f27009e9550ecc425998d48a5d4f25e57d5b7f174463ce6fa0e5",
+    "experiments/ch7/nested-copy-2026-11-18/freeze/launch_nested_load.py": "5a5f4d4d429f046303bdbbc95e38991a45b809105c797ff8e73fbfc193410082",
+    "experiments/ch7/nested-copy-2026-11-18/freeze/static-chain-bound.json": "1c9b4ee1f886e556343a3382f824d5c731dc82713fa39c19d1f42db7830510be",
+    "experiments/ch7/nested-copy-2026-11-18/freeze/static_chain_bound.py": "73a427291127858d1a5c0e56eeebfdb120697a2206cdd4e809711a0302c74651",
+    "experiments/ch7/nested-load-2026-11-17/freeze/source-freeze-preparation.json": "f9e12d32779b58724a67c0aecba9cde5856e6534828b7a76ae44f7e54e38b007",
+    "experiments/ch7/nested-load-2026-11-17/freeze/static-chain-bound.json": "1c9b4ee1f886e556343a3382f824d5c731dc82713fa39c19d1f42db7830510be",
+    "experiments/ch7/nested-load-2026-11-17/freeze/static_chain_bound.py": "4f744970f04945d1684f3af5f85aa2768b4860997c383d44ec7e0464cb7f2e23",
+    "experiments/ch7/nested_event_index.py": "dde7acfc55738000ae01566878768ad796b721439aaab8ecafa13dac1a7babcf",
+    "experiments/ch7/phase_continuity.py": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+    "experiments/ch7/process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "experiments/ch7/run_finite_block.py": "4650dfd296af798bf5b410a705c1d5690e8107eded3e04790b9f15eba3d258df",
+    "experiments/ch7/run_finite_sequence.py": "a05e1542a613b840b220d8e7060547ee65730e3b5bbce6e217c493a0e03c8b9d",
+    "experiments/ch7/run_nested_load.py": "c328d429a6ffe4152e8c8b946fa6eada9125ca49b7fcb2df1e6e932c0e813645",
+    "experiments/plans/2026-11-18-ch7-nested-copy-engineering.md": "0f0be12fadb4b59e7cee2c443fceee10836c65e88e2c5e6510abe92c1603a31d",
+    "experiments/plans/2026-11-18-ch7-nested-copy-protocol.json": "7744c01edea87e5f4ccec09ffd9d655b5c8c2affc1c342956154b0e13e5d6b79",
+    "global.json": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40",
+    "tests/shell/cursor_clone_probe_support.py": "ef5a5ea1c914590d437c4e29f31a12b1d04831222a68929adca75cd9b8a9e997",
+    "tests/shell/run_versioned_mac_controls.py": "2eff24466efa3d1c5e2093c51b63947343472e46877b37c391c442a7ea39a8d3",
+    "tests/shell/test_clone_cursor_glue.py": "e4aad12b4833a7dfb27b2390c968a7fa16e6b2564610de92a21a9fadf705f1ac",
+    "tests/shell/test_full_state_clone_cursor.py": "40ffa1b3ec1fabadb098777d5e37ce96f45bd8ca7f72dca672fe31c3d05b62fc",
+    "tests/shell/test_mac_prefix_decision.py": "c7bf0d390f21405ad37a1d0a0e6d499b60704fa0d3c9013c3c83fbf68b073caf",
+    "tests/shell/test_measured_mac_monitor.py": "dee535f2285ec0e4d5906a5b0456e787c2415ee3e05533ab5c1870321d666b85",
+    "tests/shell/test_nested_event_index.py": "3eecfc5c25631a4a627bbcb7836600efa7c5d58be2a9beda0f9b4896544ef840",
+    "tests/shell/test_nested_initialization_audit.py": "a261ea7c3e20f857b880cd6310d7452e1bc585464f273eae70996d888dff95a6",
+    "tests/shell/test_nested_load_audit.py": "285181a2e056c6854ee4883921dbe08c85fdfd85097d251367ebb708b690e441",
+    "tests/shell/test_segmented_capture.py": "dfef5cb4105094ba101b44fbb2cc1a3bf313b95121875417e56ba897b49b972c",
+    "tools/dev-services.sh": "16270ce0d239663a8ac7228bbf03e19ebd6b98a54ab9a4ffd5681f99acc89e68"
+  },
+  "observerSources": {
+    "experiments/ch7/mac_process_guard_v3.py": "ae6613db042b09149141b0bffccb0f04ded0ab9d8374b9e3f7927fdd63639d5b",
+    "experiments/ch7/process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "experiments/ch7/binary_authentication.py": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+    "experiments/ch7/phase_continuity.py": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+    "experiments/ch7/lifecycle_audit.py": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+    "experiments/ch7/mac_process_guard.py": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+    "experiments/ch7/mac_process_guard_v2.py": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+    "experiments/ch7/mac_bulk_census.c": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+    "experiments/ch7/finite_runtime.py": "96f5b56d51def50ac0930cb9084f21399df8a8fb442956fafbeccddcca7c359d",
+    "experiments/ch7/run_finite_sequence.py": "a05e1542a613b840b220d8e7060547ee65730e3b5bbce6e217c493a0e03c8b9d",
+    "experiments/ch7/run_finite_block.py": "4650dfd296af798bf5b410a705c1d5690e8107eded3e04790b9f15eba3d258df",
+    "experiments/ch7/finite_audit.py": "133d4f7bad0788bac104091e4051d2a0332bd9771944068d2317efb8c4e019b1",
+    "experiments/ch7/finite_sequence_audit.py": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696",
+    "experiments/ch7/godot_local.py": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+    "experiments/ch7/measured_mac_monitor.py": "27c4a16511b5f27009e9550ecc425998d48a5d4f25e57d5b7f174463ce6fa0e5",
+    "experiments/ch7/full_state_clone_cursor.py": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584"
+  },
+  "runnerSha256": "c328d429a6ffe4152e8c8b946fa6eada9125ca49b7fcb2df1e6e932c0e813645",
+  "auditScriptSha256": "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7",
+  "launcherSha256": "5a5f4d4d429f046303bdbbc95e38991a45b809105c797ff8e73fbfc193410082",
+  "policyPath": "configs/research/ch7-mac-nested-copy-engineering-process-policy.json",
+  "policySha256": "66b5a54af64bf40bb341853cf230d6d969e951221001b57c5724cbb4383fa5e1",
+  "planPath": "experiments/plans/2026-11-18-ch7-nested-copy-engineering.md",
+  "planSha256": "0f0be12fadb4b59e7cee2c443fceee10836c65e88e2c5e6510abe92c1603a31d",
+  "protocolPath": "experiments/plans/2026-11-18-ch7-nested-copy-protocol.json",
+  "protocolSha256": "7744c01edea87e5f4ccec09ffd9d655b5c8c2affc1c342956154b0e13e5d6b79",
+  "pythonPath": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python",
+  "pythonSha256": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+  "runtimeWrapperSha256": "f2559aff63271d802237dd55c1cf35b48e2535f4d0bc7975887f9119f0d25c59",
+  "preflightCommands": [
+    {
+      "arguments": [
+        "status",
+        "--porcelain"
+      ],
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "arguments": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "stdoutSha256": "b1db72920c111b06598a755fbc7b4a6b9e5763e189865639a08837093d74914b"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:.github/workflows/ci.yml"
+      ],
+      "stdoutSha256": "7195203a4f24ce493f0153b7f7093f641331c4970fa0ae93f66e306edde6a941"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:Aijade.slnx"
+      ],
+      "stdoutSha256": "cfd0460a9d204265e3f2ee8cf0c255650d24eebedbfd5f509a1aebb9dfdf5637"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:Directory.Build.props"
+      ],
+      "stdoutSha256": "b5e78f670ac9f929a86c5843a13cca83f949f02221dcbec10a5b77335375b7af"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:Directory.Packages.props"
+      ],
+      "stdoutSha256": "4201cabbc0c30731f43ff2a1ea391681779bdb9adeb52170b36737845eab429d"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/full_state_clone_cursor.py"
+      ],
+      "stdoutSha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:configs/research/ch7-mac-nested-copy-engineering-process-policy.json"
+      ],
+      "stdoutSha256": "66b5a54af64bf40bb341853cf230d6d969e951221001b57c5724cbb4383fa5e1"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/binary_authentication.py"
+      ],
+      "stdoutSha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/finite_audit.py"
+      ],
+      "stdoutSha256": "133d4f7bad0788bac104091e4051d2a0332bd9771944068d2317efb8c4e019b1"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/finite_runtime.py"
+      ],
+      "stdoutSha256": "96f5b56d51def50ac0930cb9084f21399df8a8fb442956fafbeccddcca7c359d"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/finite_sequence_audit.py"
+      ],
+      "stdoutSha256": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/godot_local.py"
+      ],
+      "stdoutSha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/lifecycle_audit.py"
+      ],
+      "stdoutSha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/lifecycle_exec.py"
+      ],
+      "stdoutSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/mac_bulk_census.c"
+      ],
+      "stdoutSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/mac_process_guard.py"
+      ],
+      "stdoutSha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/mac_process_guard_v2.py"
+      ],
+      "stdoutSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/mac_process_guard_v3.py"
+      ],
+      "stdoutSha256": "ae6613db042b09149141b0bffccb0f04ded0ab9d8374b9e3f7927fdd63639d5b"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json"
+      ],
+      "stdoutSha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/phase_continuity.py"
+      ],
+      "stdoutSha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/process_lifecycle.py"
+      ],
+      "stdoutSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/run_nested_load.py"
+      ],
+      "stdoutSha256": "c328d429a6ffe4152e8c8b946fa6eada9125ca49b7fcb2df1e6e932c0e813645"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/measured_mac_monitor.py"
+      ],
+      "stdoutSha256": "27c4a16511b5f27009e9550ecc425998d48a5d4f25e57d5b7f174463ce6fa0e5"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/nested_event_index.py"
+      ],
+      "stdoutSha256": "dde7acfc55738000ae01566878768ad796b721439aaab8ecafa13dac1a7babcf"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/ch7/audit_nested_load.py"
+      ],
+      "stdoutSha256": "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/plans/2026-11-18-ch7-nested-copy-engineering.md"
+      ],
+      "stdoutSha256": "0f0be12fadb4b59e7cee2c443fceee10836c65e88e2c5e6510abe92c1603a31d"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:experiments/plans/2026-11-18-ch7-nested-copy-protocol.json"
+      ],
+      "stdoutSha256": "7744c01edea87e5f4ccec09ffd9d655b5c8c2affc1c342956154b0e13e5d6b79"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:global.json"
+      ],
+      "stdoutSha256": "eef5fb137f484e0cdf996ed8808cb0d6f2614167d7073fee81b64f3772e3ff40"
+    },
+    {
+      "arguments": [
+        "show",
+        "{SOURCE}:tools/dev-services.sh"
+      ],
+      "stdoutSha256": "16270ce0d239663a8ac7228bbf03e19ebd6b98a54ab9a4ffd5681f99acc89e68"
+    }
+  ],
+  "runtime": {
+    "blocks": 4,
+    "blockWorkSeconds": 120,
+    "betweenBlockSeconds": 4,
+    "parentTailSeconds": 4,
+    "parentMaximumSeconds": 600,
+    "childStartupMaximumSeconds": 15,
+    "childCleanupMaximumSeconds": 8,
+    "childWatchdogSeconds": 145,
+    "alignmentModes": [
+      "natural",
+      "parent-next-slot",
+      "natural",
+      "parent-next-slot"
+    ]
+  },
+  "prefixPaddingTaskCount": 2500,
+  "prefixPreparationMaximumSeconds": 900,
+  "journalAcceptanceMaximumBytes": 16252928,
+  "minimumDemonstratedPrefixBytes": 14680064,
+  "numericContextLimits": {
+    "maximumStageAsciiBytes": 22,
+    "maximumEventSequence": 20000,
+    "maximumManagedPid": 999999,
+    "maximumCreateTimeMicros": 9999999999999999,
+    "maximumMonotonicSeconds": 1000000000,
+    "maximumSerializedClockCharacters": 24
+  },
+  "onlineReplayMode": "full-state-c-clone-exact-prefix-v1",
+  "onlineReplayInitializationMode": "paired-source-verified-journal-prefix-v1",
+  "onlineReplaySourceSha256": "0da9588655714d23db401b3424f45379689421898d85256b2506d674fee5e584",
+  "toolExecutableSha256": {
+    "git": "7f30f076d0e9c38f772a76449fca9da8cf97f6a3d43b94c90a00e4f9ce7ad39e",
+    "lsof": "ef5e67978fb8f8bcd32927789811462dd1b3773b8ad6322b67a491d2b5733b3a"
+  },
+  "sourceCiReceiptSha256": "17c01ce2ef7c5683a997c3d1bf4ba1e30d3b13e5c497c9da2dc23a5110651602",
+  "sourcePublicationReceiptSha256": "7a5fc49efdc9977e03ab46a30370fffd6569ce1ec015f50d9bc4351d5a750280",
+  "controlEvidenceMapSha256": "ecaf66d2fdb032c78315a9fdb6ae0a75ec60f775912f201f41ca625496e4714d",
+  "controlEvidenceSha256": {
+    "controls/cursor/e4-source-final-gates.json": "b60fb183cb907f85e93ac90471be5fd02a9bf56bc54eae3d1ea5304158463d3c",
+    "controls/cursor/e4-clone-controls-05-portable.log": "42e63e8ccd2282eac934d01174f5484c4fc8776e26b2ccf9552d39b0558075e4",
+    "controls/current/versioned-mac-controls-02.log": "81f4554e58f6d99cbaf2861e349deb0ecd457c16b6bd321f15a3ad6e4e9838c6",
+    "controls/current/audit-source-review.json": "83d99fb39a6abbd35724c207904e10aa1488cd4abbf9faf24dc6d3754a8b793b",
+    "controls/current/static_chain_bound.py": "73a427291127858d1a5c0e56eeebfdb120697a2206cdd4e809711a0302c74651",
+    "controls/current/static-chain-bound.json": "1c9b4ee1f886e556343a3382f824d5c731dc82713fa39c19d1f42db7830510be",
+    "controls/current/static-chain-bound.log": "1c9b4ee1f886e556343a3382f824d5c731dc82713fa39c19d1f42db7830510be",
+    "controls/initialization/startup15-audit-controls-01.json": "c95821680978b6c5b224ea3d414ced09cd3ad769520df01c20362941a3276fc2",
+    "controls/initialization/startup15-controls-01.log": "31e685f28b4fb66617c3eb67d45e9b625615c0b0cea69b846b65eb723436b641",
+    "controls/initialization/audit_nested_load.py": "11d5f3bce77ed0f7120d136dc734bc29acf45761877b03404cabc6a81cd7b5c7",
+    "controls/initialization/test_nested_initialization_audit.py": "a261ea7c3e20f857b880cd6310d7452e1bc585464f273eae70996d888dff95a6",
+    "controls/source/test_clone_cursor_glue.py": "e4aad12b4833a7dfb27b2390c968a7fa16e6b2564610de92a21a9fadf705f1ac",
+    "controls/source/test_full_state_clone_cursor.py": "40ffa1b3ec1fabadb098777d5e37ce96f45bd8ca7f72dca672fe31c3d05b62fc",
+    "controls/source/cursor_clone_probe_support.py": "ef5a5ea1c914590d437c4e29f31a12b1d04831222a68929adca75cd9b8a9e997",
+    "controls/source/run_versioned_mac_controls.py": "2eff24466efa3d1c5e2093c51b63947343472e46877b37c391c442a7ea39a8d3",
+    "development-probes/e4-full-validation-probe-summary.json": "e450d3b2e7598ec462697f3cae6358687dc8330a8f09eccd78799c06533d2785",
+    "development-probes/e4-full-validation-probe-01.py": "4b19e3ba90595cc7e5a489a87aa2a27876ef651bdca694e6287e0494beafaa63",
+    "development-probes/e4-full-validation-probe-01.log": "040f3659178e7a390c0242019b1fadae10dfb7c11b0b761beb66d0e5cfa1dbe6",
+    "development-probes/cursor-clone-probe-01.py": "45bec4c0961e20fa269b05c9c378fac980c9a2a5c2af5ac389e99648fee494e6",
+    "development-probes/cursor-clone-probe-01.log": "7c6a91b7c3976723d6d425eb4131f16814ddf61d39af83e4dcdd013aed519fd8",
+    "development-probes/e4-full-validation-probe-01/result.json": "a58927edf8df4e700e8fb000cfe9837a4e76e2f5fcc47cc79db6b9b7aff7cd1b",
+    "development-probes/cursor-clone-probe-01/result.json": "afde0e59593737e4f683e19362b9b8655e84b7e50efc81bade2609c01758f699",
+    "development-probes/cursor-clone-probe-01/actual-prefix-cold-view-profile.txt": "0ff07583e4fe3cf70eb35ab65c615020f22ddc61d8ef772ba929ccf98e80b3ed",
+    "development-probes/inputs/synthetic-derived-not-observed.jsonl.gz": "5b19b99bf7598ff7d7b5abca1cc42698dcad707a75b22cc8621688e4399c5e86",
+    "development-probes/inputs/input-map.json": "031272e1bc75ae03f0b248a793f2666ff790847309f71c51ab9cbc78fe27b41c",
+    "launcher-controls-final.json": "5c123c25cdc3edf4706d7d796e272713aeb4596db68641528d580d67d9724f36",
+    "test_nested_launcher.py": "89b2331b66f19126ac6fbd39aa8d9dcd7565cbacfc17f84392cc98137156001c",
+    "launcher-controls-03-startup15.log": "3c1ceb8d3cbde9ecab189cbbb011cb43bbf149d246578688a357cd8f5af389dc",
+    "launch_nested_load.py": "5a5f4d4d429f046303bdbbc95e38991a45b809105c797ff8e73fbfc193410082",
+    "retained-preparation/launcher-controls-01.log": "5aeaee06082a094406369d3967457b4033d98aea12a1a79b06a9b217348d65f4",
+    "retained-preparation/launcher-controls-02.log": "87f5f8448bf94e1dc1d643f8180e761639ede9e068bf12f510d735ebae7bef86",
+    "retained-preparation/test_nested_launcher.controls-01.py": "8eb2fd206c981d81d76025cc3e18b1efba8f46ca9b429aa65c834e96d04059a5",
+    "retained-preparation/startup-budget-design-decision.json": "23bd0006eb084af3d8be278aa8568fc3a53ec1c2d828f7ba1ace76e48b54225d",
+    "retained-preparation/versioned-mac-controls-01.log": "c0506645fd932f9d95c83d4dcbdb4570d2c7c1d10afb386d1be2b0ccd8ed1d35",
+    "retained-preparation/startup10-draft/2026-11-18-ch7-nested-copy-engineering.md": "b107c85b2b14663081832a5b532fd497131e4c050bfadfd1fdd8bfbff881894b",
+    "retained-preparation/startup10-draft/2026-11-18-ch7-nested-copy-protocol.json": "c1696cc2afc9b13a7639c6c3d772eae2f338c15f8342669516117b76089e524b",
+    "retained-preparation/startup10-draft/launch_nested_load.py": "04ada2e3cea3e256a79f8d542decd6bf1ac37a55d16fe4d2ff4cbe78d00dfd5d",
+    "retained-preparation/startup10-draft/launcher-controls-final.json": "3014c7bf6291fdbb835c7f40595b35c6b3872e380dc4202d50cadfa100a38974",
+    "retained-preparation/startup10-draft/prepare-engineering-passport.py": "b6a39632385bd92c44b6a3385b0fc4e6f2a36cfe91db1936c9841e728cd2d3b6",
+    "retained-preparation/startup10-draft/test_nested_launcher.py": "f73fb2f9a75ef907d35e2d4e29d43d98f0bfd5883ad0af2df29952c686de23ca",
+    "retained-preparation/e4-clone-controls-02.log": "7ca2ff1d7f9b8f238346c23146dbd2b85a82b604689d7bc15a1f81127088cf2d",
+    "retained-preparation/e4-clone-controls-03.log": "dfe598127f8e5657e85ec98c4731f17be8712e74b3677c45baa8e0911a0fcfb4",
+    "retained-preparation/e4-clone-controls-04.log": "42e63e8ccd2282eac934d01174f5484c4fc8776e26b2ccf9552d39b0558075e4",
+    "retained-preparation/run_nested_load.e4-startup-10-before.py": "1fcaf8ab9cc8dedcfd85f392b945791b8b9d77b04aca428ab2b41e89733e6001",
+    "retained-preparation/run_nested_load.e4-startup-15.diff": "35ce4daa624da941a494e21a0f0a36a46998ebf0f23c8a61be8f41edd7e8fbcb",
+    "retained-preparation/tests-before-portability/test_clone_cursor_glue.py": "82fef8f5468a24ab4360c8f1e5f00853f2ff2fb02fde601289f6d28e6d537ecb",
+    "retained-preparation/tests-before-portability/test_full_state_clone_cursor.py": "48c965da03bae23bbc476b653427f583414c7b87bad48a86326dbc4089695551",
+    "retained-preparation/audit-before-startup15/before-startup15-audit_nested_load.py": "33a6c190dff3d685539ad6712825da213d71ab60722a87a764681068b88f7514",
+    "retained-preparation/audit-before-startup15/before-startup15-test_nested_initialization_audit.py": "962971862a148fec5b805fbe9621859e7cd139351c03d8f33450e16fcc990465",
+    "retained-preparation/audit-before-startup15/initialization-audit-controls-01.json": "e6cb8bb19923895a7d1ae7e1c1452128b0c68883b17606d46eb22b4562a3c667",
+    "retained-preparation/audit-before-startup15/initialization-controls-03.log": "d4c8418e49ef09fb8080764fa2ca646903198cc9c42a45f09202b8c1a07cb9ab",
+    "retained-preparation/e3/e3-refusal-publication.json": "53542490b013437d2682df26c9a3238f26e008a69d23af7674235871346fec93",
+    "retained-preparation/e3/engineering-01-launch.terminal.json": "0ad325df4f2d574dfdf159797de80893ff00628db50dfd287397a1a30e6f7bf8"
+  },
+  "apfsFreeBytesAtFreeze": 2870771712,
+  "automaticRetries": 0,
+  "qualificationStarted": false,
+  "backendQualified": false,
+  "formalHardwareQualification": false,
+  "independentHumanReview": false,
+  "authorApproval": false,
+  "scientificAcceptance": false,
+  "seedConstructed": false,
+  "heldoutComparisonComplete": false,
+  "retainedE3PacketManifestSha256": "75f8d31201824cf437a7142e160a9aab43d49f0c7e9a507cd47fb89df5d3a56b",
+  "scope": "One separately frozen real nested C-clone engineering workload; not science, model, renderer or hardware qualification."
+}

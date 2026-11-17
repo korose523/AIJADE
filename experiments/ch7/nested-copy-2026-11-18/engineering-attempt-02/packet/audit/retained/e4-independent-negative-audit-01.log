@@ -1,0 +1,17 @@
+{"stage": "ALL_ORIGINAL_E4_NEGATIVE_RAW_GUARD_AND_FULL_PREFIX_COLD_REPLAY", "samples": 10, "total": 153, "seconds": 142.9837737600028}
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/audit/audit_actual_e4_refusal.py", line 266, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/Volumes/Untitled/AIJADE/.research/runs/ch7-nested-copy-20261118/audit/audit_actual_e4_refusal.py", line 157, in main
+    need(typed_equal(cutoff,oracle._replay(prefix,Q,p['policySha256'])),'every original cutoff disagrees with independent full cold oracle')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 109, in _replay
+    writer_leases = [v for v in leases.values() if identity(v['identity']) == writer]
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 59, in identity
+    require(type(value['pid']) is int and value['pid'] > 1 and type(value['createTimeMicros']) is int
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/lifecycle_audit.py", line 20, in require
+    def require(ok, message):
+    
+KeyboardInterrupt

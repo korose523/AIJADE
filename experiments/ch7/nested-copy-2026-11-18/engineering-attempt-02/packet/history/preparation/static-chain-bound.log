@@ -1,0 +1,69 @@
+{
+  "schema": "aijade.ch7.conditional-event-serialization-bound.v1",
+  "status": "SOURCE_TEMPLATE_CONDITIONAL_BOUND_NOT_UNIVERSAL",
+  "sourcePath": "/Volumes/Untitled/AIJADE/.runtime/posix/nested-20261117/worktree/experiments/ch7/process_lifecycle.py",
+  "sourceSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+  "templateVerifiedAgainstActualAppendAst": true,
+  "serializer": "Actual unchanged process_lifecycle.canonical",
+  "numericContextLimits": {
+    "maximumManagedPid": 999999,
+    "maximumManagedParentPid": 999999,
+    "maximumBirthMicros": 9999999999999999,
+    "maximumEventSequence": 20000,
+    "maximumMonotonicSeconds": 1000000000.0,
+    "maximumClockJsonTokenCharacters": 24,
+    "maximumFiniteStageAsciiBytes": 22
+  },
+  "originalTemplateClockJsonCharacters": 23,
+  "records": [
+    {
+      "event": "FINITE_REGISTER",
+      "actualTemplateBytes": 1182,
+      "floatFields": 2,
+      "conservative24CharacterFloatBytes": 1184,
+      "exactDataKeys": [
+        "commandSha256",
+        "executableSha256",
+        "identity",
+        "identityWitnessKind",
+        "leaseId",
+        "parentIdentity",
+        "readyMonotonic",
+        "role",
+        "shimSha256",
+        "stageId"
+      ]
+    },
+    {
+      "event": "RELEASE",
+      "actualTemplateBytes": 596,
+      "floatFields": 1,
+      "conservative24CharacterFloatBytes": 597,
+      "exactDataKeys": [
+        "leaseId"
+      ]
+    },
+    {
+      "event": "WAIT",
+      "actualTemplateBytes": 755,
+      "floatFields": 2,
+      "conservative24CharacterFloatBytes": 757,
+      "exactDataKeys": [
+        "exitCode",
+        "identity",
+        "leaseId",
+        "reapedMonotonic",
+        "waitSource"
+      ]
+    }
+  ],
+  "conservativeChainBytes": 2538,
+  "actualAcceptanceChainMaximumBytes": 2560,
+  "maximumFiniteTasks": 6318,
+  "nonfiniteAcceptanceMaximumBytes": 65536,
+  "cleanupReserveBytes": 524288,
+  "journalHardCeiling": 16777216,
+  "completeAcceptanceBudgetBytes": 16763904,
+  "scope": "Numeric context and every actual finite chain must be checked after the one frozen run. Not a universal event-schema size bound, WCET, live observation or backend acceptance.",
+  "liveRun": false
+}
