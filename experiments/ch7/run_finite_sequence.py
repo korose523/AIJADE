@@ -14,7 +14,7 @@ import time
 import psutil
 from finite_runtime import (validate_build, read_block_receipt, dispositions, BUILD_FREEZE_PATH,
     MAC_PLAN, MAC_PLANS, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_observation,
-    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, OwnedRegistry,
+    validate_coverage, fixed_phase, MacMonitor, validate_mac_sample, online_lifecycle_cursors, OwnedRegistry,
     MAC_LIFECYCLE_PLAN, setup_lifecycle, managed_check_output, finish_monitored_cleanup, seal_refused_cleanup)
 
 GIB=1024**3
@@ -63,6 +63,7 @@ def _execute(a):
         require(plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy),'policy/plan/build decision mismatch')
         validate_mac_build_policy(policy,build)
         observe=mac_observer(policy).observe
+    inner_cursor_options, outer_cursor_options = online_lifecycle_cursors(policy)
     metadata=dict(binding,buildFreezeCommit=a.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=hashlib.sha256(plan.read_bytes()).hexdigest(),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
@@ -80,7 +81,7 @@ def _execute(a):
         require(hashlib.sha256((output/'process-policy.json').read_bytes()).hexdigest()==process_identity['processPolicySha256'],'policy changed before phase')
         write(output/'receipt.json',prepared)
     def observed(owned_roots=None):
-        process=observe(policy,owned_roots=owned_roots or [],lifecycle=lifecycle) if v3 else observe(policy,owned_roots=owned_roots or [])
+        process=observe(policy,owned_roots=owned_roots or [],lifecycle=lifecycle,**inner_cursor_options) if v3 else observe(policy,owned_roots=owned_roots or [])
         process.update(process_identity)
         return dict(utc=utc(),availableBytes=psutil.virtual_memory().available,
                     swapUsedBytes=psutil.swap_memory().used,processObservation=process,
@@ -104,7 +105,7 @@ def _execute(a):
                 return save
             try:
                 preflight=run_preflight(observed,
-                    lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
+                    lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy,**outer_cursor_options),
                     {name:raw_save(name) for name in streams},event_writer=event_save,settling_seconds=a.settle_seconds)
             except PreflightRefused as error:
                 write(output/'preflight-continuity.json',error.result)
@@ -142,7 +143,7 @@ def _execute(a):
                     settling['coverage']=validate_coverage(settle_samples,600,300)
                     for sample in settle_samples:
                         require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
-                        validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
+                        validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy,**outer_cursor_options)
                 except ValueError as error:
                     settling.update(status='SETTLING_OBSERVATION_REFUSED',reason=str(error));write(output/'settling/receipt.json',settling);raise
                 write(output/'settling/receipt.json',settling)
@@ -166,7 +167,7 @@ def _execute(a):
                 coverage=validate_coverage(samples,120,60)
                 for sample in samples:
                     require(sample['processObservation'].get('ownedRoots')==[] and sample['processObservation'].get('ownedProcesses')==[],'idle phase cannot authorize owned runtime processes')
-                    validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy)
+                    validate_mac_sample(sample,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy,**outer_cursor_options)
             except ValueError as error:observation_error=str(error)
         else:
           with (output/'admission/telemetry.jsonl').open('x') as log:
@@ -211,7 +212,7 @@ def _execute(a):
             if not v3:owned_registry.remember(item['processObservation'])
             return item
         monitor=MacMonitor(output/'process-observations.jsonl',runtime_observed,
-            lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
+            lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy,**outer_cursor_options),
             epoch,baseline,timers,previous_sample_monotonic=(preflight['runtimeHandoffAnchor']['lastSampleMonotonic'] if v3 else None)).start()
     try:
         for index,source in enumerate(sources):

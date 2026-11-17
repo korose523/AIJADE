@@ -32,7 +32,7 @@ def _number(value):
 
 class _Controller:
     def __init__(self, sampler, validator, writers, event_writer, settling_seconds,
-                 clock, sleeper):
+                 clock, sleeper, service_observer=None):
         if settling_seconds not in (0, 600) or type(settling_seconds) is not int:
             raise ValueError('settling_seconds must be exactly 0 or 600')
         self.specs = ([('settling', 600, 300)] if settling_seconds else []) + [('admission', 120, 60)]
@@ -43,6 +43,7 @@ class _Controller:
         self.sampler, self.validator = sampler, validator
         self.writers, self.event_writer = writers, event_writer
         self.clock, self.sleeper = clock, sleeper
+        self.service_observer = service_observer
         self.last_clock = None
         self.previous = None
         self.sample_ids = set()
@@ -179,6 +180,8 @@ class _Controller:
                    validatorStartedMonotonic=validation_started,
                    validatorCompletedMonotonic=validation_completed)
         after_event = self.now()
+        if self.service_observer is not None:
+            self.service_observer(item, after_event)
         if error:
             self.fail('INVALID_SAMPLE', error)
         if validation_completed > deadline or writer_completed > deadline or after_event > deadline:
@@ -261,7 +264,7 @@ class _Controller:
 
 
 def run_preflight(sampler, validator, writers, *, event_writer,
-                  settling_seconds=600, clock=time.monotonic, sleeper=time.sleep):
+                  settling_seconds=600, clock=time.monotonic, sleeper=time.sleep, service_observer=None):
     """Collect fixed 300+60 (or only 60) raw samples under one absolute schedule.
 
     ``sampler()`` returns raw memory/process evidence; ``validator(item)`` must
@@ -272,7 +275,7 @@ def run_preflight(sampler, validator, writers, *, event_writer,
     retain original raw logs, partial writes and the terminal refusal.
     """
     controller = _Controller(sampler, validator, writers, event_writer,
-                             settling_seconds, clock, sleeper)
+                             settling_seconds, clock, sleeper, service_observer)
     try:
         return controller.run()
     except PreflightRefused:

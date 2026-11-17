@@ -75,13 +75,17 @@ class LifecycleAdapterControls(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'unknown execution'):
             audit.expected_plan_sha256(dict(buildFreezePath='other.json'))
 
-    def test_complete_14_source_map_required(self):
+    def test_complete_15_source_map_includes_binary_authentication(self):
         value = identity()
         audit._identity(value, 'qualification_only')
-        self.assertEqual(len(value['observerSources']), 14)
-        value['observerSources'].pop('experiments/ch7/phase_continuity.py')
-        with self.assertRaisesRegex(ValueError, 'population'):
-            audit._identity(value, 'qualification_only')
+        self.assertEqual(len(value['observerSources']), 15)
+        self.assertEqual(set(value['observerSources']),set(finite_runtime.MAC_LIFECYCLE_SOURCES))
+        self.assertIn('experiments/ch7/binary_authentication.py',value['observerSources'])
+        for source in finite_runtime.MAC_LIFECYCLE_SOURCES:
+            with self.subTest(missing=source):
+                incomplete=identity();incomplete['observerSources'].pop(source)
+                with self.assertRaisesRegex(ValueError, 'population'):
+                    audit._identity(incomplete, 'qualification_only')
         value = identity()
         value['observerSources']['other.py'] = 'd' * 64
         with self.assertRaisesRegex(ValueError, 'population'):

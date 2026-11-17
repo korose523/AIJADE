@@ -1,0 +1,53 @@
+{
+  "schema": "aijade.ch7.phase-continuity-preflight.v1",
+  "status": "PREFLIGHT_REFUSED",
+  "phases": {
+    "settling": {
+      "status": "PREFLIGHT_REFUSED",
+      "samples": 10,
+      "validatedSamples": 9,
+      "expectedSamples": 300,
+      "elapsedSeconds": null,
+      "minimumAvailableBytes": 7656386560,
+      "minimumSwapUsedBytes": 645922816,
+      "maximumSwapUsedBytes": 645922816,
+      "swapRangeBytes": 0,
+      "phaseClock": {
+        "startMonotonic": 198073.128010659,
+        "endMonotonic": null,
+        "requestedSeconds": 600,
+        "intervalReset": false
+      },
+      "coverage": {
+        "samples": 10,
+        "maximumGapSeconds": 2.006957413017517,
+        "firstElapsedSeconds": 0.0015866249741520733,
+        "lastElapsedSeconds": 18.00703566899756,
+        "coverageComplete": false
+      }
+    }
+  },
+  "eventCount": 11,
+  "samples": 10,
+  "validatedSamples": 9,
+  "maximumGlobalGapSeconds": 2.006957413017517,
+  "lastSample": {
+    "sampleId": "24d2561f4f8447f299377dfae214b9d8",
+    "globalIndex": 9,
+    "monotonicSeconds": 198091.135046328,
+    "observationCompletedMonotonic": 198093.142526732
+  },
+  "runtimeHandoffAnchor": null,
+  "windowReset": false,
+  "schedule": {
+    "originMonotonic": 198073.128010659,
+    "intervalSeconds": 2,
+    "maximumGapSeconds": 3,
+    "settlingSeconds": 600,
+    "admissionSeconds": 120,
+    "intervalReset": false
+  },
+  "reasonCode": "PREFLIGHT_CALLBACK_FAILED",
+  "reason": "ValueError: engineering full service exceeded two seconds",
+  "refusedAtMonotonic": 198093.177663386
+}

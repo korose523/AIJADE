@@ -1,0 +1,267 @@
+{
+  "schema": "aijade.ch7.engineering02-parent-and-cost-review.v1",
+  "status": "PARENT_BINDING_AND_RECORDED_BUDGET_REVIEW_PASS_ENGINEERING_ONLY",
+  "checkedAt": "2026-11-17T07:21:12.763387+00:00",
+  "parentBindingAccepted": true,
+  "sourceCommit": "51cf34be49a6ac955481d89e2a2691f3c7c981c5",
+  "engineeringFreezeCommit": "8cc46d5202f183dfab0d0edb2f523e637d705bc2",
+  "passportSha256": "9475830e6973bbb1e81c508505898c3cc24e340816dfdaa83dac2c44d73c0f22",
+  "parentEvidence": {
+    "launchTerminalLogReceiptPassportHashesAllBound": true,
+    "sourceFreezePolicyAndSourceManifestBound": true,
+    "controllerIdentity": {
+      "pid": 99131,
+      "createTime": 1794898166.85785,
+      "createTimeMicros": 1794898166857850,
+      "parentPid": 99127,
+      "processGroup": 99131
+    },
+    "parentIdentity": {
+      "pid": 99127,
+      "createTime": 1794898166.245683,
+      "createTimeMicros": 1794898166245683,
+      "parentPid": 46644,
+      "processGroup": 99127,
+      "sysExecutable": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python",
+      "resolvedSysExecutable": "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/bin/python3.12"
+    },
+    "actualParentWait": {
+      "source": "Popen.wait",
+      "timeoutSeconds": 850,
+      "startedMonotonic": 202699.210008718,
+      "completedMonotonic": 203428.888950866,
+      "timedOut": false,
+      "exitCode": 0
+    },
+    "actualParentWaitDurationSeconds": 729.6789421480207,
+    "parentElapsedSeconds": 729.7389878620161,
+    "parentWallTimestampSpanSeconds": 729.905675,
+    "watchdogTimedOut": false,
+    "watchdogActions": [],
+    "errors": [],
+    "automaticRetries": 0,
+    "wholeProcessGroupCleanupClaimed": false,
+    "originalTerminalStatusUnchanged": "ENGINEERING_CONTROLLER_REPORTED_PASS_PENDING_INDEPENDENT_REPLAY",
+    "originalTerminalIndependentReplayFlagUnchanged": false
+  },
+  "independentFullAudit": {
+    "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/independent-equal-load-audit-02.json",
+    "sha256": "c81eb6e288b0b92745b3dacbe20df53651b86629382c4458a550b9c1cc21df01",
+    "status": "ENGINEERING_EQUAL_LOAD_RAW_AUDIT_PASS_NOT_QUALIFIED",
+    "rawReplay": {
+      "samples": 362,
+      "guardDecisions": {
+        "PASS": 362
+      },
+      "nativeCaptures": 724,
+      "scopes": 1,
+      "fullReplayErrors": []
+    },
+    "managedTasks": {
+      "git": 30,
+      "native": 724,
+      "listener": 724,
+      "finite": 1478,
+      "actualParentWaitZero": 1478
+    },
+    "numbers": {
+      "samples": 362,
+      "settlingSamples": 300,
+      "admissionSamples": 60,
+      "tailSamples": 2,
+      "nativeCaptures": 724,
+      "finiteTasks": 1478,
+      "parentWaitZero": 1478,
+      "maximumFullServiceSeconds": 1.8884336070041172,
+      "maximumLatenessSeconds": 0.010095386009197682,
+      "lastServiceCompletedSeconds": 723.7708027710032
+    },
+    "scope": {
+      "qualificationStarted": false,
+      "backendQualified": false,
+      "scientificAdmission": false,
+      "formalHardwareQualification": false,
+      "independentHumanReview": false,
+      "seedConstructed": false,
+      "flowBlocks": 0,
+      "modelRequests": 0,
+      "rendererRequests": 0,
+      "freshHeldoutCases": 0,
+      "automaticRetries": 0
+    },
+    "separateAuditAlreadyCompleted": true,
+    "fullGuardAndLifecycleReplayRepeatedByThisReview": false
+  },
+  "recordedBudgetReview": {
+    "all362ReceiptServiceValuesWithinTwoSeconds": true,
+    "maxFullServiceSeconds": 1.8884336070041172,
+    "maxStartLatenessSeconds": 0.010095386009197682,
+    "lastServiceCompletedSecondsFromOrigin": 723.7708027710032,
+    "completePopulationFromBoundIndependentAudit": {
+      "settling": 300,
+      "admissionLike": 60,
+      "tail": 2,
+      "total": 362
+    },
+    "fixedBudgetChanged": false,
+    "fullIndependentClockAndRawAuditSource": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/independent-equal-load-audit-02.json"
+  },
+  "binaryAuthentication": {
+    "recordedFinalAttemptedWork": {
+      "calls": 1448,
+      "openedFiles": 1448,
+      "fullFileReads": 1448,
+      "physicalReadBytes": 99982256960,
+      "sha256Computations": 2,
+      "sha256Bytes": 138097040,
+      "equalBytesAuthenticated": 99844159920,
+      "cacheMatchReads": 1446,
+      "cacheMismatchReads": 0,
+      "capFallbackReads": 0,
+      "unapprovedDigestReads": 0,
+      "approvedFiles": 2,
+      "approvedBytes": 138097040,
+      "failures": 0
+    },
+    "aggregateEquationsVerified": true,
+    "memoryMeaning": "138097040 approved bytes is baseline payload, not RSS. Each read still reaches actual EOF. physicalReadBytes is bytes returned through file APIs, not measured disk-device traffic; page-cache contribution is unmeasured.",
+    "cpuMeaning": "Attempted comparison/SHA work diagnostics, not isolated CPU timing or causal speedup."
+  },
+  "journalPrefixWork": {
+    "inner": {
+      "calls": 362,
+      "parsedEvents": 4436,
+      "parsedBytes": 3671011,
+      "fullPrefixReadBytes": 680009730,
+      "fullPrefixComparedBytes": 676338719,
+      "hashUpdatedBytes": 3671011,
+      "coldOldPrefixReplays": 0,
+      "snapshotCopies": 362,
+      "failures": 0,
+      "latestPrefixBytes": 3671011,
+      "frontierScopes": 1,
+      "poisoned": false
+    },
+    "outer": {
+      "calls": 362,
+      "parsedEvents": 4436,
+      "parsedBytes": 3671011,
+      "fullPrefixReadBytes": 680009730,
+      "fullPrefixComparedBytes": 676338719,
+      "hashUpdatedBytes": 3671011,
+      "coldOldPrefixReplays": 0,
+      "snapshotCopies": 362,
+      "failures": 0,
+      "latestPrefixBytes": 3671011,
+      "frontierScopes": 1,
+      "poisoned": false
+    },
+    "terminalJournalBytes": 3671601,
+    "terminalJournalSha256": "6d03842e4e58257e664e52eabec670e9d001f40622a2202a8f78cde1d8a16758",
+    "terminalEventsFromBoundIndependentAudit": 4437,
+    "semanticBoundary": "Exact historical prefix reads/comparisons remain. Per-sample growth/cost details can be a later separate supplement; no uncomputed values are supplied."
+  },
+  "incidentalConcurrentActivity": {
+    "status": "INCIDENTAL_CONCURRENT_READ_WRITE_ACTIVITY_DISCLOSED",
+    "readinessReportPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/papers/readiness-classification-review.json",
+    "checkedAt": "2026-11-17T06:53:03.277252+00:00",
+    "overlapsParentWindow": true,
+    "parentWindowStart": "2026-11-17T06:49:26.800885+00:00",
+    "parentWindowEnd": "2026-11-17T07:01:36.706560+00:00",
+    "secondsAfterParentLaunch": 216.476367,
+    "secondsBeforeParentTerminal": 513.429308,
+    "knownOutputBytes": 19744,
+    "recordedScopeOfPaperReview": {
+      "Dmodified": false,
+      "W4modified": false,
+      "readinessExecuted": false,
+      "factsExecuted": false,
+      "pdfRendered": false,
+      "rawMeasurementRun": false,
+      "newResearchNumbersWritten": false,
+      "networkUsed": false,
+      "independentHumanReview": false
+    },
+    "reportFileMtimesUtc": {
+      "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/papers/readiness-classification-review.json": "2026-11-17T06:53:03.298905+00:00",
+      "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/papers/readiness-classification-review.md": "2026-11-17T06:53:03.302965+00:00"
+    },
+    "interpretation": "Do not claim complete inactivity. Frozen plan prohibits build/test/PDF/compression and extra polling worker, not all arbitrary read/write. These report timestamps establish incidental concurrent artifact activity, not its total duration/CPU/IO cost or causal effect; no automatic invalidation or empirical budget change is inferred.",
+    "globalBackgroundPopulationFullyAudited": false,
+    "backgroundProcessAttributedFromCategoryOther": false,
+    "causalPerformanceClaim": false,
+    "empiricalBudgetsChanged": false
+  },
+  "costSupplement": {
+    "status": "DETAILED_PER_SAMPLE_COST_DECOMPOSITION_DEFERRED_SEPARATE_ARTIFACT",
+    "parentConclusionDoesNotDependOnFurtherCostAnalysis": true,
+    "uncomputedNumericResultsFilled": false
+  },
+  "scope": {
+    "engineeringParentEvidenceAccepted": true,
+    "scientificAcceptance": false,
+    "backendQualified": false,
+    "formalHardwareQualification": false,
+    "independentHumanReview": false,
+    "heldoutComparisonComplete": false,
+    "authorApproval": false,
+    "newFormalQualificationPlanCreatedByThisReview": false,
+    "newCases": 0,
+    "seedConstructed": false,
+    "table7_3": "NOT_RUN",
+    "newObserverNativeApiModelRendererCalls": 0,
+    "originalRunReceiptWorktreeDocsModified": false
+  },
+  "inputProofs": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-launch.json",
+      "sha256": "2b7a94f663b927de694eb4570a51ab775756ef3b316eb7cc7f21247383c8fa11",
+      "sizeBytes": 2483
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-launch.terminal.json",
+      "sha256": "7b064b34d5947a62cf2ed711719365d674ce262447ad26b25e5d2e43a86d735f",
+      "sizeBytes": 3124
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-launch.log",
+      "sha256": "dd3f08eed00b52c8ae5486675885ae7756715ff0e4d19601a0f958a9cf941a0e",
+      "sizeBytes": 2439
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-passport.json",
+      "sha256": "9475830e6973bbb1e81c508505898c3cc24e340816dfdaa83dac2c44d73c0f22",
+      "sizeBytes": 13439
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering02-freeze-publication.json",
+      "sha256": "2130831bc20f45bd35e7c8ed156e809dfe97bbb0d23d3bbb0ab62a00c709cb77",
+      "sizeBytes": 13592
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-prefix-20261117/engineering-02/receipt.json",
+      "sha256": "d5f297378b588beff30f75265853827b3e62bd1e619d484d503ef51645f51e67",
+      "sizeBytes": 2590515
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-prefix-20261117/engineering-02/process-policy.json",
+      "sha256": "dd01b7ddab57ebbadc46d87529d27dcca70f65fb57d18fca746dfee609927ad9",
+      "sizeBytes": 1978
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/independent-equal-load-audit-02.json",
+      "sha256": "c81eb6e288b0b92745b3dacbe20df53651b86629382c4458a550b9c1cc21df01",
+      "sizeBytes": 124075
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/papers/readiness-classification-review.json",
+      "sha256": "f0aa22592365ee38519c30defaea843243abfc7e14097c8dca5b0ae882e596c5",
+      "sizeBytes": 16538
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/papers/readiness-classification-review.md",
+      "sha256": "8d5c1accfd7c30905eb1ab70673cb9fc285811892ff5525cca91a71fa34e4439",
+      "sizeBytes": 3206
+    }
+  ]
+}

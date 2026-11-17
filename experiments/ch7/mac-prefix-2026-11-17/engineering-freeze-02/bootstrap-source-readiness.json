@@ -1,0 +1,90 @@
+{
+  "schema": "aijade.ch7.shim-bootstrap-source-readiness.v1",
+  "status": "SHIM_ONLY_NO_SITE_SMALL_CONTROLS_PASS_NEW_FREEZE_REQUIRED",
+  "checkedAt": "2026-11-17T05:49:14.232210+00:00",
+  "baselineSourceCommit": "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb",
+  "baselineBytesPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/bootstrap-source-before/process_lifecycle.py",
+  "baselineSha256": "a6b96ca97eb22259ca1d78cbc509d59a42a4c60590d1714931f887a1c11d7d45",
+  "oneLiteralArgvChangeOnly": true,
+  "shimBodyByteIdentical": true,
+  "sourceFilesBeforeControls": {
+    "experiments/ch7/process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "tests/shell/test_process_lifecycle_bootstrap.py": "61da1d1427f30298debdf2b6dacd9ef49dc58ea1b7a390f85cf7e0c2378bf42e",
+    "tests/shell/test_process_lifecycle.py": "8d2b1f0df3ffe32138c395b875a5ce3972ed8c64561eebf4ca152b2bf121b507"
+  },
+  "sourceFilesAfterControls": {
+    "experiments/ch7/process_lifecycle.py": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+    "experiments/ch7/lifecycle_exec.py": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+    "tests/shell/test_process_lifecycle_bootstrap.py": "61da1d1427f30298debdf2b6dacd9ef49dc58ea1b7a390f85cf7e0c2378bf42e",
+    "tests/shell/test_process_lifecycle.py": "8d2b1f0df3ffe32138c395b875a5ce3972ed8c64561eebf4ca152b2bf121b507"
+  },
+  "tests": 5,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/bootstrap-python-controls-01.log",
+  "logSha256": "05f2e91f32658bb2561a2b767dd9fdc4e72d85da0ff4e4c41a4e44b065de052a",
+  "evidence": [
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/bootstrap-python-controls-01-evidence/shim-only-no-site.json",
+      "sha256": "10feaf68792aab9290d29506918ac21f52fc137891a2f30f92af94c4e3cf7641",
+      "controlledTarget": {
+        "executable": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python",
+        "prefix": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer",
+        "no_site": 0,
+        "psutilVersion": "7.2.2",
+        "testValue": "explicit-bootstrap-fixture-value",
+        "pid": 95538,
+        "parentPid": 95534
+      },
+      "markerRows": [
+        {
+          "pid": 95538,
+          "no_site": 0
+        }
+      ],
+      "shimNoSiteEnabled": true,
+      "actualWaitExitCode": 0,
+      "finalStatus": "ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT"
+    },
+    {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/bootstrap-python-controls-01-evidence/without-shim-no-site.json",
+      "sha256": "48fe53750bb5217014fff4a08140045c70b8e246c9926a17a2b54e96e18341df",
+      "controlledTarget": {
+        "executable": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer/bin/python",
+        "prefix": "/Volumes/Untitled/AIJADE/.runtime/python-envs/p2-tokenizer",
+        "no_site": 0,
+        "psutilVersion": "7.2.2",
+        "testValue": "explicit-bootstrap-fixture-value",
+        "pid": 95539,
+        "parentPid": 95534
+      },
+      "markerRows": [
+        {
+          "pid": 95539,
+          "no_site": 0
+        },
+        {
+          "pid": 95539,
+          "no_site": 0
+        }
+      ],
+      "shimNoSiteEnabled": false,
+      "actualWaitExitCode": 0,
+      "finalStatus": "ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT"
+    }
+  ],
+  "controlledPythonTargets": 3,
+  "nativeHelperExecutions": 0,
+  "collectorCalls": 0,
+  "apiCalls": 0,
+  "modelRequests": 0,
+  "rendererCalls": 0,
+  "engineeringWindows": 0,
+  "qualificationStarted": false,
+  "speedupMeasured": false,
+  "performanceRepairEstablished": false,
+  "oldE01VerdictUnchanged": true,
+  "newImplementationAndPolicyAndPassportFreezeRequired": true
+}

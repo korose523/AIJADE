@@ -1,0 +1,17 @@
+# P4 qualification and construction binding contract after independent repair
+
+This is an implementation handoff, not a scientific acceptance record. No seed or operational case is generated here.
+
+The new P4 single-block audit adds `inputIdentitiesSha256` over the exact original `input-identities.json` bytes and `qualifiedBackend` derived from that already audited object. Legacy output does not gain these fields. The exporter also rereads the original bytes and requires typed JSON identity with its validated object.
+
+A4 `evidence` has exactly five exact-Git references (`path`, `sha256`, `sizeBytes`): `sequenceReceipt`, `sequenceAudit`, `blockAudit`, `blockInputIdentities`, and `corruptionControls`. All are beneath the new decision prefix. The block identity must be known qualification Q, not formal I, with Q/B/P4, policy raw SHA and all fifteen observer sources equal to the published source generation. Its original-byte SHA must equal the single-block audit export. The accepted construction loader returns a derived `qualifiedBackend` from this reference; the A4 top-level field is optional, but if present it must agree exactly.
+
+The closed backend tuple contains exactly: `modelSha256`, `realGodotSha256`, `godotWrapperSha256`, `sandboxProfileSha256`, `rendererSources`, `preparedRenderer`, `binaries`, `buildManifestSha256`, `benchSha256`, `earlierSourceFreezeSha256`, `databaseContainer`, and `explicitDockerPath`. It excludes candidate selection intentionally because known uses two old programmes and fresh uses the eight-programme bank. Binaries must equal B4's complete `files` and `buildManifestSha256` must equal B4 raw bytes. CF4 must contain this complete tuple, typed-equal to A4's audited identity; model SHA must equal the tuple and the actual caller's model SHA. JSON equality retains numeric types, including 1 versus 1.0 and booleans.
+
+The unchanged nineteen-control producer already returns `ancestryContextFiles`. The loader requires one actual mother `receipt.json` hash equal to A4's sequence-receipt reference and one `block-1/receipt.json` hash equal to `sequenceAudit.blocksFromRaw[0].receiptSha256`, under that same original mother directory. Original paths are provenance only; no stale path is read. Another complete valid controls report bound to another run is rejected.
+
+A successful unchanged sequence may omit the adverse-only `dispositionErrors` field. Absent uses the original whole auditor's empty-list default; explicit null or a nonempty value remains adverse.
+
+For complete formal dataflow results, the P4 offline block audit reloads this versioned CF using the bound runtime repository parent, then requires the actually audited backend tuple to equal the qualified tuple before emitting PASS. This does not by itself claim that every current file was verified before the measurement. Root separately owns the actual pre-execution configuration/CF-preflight closure and any permitted two-line runner adaptation.
+
+`rendererSources` keys are paths relative to the copied client root, excluding any part in `.godot`, `bin`, `obj`, or `__pycache__`; copytree already excludes `.git`, `.svn` and `__pycache__`. The root `aijade-prepared-renderer.json` itself is included. `preparedRenderer` is the entire unchanged marker object, whose separate `files` population includes prebuilt outputs that may be excluded from `rendererSources`. The preset is copied separately and is not in that map.

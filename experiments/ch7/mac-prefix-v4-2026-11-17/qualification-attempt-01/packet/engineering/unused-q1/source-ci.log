@@ -1,0 +1,23 @@
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	﻿2026-11-17T09:33:09.3395847Z ##[group]Run .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3397238Z ^[[36;1m.runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls^[[0m
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3441610Z shell: /usr/bin/bash -e {0}
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3441811Z env:
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3442173Z   AIJADE_TEST_DATABASE_URL: ***127.0.0.1:55432/aijade
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3442433Z   DOTNET_ROOT: /usr/share/dotnet
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3442633Z ##[endgroup]
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3950426Z Traceback (most recent call last):
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3953702Z   File "/home/runner/work/AIJADE/AIJADE/experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py", line 429, in main
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3954505Z     result = controls(root, repo, temp_parent) if args.controls else verify_packet(root, repo, temp_parent)
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3954923Z              ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3955730Z   File "/home/runner/work/AIJADE/AIJADE/experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py", line 381, in controls
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3956277Z     baseline = verify_packet(root, repo, temp_parent)
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3956856Z   File "/home/runner/work/AIJADE/AIJADE/experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py", line 265, in verify_packet
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3957461Z     manifest, bodies, physical = packet_bytes(root, expected_manifest)
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3957813Z                                  ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3958398Z   File "/home/runner/work/AIJADE/AIJADE/experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py", line 113, in packet_bytes
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3959026Z     require(path.is_file() and not path.is_symlink(), 'nonregular/linked packet file')
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3959411Z     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3959969Z   File "/home/runner/work/AIJADE/AIJADE/experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py", line 45, in require
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3960463Z     raise ValueError(message)
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.3960701Z ValueError: nonregular/linked packet file
+build-test	Replay retained prefix-engineering refusal with coherent semantic controls	2026-11-17T09:33:09.4034642Z ##[error]Process completed with exit code 1.

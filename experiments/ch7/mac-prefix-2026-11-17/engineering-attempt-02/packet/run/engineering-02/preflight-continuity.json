@@ -1,0 +1,80 @@
+{
+  "schema": "aijade.ch7.phase-continuity-preflight.v1",
+  "status": "PREFLIGHT_COMPLETE_ADMITTED",
+  "phases": {
+    "settling": {
+      "status": "FIXED_SETTLING_COMPLETE_NO_ADMISSION_DECISION",
+      "samples": 300,
+      "validatedSamples": 300,
+      "expectedSamples": 300,
+      "elapsedSeconds": 600.0038722229947,
+      "minimumAvailableBytes": 6474391552,
+      "minimumSwapUsedBytes": 645922816,
+      "maximumSwapUsedBytes": 645922816,
+      "swapRangeBytes": 0,
+      "phaseClock": {
+        "startMonotonic": 202704.7808901,
+        "endMonotonic": 203304.784762323,
+        "requestedSeconds": 600,
+        "intervalReset": false
+      },
+      "coverage": {
+        "samples": 300,
+        "maximumGapSeconds": 2.0087887489935383,
+        "firstElapsedSeconds": 0.000508429016917944,
+        "lastElapsedSeconds": 598.0037499630125,
+        "coverageComplete": true
+      }
+    },
+    "admission": {
+      "status": "ADMITTED",
+      "samples": 60,
+      "validatedSamples": 60,
+      "expectedSamples": 60,
+      "elapsedSeconds": 120.00083440198796,
+      "minimumAvailableBytes": 6538178560,
+      "minimumSwapUsedBytes": 645922816,
+      "maximumSwapUsedBytes": 645922816,
+      "swapRangeBytes": 0,
+      "phaseClock": {
+        "startMonotonic": 203304.784771436,
+        "endMonotonic": 203424.785605838,
+        "requestedSeconds": 120,
+        "intervalReset": false
+      },
+      "coverage": {
+        "samples": 60,
+        "maximumGapSeconds": 2.007395279011689,
+        "firstElapsedSeconds": 0.00016924398369155824,
+        "lastElapsedSeconds": 118.0030039169942,
+        "coverageComplete": true
+      }
+    }
+  },
+  "eventCount": 363,
+  "samples": 360,
+  "validatedSamples": 360,
+  "maximumGlobalGapSeconds": 2.0087887489935383,
+  "lastSample": {
+    "sampleId": "a49752d6c1d94768b5b21a39bed8b273",
+    "globalIndex": 359,
+    "monotonicSeconds": 203422.787775353,
+    "observationCompletedMonotonic": 203424.401621417
+  },
+  "runtimeHandoffAnchor": {
+    "lastSampleMonotonic": 203422.787775353,
+    "lastSampleId": "a49752d6c1d94768b5b21a39bed8b273",
+    "lastGlobalIndex": 359,
+    "phaseEndMonotonic": 203424.785605838,
+    "handoffRecordedMonotonic": 203424.785812573
+  },
+  "windowReset": false,
+  "schedule": {
+    "originMonotonic": 202704.7808901,
+    "intervalSeconds": 2,
+    "maximumGapSeconds": 3,
+    "settlingSeconds": 600,
+    "admissionSeconds": 120,
+    "intervalReset": false
+  }
+}

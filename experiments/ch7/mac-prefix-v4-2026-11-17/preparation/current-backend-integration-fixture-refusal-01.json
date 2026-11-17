@@ -1,0 +1,14 @@
+{
+  "status": "INTEGRATION_CONTROL_FIXTURE_RESTORATION_FAILURE_RETAINED",
+  "log": "current-backend-integrated-controls-01.log",
+  "tests": 19,
+  "failures": 6,
+  "errors": 0,
+  "seconds": 7.971,
+  "cause": "The root-added measurement-entry control changed the synthetic engine file directly rather than through the fixture mutation/restore helper. That control passed, but the six later tests correctly refused their no-longer-valid positive baseline.",
+  "correction": "Use the fixture mutate helper for the engine drift and register mock/environment cleanup even when setUp fails. No production source or acceptance predicate changed.",
+  "scientificQualificationStarted": false,
+  "realBackendFailures": 0,
+  "actualSeedDerived": false,
+  "freshCasesGenerated": 0
+}

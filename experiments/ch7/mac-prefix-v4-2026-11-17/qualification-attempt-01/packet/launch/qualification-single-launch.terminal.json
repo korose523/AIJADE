@@ -1,0 +1,80 @@
+{
+  "schema": "aijade.ch7.fixed-sequence-parent-terminal.v2",
+  "status": "PARENT_ADVERSE_OR_UNRESOLVED",
+  "finishedAt": "2026-11-17T10:22:28.908211+00:00",
+  "configSha256": "ad1b3afc2e043ae29cb05861dda447dd30d956a435eeb40e36046e0a4563b97a",
+  "implementationCommit": "147564c9db812c1a9e5ae07992d9aa282399a310",
+  "repositoryCommit": "147564c9db812c1a9e5ae07992d9aa282399a310",
+  "buildFreezeCommit": "8acfa99d061f1c41197fac2a1c243b3b347bcfef",
+  "purpose": "qualification_only",
+  "launchRecordPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/qualification-single-launch.json",
+  "launchRecordSha256": "55b21e98db2eeae16cc1c872881bb5c40f7fec87780ecf1d9f753f4edb7d6b11",
+  "logPath": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-qualification-20261117/qualification-single-launch.controller.log",
+  "controllerExitCode": 1,
+  "controllerProcess": {
+    "pid": 43550,
+    "createTime": 1794910219.48059,
+    "createTimeMicros": 1794910219480590,
+    "parentPid": 43543,
+    "processGroup": 43550
+  },
+  "controllerPidFromPopen": 43550,
+  "childIdentityStatus": "KERNEL_BIRTH_PARENT_GROUP_BOUND",
+  "parentProcess": {
+    "pid": 43543,
+    "createTime": 1794910218.831402,
+    "createTimeMicros": 1794910218831402,
+    "parentPid": 46644,
+    "processGroup": 43543
+  },
+  "elapsedSeconds": 729.4199436680065,
+  "reason": null,
+  "receiptStatus": "STOPPED",
+  "output": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-prefix-v4-20261117/qualification-01",
+  "intervention": false,
+  "cleanup": null,
+  "childIdentityUnresolved": false,
+  "unresolved": false,
+  "terminalStatusProvenance": "Popen.poll",
+  "processEvidence": {
+    "pollCalls": 726,
+    "terminalPolls": [
+      {
+        "source": "Popen.poll",
+        "startedMonotonic": 215480.900604535,
+        "completedMonotonic": 215480.900653893,
+        "returncodeKnownBeforeCall": false,
+        "exitCode": 1,
+        "provenance": "TERMINAL_STATUS_FIRST_OBTAINED_BY_POPEN_POLL",
+        "independentKernelWaitClaimed": false
+      }
+    ],
+    "waitCalls": [
+      {
+        "source": "Popen.wait",
+        "purpose": "normal terminal cached return after poll",
+        "timeoutSeconds": 0,
+        "startedMonotonic": 215480.900667886,
+        "returncodeKnownBeforeCall": true,
+        "reapedBeforeThisCall": true,
+        "independentKernelWaitClaimed": false,
+        "completedMonotonic": 215480.900682813,
+        "timedOut": false,
+        "exitCode": 1,
+        "provenance": "CACHED_RETURN_AFTER_PRIOR_TERMINAL_STATUS"
+      }
+    ],
+    "terminalStatusSource": "Popen.poll"
+  },
+  "watchdogSeconds": 5700,
+  "automaticRetries": 0,
+  "scientificAcceptance": false,
+  "backendQualified": false,
+  "formalHardwareQualification": false,
+  "independentHumanReview": false,
+  "authorApproval": false,
+  "heldoutComparisonComplete": false,
+  "controllerLogMayStillGrow": false,
+  "wholeProcessGroupCleanupClaimed": false,
+  "logSha256": "591a3ee07ef1b08017035da1f2be203520bb4e514e5e2b2a80bcda5966119a1a"
+}

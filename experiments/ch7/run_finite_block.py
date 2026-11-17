@@ -21,7 +21,7 @@ import time
 
 import psutil
 from finite_runtime import (validate_build, cleanup_owned_databases, stop_owned_processes, dispositions,
-    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, MAC_LIFECYCLE_SOURCES, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, MacMonitor, OwnedRegistry,
+    BUILD_FREEZE_PATH, MAC_PLAN, MAC_PLANS, MAC_LIFECYCLE_SOURCES, mac_observer, mac_plan, mac_build_path, validate_mac_build_policy, validate_repository_binding, load_mac_policy, validate_mac_sample, online_lifecycle_cursors, MacMonitor, OwnedRegistry,
     setup_lifecycle, managed_check_output, finish_monitored_cleanup, seal_refused_cleanup)
 
 GIB = 1024 ** 3
@@ -116,6 +116,7 @@ def _main(args):
         assert args.execution_plan.name==mac_plan(policy) and freeze_path==mac_build_path(policy)
         validate_mac_build_policy(policy,build)
         observe=mac_observer(policy).observe
+    inner_cursor_options, outer_cursor_options = online_lifecycle_cursors(policy)
     metadata=dict(binding,buildFreezeCommit=args.build_freeze_commit,buildFreezePath=freeze_path,
                   executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
@@ -133,7 +134,8 @@ def _main(args):
         for path in [args.manifest,args.scoring,args.selection]:
             original = managed_check_output(['git','show',repository_commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
             assert hashlib.sha256(original).hexdigest() == sha(path), 'Uncommitted or changed finite input'
-        freeze = json.loads((repo/'experiments/ch7/finite-heldout/construction-freeze.json').read_text())
+        from finite_construction_binding import load_measurement_construction_freeze
+        freeze = load_measurement_construction_freeze(repo,runtime['constructionFreezeCommit'],args.manifest.parent.parent,sha(args.model),args,build)
         assert freeze['constructionFreezeCommit'] == runtime['constructionFreezeCommit']
         for relative, digest in freeze['sources'].items():
             assert sha(repo/relative) == digest, 'Construction-frozen source changed'
@@ -229,7 +231,7 @@ def _main(args):
         own=[(metadata['controllerProcess']['pid'],metadata['controllerProcess']['createTime'])]
         owned_registry=lifecycle if v3 else OwnedRegistry(own)
         def sample():
-            observation=(observe(policy,owned_roots=owned_registry.roots(),lifecycle=lifecycle) if v3 else
+            observation=(observe(policy,owned_roots=owned_registry.roots(),lifecycle=lifecycle,**inner_cursor_options) if v3 else
                          observe(policy,owned_roots=owned_registry.roots()))
             observation.update(process_identity)
             if not v3:owned_registry.remember(observation)
@@ -241,7 +243,7 @@ def _main(args):
             return dict(utc=utc(),elapsedSeconds=time.monotonic()-started,rssBytes=rss,availableBytes=available,
                         swapUsedBytes=swap_used,processObservation=observation,**process_identity)
         monitor=MacMonitor(output/'telemetry.jsonl',sample,
-            lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy),
+            lambda item:validate_mac_sample(item,process_identity['processPolicySha256'],process_identity['observerModuleSha256'],policy,**outer_cursor_options),
             sequence_epoch,initial_swap,maximum_wall=4800,local_epoch=started).start()
 
     def launch(name, command, cwd, extra=None):

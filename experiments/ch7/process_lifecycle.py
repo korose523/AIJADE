@@ -357,7 +357,7 @@ def read_journal(path, limitBytes=None):
     return raw
 
 
-def validate_view(view, journal_bytes=None):
+def _validate_view_cold(view, journal_bytes=None):
     need(type(view) is dict and view.get('schema') == VIEW_SCHEMA, 'lifecycle view schema')
     count = view['journalBytes']
     need(type(count) is int and 0 < count <= MAX_JOURNAL_BYTES, 'journal prefix size')
@@ -381,6 +381,140 @@ def validate_view(view, journal_bytes=None):
     state['launchRefusalArtifacts']=view.get('launchRefusalArtifacts',[])
     need(type(state['launchRefusalArtifacts']) is list,'refused-launch artifact population')
     return state
+
+
+class ViewCursor:
+    """Incremental journal replay, retaining exact reads/comparisons.
+
+    This caches journal state, never an observation verdict. Only the newest
+    full prefix/state is retained. Older prefixes from another scope replay
+    cold after exact comparison; a scope's own prefix may never regress.
+    Returned states are deep detached snapshots, including historical events.
+    """
+    def __init__(self):
+        self._mutex = threading.RLock()
+        self._raw = b''
+        self._state = None
+        self._hasher = hashlib.sha256()
+        self._origin = None
+        self._context = None
+        self._frontiers = {}
+        self._poison_reason = None
+        self._work = dict(calls=0, parsedEvents=0, parsedBytes=0,
+                          fullPrefixReadBytes=0, fullPrefixComparedBytes=0,
+                          hashUpdatedBytes=0, coldOldPrefixReplays=0,
+                          snapshotCopies=0, failures=0)
+
+    @property
+    def poisoned(self):
+        with self._mutex:
+            return self._poison_reason is not None
+
+    def statistics(self):
+        """Typed diagnostics only; never an acceptance or timing shortcut."""
+        with self._mutex:
+            return dict(self._work, latestPrefixBytes=len(self._raw),
+                        frontierScopes=len(self._frontiers),
+                        poisoned=self._poison_reason is not None)
+
+    def _usable(self):
+        need(self._poison_reason is None,
+             'lifecycle view cursor permanently poisoned: ' + str(self._poison_reason))
+
+    def validate_view(self, view, journal_bytes=None):
+        with self._mutex:
+            self._work['calls'] += 1
+            try:
+                self._usable()
+                need(type(view) is dict and view.get('schema') == VIEW_SCHEMA, 'lifecycle view schema')
+                count = view['journalBytes']
+                need(type(count) is int and 0 < count <= MAX_JOURNAL_BYTES, 'journal prefix size')
+                source = view['journalPath'] if journal_bytes is None else journal_bytes
+                if isinstance(source, (str, Path)):
+                    raw = read_journal(source, count)
+                    item = os.stat(source, follow_symlinks=False)
+                    origin = ('file', str(Path(source)), item.st_dev, item.st_ino)
+                else:
+                    need(type(source) is bytes and len(source) >= count, 'journal replay bytes missing')
+                    raw = source[:count]
+                    logical = view['journalPath']
+                    need(type(logical) is str and Path(logical).is_absolute(), 'absolute logical journal path required')
+                    # Bytes supplied by an archive need not exist at their
+                    # original path; the logical session still cannot switch.
+                    origin = ('bytes', logical)
+                self._work['fullPrefixReadBytes'] += len(raw)
+                need(self._origin is None or self._origin == origin, 'lifecycle cursor journal replaced')
+                scope_id = view['scopeId']
+                need(_hex(scope_id, 32), 'lifecycle view scope identity')
+                previous = self._frontiers.get(scope_id)
+                need(previous is None or count >= previous['bytes'], 'lifecycle scope prefix regressed')
+                compared = min(len(self._raw), count)
+                self._work['fullPrefixComparedBytes'] += compared
+                need(raw[:compared] == self._raw[:compared], 'lifecycle cursor historical prefix changed')
+                latest = count >= len(self._raw)
+                if latest:
+                    tail = raw[len(self._raw):]
+                    candidate_hash = self._hasher.copy()
+                    candidate_hash.update(tail)
+                    before = self._state['lastSequence'] if self._state is not None else 0
+                    if self._state is None:
+                        state = replay_journal(raw)
+                    elif tail:
+                        state = replay_journal(tail, self._state)
+                    else:
+                        state = self._state
+                    self._work['parsedEvents'] += state['lastSequence'] - before
+                    self._work['parsedBytes'] += len(tail)
+                    self._work['hashUpdatedBytes'] += len(tail)
+                    state.update(bytes=count, sha256=candidate_hash.hexdigest())
+                else:
+                    # A legal older prefix from a different/interleaved scope
+                    # must never borrow newer WAIT/close data from latest state.
+                    state = replay_journal(raw)
+                    self._work['coldOldPrefixReplays'] += 1
+                    self._work['parsedEvents'] += state['lastSequence']
+                    self._work['parsedBytes'] += len(raw)
+                    self._work['hashUpdatedBytes'] += len(raw)
+                context = (state['runId'], state['sourceCommit'], state['policySha256'])
+                need(self._context is None or self._context == context, 'lifecycle cursor context changed')
+                need(state['sha256'] == view['journalSha256'] and state['lastSequence'] == view['lastSequence']
+                     and state['runId'] == view['runId'], 'journal view prefix differs')
+                scope = state['scopes'][scope_id]
+                need(view['controllerIdentity'] == scope['controllerIdentity'], 'view scope controller differs')
+                wanted = {tuple(value) for value in view['referencedIdentities']}
+                need(len(wanted) == len(view['referencedIdentities']), 'duplicate referenced identity')
+                expected = [value for value in state['leases'].values()
+                            if value['absence'] is None or identity_key(value['identity']) in wanted]
+                need(view['leases'] == expected and view['controllers'] == [value['leaseId'] for value in expected
+                     if value['identity'] == view['controllerIdentity']], 'lifecycle lease view projection differs')
+                artifacts = view.get('launchRefusalArtifacts', [])
+                need(type(artifacts) is list, 'refused-launch artifact population')
+                state['launchRefusalArtifacts'] = copy.deepcopy(artifacts)
+                snapshot = copy.deepcopy(state)
+                # Commit cache metadata only after the entire view and snapshot
+                # succeed. A partially mutated replay is unusable on any error.
+                if latest:
+                    self._raw, self._state, self._hasher = raw, state, candidate_hash
+                self._origin, self._context = origin, context
+                self._frontiers[scope_id] = dict(bytes=count, sha256=state['sha256'],
+                                                lastSequence=state['lastSequence'])
+                # Each frontier names an actual SCOPE_OPEN in the <=16MiB
+                # validated journal, so no unbounded synthetic frontier store.
+                need(len(self._frontiers) <= len(self._state['scopes']), 'cursor scope frontier bound')
+                self._work['snapshotCopies'] += 1
+                return snapshot
+            except BaseException as error:
+                self._work['failures'] += 1
+                if self._poison_reason is None:
+                    self._poison_reason = type(error).__name__ + ': ' + str(error)
+                raise
+
+
+def validate_view(view, journal_bytes=None, *, cursor=None):
+    if cursor is None:
+        return _validate_view_cold(view, journal_bytes)
+    need(type(cursor) is ViewCursor, 'actual lifecycle ViewCursor required')
+    return cursor.validate_view(view, journal_bytes)
 
 
 class ManagedProcess:
@@ -438,6 +572,7 @@ class Registry:
         self.lock_path=project_path(capture_lock_path or (POSIX/'locks'/('lifecycle-'+digest(str(self.path).encode())+'.lock')))
         self._mutex=threading.RLock();self.handles=[];self.scope_id=uuid.uuid4().hex;self.closed=False
         self._cached_raw=b'';self._cached_state=None;self._cached_inode=None;self._policy=None
+        self._cached_hasher=hashlib.sha256();self._cache_poison_reason=None
         self.refused_processes=[];self.refused_process_records=[];self.launch_refusal_records=[]
         fd=_open_owned(self.path,os.O_RDWR|os.O_CREAT);os.close(fd)
         state=self._state()
@@ -461,31 +596,57 @@ class Registry:
             self.parent_lease_id=parent_lease_id
         self._append('SCOPE_OPEN',dict(scopeId=self.scope_id,controllerIdentity=self.writer,parentLeaseId=self.parent_lease_id,stageId=stage))
 
+    @property
+    def cache_poisoned(self):
+        return self._cache_poison_reason is not None
+
+    def _require_cache_usable(self):
+        need(self._cache_poison_reason is None,
+             'lifecycle producer cache permanently poisoned: '+str(self._cache_poison_reason))
+
+    def _poison_cache(self,error):
+        if self._cache_poison_reason is None:
+            self._cache_poison_reason=type(error).__name__+': '+str(error)
+
     def _sync(self,raw,inode=None):
-        if inode is not None:
-            need(self._cached_inode is None or self._cached_inode==inode,'lifecycle journal replaced')
-            self._cached_inode=inode
-        need(len(raw)>=len(self._cached_raw) and raw[:len(self._cached_raw)]==self._cached_raw,
-             'lifecycle journal truncated, rewound or prefix changed')
-        tail=raw[len(self._cached_raw):]
-        if self._cached_state is None:self._cached_state=replay_journal(raw)
-        elif tail:self._cached_state=replay_journal(tail,self._cached_state)
-        self._cached_raw=raw
-        self._cached_state.update(bytes=len(raw),sha256=digest(raw))
-        return self._cached_state
+        try:
+            self._require_cache_usable()
+            if inode is not None:
+                need(self._cached_inode is None or self._cached_inode==inode,'lifecycle journal replaced')
+            need(type(raw) is bytes and len(raw)>=len(self._cached_raw)
+                 and raw[:len(self._cached_raw)]==self._cached_raw,
+                 'lifecycle journal truncated, rewound or prefix changed')
+            tail=raw[len(self._cached_raw):]
+            hasher=hashlib.sha256() if self._cached_state is None else self._cached_hasher.copy()
+            hasher.update(tail)
+            if self._cached_state is None:state=replay_journal(raw)
+            elif tail:state=replay_journal(tail,self._cached_state)
+            else:state=self._cached_state
+            state.update(bytes=len(raw),sha256=hasher.hexdigest())
+            self._cached_raw,self._cached_state,self._cached_hasher=raw,state,hasher
+            if inode is not None:self._cached_inode=inode
+            return self._cached_state
+        except BaseException as error:
+            self._poison_cache(error);raise
     def _state(self):
         with self._mutex:
-            raw=read_journal(self.path);item=os.stat(self.path,follow_symlinks=False)
-            return self._sync(raw,(item.st_dev,item.st_ino))
+            try:
+                self._require_cache_usable()
+                raw=read_journal(self.path);item=os.stat(self.path,follow_symlinks=False)
+                return self._sync(raw,(item.st_dev,item.st_ino))
+            except BaseException as error:
+                self._poison_cache(error);raise
     def _lease(self,lease_id):return self._state()['leases'][lease_id]
 
     def _append(self,name,data):
         with self._mutex:
-            fd=_open_owned(self.path,os.O_RDWR)
-            started=time.monotonic()
+            fd=None;locked=False
             try:
+                self._require_cache_usable()
+                fd=_open_owned(self.path,os.O_RDWR)
+                started=time.monotonic()
                 while True:
-                    try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);break
+                    try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);locked=True;break
                     except BlockingIOError:
                         need(time.monotonic()-started<MAX_LOCK_WAIT,'journal lock timeout');time.sleep(.002)
                 with os.fdopen(os.dup(fd),'rb') as stream:raw=stream.read(MAX_JOURNAL_BYTES+1)
@@ -496,10 +657,21 @@ class Registry:
                 event['sha256']=digest(canonical(event));new=canonical(event)+b'\n'
                 need(len(raw)+len(new)<=MAX_JOURNAL_BYTES,'journal cap exceeded')
                 state=replay_journal(new,state);self._cached_state=state
+                hasher=self._cached_hasher.copy();hasher.update(new)
                 os.lseek(fd,0,os.SEEK_END);need(os.write(fd,new)==len(new),'partial lifecycle append');os.fsync(fd)
-                self._cached_raw=raw+new;state.update(bytes=len(raw)+len(new),sha256=digest(raw+new))
+                self._cached_raw=raw+new;self._cached_hasher=hasher
+                state.update(bytes=len(raw)+len(new),sha256=hasher.hexdigest())
                 return event
-            finally:fcntl.flock(fd,fcntl.LOCK_UN);os.close(fd)
+            except BaseException as error:
+                self._poison_cache(error);raise
+            finally:
+                if fd is not None:
+                    try:
+                        try:
+                            if locked:fcntl.flock(fd,fcntl.LOCK_UN)
+                        finally:os.close(fd)
+                    except BaseException as error:
+                        self._poison_cache(error);raise
 
     def environment(self):
         return dict(AIJADE_LIFECYCLE_JOURNAL=str(self.path),AIJADE_LIFECYCLE_SOURCE_COMMIT=self.source_commit,
@@ -533,6 +705,7 @@ class Registry:
         ready_r=ready_w=gate_r=gate_w=-1;executable_sha=None;command_sha=None
         contexts=ExitStack()
         try:
+            self._require_cache_usable()
             need(not self.closed,'cannot launch after local persistent scope closes')
             need(role in ('finite','controller') and type(command) in (list,tuple) and command
                  and all(type(x) is str and '\x00' not in x for x in command),'finite command schema')
@@ -552,7 +725,7 @@ class Registry:
             shim=Path(__file__).with_name('lifecycle_exec.py')
             contexts.enter_context(capture_lock(self.lock_path))
             ready_r,ready_w=os.pipe();gate_r,gate_w=os.pipe()
-            process=subprocess.Popen([sys.executable,'-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
+            process=subprocess.Popen([sys.executable,'-S','-B',str(shim),str(ready_w),str(gate_r),'--',str(executable),*command[1:]],
                 env=env,pass_fds=(ready_w,gate_r),**kwargs)
             os.close(ready_w);ready_w=-1;os.close(gate_r);gate_r=-1
             selected=selectors.DefaultSelector();selected.register(ready_r,selectors.EVENT_READ)
@@ -705,7 +878,7 @@ class Registry:
             state=self._state();wanted=set(identities)
             leases=copy.deepcopy([v for v in state['leases'].values() if v['absence'] is None or identity_key(v['identity']) in wanted])
             return dict(schema=VIEW_SCHEMA,runId=self.run_id,journalPath=str(self.path),journalBytes=len(self._cached_raw),
-                journalSha256=digest(self._cached_raw),lastSequence=state['lastSequence'],scopeId=self.scope_id,
+                journalSha256=state['sha256'],lastSequence=state['lastSequence'],scopeId=self.scope_id,
                 controllerIdentity=self.writer,leases=leases,referencedIdentities=[list(v) for v in sorted(wanted)],
                 launchRefusalArtifacts=self._refusal_artifacts(),
                 controllers=[v['leaseId'] for v in leases if v['identity']==self.writer])

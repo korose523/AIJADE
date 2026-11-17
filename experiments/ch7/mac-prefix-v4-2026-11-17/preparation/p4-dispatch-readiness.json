@@ -1,0 +1,379 @@
+{
+  "schema": "aijade.ch7.mac-prefix-dispatch-readiness.v1",
+  "status": "OFFLINE_DISPATCH_AND_ADAPTER_CONTROLS_PASS_NOT_QUALIFICATION",
+  "createdAt": "2026-11-17T08:30:29.078600+00:00",
+  "publicPlanCommit": "42fc728ade94c60b0d24575b9510b69dd2048676",
+  "publicPlanSha256": "7aa91508eee3e728cadd8d25f8cdd122deb9a35d06a09901e8143d1e028d9d36",
+  "acceptedEngineeringSource": "51cf34be49a6ac955481d89e2a2691f3c7c981c5",
+  "files": [
+    {
+      "path": "experiments/ch7/finite_runtime.py",
+      "sha256": "f6dca7541e41af42ae9eea283e7e3b40f8b2768cb78af1383f1c3423df756918",
+      "sizeBytes": 36688
+    },
+    {
+      "path": "experiments/ch7/finite_audit.py",
+      "sha256": "5f022e96d719560a1a252b5c1058a1490b2e53dd30773884cc02f595106353ad",
+      "sizeBytes": 31445
+    },
+    {
+      "path": "experiments/ch7/finite_sequence_audit.py",
+      "sha256": "39b415d9941c9113d4b6193c517f74ec5615a2052c0fd4c9b1baa4260cc7a696",
+      "sizeBytes": 62171
+    },
+    {
+      "path": "tests/shell/test_mac_prefix_decision.py",
+      "sha256": "c7bf0d390f21405ad37a1d0a0e6d499b60704fa0d3c9013c3c83fbf68b073caf",
+      "sizeBytes": 24581
+    }
+  ],
+  "sourceChanges": {
+    "existingRuntimeFunctionsChangedOnlyInPreflightOrDispatch": [
+      "setup_lifecycle",
+      "mac_plan",
+      "mac_build_path",
+      "validate_mac_build_policy",
+      "load_mac_policy",
+      "validate_build"
+    ],
+    "newFunction": [
+      "validate_mac_execution_identity"
+    ],
+    "allOtherExistingRuntimeFunctions": [
+      {
+        "function": "sha",
+        "sha256": "2cc0fde0e63eccef63730c984e5ea35748e8cf8c3d1af9bcd94b20e8ee8bc525",
+        "unchanged": true
+      },
+      {
+        "function": "require",
+        "sha256": "3c0757518ce0496b4a485c0c8a7ed35ae7977af6cb36de2d0ec7da3a0665a82d",
+        "unchanged": true
+      },
+      {
+        "function": "safe_relative",
+        "sha256": "e9579a8501672c2d1907cbe746fda899cbca905ae0e73df7233398a04998310e",
+        "unchanged": true
+      },
+      {
+        "function": "managed_check_output",
+        "sha256": "9fe0123dcdd3f170a743eb1071f75cc5cb5a57fba13772f68b437411ab622a32",
+        "unchanged": true
+      },
+      {
+        "function": "managed_run",
+        "sha256": "f92e0f5f5db0aafabdb4a2d47ca57b35e749476f59d8cf5ddb13d8a1ea6b9c5d",
+        "unchanged": true
+      },
+      {
+        "function": "git_bytes",
+        "sha256": "afa70aa17a79b04c8a1a82496f0223a4e4cc1cbae4e584bd438b5a87f4c87a90",
+        "unchanged": true
+      },
+      {
+        "function": "wait_post_cleanup_sample",
+        "sha256": "c7fcaf6e794f884785e99dd2e5e1290499023ae4e3904ac6bb9551c69da5e1d1",
+        "unchanged": true
+      },
+      {
+        "function": "seal_refused_cleanup",
+        "sha256": "acd1b37e4a7da8073aed62a0ca6a3fb43b34a440d8f5f355190b530fbb833a3c",
+        "unchanged": true
+      },
+      {
+        "function": "finish_monitored_cleanup",
+        "sha256": "ac1d0f967f1e7d53b6153dcf520d8d7b5db8a8354e7912f5aa61d019763d6c2e",
+        "unchanged": true
+      },
+      {
+        "function": "commit_id",
+        "sha256": "314d93d6ebcbd9203859a91ec7a2e4ee5a24cb4593a024aabdf0681684ae1bb7",
+        "unchanged": true
+      },
+      {
+        "function": "changed_paths",
+        "sha256": "5eb1a17988e23de02eb1febef7ba88ef610bc167d737ecb0ce6a4cee0c985108",
+        "unchanged": true
+      },
+      {
+        "function": "validate_repository_binding",
+        "sha256": "63271b56a5180675ca9d861252eeaba28f6c73d467afbdb32effdc1f1542376b",
+        "unchanged": true
+      },
+      {
+        "function": "mac_observer",
+        "sha256": "3847e9fc10172d0841376a9d09e2f9e8cc6217fd07df98e15c1a01860326ee71",
+        "unchanged": true
+      },
+      {
+        "function": "validate_mac_observation",
+        "sha256": "dc3f55c0aeb85e0743c8a7c02425d4ad4b04802f2f4a1fcca3ea64d8b548d97c",
+        "unchanged": true
+      },
+      {
+        "function": "validate_mac_sample",
+        "sha256": "edf2609065dfd87c502cd864126e895a6fe91b0adc5ae474b64d4ea8d2454eb1",
+        "unchanged": true
+      },
+      {
+        "function": "online_lifecycle_cursors",
+        "sha256": "96c238c0b0a0d51d1fdb9246c6555aa94522669d85792acba661835333c40330",
+        "unchanged": true
+      },
+      {
+        "function": "validate_coverage",
+        "sha256": "efb195a2773b60e378e1addaf58566827cc9414d384357df9a7350e30150e1a6",
+        "unchanged": true
+      },
+      {
+        "function": "fixed_phase",
+        "sha256": "249e899b5872c75fa4d305d7eb78d82381044b175a9eb2b50de198a2c7a9fdf7",
+        "unchanged": true
+      },
+      {
+        "function": "MacMonitor.__init__",
+        "sha256": "bcd2587de7f37c9a06c4c0aa298ff4e2c8af67784b37a58c31df40c7c75c5b20",
+        "unchanged": true
+      },
+      {
+        "function": "MacMonitor.start",
+        "sha256": "8c5bec9369784357ff4dce72ac561f71b12141987efd3f771cca444bd9d87bcb",
+        "unchanged": true
+      },
+      {
+        "function": "MacMonitor._run",
+        "sha256": "7c82611e50e3d3547e7e5dfd5992d807d0c8312f39e955b6e5fcada43d352e23",
+        "unchanged": true
+      },
+      {
+        "function": "MacMonitor.check",
+        "sha256": "fa3d790d8155340da128f970206a6554b2cfe096644872cea819574a6d798059",
+        "unchanged": true
+      },
+      {
+        "function": "MacMonitor.stop",
+        "sha256": "373c7d62f760ea7ac54b8ee616d67d3a0d8639a88e96415a23d7551c48b86e2c",
+        "unchanged": true
+      },
+      {
+        "function": "OwnedRegistry.__init__",
+        "sha256": "542e54d143a29771e2baad6ee1dc0bf9f34cbf1b3e9921d89f999baf3281b10b",
+        "unchanged": true
+      },
+      {
+        "function": "OwnedRegistry._lookup",
+        "sha256": "454e87a73087ce3e13f9be737543eb249178deab1f2d35e7f1eaf99941c056d5",
+        "unchanged": true
+      },
+      {
+        "function": "OwnedRegistry.roots",
+        "sha256": "70162b708b147d188ac54f2487a5652dda13821aaaf8ce973462347902c8416c",
+        "unchanged": true
+      },
+      {
+        "function": "OwnedRegistry.remember",
+        "sha256": "b299d27981aed95dea532587e71cff8c7260879b444492f7bc2b9e760f5c9ff2",
+        "unchanged": true
+      },
+      {
+        "function": "OwnedRegistry.register",
+        "sha256": "b65d708c55e6e2f4fd4d178d9556e1fdde2f3ef9ce0b7bd682ee94acd4723b31",
+        "unchanged": true
+      },
+      {
+        "function": "OwnedRegistry.final",
+        "sha256": "da4bed665ac6b396c20148332a7743f31bc2ca59daf3bf11e896f6f1be238e29",
+        "unchanged": true
+      },
+      {
+        "function": "validate_owned_registry",
+        "sha256": "34f55b5ac2b6f94df6e48af76020e83a532552a4485340afe04d929090f0f867",
+        "unchanged": true
+      },
+      {
+        "function": "cleanup_owned_databases",
+        "sha256": "ad42246498db3f9833321d68c48cff229c0e0fddcd2f1da868b7724ae3b93e8d",
+        "unchanged": true
+      },
+      {
+        "function": "stop_owned_processes",
+        "sha256": "baf022cf437b52a1567af913a4cb49c0eee4a21a9e8dd61b721bdaefd0869150",
+        "unchanged": true
+      },
+      {
+        "function": "dispositions",
+        "sha256": "f3ed968c473386c7c226b452b47612d9eeb2a14e1316b9bba73eb3f38e0f9d5e",
+        "unchanged": true
+      },
+      {
+        "function": "read_block_receipt",
+        "sha256": "ec5e15721883750045274bdf5cab615f44e6a4a631ecb922a141dee33facb710",
+        "unchanged": true
+      }
+    ],
+    "tenCoreBlobs": [
+      {
+        "path": "experiments/ch7/mac_process_guard_v3.py",
+        "acceptedEngineeringSha256": "6da78ff6884a2390d5fa8a291237d5ff57dedf451445653711f586ed11d68629",
+        "currentSha256": "6da78ff6884a2390d5fa8a291237d5ff57dedf451445653711f586ed11d68629",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/process_lifecycle.py",
+        "acceptedEngineeringSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+        "currentSha256": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/lifecycle_exec.py",
+        "acceptedEngineeringSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "currentSha256": "ecd60bb498802a220d5e2217cabda8dd3fcd601a77ed5dacb2417a3ecc998bc3",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/binary_authentication.py",
+        "acceptedEngineeringSha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+        "currentSha256": "f2e1be6ea2adea1a5f90516c1a519cfaa1f249c2c9929a3375eb58b543a5926f",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/phase_continuity.py",
+        "acceptedEngineeringSha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+        "currentSha256": "2b1fbb6cf1438179cfdb6cb9cf5cf8f252d095cd72d4ec0f6ff3afdda8854e83",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/lifecycle_audit.py",
+        "acceptedEngineeringSha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+        "currentSha256": "ffbf69965dd68bcdbf1f7b67ab6e2bda31839ee80ca176a8bc3f9ba2fd77bfef",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/mac_process_guard.py",
+        "acceptedEngineeringSha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+        "currentSha256": "be8df86b47f382f663eab4f22553025a41661326695d112cfc30ffbe1c677d87",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/mac_process_guard_v2.py",
+        "acceptedEngineeringSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+        "currentSha256": "85fe287e32b2c3741bcc84dbc0c393f7d798c25bbfd0140f71db4611ede21fc6",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/mac_bulk_census.c",
+        "acceptedEngineeringSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+        "currentSha256": "22bb68d79e62a3ef40177988621c3d69c6195427c891879186534578e465d003",
+        "exactBytesEqual": true
+      },
+      {
+        "path": "experiments/ch7/godot_local.py",
+        "acceptedEngineeringSha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+        "currentSha256": "7a710ee6e03418a6b243e6c4c531ea98759ca39d6c42f61cb0ea34bce9483ed3",
+        "exactBytesEqual": true
+      }
+    ],
+    "observerSourcePopulation": 15,
+    "protectedSources": {
+      "expected": 331,
+      "unchanged": 331,
+      "changedPaths": []
+    },
+    "rejectionControls": {
+      "exactOriginalFileBytes": true,
+      "sha256": "ae849eb9d15c4efcf3158adf99d9b1b029e5fde8cfd70afc6450de4772200127",
+      "mutationNames": [
+        "missing-arm",
+        "duplicate-arm",
+        "retrieved-code",
+        "database-token",
+        "time-reversal",
+        "render-seal",
+        "hidden-durable-rows-coherent",
+        "changed-window-rebound",
+        "changed-denominator-rebound",
+        "failure-witness-coherent",
+        "replay-observation-coherent",
+        "unplanned-probe-coherent",
+        "embedded-build-revision",
+        "runtime-rebound",
+        "missing-owned-lease",
+        "provider-attempt-coherent",
+        "unknown-cleanup-coherent",
+        "unknown-process-cleanup",
+        "build-hashes-rebound"
+      ],
+      "mutationCount": 19
+    }
+  },
+  "validation": {
+    "finalCombinedTests": 125,
+    "newDecisionControls": 29,
+    "existingAdapterControls": 96,
+    "logs": [
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/p4-decision-controls-01.log",
+        "sha256": "4a368ed1bd4fb753fd8c6c77c36919cc1c9744ed5bc811a41aba73e90a1e42b7",
+        "tests": 23,
+        "elapsedSeconds": 11.731,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/p4-decision-controls-02.log",
+        "sha256": "5ddc75f84207792430f3802bba770020d6a0ff6ea7065f52e39ce2c682f754e5",
+        "tests": 25,
+        "elapsedSeconds": 12.181,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/p4-decision-controls-03.log",
+        "sha256": "9d7d0a4a314e3985f07a962f2be17098e58d1a970313f0205d87192831636d82",
+        "tests": 27,
+        "elapsedSeconds": 12.84,
+        "status": "PASS"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/p4-existing-adapter-controls-01.log",
+        "sha256": "0b244a8fea0d795411485d3d68da2975fd8b7107c04369ab6886a0aa8178b2e9",
+        "tests": 96,
+        "elapsedSeconds": 9.64,
+        "status": "FAILED_PRESERVED"
+      },
+      {
+        "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/p4-decision-and-adapter-controls-04.log",
+        "sha256": "fb8dd8c27d645da68460fd77bbeb6120ded1500827fff4a6b662be3d63abf51a",
+        "tests": 125,
+        "elapsedSeconds": 23.066,
+        "status": "PASS"
+      }
+    ],
+    "intermediateFailure": "An over-broad new whole-audit identity check reached an unchanged synthetic legacy bulk fixture. Restricting the new check to explicit decisions/new canonical build/new canonical policy retained the old branch and all P4 missing/mixed-identity refusals. No old test or corruption mutation changed."
+  },
+  "runtimeContract": {
+    "executionDecision": "mac-prefix-v4",
+    "kind": "mac-lifecycle-observed-idle-daemon-v3",
+    "receiptSchemaChanged": false,
+    "policyPath": "configs/research/ch7-mac-prefix-v4-process-policy.json",
+    "buildFreezePath": "experiments/ch7/mac-prefix-v4-2026-11-17/frozen-build.json",
+    "dataPrefix": "experiments/ch7/mac-prefix-v4-2026-11-17/",
+    "acceptedModes": [
+      "incremental-exact-prefix-v1",
+      "full-read-exact-bytes-v1"
+    ],
+    "policyRawBytesAndQSourcesRequired": true
+  },
+  "scope": {
+    "liveObserverInvocations": 0,
+    "nativeHelperInvocations": 0,
+    "apiRequests": 0,
+    "modelRequests": 0,
+    "rendererRequests": 0,
+    "scientificWindows": 0,
+    "freshHeldoutCases": 0,
+    "seedConstructed": false,
+    "backendQualified": false,
+    "independentHumanReview": false,
+    "committed": false
+  },
+  "note": "Local synthetic Git/source/metadata fixtures and mocked lifecycle-setup controls only; no new scientific inputs. Full default regression/build/publication and independently accepted known qualification remain required. Source hashes bind the delivered current files; root will perform final complete source-bound checks before Q4."
+}

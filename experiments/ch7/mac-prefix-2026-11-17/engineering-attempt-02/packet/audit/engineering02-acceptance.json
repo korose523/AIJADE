@@ -1,0 +1,204 @@
+{
+  "schema": "aijade.ch7.equal-load-engineering-acceptance.v1",
+  "status": "FULL_EQUAL_LOAD_ENGINEERING_ACCEPTED_NOT_BACKEND_QUALIFIED",
+  "acceptedAt": "2026-11-17T07:25:07.469550+00:00",
+  "sourceCommit": "51cf34be49a6ac955481d89e2a2691f3c7c981c5",
+  "prospectiveEngineeringFreezeCommit": "8cc46d5202f183dfab0d0edb2f523e637d705bc2",
+  "passportSha256": "9475830e6973bbb1e81c508505898c3cc24e340816dfdaa83dac2c44d73c0f22",
+  "independentEngineeringReplayAccepted": true,
+  "evidence": {
+    "rawAudit": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/independent-equal-load-audit-02.json",
+      "sha256": "c81eb6e288b0b92745b3dacbe20df53651b86629382c4458a550b9c1cc21df01",
+      "sizeBytes": 124075
+    },
+    "fullRawReplay": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/independent-equal-load-audit-02-full-raw-replay.json",
+      "sha256": "ba8d40f564a85abff145707dc1ef5e678d547f4d3b5095a2e6c2ba52d9ea035d",
+      "sizeBytes": 7146
+    },
+    "parentLaunch": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-launch.json",
+      "sha256": "2b7a94f663b927de694eb4570a51ab775756ef3b316eb7cc7f21247383c8fa11",
+      "sizeBytes": 2483
+    },
+    "parentTerminal": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-launch.terminal.json",
+      "sha256": "7b064b34d5947a62cf2ed711719365d674ce262447ad26b25e5d2e43a86d735f",
+      "sizeBytes": 3124
+    },
+    "parentIndependentReview": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/analysis/engineering02-parent-and-cost-review.json",
+      "sha256": "05ff16b3c4bb7bbd179a125289a42f3119541dabc9feda89a621aaef1ce07569",
+      "sizeBytes": 10920
+    },
+    "parentLog": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering-02-launch.log",
+      "sha256": "dd3f08eed00b52c8ae5486675885ae7756715ff0e4d19601a0f958a9cf941a0e",
+      "sizeBytes": 2439
+    },
+    "runnerReport": {
+      "path": "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-prefix-20261117/engineering-02/receipt.json",
+      "sha256": "d5f297378b588beff30f75265853827b3e62bd1e619d484d503ef51645f51e67",
+      "sizeBytes": 2590515
+    },
+    "sourceBoundControls": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/all-python-controls-serial-05.json",
+      "sha256": "e8303fb71d827fc1a964d827021f4614589f7c2f2593c564e86e52cca322cdb5",
+      "sizeBytes": 10526
+    },
+    "ci": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/engineering02-source-ci.json",
+      "sha256": "500151d5c604051be21c74f9eb439fd53a236a824abd07d6346aff0d43ab2afc",
+      "sizeBytes": 9000
+    }
+  },
+  "inputFiles": {
+    "admission/telemetry.jsonl": {
+      "sha256": "4e90207771532f4ea2836e3ed3bcc88d293a4f01b1318ed6a37e28e82c8a8a49",
+      "sizeBytes": 26159586
+    },
+    "engineering-passport.json": {
+      "sha256": "9475830e6973bbb1e81c508505898c3cc24e340816dfdaa83dac2c44d73c0f22",
+      "sizeBytes": 13439
+    },
+    "lifecycle-journal.jsonl": {
+      "sha256": "6d03842e4e58257e664e52eabec670e9d001f40622a2202a8f78cde1d8a16758",
+      "sizeBytes": 3671601
+    },
+    "phase-events.jsonl": {
+      "sha256": "b5548ff409190768d7b0d7345fd60d563e130c71df4b3ba48f3123ee67cfbdb6",
+      "sizeBytes": 147885
+    },
+    "preflight-continuity.json": {
+      "sha256": "0c5d3c5301235f3f969499a2794e7abb135054aa2da7915ca199b9b60be864c0",
+      "sizeBytes": 2436
+    },
+    "process-policy.json": {
+      "sha256": "dd01b7ddab57ebbadc46d87529d27dcca70f65fb57d18fca746dfee609927ad9",
+      "sizeBytes": 1978
+    },
+    "receipt.json": {
+      "sha256": "d5f297378b588beff30f75265853827b3e62bd1e619d484d503ef51645f51e67",
+      "sizeBytes": 2590515
+    },
+    "service-events.jsonl": {
+      "sha256": "39913b0c718cce9ad3171643095b12ce94b507e97aef9a2c9b37a99f4f62b994",
+      "sizeBytes": 128737
+    },
+    "settling/telemetry.jsonl": {
+      "sha256": "e0062388373b9b14234f51a0c6a4719823cb8381b439453416f1d75aa24ca18d",
+      "sizeBytes": 130858030
+    },
+    "tail/events.jsonl": {
+      "sha256": "e96c85b64e1181ec08a2a74c53da2a87656b4c4a27ecb0685a969536653adc00",
+      "sizeBytes": 768
+    },
+    "tail/telemetry.jsonl": {
+      "sha256": "cdfed51b26c21699bcef3e94facc9413454baa741f9783f5b18f5bc986669386",
+      "sizeBytes": 886526
+    }
+  },
+  "numbers": {
+    "samples": 362,
+    "settlingSamples": 300,
+    "admissionSamples": 60,
+    "tailSamples": 2,
+    "nativeCaptures": 724,
+    "finiteTasks": 1478,
+    "parentWaitZero": 1478,
+    "maximumFullServiceSeconds": 1.8884336070041172,
+    "maximumLatenessSeconds": 0.010095386009197682,
+    "lastServiceCompletedSeconds": 723.7708027710032
+  },
+  "managedTasks": {
+    "git": 30,
+    "native": 724,
+    "listener": 724,
+    "finite": 1478,
+    "actualParentWaitZero": 1478
+  },
+  "lifecycle": {
+    "status": "LIFECYCLE_RAW_AUDIT_PASS",
+    "journalBytes": 3671601,
+    "journalSha256": "6d03842e4e58257e664e52eabec670e9d001f40622a2202a8f78cde1d8a16758",
+    "events": 4437,
+    "observations": 2,
+    "finiteLeases": 1478,
+    "finiteWaitZero": 1478,
+    "peakObservedOwnedRssBytes": 280739840,
+    "discoveredOnlyConfirmedAbsentUnknownExit": 0,
+    "scopeId": "99be12326f324f5da03099d63548ab9c",
+    "cleanupAccepted": true,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false
+  },
+  "continuity": {
+    "status": "CONTINUITY_RAW_AUDIT_PASS",
+    "phases": {
+      "settling": {
+        "samples": 300,
+        "maximumGapSeconds": 2.0087887489935383,
+        "firstElapsedSeconds": 0.000508429016917944,
+        "lastElapsedSeconds": 598.0037499630125,
+        "coverageComplete": true,
+        "minimumAvailableBytes": 6474391552,
+        "swapRangeBytes": 0
+      },
+      "admission": {
+        "samples": 60,
+        "maximumGapSeconds": 2.007395279011689,
+        "firstElapsedSeconds": 0.00016924398369155824,
+        "lastElapsedSeconds": 118.0030039169942,
+        "coverageComplete": true,
+        "minimumAvailableBytes": 6538178560,
+        "swapRangeBytes": 0
+      }
+    },
+    "samples": 360,
+    "maximumGlobalSampleGapSeconds": 2.0087887489935383,
+    "runtimeHandoff": null,
+    "independentHumanReview": false,
+    "formalHardwareQualification": false
+  },
+  "parentWaitSeconds": 729.6789421480207,
+  "parentElapsedSeconds": 729.7389878620161,
+  "incidentalActivity": {
+    "kind": "CONCURRENT_SMALL_READ_ONLY_REVIEW_AND_REPORT_WRITE",
+    "report": {
+      "path": "/Volumes/Untitled/AIJADE/.research/runs/ch7-prefix-20261117/papers/readiness-classification-review.json",
+      "sha256": "f0aa22592365ee38519c30defaea843243abfc7e14097c8dca5b0ae882e596c5",
+      "sizeBytes": 16538
+    },
+    "checkedAt": "2026-11-17T06:53:03.277252+00:00",
+    "liesInsideParentRun": true,
+    "relativeToParentStartSeconds": 216.476367,
+    "noFullyIdleHostClaim": true,
+    "causalPerformanceAttribution": false,
+    "frozenRestriction": "No build, test, PDF, compression or extra polling worker runs during the timed window.",
+    "interpretation": "Retained incidental read/write overlap; does not amend any budget or discard a row. No prohibited workflow was launched by this task. The whole-host activity history is not independently known."
+  },
+  "preservedRefusal": {
+    "sourceCommit": "b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb",
+    "auditSha256": "04f724d851349d2c9ae608effa87aebcc5c46531cc79b8ea6445d4cfe8746098",
+    "accepted": false
+  },
+  "auditScriptSha256": "189ea385a3f3c68ad8e473f2d6613bd496b84cc77f7b85a425d238173c61a424",
+  "nextScientificPlanPermitted": true,
+  "qualificationStarted": false,
+  "backendQualified": false,
+  "scientificAdmission": false,
+  "formalHardwareQualification": false,
+  "independentHumanReview": false,
+  "authorApproval": false,
+  "currentProductInheritsResearchQualification": false,
+  "flowBlocks": 0,
+  "modelRequests": 0,
+  "rendererRequests": 0,
+  "freshHeldoutCases": 0,
+  "seedConstructed": false,
+  "heldoutComparisonComplete": false,
+  "table7_3": "NOT_RUN",
+  "automaticRetries": 0,
+  "interpretation": "Engineering acceptance of the complete frozen equivalent load only. A separately published prospective scientific decision is still required, then clean Q/B and one fully audited known-input qualification before any fresh seed or forty-pair comparison."
+}

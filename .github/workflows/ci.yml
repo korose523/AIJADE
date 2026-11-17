@@ -44,15 +44,28 @@ jobs:
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_runtime.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_block_lifecycle.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_lifecycle_integration.py' -v
+      - name: Fetch original prefix-engineering refusal and prior passport source objects
+        run: git fetch --no-tags --depth=1 origin b5af85f7a1b5f1da3ceeda0a9c1a64393a0e3efb bb2c25b808c1c3f604e081b5fa4da4d4f76af84d
+      - name: Replay retained prefix-engineering refusal with coherent semantic controls
+        run: |
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-2026-11-17/engineering-attempt-01/verify_archive.py --repo . --output .runtime/mac-prefix-refusal/report.json --temp-root .runtime/mac-prefix-refusal/disposable --controls
+      - name: Verify complete P4 refusal records and adversarial controls without Mac services
+        run: |
+          git fetch --no-tags --depth=1 origin 147564c9db812c1a9e5ae07992d9aa282399a310 8acfa99d061f1c41197fac2a1c243b3b347bcfef 42fc728ade94c60b0d24575b9510b69dd2048676 5d020ccbf54c16965b4a1fe3467b3d8d726d23f8
+          .runtime/finite-control-env/bin/python -B experiments/ch7/mac-prefix-v4-2026-11-17/qualification-attempt-01/verify_archive.py --repo . --controls
       - name: Verify prospective Mac process, version and complete-sequence controls without live services
         run: |
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_mac_*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_process_lifecycle*.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_binary_authentication.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_phase_continuity*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_lifecycle_*.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_sequence_audit.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_finite_corruption_baselines.py' -v
           .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_launcher.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_frozen_sequence_parent.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_construction_binding.py' -v
+          .runtime/finite-control-env/bin/python -B -m unittest discover -s tests/shell -p 'test_prefix_backend_preflight.py' -v
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
       - name: Check public-reference type and missing-data conventions
