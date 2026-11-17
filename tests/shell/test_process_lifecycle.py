@@ -26,7 +26,8 @@ class ManagedProcessControls(unittest.TestCase):
         for p in self.registry.handles:
             if p.poll() is None:p.kill()
             p.wait(timeout=2)
-        self.registry.close();os.environ.clear();os.environ.update(self.env)
+        if not self.registry.cache_poisoned:self.registry.close()
+        os.environ.clear();os.environ.update(self.env)
         life._env_registry=None;self.scratch.cleanup()
     def test_fast_true_has_real_identity_release_and_parent_wait(self):
         result=self.registry.run(['/usr/bin/true'],capture_output=True,timeout=2)
@@ -83,8 +84,8 @@ class ManagedProcessControls(unittest.TestCase):
         with self.assertRaises(ValueError):self.registry.sample()
         self.registry.path.write_bytes(raw);other=self.registry.path.with_suffix('.new');other.write_bytes(raw);other.chmod(0o600);os.replace(other,self.registry.path)
         with self.assertRaises(ValueError):self.registry.sample()
-        # Reset only this deliberately corrupted fixture for ordinary teardown.
-        self.registry._cached_inode=None;self.registry._cached_raw=b'';self.registry._cached_state=None
+        # This destructive fixture remains poisoned; teardown does not append
+        # to its uncertain journal. No production poison reset is provided.
     def test_concurrent_launches_have_distinct_identity_bound_waits(self):
         errors=[]
         def launch():

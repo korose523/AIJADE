@@ -83,6 +83,8 @@ def validate_policy(policy):
     """Raise ValueError for an unsafe or incomplete predeclared policy."""
     if not isinstance(policy, dict) or type(policy.get('schemaVersion')) is not int or policy['schemaVersion'] != SCHEMA or policy.get('kind') != KIND:
         raise ValueError('policy schema/kind')
+    if policy.get('onlineReplayMode') not in (None, 'incremental-exact-prefix-v1'):
+        raise ValueError('unrecognized online journal replay mode')
     daemon = policy.get('daemon')
     if not isinstance(daemon, dict) or set(daemon) != {'app', 'serve'}:
         raise ValueError('policy must bind exactly app and serve')
@@ -683,13 +685,13 @@ def _decision(blockers, owned=None):
             'ownedRssBytes': sum(x['rssBytes'] for x in rows) if status == 'PASS' and owned is not None else None}
 
 
-def validate_observation(policy, observation, lifecycle_journal=None):
+def validate_observation(policy, observation, lifecycle_journal=None, *, lifecycle_cursor=None):
     """Recompute from recorded facts, not claimed PASS or derived RSS totals."""
     blockers = []
     def add(code, severity='UNKNOWN', **fields): blockers.append({'code': code, 'severity': severity, **fields})
     try:
         validate_policy(policy)
-        state=lifecycle_support.validate_view(observation['lifecycle'],lifecycle_journal)
+        state=lifecycle_support.validate_view(observation['lifecycle'],lifecycle_journal,cursor=lifecycle_cursor)
         if state['launchRefusals']:add('LAUNCH_REFUSED','FAIL')
         if state.get('launchRefusalArtifacts'):add('LAUNCH_REFUSED_ARTIFACT_PRESENT','FAIL')
         controller=observation['lifecycle']['controllerIdentity']
@@ -861,7 +863,7 @@ def validate_observation(policy, observation, lifecycle_journal=None):
         return _decision(blockers)
 
 
-def observe(policy, owned_roots=(), lifecycle=None):
+def observe(policy, owned_roots=(), lifecycle=None, *, lifecycle_cursor=None):
     """Serialized bounded before/API/after with exact launch/wait journal prefix."""
     started=time.monotonic()
     result={'schemaVersion':SCHEMA,'sampleId':uuid.uuid4().hex,'startedMonotonic':started,
@@ -893,7 +895,7 @@ def observe(policy, owned_roots=(), lifecycle=None):
         lifecycle.remember(result)
         result['lifecycle']=lifecycle.sample(refs)
         result['finishedMonotonic']=time.monotonic()
-        decision=validate_observation(policy,result)
+        decision=validate_observation(policy,result,lifecycle_cursor=lifecycle_cursor)
     except Exception as error:
         result['finishedMonotonic']=time.monotonic()
         decision=_decision([{'code':'OBSERVER_READ_UNKNOWN','severity':'UNKNOWN','errorClass':type(error).__name__}])

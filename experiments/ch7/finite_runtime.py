@@ -256,19 +256,19 @@ def load_mac_policy(repo,path,implementation):
     return policy,dict(processPolicyPath=relative,processPolicySha256=hashlib.sha256(raw).hexdigest(),observerModuleSha256=sha(module),**({'observerSources':dependencies} if dependencies else {}))
 
 
-def validate_mac_observation(observation,policy_sha,module_sha,policy=None,lifecycle_journal=None):
+def validate_mac_observation(observation,policy_sha,module_sha,policy=None,lifecycle_journal=None,*,lifecycle_cursor=None):
     require(type(observation) is dict and observation.get('processPolicySha256')==policy_sha
             and observation.get('observerModuleSha256')==module_sha,'observer/policy identity missing')
     require(observation.get('status')=='PASS' and observation.get('blockers')==[],'process observation adverse or unknown')
     require(type(observation.get('ownedProcesses')) is list,'owned process observation missing')
     require(policy is not None,'observer evidence requires the frozen policy for independent validation')
-    recalculated=(mac_observer(policy).validate_observation(policy,observation,lifecycle_journal=lifecycle_journal)
+    recalculated=(mac_observer(policy).validate_observation(policy,observation,lifecycle_journal=lifecycle_journal,lifecycle_cursor=lifecycle_cursor)
                   if policy.get('kind')==MAC_LIFECYCLE_KIND else mac_observer(policy).validate_observation(policy,observation))
     require(recalculated.get('status')=='PASS' and recalculated.get('blockers')==[], 'raw process/API evidence does not independently pass')
     return recalculated
 
 
-def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None):
+def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None,*,lifecycle_cursor=None):
     if policy.get('kind')==MAC_LIFECYCLE_KIND:
         began=item.get('monotonicSeconds');ended=item.get('observationCompletedMonotonic')
         require(type(began) in (int,float) and type(ended) in (int,float) and 0<=ended-began<=2.5,
@@ -277,9 +277,19 @@ def validate_mac_sample(item,policy_sha,module_sha,policy,lifecycle_journal=None
         require(began<=raw.get('startedMonotonic',-1)<=raw.get('finishedMonotonic',float('inf'))<=ended,
                 'v3 raw evidence lies outside actual outer observation')
     require(item.get('processPolicySha256')==policy_sha and item.get('observerModuleSha256')==module_sha,'sample observer identity missing')
-    recalculated=validate_mac_observation(item['processObservation'],policy_sha,module_sha,policy,lifecycle_journal=lifecycle_journal)
+    recalculated=validate_mac_observation(item['processObservation'],policy_sha,module_sha,policy,lifecycle_journal=lifecycle_journal,lifecycle_cursor=lifecycle_cursor)
     require(type(item.get('rssBytes')) is int and item['rssBytes']==recalculated['ownedRssBytes'],'sample owned RSS differs from raw process evidence')
     return recalculated
+
+
+def online_lifecycle_cursors(policy):
+    """Independent raw-byte replay states; never share the producer's state."""
+    if policy is None or policy.get('onlineReplayMode') is None:
+        return {}, {}
+    require(policy.get('kind')==MAC_LIFECYCLE_KIND and
+            policy['onlineReplayMode']=='incremental-exact-prefix-v1', 'unsupported online replay mode')
+    from process_lifecycle import ViewCursor
+    return dict(lifecycle_cursor=ViewCursor()), dict(lifecycle_cursor=ViewCursor())
 
 
 def validate_coverage(samples,duration=None,minimum_samples=None,max_gap=3):
