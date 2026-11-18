@@ -75,6 +75,60 @@ def validate_placements(row,finite,key,phase):
     else:require(witness is None,'SQL witness without failure')
 
 
+def heldout_audit_context(root, repo, identity, receipt, runtime):
+    """Rebind the full finite dataflow audit to its successor launch and watchdog."""
+    from finite_construction_binding import decode, known_repeat_required
+    from known_repeat_acceptance import BUILD, raw as public_bytes
+    from launch_heldout_blocks import (BLOCKS, LAUNCH_SCHEMA, PLAN_SCHEMA, PURPOSE, REAL, block_evidence,
+                                       read_file, validate_successor_repository_binding)
+    from launch_known_repeats import validate_runtime_settings
+    from prepare_known_repeats import INPUT_NAMES
+
+    launch = decode(read_file(root.parent, 'launch.json'))
+    require(launch['schema'] == LAUNCH_SCHEMA and launch['mode'] == REAL
+            and known_repeat_required(repo, launch['implementationCommit']),
+            'successor full audit requires the original prospective launch packet')
+    index = runtime['blockIndex']
+    require(type(index) is int and 0 <= index < len(BLOCKS) and root.name == BLOCKS[index],
+            'successor block index or output directory changed')
+    block_evidence(root, launch, index, {name: read_file(root, name) for name in INPUT_NAMES})
+    repository_commit = identity['repositoryCommit']
+    binding = validate_successor_repository_binding(repo, launch['implementationCommit'], repository_commit,
+                                                    launch['dataPublicationManifestPath'])
+    require(all(identity.get(key) == receipt.get(key) == value for key, value in binding.items()),
+            'successor input publication changed')
+    plan = public_bytes(repo, repository_commit, launch['executionPlanPath'])
+    require(sha(plan) == launch['executionPlanSha256']
+            and identity['buildFreezePath'] == BUILD, 'successor plan or build freeze changed')
+    settings = decode(plan)
+    require(settings['schema'] == PLAN_SCHEMA and settings['purpose'] == PURPOSE,
+            'successor full audit requires the measurement plan')
+    validate_runtime_settings(settings)
+    require(settings['watchdog'] == launch['operationalWatchdog'], 'successor watchdog changed')
+    return index, settings['watchdog']
+
+
+def verify_resource_thresholds(telemetry, watchdog=None):
+    """Replay resource limits with the correct protocol's sustained window."""
+    timers={}
+    max_rss, min_available, max_swap, sustained = (2*1024**3, 3*1024**3, 1024**3, 30)
+    if watchdog is not None:
+        max_rss = watchdog['maxOwnedRssBytes']
+        min_available = watchdog['minAvailableBytes']
+        max_swap = watchdog['maxSwapIncreaseBytes']
+        sustained = watchdog['sustainedResourceSeconds']
+    for t in telemetry:
+        crossings = [('rss', max_rss is not None and t['rssBytes'] > max_rss),
+                     ('available', min_available is not None and t['availableBytes'] < min_available),
+                     ('swap', max_swap is not None and t['swapIncreaseBytes'] > max_swap)]
+        for name, crossed in crossings:
+            if not crossed:
+                timers.pop(name, None)
+            else:
+                timers.setdefault(name,t['elapsedSeconds'])
+                require(t['elapsedSeconds']-timers[name] < sustained, 'unreported resource stop')
+
+
 def verify(root, repo, *, ancestry_context=None):
     root=Path(root);repo=Path(repo)
     v3=False;lifecycle_journal=None;lifecycle_result=None
@@ -90,8 +144,12 @@ def verify(root, repo, *, ancestry_context=None):
     canonical_plan='experiments/plans/'+MAC_PLAN
     q_has_mac_plan=subprocess.run(['git','cat-file','-e',receipt['codeCommit']+':'+canonical_plan],cwd=repo,
                                   stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0
-    mac=q_has_mac_plan or 'processPolicySha256' in identity or 'implementationCommit' in identity
+    successor = runtime['purpose'] == 'confirmed_finite_heldout' and 'heldoutLaunchSha256' in identity
+    mac = not successor and (q_has_mac_plan or 'processPolicySha256' in identity or 'implementationCommit' in identity)
     repository_commit=identity.get('repositoryCommit',receipt['codeCommit'])
+    watchdog = None
+    if successor:
+        index, watchdog = heldout_audit_context(root, repo, identity, receipt, runtime)
     if mac:
         keys=['implementationCommit','repositoryCommit','buildFreezeCommit','buildFreezePath','inputPublicationCommit',
               'dataPublicationManifestPath','dataPublicationManifestSha256','processPolicyPath','processPolicySha256','observerModuleSha256']
@@ -286,7 +344,9 @@ def verify(root, repo, *, ancestry_context=None):
     require({r['database'] for r in cleanup}==set(databases) and all(r['remaining']==0 and not r.get('error') for r in cleanup), 'exact owned lease cleanup')
     process_cleanup=load(root,'process-cleanup.json')
     require(len(process_cleanup)==2 and all(r['exitCode']==0 and not r['errors'] for r in process_cleanup), 'owned process cleanup incomplete')
-    telemetry=lines(root,'telemetry.jsonl'); require(telemetry and receipt['wallSeconds']<=1200, 'resource trace/wall limit')
+    telemetry=lines(root,'telemetry.jsonl')
+    wall_limit = 1200 if watchdog is None else watchdog['blockWallSeconds']
+    require(telemetry and receipt['wallSeconds'] <= wall_limit, 'resource trace/wall limit')
     if mac:
         validate_coverage(telemetry,receipt['wallSeconds'],1)
         for sample in telemetry:
@@ -313,12 +373,7 @@ def verify(root, repo, *, ancestry_context=None):
             registered={(v['pid'],v['createTime']) for v in registry['explicitlyRegisteredIdentities']}
             require({(v['pid'],v['createTime']) for v in receipt['phases'].values()}<=registered,'phase PID/create-time lease missing')
     require(max(t['rssBytes'] for t in telemetry)==receipt['peak']['rssBytes'] and min(t['availableBytes'] for t in telemetry)==receipt['peak']['minAvailableBytes'], 'resource extrema')
-    timers={}
-    for t in telemetry:
-        for name,crossed in [('rss',t['rssBytes']>2*1024**3),('available',t['availableBytes']<3*1024**3),('swap',t['swapIncreaseBytes']>1024**3)]:
-            if not crossed: timers.pop(name,None)
-            else:
-                timers.setdefault(name,t['elapsedSeconds']); require(t['elapsedSeconds']-timers[name]<30, 'unreported resource stop')
+    verify_resource_thresholds(telemetry, watchdog)
     scored=score_directory(root)
     if (root/'scoring.json').is_file(): require(load(root,'scoring.json')==scored, 'actual raw/window score reconstruction')
     result=dict(status='FINITE_DATAFLOW_AUDIT_PASS', casePairs=n, measuredConditionRows=2*n,
@@ -326,6 +381,9 @@ def verify(root, repo, *, ancestry_context=None):
                 conditionCounts={arm:{k:v for k,v in scored['arms'][arm].items() if k!='byCase'} for arm in ['C1','C2']},
                 round2SemanticActCorrectness='NOT_MEASURED', interpretation=scored['interpretation'])
     if mac:result.update({key:identity[key] for key in keys},codeCommit=receipt['codeCommit'],processObservationCount=len(telemetry))
+    if successor:
+        result.update(heldoutLaunchSha256=identity['heldoutLaunchSha256'], blockIndex=index,
+                      codeCommit=identity['codeCommit'], processObservationCount=len(telemetry))
     if v3:result['processLifecycle']=lifecycle_result
     if mac and policy.get('executionDecision')=='mac-prefix-v4':
         expected_backend=None

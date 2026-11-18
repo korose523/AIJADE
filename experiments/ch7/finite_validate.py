@@ -19,9 +19,9 @@ def signature(c):
 
 def verify(repo,inputs):
     construction=json.loads((inputs/'construction.json').read_text());freeze=construction['constructionFreezeCommit']
-    from finite_construction_binding import load_construction_freeze, SIDECAR
+    from finite_construction_binding import load_construction_freeze, KNOWN_REPEAT_FREEZE_SCHEMA, SIDECAR
     freeze_receipt=load_construction_freeze(repo,freeze,inputs,construction['modelSha256'])
-    versioned=freeze_receipt.get('schema')=='aijade.ch7.prefix-construction-freeze.v1'
+    versioned=freeze_receipt.get('schema') in ('aijade.ch7.prefix-construction-freeze.v1',KNOWN_REPEAT_FREEZE_SCHEMA)
     require(freeze_receipt['constructionFreezeCommit']==freeze,'different construction freeze')
     for rel,digest in freeze_receipt['sources'].items():
         require(sha((repo/rel).read_bytes())==digest,'construction source changed: '+rel)
