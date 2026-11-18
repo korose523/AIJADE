@@ -31,6 +31,17 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.12.14'
+      - name: Verify protected Chapter 7 runner controls without live services
+        run: |
+          set -o pipefail
+          git fetch --no-tags --depth=1 origin 3dc0644da43054ad879cfeb1d2b3a57313f57ff8
+          mkdir -p .runtime/ch7-preparation
+          python3 -B experiments/ch7/test_prepare_known_repeats.py .runtime/ch7-preparation | cmp - experiments/ch7/mac-known-repeats-preparation/offline-controls.json
+          python3 -B -m unittest discover -s experiments/ch7 -p test_launch_known_repeats.py -v
+          python3 -B -m unittest discover -s experiments/ch7 -p test_known_repeat_acceptance.py -v
+          python3 -B -m unittest discover -s experiments/ch7 -p test_freeze_known_repeat_build.py -v
+          python3 -B -m unittest discover -s experiments/ch7 -p test_heldout_audit_route.py -v
+          python3 -B -m unittest discover -s experiments/ch7 -p test_four_block_end_to_end.py -v
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json

@@ -1,0 +1,12 @@
+<Project>
+  <!-- On macOS the MSBuild task host uses /tmp for its Unix socket.
+       The project-local build can run the same SDK WebAssembly tasks in-process. -->
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.GenerateWasmBootJson" AssemblyFile="$(_WebAssemblySdkTasksAssembly)" Override="true"
+             Condition="'$(AijadeUseInProcessWasmTasks)' == 'true' and $([MSBuild]::IsOSPlatform('OSX')) and '$(MSBuildRuntimeType)' == 'Core' and '$(MSBuildProjectName)' == 'Aijade.Web' and '$(_WebAssemblySdkTasksAssembly)' != ''" />
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.ComputeWasmBuildAssets" AssemblyFile="$(_WebAssemblySdkTasksAssembly)" Override="true"
+             Condition="'$(AijadeUseInProcessWasmTasks)' == 'true' and $([MSBuild]::IsOSPlatform('OSX')) and '$(MSBuildRuntimeType)' == 'Core' and '$(MSBuildProjectName)' == 'Aijade.Web' and '$(_WebAssemblySdkTasksAssembly)' != ''" />
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.ComputeWasmPublishAssets" AssemblyFile="$(_WebAssemblySdkTasksAssembly)" Override="true"
+             Condition="'$(AijadeUseInProcessWasmTasks)' == 'true' and $([MSBuild]::IsOSPlatform('OSX')) and '$(MSBuildRuntimeType)' == 'Core' and '$(MSBuildProjectName)' == 'Aijade.Web' and '$(_WebAssemblySdkTasksAssembly)' != ''" />
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.ConvertDllsToWebCil" AssemblyFile="$(_WebAssemblySdkTasksAssembly)" Override="true"
+             Condition="'$(AijadeUseInProcessWasmTasks)' == 'true' and $([MSBuild]::IsOSPlatform('OSX')) and '$(MSBuildRuntimeType)' == 'Core' and '$(MSBuildProjectName)' == 'Aijade.Web' and '$(_WebAssemblySdkTasksAssembly)' != ''" />
+</Project>
