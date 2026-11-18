@@ -43,7 +43,7 @@
 | 线 | 模块 | 现状（见 `docs/STATUS.md` 第 4 节） |
 |---|---|---|
 | 伴侣产品：聊天、记忆库、角色、设置、账户与计费、管理后台、Web 与 PWA | `src/Aijade.Server`（除 `V9`）、`Aijade.Client`、`Aijade.UI`、`Aijade.Web` | 已实现并有测试 |
-| 语音与舞台：识别与合成网关、口型、MMD 舞台、陪伴行为 | 同上，`tools/mmd-bundle` | 已实现并有测试 |
+| 语音与舞台（识别与合成网关、口型、本机 MMD 与 Live2D、陪伴行为） | 同上，`tools/mmd-bundle`、`tools/live2d-bundle` | 已实现并有测试 |
 | 多端 | `src/Aijade.Maui` | Android 已实测；Windows 未在本机验证；macOS/iOS 未实现 |
 | 集成：MCP 与工具中枢、聊天平台、Minecraft、计算机控制、浏览器扩展、VS Code、Claude Code | `src/Aijade.Integrations`（除 `Renderer`）、`Aijade.Bots`、`Aijade.ComputerUse`、`integrations/*`、`tools/minecraft` | 已实现；部分未在真实平台验证 |
 | 品牌素材 | `brand` | — |
