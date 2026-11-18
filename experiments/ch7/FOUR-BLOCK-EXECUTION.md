@@ -6,6 +6,31 @@ supervisor's reply to the one-page plan. Start the held-out construction only
 after the two known-condition repeats have passed and their actual raw
 deliveries have been accepted. Keep every earlier refusal with its receipt.
 
+## Offline build and file check
+
+Use a clean checkout, fresh artifacts on the project-local POSIX volume, and
+the SDK specified by `global.json`. Check the SDK from the checkout because
+the system `dotnet` may resolve a different installation. For a cached build
+check, use a local NuGet source and run only the build target.
+
+```sh
+revision=$(git rev-parse HEAD)
+test -z "$(git status --porcelain)"
+"$dotnet" --version
+AIJADE_ARTIFACTS="$project_local_artifacts" "$dotnet" build \
+  tests/Aijade.Tests/Aijade.Tests.csproj --configuration Release \
+  --source "$cached_packages" --disable-build-servers \
+  -p:NuGetAudit=false -p:ContinuousIntegrationBuild=true \
+  -p:SourceRevisionId="$revision"
+```
+
+Check that the generated assembly version contains the exact revision. Hash
+the assembly, runtime configuration and all dependency files. Verify an
+exact project-local copy of the Godot executable and the retained prepared
+renderer files from their bytes. The launcher requires the Godot executable,
+renderer, model and sandbox profile to resolve inside AIJADE. Keep an offline
+check in a separate record without a qualification decision or B manifest.
+
 ## Qualification and build freeze
 
 In the approved clean POSIX worktree under the AIJADE workspace, designate the

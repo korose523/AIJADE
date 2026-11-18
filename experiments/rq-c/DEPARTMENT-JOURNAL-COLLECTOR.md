@@ -13,6 +13,19 @@ python3 -B -m unittest discover -s experiments/rq-c -p test_launch_department_re
 
 The [P2-R launcher](DEPARTMENT-REGENERATION-LAUNCH.md) can audit two saved captures again without calling the collector.
 
+When configuration bytes are available, use the same parser on Mac or Linux. Pass the resolved absolute file path. The command reads only that file and reports its exact SHA-256. It exits with code 2 for malformed, oversized or mismatched configuration. The host compatibility and log access fields remain unverified.
+
+```sh
+python3 -B experiments/rq-c/collect_department_journal.py --check-config "$P2_COLLECTOR_CONFIG"
+```
+
+When the digest and allocation have been recorded independently, compare them during the same check.
+
+```sh
+python3 -B experiments/rq-c/collect_department_journal.py --check-config "$P2_COLLECTOR_CONFIG" \
+  --expected-config-sha256 "$P2_REVIEWED_CONFIG_SHA" --expected-allocation "$P2_REVIEWED_ALLOCATION"
+```
+
 ## Configure after the reply and host assignment
 
 Use the actual department reservation, PCI address, resolved journalctl executable and source bytes. Verify that the assigned device exposes its UUID at `/proc/driver/nvidia/gpus/<PCI address>/information` and its loaded module version at `/sys/module/nvidia/version`. Confirm that the relevant model service is a declared system unit in the local journal namespace. Verify the assigned account can read that system journal through the required retention interval. Keep this configuration and captured logs private in the project workspace.

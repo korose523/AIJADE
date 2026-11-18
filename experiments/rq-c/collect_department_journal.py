@@ -23,6 +23,7 @@ SOURCE_FIELDS = (
 EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
 READ_BUDGET = 32 * 1024 * 1024
 QUERY_BUDGET_SECONDS = 90
+CONFIG_BUDGET = 65536
 GPU_LABEL = re.compile(r"\b(?:nvidia|nvrm|nouveau|amdgpu|gpu|drm|gsp|cuda|nvlink|nvml)\b", re.I)
 GPU_FAILURE = re.compile(r"\b(?:xid|fault|fail(?:ed|ure)?|error|reset|hang|timeout|timed out|fallen off|uncorrectable|fatal)\b", re.I)
 HOST_FAILURE = re.compile(r"\b(?:hardware error|machine check|mce|edac|uncorrectable|kernel panic|oom-kill|out of memory|watchdog|segfault)\b", re.I)
@@ -102,6 +103,30 @@ def config_from(raw):
          and all(type(unit) is str and re.fullmatch(r"[a-zA-Z0-9_.@-]{1,150}\.service", unit) for unit in units)
          and len(set(units)) == len(units), "expected explicit unique system service units")
     return obj
+
+
+def config_bytes(path):
+    need(path.is_absolute() and path.resolve() == path and path.is_file(),
+         "collector configuration must be a resolved absolute file")
+    with path.open("rb") as source:
+        settings = source.read(CONFIG_BUDGET + 1)
+    need(len(settings) <= CONFIG_BUDGET, "collector configuration is too large")
+    return settings
+
+
+def check_config(path, expected_sha, expected_allocation):
+    settings = config_bytes(path)
+    cfg = config_from(settings)
+    configuration_sha = sha(settings)
+    if expected_sha is not None:
+        need(re.fullmatch(r"[0-9a-f]{64}", expected_sha) and expected_sha == configuration_sha,
+             "configuration bytes differ from the expected SHA-256")
+    if expected_allocation is not None:
+        need(cfg["allocation"] == expected_allocation, "configuration allocation differs from the expected allocation")
+    return {"status": "COLLECTOR_CONFIG_OFFLINE_VALIDATED", "configurationSha256": configuration_sha,
+            "comparedExpectedSha256": expected_sha is not None,
+            "comparedExpectedAllocation": expected_allocation is not None,
+            "hostCompatibilityAndLogAccess": "UNVERIFIED"}
 
 
 def identity(cfg, read):
@@ -289,16 +314,32 @@ def capture(cfg, since, until, read, run_query, clock, monotonic, collector_sha)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--since", required=True)
-    parser.add_argument("--until", required=True)
+    parser.add_argument("--since")
+    parser.add_argument("--until")
+    parser.add_argument("--check-config", type=Path, metavar="FILE", help="validate configuration bytes without host access")
+    parser.add_argument("--expected-config-sha256", help="compare against an independently recorded configuration digest")
+    parser.add_argument("--expected-allocation", help="compare against an independently recorded allocation identifier")
     args = parser.parse_args()
+    if args.check_config is not None:
+        if args.since is not None or args.until is not None:
+            parser.error("--check-config cannot be combined with a capture interval")
+        try:
+            report = check_config(args.check_config, args.expected_config_sha256, args.expected_allocation)
+        except (ValueError, OSError) as error:
+            print(f"journal configuration check refused: {error}", file=sys.stderr)
+            return 2
+        print(json.dumps(report, indent=2, allow_nan=False))
+        return 0
+    if args.expected_config_sha256 is not None or args.expected_allocation is not None:
+        parser.error("configuration comparisons require --check-config")
+    if args.since is None or args.until is None:
+        parser.error("capture requires --since and --until")
     try:
         need(sys.platform == "linux", "this collector requires Linux; verify the actual assigned host first")
-        path = Path(os.environ.get("AIJADE_P2_LOG_CONFIG", ""))
-        need(path.is_absolute() and path.resolve() == path and path.is_file(),
-             "AIJADE_P2_LOG_CONFIG must name the reviewed absolute configuration")
-        need(path.stat().st_size <= 65536, "collector configuration is too large")
-        settings = path.read_bytes()
+        location = os.environ.get("AIJADE_P2_LOG_CONFIG")
+        need(location, "AIJADE_P2_LOG_CONFIG must name the reviewed absolute configuration")
+        path = Path(location)
+        settings = config_bytes(path)
         cfg = config_from(settings)
         journalctl = Path(cfg["journalctl"])
         need(journalctl.resolve() == journalctl and journalctl.is_file() and os.access(journalctl, os.X_OK),
@@ -315,7 +356,7 @@ def main():
                                  lambda: datetime.now(timezone.utc), time.monotonic,
                                  sha(Path(__file__).read_bytes()))
         pin_file(journalctl, cfg["journalctlSha256"])
-        need(path.read_bytes() == settings, "collector configuration changed during capture")
+        need(config_bytes(path) == settings, "collector configuration changed during capture")
         capture_result["provenance"]["configurationSha256"] = sha(settings)
     except (ValueError, OSError, OverflowError, subprocess.SubprocessError) as error:
         print(f"journal capture refused: {error}", file=sys.stderr)

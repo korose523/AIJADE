@@ -1,6 +1,8 @@
 """Offline Linux collector controls. No real journal, GPU or server is queried."""
 
+from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timedelta, timezone
+import io
 import json
 import os
 from pathlib import Path
@@ -162,6 +164,44 @@ class JournalTests(unittest.TestCase):
                         dict(CFG, pciAddress="../../something"), dict(CFG, serviceUnits=["*"])):
             self.assertRaises(ValueError, collector.config_from, json.dumps(changed).encode())
         self.assertRaisesRegex(ValueError, "duplicate JSON key", collector.config_from, b'{"schema":"a","schema":"b"}')
+
+    def test_check_config_reads_exact_bytes_without_running_the_collector(self):
+        runtime = launch.REPO / ".runtime"
+        runtime.mkdir(exist_ok=True)
+        with TemporaryDirectory(prefix="p2-config-check-", dir=runtime) as directory:
+            config = Path(directory).resolve() / "collector.json"
+            raw = (json.dumps(CFG) + "\n").encode()
+            config.write_bytes(raw)
+            digest = collector.sha(raw)
+            command = ["collect_department_journal.py", "--check-config", str(config),
+                       "--expected-config-sha256", digest, "--expected-allocation", CFG["allocation"]]
+            with patch.object(sys, "argv", command), patch.object(sys, "platform", "darwin"), \
+                    patch.object(collector, "capture") as capture, patch.object(collector, "pin_file") as pin, \
+                    redirect_stdout(io.StringIO()) as stdout:
+                self.assertEqual(0, collector.main())
+                report = json.loads(stdout.getvalue())
+                capture.assert_not_called()
+                pin.assert_not_called()
+            self.assertEqual(report, {"status": "COLLECTOR_CONFIG_OFFLINE_VALIDATED", "configurationSha256": digest,
+                                      "comparedExpectedSha256": True, "comparedExpectedAllocation": True,
+                                      "hostCompatibilityAndLogAccess": "UNVERIFIED"})
+
+    def test_check_config_refuses_mismatch_and_oversized_bytes(self):
+        runtime = launch.REPO / ".runtime"
+        runtime.mkdir(exist_ok=True)
+        with TemporaryDirectory(prefix="p2-config-check-", dir=runtime) as directory:
+            config = Path(directory).resolve() / "collector.json"
+            raw = json.dumps(CFG).encode()
+            cases = ((raw + b"\n", ["--expected-config-sha256", collector.sha(raw)], "SHA-256"),
+                     (raw, ["--expected-allocation", "another-allocation"], "expected allocation"),
+                     (b" " * (collector.CONFIG_BUDGET + 1), [], "too large"))
+            command = ["collect_department_journal.py", "--check-config", str(config)]
+            for content, flags, message in cases:
+                with self.subTest(message=message):
+                    config.write_bytes(content)
+                    with patch.object(sys, "argv", command + flags), redirect_stderr(io.StringIO()) as stderr:
+                        self.assertEqual(2, collector.main())
+                    self.assertIn(message, stderr.getvalue())
 
     def test_bounded_capture_drains_both_channels_and_stops_at_limit(self):
         command = [sys.executable, "-B", "-c", "import sys; sys.stdout.write('abc'); sys.stderr.write('de')"]
