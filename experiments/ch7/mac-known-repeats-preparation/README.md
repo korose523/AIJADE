@@ -28,34 +28,42 @@ packages illustrate tool behavior. No renderer, model, database
 or live observer runs in either command. All earlier refused, timed-out and
 engineering-only attempts remain archived with their original dispositions.
 
+The separate `preflight_known_repeat_readback.py` readback checks the protected
+source, the historical engineering Release outputs, and the exact content of
+the known worklist. It records the absence of the formal decision and
+publication files and lists the required acceptance inventory. It compares the
+runtime and scoring inputs after rebinding the protected revision and its
+dependent digest, and checks the selection without changes.
+
+```sh
+python3 -B experiments/ch7/preflight_known_repeat_readback.py \
+  --protected-repo "$protected_checkout" --historical-release-manifest "$release_output_manifest" \
+  --supervisor-review "$review_original" --scratch "$project_scratch" --archive-deck "$archive_deck"
+```
+
+The report lists programme sources found in the protected sparse checkout and
+those verified in the separate optional archive deck. The latter is a read-only
+copy of four Git objects. The future Q worktree must contain those files at
+their original relative paths. The retained engineering Release build identifies
+the protected revision and cannot supply the separately approved build for Q.
+
 ## After the reply
 
-1. Record the reply and freeze the approved plan, implementation, scoring and
-   backend identity before starting either repeat. Re-derive the same known
-   inputs through the existing `finite_inputs.py qualification` mode under that
-   exact implementation commit. Use independently isolated output locations
-   and preserve both terminal receipts, including stops.
-2. The prospective launcher should call the finite block primitive for each
-   repeat. `run_finite_block.py` expects exact `--repo`, `--client`, `--model`,
-   `--selection`, `--manifest`, `--scoring`, `--output`, `--dotnet`,
-   `--assembly`, `--build-manifest`, `--godot`, `--docker`, `--execution-plan`,
-   `--db-container` and `--build-freeze-commit` inputs. Mac strict mode also
-   needs `--implementation-commit`, `--build-freeze-path` and `--process-policy`.
-   The block checks a clean source checkout, its build and policy, `psutil
-   7.2.2`, `DOTNET_PROCESSOR_COUNT=2`, and `AIJADE_GIT_COMMIT`. Its caller
-   supplies the Godot executable and sandbox profile as `AIJADE_REAL_GODOT`
-   and `AIJADE_GODOT_SANDBOX_PROFILE`, an owned `AIJADE_FINITE_TIMERS_FILE` and
-   the relevant lifecycle context and sequence clock. The finite primitive
-   requires Python 3.11 or newer and an already-built renderer.
-3. Approve the new launch path explicitly after the reply. The current plan
-   dispatch recognizes four historical Mac execution plans. A different
-   filename falls through the legacy path. The historical sequence launcher
-   uses its own 600-second settling and 120-second admission, and the old
-   acceptance reader binds one P4-era sequence. These frozen paths remain
-   historical. A new two-repeat launcher and a prospective construction
-   acceptance binding are still required after review.
-4. After the future two repeats have closed, use the offline delivery check
-   from the repository root with the two **block** directories. Its
+1. Record the reply and prepare the approved implementation Q and build
+   publication B under [the canonical launch procedure](../mac-known-repeats-qualification/LAUNCH.md).
+   Materialize the four bound programme sources in the clean Q checkout and
+   preserve both repeat receipts, including any stops.
+2. Run the implemented two-repeat `launch_known_repeats.py` through that
+   procedure with the approved prebuilt renderer, Python 3.11 or newer, and
+   psutil 7.2.2. The launcher re-derives the known input bytes against Q and
+   checks the terminal block evidence before advancing.
+3. Use [the acceptance procedure](ACCEPTANCE.md) to review the complete
+   repeats before publishing acceptance and construction freeze. The
+   [four-block procedure](../FOUR-BLOCK-EXECUTION.md) uses these bindings for
+   the held-out comparison. The historical sequence and its refusal records
+   retain their original scope.
+4. An additional offline delivery check from the repository root takes the
+   two completed **block** directories. Its
    `--expected-identity` JSON is independently archived from the approved
    pre-run materials with schema `aijade.ch7.known-repeats-expected-identity.v1`,
    a full `implementationCommit`, an `executionPlanSha256`, and the closed
