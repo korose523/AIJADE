@@ -1,0 +1,567 @@
+{
+  "codeFaults": {
+    "changed unit or meaning": {
+      "1 paper": {
+        "applicable": 5,
+        "detected": 1,
+        "detectedIds": [
+          "C3"
+        ],
+        "detectionStages": {
+          "before deployment: drift matrix": 1
+        },
+        "notApplicableIds": []
+      },
+      "2 liberal": {
+        "applicable": 5,
+        "detected": 1,
+        "detectedIds": [
+          "C3"
+        ],
+        "detectionStages": {
+          "before deployment: drift matrix, liberal": 1
+        },
+        "notApplicableIds": []
+      },
+      "3 contracts": {
+        "applicable": 5,
+        "detected": 5,
+        "detectedIds": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5"
+        ],
+        "detectionStages": {
+          "before deployment: consumer tests": 5
+        },
+        "notApplicableIds": []
+      },
+      "4 lineage": {
+        "applicable": 5,
+        "detected": 0,
+        "detectedIds": [],
+        "detectionStages": {},
+        "notApplicableIds": []
+      }
+    },
+    "drift-matrix mutants": {
+      "1 paper": {
+        "applicable": 18,
+        "detected": 9,
+        "detectedIds": [
+          "FU-01",
+          "FU-02",
+          "FU-03",
+          "FU-04",
+          "FU-05",
+          "FU-06",
+          "FU-07b",
+          "FU-09",
+          "FU-14"
+        ],
+        "detectionStages": {
+          "before deployment: drift matrix": 9
+        },
+        "notApplicableIds": []
+      },
+      "2 liberal": {
+        "applicable": 16,
+        "detected": 7,
+        "detectedIds": [
+          "FU-01",
+          "FU-02",
+          "FU-03",
+          "FU-06",
+          "FU-07b",
+          "FU-09",
+          "FU-14"
+        ],
+        "detectionStages": {
+          "before deployment: drift matrix, liberal": 7
+        },
+        "notApplicableIds": [
+          "FU-04",
+          "FU-13"
+        ]
+      },
+      "3 contracts": {
+        "applicable": 9,
+        "detected": 5,
+        "detectedIds": [
+          "FU-08",
+          "FU-09",
+          "FU-10",
+          "FU-11",
+          "FU-14"
+        ],
+        "detectionStages": {
+          "before deployment: consumer tests": 5
+        },
+        "notApplicableIds": [
+          "FU-01",
+          "FU-02",
+          "FU-03",
+          "FU-04",
+          "FU-05",
+          "FU-06",
+          "FU-13",
+          "FU-17",
+          "FU-18"
+        ]
+      },
+      "4 lineage": {
+        "applicable": 4,
+        "detected": 1,
+        "detectedIds": [
+          "FU-09"
+        ],
+        "detectionStages": {
+          "after-the-fact audit": 1
+        },
+        "notApplicableIds": [
+          "FU-01",
+          "FU-02",
+          "FU-03",
+          "FU-04",
+          "FU-05",
+          "FU-06",
+          "FU-07a",
+          "FU-07b",
+          "FU-08",
+          "FU-11",
+          "FU-13",
+          "FU-14",
+          "FU-17",
+          "FU-18"
+        ]
+      }
+    },
+    "gate-matrix mutants": {
+      "1 paper": {
+        "applicable": 15,
+        "detected": 13,
+        "detectedIds": [
+          "A1",
+          "A2",
+          "E1",
+          "E2",
+          "E4",
+          "E5",
+          "E6",
+          "G5",
+          "P1",
+          "P2",
+          "P3",
+          "P4",
+          "P5"
+        ],
+        "detectionStages": {
+          "before deployment: gate matrix": 13
+        },
+        "notApplicableIds": []
+      },
+      "2 liberal": {
+        "applicable": 15,
+        "detected": 13,
+        "detectedIds": [
+          "A1",
+          "A2",
+          "E1",
+          "E2",
+          "E4",
+          "E5",
+          "E6",
+          "G5",
+          "P1",
+          "P2",
+          "P3",
+          "P4",
+          "P5"
+        ],
+        "detectionStages": {
+          "before deployment: gate matrix": 13
+        },
+        "notApplicableIds": []
+      },
+      "3 contracts": {
+        "applicable": 15,
+        "detected": 13,
+        "detectedIds": [
+          "A1",
+          "A2",
+          "E1",
+          "E2",
+          "E4",
+          "E5",
+          "E6",
+          "G5",
+          "P1",
+          "P2",
+          "P3",
+          "P4",
+          "P5"
+        ],
+        "detectionStages": {
+          "before deployment: gate matrix": 13
+        },
+        "notApplicableIds": []
+      },
+      "4 lineage": {
+        "applicable": 15,
+        "detected": 13,
+        "detectedIds": [
+          "A1",
+          "A2",
+          "E1",
+          "E2",
+          "E4",
+          "E5",
+          "E6",
+          "G5",
+          "P1",
+          "P2",
+          "P3",
+          "P4",
+          "P5"
+        ],
+        "detectionStages": {
+          "before deployment: gate matrix": 13
+        },
+        "notApplicableIds": []
+      }
+    }
+  },
+  "inputAndData": {
+    "1": {
+      "1 paper": {
+        "cases": 24,
+        "detected": 7,
+        "detectedCasesWithRowDelta": [
+          "o3"
+        ],
+        "detectedIds": [
+          "o3",
+          "p1",
+          "p2",
+          "p3",
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "detectionStages": {
+          "boundary": 2,
+          "write": 5
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      },
+      "2 liberal": {
+        "cases": 24,
+        "detected": 7,
+        "detectedCasesWithRowDelta": [
+          "o3"
+        ],
+        "detectedIds": [
+          "o3",
+          "p1",
+          "p2",
+          "p3",
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "detectionStages": {
+          "boundary": 1,
+          "write": 6
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      },
+      "3 contracts": {
+        "cases": 24,
+        "detected": 7,
+        "detectedCasesWithRowDelta": [
+          "o3"
+        ],
+        "detectedIds": [
+          "o3",
+          "p1",
+          "p2",
+          "p3",
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "detectionStages": {
+          "write": 7
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      },
+      "4 lineage": {
+        "cases": 24,
+        "detected": 8,
+        "detectedCasesWithRowDelta": [
+          "m1",
+          "m2",
+          "m3",
+          "o1",
+          "o3",
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "detectedIds": [
+          "m1",
+          "m2",
+          "m3",
+          "o1",
+          "o3",
+          "s1",
+          "s2",
+          "s3"
+        ],
+        "detectionStages": {
+          "after-the-fact audit": 8
+        },
+        "eventRowDeltaOverDetectedCases": 9,
+        "traceRowDeltaOverDetectedCases": 2
+      }
+    },
+    "2": {
+      "1 paper": {
+        "cases": 5,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      },
+      "2 liberal": {
+        "cases": 5,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      },
+      "3 contracts": {
+        "cases": 5,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      },
+      "4 lineage": {
+        "cases": 5,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      }
+    },
+    "3": {
+      "1 paper": {
+        "cases": 9,
+        "detected": 9,
+        "detectedCasesWithRowDelta": [
+          "n7"
+        ],
+        "detectedIds": [
+          "n1",
+          "n2",
+          "n3",
+          "n4",
+          "n5",
+          "n6",
+          "n7",
+          "n8",
+          "n9"
+        ],
+        "detectionStages": {
+          "authentication": 1,
+          "boundary": 6,
+          "write": 2
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      },
+      "2 liberal": {
+        "cases": 9,
+        "detected": 6,
+        "detectedCasesWithRowDelta": [
+          "n7"
+        ],
+        "detectedIds": [
+          "n1",
+          "n3",
+          "n5",
+          "n7",
+          "n8",
+          "n9"
+        ],
+        "detectionStages": {
+          "authentication": 1,
+          "boundary": 3,
+          "write": 2
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      },
+      "3 contracts": {
+        "cases": 9,
+        "detected": 5,
+        "detectedCasesWithRowDelta": [
+          "n7"
+        ],
+        "detectedIds": [
+          "n1",
+          "n6",
+          "n7",
+          "n8",
+          "n9"
+        ],
+        "detectionStages": {
+          "authentication": 1,
+          "boundary": 1,
+          "write": 2,
+          "write (server error)": 1
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      },
+      "4 lineage": {
+        "cases": 9,
+        "detected": 3,
+        "detectedCasesWithRowDelta": [
+          "n6"
+        ],
+        "detectedIds": [
+          "n1",
+          "n6",
+          "n9"
+        ],
+        "detectionStages": {
+          "after-the-fact audit": 1,
+          "authentication": 1,
+          "boundary": 1
+        },
+        "eventRowDeltaOverDetectedCases": 1,
+        "traceRowDeltaOverDetectedCases": 1
+      }
+    },
+    "valid": {
+      "1 paper": {
+        "cases": 24,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      },
+      "2 liberal": {
+        "cases": 24,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      },
+      "3 contracts": {
+        "cases": 24,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      },
+      "4 lineage": {
+        "cases": 24,
+        "detected": 0,
+        "detectedCasesWithRowDelta": [],
+        "detectedIds": [],
+        "detectionStages": {},
+        "eventRowDeltaOverDetectedCases": 0,
+        "traceRowDeltaOverDetectedCases": 0
+      }
+    }
+  },
+  "interpretation": [
+    "Recorded stages and row-count deltas are properties of these authored cases.",
+    "Row deltas cover whole trajectories, including accepted setup events. They do not classify the rows as faulty.",
+    "Code-fault applicability and the historical non-blind timing of the consumer tests are retained."
+  ],
+  "population": {
+    "applicableCodeCells": 127,
+    "codeConfigurationCells": 152,
+    "codeFaultRows": 38,
+    "inputConfigurationRows": 248,
+    "inputScenarioKeys": 62,
+    "notApplicableCodeCells": 25
+  },
+  "schema": "aijade.p1.alternative-designs-paired-readback.v1",
+  "scope": "Descriptive recomputation of the original P1-A rows. No fault, runtime, or model was run.",
+  "set1Paired": {
+    "changedStagesAmongSharedDetections": {
+      "2 liberal": {
+        "s1": {
+          "comparator": "write",
+          "paper": "boundary"
+        }
+      },
+      "3 contracts": {
+        "s1": {
+          "comparator": "write",
+          "paper": "boundary"
+        },
+        "s3": {
+          "comparator": "write",
+          "paper": "boundary"
+        }
+      }
+    },
+    "firstThreeDetectExactlySameCases": true,
+    "paperAndLineage": {
+      "both": [
+        "o3",
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "lineageOnly": [
+        "m1",
+        "m2",
+        "m3",
+        "o1"
+      ],
+      "paperOnly": [
+        "p1",
+        "p2",
+        "p3"
+      ]
+    }
+  },
+  "sources": {
+    "alternative-designs-code-faults.json": {
+      "archiveCommit": "6d85e4a68158e431cbb8863c5bb5f87ac2cb9db9",
+      "recordedCodeCommit": "7d119a9f1443938deda4b98e1d6881bb4be0e9c4",
+      "sha256": "f8e905b1420fc65c8180ebb328c175a426076e086d93e1e2928aad3162edc78b"
+    },
+    "alternative-designs.json": {
+      "archiveCommit": "29a527107e9e2758ea4579b190dec88bea895b9a",
+      "recordedCodeCommit": "de70ae570448e6152b490dc81714b113630e3b06",
+      "sha256": "dbd75fee2d4ddc33721d0a7d64edc9ffbb48fa48cc61ba3da02d6f6250e4f8bb"
+    }
+  }
+}

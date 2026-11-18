@@ -44,6 +44,15 @@ jobs:
           python3 -B experiments/ch7/test_prepare_known_repeats.py .runtime/ch7-preparation | cmp - experiments/ch7/mac-known-repeats-preparation/offline-controls.json
       - name: Verify offline P2-R launch and continuous log evidence
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_launch_department_regeneration.py -v
+      - name: Verify offline P2-R reporting on retained archives and simulated receipts
+        run: python3 -B -m unittest discover -s experiments/rq-c -p test_summarize_department_regeneration.py -v
+      - name: Recompute P1 detection-stage and P3 scorer-policy archive comparisons
+        run: |
+          set -o pipefail
+          python3 -B experiments/p1/audit_alternative_designs.py --verify experiments/p1/alternative-designs-paired-readback.json
+          python3 -B -m unittest discover -s experiments/p1 -p test_audit_alternative_designs.py -v
+          python3 -B experiments/p3-policy/2026-11-10/audit_langchain_scorer_policy_interaction.py | cmp - experiments/p3-policy/2026-11-10/langchain-scorer-policy-interaction.json
+          python3 -B -m unittest discover -s experiments/p3-policy/2026-11-10 -p test_langchain_scorer_policy_interaction.py -v
       - name: Verify offline Chapter 7 two-repeat launcher
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_launch_known_repeats.py -v
       - name: Verify offline Chapter 7 qualification and construction binding

@@ -1,0 +1,250 @@
+{
+  "archiveChecks": {
+    "actualPromptMatchedPlannedFirstFiveAcrossAllCells": true,
+    "actualPromptRowsValidated": 7944,
+    "candidateMasksMatchedAcrossAllCells": true,
+    "newModelCalls": 0,
+    "priorNativeTransitionAndOriginalCellMeansMatched": true,
+    "rankingRowsValidated": 7944
+  },
+  "contrast": "(refresh on minus off under native scoring) minus (refresh on minus off under relevance-only scoring)",
+  "inference": {
+    "holmFamily": "four exploratory interactions: two stages crossed with two metrics",
+    "interval": "descriptive 95% percentile interval from 10,000 paired dialogue resamples, seed 20261110",
+    "limits": "same archived corpus and switch; no preregistered test, independent corpus, other maintenance policy or generated-answer result",
+    "signFlip": "exploratory two-sided exact test across 1,024 sign patterns, assuming independent dialogues and null sign symmetry",
+    "unit": "ten dialogues, equally weighted after dialogue-specific question means"
+  },
+  "metrics": {
+    "annotatedSourceFraction": "distinct annotated evidence sources present divided by all annotated sources",
+    "hitAny": "binary hit on at least one annotated evidence source"
+  },
+  "population": {
+    "allQuestions": 1986,
+    "primaryEvidenceBearingAnswerable": 1536,
+    "questionsPerDialogue": [
+      150,
+      81,
+      152,
+      199,
+      178,
+      123,
+      150,
+      191,
+      156,
+      156
+    ]
+  },
+  "provenance": {
+    "analysisSourcesSha256": {
+      "audit_langchain_access_refresh.py": "7187f31eddecbc257da9db80310759356f62f054c0793023a8f4f4ab298b89c4",
+      "audit_langchain_scorer_policy_interaction.py": "6f5379b7c6e2ac24c98b681e656113e47847b8978ba17732375ae3ae169e7902"
+    },
+    "executionCommit": "1c78bf920902a6aeff6b4b269b9883d1c120a983",
+    "inputSha256": {
+      "analyze.py": "7fd3ca70482f161d1cfce2db8abbbdba7a3c3c0885216c39d0d1cc63843d72f9",
+      "corpus-export.json.gz": "4ede85f3c6fcc7412073dc260634090f42c0441c9293f266dff77e101f6b5a18",
+      "langchain-access-refresh-transitions.json": "81ef8c72aad89a6c1d2e8899e1c35b2be8b4381e64fb722c1cf8ce091c35ff4f",
+      "receipt.json": "14c2ccb758be03998f117dcec93e5805c52a46dd6b3ef8f83f68d27277660945",
+      "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz": "031457410e5d58686074456a2306081a8b7ffa95c82cae431da048402c35c626",
+      "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz.receipt.json": "e52d26762b5dd5756931e01c6a12eff8e59b60b3ffd99cd6b72e03ea0c97d3b2",
+      "runs/attempt-03/external/langchain/langchain.jsonl.gz": "e84437d47c0d4c7ca226e1c696aae9eef3d2291973932b44b71f8f51445790c9",
+      "runs/attempt-03/external/langchain/receipt.json": "b62a23a60d35cb64028179bc6d3e744c88bdbdcadd574f116b2dcade442af5cc",
+      "summary.json": "9672a29c5957d9d33410922948544e3e7f70b7380a3822cd5320664cb918ca15"
+    },
+    "originalPlanCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b"
+  },
+  "schema": "aijade.p3.langchain-scorer-policy-interaction.v1",
+  "scope": "Frozen attempt 03 LangChain time-weighted retriever, recorded relevance-only scorer and access-refresh switch.",
+  "stages": {
+    "actualPrompt": {
+      "hitTransitions": {
+        "own": {
+          "both": 31,
+          "neither": 1482,
+          "offOnly": 8,
+          "onOnly": 15
+        },
+        "relevance": {
+          "both": 448,
+          "neither": 1088,
+          "offOnly": 0,
+          "onOnly": 0
+        }
+      },
+      "metrics": {
+        "annotatedSourceFraction": {
+          "cellMeans": {
+            "off-own": 0.023591661,
+            "off-relevance": 0.259945061,
+            "on-own": 0.027162571,
+            "on-relevance": 0.259945061
+          },
+          "interaction": {
+            "ci95": [
+              -0.001669,
+              0.009569
+            ],
+            "conversationValues": [
+              -0.0033333333333333335,
+              0.024691358024691357,
+              0.0,
+              0.005025125628140704,
+              0.0056179775280898875,
+              0.0027100271002710027,
+              0.006666666666666667,
+              0.006544502617801047,
+              0.0006072874493927126,
+              -0.01282051282051282
+            ],
+            "holmP": 0.90234375,
+            "mean": 0.003571,
+            "signFlipP": 0.30078125
+          },
+          "refreshOnMinusOff": {
+            "own": 0.00357091,
+            "relevance": 0.0
+          }
+        },
+        "hitAny": {
+          "cellMeans": {
+            "off-own": 0.025844011,
+            "off-relevance": 0.28634554,
+            "on-own": 0.031263227,
+            "on-relevance": 0.28634554
+          },
+          "interaction": {
+            "ci95": [
+              1.4e-05,
+              0.011115
+            ],
+            "conversationValues": [
+              0.0,
+              0.024691358024691357,
+              0.0,
+              0.005025125628140704,
+              0.0056179775280898875,
+              0.008130081300813009,
+              0.006666666666666667,
+              0.010471204188481676,
+              0.00641025641025641,
+              -0.01282051282051282
+            ],
+            "holmP": 0.40625,
+            "mean": 0.005419,
+            "signFlipP": 0.1015625
+          },
+          "refreshOnMinusOff": {
+            "own": 0.005419216,
+            "relevance": 0.0
+          }
+        }
+      },
+      "orderedSourcesChangedByRefresh": {
+        "own": {
+          "allQuestions": 1800,
+          "primary": 1391
+        },
+        "relevance": {
+          "allQuestions": 0,
+          "primary": 0
+        }
+      }
+    },
+    "top8": {
+      "hitTransitions": {
+        "own": {
+          "both": 55,
+          "neither": 1467,
+          "offOnly": 8,
+          "onOnly": 6
+        },
+        "relevance": {
+          "both": 550,
+          "neither": 986,
+          "offOnly": 0,
+          "onOnly": 0
+        }
+      },
+      "metrics": {
+        "annotatedSourceFraction": {
+          "cellMeans": {
+            "off-own": 0.034470161,
+            "off-relevance": 0.317726342,
+            "on-own": 0.03486612,
+            "on-relevance": 0.317726342
+          },
+          "interaction": {
+            "ci95": [
+              -0.004166,
+              0.005244
+            ],
+            "conversationValues": [
+              -0.013333333333333334,
+              0.012345679012345678,
+              0.011513157894736841,
+              -0.006700167504187605,
+              0.0,
+              0.0,
+              0.0,
+              0.006544502617801047,
+              -0.00641025641025641,
+              0.0
+            ],
+            "holmP": 1,
+            "mean": 0.000396,
+            "signFlipP": 0.96875
+          },
+          "refreshOnMinusOff": {
+            "own": 0.000395958,
+            "relevance": 0.0
+          }
+        },
+        "hitAny": {
+          "cellMeans": {
+            "off-own": 0.041040054,
+            "off-relevance": 0.354081782,
+            "on-own": 0.040333587,
+            "on-relevance": 0.354081782
+          },
+          "interaction": {
+            "ci95": [
+              -0.006599,
+              0.004751
+            ],
+            "conversationValues": [
+              -0.02,
+              0.012345679012345678,
+              0.006578947368421052,
+              -0.010050251256281407,
+              0.0,
+              0.0,
+              0.0,
+              0.010471204188481676,
+              -0.00641025641025641,
+              0.0
+            ],
+            "holmP": 1,
+            "mean": -0.000706,
+            "signFlipP": 0.875
+          },
+          "refreshOnMinusOff": {
+            "own": -0.000706468,
+            "relevance": 0.0
+          }
+        }
+      },
+      "orderedSourcesChangedByRefresh": {
+        "own": {
+          "allQuestions": 1940,
+          "primary": 1498
+        },
+        "relevance": {
+          "allQuestions": 0,
+          "primary": 0
+        }
+      }
+    }
+  },
+  "status": "POST_HOC_ARCHIVE_RECOMPUTATION"
+}
