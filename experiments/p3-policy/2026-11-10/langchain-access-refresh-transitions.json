@@ -1,0 +1,240 @@
+{
+  "schema": "aijade.p3.langchain-access-refresh-transitions.v1",
+  "status": "POST_HOC_DESCRIPTIVE_ARCHIVE_RECOMPUTATION",
+  "scope": "Attempt 03, LangChain named access-refresh configuration, native own scorer held fixed. No new run or wider policy inference.",
+  "executionCommit": "1c78bf920902a6aeff6b4b269b9883d1c120a983",
+  "originalPlanCommit": "132bfda51b95fd4b0ebfc23304142d56bfcb455b",
+  "analysisSourceSha256": "7187f31eddecbc257da9db80310759356f62f054c0793023a8f4f4ab298b89c4",
+  "inputSha256": {
+    "receipt.json": "14c2ccb758be03998f117dcec93e5805c52a46dd6b3ef8f83f68d27277660945",
+    "runs/attempt-03/external/langchain/langchain.jsonl.gz": "e84437d47c0d4c7ca226e1c696aae9eef3d2291973932b44b71f8f51445790c9",
+    "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz": "031457410e5d58686074456a2306081a8b7ffa95c82cae431da048402c35c626",
+    "runs/attempt-03/external/langchain/langchain-prompts.jsonl.gz.receipt.json": "e52d26762b5dd5756931e01c6a12eff8e59b60b3ffd99cd6b72e03ea0c97d3b2",
+    "corpus-export.json.gz": "4ede85f3c6fcc7412073dc260634090f42c0441c9293f266dff77e101f6b5a18",
+    "summary.json": "9672a29c5957d9d33410922948544e3e7f70b7380a3822cd5320664cb918ca15",
+    "analyze.py": "7fd3ca70482f161d1cfce2db8abbbdba7a3c3c0885216c39d0d1cc63843d72f9",
+    "runs/attempt-03/external/langchain/receipt.json": "b62a23a60d35cb64028179bc6d3e744c88bdbdcadd574f116b2dcade442af5cc"
+  },
+  "archiveChecks": {
+    "validatedRankedRows": 7944,
+    "validatedCompletionCaptures": 7944,
+    "candidateMasksMatchedAcrossAllCells": true,
+    "actualPromptMatchedPlannedFirstFiveAcrossAllCells": true,
+    "archivedPromptBudget": {
+      "ModuleCharacters": 4000,
+      "SupplementCharacters": 12000,
+      "HistoryCharacters": 24000,
+      "ToolResultCharacters": 8000
+    },
+    "truncatedOrUnknownCaptures": 0,
+    "originalStageMeansAndTop8SwitchCountsMatched": true,
+    "newModelCalls": 0
+  },
+  "metrics": {
+    "hitStates": "Any annotated source present in both, ON only, OFF only, or neither cell",
+    "dialogueMacro": "Mean within each of ten conversations, then equally across conversations. Questions without any evidence annotation are omitted from these means, and unlocated annotated sources remain in the denominator.",
+    "promptBoundary": "Ordered first five native results, verified in captured memory blocks. There was no extra recorded budget truncation. This does not measure generated-answer quality."
+  },
+  "allArchivedQuestions": {
+    "questionCount": 1986,
+    "withAnnotatedEvidence": 1982,
+    "dialogueCount": 10,
+    "stages": {
+      "top8": {
+        "hitStates": {
+          "both": 77,
+          "onOnly": 8,
+          "offOnly": 14,
+          "neither": 1887
+        },
+        "changes": {
+          "orderedSourceChange": 1940,
+          "sourceSetChange": 1739,
+          "goldSourceSetChange": 22,
+          "goldCountIncrease": 8,
+          "goldCountDecrease": 14,
+          "differentGoldSameCount": 0
+        },
+        "dialogueMacro": {
+          "hitAny": {
+            "on": 0.042819223,
+            "off": 0.045175263,
+            "onMinusOff": -0.00235604,
+            "dialoguesWithLargerOn": 3,
+            "dialoguesWithEqual": 3,
+            "dialoguesWithLargerOff": 4
+          },
+          "annotatedSourceFraction": {
+            "on": 0.03829304,
+            "off": 0.040064069,
+            "onMinusOff": -0.00177103,
+            "dialoguesWithLargerOn": 3,
+            "dialoguesWithEqual": 3,
+            "dialoguesWithLargerOff": 4
+          }
+        }
+      },
+      "actualPrompt": {
+        "hitStates": {
+          "both": 48,
+          "onOnly": 20,
+          "offOnly": 12,
+          "neither": 1906
+        },
+        "changes": {
+          "orderedSourceChange": 1800,
+          "sourceSetChange": 1696,
+          "goldSourceSetChange": 32,
+          "goldCountIncrease": 20,
+          "goldCountDecrease": 12,
+          "differentGoldSameCount": 0
+        },
+        "dialogueMacro": {
+          "hitAny": {
+            "on": 0.034761523,
+            "off": 0.029667028,
+            "onMinusOff": 0.005094494,
+            "dialoguesWithLargerOn": 7,
+            "dialoguesWithEqual": 2,
+            "dialoguesWithLargerOff": 1
+          },
+          "annotatedSourceFraction": {
+            "on": 0.031306087,
+            "off": 0.027916824,
+            "onMinusOff": 0.003389263,
+            "dialoguesWithLargerOn": 7,
+            "dialoguesWithEqual": 1,
+            "dialoguesWithLargerOff": 2
+          }
+        }
+      }
+    },
+    "pairedTop8StateToPromptState": {
+      "both": {
+        "both": 48,
+        "onOnly": 14,
+        "offOnly": 7,
+        "neither": 8
+      },
+      "onOnly": {
+        "both": 0,
+        "onOnly": 6,
+        "offOnly": 0,
+        "neither": 2
+      },
+      "offOnly": {
+        "both": 0,
+        "onOnly": 0,
+        "offOnly": 5,
+        "neither": 9
+      },
+      "neither": {
+        "both": 0,
+        "onOnly": 0,
+        "offOnly": 0,
+        "neither": 1887
+      }
+    }
+  },
+  "answerableWithAnnotatedEvidence": {
+    "questionCount": 1536,
+    "withAnnotatedEvidence": 1536,
+    "dialogueCount": 10,
+    "stages": {
+      "top8": {
+        "hitStates": {
+          "both": 55,
+          "onOnly": 6,
+          "offOnly": 8,
+          "neither": 1467
+        },
+        "changes": {
+          "orderedSourceChange": 1498,
+          "sourceSetChange": 1321,
+          "goldSourceSetChange": 14,
+          "goldCountIncrease": 6,
+          "goldCountDecrease": 8,
+          "differentGoldSameCount": 0
+        },
+        "dialogueMacro": {
+          "hitAny": {
+            "on": 0.040333587,
+            "off": 0.041040054,
+            "onMinusOff": -0.000706468,
+            "dialoguesWithLargerOn": 3,
+            "dialoguesWithEqual": 4,
+            "dialoguesWithLargerOff": 3
+          },
+          "annotatedSourceFraction": {
+            "on": 0.03486612,
+            "off": 0.034470161,
+            "onMinusOff": 0.000395958,
+            "dialoguesWithLargerOn": 3,
+            "dialoguesWithEqual": 4,
+            "dialoguesWithLargerOff": 3
+          }
+        }
+      },
+      "actualPrompt": {
+        "hitStates": {
+          "both": 31,
+          "onOnly": 15,
+          "offOnly": 8,
+          "neither": 1482
+        },
+        "changes": {
+          "orderedSourceChange": 1391,
+          "sourceSetChange": 1315,
+          "goldSourceSetChange": 23,
+          "goldCountIncrease": 15,
+          "goldCountDecrease": 8,
+          "differentGoldSameCount": 0
+        },
+        "dialogueMacro": {
+          "hitAny": {
+            "on": 0.031263227,
+            "off": 0.025844011,
+            "onMinusOff": 0.005419216,
+            "dialoguesWithLargerOn": 7,
+            "dialoguesWithEqual": 2,
+            "dialoguesWithLargerOff": 1
+          },
+          "annotatedSourceFraction": {
+            "on": 0.027162571,
+            "off": 0.023591661,
+            "onMinusOff": 0.00357091,
+            "dialoguesWithLargerOn": 7,
+            "dialoguesWithEqual": 1,
+            "dialoguesWithLargerOff": 2
+          }
+        }
+      }
+    },
+    "pairedTop8StateToPromptState": {
+      "both": {
+        "both": 31,
+        "onOnly": 11,
+        "offOnly": 5,
+        "neither": 8
+      },
+      "onOnly": {
+        "both": 0,
+        "onOnly": 4,
+        "offOnly": 0,
+        "neither": 2
+      },
+      "offOnly": {
+        "both": 0,
+        "onOnly": 0,
+        "offOnly": 3,
+        "neither": 5
+      },
+      "neither": {
+        "both": 0,
+        "onOnly": 0,
+        "offOnly": 0,
+        "neither": 1467
+      }
+    }
+  }
+}

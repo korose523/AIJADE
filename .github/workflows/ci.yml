@@ -101,6 +101,17 @@ jobs:
           .runtime/finite-control-env/bin/python -B -m unittest discover -s experiments/ch7/native-ready-2026-11-18/freeze -p 'test_*launcher*.py' -v
       - name: Check finite-comparison adverse scoring and independent raw aggregation
         run: python3 experiments/ch7/finite_scoring_controls.py
+      - name: Check two-repeat decision matching on retained and synthetic cases
+        run: |
+          mkdir -p .runtime/ch7-repeat-controls
+          python3 -B experiments/ch7/test_compare_known_repeats.py .runtime/ch7-repeat-controls
+      - name: Reject incomplete or non-equivalent P2 regeneration comparisons
+        run: python3 -B -m unittest discover -s experiments/rq-c -p 'test_regen_compare_v2.py' -v
+      - name: Recompute the archived LangChain access-refresh transitions
+        run: |
+          set -o pipefail
+          study=experiments/p3-policy/2026-11-10
+          python3 -B "$study/audit_langchain_access_refresh.py" | cmp - "$study/langchain-access-refresh-transitions.json"
       - name: Check public-reference type and missing-data conventions
         run: python3 -m unittest discover -s experiments/p2-a/reference-oracles/2026-11-10 -p 'test_*.py' -v
       - name: Verify P2-A recovered references and candidate decisions
