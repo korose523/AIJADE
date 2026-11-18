@@ -31,6 +31,13 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.12.14'
+      - name: Verify offline P2-R qualification worklist and captured records
+        run: python3 -B -m unittest discover -s experiments/rq-c -p test_prepare_department_regeneration.py -v
+      - name: Verify offline Chapter 7 worklist and repeat delivery
+        run: |
+          set -o pipefail
+          mkdir -p .runtime/ch7-preparation
+          python3 -B experiments/ch7/test_prepare_known_repeats.py .runtime/ch7-preparation | cmp - experiments/ch7/mac-known-repeats-preparation/offline-controls.json
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json

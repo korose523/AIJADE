@@ -1,0 +1,77 @@
+{
+  "status": "OFFLINE_KNOWN_REPEAT_PREPARATION_CONTROLS_PASS",
+  "controls": [
+    {
+      "case": "historical stopped/complete archive stays unscorable",
+      "status": "OFFLINE_DELIVERY_BLOCKED"
+    },
+    {
+      "case": "two synthetic derived packages with complete bindings",
+      "status": "OFFLINE_DELIVERY_EVIDENCE_READY_FOR_REVIEW",
+      "blocker": null
+    },
+    {
+      "case": "same observations with a differently nominated plan",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "block execution plan differs from the nominated plan"
+    },
+    {
+      "case": "same observations with a differently nominated backend",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "block backend differs from the nominated backend"
+    },
+    {
+      "case": "terminal case events differ from summary",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "case rows differ from the original completion events"
+    },
+    {
+      "case": "prepared bytes differ from request",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "renderer did not receive the captured prepared bytes"
+    },
+    {
+      "case": "renderer stream hash differs from bound manifest",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "renderer close and manifest hashes differ"
+    },
+    {
+      "case": "registered intent replaced independently of case records",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "registered intents differ from ordered case observations"
+    },
+    {
+      "case": "xUnit result cannot be replaced with a different method",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "finite flow result missing or not passed"
+    },
+    {
+      "case": "a database lease remains unresolved",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "case database leases or final disposals are incomplete"
+    },
+    {
+      "case": "matching cases with an unclosed process are blocked",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "flow or renderer process closure was not observed"
+    },
+    {
+      "case": "closed evidence with different first and duplicate reuse decisions",
+      "status": "OFFLINE_DELIVERY_MATCHED_INPUTS_BUT_DIFFERENT_DECISIONS",
+      "blocker": null
+    },
+    {
+      "case": "same coherently substituted selection in both repeats",
+      "status": "OFFLINE_DELIVERY_BLOCKED",
+      "blocker": "known input differs from declared derivation: runtime-manifest.json"
+    }
+  ],
+  "controlCount": 13,
+  "exactArchivedInputFiles": 3,
+  "knownCases": 10,
+  "repeatSlots": 40,
+  "qualificationDetermined": false,
+  "newRunsStarted": 0,
+  "newHeldoutCases": 0,
+  "newSeedsDerived": 0
+}
