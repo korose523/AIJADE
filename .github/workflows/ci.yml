@@ -27,6 +27,8 @@ jobs:
       AIJADE_TEST_DATABASE_URL: postgres://aijade:aijade@127.0.0.1:55432/aijade
     steps:
       - uses: actions/checkout@v7
+      - name: Verify browser soak duration and sampling boundaries
+        run: node --test tests/Aijade.E2E/browser-soak-clock.test.mjs
       - name: Match the Mac observer AST and source-control toolchain
         uses: actions/setup-python@v7
         with:
