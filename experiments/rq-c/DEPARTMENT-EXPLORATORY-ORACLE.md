@@ -9,7 +9,7 @@ python3 -B experiments/rq-c/rescore_department_oracle.py archive-self-check \
   --out "$P2_ORACLE_ARCHIVE_CHECK"
 ```
 
-This checks the 44-task, 228-case bench and the exact historical oracle implementation. The three archived populations contain 69, 57 and 49 distinct task/code pairs. The reporter reconstructs the historical aggregate tables from retained promotion classes and their recorded baseline agreement. The original audit supplies aggregate failure witnesses. Counts, table structure and other values must match exactly. Interpolated BCa interval endpoints allow an absolute difference of `1e-12` for platform rounding. This archive check records zero candidate executions.
+This checks the 44-task, 228-case bench and the exact historical oracle implementation. The three archived populations contain 69, 57 and 49 distinct task/code pairs. The reporter reconstructs the historical aggregate tables from retained promotion classes and their recorded baseline agreement. The original audit supplies aggregate failure witnesses. For platform rounding, the absolute tolerance is `1e-12` for interpolated BCa endpoints and the relative tolerance is `1e-12` for the clustered McNemar p-value. All other values and table structure match exactly. This archive check records zero candidate executions.
 
 ## Prepare intake after a completed department phase
 

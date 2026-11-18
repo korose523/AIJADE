@@ -34,6 +34,7 @@ REPORT_SCHEMA = "aijade.p2-r.department-exploratory-oracle-report.v1"
 VARIANTS = ("asRun", "entry", "entryAndTest")
 OUTCOMES = frozenset({"PASSED", "FAILED_CASES", "NO_CALLABLE", "SETUP_ERROR", "TIMEOUT"})
 HISTORICAL_BCA_ABSOLUTE_TOLERANCE = 1e-12
+HISTORICAL_CLUSTERED_P_RELATIVE_TOLERANCE = 1e-12
 
 
 def rule_contract():
@@ -164,27 +165,43 @@ def scores(skills, replay):
     return output
 
 
-def historical_labels_match(actual, expected):
-    """Permit platform rounding only for interpolated BCa interval endpoints."""
+def historical_label_mismatch(actual, expected, path=()):
+    """Report the first mismatch while bounding rounding at computed libm fields."""
+    field = ".".join(map(str, path)) or "labels"
     if type(actual) is not type(expected):
-        return False
+        return f"{field}: type {type(actual).__name__} != {type(expected).__name__}"
     if type(actual) is dict:
         if set(actual) != set(expected):
-            return False
+            return f"{field}: field names differ"
         for key, value in actual.items():
-            reference = expected[key]
-            if key == "taskBootstrapBca95":
-                if not (type(value) is type(reference) is list and len(value) == len(reference) == 2
-                        and all(type(a) is type(b) and type(a) in (int, float)
-                                and math.isclose(a, b, rel_tol=0, abs_tol=HISTORICAL_BCA_ABSOLUTE_TOLERANCE)
-                                for a, b in zip(value, reference))):
-                    return False
-            elif not historical_labels_match(value, reference):
-                return False
-        return True
+            mismatch = historical_label_mismatch(value, expected[key], (*path, key))
+            if mismatch is not None:
+                return mismatch
+        return None
     if type(actual) is list:
-        return len(actual) == len(expected) and all(historical_labels_match(a, b) for a, b in zip(actual, expected))
-    return actual == expected
+        if len(actual) != len(expected):
+            return f"{field}: length {len(actual)} != {len(expected)}"
+        for index, (value, reference) in enumerate(zip(actual, expected)):
+            mismatch = historical_label_mismatch(value, reference, (*path, index))
+            if mismatch is not None:
+                return mismatch
+        return None
+    if actual == expected:
+        return None
+    if type(actual) is float:
+        if (len(path) == 5 and path[0] in VARIANTS and path[1] == "diagnostics"
+                and path[3] == "taskBootstrapBca95" and path[4] in (0, 1)
+                and math.isclose(actual, expected, rel_tol=0, abs_tol=HISTORICAL_BCA_ABSOLUTE_TOLERANCE)):
+            return None
+        if (len(path) == 3 and path[0] in VARIANTS and path[1:] == ("clusteredMcNemar", "clusteredP")
+                and math.isclose(actual, expected, rel_tol=HISTORICAL_CLUSTERED_P_RELATIVE_TOLERANCE, abs_tol=0)):
+            return None
+        return f"{field}: numeric delta {abs(actual - expected):.17g}"
+    return f"{field}: value differs"
+
+
+def historical_labels_match(actual, expected):
+    return historical_label_mismatch(actual, expected) is None
 
 
 def archive_readback(worklist, contract):
@@ -223,8 +240,8 @@ def archive_readback(worklist, contract):
             decisions[key] = (baseline, baseline or key in winners[0],
                               baseline or key in winners[0] or key in winners[1])
         labels = scores(skills, decisions)
-        require(historical_labels_match(labels, prior["labels"]),
-                f"{group['id']}: historical exploratory tables do not reproduce")
+        mismatch = historical_label_mismatch(labels, prior["labels"])
+        require(mismatch is None, f"{group['id']}: historical exploratory tables do not reproduce: {mismatch}")
         output[group["id"]] = {
             "archiveFilesSha256": hashes,
             "source": "retained promotion classes and historical replay agreement",
@@ -373,6 +390,7 @@ def main():
         result = {"schema": REPORT_SCHEMA, "ruleContract": contract, "ruleContractSha256": sha(encoded(contract)),
                   "retainedOracleAuditSha256": MODEL_PINS["oracle-audit.json"],
                   "historicalBcaAbsoluteTolerance": HISTORICAL_BCA_ABSOLUTE_TOLERANCE,
+                  "historicalClusteredPRelativeTolerance": HISTORICAL_CLUSTERED_P_RELATIVE_TOLERANCE,
                   "worklistSha256": sha(encoded(worklist)), "formalRunsStartedByReport": 0,
                   "candidateExecutionsByReport": 0}
         if args.action == "archive-self-check":

@@ -1,0 +1,55 @@
+{
+  "candidateExecutions": 0,
+  "departmentRegeneration": "NOT_RUN",
+  "formalRunsStarted": 0,
+  "localEvidenceSha256": {
+    "linuxComparisonAndTestsLog": "36b9f4e1b59526f27a776ea9ea9926acaa15610e327ec6902170234ab1c46423",
+    "linuxOriginalFieldDiagnostics": "7ffdde0a884f926e2016ea1c537b3b1f9e0bce44b5dceb0b6ace9d4d9f0ca23c",
+    "originalReporterSource": "cb600d3370bb4d5e483b1a7a96e6a6ea3d8ade09bde55acdb8ed2efc46f91e77",
+    "probeRunner": "146cdceabde08432ce4967bd6875e724c745ab1aa1f0be4a544f90ef602b6883"
+  },
+  "localLinux": {
+    "architecture": "x86_64",
+    "archivalExecutionsVerified": 21600,
+    "containerImage": "ghcr.io/tensorchord/vchord-postgres:pg18-v1.0.0",
+    "distribution": "Debian 12.12",
+    "historicalLabelTablesVerified": 9,
+    "networkEnabled": false,
+    "oldReporterExit": 2,
+    "patchedReporterExit": 0,
+    "pythonVersion": "3.12.14",
+    "readOnlyContainerRoot": true,
+    "targetedTestsPassed": 7
+  },
+  "newExploratoryReplay": "NOT_RUN",
+  "numericReadback": {
+    "clusteredMcNemarP": {
+      "absoluteTolerance": 0,
+      "changed": 7,
+      "maximumObservedAbsoluteDelta": 1.1102230246251565e-16,
+      "maximumObservedRelativeDelta": 2.088978154432474e-16,
+      "relativeTolerance": 1e-12
+    },
+    "interpolatedBcaEndpoints": {
+      "absoluteTolerance": 1e-12,
+      "changed": 17,
+      "maximumObservedAbsoluteDelta": 3.9968028886505635e-15
+    },
+    "otherValueOrStructureDifferences": 0
+  },
+  "originalLinuxCi": {
+    "failedLogSha256": "c18e30838dc41273d01b651357c9cd4cbfaa294b268b64f989419950468a9a2f",
+    "originalMacValidationReceiptSha256": "d7e29c05ba983be24cf6afd2b028a1932736c065be3f5a6730680c710bda6d1c",
+    "runId": 44336804098,
+    "sourceCommit": "6272d1dff227fc3337b079db391b52e8d9ebb713",
+    "status": "FAIL"
+  },
+  "schema": "aijade.p2-r.exploratory-oracle-linux-recovery.v1",
+  "scope": "network-isolated Linux readback and synthetic accepted-phase/transcript controls",
+  "sourceSha256": {
+    "experiments/rq-c/DEPARTMENT-EXPLORATORY-ORACLE.md": "e921262925962aa79e3509c658b19c576b36c2e58b6fd85e7e56e9ee8630d025",
+    "experiments/rq-c/rescore_department_oracle.py": "8862a20ce8e98627d16a5d35ebee7ea5daba5dd46f21e15afcb599044f2d5386",
+    "experiments/rq-c/test_rescore_department_oracle.py": "b2289e8d433376139c951f8ab6730ba9868aef4dd4b508fd9f847ef37a1f32d9"
+  },
+  "status": "PASS"
+}

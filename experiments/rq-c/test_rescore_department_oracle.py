@@ -92,8 +92,9 @@ class DepartmentOracleTests(unittest.TestCase):
         self.assertEqual(1, labels["asRun"]["distinct"]["falsePasses"])
         self.assertEqual({"NO_CALLABLE": 1, "PASSED": 1}, result["outcomesByVariant"]["asRun"])
 
-    def test_historical_readback_allows_only_bca_rounding(self):
-        reference = {"n": 8, "estimate": 0.2, "taskBootstrapBca95": [0.1, 0.8]}
+    def test_historical_readback_allows_only_schema_specific_rounding(self):
+        metric = {"n": 8, "estimate": 0.2, "taskBootstrapBca95": [0.1, 0.8]}
+        reference = {"asRun": {"diagnostics": {"missRate": metric}, "clusteredMcNemar": {"clusteredP": 1e-14}}}
         for key, value, allowed in (
             ("taskBootstrapBca95", [0.1 + 4e-15, 0.8], True),
             ("taskBootstrapBca95", [0.1 + 2e-12, 0.8], False),
@@ -102,7 +103,15 @@ class DepartmentOracleTests(unittest.TestCase):
             ("n", 8.0, False),
         ):
             with self.subTest(key=key, value=value):
-                self.assertIs(allowed, oracle.historical_labels_match(dict(reference, **{key: value}), reference))
+                actual = deepcopy(reference)
+                actual["asRun"]["diagnostics"]["missRate"][key] = value
+                self.assertIs(allowed, oracle.historical_labels_match(actual, reference))
+        actual = deepcopy(reference)
+        actual["asRun"]["clusteredMcNemar"]["clusteredP"] *= 1 + 5e-15
+        self.assertTrue(oracle.historical_labels_match(actual, reference))
+        actual["asRun"]["clusteredMcNemar"]["clusteredP"] = 2e-14
+        self.assertIn("asRun.clusteredMcNemar.clusteredP: numeric delta",
+                      oracle.historical_label_mismatch(actual, reference))
 
     def test_rejects_wrong_population_phase_and_capture_identity(self):
         for name in ("manifestSha256", "binding"):
