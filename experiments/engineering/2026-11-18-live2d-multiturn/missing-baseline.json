@@ -1,0 +1,174 @@
+{
+  "schema": "aijade.live2d-baseline-recovery-public.v1",
+  "scope": "Synthetic dialogue engineering diagnostic with actual previously used model and isolated AIJADE gateway.",
+  "scenario": "shared_interest",
+  "providerAdmissionSha256": "4307da1458d44c78ba0a2a0b94929d3c71f303a92784aa0488a08bdb142a6bc7",
+  "gatewayAssemblySha256": "317c0708cb48fcdc34c49ea98146160b939e03367e72b356e24182f7679dad43",
+  "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+  "original": {
+    "plannedMatchedPairsAcrossTwoSeedsAndThreeScenarios": 24,
+    "completedMatchedPairsAcrossTwoSeedsAndThreeScenarios": 16,
+    "sharedInterestBaselineDispositions": [
+      {
+        "seed": 818,
+        "priorPlanSha256": "5f8caced9f2f7f0da559dad4d6fba96fb205f6b440436991df393711b7529a68",
+        "priorOutputSha256": "db7684eb66379412185fb68c3de7f0dbbbc4aa363bbee7c86dbac6f2e5e80f73",
+        "dispositions": [
+          {
+            "turn": 1,
+            "status": "UPSTREAM_OR_PARSE_FAILURE",
+            "type": "ValueError"
+          },
+          {
+            "turn": 2,
+            "status": "UNATTEMPTED_AFTER_ARM_FAILURE",
+            "type": null
+          },
+          {
+            "turn": 3,
+            "status": "UNATTEMPTED_AFTER_ARM_FAILURE",
+            "type": null
+          },
+          {
+            "turn": 4,
+            "status": "UNATTEMPTED_AFTER_ARM_FAILURE",
+            "type": null
+          }
+        ]
+      },
+      {
+        "seed": 819,
+        "priorPlanSha256": "86586b0d5132fcc768ea6f44786a3f228dc369a185e742587f06de5aacfbd37b",
+        "priorOutputSha256": "ea140507c572aeaecf47a12be838f06b90835311ef65d9dd3cecc023baa42dea",
+        "dispositions": [
+          {
+            "turn": 1,
+            "status": "UPSTREAM_OR_PARSE_FAILURE",
+            "type": "ValueError"
+          },
+          {
+            "turn": 2,
+            "status": "UNATTEMPTED_AFTER_ARM_FAILURE",
+            "type": null
+          },
+          {
+            "turn": 3,
+            "status": "UNATTEMPTED_AFTER_ARM_FAILURE",
+            "type": null
+          },
+          {
+            "turn": 4,
+            "status": "UNATTEMPTED_AFTER_ARM_FAILURE",
+            "type": null
+          }
+        ]
+      }
+    ],
+    "sharedInterestMatchedPairs": 0
+  },
+  "exactReplay": {
+    "frozenAtUtc": "2026-11-18T12:59:06.455307+00:00",
+    "frozenPlanSha256": "a2319bd5c464bd49e7a3d3a17e1b331620c8e61da6c1d1545c74ab94d2c97adc",
+    "rawDispositionSha256": "f13800d542d77075084cfb14b62361fa25e0b3d115171be3ca53e5ef9c0b8e95",
+    "independentFileReadback": {
+      "requests": 2,
+      "responses": 2
+    },
+    "requestReconstruction": "System prompt hash matched each original archived plan. Requests reconstructed from the original runner serialization, messages, settings and seeds.",
+    "firstTurnOutcomes": [
+      {
+        "seed": 818,
+        "arm": "baseline",
+        "turn": 1,
+        "requestSha256": "54594e9a5e05b04da7cdbc3b995f6a2c20f7144174f65b069326fc41b8e10972",
+        "requestedAtUtc": "2026-11-18T12:59:08.318030+00:00",
+        "httpStatus": 200,
+        "contentType": "application/json; charset=utf-8",
+        "responseSha256": "e6908140f54c2076aa3dafd7867c62ce35faeea8e7dee74312a91d6a724d46a2",
+        "responseBytes": 345,
+        "elapsedSeconds": 3.220906506,
+        "status": "EMPTY_VISIBLE_COMPLETION",
+        "finishReason": "stop",
+        "messageContentLength": 13,
+        "visibleContentLength": 0,
+        "messageEmpty": false,
+        "messageWhitespaceOnly": false,
+        "messageMarkerOnly": true,
+        "usage": {
+          "prompt_tokens": 269,
+          "completion_tokens": 7,
+          "total_tokens": 276
+        }
+      },
+      {
+        "seed": 819,
+        "arm": "baseline",
+        "turn": 1,
+        "requestSha256": "6276c681f529e750696185cdce4115e7558bead614ebb569eead7ba0cdff66f9",
+        "requestedAtUtc": "2026-11-18T12:59:12.160082+00:00",
+        "httpStatus": 200,
+        "contentType": "application/json; charset=utf-8",
+        "responseSha256": "ad02397ed985d80949992f8ec6eeb79def67954f20e038e85519406a3db0e482",
+        "responseBytes": 345,
+        "elapsedSeconds": 4.81252186,
+        "status": "EMPTY_VISIBLE_COMPLETION",
+        "finishReason": "stop",
+        "messageContentLength": 13,
+        "visibleContentLength": 0,
+        "messageEmpty": false,
+        "messageWhitespaceOnly": false,
+        "messageMarkerOnly": true,
+        "usage": {
+          "prompt_tokens": 269,
+          "completion_tokens": 7,
+          "total_tokens": 276
+        }
+      }
+    ],
+    "laterLegacyCellsUnattempted": 6,
+    "interpretation": "Both first turns reproduced marker-only successful wire responses that produced empty visible replies after removal of recognized markers."
+  },
+  "supplementalPairedReplay": {
+    "frozenAtUtc": "2026-11-18T12:59:29.553064+00:00",
+    "frozenPlanSha256": "451b5664e04b5c2d07e08457d50e6364376aab25f407a2c52be8a70e90dd4863",
+    "rawDispositionSha256": "76edfdfd1db8c198211e0a1f2384098115cab7853833a95c89320e0b2c78af23",
+    "independentFileReadback": {
+      "requests": 16,
+      "responses": 16
+    },
+    "status": "COMPLETE",
+    "sharedHistoryMessages": 2,
+    "sharedHistorySha256": "edbb21360b52d52cb790fc550128ef59be2a9c6714af9d4670ac6c1b02c4c4ff",
+    "design": "Same synthetic scenario utterances, Qwen model, sampling settings and fixed seeds, with two neutral synthetic preceding messages common to both arms. Original prompt conditions retained. Each arm uses its own generated history. The supplemental comparison is a separate stratum.",
+    "plannedMatchedPairs": 8,
+    "completedMatchedPairs": 8,
+    "matchedTurnsPerSeed": {
+      "818": 4,
+      "819": 4
+    },
+    "arms": {
+      "baseline": {
+        "dispositions": {
+          "COMPLETE": 8
+        },
+        "visiblePairedTurns": 8,
+        "turnsWithFixedPattern": 0,
+        "totalFixedPatternHits": 0,
+        "withinTrajectoryOpeningRepeats": 1,
+        "questionEndings": 2,
+        "lengthStops": 0
+      },
+      "current": {
+        "dispositions": {
+          "COMPLETE": 8
+        },
+        "visiblePairedTurns": 8,
+        "turnsWithFixedPattern": 0,
+        "totalFixedPatternHits": 0,
+        "withinTrajectoryOpeningRepeats": 1,
+        "questionEndings": 0,
+        "lengthStops": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "kind": "final",
+  "technicalStatus": "PASS",
+  "providerConfigurationScope": "ISOLATED_LOCAL_PROVIDER_SAME_ORIGINAL_IDENTITIES_AND_CURRENTLY_VERIFIED",
+  "providerChat": {
+    "model": "qwen2.5-coder:1.5b",
+    "kind": "openai-compatible",
+    "scope": "loopback"
+  },
+  "providerSpeech": {
+    "model": "macos-system-say-tingting",
+    "kind": "local",
+    "scope": "loopback"
+  },
+  "modelAndSpeechServiceVerifiedFromLiveTraffic": true,
+  "workspaceSourceSha256": {
+    "src/Aijade.Client/Chat/CompanionRuntime.cs": "f213e447aa5dc6ec181af7c4cea0c82f44186d0f263d2046ecb2d2e3c9cb1937",
+    "src/Aijade.Client/Chat/Orchestrator.cs": "ad38740f680016d8fc6d73e215cd509c0e952aaced55c4899c0d1040bf4e95e5",
+    "src/Aijade.Client/Chat/StrictJsonReply.cs": "ed17b2f90091177e84b69996b8e4be2c759517656f9735227a181be4aa877f5b",
+    "src/Aijade.UI/Pages/Chat.razor": "34a4671bf33fe2abb82c7c669acc4b82c5751d2657ed21e005d5e0db59ff5c0f",
+    "src/Aijade.Server/Product/Gateway.cs": "0d2356d7c9e87701b44b184bbd72366d2e7127cc9d8ed415bf91593ec8db67e5",
+    "src/Aijade.UI/wwwroot/audio.js": "597734e1b150ac2f8ab90e64fea0bccf397ea50fb8210e99ff62a667f6c8f31c"
+  },
+  "appServerAssemblySha256": "317c0708cb48fcdc34c49ea98146160b939e03367e72b356e24182f7679dad43",
+  "sourceCommit": "0c605203db091c671f4c739544835b3186f53c14",
+  "immutableGitSource": true,
+  "observedServiceEvidenceSha256": {
+    "chatEvidenceSha256": "4307da1458d44c78ba0a2a0b94929d3c71f303a92784aa0488a08bdb142a6bc7",
+    "speechEvidenceSha256": "1ff31d95403325a887cde170ba612f6fe27200d93ac06a54f23281ef20ca1139"
+  },
+  "planSha256": "5bec0843b420da64572db3fcb6e18e8550218ab8e5d7c49b08c499ab0b088bc9",
+  "privateReportSha256": "d85cbebd6cc4db5219a8f9940bd79bc546ce0bb70598e79613cbb1cdde830abc",
+  "privateGatewayAccountingSha256": "5d750c12cca4fc966d4319d93eaf58a2f0e80ab7139dc7e6193e1aae997bc904",
+  "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+  "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+  "staticWasmSha256": [
+    "6fe0fb861d15247ebe9f6104736ac2392148b725acf18fe8c11b19bc649a2f35",
+    "9b155c6e148748a49f3f2686dfd10b36db7d79f1b84bf83735d092bf24db6d3c"
+  ],
+  "renderChecks": {
+    "expectedOrdinaryTurns": 11,
+    "acknowledgedRenderReady": 11,
+    "countMatchingActualSpeechAndMouth": 11,
+    "nativeMouthPeak": {
+      "min": 0.8990148305892944,
+      "median": 0.9561593532562256,
+      "max": 0.987374484539032
+    },
+    "nativeMouthRestAfterPlayback": {
+      "min": 5.150477954884991e-05,
+      "median": 7.90562407928519e-05,
+      "max": 0.00011764379451051354
+    },
+    "audioRmsPeak": {
+      "min": 0.1906906526090606,
+      "median": 0.20209033169898352,
+      "max": 0.217212557096189
+    },
+    "replySecondsIncludingSpeech": {
+      "min": 15.535399457000022,
+      "median": 18.813036829999998,
+      "max": 24.788041769000003
+    },
+    "realWavResponses": 11,
+    "cuedExpressions": [
+      {
+        "requested": "joy",
+        "parameterMatch": true,
+        "observedClass": "joy",
+        "mouthVerified": true
+      },
+      {
+        "requested": "sad",
+        "parameterMatch": false,
+        "observedClass": "neutral",
+        "mouthVerified": true
+      },
+      {
+        "requested": "neutral",
+        "parameterMatch": true,
+        "observedClass": "neutral",
+        "mouthVerified": true
+      }
+    ],
+    "renderer": {
+      "maskGroups": 49,
+      "maskBufferCount": 2,
+      "maskBufferSize": 768,
+      "highPrecisionMask": false
+    }
+  },
+  "supplementaryLiteralExpressionsAfterSoakAndJson": [
+    {
+      "requested": "sad",
+      "parameterMatch": true,
+      "observedClass": "sad",
+      "mouthVerified": true,
+      "emittedExpectedMarker": true,
+      "nativeTearParameter": 1,
+      "nativeRedParameter": 0
+    },
+    {
+      "requested": "neutral",
+      "parameterMatch": true,
+      "observedClass": "neutral",
+      "mouthVerified": true,
+      "emittedExpectedMarker": false,
+      "nativeTearParameter": 0,
+      "nativeRedParameter": 0
+    }
+  ],
+  "unpromptedBrowserTurns": {
+    "count": 8,
+    "outputLength": {
+      "min": 7,
+      "median": 14.0,
+      "max": 44
+    },
+    "currentGuidanceAttached": 8
+  },
+  "healthChecks": 29,
+  "apiErrorCount": 0,
+  "browserErrorCount": 0,
+  "blockedNonLoopbackRequestCount": 0,
+  "isolatedGatewayCounts": {
+    "chatHttp200": 14,
+    "chatReportedPromptTokens": 12832,
+    "chatReportedCompletionTokens": 184,
+    "fluxCharged": 0,
+    "events": [
+      {
+        "feature": "gen_ai_chat",
+        "action": "completion_requested",
+        "status": "started",
+        "count": 14
+      },
+      {
+        "feature": "gen_ai_chat",
+        "action": "completion_succeeded",
+        "status": "succeeded",
+        "count": 14
+      },
+      {
+        "feature": "tts",
+        "action": "speech_requested",
+        "status": "started",
+        "count": 13
+      },
+      {
+        "feature": "tts",
+        "action": "speech_succeeded",
+        "status": "succeeded",
+        "count": 13
+      }
+    ]
+  },
+  "cleanupVerified": {
+    "serverStopped": true,
+    "temporaryContainerAbsent": true,
+    "temporarySessionRemoved": true
+  },
+  "privateCleanupReceiptSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+  "strictJson": {
+    "oneBareValue": true,
+    "expectedValue": true,
+    "compactLiteral": true,
+    "persisted": true,
+    "domPersistedMatch": true,
+    "playbackCountDelta": 0,
+    "gatewaySpeechRequests": 0,
+    "pefRenderEvents": 0,
+    "gatewayCompletions": [
+      {
+        "status": 200,
+        "stream": false,
+        "responseFormat": null
+      }
+    ]
+  },
+  "soak": {
+    "elapsedSeconds": 1800.0233999999762,
+    "frames": 53794,
+    "peakNeutralRedRatio": 0.02608695652173913,
+    "neutralSamples": 181,
+    "samples": 181,
+    "sampleMaxGapSeconds": 10.056500000000142,
+    "minWindowFrames": 258,
+    "sameMount": true,
+    "webglLosses": 0,
+    "modelReleasesDuringSoak": 0,
+    "hiddenTransitionsDuringSoak": 0,
+    "clock": {
+      "source": "browser.performance.now",
+      "startedAt": 79898.19999998808,
+      "stoppedAt": 1879921.5999999642,
+      "minimumMilliseconds": 1800000,
+      "firstSampleSeconds": 0,
+      "terminalSampleSeconds": 1800.0233999999762,
+      "tailGapSeconds": 0.001099999964253584
+    },
+    "clockModuleSha256": "42044ba24ca836ec8653799b9d84e99388dfd7f46b6a1c4e19204529896ad9eb",
+    "browserRssKib": {
+      "min": 1050228,
+      "median": 1117420,
+      "max": 1208568
+    },
+    "browserHeapBytes": {
+      "min": 97165602,
+      "median": 108311369,
+      "max": 135831807
+    }
+  }
+}

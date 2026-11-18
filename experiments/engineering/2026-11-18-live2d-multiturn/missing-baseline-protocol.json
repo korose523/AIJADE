@@ -1,0 +1,50 @@
+{
+  "schema": "aijade.missing-baseline-supplemental-fixture.v1",
+  "design": "Supplemental context-seeded matched comparison, chosen after exact replay and frozen before any supplemental requests. Both original seeds, both original prompt arms, same four source utterances, same settings and shared neutral two-message synthetic prior context. This is a distinct engineering diagnostic and preserves the old and replayed blank cells.",
+  "scenario": "shared_interest",
+  "planSha256": "451b5664e04b5c2d07e08457d50e6364376aab25f407a2c52be8a70e90dd4863",
+  "model": "qwen2.5-coder:1.5b",
+  "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+  "gatewayAssemblySha256": "317c0708cb48fcdc34c49ea98146160b939e03367e72b356e24182f7679dad43",
+  "sharedSyntheticHistory": [
+    {
+      "role": "user",
+      "content": "这个阳台下午有一点太阳，我经常坐在那里。"
+    },
+    {
+      "role": "assistant",
+      "content": "有点阳光的时候，坐一会儿挺舒服。"
+    }
+  ],
+  "sharedSyntheticHistorySha256": "edbb21360b52d52cb790fc550128ef59be2a9c6714af9d4670ac6c1b02c4c4ff",
+  "sharedHistoryDigestEncoding": "UTF-8 JSON with literal Unicode, comma-space and colon-space separators, no trailing newline",
+  "syntheticTargetTurns": [
+    "我给常来阳台的一只鸟取名叫豆芽。",
+    "刚才发现它其实一直盯着我的水杯。",
+    "我拿了只浅盘子盛水，它一直没过来。",
+    "没关系，我就留在那里。我也不着急。"
+  ],
+  "arms": {
+    "baseline": "Original legacy visible instruction",
+    "current": "Prior product visible instruction with conversational style"
+  },
+  "settingsBySeed": [
+    {
+      "temperature": 0.2,
+      "max_tokens": 72,
+      "seed": 818
+    },
+    {
+      "temperature": 0.2,
+      "max_tokens": 72,
+      "seed": 819
+    }
+  ],
+  "armOrder": "Alternate legacy/current and current/legacy by seed index plus 1-based turn",
+  "failurePolicy": "One attempt per planned cell. Remainder of failed arm trajectory is unattempted.",
+  "originalPlanSha256": [
+    "5f8caced9f2f7f0da559dad4d6fba96fb205f6b440436991df393711b7529a68",
+    "86586b0d5132fcc768ea6f44786a3f228dc369a185e742587f06de5aacfbd37b"
+  ],
+  "publicOutcomeSha256": "0ce05e0683b695147c4d8af17945b439e955a6af00c96278518f7625023624c1"
+}

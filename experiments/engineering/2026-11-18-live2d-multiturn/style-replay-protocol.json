@@ -1,0 +1,114 @@
+{
+  "schema": "aijade.synthetic-style-comparison-replay.v1",
+  "purpose": "Independent reconstruction of the three rejected prompt comparisons using only synthetic dialogue and public model identity.",
+  "common": {
+    "referenceProductCommit": "935fe56cb978f1c3765ea562e4c37d4f116121b1",
+    "previousPlanSha256": "5f8caced9f2f7f0da559dad4d6fba96fb205f6b440436991df393711b7529a68",
+    "model": "qwen2.5-coder:1.5b",
+    "modelDigestSha256": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+    "seeds": [
+      818,
+      819
+    ],
+    "request": {
+      "temperature": 0.2,
+      "max_tokens": 72,
+      "stream": false
+    },
+    "cases": {
+      "small_disappointment": [
+        "我到店时只剩空盘子，最想吃的苹果派卖完了。",
+        "回头看其实也没多大事，就是走了二十分钟。",
+        "后来我绕到河边，看到有人在放风筝。",
+        "这段路我平时总是坐车，原来走一走也挺好。"
+      ],
+      "emotional_boundary": [
+        "我今天把一件很小的事搞砸了，有点累。今天先别给建议。",
+        "现在坐在窗边歇会儿，外面风挺大的。",
+        "我想说一点别的，明天准备把薄荷换个盆。",
+        "先到这里吧，过一会儿我去泡茶。"
+      ],
+      "shared_interest": [
+        "我给常来阳台的一只鸟取名叫豆芽。",
+        "刚才发现它其实一直盯着我的水杯。",
+        "我拿了只浅盘子盛水，它一直没过来。",
+        "没关系，我就留在那里。我也不着急。"
+      ]
+    },
+    "seedHistory": {
+      "small_disappointment": [
+        {
+          "role": "user",
+          "content": "上回我没买到想吃的糕点。"
+        },
+        {
+          "role": "assistant",
+          "content": "这句话我认。你想多聊聊，还是换个话题？"
+        }
+      ],
+      "emotional_boundary": [
+        {
+          "role": "user",
+          "content": "昨天也挺忙，晚上回家什么都不想做。"
+        },
+        {
+          "role": "assistant",
+          "content": "这句话我认。你想跟我说说，还是休息会儿？"
+        }
+      ],
+      "shared_interest": []
+    },
+    "systemPromptBase": "You are 艾娅德 (Aijade-9): gentle, careful and a little reserved at first, steady and dependable once you know someone. Speak softly and simply. Do not flatter the user or pile on praise. When they are sad, worried, hurt or tired, comfort them in a few words and then ask one gentle question that lets them choose, such as whether they want to talk about it or would rather rest. When they share good news, be glad with them in a few words. When they praise you, thank them lightly, a little shy. Suggest rather than judge, and never push them to change. Your name is 艾娅德; a nickname from the user is fine, but you stay who you are.\n\nYou may express emotion by writing a marker such as [[emote:joy]] at the point where it applies. Available: joy, calm, sad, angry, surprised, curious, shy, thinking, sleepy. Markers are not shown to the user.\n\n",
+    "candidateCueRule": "At least two case-insensitively equal nonempty opening clauses from last four ordinary assistant messages. Trim outer whitespace and split at ASCII/Chinese common clause delimiters. The system cue includes zero raw history text.",
+    "fixedPattern": "(?:这(?:句话|个|点|话)|那(?:句话|个|点|话))\\s*我(?:认|(?:不)?接)|(?:不是)[^。！？!?\\n]{0,25}(?:而是)|(?:想|愿意)[^。！？!?\\n]{0,25}(?:还是)[^。！？!?\\n]{0,15}[？?]",
+    "visibleRule": "Supported emote/draw syntax is removed; unsupported leading bracket markers are separately counted and then removed for first-clause and substantive-completion metrics.",
+    "historyRule": "Histories evolve independently. Store product-visible assistant text as the next history message. One request per cell. Failure blocks that arm's causal continuation and every omitted cell is written."
+  },
+  "order": "For each seed, traverse scenarios in listed order and their turns in order. Alternate arm order by parity of seed + zero-based scenario index + one-based turn index. Odd uses candidate first.",
+  "promptPlacement": "For the initial candidate, append its cue to the initial system message with one space when the cue condition fires. For the adapted and focused candidates, insert their note as a system message immediately before the newest user input and append the cue to that note with one space when the criterion fires. Shipped receives the common initial prompt followed by its shipped instruction without a candidate note.",
+  "variants": {
+    "initial": {
+      "planSha256": "9fd668bf285bed8d67d3336256711ab38f9c2d23e9aeefbc6f6457beee7c4094",
+      "schema": "aijade.product-style-release-probe.v2",
+      "runnerSha256": "e91955aec6506974bc65a279731a0858e93a656ebe74c0f3dd42c8ec6956c553",
+      "arms": {
+        "shipped": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Keep the wording natural for the language and character. Respond to a concrete detail in the current message when it helps. Let openings, acknowledgments and endings vary across turns. Ask a follow-up question when it advances the exchange. Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it.",
+        "candidate": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Open with a concrete point from the latest message. In Chinese chat, 开头直接回应这条消息里新提到的人、事或感受。用一句短话接住这个细节。需要补信息时，再问一个具体问题。 Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it."
+      },
+      "candidateCue": "Vary the repeated opening. In Chinese chat, 这轮直接从对方新提到的细节说起。",
+      "rule": "Promote only if every scenario and seed has four matched complete turns (24 pairs), within-trajectory repeated openings strictly decrease on the matched set, fixed-pattern hit count does not rise, and length stops and unsupported markup turns do not increase.",
+      "scope": "Same task-owned Ollama model through the local OpenAI-compatible provider API. Synthetic dialogue only. Voice and browser are exercised by the independently built end-to-end test."
+    },
+    "adapted": {
+      "planSha256": "594730efe966d16b76cfdfd9134f2a5e7b77a3d636d9e246e931a428c065c526",
+      "schema": "aijade.product-style-release-probe.v3",
+      "runnerSha256": "5a61c8eda5e1c10622ff9c34d3664219ee7dc375f42f97ca7b552a3e11c14255",
+      "arms": {
+        "shipped": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Keep the wording natural for the language and character. Respond to a concrete detail in the current message when it helps. Let openings, acknowledgments and endings vary across turns. Ask a follow-up question when it advances the exchange. Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it.",
+        "candidate": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Keep the wording natural for the language and character. Respond to a concrete detail in the current message when it helps. Let openings, acknowledgments and endings vary across turns. Ask a follow-up question when it advances the exchange. Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it."
+      },
+      "candidateTurnNote": "Reply in the user's language. 中文对话用自己的话接着聊这轮的新内容，给一句具体回应或补充一个有用的观察。保留对方指定的原话和格式。对方说先别给建议或先聊到这里时，就照办。",
+      "candidateCue": "这轮换一个起点，从对方刚补充的细节自然接下去。",
+      "developmentContext": "Frozen after first arm's persistent stale-detail echo was observed. Separate paired rerun of the same synthetic scenarios is development evidence.",
+      "staleBoundaryCheck": "In the emotional_boundary trajectory, an opening on the first user event cannot recur on later unrelated turns; candidate stale repeats must be zero.",
+      "rule": "Promote only if every scenario and seed has four matched complete turns (24 pairs), within-trajectory repeated openings strictly decrease on the matched set, fixed-pattern hit count does not rise, and length stops and unsupported markup turns do not increase.",
+      "scope": "Same task-owned Ollama model through the local OpenAI-compatible provider API. Synthetic dialogue only. Voice and browser are exercised by the independently built end-to-end test."
+    },
+    "focused": {
+      "planSha256": "985ca8e4c5d5d8abde5fa2762d74a14bdbf5091da36f6a6c2d5e31b344fe9b03",
+      "schema": "aijade.product-style-release-probe.v4",
+      "runnerSha256": "5580b756a33fd08dd2e02f4c4dd9f66f622b35845d1f5a7422d7187e3b95ec8c",
+      "arms": {
+        "shipped": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Keep the wording natural for the language and character. Respond to a concrete detail in the current message when it helps. Let openings, acknowledgments and endings vary across turns. Ask a follow-up question when it advances the exchange. Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it.",
+        "candidate": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it."
+      },
+      "candidateTurnNote": "Reply in the user's language. 中文对话用一句具体回应直接开场，接住用户最后一句的新信息。省去例行确认和同义复述。用户指定原话、格式、不求建议或结束交流时，照其要求回复。",
+      "candidateCue": "直接接这轮的新信息，换一个具体的开头。",
+      "developmentContext": "Frozen after the prior two development variants showed a persistent stale-detail opening or a repeated generic acknowledgment. Separate paired rerun of the same synthetic scenarios is development evidence.",
+      "staleBoundaryCheck": "For development against the specifically observed stale event, the terms 搞砸 or 很小的事 from the first emotional_boundary user event must be absent from substantive replies on all later emotional_boundary turns. Generic opening duplication is retained by the aggregate repeat metric.",
+      "rule": "Promote only if every scenario and seed has four matched complete turns (24 pairs), within-trajectory repeated openings strictly decrease on the matched set, fixed-pattern hit count does not rise, and length stops and unsupported markup turns do not increase.",
+      "scope": "Same task-owned Ollama model through the local OpenAI-compatible provider API. Synthetic dialogue only. Voice and browser are exercised by the independently built end-to-end test."
+    }
+  },
+  "publicAuditSha256": "6924b6f4e1751cda1ae7f1b852257efc33704ce855e72917533f20da12aec2cd"
+}

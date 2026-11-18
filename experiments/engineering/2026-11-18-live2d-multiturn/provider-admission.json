@@ -1,0 +1,48 @@
+{
+  "schema": "aijade.product-provider-admission.v1",
+  "scope": "Owned loopback Mac services after fresh warmup and native synthesis, with same versions and model/TTS identities as prior product run.",
+  "verifiedAtUtc": "2026-11-18T13:00:38.533205+00:00",
+  "provider": {
+    "runtime": "Ollama",
+    "runtimeVersion": "0.40.16",
+    "model": "qwen2.5-coder:1.5b",
+    "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+    "quantization": "Q4_K_M",
+    "contextLength": 4096,
+    "runner": "llamacpp",
+    "loopback": true,
+    "resident": true,
+    "sameOriginalVersionAndModel": true,
+    "catalogReceiptSha256": "3fdc0ebf37c5328187dd8fe24bb8c40c9c090cd149a87c742fa3d515d4756a6a",
+    "residentReceiptSha256": "f970d38e197bea561c655ea6612c612a14e84674a2a63f74e44dd764541886a2",
+    "warmReceiptSha256": "8265678ae0415b01eb5d443e8ba18ce8d9994c854205ca54bfd9b45ac12cb723",
+    "priorResidentReceiptSha256": "d47025f5b81b9d102a1ec74d196ace9e5466d5e38979bf05ac8aa1abf00af251"
+  },
+  "voice": {
+    "nativeProvider": "macos-system-say",
+    "nativeVoice": "Tingting",
+    "gatewayVoiceAlias": "alloy",
+    "wireContent": "PCM WAV",
+    "frames": 53218,
+    "channels": 1,
+    "sampleRateHz": 22050,
+    "sampleBytes": 2,
+    "durationSeconds": 2.413514739229025,
+    "peak": 22242,
+    "sha256": "d3856c7e1e1061063ee176288520fd2fc272c5027bf5d1ee07a57584fa8231fd",
+    "sameOriginalNativeVoice": true,
+    "loopback": true,
+    "runtimeVerified": true,
+    "trainedVoice": false,
+    "alignmentVerified": false,
+    "sourceSha256": "ef7d3228a68b080f7f50ca0f8ff7bd0ccf26b3f78f1fb442fecfc700e2d3de87",
+    "healthReceiptSha256": "27cba4ef7acab8f0497eb9266b69ea42fd9b929f091e211d61d2d1b2e4249010",
+    "priorNativeVoiceReceiptSha256": "2608002314d0daa7a329dc40cdc27b8d4e1f29270aa33e6e995e2ccb24f1331d"
+  },
+  "initialNegativeProbe": {
+    "requestKind": "direct native endpoint with unexpected voice field",
+    "status": "HTTP_FAILURE",
+    "httpStatus": 400,
+    "providerCode": "INVALID_REQUEST"
+  }
+}

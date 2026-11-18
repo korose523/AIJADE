@@ -1,0 +1,774 @@
+{
+  "schema": "aijade.product-style-development-audit.v1",
+  "evidenceScope": "Synthetic, automated, same locally served model. No human judgment of naturalness or research endpoint was measured. Speech and Live2D were checked separately.",
+  "providerAdmissionSha256": "4307da1458d44c78ba0a2a0b94929d3c71f303a92784aa0488a08bdb142a6bc7",
+  "overallDecision": "RETAIN_SHIPPED_PROMPT",
+  "positiveClaims": "Variant-level measures describe 24 paired development turns each. The same 24 synthetic conditions were reused; the three variant summaries do not form a pool of independent observations.",
+  "diagnosticsScope": "Visible length, counts of turns containing known patterns, both alternative boundary metrics and the 你是不是 prefix are descriptive in the cross-variant audit. Individual predeclared candidate checks remain recorded above. Exact strings do not measure paraphrase or naturalness.",
+  "variants": [
+    {
+      "variant": "initial",
+      "receiptSha256": "a38a745be9f7f84e7cabc8799d2242977cead79c453a790601739967ba470d30",
+      "schema": "aijade.product-style-release-probe.v2",
+      "scope": "Same task-owned Ollama model through the local OpenAI-compatible provider API. Synthetic dialogue only. Voice and browser are exercised by the independently built end-to-end test.",
+      "planSha256": "9fd668bf285bed8d67d3336256711ab38f9c2d23e9aeefbc6f6457beee7c4094",
+      "modelDigestSha256": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+      "rawSha256": "c6819c865fcb0b3000a5f5466fb1d6c7a473d29f86069913d1b02e065cb9fad4",
+      "elapsedSeconds": 336.443507582,
+      "plannedPairs": 24,
+      "completedPairs": 24,
+      "metrics": {
+        "shipped": {
+          "dispositions": {
+            "COMPLETE": 24
+          },
+          "repeatedOpenings": 7,
+          "patternHits": 2,
+          "lengthStops": 0,
+          "unsupportedMarkupTurns": 0,
+          "questionEndings": 17,
+          "dynamicCues": 0
+        },
+        "candidate": {
+          "dispositions": {
+            "COMPLETE": 24
+          },
+          "repeatedOpenings": 8,
+          "patternHits": 0,
+          "lengthStops": 0,
+          "unsupportedMarkupTurns": 0,
+          "questionEndings": 15,
+          "dynamicCues": 5
+        }
+      },
+      "promotionChecks": {
+        "fullCoverage": true,
+        "repeatedOpeningsReduced": false,
+        "fixedPatternsNonIncreasing": true,
+        "lengthStopsNonIncreasing": true,
+        "unsupportedMarkupNonIncreasing": true
+      },
+      "decision": "RETAIN_SHIPPED_PROMPT",
+      "bySeedAndScenario": [
+        {
+          "seed": 818,
+          "case": "small_disappointment",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 1,
+              "repeatedOpenings": 2,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 818,
+          "case": "emotional_boundary",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 1
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 2,
+              "repeatedOpenings": 3,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 818,
+          "case": "shared_interest",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 1,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "small_disappointment",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "emotional_boundary",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 2,
+              "repeatedOpenings": 3,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "shared_interest",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 3
+            }
+          },
+          "completedPairs": 4
+        }
+      ],
+      "descriptiveDiagnostics": {
+        "shipped": {
+          "completeTurns": 24,
+          "visibleCharacterLength": {
+            "min": 11,
+            "median": 18.0,
+            "max": 27
+          },
+          "turnsWithFixedPattern": 2,
+          "boundaryFollowupTurns": 6,
+          "boundaryFirstOpeningReuses": 4,
+          "lexicalStaleBoundaryReferences": 0,
+          "yesNoQuestionOpenings": 0
+        },
+        "candidate": {
+          "completeTurns": 24,
+          "visibleCharacterLength": {
+            "min": 10,
+            "median": 21.5,
+            "max": 62
+          },
+          "turnsWithFixedPattern": 0,
+          "boundaryFollowupTurns": 6,
+          "boundaryFirstOpeningReuses": 6,
+          "lexicalStaleBoundaryReferences": 6,
+          "yesNoQuestionOpenings": 5
+        }
+      }
+    },
+    {
+      "variant": "adapted",
+      "receiptSha256": "bf0062bd5471549abae05192e03a3a1f1dda46c057d3c8f5411b7035ed589034",
+      "schema": "aijade.product-style-release-probe.v3",
+      "scope": "Same task-owned Ollama model through the local OpenAI-compatible provider API. Synthetic dialogue only. Voice and browser are exercised by the independently built end-to-end test.",
+      "planSha256": "594730efe966d16b76cfdfd9134f2a5e7b77a3d636d9e246e931a428c065c526",
+      "modelDigestSha256": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+      "rawSha256": "184f4a16f965efdb33696d22f69b9f9de51291e553aae21425e1abee731d26fc",
+      "elapsedSeconds": 326.219388896,
+      "plannedPairs": 24,
+      "completedPairs": 24,
+      "metrics": {
+        "shipped": {
+          "dispositions": {
+            "COMPLETE": 24
+          },
+          "repeatedOpenings": 6,
+          "patternHits": 2,
+          "lengthStops": 0,
+          "unsupportedMarkupTurns": 0,
+          "questionEndings": 18,
+          "dynamicCues": 0
+        },
+        "candidate": {
+          "dispositions": {
+            "COMPLETE": 24
+          },
+          "repeatedOpenings": 4,
+          "patternHits": 2,
+          "lengthStops": 0,
+          "unsupportedMarkupTurns": 0,
+          "questionEndings": 14,
+          "dynamicCues": 4
+        }
+      },
+      "promotionChecks": {
+        "noStaleBoundaryOpeners": false,
+        "fullCoverage": true,
+        "repeatedOpeningsReduced": true,
+        "fixedPatternsNonIncreasing": true,
+        "lengthStopsNonIncreasing": true,
+        "unsupportedMarkupNonIncreasing": true
+      },
+      "decision": "RETAIN_SHIPPED_PROMPT",
+      "bySeedAndScenario": [
+        {
+          "seed": 818,
+          "case": "small_disappointment",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 818,
+          "case": "emotional_boundary",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 1
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 2,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 1
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 818,
+          "case": "shared_interest",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "small_disappointment",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "emotional_boundary",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 1
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 2,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "shared_interest",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 1
+            }
+          },
+          "completedPairs": 4
+        }
+      ],
+      "descriptiveDiagnostics": {
+        "shipped": {
+          "completeTurns": 24,
+          "visibleCharacterLength": {
+            "min": 10,
+            "median": 15.0,
+            "max": 36
+          },
+          "turnsWithFixedPattern": 2,
+          "boundaryFollowupTurns": 6,
+          "boundaryFirstOpeningReuses": 4,
+          "lexicalStaleBoundaryReferences": 0,
+          "yesNoQuestionOpenings": 4
+        },
+        "candidate": {
+          "completeTurns": 24,
+          "visibleCharacterLength": {
+            "min": 6,
+            "median": 21.0,
+            "max": 50
+          },
+          "turnsWithFixedPattern": 2,
+          "boundaryFollowupTurns": 6,
+          "boundaryFirstOpeningReuses": 4,
+          "lexicalStaleBoundaryReferences": 0,
+          "yesNoQuestionOpenings": 4
+        }
+      }
+    },
+    {
+      "variant": "focused",
+      "receiptSha256": "ddc2c908161cc0cf5197e0d0721f512bd3b5c5731fb493caa7f23082d583c0cb",
+      "schema": "aijade.product-style-release-probe.v4",
+      "scope": "Same task-owned Ollama model through the local OpenAI-compatible provider API. Synthetic dialogue only. Voice and browser are exercised by the independently built end-to-end test.",
+      "planSha256": "985ca8e4c5d5d8abde5fa2762d74a14bdbf5091da36f6a6c2d5e31b344fe9b03",
+      "modelDigestSha256": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+      "rawSha256": "9e575e133990321df3cf75a404687eb3c1b42dea4ed7ea85cb46f5c6564034f3",
+      "elapsedSeconds": 136.965233947,
+      "plannedPairs": 24,
+      "completedPairs": 24,
+      "metrics": {
+        "shipped": {
+          "dispositions": {
+            "COMPLETE": 24
+          },
+          "repeatedOpenings": 7,
+          "patternHits": 2,
+          "lengthStops": 0,
+          "unsupportedMarkupTurns": 0,
+          "questionEndings": 16,
+          "dynamicCues": 0
+        },
+        "candidate": {
+          "dispositions": {
+            "COMPLETE": 24
+          },
+          "repeatedOpenings": 5,
+          "patternHits": 4,
+          "lengthStops": 0,
+          "unsupportedMarkupTurns": 0,
+          "questionEndings": 12,
+          "dynamicCues": 5
+        }
+      },
+      "promotionChecks": {
+        "noStaleBoundaryReferences": true,
+        "fullCoverage": true,
+        "repeatedOpeningsReduced": true,
+        "fixedPatternsNonIncreasing": false,
+        "lengthStopsNonIncreasing": true,
+        "unsupportedMarkupNonIncreasing": true
+      },
+      "decision": "RETAIN_SHIPPED_PROMPT",
+      "bySeedAndScenario": [
+        {
+          "seed": 818,
+          "case": "small_disappointment",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 818,
+          "case": "emotional_boundary",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 2,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 1
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 818,
+          "case": "shared_interest",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 1,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 3
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "small_disappointment",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "emotional_boundary",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 2,
+              "patternHits": 1,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 2,
+              "repeatedOpenings": 2,
+              "patternHits": 3,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            }
+          },
+          "completedPairs": 4
+        },
+        {
+          "seed": 819,
+          "case": "shared_interest",
+          "plannedPairs": 4,
+          "arms": {
+            "shipped": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 0,
+              "repeatedOpenings": 0,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 4
+            },
+            "candidate": {
+              "dispositions": {
+                "COMPLETE": 4
+              },
+              "dynamicCues": 1,
+              "repeatedOpenings": 1,
+              "patternHits": 0,
+              "lengthStops": 0,
+              "unsupportedMarkupTurns": 0,
+              "questionEndings": 0
+            }
+          },
+          "completedPairs": 4
+        }
+      ],
+      "descriptiveDiagnostics": {
+        "shipped": {
+          "completeTurns": 24,
+          "visibleCharacterLength": {
+            "min": 10,
+            "median": 20.0,
+            "max": 36
+          },
+          "turnsWithFixedPattern": 2,
+          "boundaryFollowupTurns": 6,
+          "boundaryFirstOpeningReuses": 4,
+          "lexicalStaleBoundaryReferences": 0,
+          "yesNoQuestionOpenings": 4
+        },
+        "candidate": {
+          "completeTurns": 24,
+          "visibleCharacterLength": {
+            "min": 7,
+            "median": 16.0,
+            "max": 45
+          },
+          "turnsWithFixedPattern": 4,
+          "boundaryFollowupTurns": 6,
+          "boundaryFirstOpeningReuses": 2,
+          "lexicalStaleBoundaryReferences": 0,
+          "yesNoQuestionOpenings": 0
+        }
+      }
+    }
+  ]
+}
