@@ -37,6 +37,11 @@ listener call will meet its 0.5-second deadline. The
 disposition remain the basis for Chapter 7. Backend qualification and
 the approved 40-pair comparison are still pending.
 
+The [17 November scope correction](../heldout-scope-correction-20261117.json)
+records the supervisor's permission for the 40-pair design and the need to
+review the new qualification criteria before another run. This journal
+component comparison does not set the revised qualification criteria.
+
 Run the [benchmark](../benchmark_producer_prefix.py) with the retained
 original journal, initialization record, and independent cold audit cutoff
 export, using `--journal`, `--initialization`, and `--cold-details`.
