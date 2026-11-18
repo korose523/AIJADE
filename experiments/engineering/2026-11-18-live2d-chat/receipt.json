@@ -1,0 +1,317 @@
+{
+  "schema": "aijade.live2d-chat-mask-engineering.v1",
+  "scope": "Actual AIJADE Web UI, server and browser rendering with controlled upstream fixtures on Mac",
+  "browser": "Chromium on macOS",
+  "implementedSourceCommit": "da7f97482935efe83a9d49bca92742b3b74b25ff",
+  "privateIntegrationSummarySha256": "19f60c458f38e1b49ff08762c48ad1ee63f8e8c8db599dc590aacf5931722d0d",
+  "integration": {
+    "status": "PASS",
+    "evidenceType": "local engineering browser integration fixture",
+    "chatProvider": "deterministic local SSE, no model quality claims",
+    "voice": "macOS Samantha non-silent synthetic WAV via actual gateway and browser WebAudio; amplitude-driven lips",
+    "eventVerification": {
+      "canonicalTopics": {
+        "LpmRenderReady": "aijade.lpm.render_ready",
+        "PersonaRenderRequested": "aijade.persona.render_requested"
+      },
+      "canonicalTopicSourceSha256": "818072ce477cda73bad647d07683d65598c9f4dcedba42d0c6753cc3f741ffc0",
+      "validation": "The running harness used a missing prefix in the final event assertion. Original results are retained. An independent check validated both accepted canonical events per completed turn and screened all other raw failures."
+    },
+    "baselinePreflightWasNotAnAcceptedRun": "stale static asset manifest during build caused HTTP 404s; preserved separately",
+    "soakPhase": "single headless Chrome tab, same renderer instance, foreground visibility; no multi-browser/hardware, human-subject, or production-scale inference",
+    "rawScreenshotsAudioAndIdentityDataExcluded": true,
+    "arms": {
+      "baseline": {
+        "reportSha256": "14bd1a3961a6e82b4a0304a97f887d091f4bbdc9dbe292cd897da83a86362f10",
+        "unmodifiedHarnessStatus": "FAIL",
+        "nonProductHarnessNamespaceAssertion": [
+          "all completed turns need accepted applied-parameter events"
+        ],
+        "independentCanonicalTopicAudit": "PASS",
+        "adapterSha256": "6bd8e1462a5c07fff6a834686d436e008f435179c6e1d753a48b693fb628bdd8",
+        "profileSha256": "abb1bb16ea3958d9aa46541fd1cb7511c6854e5c1943d7fe0d278b58f33285d5",
+        "servedBlazorWasm": [
+          {
+            "path": "/_framework/Aijade.Client.inwcgyy01s.wasm",
+            "sha256": "4e289e45743e196b5fae2d863b7284c8ddcc4dcab55f59c05d04af0809cf50df"
+          },
+          {
+            "path": "/_framework/Aijade.UI.nf852bla96.wasm",
+            "sha256": "0d2838bd65bffa2ea6eeda949b0cf545250768a0c656313d89523109c3ecf6a9"
+          }
+        ],
+        "fixtureCompletedTurns": 7,
+        "serverStoredAssistantCountChecked": false,
+        "appliedParameterEventsAccepted": 7,
+        "gatewaySpeechResponsesMatched": 7,
+        "maxMouthOpeningWhileAudioPlaying": {
+          "minimum": 0.9856477975845337,
+          "median": 0.9920171499252319,
+          "maximum": 0.9979303479194641
+        },
+        "maxWaveformRmsWhileAudioPlaying": {
+          "minimum": 0.24919779112743165,
+          "median": 0.259937144479077,
+          "maximum": 0.28530476544342875
+        },
+        "mouthOpeningAfterPlayback": {
+          "minimum": 3.576212748157559e-08,
+          "median": 2.5219562758138636e-06,
+          "maximum": 9.743651025928557e-05
+        },
+        "fixtureSpeechSeconds": {
+          "minimum": 2.4385416666666666,
+          "median": 3.1097916666666667,
+          "maximum": 3.7229375
+        },
+        "expressions": {
+          "joy": {
+            "count": 3,
+            "blushParameter": {
+              "minimum": 1,
+              "median": 1,
+              "maximum": 1
+            },
+            "tearsParameter": {
+              "minimum": 0,
+              "median": 0,
+              "maximum": 0
+            }
+          },
+          "sad": {
+            "count": 1,
+            "blushParameter": {
+              "minimum": 0,
+              "median": 0,
+              "maximum": 0
+            },
+            "tearsParameter": {
+              "minimum": 1,
+              "median": 1,
+              "maximum": 1
+            }
+          },
+          "neutral": {
+            "count": 3,
+            "blushParameter": {
+              "minimum": 0,
+              "median": 0,
+              "maximum": 0
+            },
+            "tearsParameter": {
+              "minimum": 0,
+              "median": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "abortedStreamUpstreamDisconnected": true,
+        "abortedTurn": {
+          "committedAssistantCountBefore": 3,
+          "after": 3,
+          "audioCountBefore": 3,
+          "audioCountAfter": 3
+        },
+        "soak": {
+          "elapsedSeconds": 300.03872233199996,
+          "frames": 8055,
+          "neutralSamples": 29,
+          "sampleSpacingApproxSeconds": 10,
+          "strongRedDefinition": "R >= 155 and R - G >= 70, at captured neutral ROI",
+          "neutralFaceRoi": {
+            "x": 394,
+            "y": 77,
+            "width": 23,
+            "height": 15
+          },
+          "maxNeutralStrongRedRatio": 0.020289855072463767,
+          "maxObservedInterFrameGapMs": 573,
+          "interFrameGapIncludesMountAndUiTransitions": true,
+          "webglContextLosses": 0,
+          "modelReleasesDuringSoak": 0,
+          "browserErrors": 0,
+          "apiErrors": 0,
+          "externalRequestsAttempted": 0,
+          "browserProcessGroupRssKiB": null,
+          "browserJsHeapBytes": {
+            "minimum": 94306339,
+            "median": 105518446,
+            "maximum": 134202803
+          }
+        },
+        "newNaturalReplyInstructionDetected": 8,
+        "browserMaskDiagnostics": {
+          "maskGroups": 49,
+          "highPrecisionMask": true
+        }
+      },
+      "final": {
+        "reportSha256": "cf7d0bcd69cc236fa5405df2f59cbdaf3f6b530cc89854eb6746a3c42c1efad7",
+        "unmodifiedHarnessStatus": "FAIL",
+        "nonProductHarnessNamespaceAssertion": [
+          "all completed turns need accepted applied-parameter events"
+        ],
+        "independentCanonicalTopicAudit": "PASS",
+        "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+        "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+        "servedBlazorWasm": [
+          {
+            "path": "/_framework/Aijade.Client.inwcgyy01s.wasm",
+            "sha256": "4e289e45743e196b5fae2d863b7284c8ddcc4dcab55f59c05d04af0809cf50df"
+          },
+          {
+            "path": "/_framework/Aijade.UI.nf852bla96.wasm",
+            "sha256": "0d2838bd65bffa2ea6eeda949b0cf545250768a0c656313d89523109c3ecf6a9"
+          }
+        ],
+        "fixtureCompletedTurns": 13,
+        "serverStoredAssistantCountChecked": true,
+        "appliedParameterEventsAccepted": 13,
+        "gatewaySpeechResponsesMatched": 13,
+        "maxMouthOpeningWhileAudioPlaying": {
+          "minimum": 0.9825950860977173,
+          "median": 0.9901866316795349,
+          "maximum": 0.9967507719993591
+        },
+        "maxWaveformRmsWhileAudioPlaying": {
+          "minimum": 0.23863571787473167,
+          "median": 0.259279819066583,
+          "maximum": 0.28530476544342875
+        },
+        "mouthOpeningAfterPlayback": {
+          "minimum": 2.116252052070111e-12,
+          "median": 6.401138671208173e-05,
+          "maximum": 0.00013708919868804514
+        },
+        "fixtureSpeechSeconds": {
+          "minimum": 2.4385416666666666,
+          "median": 3.1097916666666667,
+          "maximum": 3.7229375
+        },
+        "expressions": {
+          "joy": {
+            "count": 4,
+            "blushParameter": {
+              "minimum": 1,
+              "median": 1.0,
+              "maximum": 1
+            },
+            "tearsParameter": {
+              "minimum": 0,
+              "median": 0.0,
+              "maximum": 0
+            }
+          },
+          "sad": {
+            "count": 3,
+            "blushParameter": {
+              "minimum": 0,
+              "median": 0,
+              "maximum": 0
+            },
+            "tearsParameter": {
+              "minimum": 1,
+              "median": 1,
+              "maximum": 1
+            }
+          },
+          "neutral": {
+            "count": 6,
+            "blushParameter": {
+              "minimum": 0,
+              "median": 0.0,
+              "maximum": 0
+            },
+            "tearsParameter": {
+              "minimum": 0,
+              "median": 0.0,
+              "maximum": 0
+            }
+          }
+        },
+        "abortedStreamUpstreamDisconnected": true,
+        "abortedTurn": {
+          "committedAssistantCountBefore": 3,
+          "after": 3,
+          "databaseCount": 3,
+          "audioCountBefore": 3,
+          "audioCountAfter": 3
+        },
+        "soak": {
+          "elapsedSeconds": 900.019289701,
+          "frames": 26890,
+          "neutralSamples": 87,
+          "sampleSpacingApproxSeconds": 10,
+          "strongRedDefinition": "R >= 155 and R - G >= 70, at captured neutral ROI",
+          "neutralFaceRoi": {
+            "x": 394,
+            "y": 77,
+            "width": 23,
+            "height": 15
+          },
+          "maxNeutralStrongRedRatio": 0.02318840579710145,
+          "maxObservedInterFrameGapMs": 760,
+          "interFrameGapIncludesMountAndUiTransitions": true,
+          "webglContextLosses": 0,
+          "modelReleasesDuringSoak": 0,
+          "browserErrors": 0,
+          "apiErrors": 0,
+          "externalRequestsAttempted": 0,
+          "browserProcessGroupRssKiB": {
+            "minimum": 723932,
+            "median": 733162.0,
+            "maximum": 1143724
+          },
+          "browserJsHeapBytes": {
+            "minimum": 94423790,
+            "median": 114173871,
+            "maximum": 138025952
+          }
+        },
+        "newNaturalReplyInstructionDetected": 14,
+        "browserMaskDiagnostics": {
+          "maskGroups": 49,
+          "maskBufferCount": 2,
+          "maskBufferSize": 768,
+          "highPrecisionMask": false
+        }
+      }
+    }
+  },
+  "releaseBuild": {
+    "scope": "AIJADE server and Blazor Web output",
+    "exitCode": 0,
+    "warnings": 0,
+    "errors": 0,
+    "elapsedSeconds": 47.18,
+    "privateBuildLogSha256": "4e6504da74e9106b885a4cfe4dc08dfedd48b862d66f4d532457b508150f3d32"
+  },
+  "targetedReleaseRegression": {
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0,
+    "groups": [
+      "IntegrationTests.The_bridge_answers_dms_and_mentions",
+      "CompanionRuntimeTests",
+      "NativeStageTests",
+      "SelfiesTests"
+    ],
+    "temporaryDatabaseRemoved": true,
+    "releaseTestBuildSeconds": 212.33,
+    "privateTestBuildLogSha256": "23a6ef30a8a5f6c38b3f3d5581f646b7bbc2ece802b26f86ee508599d190118e",
+    "privateTestLogSha256": "137de61577c865b5a63d13dac4c437cfb20914c29094a95aa4843b7e68267bc6"
+  },
+  "protectedResearchReadback": {
+    "researchCommit": "4aa3eaaca0664307171be799511c927cc4e1da1b",
+    "manifestSha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+    "protectedFilesVerified": 331,
+    "formalMacQualification": "NOT_RUN",
+    "formalHeldout": "NOT_RUN",
+    "p2DepartmentRegeneration": "NOT_RUN"
+  },
+  "supportingSummaries": {
+    "historical-mask-repair.json": "12dd070ac432fd5a91b8ad1dcd5adc82d60b6a65793393855ccc8b3850b506b6",
+    "packed-mask-comparison.json": "1f5e336b8b77fb6c22b976d67b74af0f7ae94d2aebebf4282ac24a074718db8e",
+    "conversational-reference.json": "aaaf992b2619390842eb28f48c9abb4aaedb2b13cfec5f23bbe6ae8c8c9326a5"
+  }
+}

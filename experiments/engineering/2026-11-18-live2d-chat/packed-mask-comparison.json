@@ -1,0 +1,457 @@
+{
+  "schema": "aijade.live2d-packed-mask-comparison.v1",
+  "localObservationSha256": "20019da80dfb10c0b69be542bbf2e30811b35f871d576ddf72418f4eb0d1e078",
+  "browser": "Chromium on macOS",
+  "evidenceScope": "Local companion engineering; bounded real Chromium render and instrumentation",
+  "pairedSequences": [
+    {
+      "sequence": 1,
+      "order": [
+        "reference",
+        "candidate"
+      ],
+      "reference": {
+        "receiptSha256": "4267769a5d9a9a3cc6dd707b5e58bcb7f01199589053d73007d34c92f5ca8fcf",
+        "adapterSha256": "6bd8e1462a5c07fff6a834686d436e008f435179c6e1d753a48b693fb628bdd8",
+        "profileSha256": "abb1bb16ea3958d9aa46541fd1cb7511c6854e5c1943d7fe0d278b58f33285d5",
+        "mode": "high-precision",
+        "renderTargets": 1,
+        "targetEdgePixels": 256,
+        "rawModelMaskCounts": {
+          "drawables": {
+            "total": 715,
+            "masked": 181,
+            "groups": 49
+          },
+          "offscreens": {
+            "total": 0,
+            "masked": 0,
+            "groups": 0
+          }
+        },
+        "visualStates": {
+          "neutral": {
+            "strongRedPixels": 12,
+            "meanRedMinusGreen": 10.0625,
+            "intentionalBlushParameter": 0
+          },
+          "blush": {
+            "strongRedPixels": 51,
+            "meanRedMinusGreen": 23.72159090909091,
+            "intentionalBlushParameter": 0.9566661715507507
+          },
+          "reset": {
+            "strongRedPixels": 14,
+            "meanRedMinusGreen": 9.959415584415584,
+            "intentionalBlushParameter": 0
+          },
+          "concerned": {
+            "strongRedPixels": 13,
+            "meanRedMinusGreen": 9.902597402597403,
+            "intentionalBlushParameter": 0
+          },
+          "mouth-gaze": {
+            "strongRedPixels": 8,
+            "meanRedMinusGreen": 11.616071428571429,
+            "intentionalBlushParameter": 0
+          }
+        },
+        "concernParameterActive": 0.966545820236206,
+        "concernParameterReset": 0,
+        "nativeMouthOpen": 0.685590922832489,
+        "nativeGazeXY": [
+          0.4834824502468109,
+          0.3955765664577484
+        ],
+        "windowMeasuredMs": 2000.199999988079,
+        "presentedFrames": 41,
+        "presentedFramesPerSecond": 20.497950205101667,
+        "medianMaskClearsPerPresentedFrame": 127,
+        "medianWebGlDrawCallsPerPresentedFrame": 682,
+        "medianJsDispatchThroughPresentationMs": 3.400000035762787,
+        "formulaBaseLevelMaskTextureBytes": 262144
+      },
+      "candidate": {
+        "receiptSha256": "28b2a90e1eac601bc77bd9e2ce1540bdec7666c45be1dcbb4d9ad0b01b68a9a2",
+        "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+        "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+        "mode": "packed",
+        "renderTargets": 2,
+        "targetEdgePixels": 768,
+        "rawModelMaskCounts": {
+          "drawables": {
+            "total": 715,
+            "masked": 181,
+            "groups": 49
+          },
+          "offscreens": {
+            "total": 0,
+            "masked": 0,
+            "groups": 0
+          }
+        },
+        "visualStates": {
+          "neutral": {
+            "strongRedPixels": 12,
+            "meanRedMinusGreen": 10.058441558441558,
+            "intentionalBlushParameter": 0
+          },
+          "blush": {
+            "strongRedPixels": 50,
+            "meanRedMinusGreen": 23.724025974025974,
+            "intentionalBlushParameter": 0.9567301273345947
+          },
+          "reset": {
+            "strongRedPixels": 14,
+            "meanRedMinusGreen": 9.96185064935065,
+            "intentionalBlushParameter": 0
+          },
+          "concerned": {
+            "strongRedPixels": 15,
+            "meanRedMinusGreen": 9.894480519480519,
+            "intentionalBlushParameter": 0
+          },
+          "mouth-gaze": {
+            "strongRedPixels": 8,
+            "meanRedMinusGreen": 11.655844155844155,
+            "intentionalBlushParameter": 0
+          }
+        },
+        "concernParameterActive": 0.956794023513794,
+        "concernParameterReset": 0,
+        "nativeMouthOpen": 0.685590922832489,
+        "nativeGazeXY": [
+          0.4834824502468109,
+          0.3955765664577484
+        ],
+        "windowMeasuredMs": 2015.4000000357628,
+        "presentedFrames": 61,
+        "presentedFramesPerSecond": 30.266944526603936,
+        "medianMaskClearsPerPresentedFrame": 2,
+        "medianWebGlDrawCallsPerPresentedFrame": 556,
+        "medianJsDispatchThroughPresentationMs": 2.5,
+        "formulaBaseLevelMaskTextureBytes": 4718592
+      },
+      "imageComparison": {
+        "stage-neutral": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 4.260037348272643e-05,
+          "foregroundPixels": 68600,
+          "foregroundRgbAverageAbsoluteDifference": 0.0003401360544217687,
+          "anyChannelDeltaAtLeast16Pixels": 0,
+          "maxChannelDelta": 4,
+          "grossForegroundLossPixels": 0
+        },
+        "stage-blush": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.026963118580765638,
+          "foregroundPixels": 68867,
+          "foregroundRgbAverageAbsoluteDifference": 0.22279175802634063,
+          "anyChannelDeltaAtLeast16Pixels": 229,
+          "maxChannelDelta": 154,
+          "grossForegroundLossPixels": 0
+        },
+        "stage-reset": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.024022525676937443,
+          "foregroundPixels": 68866,
+          "foregroundRgbAverageAbsoluteDifference": 0.19849175693859572,
+          "anyChannelDeltaAtLeast16Pixels": 192,
+          "maxChannelDelta": 156,
+          "grossForegroundLossPixels": 0
+        },
+        "stage-concerned": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.060141806722689074,
+          "foregroundPixels": 68906,
+          "foregroundRgbAverageAbsoluteDifference": 0.49600421830706565,
+          "anyChannelDeltaAtLeast16Pixels": 642,
+          "maxChannelDelta": 193,
+          "grossForegroundLossPixels": 8
+        },
+        "stage-mouth-gaze": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.03343078898225957,
+          "foregroundPixels": 68160,
+          "foregroundRgbAverageAbsoluteDifference": 0.2782130281690141,
+          "anyChannelDeltaAtLeast16Pixels": 332,
+          "maxChannelDelta": 194,
+          "grossForegroundLossPixels": 0
+        },
+        "face-neutral": {
+          "pixels": 1232,
+          "rgbAverageAbsoluteDifference": 0.007034632034632035,
+          "foregroundPixels": 1232,
+          "foregroundRgbAverageAbsoluteDifference": 0.007034632034632035,
+          "anyChannelDeltaAtLeast16Pixels": 0,
+          "maxChannelDelta": 4,
+          "grossForegroundLossPixels": 0
+        }
+      },
+      "imageComparisonSha256": "668bd98829ca5e54358f2d44ddaa9f644822d9ab03ba966786f25195f94f9032"
+    },
+    {
+      "sequence": 2,
+      "order": [
+        "candidate",
+        "reference"
+      ],
+      "reference": {
+        "receiptSha256": "8526d437d0c97abb7da523eb7134400b759339abdac2d1e8e034e89196ddaa22",
+        "adapterSha256": "6bd8e1462a5c07fff6a834686d436e008f435179c6e1d753a48b693fb628bdd8",
+        "profileSha256": "abb1bb16ea3958d9aa46541fd1cb7511c6854e5c1943d7fe0d278b58f33285d5",
+        "mode": "high-precision",
+        "renderTargets": 1,
+        "targetEdgePixels": 256,
+        "rawModelMaskCounts": {
+          "drawables": {
+            "total": 715,
+            "masked": 181,
+            "groups": 49
+          },
+          "offscreens": {
+            "total": 0,
+            "masked": 0,
+            "groups": 0
+          }
+        },
+        "visualStates": {
+          "neutral": {
+            "strongRedPixels": 12,
+            "meanRedMinusGreen": 10.0625,
+            "intentionalBlushParameter": 0
+          },
+          "blush": {
+            "strongRedPixels": 50,
+            "meanRedMinusGreen": 23.723214285714285,
+            "intentionalBlushParameter": 0.9564099907875061
+          },
+          "reset": {
+            "strongRedPixels": 14,
+            "meanRedMinusGreen": 9.957792207792208,
+            "intentionalBlushParameter": 0
+          },
+          "concerned": {
+            "strongRedPixels": 14,
+            "meanRedMinusGreen": 10.034902597402597,
+            "intentionalBlushParameter": 0
+          },
+          "mouth-gaze": {
+            "strongRedPixels": 9,
+            "meanRedMinusGreen": 11.637175324675324,
+            "intentionalBlushParameter": 0
+          }
+        },
+        "concernParameterActive": 0.9755282402038574,
+        "concernParameterReset": 0,
+        "nativeMouthOpen": 0.7002555131912231,
+        "nativeGazeXY": [
+          0.4938240051269531,
+          0.40403783321380615
+        ],
+        "windowMeasuredMs": 2002.8999999761581,
+        "presentedFrames": 43,
+        "presentedFramesPerSecond": 21.468870138555022,
+        "medianMaskClearsPerPresentedFrame": 127,
+        "medianWebGlDrawCallsPerPresentedFrame": 682,
+        "medianJsDispatchThroughPresentationMs": 3.600000023841858,
+        "formulaBaseLevelMaskTextureBytes": 262144
+      },
+      "candidate": {
+        "receiptSha256": "64d95268ab4ad9f0927477500ff21e4ad27bd09abb9d145e14827dac11c294c7",
+        "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+        "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+        "mode": "packed",
+        "renderTargets": 2,
+        "targetEdgePixels": 768,
+        "rawModelMaskCounts": {
+          "drawables": {
+            "total": 715,
+            "masked": 181,
+            "groups": 49
+          },
+          "offscreens": {
+            "total": 0,
+            "masked": 0,
+            "groups": 0
+          }
+        },
+        "visualStates": {
+          "neutral": {
+            "strongRedPixels": 12,
+            "meanRedMinusGreen": 10.058441558441558,
+            "intentionalBlushParameter": 0
+          },
+          "blush": {
+            "strongRedPixels": 49,
+            "meanRedMinusGreen": 25.789772727272727,
+            "intentionalBlushParameter": 0.9566661715507507
+          },
+          "reset": {
+            "strongRedPixels": 13,
+            "meanRedMinusGreen": 14.133116883116884,
+            "intentionalBlushParameter": 0
+          },
+          "concerned": {
+            "strongRedPixels": 14,
+            "meanRedMinusGreen": 10.0487012987013,
+            "intentionalBlushParameter": 0
+          },
+          "mouth-gaze": {
+            "strongRedPixels": 8,
+            "meanRedMinusGreen": 11.395292207792208,
+            "intentionalBlushParameter": 0
+          }
+        },
+        "concernParameterActive": 0.9567301273345947,
+        "concernParameterReset": 0,
+        "nativeMouthOpen": 0.685590922832489,
+        "nativeGazeXY": [
+          0.4834824502468109,
+          0.3955765664577484
+        ],
+        "windowMeasuredMs": 2015.2999999523163,
+        "presentedFrames": 61,
+        "presentedFramesPerSecond": 30.26844638586975,
+        "medianMaskClearsPerPresentedFrame": 2,
+        "medianWebGlDrawCallsPerPresentedFrame": 556,
+        "medianJsDispatchThroughPresentationMs": 2.899999976158142,
+        "formulaBaseLevelMaskTextureBytes": 4718592
+      },
+      "imageComparison": {
+        "stage-neutral": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 4.260037348272643e-05,
+          "foregroundPixels": 68600,
+          "foregroundRgbAverageAbsoluteDifference": 0.0003401360544217687,
+          "anyChannelDeltaAtLeast16Pixels": 0,
+          "maxChannelDelta": 4,
+          "grossForegroundLossPixels": 0
+        },
+        "stage-blush": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.11448295985060691,
+          "foregroundPixels": 68907,
+          "foregroundRgbAverageAbsoluteDifference": 0.9465753358391261,
+          "anyChannelDeltaAtLeast16Pixels": 963,
+          "maxChannelDelta": 245,
+          "grossForegroundLossPixels": 8
+        },
+        "stage-reset": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.16582166199813259,
+          "foregroundPixels": 68934,
+          "foregroundRgbAverageAbsoluteDifference": 1.3716211642053753,
+          "anyChannelDeltaAtLeast16Pixels": 1120,
+          "maxChannelDelta": 245,
+          "grossForegroundLossPixels": 30
+        },
+        "stage-concerned": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.057318510737628385,
+          "foregroundPixels": 68902,
+          "foregroundRgbAverageAbsoluteDifference": 0.47368242818302325,
+          "anyChannelDeltaAtLeast16Pixels": 603,
+          "maxChannelDelta": 200,
+          "grossForegroundLossPixels": 8
+        },
+        "stage-mouth-gaze": {
+          "pixels": 571200,
+          "rgbAverageAbsoluteDifference": 0.1552591036414566,
+          "foregroundPixels": 68264,
+          "foregroundRgbAverageAbsoluteDifference": 1.2910123442321966,
+          "anyChannelDeltaAtLeast16Pixels": 2059,
+          "maxChannelDelta": 175,
+          "grossForegroundLossPixels": 24
+        },
+        "face-neutral": {
+          "pixels": 1232,
+          "rgbAverageAbsoluteDifference": 0.007034632034632035,
+          "foregroundPixels": 1232,
+          "foregroundRgbAverageAbsoluteDifference": 0.007034632034632035,
+          "anyChannelDeltaAtLeast16Pixels": 0,
+          "maxChannelDelta": 4,
+          "grossForegroundLossPixels": 0
+        }
+      },
+      "imageComparisonSha256": "53f2b65d5c6e8ef164875a2058331f7ea75a35df0c9e601132e434bf0a80d2d2"
+    }
+  ],
+  "sameCandidateAdapterWithoutProfileOptIn": {
+    "receiptSha256": "c318f5433401cc0c1afab4919f1b427cce6e3e12191876d64b1e7d11fb947dbb",
+    "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+    "profileSha256": "abb1bb16ea3958d9aa46541fd1cb7511c6854e5c1943d7fe0d278b58f33285d5",
+    "mode": "high-precision",
+    "renderTargets": 1,
+    "targetEdgePixels": 256,
+    "rawModelMaskCounts": {
+      "drawables": {
+        "total": 715,
+        "masked": 181,
+        "groups": 49
+      },
+      "offscreens": {
+        "total": 0,
+        "masked": 0,
+        "groups": 0
+      }
+    },
+    "visualStates": {
+      "neutral": {
+        "strongRedPixels": 12,
+        "meanRedMinusGreen": 10.0625,
+        "intentionalBlushParameter": 0
+      },
+      "blush": {
+        "strongRedPixels": 50,
+        "meanRedMinusGreen": 23.72159090909091,
+        "intentionalBlushParameter": 0.9564099907875061
+      },
+      "reset": {
+        "strongRedPixels": 14,
+        "meanRedMinusGreen": 9.96185064935065,
+        "intentionalBlushParameter": 0
+      },
+      "concerned": {
+        "strongRedPixels": 14,
+        "meanRedMinusGreen": 9.915584415584416,
+        "intentionalBlushParameter": 0
+      },
+      "mouth-gaze": {
+        "strongRedPixels": 9,
+        "meanRedMinusGreen": 11.693993506493506,
+        "intentionalBlushParameter": 0
+      }
+    },
+    "concernParameterActive": 0.9566661715507507,
+    "concernParameterReset": 0,
+    "nativeMouthOpen": 0.6936118006706238,
+    "nativeGazeXY": [
+      0.4891388416290283,
+      0.40020450949668884
+    ],
+    "windowMeasuredMs": 2004.5999999642372,
+    "presentedFrames": 43,
+    "presentedFramesPerSecond": 21.450663474392464,
+    "medianMaskClearsPerPresentedFrame": 127,
+    "medianWebGlDrawCallsPerPresentedFrame": 682,
+    "medianJsDispatchThroughPresentationMs": 7.600000023841858,
+    "formulaBaseLevelMaskTextureBytes": 262144
+  },
+  "stageDimensions": [
+    840,
+    680
+  ],
+  "faceRoiDimensions": [
+    44,
+    28
+  ],
+  "strongRedThreshold": {
+    "minRedChannel": 155,
+    "minRedMinusGreen": 70
+  },
+  "timingScope": "Approximate two-second windows; dispatch is instrumented JavaScript to presentation, not GPU execution",
+  "storageScope": "RGBA level zero for mask render targets only, computed from actual dimensions and counts",
+  "policy": "Local profile opt-in; 37–64 masks; one-buffer or high-precision default elsewhere; hardware capability and SDK blend gates",
+  "comparisonStatus": "PASS"
+}

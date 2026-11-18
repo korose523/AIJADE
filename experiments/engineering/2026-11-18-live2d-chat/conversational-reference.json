@@ -1,0 +1,100 @@
+{
+  "schema": "aijade.companion-conversational-reference.v1",
+  "sourceUrl": "https://www.bilibili.com/video/BV1gMsM6TE9u/",
+  "publicUploaderName": "叶心ver",
+  "readingDateKST": "2026-11-18",
+  "audio": {
+    "publicAudioDurationSeconds": 327.981875,
+    "sha256": "0f7074059971f081928cd795a2b1d0ff1ecc2717835c23aa1a2b52d3aa7eb368"
+  },
+  "transcription": {
+    "kind": "local machine ASR",
+    "authenticatedSubtitleAvailable": false,
+    "segments": 146,
+    "runtimeVersion": "1.2.1",
+    "model": "faster-whisper tiny (CPU int8)",
+    "modelRevision": "d90ca5fe260221311c53c58e660288d3deb8d356",
+    "sha256": "bf8e17bd3fdbc3210bbf14999d172b53b2925e58b94be58f9102c8e910b94b50"
+  },
+  "commentReading": {
+    "topLevelPostsRead": 3,
+    "includedNestedRepliesRead": true
+  },
+  "adoptedProductInstruction": {
+    "scope": [
+      "Web companion reply",
+      "bridge companion reply"
+    ],
+    "field": "ReplyInstruction",
+    "style": [
+      "context-specific wording",
+      "varied openings, acknowledgments and endings",
+      "follow-up when it advances the exchange"
+    ],
+    "guardedContent": [
+      "exact user requests",
+      "facts and quotations",
+      "codes or commands",
+      "tool or delivery outcomes"
+    ]
+  },
+  "privateReadingReceiptSha256": "cbd9bd9afb5701fc5762f7153378fcf0f2da34dbb854d339c52e27ab036e8f43",
+  "boundedLocalPromptProbe": {
+    "configuredModel": "qwen2.5-coder:1.5b",
+    "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+    "generationOptions": {
+      "temperature": 0.2,
+      "seed": 818,
+      "num_ctx": 2048,
+      "num_predict": 66,
+      "num_thread": 2,
+      "num_gpu": 0
+    },
+    "pairedSyntheticContexts": 8,
+    "responses": 16,
+    "scoring": {
+      "styleSubsetSize": 5,
+      "patternHits": "sum of matches to a fixed expression-pattern detector",
+      "uniqueOpeningClauses": "count of distinct first punctuation-delimited clauses",
+      "followupQuestionCases": "reply ends in a full-width or ASCII question mark",
+      "allExactControls": "literal match for arithmetic, quotation and JSON output"
+    },
+    "results": {
+      "baseline": {
+        "styledCases": 5,
+        "patternCases": 5,
+        "patternHits": 6,
+        "uniqueOpeningClauses": 1,
+        "followupQuestionCases": 5,
+        "allExactControls": {
+          "math": true,
+          "quote": true,
+          "format": false
+        },
+        "lengthStops": 0
+      },
+      "candidate": {
+        "styledCases": 5,
+        "patternCases": 4,
+        "patternHits": 4,
+        "uniqueOpeningClauses": 2,
+        "followupQuestionCases": 4,
+        "allExactControls": {
+          "math": true,
+          "quote": true,
+          "format": false
+        },
+        "lengthStops": 0
+      }
+    },
+    "privateResultSha256": "c9f2b45da8427fdcdc27a87dca9c607dabd4dc0172a9fed66d46734c29fa4720",
+    "privateInputPlanSha256": "93109b8f693cd3b093ed993d1db5980303678f264fbc47ed9f18d2268b2e9c21",
+    "elapsedSeconds": 141.304,
+    "priorColdStart": {
+      "model": "llama3.1:8b",
+      "status": "TIMED_OUT_BEFORE_FIRST_RESPONSE",
+      "privateLogSha256": "fb1d7631601f9fd8c3d8c1639cc7fa28e3372f29c56b225d6ea5cc3c2ed4256d"
+    },
+    "privateAggregateReadbackSha256": "893e6fdf13b343c66ff9e0be0116ef024a59c992d5163d6fb5e6640f9be82f1b"
+  }
+}
