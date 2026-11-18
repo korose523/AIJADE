@@ -65,7 +65,7 @@ public sealed record VoiceSettings
 
 public sealed record StageSettings
 {
-    /// <summary>The MMD model (PMX / PMD) URL; none by default — models are supplied by the user under their own licence.</summary>
+    /// <summary>An MMD model URL or a local Live2D model3 URL. The web stage can also discover an installed skin.</summary>
     public string? ModelUrl { get; init; }
 
     public string? IdleMotionUrl { get; init; }

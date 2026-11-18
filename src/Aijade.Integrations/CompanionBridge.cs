@@ -121,6 +121,7 @@ public sealed class CompanionBridge(AijadeApi api, BridgeOptions? options = null
             AgentId = who?.Id ?? options.Orchestrator.AgentId,
             Drawing = () => options.Drawing,
             Tools = () => options.Tools,
+            ReplyInstruction = options.Orchestrator.ReplyInstruction ?? CompanionRuntime.ConversationalReplyInstruction,
         }, companion, audio, options.Time);
     }
 

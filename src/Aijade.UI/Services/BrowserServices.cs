@@ -116,14 +116,14 @@ public sealed class VoiceInput(IJSRuntime js, AijadeApi api) : IAsyncDisposable
     }
 }
 
-/// <summary>The stage: a renderer chosen at load (MMD when a model and the MMD backend are available, else the built-in avatar).</summary>
+/// <summary>The stage selects an installed Live2D skin, a configured MMD model, or the built-in avatar.</summary>
 public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposable
 {
     private IJSObjectReference? module;
 
     private async ValueTask<IJSObjectReference> ModuleAsync() => module ??= await js.InvokeAsync<IJSObjectReference>("import", "./_content/Aijade.UI/stage.js");
 
-    /// <returns>The renderer actually used ("mmd" or "avatar") and its asset version hash, if any.</returns>
+    /// <returns>The renderer actually used ("live2d", "mmd", or "avatar") and its asset version hash, if any.</returns>
     public async Task<JsonObject> MountAsync(string canvasId, StageSettings settings) =>
         await (await ModuleAsync()).InvokeAsync<JsonObject>("mount", canvasId, new { modelUrl = host.Resolve(settings.ModelUrl), motionUrl = host.Resolve(settings.IdleMotionUrl), background = settings.Background, transparent = settings.BackgroundImage is { Length: > 0 }, scale = settings.Scale, beatSync = settings.BeatSync, physics = settings.Physics, cameraFollow = settings.CameraFollow });
 

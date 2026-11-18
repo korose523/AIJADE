@@ -17,6 +17,12 @@ public static class CompanionRuntime
 {
     public const string VisibleReplyInstruction = "Every reply must include ordinary visible words that answer the user. " +
         "Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker.";
+
+    public const string ConversationalReplyInstruction = VisibleReplyInstruction + " " +
+        "Keep the wording natural for the language and character. Respond to a concrete detail in the current message when it helps. " +
+        "Let openings, acknowledgments and endings vary across turns. Ask a follow-up question when it advances the exchange. " +
+        "Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it.";
+
     public static ChatOrchestrator Create(AijadeApi api, IEnumerable<ChatModule> modules, OrchestratorOptions options,
         CompanionExperience? companion = null, bool audio = true, TimeProvider? time = null,
         Action<string, Exception>? moduleFailed = null)

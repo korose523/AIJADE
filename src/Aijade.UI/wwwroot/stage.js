@@ -1,9 +1,10 @@
-// The AIJADE stage. A renderer is chosen at mount: the MMD renderer (PMX/PMD models with VMD motions) when a model URL is
-// configured and the MMD backend module is installed, otherwise the built-in avatar — a procedural face driven by the PEF
-// expression vector, which is also the "controllable avatar" fallback of the identity-consistency check.
+// The AIJADE stage selects the installed local Live2D skin, a configured MMD model, or the built-in procedural avatar.
 // Every apply() returns the parameter map that was actually applied: the client hashes it into the render receipt.
+import { installedLive2DModel, isLive2DModel, mountLive2D } from './live2d-renderer.js';
 
 let current = null;
+let pendingMount = null;
+let mmdSurface = null;
 
 function clamp(x, lo = 0, hi = 1) { return Math.min(hi, Math.max(lo, x)); }
 function round(x) { return Math.round(x * 1000) / 1000; }
@@ -191,30 +192,66 @@ let pointer = null;
 function followPointer(canvas) {
   const onMove = (e) => {
     const r = canvas.getBoundingClientRect();
+    if (!r.width || !r.height) return;
     current?.look?.(((e.clientX - r.left) / r.width) * 2 - 1, ((e.clientY - r.top) / r.height) * 2 - 1);
   };
   canvas.addEventListener('pointermove', onMove);
   pointer = { canvas, onMove };
 }
 
-/** Mount the stage on a canvas. Returns { renderer, assetVersionHash, fallbackReason?, notes? }. */
+function releaseMmdSurface() {
+  if (!mmdSurface) return;
+  mmdSurface.surface.remove();
+  mmdSurface.canvas.hidden = false;
+  mmdSurface = null;
+}
+
+/** Mount the stage on a canvas and report the renderer, asset hash, and any installation notes. */
 export async function mount(canvasId, options) {
   unmount();
   const canvas = document.getElementById(canvasId);
   if (!canvas) throw new Error(`no canvas #${canvasId}`);
-  followPointer(canvas);
-  if (options.modelUrl) {
-    try {
+  const request = new AbortController();
+  pendingMount = request;
+  let renderer;
+  let eventSurface = canvas;
+  let fallbackReason;
+  try {
+    const modelUrl = options.modelUrl || await installedLive2DModel(request.signal);
+    request.signal.throwIfAborted();
+    if (isLive2DModel(modelUrl)) {
+      renderer = await mountLive2D(canvas, { ...options, modelUrl }, request.signal);
+    } else if (modelUrl) {
       const { MmdRenderer } = await import('./mmd-renderer.js');
-      current = await MmdRenderer.create(canvas, options);
-      return { renderer: current.kind, assetVersionHash: current.assetVersionHash, notes: current.notes ?? [] };
-    } catch (e) {
-      current = new AvatarRenderer(canvas, options);
-      return { renderer: current.kind, assetVersionHash: current.assetVersionHash, fallbackReason: String(e?.message ?? e) };
+      request.signal.throwIfAborted();
+      // Keep the original stage canvas available for 2D if MMD fails or a later mount selects Live2D.
+      eventSurface = document.createElement('canvas');
+      const holder = canvas.previousElementSibling;
+      if (holder?.classList.contains('stage-mmd-surface')) holder.appendChild(eventSurface);
+      else canvas.before(eventSurface);
+      canvas.hidden = true;
+      mmdSurface = { canvas, surface: eventSurface };
+      renderer = await MmdRenderer.create(eventSurface, { ...options, modelUrl });
     }
+  } catch (error) {
+    fallbackReason = String(error?.message ?? error);
   }
-  current = new AvatarRenderer(canvas, options);
-  return { renderer: current.kind, assetVersionHash: current.assetVersionHash };
+  if (request.signal.aborted) {
+    renderer?.dispose();
+    return { renderer: 'unmounted' };
+  }
+  pendingMount = null;
+  if (!renderer) releaseMmdSurface();
+  current = renderer ?? new AvatarRenderer(canvas, options);
+  followPointer(renderer ? eventSurface : canvas);
+  return {
+    renderer: current.kind,
+    assetVersionHash: current.assetVersionHash,
+    attribution: current.attribution,
+    notes: current.notes,
+    diagnostics: current.diagnostics,
+    fallbackReason,
+  };
 }
 
 /**
@@ -248,10 +285,13 @@ export async function selfie() {
   return dataUrl ? { dataUrl, renderer } : null;
 }
 export function look(x, y) { current?.look?.(x, y); }
+export function rendererDiagnostics() { return current?.diagnostics ?? null; }
 export function userSpeech(on, spokeMs, quietMs) { current?.userSpeech?.(on, spokeMs, quietMs); }
 // The microphone module announces the user's speech (voice activity) on the window; the stage listens without a round trip through .NET.
 window.addEventListener('aijade-user-speech', (e) => userSpeech(!!e.detail?.speaking, e.detail?.spokeMs, e.detail?.quietMs));
 export function unmount() {
+  pendingMount?.abort(); pendingMount = null;
   if (pointer) { pointer.canvas.removeEventListener('pointermove', pointer.onMove); pointer = null; }
   current?.dispose(); current = null;
+  releaseMmdSurface();
 }

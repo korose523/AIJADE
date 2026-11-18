@@ -104,6 +104,8 @@ AIJADE_E2E=1 AIJADE_TEST_DATABASE_URL=postgres://aijade:aijade@127.0.0.1:55432/a
 Add `AIJADE_E2E_MMD_DIR=<folder>` and `AIJADE_E2E_MMD_MODEL=<file.pmx>` to also test the MMD stage with a model you are
 licensed to use. Models are served from that folder and never copied into the repository.
 
+The chat stage can also load an installed Live2D package on loopback. See the [local Live2D setup](docs/LIVE2D-LOCAL.md).
+
 ## Reproducing the measurements
 
 Every number in the accompanying papers is computed from the files under `experiments/`; [experiments/README.md](experiments/README.md)

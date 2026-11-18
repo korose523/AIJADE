@@ -429,6 +429,7 @@
                 Drawing = () => canDraw && s.Modules.Artistry,
                 Tools = () => s.Modules.Mcp,
                 PromptBudget = s.PromptBudget, ToolTimeoutSeconds = s.ToolTimeoutSeconds,
+                ReplyInstruction = CompanionRuntime.ConversationalReplyInstruction,
             },
             companion);
     }

@@ -413,7 +413,9 @@ public static class ImageEndpoints
             var caption = form["caption"].ToString().Trim();
             if (caption.Length is 0 or > MaxCaptionLength)
                 throw ApiException.BadRequest($"caption is required (at most {MaxCaptionLength} characters)", "INVALID_IMAGE_REQUEST");
-            var renderer = form["renderer"].ToString() is "mmd" or "avatar" ? form["renderer"].ToString() : throw ApiException.BadRequest("renderer must be mmd or avatar", "INVALID_IMAGE_REQUEST");
+            var renderer = form["renderer"].ToString();
+            if (renderer is not ("live2d" or "mmd" or "avatar"))
+                throw ApiException.BadRequest("renderer must be live2d, mmd, or avatar", "INVALID_IMAGE_REQUEST");
             var bytes = new byte[file.Length];
             await using (var s = file.OpenReadStream())
                 await s.ReadExactlyAsync(bytes, ct).ConfigureAwait(false);

@@ -109,8 +109,8 @@
 
 <section>
     <h2>@State.Text["settings.stage"]</h2>
-    <label>@State.Text["settings.stage.model"]<input value="@s.Stage.ModelUrl" @onchange="e => Save(s with { Stage = s.Stage with { ModelUrl = NullIfEmpty(e.Value) } })" /></label>
-    <label>@State.Text["settings.stage.motion"]<input value="@s.Stage.IdleMotionUrl" @onchange="e => Save(s with { Stage = s.Stage with { IdleMotionUrl = NullIfEmpty(e.Value) } })" /></label>
+    <label>@State.Text["settings.stage.model"]<input value="@s.Stage.ModelUrl" placeholder=".pmx / .pmd / .model3.json" @onchange="e => Save(s with { Stage = s.Stage with { ModelUrl = NullIfEmpty(e.Value) } })" /></label>
+    <label>@State.Text["settings.stage.motion"]<input value="@s.Stage.IdleMotionUrl" placeholder=".vmd / .motion3.json" @onchange="e => Save(s with { Stage = s.Stage with { IdleMotionUrl = NullIfEmpty(e.Value) } })" /></label>
     <p class="hint">@State.Text["settings.stage.license"]</p>
     <Toggle Label="@State.Text["settings.stage.physics"]" Value="s.Stage.Physics" Changed="v => Save(s with { Stage = s.Stage with { Physics = v } })" />
     <label>@State.Text["settings.stage.background"]<input type="color" value="@s.Stage.Background" @onchange="e => Save(s with { Stage = s.Stage with { Background = (string)e.Value! } })" /></label>

@@ -117,6 +117,7 @@ public class IntegrationTests
         Assert.Equal("Hello there!", reply!.Text);
         Assert.Equal(["joy"], reply.Expressions);
         Assert.Equal("My cat is called Mochi.", LastUser(llm.Chats[^1]));
+        Assert.Contains(CompanionRuntime.ConversationalReplyInstruction, SystemPrompt(llm.Chats[^1]), StringComparison.Ordinal);
 
         // A group room: chatter is ignored; a mention or the companion's name gets an answer, with the speaker named.
         var chatter = new ChannelMessage("discord", "room-1", "bob", "Bob", "anyone seen my keys?", false, false);

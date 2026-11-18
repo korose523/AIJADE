@@ -4,7 +4,12 @@
 @inject BeatSyncSession BeatSync
 
 <div class="stage" style="@Stage.BackgroundStyle(State.Settings.Current.Stage)">
+    <div class="stage-mmd-surface"></div>
     <canvas id="@canvasId"></canvas>
+    @if (attribution is not null)
+    {
+        <div class="stage-credit">@attribution</div>
+    }
     @if (fallback is not null)
     {
         <div class="stage-note" title="@fallback">avatar</div>
@@ -32,6 +37,7 @@
             }
         </div>
     }
+    <div class="stage-overlay"></div>
 </div>
 
 @code {
@@ -47,6 +53,7 @@
 
     private readonly string canvasId = $"stage-{Guid.NewGuid():N}";
     private string? fallback;
+    private string? attribution;
     private List<string> notes = [];
 
     /// <summary>The renderer's asset version hash (part of every render receipt).</summary>
@@ -59,8 +66,9 @@
         var mounted = await Stage.MountAsync(canvasId, State.Settings.Current.Stage);
         AssetVersionHash = mounted["assetVersionHash"]?.GetValue<string>();
         fallback = mounted["fallbackReason"]?.GetValue<string>();
+        attribution = mounted["attribution"]?.GetValue<string>();
         notes = [.. (mounted["notes"] as JsonArray ?? []).Select(n => n!.GetValue<string>())];
-        if (fallback is not null || notes.Count > 0)
+        if (fallback is not null || attribution is not null || notes.Count > 0)
             StateHasChanged();
     }
 

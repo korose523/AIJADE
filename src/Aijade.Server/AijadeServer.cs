@@ -129,6 +129,8 @@ public static class AijadeServer
         {
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = MmdContentTypes() });
+            if (config["Live2D:Root"] is { Length: > 0 } live2dRoot)
+                LocalLive2D.Map(app, live2dRoot);
             // A local directory of the user's own (licensed) MMD models and motions, served read-only at /models/.
             // Models are never bundled with AIJADE: each comes with its author's terms.
             if (config["Aijade:ModelsDir"] is { Length: > 0 } modelsDir && Directory.Exists(modelsDir))
