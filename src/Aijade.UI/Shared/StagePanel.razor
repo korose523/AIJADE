@@ -59,12 +59,15 @@
     /// <summary>The renderer's asset version hash (part of every render receipt).</summary>
     public string? AssetVersionHash { get; private set; }
 
+    public bool RendersLive2D { get; private set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender)
             return;
         var mounted = await Stage.MountAsync(canvasId, State.Settings.Current.Stage);
         AssetVersionHash = mounted["assetVersionHash"]?.GetValue<string>();
+        RendersLive2D = mounted["renderer"]?.GetValue<string>() == "live2d";
         fallback = mounted["fallbackReason"]?.GetValue<string>();
         attribution = mounted["attribution"]?.GetValue<string>();
         notes = [.. (mounted["notes"] as JsonArray ?? []).Select(n => n!.GetValue<string>())];

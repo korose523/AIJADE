@@ -515,7 +515,7 @@
             var notes = (home is null ? [] : home.StateKind == "virtual" ? NativeSceneNotes(action, home) : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
             if (home is not null)
                 undone = null; // told once
-            var input = new ChatInput(text) { JsonOnly = jsonOnly };
+            var input = new ChatInput(text) { JsonOnly = jsonOnly, UseSadnessCueFallback = stage?.RendersLive2D == true };
             await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, input, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
             {
                 switch (e)

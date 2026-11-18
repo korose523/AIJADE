@@ -119,13 +119,27 @@ public sealed class VoiceInput(IJSRuntime js, AijadeApi api) : IAsyncDisposable
 /// <summary>The stage selects an installed Live2D skin, a configured MMD model, or the built-in avatar.</summary>
 public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposable
 {
-    private IJSObjectReference? module;
+    private Task<IJSObjectReference>? module;
+    private string? canvasOwner;
+    private bool disposed;
 
-    private async ValueTask<IJSObjectReference> ModuleAsync() => module ??= await js.InvokeAsync<IJSObjectReference>("import", "./_content/Aijade.UI/stage.js");
+    private Task<IJSObjectReference> ModuleAsync()
+    {
+        ObjectDisposedException.ThrowIf(disposed, this);
+        if (module is { IsCanceled: true } or { IsFaulted: true })
+            module = null;
+        return module ??= js.InvokeAsync<IJSObjectReference>("import", "./_content/Aijade.UI/stage.js").AsTask();
+    }
 
     /// <returns>The renderer actually used ("live2d", "mmd", or "avatar") and its asset version hash, if any.</returns>
-    public async Task<JsonObject> MountAsync(string canvasId, StageSettings settings) =>
-        await (await ModuleAsync()).InvokeAsync<JsonObject>("mount", canvasId, new { modelUrl = host.Resolve(settings.ModelUrl), motionUrl = host.Resolve(settings.IdleMotionUrl), background = settings.Background, transparent = settings.BackgroundImage is { Length: > 0 }, scale = settings.Scale, beatSync = settings.BeatSync, physics = settings.Physics, cameraFollow = settings.CameraFollow });
+    public async Task<JsonObject> MountAsync(string canvasId, StageSettings settings)
+    {
+        var browser = await ModuleAsync();
+        if (disposed)
+            return new JsonObject { ["renderer"] = "unmounted" };
+        canvasOwner = canvasId;
+        return await browser.InvokeAsync<JsonObject>("mount", canvasId, new { modelUrl = host.Resolve(settings.ModelUrl), motionUrl = host.Resolve(settings.IdleMotionUrl), background = settings.Background, transparent = settings.BackgroundImage is { Length: > 0 }, scale = settings.Scale, beatSync = settings.BeatSync, physics = settings.Physics, cameraFollow = settings.CameraFollow });
+    }
 
     /// <summary>The stage container's CSS: the background colour, and the picture (if any) behind the transparent canvas.</summary>
     public string BackgroundStyle(StageSettings settings)
@@ -171,16 +185,28 @@ public sealed class StageHost(IJSRuntime js, IClientHost host) : IAsyncDisposabl
 
     public async ValueTask DisposeAsync()
     {
-        if (module is not null)
+        if (disposed)
+            return;
+        disposed = true;
+        if (module is null)
+            return;
+        IJSObjectReference browser;
+        try { browser = await module; }
+        catch (Exception error) when (error is JSDisconnectedException or JSException or OperationCanceledException) { return; }
+        try
         {
             try
             {
-                await module.InvokeVoidAsync("unmount");
-                await module.DisposeAsync();
+                if (canvasOwner is not null)
+                    await browser.InvokeVoidAsync("unmount", canvasOwner);
             }
-            catch (JSDisconnectedException)
+            finally
             {
+                await browser.DisposeAsync();
             }
+        }
+        catch (JSDisconnectedException)
+        {
         }
     }
 }

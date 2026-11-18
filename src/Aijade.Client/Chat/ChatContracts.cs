@@ -33,6 +33,9 @@ public sealed record ChatInput(string Text, string? Speaker = null)
 
     /// <summary>The product caller explicitly requests one JSON value for this turn.</summary>
     public bool JsonOnly { get; init; }
+
+    /// <summary>The Web caller has mounted a Live2D stage and can render a suggested sadness cue.</summary>
+    public bool UseSadnessCueFallback { get; init; }
 }
 
 public abstract record OrchestratorEvent;

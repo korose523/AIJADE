@@ -5,6 +5,7 @@ import { installedLive2DModel, isLive2DModel, mountLive2D } from './live2d-rende
 let current = null;
 let pendingMount = null;
 let mmdSurface = null;
+let canvasOwner = null;
 
 function clamp(x, lo = 0, hi = 1) { return Math.min(hi, Math.max(lo, x)); }
 function round(x) { return Math.round(x * 1000) / 1000; }
@@ -208,9 +209,10 @@ function releaseMmdSurface() {
 
 /** Mount the stage on a canvas and report the renderer, asset hash, and any installation notes. */
 export async function mount(canvasId, options) {
-  unmount();
   const canvas = document.getElementById(canvasId);
   if (!canvas) throw new Error(`no canvas #${canvasId}`);
+  unmount();
+  canvasOwner = canvasId;
   const request = new AbortController();
   pendingMount = request;
   let renderer;
@@ -289,7 +291,10 @@ export function rendererDiagnostics() { return current?.diagnostics ?? null; }
 export function userSpeech(on, spokeMs, quietMs) { current?.userSpeech?.(on, spokeMs, quietMs); }
 // The microphone module announces the user's speech (voice activity) on the window; the stage listens without a round trip through .NET.
 window.addEventListener('aijade-user-speech', (e) => userSpeech(!!e.detail?.speaking, e.detail?.spokeMs, e.detail?.quietMs));
-export function unmount() {
+/** Only the owning panel may cancel or release its pending/current stage. New valid mounts replace it. */
+export function unmount(canvasId) {
+  if (canvasId !== undefined && canvasId !== canvasOwner) return;
+  canvasOwner = null;
   pendingMount?.abort(); pendingMount = null;
   if (pointer) { pointer.canvas.removeEventListener('pointermove', pointer.onMove); pointer = null; }
   current?.dispose(); current = null;

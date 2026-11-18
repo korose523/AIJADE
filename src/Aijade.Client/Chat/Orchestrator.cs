@@ -163,7 +163,8 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         }
         var stream = options.Tools() ? new ToolConversation(api, options).ReplyAsync(messages, ct)
             : api.StreamChatAsync(options.Model, messages, options.Temperature, ct);
-        await foreach (var e in ReplyAsync(chatId, stream, personaSnapshotRef, drawing, turn: turn, ct: ct).ConfigureAwait(false))
+        await foreach (var e in ReplyAsync(chatId, stream, personaSnapshotRef, drawing, turn: turn,
+            fillMissingSadCue: SadnessCue.IsRequested(input), ct: ct).ConfigureAwait(false))
             yield return e;
     }
 
@@ -260,7 +261,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
 
     /// <summary>One stream / persistence / performance path for replies, first lines and promised reminders.</summary>
     private async IAsyncEnumerable<OrchestratorEvent> ReplyAsync(string chatId, IAsyncEnumerable<CompletionDelta> stream,
-        string personaSnapshotRef, bool drawing, JsonObject? extraMeta = null, TurnContext? turn = null,
+        string personaSnapshotRef, bool drawing, JsonObject? extraMeta = null, TurnContext? turn = null, bool fillMissingSadCue = false,
         [EnumeratorCancellation] CancellationToken ct = default)
     {
         var parser = new MarkerParser("emote", "draw");
@@ -320,7 +321,12 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
                 yield return new TurnFailed("EMPTY_REPLY", "The model returned no reply.");
             yield break;
         }
+        var usedSadFallback = fillMissingSadCue && cues.Count == 0;
+        if (usedSadFallback)
+            cues.Add("sad");
         var meta = new JsonObject { ["expressions"] = new JsonArray([.. cues.Select(c => (JsonNode)c)]) };
+        if (usedSadFallback)
+            meta["expressionSource"] = "sad_fallback";
         if (turn is null)
             meta[Initiative.ProactiveMeta] = true;
         foreach (var (key, value) in extraMeta ?? [])

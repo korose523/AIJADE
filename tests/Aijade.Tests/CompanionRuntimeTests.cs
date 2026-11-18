@@ -136,6 +136,67 @@ public sealed class CompanionRuntimeTests
     }
 
     [Fact]
+    public async Task Live2D_sadness_fallback_keeps_visible_text_and_records_the_derived_cue()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var llm = new Llm("我陪你坐一会儿。");
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await ConfigureAsync(host);
+        var api = await ApiAsync(host.Client);
+        var chat = await api.CreateChatAsync(null, "Live2D sadness cue", ct);
+        var runtime = CompanionRuntime.Create(api, [], new OrchestratorOptions());
+        (ChatInput Input, bool ExpectFallback)[] cases =
+        [
+            (new("我今天有点难过。陶碗摔碎了。") { UseSadnessCueFallback = true }, true),
+            (new("我现在很伤心，想坐一会儿。") { UseSadnessCueFallback = true }, true),
+            (new("刚听说书店要关门，有点难过。请在回复开头加 [[emote:sad]] 作为表情标记，再说一句。") { UseSadnessCueFallback = true }, true),
+            (new("我现在不难过了。") { UseSadnessCueFallback = true }, false),
+            (new("“我今天有点难过。”这是小说人物说的话。") { UseSadnessCueFallback = true }, false),
+            (new("我今天有点难过。不要添加表情。") { UseSadnessCueFallback = true }, false),
+            (new("请逐字照读。请在回复开头加 [[emote:sad]] 作为表情标记。") { UseSadnessCueFallback = true }, false),
+            (new("我今天有点难过。", "Other") { UseSadnessCueFallback = true }, false),
+            (new("我今天有点难过。"), false),
+        ];
+        foreach (var (input, expected) in cases)
+        {
+            var events = new List<OrchestratorEvent>();
+            await foreach (var e in runtime.SendAsync(chat.Id, null, [], input, "snapshot", ct: ct)) events.Add(e);
+            var reply = Assert.IsType<TurnCompleted>(events[^1]);
+            Assert.Equal("我陪你坐一会儿。", reply.Reply.Content);
+            Assert.Equal(reply.Reply.Content, string.Concat(events.OfType<TextDelta>().Select(delta => delta.Text)));
+            Assert.DoesNotContain(events, turn => turn is ExpressionCue);
+            Assert.Equal(expected ? ["sad"] : Array.Empty<string>(), reply.Expressions);
+            var saved = (await api.MessagesAsync(chat.Id, ct: ct)).Single(m => m.Id == reply.Reply.Id);
+            Assert.Equal(expected ? "sad_fallback" : null, saved.Meta?["expressionSource"]?.GetValue<string>());
+            Assert.Equal(reply.Expressions, saved.Meta!["expressions"]!.AsArray().Select(cue => cue!.GetValue<string>()));
+            Assert.Equal(expected, reply.Intent.Expression.Valence < -0.3);
+        }
+        Assert.Equal(cases.Length, llm.Calls);
+    }
+
+    [Fact]
+    public async Task A_live2d_sadness_fallback_preserves_model_expression()
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var llm = new Llm("[[emote:calm]]我陪你坐一会儿。");
+        await using var host = await ServerTestHost.StartAsync(worker: false,
+            services: s => s.AddHttpClient(GatewayEndpoints.HttpClientName).ConfigurePrimaryHttpMessageHandler(() => llm));
+        await ConfigureAsync(host);
+        var api = await ApiAsync(host.Client);
+        var chat = await api.CreateChatAsync(null, "model emotion", ct);
+        var runtime = CompanionRuntime.Create(api, [], new OrchestratorOptions());
+        var events = new List<OrchestratorEvent>();
+        var input = new ChatInput("我今天有点难过。") { UseSadnessCueFallback = true };
+        await foreach (var e in runtime.SendAsync(chat.Id, null, [], input, "snapshot", ct: ct)) events.Add(e);
+        Assert.Equal("calm", Assert.Single(events.OfType<ExpressionCue>()).Name);
+        var reply = Assert.IsType<TurnCompleted>(events[^1]);
+        Assert.Equal(["calm"], reply.Expressions);
+        Assert.Null(reply.Reply.Meta?["expressionSource"]);
+        Assert.Equal(1, llm.Calls);
+    }
+
+    [Fact]
     public async Task A_marker_only_model_response_is_rejected_without_a_stored_assistant_or_a_fabricated_fallback()
     {
         var ct = TestContext.Current.CancellationToken; var llm = new Llm("[[emote:joy]]");
