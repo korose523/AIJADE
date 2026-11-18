@@ -2,6 +2,8 @@
 
 The launcher stages one phase per new output directory. Qualification covers five fresh launches in each of the three archived configurations, followed by the two open-sampling controls. Regeneration uses three separate output directories and compares each complete run with its pinned archive. The runner uses the original task, sampling and comparison settings from the [retained worklist](DEPARTMENT-REGENERATION-PREPARATION.md).
 
+Use the [department GitHub download guide](DEPARTMENT-GITHUB-DOWNLOAD.md) to fetch the fixed source commit and check the archived inputs on the department computer.
+
 ## Offline review
 
 From the source checkout, render the commands and expected record schema. Run the tests using local synthetic fixtures.
