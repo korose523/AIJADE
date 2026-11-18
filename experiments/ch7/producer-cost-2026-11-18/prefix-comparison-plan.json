@@ -1,0 +1,27 @@
+{
+  "schema": "aijade.ch7.offline-producer-prefix-plan.v1",
+  "writtenAt": "2026-11-18T01:31:46.192037+00:00",
+  "benchmarkSha256": "8bba093fa73845deb0cc1caf0876e830fe9f6a3e2848524373895567a9e0bbcf",
+  "inputs": {
+    "journal": "36dcdadc3f09477e69b5ad0eede667b7338d31cc161e3ddf0d46103d88600084",
+    "initialization": "635b4655a9b96da8f50a8f45aeba148f14f4b2fb000536205fa83b8abcf2154c",
+    "cold_details": "d980e25e6e6cb75dbf8591d49a9d8a517d50caf8c473a34ae1e3b2039426ab2e",
+    "producer": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+  },
+  "rawIndices": [
+    0,
+    83,
+    166,
+    167
+  ],
+  "pairsPerCondition": 24,
+  "orderSeed": 20261118,
+  "schedule": "12 AB and 12 BA pairs shuffled within each of eight conditions",
+  "conditions": [
+    "authentic growing prefix",
+    "same length separate exact buffers"
+  ],
+  "response": "paired wall-clock nanoseconds for an in-memory exact comparison",
+  "validity": "All 169 archived cutoff SHA256s, typed replay at 4 selected cutoffs, 6 adverse controls",
+  "scope": "Single Mac process over one retained E6 journal. Descriptive timing. No policy threshold, live observations or engineering acceptance."
+}

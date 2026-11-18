@@ -1,0 +1,1764 @@
+{
+  "schema": "aijade.ch7.offline-producer-prefix-comparison.v1",
+  "status": "OFFLINE_COMPONENT_MEASURED",
+  "startedAt": "2026-11-18T01:31:53.152436+00:00",
+  "completedAt": "2026-11-18T01:32:00.506416+00:00",
+  "planSha256": "4fdc81b66bc96552e69ed3497a9173a1ce6f6c226f2cb11ae50ba4269d74b118",
+  "benchmarkSha256": "8bba093fa73845deb0cc1caf0876e830fe9f6a3e2848524373895567a9e0bbcf",
+  "inputs": {
+    "journal": "36dcdadc3f09477e69b5ad0eede667b7338d31cc161e3ddf0d46103d88600084",
+    "initialization": "635b4655a9b96da8f50a8f45aeba148f14f4b2fb000536205fa83b8abcf2154c",
+    "cold_details": "d980e25e6e6cb75dbf8591d49a9d8a517d50caf8c473a34ae1e3b2039426ab2e",
+    "producer": "93e12314fd66c4cde97323afcda7c6f7ba3e08a9a9fe078aba6b22845ea12c65"
+  },
+  "sourceCommit": "4599cfe9885e529e99ba22f7ffdbfb2ce290d583",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:22) [Clang 22.1.3 ]",
+  "platform": "macOS-15.7.4-x86_64-i386-64bit",
+  "cutoffsVerified": 169,
+  "comparisonCalls": 384,
+  "measurements": [
+    {
+      "rawIndex": 0,
+      "priorBytes": 6220382,
+      "currentBytes": 6230214,
+      "tailBytes": 9832,
+      "currentEvents": 7604,
+      "currentPrefixSha256": "43c1b182d17a1ca0dc1f23b229380ab67c78668c29966eb692643a3013c79273",
+      "coldReplayNs": 555066983,
+      "tailReplayNs": 1383724,
+      "typedColdEquivalence": true,
+      "append": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 4197429,
+            "startswith": 502460
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 491955,
+            "slice": 893280
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 861916,
+            "startswith": 693042
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 568510,
+            "slice": 1263797
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 510367,
+            "slice": 875504
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1028705,
+            "startswith": 657952
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1280327,
+            "startswith": 835489
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 488684,
+            "slice": 1741762
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1178627,
+            "startswith": 749087
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 506843,
+            "slice": 944888
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 442799,
+            "slice": 892679
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 513959,
+            "slice": 918734
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 886495,
+            "startswith": 470764
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 460687,
+            "slice": 900318
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 535353,
+            "slice": 886122
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 502879,
+            "slice": 849616
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 921045,
+            "startswith": 470654
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 450458,
+            "slice": 962444
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 872379,
+            "startswith": 455832
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 434594,
+            "slice": 875049
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 832802,
+            "startswith": 464274
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 861472,
+            "startswith": 518776
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 852064,
+            "startswith": 455218
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 854279,
+            "startswith": 455757
+          }
+        ],
+        "slice": {
+          "minNs": 832802,
+          "medianNs": 892979.5,
+          "maxNs": 4197429
+        },
+        "startswith": {
+          "minNs": 434594,
+          "medianNs": 497207.5,
+          "maxNs": 835489
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": 168874,
+          "medianNs": 416139.0,
+          "maxNs": 3694969
+        }
+      },
+      "sameLength": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 689081,
+            "startswith": 444349
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 410651,
+            "slice": 402047
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 394690,
+            "startswith": 414150
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 419366,
+            "slice": 412674
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 411818,
+            "slice": 400145
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 398532,
+            "startswith": 393302
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 394246,
+            "slice": 418523
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 458238,
+            "slice": 462611
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 458646,
+            "startswith": 458444
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 462700,
+            "slice": 451462
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 444187,
+            "startswith": 459063
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 529549,
+            "startswith": 479755
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 499537,
+            "startswith": 592052
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 677887,
+            "slice": 761719
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 563037,
+            "slice": 608336
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 705838,
+            "slice": 569428
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 552304,
+            "slice": 1258581
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 664847,
+            "startswith": 575585
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 472386,
+            "startswith": 456348
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 420745,
+            "startswith": 432067
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 401835,
+            "startswith": 405993
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 420178,
+            "startswith": 417302
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 442492,
+            "slice": 493821
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 483024,
+            "slice": 571061
+          }
+        ],
+        "slice": {
+          "minNs": 394690,
+          "medianNs": 460628.5,
+          "maxNs": 1258581
+        },
+        "startswith": {
+          "minNs": 393302,
+          "medianNs": 457293.0,
+          "maxNs": 705838
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": -136410,
+          "medianNs": 3624.5,
+          "maxNs": 706277
+        }
+      }
+    },
+    {
+      "rawIndex": 83,
+      "priorBytes": 7036415,
+      "currentBytes": 7046247,
+      "tailBytes": 9832,
+      "currentEvents": 8600,
+      "currentPrefixSha256": "72dfca27b03c64256bb0a3eccb01915ad0f74ba5eb8af6665779364154545b9f",
+      "coldReplayNs": 635439204,
+      "tailReplayNs": 976592,
+      "typedColdEquivalence": true,
+      "append": {
+        "rows": [
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 2278299,
+            "slice": 4492146
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1963438,
+            "startswith": 625812
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1765816,
+            "startswith": 535467
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 540234,
+            "slice": 1947761
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 700751,
+            "slice": 1712694
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1863121,
+            "startswith": 683166
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 690039,
+            "slice": 2268627
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1911330,
+            "startswith": 533039
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 526306,
+            "slice": 1831270
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 549835,
+            "slice": 1900444
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 566009,
+            "slice": 2253609
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2469511,
+            "startswith": 652592
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 643607,
+            "slice": 1909802
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 587745,
+            "slice": 2017949
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2115459,
+            "startswith": 652946
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1858494,
+            "startswith": 722136
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1951659,
+            "startswith": 621757
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1865219,
+            "startswith": 584247
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1909584,
+            "startswith": 621977
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 604931,
+            "slice": 2090198
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2012492,
+            "startswith": 570198
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 560305,
+            "slice": 2046887
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2039507,
+            "startswith": 678631
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 607654,
+            "slice": 2087046
+          }
+        ],
+        "slice": {
+          "minNs": 1712694,
+          "medianNs": 1957548.5,
+          "maxNs": 4492146
+        },
+        "startswith": {
+          "minNs": 526306,
+          "medianNs": 614705.5,
+          "maxNs": 2278299
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": 1011943,
+          "medianNs": 1369583.5,
+          "maxNs": 2213847
+        }
+      },
+      "sameLength": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1531459,
+            "startswith": 687760
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 602623,
+            "slice": 551906
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 636114,
+            "startswith": 603490
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 585170,
+            "slice": 593367
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 699829,
+            "startswith": 573505
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 557291,
+            "startswith": 660033
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 572117,
+            "slice": 530276
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 777502,
+            "slice": 637184
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 667835,
+            "startswith": 586984
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 544746,
+            "slice": 548148
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 553064,
+            "slice": 508895
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 494256,
+            "startswith": 493382
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 495875,
+            "slice": 522051
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 543668,
+            "slice": 527534
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 536641,
+            "slice": 494501
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 493479,
+            "startswith": 467709
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 484599,
+            "startswith": 476764
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 499006,
+            "slice": 522595
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 577682,
+            "startswith": 524970
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 507874,
+            "startswith": 494902
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 501303,
+            "slice": 501278
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 467909,
+            "slice": 464813
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 466037,
+            "startswith": 459922
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 455881,
+            "startswith": 454152
+          }
+        ],
+        "slice": {
+          "minNs": 455881,
+          "medianNs": 525064.5,
+          "maxNs": 1531459
+        },
+        "startswith": {
+          "minNs": 454152,
+          "medianNs": 540154.5,
+          "maxNs": 777502
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": -140318,
+          "medianNs": 4758.5,
+          "maxNs": 843699
+        }
+      }
+    },
+    {
+      "rawIndex": 166,
+      "priorBytes": 7852471,
+      "currentBytes": 7862303,
+      "tailBytes": 9832,
+      "currentEvents": 9596,
+      "currentPrefixSha256": "1405a50de80ee200ffc5aacb86715e3beb039a9781b1bd905ce21dece1ae1797",
+      "coldReplayNs": 694791828,
+      "tailReplayNs": 1528159,
+      "typedColdEquivalence": true,
+      "append": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 6365064,
+            "startswith": 933628
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 3292789,
+            "startswith": 797353
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 730834,
+            "slice": 2510786
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 1023383,
+            "slice": 2240119
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 593947,
+            "slice": 2061499
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2143544,
+            "startswith": 775436
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 611056,
+            "slice": 3521970
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 796530,
+            "slice": 2984807
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 688460,
+            "slice": 2139503
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2257660,
+            "startswith": 663066
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2233502,
+            "startswith": 759353
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 611294,
+            "slice": 2906892
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2188992,
+            "startswith": 832312
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2464114,
+            "startswith": 718942
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2391883,
+            "startswith": 643576
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2466003,
+            "startswith": 720857
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2620730,
+            "startswith": 904069
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2231905,
+            "startswith": 757419
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 877775,
+            "slice": 2387321
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 707928,
+            "slice": 2264827
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 771159,
+            "slice": 2618554
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 706956,
+            "slice": 2729848
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 953022,
+            "slice": 2231603
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2591960,
+            "startswith": 675899
+          }
+        ],
+        "slice": {
+          "minNs": 2061499,
+          "medianNs": 2427998.5,
+          "maxNs": 6365064
+        },
+        "startswith": {
+          "minNs": 593947,
+          "medianNs": 744126.5,
+          "maxNs": 1023383
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": 1216736,
+          "medianNs": 1730903.5,
+          "maxNs": 5431436
+        }
+      },
+      "sameLength": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 982976,
+            "startswith": 637452
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 629409,
+            "slice": 630200
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 624063,
+            "slice": 622696
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 754494,
+            "slice": 644152
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 636374,
+            "startswith": 639853
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 817424,
+            "slice": 624973
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1059415,
+            "startswith": 804158
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 714575,
+            "startswith": 650536
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 605200,
+            "slice": 588195
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 670115,
+            "slice": 783021
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 844043,
+            "startswith": 625522
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 662720,
+            "slice": 620415
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 596356,
+            "startswith": 619343
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 637879,
+            "slice": 761382
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 647073,
+            "slice": 622558
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 655250,
+            "startswith": 681841
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 723256,
+            "slice": 784149
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 804486,
+            "startswith": 792314
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1370838,
+            "startswith": 840979
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 739678,
+            "slice": 727951
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 623522,
+            "startswith": 857601
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 827980,
+            "slice": 638740
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 886475,
+            "startswith": 830776
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 772336,
+            "startswith": 671899
+          }
+        ],
+        "slice": {
+          "minNs": 588195,
+          "medianNs": 684912.5,
+          "maxNs": 1370838
+        },
+        "startswith": {
+          "minNs": 605200,
+          "medianNs": 671007.0,
+          "maxNs": 857601
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": -234079,
+          "medianNs": -288.0,
+          "maxNs": 529859
+        }
+      }
+    },
+    {
+      "rawIndex": 167,
+      "priorBytes": 7862303,
+      "currentBytes": 7872136,
+      "tailBytes": 9833,
+      "currentEvents": 9608,
+      "currentPrefixSha256": "5ee98967795eb0349a041f6f13dee0aaf1547f8060cd86f3db602bf7d8c87039",
+      "coldReplayNs": 871195177,
+      "tailReplayNs": 986156,
+      "typedColdEquivalence": true,
+      "append": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 3119536,
+            "startswith": 1172095
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 749689,
+            "slice": 2061387
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2146451,
+            "startswith": 660737
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 620286,
+            "slice": 2127648
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 628947,
+            "slice": 2349984
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 620370,
+            "slice": 2354667
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2316586,
+            "startswith": 636661
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 623356,
+            "slice": 2388115
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 682581,
+            "slice": 2380282
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2529420,
+            "startswith": 708205
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2512359,
+            "startswith": 675448
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 810533,
+            "slice": 2570730
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2232906,
+            "startswith": 701953
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 803237,
+            "slice": 2279283
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2265383,
+            "startswith": 661249
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 652467,
+            "slice": 2539134
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2499892,
+            "startswith": 675239
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2505250,
+            "startswith": 678284
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 657111,
+            "slice": 2409071
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 720884,
+            "slice": 2558917
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2591754,
+            "startswith": 723731
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2437717,
+            "startswith": 720468
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 823893,
+            "slice": 2501495
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 2430183,
+            "startswith": 859386
+          }
+        ],
+        "slice": {
+          "minNs": 2061387,
+          "medianNs": 2419627.0,
+          "maxNs": 3119536
+        },
+        "startswith": {
+          "minNs": 620286,
+          "medianNs": 680432.5,
+          "maxNs": 1172095
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": 1311698,
+          "medianNs": 1727667.0,
+          "maxNs": 1947441
+        }
+      },
+      "sameLength": {
+        "rows": [
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1243007,
+            "startswith": 699309
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 771764,
+            "slice": 665142
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 1052424,
+            "startswith": 733051
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 812616,
+            "startswith": 673331
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 659790,
+            "startswith": 649058
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 633720,
+            "startswith": 629490
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 608123,
+            "slice": 645871
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 633199,
+            "slice": 624749
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 608124,
+            "startswith": 607837
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 590201,
+            "startswith": 586718
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 587606,
+            "startswith": 693106
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 622670,
+            "startswith": 662658
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 612664,
+            "startswith": 608710
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 637476,
+            "slice": 598844
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 587969,
+            "startswith": 591783
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 590967,
+            "slice": 566178
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 573931,
+            "slice": 596673
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 559268,
+            "slice": 570885
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 579515,
+            "slice": 702331
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 573149,
+            "slice": 630602
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 750276,
+            "slice": 680957
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 702281,
+            "slice": 821070
+          },
+          {
+            "order": [
+              "slice",
+              "startswith"
+            ],
+            "slice": 625269,
+            "startswith": 576073
+          },
+          {
+            "order": [
+              "startswith",
+              "slice"
+            ],
+            "startswith": 571147,
+            "slice": 601919
+          }
+        ],
+        "slice": {
+          "minNs": 566178,
+          "medianNs": 625009.0,
+          "maxNs": 1243007
+        },
+        "startswith": {
+          "minNs": 559268,
+          "medianNs": 619100.0,
+          "maxNs": 771764
+        },
+        "pairedSliceMinusStartswith": {
+          "minNs": -106622,
+          "medianNs": 7481.0,
+          "maxNs": 543698
+        }
+      }
+    }
+  ],
+  "controls": {
+    "edited_first": "BOTH_REJECT",
+    "edited_middle": "BOTH_REJECT",
+    "edited_last": "BOTH_REJECT",
+    "older_legal_cutoff": "BOTH_REJECT",
+    "wrong_type": "BOTH_REJECT",
+    "malformed_new_event": "PREFIX_MATCHES_SHARED_PARSER_REJECTS"
+  },
+  "runningBoundary": "In-memory exact prefix comparison. Read, fsync, native collection, full callback and real concurrency were outside the timed comparison.",
+  "backendQualification": "NOT_RUN",
+  "heldoutComparison": "NOT_RUN"
+}
