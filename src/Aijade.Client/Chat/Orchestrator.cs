@@ -36,7 +36,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
     public static string SystemPrompt(Character? character, IEnumerable<string> supplements, bool drawing = false) =>
         ComposeSystemPrompt(character, supplements, drawing, null);
 
-    private static string ComposeSystemPrompt(Character? character, IEnumerable<string> supplements, bool drawing, string? replyInstruction)
+    private static string ComposeSystemPrompt(Character? character, IEnumerable<string> supplements, bool drawing, string? replyInstruction, bool jsonOnly = false)
     {
         var parts = new List<string>();
         if (character is not null)
@@ -52,6 +52,11 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
             parts.Add(DefaultPersona);
         }
         parts.AddRange(supplements.Where(s => s.Length > 0));
+        if (jsonOnly)
+        {
+            parts.Add(StrictJsonReply.Instruction);
+            return string.Join("\n\n", parts);
+        }
         parts.Add(Expressions.Instruction);
         if (drawing)
             parts.Add(Artistry.Instruction);
@@ -97,7 +102,7 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
         string personaSnapshotRef, IReadOnlyList<string>? notesBeforeMessage = null, [EnumeratorCancellation] CancellationToken ct = default)
     {
         // Explicit product commands use the same entry point on every channel and never spend a chat-model call.
-        if (options.Companion is { } companion)
+        if (!input.JsonOnly && options.Companion is { } companion)
         {
             StoredMessage? media = null;
             TurnFailed? mediaFailure = null;
@@ -132,25 +137,55 @@ public sealed class ChatOrchestrator(AijadeApi api, IEnumerable<IContextProvider
             yield break;
         }
         var turn = new TurnContext(chatId, character, history, userText) { UserMessageId = user!.Id };
-        await NotifyAsync(o => o.UserTurnAsync(turn, ct)).ConfigureAwait(false);
         var supplements = new List<string>();
-        foreach (var provider in providers)
+        if (!input.JsonOnly)
         {
-            if (await provider.SupplyAsync(turn, ct).ConfigureAwait(false) is { Length: > 0 } supplement)
-                supplements.Add(supplement);
+            await NotifyAsync(o => o.UserTurnAsync(turn, ct)).ConfigureAwait(false);
+            foreach (var provider in providers)
+            {
+                if (await provider.SupplyAsync(turn, ct).ConfigureAwait(false) is { Length: > 0 } supplement)
+                    supplements.Add(supplement);
+            }
         }
-        var drawing = options.Drawing();
-        var messages = new List<(string Role, string Content)> { ("system", ComposeSystemPrompt(character, supplements, drawing, options.ReplyInstruction)) };
+        var drawing = !input.JsonOnly && options.Drawing();
+        var messages = new List<(string Role, string Content)> { ("system", ComposeSystemPrompt(character, supplements, drawing, options.ReplyInstruction, input.JsonOnly)) };
         var recent = history.Where(m => m.Role is "user" or "assistant").TakeLast(Math.Max(0, options.HistoryWindow))
             .Select(m => (m.Role, Selfies.IsSelfie(m) ? $"[I sent them a selfie from the stage: {m.Content}]"
                 : Artistry.ImageOf(m) is { } image ? $"[I drew a picture: {image.Prompt}]" : m.Content));
         messages.AddRange(options.PromptBudget is { } budget ? budget.History(recent) : recent);
-        messages.AddRange((notesBeforeMessage ?? []).Select(n => ("system", n)));
+        if (!input.JsonOnly)
+            messages.AddRange((notesBeforeMessage ?? []).Select(n => ("system", n)));
         messages.Add(("user", user.Content));
+        if (input.JsonOnly)
+        {
+            yield return await ReplyWithJsonAsync(chatId, messages, ct).ConfigureAwait(false);
+            yield break;
+        }
         var stream = options.Tools() ? new ToolConversation(api, options).ReplyAsync(messages, ct)
             : api.StreamChatAsync(options.Model, messages, options.Temperature, ct);
         await foreach (var e in ReplyAsync(chatId, stream, personaSnapshotRef, drawing, turn: turn, ct: ct).ConfigureAwait(false))
             yield return e;
+    }
+
+    private async Task<OrchestratorEvent> ReplyWithJsonAsync(string chatId, IReadOnlyList<(string Role, string Content)> messages, CancellationToken ct)
+    {
+        var invalid = new TurnFailed("INVALID_JSON_REPLY", "The model returned an invalid or incomplete JSON reply.");
+        try
+        {
+            // A generic completion supports arrays and scalar JSON on providers without a native JSON object mode.
+            var completion = await api.CompleteChatAsync(options.Model, messages, options.Temperature, maxTokens: StrictJsonReply.MaxTokens, ct: ct).ConfigureAwait(false);
+            if (StrictJsonReply.GetContent(completion) is not { } content)
+                return invalid;
+            var reply = await api.AppendMessageAsync(chatId, "assistant", content, new JsonObject { ["format"] = "json" }, ct).ConfigureAwait(false);
+            return new JsonReplyCompleted(reply);
+        }
+        catch (AijadeApiException e) when (e.Code == "UPSTREAM_INVALID_COMPLETION") { return invalid; }
+        catch (AijadeApiException e) { return new TurnFailed(e.Code, e.Message); }
+        catch (HttpRequestException) { return new TurnFailed("UPSTREAM_UNREACHABLE", "The model connection was interrupted."); }
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        {
+            return new TurnFailed("UPSTREAM_TIMEOUT", "The model request timed out.");
+        }
     }
 
     /// <summary>

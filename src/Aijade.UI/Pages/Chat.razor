@@ -439,6 +439,7 @@
         var text = draft.Trim();
         if (text.Length == 0 || busy)
             return;
+        var jsonOnly = StrictJsonReply.IsRequested(text);
         busy = true; // before any navigation, so the parameter reload leaves this turn alone
         try
         {
@@ -492,19 +493,19 @@
         var settings = State.Settings.Current;
         try
         {
-            if (settings.RecordConversations && settings.Modules.Memory)
+            if (!jsonOnly && settings.RecordConversations && settings.Modules.Memory)
                 _ = new ConversationRecorder(State.Api, State.MemorySessionId, State.DeviceId).RecordAsync(text);
-            canDraw = (await State.CapabilitiesAsync()).Images;
-            var mediaRequest = State.CompanionFor(character?.Id).Profile.Enabled && CompanionMediaTurn.IsRequest(text);
+            canDraw = !jsonOnly && (await State.CapabilitiesAsync()).Images;
+            var conversationTurn = !jsonOnly && !(State.CompanionFor(character?.Id).Profile.Enabled && CompanionMediaTurn.IsRequest(text));
             var drawRequests = new List<string>();
             // On MOSAIC's stage the user's words decide what her body does after the reply, and she is told so before it.
-            var home = !mediaRequest && settings.Modules.NativeStage ? await new CompanionStage(State.Api, character?.Id).StateAsync(cts.Token) : null;
+            var home = conversationTurn && settings.Modules.NativeStage ? await new CompanionStage(State.Api, character?.Id).StateAsync(cts.Token) : null;
             var action = home is null ? null : Stage.Decide(text, home.Seated);
             // A reminder asked for, cancelled or asked about is decided by fixed words before the reply, and she is told so (ADR-003).
             var reminders = State.Reminders;
             IReadOnlyList<string> reminderNotes = [];
             Reminder? promised = null;
-            if (!mediaRequest)
+            if (conversationTurn)
             {
                 var book = await reminders.LoadAsync();
                 (reminderNotes, promised) = book.Read(ChatId, text, Now(), State.SharedCompanion?.RuntimeProfile.Zone);
@@ -514,11 +515,13 @@
             var notes = (home is null ? [] : home.StateKind == "virtual" ? NativeSceneNotes(action, home) : Stage.Notes(action, home.Where, home.Learned, undone)).Concat(reminderNotes).ToList();
             if (home is not null)
                 undone = null; // told once
-            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, text, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
+            var input = new ChatInput(text) { JsonOnly = jsonOnly };
+            await foreach (var e in Orchestrator().SendAsync(ChatId, character, history, input, $"persona:{character?.Id ?? "default"}", notes.Count > 0 ? notes : null, cts.Token))
             {
                 switch (e)
                 {
                     case MediaCompleted:
+                    case JsonReplyCompleted:
                         messages = [.. await State.Api.MessagesAsync(ChatId)];
                         break;
                     case TextDelta d:

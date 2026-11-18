@@ -269,9 +269,20 @@ public static class GatewayEndpoints
         var chars = 0;
         if (!stream)
         {
-            var json = JsonNode.Parse(await res.Content.ReadAsStringAsync(ct).ConfigureAwait(false))!.AsObject();
-            prompt = json["usage"]?["prompt_tokens"]?.GetValue<int>();
-            completion = json["usage"]?["completion_tokens"]?.GetValue<int>();
+            JsonObject? json;
+            try { json = JsonNode.Parse(await res.Content.ReadAsStringAsync(ct).ConfigureAwait(false)) as JsonObject; }
+            catch (JsonException) { json = null; }
+            if (json is null)
+            {
+                await LogAsync(db, userId, alias, route.Upstream, 502, null, null, 0, sw.ElapsedMilliseconds, stream, "Invalid completion envelope", ct).ConfigureAwait(false);
+                await events.TrackAsync(userId, "gen_ai_chat", "completion_failed", "failed", "openai.chat.completions", alias, reason: "upstream_invalid_completion", ct: ct).ConfigureAwait(false);
+                throw new ApiException(502, "UPSTREAM_INVALID_COMPLETION", "The upstream model provider returned an invalid completion");
+            }
+            if (json["usage"] is JsonObject usage)
+            {
+                prompt = usage["prompt_tokens"] is JsonValue p && p.TryGetValue<int>(out var inputTokens) ? inputTokens : null;
+                completion = usage["completion_tokens"] is JsonValue q && q.TryGetValue<int>(out var outputTokens) ? outputTokens : null;
+            }
             chars = json.ToJsonString().Length;
             json["model"] = alias;
             await SettleAsync().ConfigureAwait(false);

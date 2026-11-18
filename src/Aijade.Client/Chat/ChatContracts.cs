@@ -30,6 +30,9 @@ public sealed record TurnContext(string ChatId, Character? Character, IReadOnlyL
 public sealed record ChatInput(string Text, string? Speaker = null)
 {
     public string PromptText => Speaker is null ? Text : $"{Speaker}: {Text}";
+
+    /// <summary>The product caller explicitly requests one JSON value for this turn.</summary>
+    public bool JsonOnly { get; init; }
 }
 
 public abstract record OrchestratorEvent;
@@ -43,6 +46,9 @@ public sealed record ExpressionCue(string Name) : OrchestratorEvent;
 public sealed record DrawRequest(string Prompt) : OrchestratorEvent;
 
 public sealed record TurnCompleted(StoredMessage Reply, PerformanceIntent Intent, IReadOnlyList<string> Expressions) : OrchestratorEvent;
+
+/// <summary>A validated JSON reply has been stored and can be shown as literal text.</summary>
+public sealed record JsonReplyCompleted(StoredMessage Reply) : OrchestratorEvent;
 
 public sealed record TurnFailed(string Code, string Message) : OrchestratorEvent;
 
