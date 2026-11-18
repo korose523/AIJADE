@@ -36,15 +36,17 @@ The approval receipt schema is `aijade.p2-r.department-execution-approval.v1`. P
 | `host` | Stable nonempty `machine`, `boot`, `os`, `gpu`, and `driver`, plus the assigned `allocation`. The GPU identity identifies the actual assigned device, such as its device UUID. |
 | `ollamaUrl`, `ollamaVersion` | Exact allocated endpoint with explicit port and no credentials, and its observed server version. |
 | `build` | Receipt-local `directory`, relative `rqcDll` and `substrateDll`, and `files` mapping every regular file in the frozen build directory to SHA-256. Include dependency, runtime-config and manifest files. |
-| `dotnet`, `logCollector` | Each has an absolute resolved executable `path` and exact `sha256`. The log collector publishes the contract below. |
+| `dotnet`, `logCollector` | Each has an absolute resolved executable `path` and exact `sha256`. The log collector may also specify a receipt-local `config.path` and `config.sha256`, which the launcher passes only after verifying the pinned file. |
 
 The department log collector is selected when the OS, available journal or exporter and permissions are known. It is a read-only executable called with `--since` and `--until` as zoned timestamps. It exports one UTF-8 JSON document on stdout, with `schema` set to `aijade.p2-r.department-log-capture.v1`, actual `host` identity as above, the requested `since` and `until`, and `sources` with both `system` and `gpu`. Each source provides:
 
 - `sourceId` for the actual journal/channel and `querySha256` for the unchanged collector and relevance filters, excluding the moving time bounds. Keep the source commands and access evidence.
-- `complete` as a literal Boolean, plus `readableFrom` and `readableUntil` for the verified retained interval. Permission denial, unconfirmed retention or incomplete visibility must produce an error or `complete: false`. An empty list represents a successful and fully covered query.
+- `complete` as a literal Boolean, plus `readableFrom` and `readableUntil` for the verified retained interval. Permission denial, unconfirmed retention or incomplete visibility must produce an error or `complete: false`. An empty event list is valid when independent retained-interval evidence establishes query coverage.
 - `events` with unique stable `id`, zoned `at` and source event `record` for each relevant recorded error. Include applicable hardware faults, service crashes and unexplained interruptions. Keep raw event text in the private bundle.
 
 The pre/post queries use the same source identities and relevance filters. The before cutoff is captured immediately before the baseline export and the post cutoff after the final operation. The post export retains the same historical prefix and extends through the phase end. Missing coverage or a changing historical prefix rejects the phase. New events in the covered phase trigger investigation even when all subprocesses exited successfully. These checks rely on complete and correctly identified source exports from the approved collector.
+
+For an allocation with Linux, a local system journal and an NVIDIA device, see the [AIJADE read-only journal collector](DEPARTMENT-JOURNAL-COLLECTOR.md) for the pinned configuration, access requirements and the limits of retained-journal evidence.
 
 ## Execute in the agreed window
 
@@ -56,7 +58,7 @@ python3 -B experiments/rq-c/launch_department_regeneration.py run qualification 
   --bundle "$P2_NEW_QUALIFICATION_DIR"
 ```
 
-Review the completed qualification and its raw captures, independently pin its `phase-result.json`, then use that pin for regeneration. Re-audit verifies the receipt, raw bound files, all 15 launches, both controls, unload evidence and complete pre/post coverage. Regeneration produces its own phase and comparison records. When a later assigned window has a separately reviewed receipt, pass the original qualification approval and its trusted SHA-256 as additional arguments. The stable technical plan, verified supervisor identity, source and build, endpoint, host and GPU must still match. Each phase uses its own actual allocation and coverage window. The regeneration baseline must reach back to qualification's end on the same sources and queries. A lost or changed overlapping entry, uncovered gap, or relevant intervening event blocks the launch.
+Review the completed qualification and its raw captures, independently pin its `phase-result.json`, then use that pin for regeneration. Re-audit verifies the receipt, raw bound files, all 15 launches, both controls, unload evidence and complete pre/post coverage. It also checks each capture's configuration attestation when the approval pins a config. Regeneration produces its own phase and comparison records. When a later assigned window has a separately reviewed receipt, pass the original qualification approval and its trusted SHA-256 as additional arguments. The stable technical plan, verified supervisor identity, source and build, endpoint, host, GPU and collector executable digest must still match. Each phase uses its own actual allocation and coverage window. The regeneration baseline must reach back to qualification's end on the same sources and queries. A lost or changed overlapping entry, uncovered gap, or relevant intervening event blocks the launch.
 
 ```sh
 python3 -B experiments/rq-c/launch_department_regeneration.py run regeneration \

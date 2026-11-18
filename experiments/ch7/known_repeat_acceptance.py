@@ -24,6 +24,7 @@ from finite_runtime import require, safe_relative
 
 PREFIX = 'experiments/ch7/mac-known-repeats-qualification/'
 LAUNCHER = 'experiments/ch7/launch_known_repeats.py'
+MEASUREMENT_LAUNCHER = 'experiments/ch7/launch_heldout_blocks.py'
 BUILD = PREFIX + 'frozen-build.json'
 ACCEPTANCE = PREFIX + 'qualification-acceptance.json'
 FREEZE = PREFIX + 'construction-freeze.json'
@@ -243,6 +244,8 @@ def verify_acceptance(repo, implementation, publication, expected_digest, scratc
 
 def construction_sources(repo, implementation, decision):
     expected = source_paths(repo, implementation) | ADDITIONAL_SOURCES | {decision['executionPlanPath']}
+    if git(repo, 'ls-tree', '--name-only', implementation, '--', MEASUREMENT_LAUNCHER):
+        expected.add(MEASUREMENT_LAUNCHER)
     return {path: digest(raw(repo, implementation, path)) for path in sorted(expected)}
 
 

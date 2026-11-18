@@ -44,6 +44,14 @@ jobs:
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_launch_known_repeats.py -v
       - name: Verify offline Chapter 7 qualification and construction binding
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_known_repeat_acceptance.py -v
+      - name: Verify offline Chapter 7 canonical build freeze
+        run: python3 -B -m unittest discover -s experiments/ch7 -p test_freeze_known_repeat_build.py -v
+      - name: Verify offline Chapter 7 measurement audit policy binding
+        run: python3 -B -m unittest discover -s experiments/ch7 -p test_heldout_audit_route.py -v
+      - name: Verify offline Chapter 7 four-block qualification to measurement
+        run: python3 -B -m unittest discover -s experiments/ch7 -p test_four_block_end_to_end.py -v
+      - name: Verify offline P2-R read-only departmental log collector
+        run: python3 -B -m unittest discover -s experiments/rq-c -p test_collect_department_journal.py -v
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json

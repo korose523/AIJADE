@@ -141,6 +141,10 @@ def approved(path, pin, phase, worklist, expected_commit, clock, historical=Fals
         require(tool.is_absolute() and tool == tool.resolve() and os.access(tool, os.X_OK),
                 f"{key} must name a resolved executable")
         dlls[key] = file_pin(tool, entry["sha256"])
+    if "config" in approval["logCollector"]:
+        entry = approval["logCollector"]["config"]
+        require(type(entry) is dict and set(entry) == {"path", "sha256"}, "incomplete pinned collector configuration")
+        dlls["logCollectorConfig"] = file_pin(inside(path.parent, entry["path"]), entry["sha256"])
     return approval, dlls
 
 
@@ -151,9 +155,17 @@ def same_qualification_identity(previous, current):
         and previous["supervisorReply"]["reviewedSender"] == current["supervisorReply"]["reviewedSender"]
         and all(previous["host"][key] == current["host"][key] for key in ("machine", "boot", "os", "gpu", "driver"))
         and previous["dotnet"]["sha256"] == current["dotnet"]["sha256"]
+        and previous["logCollector"]["sha256"] == current["logCollector"]["sha256"]
         and all(previous["build"][key] == current["build"][key] for key in ("files", "rqcDll", "substrateDll"))
     )
-    require(same, "regeneration host, plan, supervisor, service or build differs from qualification")
+    require(same, "regeneration host, plan, supervisor, service, collector or build differs from qualification")
+
+
+def verify_collector_config(raw, wanted, label):
+    capture = json.loads(raw)
+    proof = capture.get("provenance") if type(capture) is dict else None
+    require(type(proof) is dict and proof.get("configurationSha256") == wanted,
+            f"{label}: collector output does not attest to the reviewed configuration bytes")
 
 
 def log_snapshot(raw, since, until, host):
@@ -239,10 +251,21 @@ class DepartmentRuntime:
     def capture(self, bundle, label, since, until):
         path = bundle / f"logs-{label}.json"
         cmd = [str(self.tools["logCollector"]), "--since", stamp(since), "--until", stamp(until)]
+        env = dict(os.environ)
+        env.pop("AIJADE_P2_LOG_CONFIG", None)
+        config = self.tools.get("logCollectorConfig")
+        config_sha = None
+        if config is not None:
+            config_sha = self.approval["logCollector"]["config"]["sha256"]
+            env["AIJADE_P2_LOG_CONFIG"] = str(file_pin(config, config_sha))
         with path.open("xb") as output, (bundle / f"logs-{label}.stderr").open("xb") as errors:
-            result = subprocess.run(cmd, cwd=REPO, stdout=output, stderr=errors, timeout=120)
+            result = subprocess.run(cmd, cwd=REPO, env=env, stdout=output, stderr=errors, timeout=120)
         require(result.returncode == 0, f"{label}: log collector failed ({result.returncode})")
-        return path.read_bytes()
+        raw = path.read_bytes()
+        if config is not None:
+            file_pin(config, config_sha)
+            verify_collector_config(raw, config_sha, label)
+        return raw
 
     def api(self, route, data=None):
         request = Request(self.approval["ollamaUrl"].rstrip("/") + route,
@@ -368,8 +391,13 @@ def proven_qualification(bundle, qualification_pin, approval_pin, approval, work
     require(instant(approval["notBefore"]) <= start < end <= min(instant(approval["notAfter"]), now()),
             "qualification observation falls outside the approved window")
     since = instant(approval["logHistorySince"])
+    before = (bundle / "logs-before.json").read_bytes()
     after = (bundle / "logs-after.json").read_bytes()
-    log = audit_logs((bundle / "logs-before.json").read_bytes(), after, since, start, end, approval["host"])
+    collector_config = approval["logCollector"].get("config")
+    if collector_config is not None:
+        verify_collector_config(before, collector_config["sha256"], "qualification before")
+        verify_collector_config(after, collector_config["sha256"], "qualification after")
+    log = audit_logs(before, after, since, start, end, approval["host"])
     repeats = audit(bundle, worklist)
     require(log["status"] == "NO_NEW_RELEVANT_EVENTS_IN_CAPTURE"
             and repeats["status"] == "CAPTURED_REPEATS_MATCH" and repeats["positiveControlDiscriminationRecorded"],

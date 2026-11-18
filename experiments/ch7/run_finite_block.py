@@ -99,8 +99,11 @@ def _main(args):
     commit = getattr(args,'implementation_commit',None) or repository_commit
     mac=args.execution_plan.name in MAC_PLANS
     known_watchdog = getattr(args, '_known_repeat_watchdog', None)
-    assert known_watchdog is None or (not mac and not v3), 'known-repeat block cannot use a legacy launcher'
-    assert mac or commit==repository_commit
+    heldout_watchdog = getattr(args, '_heldout_watchdog', None)
+    watchdog = heldout_watchdog if heldout_watchdog is not None else known_watchdog
+    assert watchdog is None or (not mac and not v3), 'explicit successor blocks cannot use a legacy launcher'
+    assert known_watchdog is None or heldout_watchdog is None, 'block cannot have two successor scopes'
+    assert mac or heldout_watchdog is not None or commit==repository_commit
     if mac:
         assert args.execution_plan.resolve()==repo/'experiments/plans'/args.execution_plan.name
         assert args.execution_plan.read_bytes()==managed_check_output(['git','show',commit+':experiments/plans/'+args.execution_plan.name],cwd=repo)
@@ -109,7 +112,14 @@ def _main(args):
     assert psutil.__version__ == '7.2.2'
     assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',args.db_container)
     freeze_path=getattr(args,'build_freeze_path',BUILD_FREEZE_PATH)
-    binding=validate_repository_binding(repo,commit,repository_commit,getattr(args,'data_publication_manifest',None),require_head=True) if mac else {}
+    extra_prefixes = ()
+    if heldout_watchdog is not None:
+        from known_repeat_acceptance import BUILD, PREFIX
+        assert freeze_path == BUILD, 'successor measurement requires its qualification build freeze'
+        extra_prefixes = (PREFIX,)
+    binding = (validate_repository_binding(repo, commit, repository_commit,
+               getattr(args, 'data_publication_manifest', None), require_head=True,
+               additional_data_prefixes=extra_prefixes) if mac or heldout_watchdog is not None else {})
     build = validate_build(args.assembly,args.build_manifest,commit,repo,args.build_freeze_commit,freeze_path,strict_publication=mac)
     policy=None;process_identity={}
     if mac:
@@ -120,19 +130,27 @@ def _main(args):
         observe=mac_observer(policy).observe
     inner_cursor_options, outer_cursor_options = {}, {}
     metadata=dict(binding,buildFreezeCommit=args.build_freeze_commit,buildFreezePath=freeze_path,
-                  executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
+                  executionPlanSha256=sha(args.execution_plan),**process_identity) if mac or heldout_watchdog is not None else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
     if v3:metadata.update(lifecycleJournalPath=str(lifecycle.path),lifecycleScopeId=lifecycle.scope_id)
     if known_watchdog is not None:
         metadata.update(knownRepeatLaunchSha256=args._known_repeat_launch_sha,
                         knownRepeatIndex=args._known_repeat_index, operationalWatchdog=known_watchdog,
                         buildFreezePath=freeze_path)
+    if heldout_watchdog is not None:
+        metadata.update(heldoutLaunchSha256=args._heldout_launch_sha,
+                        heldoutLaunchIndex=args._heldout_block_index, operationalWatchdog=heldout_watchdog)
     runtime = json.loads(args.manifest.read_text())
     contract = json.loads(args.scoring.read_text())
     assert runtime['purpose'] in ['qualification_only','confirmed_finite_heldout']
     if known_watchdog is not None:
         assert runtime['purpose']=='qualification_only' and runtime['constructionFreezeCommit']==commit
         assert len(runtime['cases'])==10 and all(len(case['input']['conditions'])==2 for case in runtime['cases'])
+    if heldout_watchdog is not None:
+        assert runtime['purpose'] == 'confirmed_finite_heldout' and runtime['constructionFreezeCommit'] == commit
+        assert type(runtime['blockIndex']) is int and runtime['blockIndex'] == args._heldout_block_index
+        assert len(runtime['cases']) == len({case['input']['caseId'] for case in runtime['cases']}) == 10
+        assert all(sorted(case['input']['conditions']) == ['C1','C2'] for case in runtime['cases'])
     assert runtime['protocolPlanSha256'] == sha(repo/'experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md')
     assert runtime['selectionSha256'] == sha(args.selection)
     assert contract['runtimeManifestSha256'] == sha(args.manifest)
@@ -143,7 +161,9 @@ def _main(args):
         for path in [args.manifest,args.scoring,args.selection]:
             original = managed_check_output(['git','show',repository_commit+':'+str(path.resolve().relative_to(repo))],cwd=repo)
             assert hashlib.sha256(original).hexdigest() == sha(path), 'Uncommitted or changed finite input'
-        from finite_construction_binding import load_measurement_construction_freeze
+        from finite_construction_binding import load_measurement_construction_freeze, known_repeat_required
+        assert heldout_watchdog is not None or not known_repeat_required(repo, runtime['constructionFreezeCommit']), (
+            'successor measurement requires the separately frozen four-block launcher')
         freeze = load_measurement_construction_freeze(repo,runtime['constructionFreezeCommit'],args.manifest.parent.parent,sha(args.model),args,build)
         assert freeze['constructionFreezeCommit'] == runtime['constructionFreezeCommit']
         for relative, digest in freeze['sources'].items():
@@ -152,7 +172,7 @@ def _main(args):
             assert hashlib.sha256(original).hexdigest() == digest
         suitability = json.loads((args.manifest.parent.parent/'suitability-acceptance.json').read_text())
         assert suitability['status'] == 'PASS_ALL_FORTY_BEFORE_MEASUREMENT'
-        if mac:
+        if mac or heldout_watchdog is not None:
             assert commit!=repository_commit and runtime['constructionFreezeCommit']==commit
     elif mac:assert commit==repository_commit and runtime['constructionFreezeCommit']==commit
     source_freeze = json.loads((repo/'experiments/ch7/manifest-preparation-2026-11-12/source-freeze.json').read_text())
@@ -238,7 +258,7 @@ def _main(args):
     reason = None
     status = 'RUNNING'
     monitor=None;owned_registry=None
-    if known_watchdog is not None:
+    if watchdog is not None:
         owned_registry=OwnedRegistry([(os.getpid(),psutil.Process().create_time())])
     if mac:
         peaks['minAvailableBytes']=2**100
@@ -267,10 +287,10 @@ def _main(args):
                                              owned_registry, mac=mac, v3=v3)
         roots.append(proc)
         phases[name] = dict(startedAt=utc(), pid=proc.pid, exitCode=None)
-        if known_watchdog is not None:
+        if watchdog is not None:
             created=psutil.Process(proc.pid).create_time()
             owned_registry.register(proc.pid,created)
-        if mac or known_watchdog is not None:phases[name]['createTime']=created
+        if mac or watchdog is not None:phases[name]['createTime']=created
         write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases=phases,modelRequests=0))
         return proc
 
@@ -284,7 +304,7 @@ def _main(args):
             return
         self_process = psutil.Process()
         family = {(self_process.pid, self_process.create_time()): self_process}
-        if known_watchdog is None:
+        if watchdog is None:
             sample_roots = [(root.pid,None) for root in roots if root.poll() is None]
         else:
             sample_roots = owned_registry.roots()
@@ -292,7 +312,7 @@ def _main(args):
             try:
                 parent = psutil.Process(pid)
                 if created is not None and parent.create_time()!=created:
-                    raise RuntimeError('known owned process identity changed during sampling')
+                    raise RuntimeError('owned process identity changed during sampling')
                 for child in [parent] + parent.children(recursive=True):
                     family[(child.pid, child.create_time())] = child
             except psutil.Error as error:
@@ -312,22 +332,22 @@ def _main(args):
         peaks['minAvailableBytes'] = min(peaks['minAvailableBytes'], available)
         sample=dict(utc=utc(), elapsedSeconds=now-started, rssBytes=rss,
                     availableBytes=available, swapIncreaseBytes=swap)
-        if known_watchdog is not None:
+        if watchdog is not None:
             observation={'ownedProcesses':[dict(pid=pid,createTime=created) for pid,created in sorted(family)]}
             owned_registry.remember(observation)
             sample['processObservation']=observation
         telemetry.write(json.dumps(sample) + '\n')
         telemetry.flush()
-        if known_watchdog is None:
+        if watchdog is None:
             limits = [('rss', rss > 2*GIB), ('available', available < 3*GIB), ('swap', swap > GIB)]
             sustained_seconds = 30
         else:
-            max_rss, min_available, max_swap = (known_watchdog[key] for key in
+            max_rss, min_available, max_swap = (watchdog[key] for key in
                                                 ('maxOwnedRssBytes', 'minAvailableBytes', 'maxSwapIncreaseBytes'))
             limits = [('rss', max_rss is not None and rss > max_rss),
                       ('available', min_available is not None and available < min_available),
                       ('swap', max_swap is not None and swap > max_swap)]
-            sustained_seconds = known_watchdog['sustainedResourceSeconds']
+            sustained_seconds = watchdog['sustainedResourceSeconds']
         for name, crossed in limits:
             if not crossed:
                 timers.pop(name, None)
@@ -336,7 +356,7 @@ def _main(args):
                 if now - timers[name] >= sustained_seconds:
                     raise RuntimeError(name + '_sustained_resource_stop')
         write(timer_file,timers)
-        if known_watchdog is None and now - sequence_epoch > 4800:
+        if watchdog is None and now - sequence_epoch > 4800:
             raise RuntimeError('overall_wall_limit_stop')
         if now - started > block_wall_seconds:
             raise RuntimeError('wall_limit_stop')
@@ -349,8 +369,8 @@ def _main(args):
         if proc.returncode != 0:
             raise RuntimeError(name + '_nonzero_exit')
 
-    block_wall_seconds = 1200 if known_watchdog is None else known_watchdog['blockWallSeconds']
-    renderer_timeout = '400' if known_watchdog is None else str(known_watchdog['rendererTimeoutSeconds'])
+    block_wall_seconds = 1200 if watchdog is None else watchdog['blockWallSeconds']
+    renderer_timeout = '400' if watchdog is None else str(watchdog['rendererTimeoutSeconds'])
 
     def interrupted(signum, frame):
         raise RuntimeError('owned_controller_signal_' + str(signum))
@@ -439,15 +459,15 @@ def _main(args):
                 journal=lifecycle.path.read_bytes()
                 metadata.update(lifecycleJournalBytes=len(journal),lifecycleJournalSha256=hashlib.sha256(journal).hexdigest())
             if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
-                status='STOPPED';reason=(reason+'; ' if reason else '')+'known owned descendant remains or identity unknown'
-        if known_watchdog is not None:
+                status='STOPPED';reason=(reason+'; ' if reason else '')+'owned descendant remains or identity unknown'
+        if watchdog is not None:
             try:registry_final=owned_registry.final()
             except (ValueError,psutil.Error) as error:
                 registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
             write(output/'owned-process-registry.json',registry_final)
             metadata['ownedProcessRegistrySha256']=sha(output/'owned-process-registry.json')
             if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
-                cleanup_errors.append('known owned descendant remains or identity unknown')
+                cleanup_errors.append('owned descendant remains or identity unknown')
         if cleanup_errors:
             status='STOPPED';reason=(reason+'; ' if reason else '')+'; '.join(cleanup_errors)
         if time.monotonic()-started>block_wall_seconds:

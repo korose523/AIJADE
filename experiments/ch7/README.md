@@ -33,6 +33,10 @@ After the November 16 workspace relocation, a separately prospective bounded
 qualification and current runtime/service checks must precede new case generation.
 All interpretation is AI-assisted; no independent human review is inferred.
 
+The [four-block execution runbook](FOUR-BLOCK-EXECUTION.md) describes the
+current build freeze, two-repeat acceptance and successor measurement routes.
+Its checks use synthetic data while the Mac qualification reply remains pending.
+
 ## Earlier measured extension: second-round persisted-act command delivery
 
 The [prospective plan](../plans/2026-11-12-ch7-round2-persisted-act.md) was

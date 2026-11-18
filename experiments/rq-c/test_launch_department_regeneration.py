@@ -190,6 +190,15 @@ class DepartmentLaunchTests(unittest.TestCase):
         (self.root / "build/dependency.dat").write_text("tampered dependent binary")
         self.assertRaisesRegex(ValueError, "frozen build files differ", self.check)
 
+    def test_approval_pins_relative_collector_configuration(self):
+        settings = self.root / "collector.json"
+        settings.write_bytes(b"synthetic config bytes")
+        self.approval["logCollector"]["config"] = {"path": settings.name, "sha256": sha(settings.read_bytes())}
+        self.pin = self.save()
+        self.assertEqual(settings, self.check()[1]["logCollectorConfig"])
+        settings.write_bytes(b"other bytes")
+        self.assertRaisesRegex(ValueError, "file identity differs", self.check)
+
     def test_scope_future_reply_and_expiry_gate(self):
         self.assertRaisesRegex(ValueError, "time window", self.check, current=END)
         self.approval["phases"] = ["qualification"]
@@ -215,6 +224,11 @@ class DepartmentLaunchTests(unittest.TestCase):
         recent, _ = launch.approved(next_path, sha(next_path.read_bytes()), "regeneration", self.worklist,
                                     COMMIT, lambda: future)
         launch.same_qualification_identity(prior, recent)
+        relocated = deepcopy(recent)
+        relocated["logCollector"]["path"] = "/another/path/to/the/same/collector"
+        launch.same_qualification_identity(prior, relocated)
+        relocated["logCollector"]["sha256"] = "1" * 64
+        self.assertRaisesRegex(ValueError, "differs from qualification", launch.same_qualification_identity, prior, relocated)
         for field, changed in (("boot", "different-boot"), ("gpu", "different-device")):
             wrong = deepcopy(recent)
             wrong["host"][field] = changed

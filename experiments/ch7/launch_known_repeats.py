@@ -89,6 +89,12 @@ def parse_execution_plan(body):
     require(plan['schema'] == PLAN_SCHEMA and plan['purpose'] == 'qualification_only', 'wrong known-repeat scope')
     exact_int(plan['repeats'], 2, 'known repeats')
     exact_int(plan['conditionSlotsPerRepeat'], 20, 'condition slots per repeat')
+    validate_runtime_settings(plan)
+    return plan
+
+
+def validate_runtime_settings(plan):
+    """Validate explicitly frozen tools and watchdog limits for a finite block."""
     require(type(plan['databasePort']) is int and 1 <= plan['databasePort'] <= 65535, 'invalid local database port')
     watchdog = plan['watchdog']
     closed(watchdog, ('blockWallSeconds', 'rendererTimeoutSeconds', 'sustainedResourceSeconds',
@@ -106,7 +112,6 @@ def parse_execution_plan(body):
     closed(plan['toolsSha256'], ('python', *TOOL_PATHS), 'runtime executable hashes are incomplete')
     for value in plan['toolsSha256'].values():
         full_sha(value)
-    return plan
 
 
 def git(*args):
