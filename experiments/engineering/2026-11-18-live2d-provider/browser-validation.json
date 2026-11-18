@@ -1,0 +1,399 @@
+{
+  "scope": "Product engineering with synthetic Chinese user prompts, actual AIJADE browser and model/voice protocols, no formal study measurements.",
+  "historicalFixtureRegression": {
+    "sha256": "19f60c458f38e1b49ff08762c48ad1ee63f8e8c8db599dc590aacf5931722d0d",
+    "durationSeconds": 900.019289701
+  },
+  "arms": [
+    {
+      "kind": "baseline",
+      "technicalStatus": "PASS",
+      "providerConfigurationScope": "NEW_ISOLATED_LOCAL_PROVIDER_CONFIGURATION",
+      "providerChat": {
+        "model": "qwen2.5-coder:1.5b",
+        "kind": "openai-compatible",
+        "scope": "loopback"
+      },
+      "providerSpeech": {
+        "model": "macos-system-say-tingting",
+        "kind": "local",
+        "scope": "loopback"
+      },
+      "modelAndSpeechServiceVerifiedFromLiveTraffic": true,
+      "workspaceSourceSha256": {
+        "src/Aijade.Client/Chat/CompanionRuntime.cs": "f213e447aa5dc6ec181af7c4cea0c82f44186d0f263d2046ecb2d2e3c9cb1937",
+        "src/Aijade.Client/Chat/Orchestrator.cs": "0626c4f8ab205e7f067a5016e38df1bf294304fb9a1c591797c2cd0fe482b111",
+        "src/Aijade.UI/Pages/Chat.razor": "11d73be8bbbc4d6f1b20794163830f17a3055159afaa8db8885084b156b16316",
+        "src/Aijade.Server/Product/Gateway.cs": "488e3399e24b72bcfa9cd4b78b7ac915597a06aabb3aa5a76836ab47d490579f",
+        "src/Aijade.UI/wwwroot/audio.js": "597734e1b150ac2f8ab90e64fea0bccf397ea50fb8210e99ff62a667f6c8f31c"
+      },
+      "appServerAssemblySha256": "6188140777165f7730e8e36a714266d8d3cd5c5456085253aa8b6e34260a6081",
+      "planSha256": "c8b51ef7da5d3e0e9aa36c5e2ff29e16c0924d536c1a4e55815f2613dd4e9b4a",
+      "privateReportSha256": "ff665aa7fba2ede91306b3a49267fa9d92f4ef0fc4f58b4df36f62582d6e2bdd",
+      "privateGatewayAccountingSha256": "59b3f3d7cce994cb550c306b380546596677ce0b38c5c3bfb5c4952eafccc728",
+      "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+      "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+      "staticWasmSha256": [
+        "0d2838bd65bffa2ea6eeda949b0cf545250768a0c656313d89523109c3ecf6a9",
+        "4e289e45743e196b5fae2d863b7284c8ddcc4dcab55f59c05d04af0809cf50df"
+      ],
+      "renderChecks": {
+        "expectedOrdinaryTurns": 3,
+        "acknowledgedRenderReady": 4,
+        "countMatchingActualSpeechAndMouth": 3,
+        "nativeMouthPeak": {
+          "min": 0.8902122974395752,
+          "median": 0.9660502076148987,
+          "max": 0.9892414808273315
+        },
+        "nativeMouthRestAfterPlayback": {
+          "min": 7.326460763579234e-05,
+          "median": 7.763865141896531e-05,
+          "max": 8.574361709179357e-05
+        },
+        "audioRmsPeak": {
+          "min": 0.19103192355652532,
+          "median": 0.19212068113466618,
+          "max": 0.2026981788977034
+        },
+        "replySecondsIncludingSpeech": {
+          "min": 26.792425619000003,
+          "median": 34.885534076,
+          "max": 37.288939235
+        },
+        "realWavResponses": 4,
+        "cuedExpressions": [
+          {
+            "requested": "joy",
+            "parameterMatch": true,
+            "observedClass": "joy",
+            "mouthVerified": true
+          },
+          {
+            "requested": "sad",
+            "parameterMatch": false,
+            "observedClass": "neutral",
+            "mouthVerified": true
+          },
+          {
+            "requested": "neutral",
+            "parameterMatch": true,
+            "observedClass": "neutral",
+            "mouthVerified": true
+          }
+        ],
+        "renderer": {
+          "maskGroups": 49,
+          "maskBufferCount": 2,
+          "maskBufferSize": 768,
+          "highPrecisionMask": false
+        }
+      },
+      "unpromptedBrowserTurns": {
+        "count": 0,
+        "outputLength": null,
+        "currentGuidanceAttached": 0
+      },
+      "healthChecks": 0,
+      "apiErrorCount": 0,
+      "browserErrorCount": 0,
+      "blockedNonLoopbackRequestCount": 0,
+      "isolatedGatewayCounts": {
+        "chatHttp200": 4,
+        "chatReportedPromptTokens": 2842,
+        "chatReportedCompletionTokens": 52,
+        "fluxCharged": 0,
+        "events": [
+          {
+            "feature": "gen_ai_chat",
+            "action": "completion_requested",
+            "status": "started",
+            "count": 4
+          },
+          {
+            "feature": "gen_ai_chat",
+            "action": "completion_succeeded",
+            "status": "succeeded",
+            "count": 4
+          },
+          {
+            "feature": "tts",
+            "action": "speech_requested",
+            "status": "started",
+            "count": 4
+          },
+          {
+            "feature": "tts",
+            "action": "speech_succeeded",
+            "status": "succeeded",
+            "count": 4
+          }
+        ]
+      },
+      "cleanupVerified": {
+        "serverStopped": true,
+        "temporaryContainerAbsent": true,
+        "temporarySessionRemoved": true
+      },
+      "privateCleanupReceiptSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+      "strictJson": {
+        "oneBareValue": false,
+        "expectedValue": false,
+        "compactLiteral": false,
+        "persisted": true,
+        "domPersistedMatch": true,
+        "playbackCountDelta": 1,
+        "gatewaySpeechRequests": 1,
+        "pefRenderEvents": 2,
+        "gatewayCompletions": [
+          {
+            "status": 200,
+            "stream": true,
+            "responseFormat": null
+          }
+        ]
+      }
+    },
+    {
+      "kind": "final",
+      "technicalStatus": "FAIL",
+      "providerConfigurationScope": "NEW_ISOLATED_LOCAL_PROVIDER_CONFIGURATION",
+      "providerChat": {
+        "model": "qwen2.5-coder:1.5b",
+        "kind": "openai-compatible",
+        "scope": "loopback"
+      },
+      "providerSpeech": {
+        "model": "macos-system-say-tingting",
+        "kind": "local",
+        "scope": "loopback"
+      },
+      "modelAndSpeechServiceVerifiedFromLiveTraffic": true,
+      "workspaceSourceSha256": {
+        "src/Aijade.Client/Chat/CompanionRuntime.cs": "f213e447aa5dc6ec181af7c4cea0c82f44186d0f263d2046ecb2d2e3c9cb1937",
+        "src/Aijade.Client/Chat/Orchestrator.cs": "ad38740f680016d8fc6d73e215cd509c0e952aaced55c4899c0d1040bf4e95e5",
+        "src/Aijade.UI/Pages/Chat.razor": "34a4671bf33fe2abb82c7c669acc4b82c5751d2657ed21e005d5e0db59ff5c0f",
+        "src/Aijade.Server/Product/Gateway.cs": "0d2356d7c9e87701b44b184bbd72366d2e7127cc9d8ed415bf91593ec8db67e5",
+        "src/Aijade.UI/wwwroot/audio.js": "597734e1b150ac2f8ab90e64fea0bccf397ea50fb8210e99ff62a667f6c8f31c"
+      },
+      "appServerAssemblySha256": "317c0708cb48fcdc34c49ea98146160b939e03367e72b356e24182f7679dad43",
+      "planSha256": "01ef00a6e9b4763f9ae048dc95434dccd8f77dc5f95ec865daf03ed43160ffa7",
+      "privateReportSha256": "3243015b7ae61ddd368e934ad62b1522526d01b2e453f9838cbc90762116f5e3",
+      "privateGatewayAccountingSha256": "1d1cdf6f6a4e0dd944bba0290d3b6c0b6f554d6e088bd5fae90f22926cb78e2f",
+      "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+      "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+      "staticWasmSha256": [
+        "6fe0fb861d15247ebe9f6104736ac2392148b725acf18fe8c11b19bc649a2f35",
+        "9b155c6e148748a49f3f2686dfd10b36db7d79f1b84bf83735d092bf24db6d3c"
+      ],
+      "renderChecks": {
+        "expectedOrdinaryTurns": 11,
+        "acknowledgedRenderReady": 11,
+        "countMatchingActualSpeechAndMouth": 11,
+        "nativeMouthPeak": {
+          "min": 0.9131519198417664,
+          "median": 0.9727790355682373,
+          "max": 0.9894570112228394
+        },
+        "nativeMouthRestAfterPlayback": {
+          "min": 2.1565827410086058e-05,
+          "median": 7.042478682706133e-05,
+          "max": 0.0001267822226509452
+        },
+        "audioRmsPeak": {
+          "min": 0.1881432774499069,
+          "median": 0.19708377591898393,
+          "max": 0.2181904457781368
+        },
+        "replySecondsIncludingSpeech": {
+          "min": 16.026986525999963,
+          "median": 20.508428940000012,
+          "max": 32.628800719000004
+        },
+        "realWavResponses": 11,
+        "cuedExpressions": [
+          {
+            "requested": "joy",
+            "parameterMatch": true,
+            "observedClass": "joy",
+            "mouthVerified": true
+          },
+          {
+            "requested": "sad",
+            "parameterMatch": false,
+            "observedClass": "neutral",
+            "mouthVerified": true
+          },
+          {
+            "requested": "neutral",
+            "parameterMatch": true,
+            "observedClass": "neutral",
+            "mouthVerified": true
+          }
+        ],
+        "renderer": {
+          "maskGroups": 49,
+          "maskBufferCount": 2,
+          "maskBufferSize": 768,
+          "highPrecisionMask": false
+        }
+      },
+      "unpromptedBrowserTurns": {
+        "count": 8,
+        "outputLength": {
+          "min": 8,
+          "median": 15.5,
+          "max": 26
+        },
+        "currentGuidanceAttached": 8
+      },
+      "healthChecks": 29,
+      "apiErrorCount": 0,
+      "browserErrorCount": 0,
+      "blockedNonLoopbackRequestCount": 0,
+      "isolatedGatewayCounts": {
+        "chatHttp200": 12,
+        "chatReportedPromptTokens": 10343,
+        "chatReportedCompletionTokens": 141,
+        "fluxCharged": 0,
+        "events": [
+          {
+            "feature": "gen_ai_chat",
+            "action": "completion_requested",
+            "status": "started",
+            "count": 12
+          },
+          {
+            "feature": "gen_ai_chat",
+            "action": "completion_succeeded",
+            "status": "succeeded",
+            "count": 12
+          },
+          {
+            "feature": "tts",
+            "action": "speech_requested",
+            "status": "started",
+            "count": 11
+          },
+          {
+            "feature": "tts",
+            "action": "speech_succeeded",
+            "status": "succeeded",
+            "count": 11
+          }
+        ]
+      },
+      "cleanupVerified": {
+        "serverStopped": true,
+        "temporaryContainerAbsent": true,
+        "temporarySessionRemoved": true
+      },
+      "privateCleanupReceiptSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+      "strictJson": {
+        "oneBareValue": true,
+        "expectedValue": true,
+        "compactLiteral": true,
+        "persisted": true,
+        "domPersistedMatch": true,
+        "playbackCountDelta": 0,
+        "gatewaySpeechRequests": 0,
+        "pefRenderEvents": 0,
+        "gatewayCompletions": [
+          {
+            "status": 200,
+            "stream": false,
+            "responseFormat": null
+          }
+        ]
+      },
+      "soak": {
+        "elapsedSeconds": 1799.9879000000358,
+        "frames": 52548,
+        "peakNeutralRedRatio": 0.028985507246376812,
+        "neutralSamples": 180,
+        "samples": 180,
+        "sampleMaxGapSeconds": 10.257800000011912,
+        "minWindowFrames": 166,
+        "sameMount": true,
+        "webglLosses": 0,
+        "modelReleasesDuringSoak": 0,
+        "browserRssKib": {
+          "min": 731528,
+          "median": 1191964,
+          "max": 1211352
+        },
+        "browserHeapBytes": {
+          "min": 97390215,
+          "median": 123780419,
+          "max": 138753196
+        }
+      },
+      "privateFailuresCount": 1
+    }
+  ],
+  "publicExclusions": [
+    "raw prompt/reply bodies",
+    "audio bytes",
+    "images and model files",
+    "credentials",
+    "addresses",
+    "browser/session identifiers"
+  ],
+  "durationBoundaryReadback": {
+    "rawReportSha256": "3243015b7ae61ddd368e934ad62b1522526d01b2e453f9838cbc90762116f5e3",
+    "originalHarnessVerdict": "FAIL",
+    "soleFailure": "predeclared minimum browser-clock duration",
+    "targetSeconds": 1800,
+    "observedSeconds": 1799.9879000000358,
+    "shortfallSeconds": 0.012099999964220842,
+    "previousFixtureSeconds": 900.019289701,
+    "longerThanPreviousObservedWindow": true,
+    "observedFrames": 52548,
+    "neutralSamples": 180,
+    "samplePeakStrongRed": 0.028985507246376812,
+    "sameMountNoLostContext": true,
+    "realVoicedTurns": 11,
+    "strictStructuredReplayExact": true
+  },
+  "independentWindowAndEndpointReadback": {
+    "scope": "Readback of unchanged observed engineering browser evidence. Raw planned timer acceptance remains FAIL. The separate browser frame endpoint readback does not replace the scheduled sample window.",
+    "rawReportSha256": "3243015b7ae61ddd368e934ad62b1522526d01b2e453f9838cbc90762116f5e3",
+    "rawVerdict": "FAIL",
+    "onlyRawFailedCondition": "scheduled browser timer 1800 seconds",
+    "scheduledBrowserTimerSeconds": 1799.9879000000358,
+    "scheduledTargetSeconds": 1800,
+    "scheduledShortfallMilliseconds": 12.099999964220842,
+    "priorFixtureWindowSeconds": 900.019289701,
+    "longerThanPriorWindow": true,
+    "allOtherChecksIndependentlyPassed": true,
+    "frameEndpoints": {
+      "firstScheduledSampleToPostWindowStrictReplySeconds": 1809.0165999999642,
+      "sameCanvasAndModelCountersAtEndpoints": true,
+      "postWindowFramesAfterLastScheduledState": 267,
+      "maxInterFrameGapThroughPostWindowMs": 646.1999999880791,
+      "scope": "Endpoint observation includes the post-window structured turn; no claim that scheduled sample duration reached 1800 seconds."
+    },
+    "neutralSamples": 180,
+    "samples": 180,
+    "maxNeutralStrongRedRatio": 0.028985507246376812,
+    "framesInScheduledWindow": 52548,
+    "confirmedOrdinaryVoicedTurns": 11,
+    "strictExactValuePassed": true
+  },
+  "separateSadCueProbe": {
+    "observedAfterPrimaryWindow": true,
+    "scope": "Separate, explicit literal-cue reproduction in the real local chat/speech browser path. Measures rendering when the model emits the selected marker.",
+    "primaryNaturalCueResult": "The real model omitted the sad marker in both primary earlier conversations.",
+    "chatModel": "qwen2.5-coder:1.5b",
+    "voiceKind": "local",
+    "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+    "privateReportSha256": "c33eac167b13e3b829e5c2747d6ebae7de09bcd6c166980f68c99a6e55b5b0b6",
+    "serverAndTemporaryDbCleanupVerified": true,
+    "nativeTearParameter": {
+      "explicitSadObserved": 1,
+      "followingNeutralObserved": 0
+    },
+    "mouthAndRealSpeechVerifiedBothTurns": true,
+    "acknowledgedCanonicalRenderEvents": 2
+  }
+}

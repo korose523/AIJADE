@@ -1,0 +1,107 @@
+{
+  "status": "PASS",
+  "scope": "explicit JSON mode on the Web product path",
+  "rawPriorArmFailures": 2,
+  "rawPriorFailureKind": "complete valid JSON value wrapped in one whole Markdown fence",
+  "literalRegressionExpected": "{\"total\":5}",
+  "priorRawReceiptSha256": "1db4dd6ec1a99693cf1cfc792ded95c7ea0d84f5d7f7f4aaddc76b95741d7134",
+  "releaseProvenanceSha256": "91d80f1ab7e41e5e7ca78a4b2a9d676073c5ed4b358988c68b42559ddc4f52ae",
+  "testSummary": {
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0,
+    "strictJsonCases": 23,
+    "groups": [
+      "StrictJsonReplyTests",
+      "CompanionRuntimeTests",
+      "ProjectScopeTests"
+    ],
+    "independentCleanupReadbackSha256": "c1e15b077b063f1f15f4eb11afa2ab44d019791c72a3ac4b071c9b55ace5c8b4"
+  },
+  "testLogSha256": "3e555fb44e1fee327f5e355ffc83a6d0b9a9bee195a8c47f16239bac9b572105",
+  "transportChecks": [
+    "the recorded full fence is normalized without changing its JSON value",
+    "arrays and scalars are accepted as literal JSON",
+    "prose, duplicate keys, multiple values, unfinished fences, length termination and invalid envelopes do not yield a stored assistant message",
+    "malformed upstream HTTP 200 maps to a structured gateway failure on the real test host",
+    "ordinary JSON discussion still streams text and expression markers"
+  ],
+  "modelCallsPerStructuredTurn": 1,
+  "modelRequestedMaxTokens": 2048,
+  "maxAcceptedResponseCharacters": 32768,
+  "observedSameServices": {
+    "priorAppWithHistory": {
+      "oneBareValue": false,
+      "expectedValue": false,
+      "compactLiteral": false,
+      "persisted": true,
+      "domPersistedMatch": true,
+      "playbackCountDelta": 1,
+      "gatewaySpeechRequests": 1,
+      "pefRenderEvents": 2,
+      "gatewayCompletions": [
+        {
+          "status": 200,
+          "stream": true,
+          "responseFormat": null
+        }
+      ]
+    },
+    "repairedAppWithHistory": {
+      "oneBareValue": true,
+      "expectedValue": true,
+      "compactLiteral": true,
+      "persisted": true,
+      "domPersistedMatch": true,
+      "playbackCountDelta": 0,
+      "gatewaySpeechRequests": 0,
+      "pefRenderEvents": 0,
+      "gatewayCompletions": [
+        {
+          "status": 200,
+          "stream": false,
+          "responseFormat": null
+        }
+      ]
+    }
+  },
+  "freshChatReplay": {
+    "strict-smoke-prior": {
+      "oneBareValue": false,
+      "expectedValue": false,
+      "compactLiteral": false,
+      "domMatchesOnePersistedValue": true,
+      "gateway": [
+        {
+          "status": 200,
+          "stream": true,
+          "alias": "aijade-chat",
+          "responseFormat": null
+        }
+      ],
+      "speechRequests": 1,
+      "pefEvents": 2,
+      "pass": false,
+      "reportSha256": "52c4b5c2595be0129059dfe442a8d7ee9d940d141addbba2f3c18465df41fa5f"
+    },
+    "strict-smoke": {
+      "oneBareValue": true,
+      "expectedValue": true,
+      "compactLiteral": true,
+      "domMatchesOnePersistedValue": true,
+      "gateway": [
+        {
+          "status": 200,
+          "stream": false,
+          "alias": "aijade-chat",
+          "responseFormat": null
+        }
+      ],
+      "speechRequests": 0,
+      "pefEvents": 0,
+      "pass": true,
+      "reportSha256": "27d1aefad57ee3305a12282cf16fe4438e461bf1cb131a27485f54450a00a055"
+    }
+  },
+  "freshChatPairReadbackSha256": "7efaac3444634be5f3bb0343c24109e0baf518622812fd581fe0480026a12c20"
+}

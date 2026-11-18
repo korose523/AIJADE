@@ -1,0 +1,94 @@
+{
+  "schema": "aijade.product-dialogue-controlled-probe.v2",
+  "provider": {
+    "model": "qwen2.5-coder:1.5b",
+    "kind": "openai-compatible",
+    "scope": "loopback"
+  },
+  "sameSeededHistoryPerMatchedScenario": true,
+  "interpretation": "Bounded synthetic product probe with lexical diagnostics. See arm-specific missing cells. No independent human naturalness rating.",
+  "runs": [
+    {
+      "seed": 818,
+      "record": {
+        "schema": "aijade.product-multiturn-style.v1",
+        "scope": "Paired synthetic multi-turn product calls at the actual loopback AIJADE gateway. An automated diagnostic, no human naturalness rating.",
+        "planSha256": "5f8caced9f2f7f0da559dad4d6fba96fb205f6b440436991df393711b7529a68",
+        "rawSha256": "db7684eb66379412185fb68c3de7f0dbbbc4aa363bbee7c86dbac6f2e5e80f73",
+        "plannedPairs": 12,
+        "completedPairs": 8,
+        "summary": {
+          "baseline": {
+            "dispositions": {
+              "COMPLETE": 8,
+              "UPSTREAM_OR_PARSE_FAILURE": 1,
+              "UNATTEMPTED_AFTER_ARM_FAILURE": 3
+            },
+            "patternHits": 0,
+            "turnsWithPattern": 0,
+            "distinctOpeningClauses": 8,
+            "repeatedOpeningTurnsWithinTrajectory": 0,
+            "questionEndings": 4,
+            "lengthStops": 0
+          },
+          "current": {
+            "dispositions": {
+              "COMPLETE": 12
+            },
+            "patternHits": 1,
+            "turnsWithPattern": 1,
+            "distinctOpeningClauses": 4,
+            "repeatedOpeningTurnsWithinTrajectory": 4,
+            "questionEndings": 4,
+            "lengthStops": 0
+          }
+        },
+        "elapsedSeconds": 113.13762971700001
+      }
+    },
+    {
+      "seed": 819,
+      "record": {
+        "schema": "aijade.product-multiturn-style.v1",
+        "scope": "Paired synthetic multi-turn product calls at the actual loopback AIJADE gateway. An automated diagnostic, no human naturalness rating.",
+        "planSha256": "86586b0d5132fcc768ea6f44786a3f228dc369a185e742587f06de5aacfbd37b",
+        "rawSha256": "ea140507c572aeaecf47a12be838f06b90835311ef65d9dd3cecc023baa42dea",
+        "plannedPairs": 12,
+        "completedPairs": 8,
+        "summary": {
+          "baseline": {
+            "dispositions": {
+              "COMPLETE": 8,
+              "UPSTREAM_OR_PARSE_FAILURE": 1,
+              "UNATTEMPTED_AFTER_ARM_FAILURE": 3
+            },
+            "patternHits": 0,
+            "turnsWithPattern": 0,
+            "distinctOpeningClauses": 6,
+            "repeatedOpeningTurnsWithinTrajectory": 2,
+            "questionEndings": 4,
+            "lengthStops": 0
+          },
+          "current": {
+            "dispositions": {
+              "COMPLETE": 12
+            },
+            "patternHits": 1,
+            "turnsWithPattern": 1,
+            "distinctOpeningClauses": 6,
+            "repeatedOpeningTurnsWithinTrajectory": 2,
+            "questionEndings": 5,
+            "lengthStops": 0
+          }
+        },
+        "elapsedSeconds": 99.889192831
+      }
+    }
+  ],
+  "pairedGatewayReadbacks": [
+    "6eb11fd7435df7d2f52057a3d48489b589cc3a48173e5683f502d5e01288c085",
+    "14c2eece08db0d6b94efa0cdad30c21091335eb65f543c4a68f807cca63b8a1e"
+  ],
+  "independentRecalculationSha256": "82e04c4d6e2dce8eeee093cfa8010f1fb78fd72954078c76eaa28ffd8142a45d",
+  "reference": "experiments/engineering/2026-11-18-live2d-chat/conversational-reference.json"
+}

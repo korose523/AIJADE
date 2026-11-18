@@ -1,0 +1,80 @@
+{
+  "schema": "aijade.local-provider-discovery.v1",
+  "recordedUtc": "2026-11-18T11:53:00.565686+00:00",
+  "scope": "Product engineering. Newly configured, isolated local provider pair tested with synthetic inputs. A preexisting deployed AIJADE route pair was not established.",
+  "discovery": {
+    "activeOllamaBeforeTask": true,
+    "activeAIJADEProductHostFound": false,
+    "preexistingProductSpeechEndpointFound": false,
+    "repoDevelopmentDatabasesWithGatewayConfigurationTable": 0,
+    "repoDevelopmentDatabasesExamined": 2,
+    "usedPersonalConversationData": false
+  },
+  "model": {
+    "serviceVersion": "0.40.16",
+    "networkScope": "loopback",
+    "name": "qwen2.5-coder:1.5b",
+    "modelDigest": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+    "artifactBytes": 986062089,
+    "residentBytes": 1173136342,
+    "contextLength": 4096,
+    "warmupWallSeconds": 36.711736,
+    "warmupResult": "load complete",
+    "probes": [
+      {
+        "mode": "stream",
+        "httpStatus": 200,
+        "responseMediaType": "text/event-stream",
+        "wallSeconds": 3.8001047750000003,
+        "responseSha256": "0e0aa0873f9151cfd2b582d7141eea8dd7718d688c41b74cfc3633f1899aa984",
+        "streamEndSeen": true,
+        "chunks": 17,
+        "nonempty": true,
+        "visibleCharacters": 19
+      },
+      {
+        "mode": "json-format",
+        "httpStatus": 200,
+        "responseMediaType": "application/json",
+        "wallSeconds": 2.353862878,
+        "responseSha256": "bf65cc3dd632c4a89616dfea6e2e67085196f182bb60b7cca1fc09aa0d6ad3a2",
+        "finishReason": "stop",
+        "strictJsonObject": true,
+        "expectedFieldsMatch": true
+      }
+    ]
+  },
+  "alternateWarmup": {
+    "model": "llama3.1:8b",
+    "status": "owned warmup stopped before model residency",
+    "wallSeconds": 321.700037,
+    "observedSwapUsedFirstMiB": 1086.75,
+    "observedSwapUsedAtStopMiB": 3054.75,
+    "firstInferenceReached": false
+  },
+  "speech": {
+    "probe": {
+      "source": "AIJADE-owned tools/companion-services/server.py with installed macOS Tingting",
+      "runtimeVerified": true,
+      "sampleRate": 22050,
+      "channels": 1,
+      "bitsPerSample": 16,
+      "frames": 90711,
+      "durationSeconds": 4.113877551020408,
+      "peakPcm": 0.630859375,
+      "rmsPcm": 0.12853906365186032,
+      "probeSha256": "a6c9e667e402fe655440a9cb10b635054e809feb0d1251a2d3864246da8171a4",
+      "host": "loopback",
+      "alignmentVerified": false,
+      "trainedVoice": false
+    },
+    "engineSourceSha256": "ef7d3228a68b080f7f50ca0f8ff7bd0ccf26b3f78f1fb442fecfc700e2d3de87"
+  },
+  "inputReceiptSha256": {
+    "speech-sanitized.json": "2608002314d0daa7a329dc40cdc27b8d4e1f29270aa33e6e995e2ccb24f1331d",
+    "qwen15-model-wire-sanitized.json": "344678cfd4a6f7e5390f90e3fe75b8cb3d6f9b2da4f129b7275bdfe6d3269ea7",
+    "llama8b-warm-disposition.json": "2b0071a082f2ec6abc37b6306aa6c5cfc940eed76495e25f69a0c4f977fd9519"
+  },
+  "artifactsCopiedOrDownloaded": false,
+  "remoteServiceUsed": false
+}
