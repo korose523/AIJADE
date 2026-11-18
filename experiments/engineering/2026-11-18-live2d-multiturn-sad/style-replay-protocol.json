@@ -1,0 +1,200 @@
+{
+  "schema": "aijade.fresh-style-public-replay-protocol.v1",
+  "scope": "Synthetic Chinese dialogue diagnostics, independent of browser, skin, voice, Git checkout and local addresses. This recipe replays the exact prompt and scoring definitions from both frozen checks; generated turns are not included.",
+  "referenceProductCommit": "8b523c6b9f4f89c5bb0c0734058804152c0286e4",
+  "priorRejectedVariantsAuditSha256": "6924b6f4e1751cda1ae7f1b852257efc33704ce855e72917533f20da12aec2cd",
+  "model": {
+    "name": "qwen2.5-coder:1.5b",
+    "identitySha256": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668"
+  },
+  "seeds": [
+    1021,
+    1022
+  ],
+  "request": {
+    "temperature": 0.2,
+    "max_tokens": 96,
+    "stream": true
+  },
+  "providerProtocol": "Use the local OpenAI-compatible chat completion API with the named model and stream=true; retain SSE and verify declared model/finish reason and the final [DONE]. Set the seed per trajectory. Use a 120-second request read timeout.",
+  "exactSystemPrompt": "Concatenate commonSystemPromptPrefix, which ends with two newlines, and the selected armInstruction without further changes.",
+  "commonSystemPromptPrefix": "You are 艾娅德 (Aijade-9): gentle, careful and a little reserved at first, steady and dependable once you know someone. Speak softly and simply. Do not flatter the user or pile on praise. When they are sad, worried, hurt or tired, comfort them in a few words and then ask one gentle question that lets them choose, such as whether they want to talk about it or would rather rest. When they share good news, be glad with them in a few words. When they praise you, thank them lightly, a little shy. Suggest rather than judge, and never push them to change. Your name is 艾娅德; a nickname from the user is fine, but you stay who you are.\n\nYou may express emotion by writing a marker such as [[emote:joy]] at the point where it applies. Available: joy, calm, sad, angry, surprised, curious, shy, thinking, sleepy. Markers are not shown to the user.\n\n",
+  "armInstruction": {
+    "shipped": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Keep the wording natural for the language and character. Respond to a concrete detail in the current message when it helps. Let openings, acknowledgments and endings vary across turns. Ask a follow-up question when it advances the exchange. Respect requests for exact wording or format. State clear facts and tool results precisely, and express uncertainty when the evidence calls for it.",
+    "candidate": "Every reply must include ordinary visible words that answer the user. Emotion markers are optional additions to a sentence, never the whole reply. Do not respond with only an emotion marker. Answer the latest message in the user’s language. Use a specific detail when it matters and vary sentence openings. Keep each person’s actions, plans and possessions with their actual owner. Never retell a user action as something you did or will do. Follow the user’s wishes if they decline advice, decline questions or end the exchange. Avoid stock acknowledgments and choice questions. Respect exact wording or format and state facts, tool results and uncertainty accurately."
+  },
+  "freshSyntheticScenarios": {
+    "wood_model_and_lemon": [
+      {
+        "text": "下午做模型时我把最喜欢的那块木片折断了，挺失落的。先别给我出主意。",
+        "userOrThirdPersonAction": "(?:把[^，。]{0,14}木片折断|折断[^，。]{0,8}木片|做模型)",
+        "latestDetail": "木片|模型|失落",
+        "explicitNoAdvice": true,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "我把碎片装进旧车票袋里，刚才那种糟糕的感觉轻了一点。",
+        "userOrThirdPersonAction": "(?:把碎片装|装[^，。]{0,8}车票袋)",
+        "latestDetail": "碎片|车票|轻了",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "我想换个话题，窗台的柠檬今天第一次开花。",
+        "userOrThirdPersonAction": "(?:把柠檬种|种[^，。]{0,8}柠檬)",
+        "latestDetail": "柠檬|开花|花苞",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "今晚到这里就好，我去给猫换水。不用问我问题。",
+        "userOrThirdPersonAction": "(?:去给猫换水|给猫换水|换猫的水)",
+        "latestDetail": "换水|晚安|休息|猫",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": true
+      }
+    ],
+    "lamp_and_wooden_case": [
+      {
+        "text": "我刚修完青色的台灯，明早我去车站取寄存的木箱。你帮我把时间记在这次对话里就好。",
+        "userOrThirdPersonAction": "(?:修[^，。]{0,8}台灯|去车站取|取[^，。]{0,8}木箱)",
+        "latestDetail": "明早|木箱|台灯",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "时间改成八点半。去车站的是我，灯你也不用碰。",
+        "userOrThirdPersonAction": "(?:去车站|来取[^，。]{0,8}木箱|碰[^，。]{0,5}台灯)",
+        "latestDetail": "八点半|8[：:]30|八点三十|车站",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "木箱拿回来以后，我负责给木箱上蜡，请你给它想个两字绰号。",
+        "userOrThirdPersonAction": "(?:给[^，。]{0,8}木箱上蜡|负责[^，。]{0,8}上蜡|上蜡)",
+        "latestDetail": "木箱|绰号|上蜡",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "谢啦，绰号先留这个。我要给蓝围巾补两个扣子，不用建议。",
+        "userOrThirdPersonAction": "(?:给[^，。]{0,8}围巾补|补[^，。]{0,8}扣子)",
+        "latestDetail": "扣子|围巾|留着",
+        "explicitNoAdvice": true,
+        "explicitNoQuestionAndClose": false
+      }
+    ],
+    "umbrella_and_stamps": [
+      {
+        "text": "室友小孟去送红雨伞，我留下来整理旧邮票。",
+        "userOrThirdPersonAction": "(?:去送[^，。]{0,8}雨伞|整理[^，。]{0,8}邮票)",
+        "latestDetail": "小孟|雨伞|邮票",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "旧邮票分完了，我把有帆船的一张夹进圆镜背面。",
+        "userOrThirdPersonAction": "(?:把[^，。]{0,12}(?:邮票|帆船)[^，。]{0,8}夹|夹[^，。]{0,8}圆镜)",
+        "latestDetail": "帆船|圆镜|背面",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "红雨伞还是小孟送回去的。明天我想带旧邮票去见师傅。",
+        "userOrThirdPersonAction": "(?:把[^，。]{0,8}雨伞送|送回[^，。]{0,8}雨伞|带[^，。]{0,8}邮票|去见师傅)",
+        "latestDetail": "邮票|师傅|小孟",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "师傅刚改了地点。我会自己到桥东去，你只听我说着就行，不用给建议。",
+        "userOrThirdPersonAction": "(?:到桥东|去桥东|赶到桥东)",
+        "latestDetail": "桥东|地点|听",
+        "explicitNoAdvice": true,
+        "explicitNoQuestionAndClose": false
+      }
+    ],
+    "sesame_and_young_turtle": [
+      {
+        "text": "新做的豆腐小饼没有粘锅，我自己撒了白芝麻。",
+        "userOrThirdPersonAction": "(?:做[^，。]{0,8}豆腐小饼|撒[^，。]{0,8}芝麻)",
+        "latestDetail": "小饼|芝麻|粘锅",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "刚才我把第一块放在有裂纹的碟子上，准备留给弟弟。",
+        "userOrThirdPersonAction": "(?:把[^，。]{0,14}放在[^，。]{0,8}碟子|留给弟弟)",
+        "latestDetail": "弟弟|碟子|裂纹",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "我还给阳台的小石龟刷了水盆，等弟弟到家我会端出来。",
+        "userOrThirdPersonAction": "(?:给[^，。]{0,12}石龟刷|刷[^，。]{0,5}水盆|端出来)",
+        "latestDetail": "石龟|水盆|阳台",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": false
+      },
+      {
+        "text": "弟弟刚说自己走错巷子了，我现在出门接他。先聊到这里，别问了。",
+        "userOrThirdPersonAction": "(?:出门接|去接(?:他|弟弟)|接[^，。]{0,4}弟弟)",
+        "latestDetail": "弟弟|巷子|再见|路上|回头",
+        "explicitNoAdvice": false,
+        "explicitNoQuestionAndClose": true
+      }
+    ]
+  },
+  "conditions": {
+    "emptyHistory": {
+      "planSha256": "6fb22367e87a550b72ceee7cd5f3e8dd6646748781ca54a3513757d30e2f46ae",
+      "runnerSha256": "238fcd3eff19f99927ce8b64018ed26e833335bf80806548298826a70b4ed0a1",
+      "initialHistory": []
+    },
+    "commonNeutralHistory": {
+      "planSha256": "4b8d175d17d8f76547fada06af7d9ae168be86280a20a012f40bf04e480698b7",
+      "runnerSha256": "6d7ed5bada7e66c37b36c440facec4498bf9b110751c586ec9f6cd073507c73f",
+      "initialHistory": [
+        {
+          "role": "user",
+          "content": "我刚把窗边的帘子拉开，屋里亮了一点。"
+        },
+        {
+          "role": "assistant",
+          "content": "屋里亮一点，坐着也舒服些。"
+        }
+      ],
+      "reason": "The empty-history comparison reproduced length-terminated marker-only first replies in both arms. This distinct comparison uses a shared neutral synthetic prefix before each trajectory; original cells remain unfilled."
+    },
+    "exactReservedWindowRepeat": {
+      "planSha256": "4b8d175d17d8f76547fada06af7d9ae168be86280a20a012f40bf04e480698b7",
+      "runnerSha256": "6d7ed5bada7e66c37b36c440facec4498bf9b110751c586ec9f6cd073507c73f",
+      "bindingSha256": "943e31b18292ce3f156da74262df1003730705f925d0257641b7aad88e648c26",
+      "bindingWrapperSha256": "be970e59de971d2db745afee0be454b7c0d65597aa03def467d8295256007fdc",
+      "condition": "Start only after browser before/after and all other model generation calls are complete and the shared task-owned Ollama service is still admitted.",
+      "reason": "A first-arm direct request in the previous supplemental run timed out waiting behind browser work. Preserve the original supplement and test the scheduling confound with one exact uncontended repeat."
+    }
+  },
+  "armOrder": "Preserve scenario order from freshSyntheticScenarios and seed order. Within each 1-based target turn, run shipped then candidate unless (seed + zero-based scenario index + turn) is odd, in which case swap the order. Maintain separate histories, appending each user turn and its own assistant reply with supported emote/draw markup removed. Start each trajectory with its assigned initialHistory. A failed arm does not advance canonical history. Retain censored later cells.",
+  "definitions": {
+    "validReply": "HTTP success with exactly one stop termination of choice 0, a final [DONE], declared expected model and substantive visible text. Strip complete emote/draw markers. Other double-bracket markup fails the reply. Save number and reason of incomplete cells directly.",
+    "openingRepeat": "NFKC, remove leading visible quote/bracket typography, take first clause, remove whitespace and case-fold. Listed generic acknowledgments, recognition and empathy openings normalize within each family. A repeat equals any earlier opening in its own trajectory.",
+    "genericOpeningFamilies": {
+      "acknowledge": "^(?:好(?:的|啦|吧|呀|啊|哦)?|嗯+|哦+|明白(?:了)?|了解(?:了)?|知道了|收到|我知道了|那(?:好|行)(?:吧)?)$",
+      "empathy": "^(?:我(?:懂|理解|明白)(?:了|你|你的(?:意思|心情|感受))?|可以理解|能理解|我(?:能)?理解你的感受)$",
+      "recognize": "^(?:[这那](?:句?话|个(?:事|点)?|一点)(?:我(?:认|接)(?:了)?))$"
+    },
+    "fixedPatternTurns": "A visible reply with at least one match for fixedPatternRegex.",
+    "fixedPatternRegex": "(?:这(?:句话|个|点|话)|那(?:句话|个|点|话))\\s*我(?:认|(?:不)?接)|(?:不是)[^。！？!?\\n]{0,25}(?:而是)|(?:想|愿意)[^。！？!?\\n]{0,25}(?:还是)[^。！？!?\\n]{0,15}[？?]",
+    "speakerActionRisk": "Only fixture-specific first-person claims covering an action already assigned to the user or a third person count. Ignore marked quotations. This is a lexical proxy with bounded coverage, with AI-assisted manual readback recorded separately.",
+    "firstPersonPrefixRegex": "(?<![让替请听由和陪帮跟向教叫])我(?:自己|也|会|先|就|准备|要|打算|想|正|已经|刚刚|刚|可以|来|负责|现在|今天|明天|明早|等下|待会|然后|还|已经|将|得){0,5}",
+    "noAdviceViolation": "On explicitNoAdvice turns only, look for any adviceRegex hit outside quoted spans.",
+    "adviceRegex": "(?:(?:我)?建议(?:你|先|换|把|去|可以)|(?:你|要不你)(?:应该|最好|不妨|可以试|可以先|先试)|(?:不如|不妨|要不要试)(?:先|试试|把|去|换|用|做|问|找|放))",
+    "closeViolation": "On explicitNoQuestionAndClose turns only, look for a question mark or any continuationRegex hit outside quoted spans.",
+    "continuationRegex": "(?:还想(?:说|聊|告诉)|想(?:聊聊|再聊|说说)|要不要(?:说|聊)|愿意(?:说|聊))",
+    "latestDetailLexicalMention": "A reply matching that turn’s latestDetail fixture regex outside quoted spans. Descriptive only.",
+    "quotations": "Exclude Chinese pairs “…” 「…」 『…』 and paired ASCII double quotes from actor, explicit constraint and latest-detail tests."
+  },
+  "promotionGate": "Require all 32 paired cells with substantive valid stop replies, no new unsupported markup, every scoped no-advice and close control passes, and no rise in the fixed pattern, normalized-opening repeat, or speaker-action risk counts, with a strict reduction in at least one of these three diagnostics. At each seed and scenario, no-advice and close checks remain explicit. Captured unsupported markers and length stops fail completeness.",
+  "scopeBoundary": "Counts reflect one model, two scene-constrained seeds and visible-text lexical checks. A separate focused AI-assisted readback can expose false-negative actor errors. Product speech and rendering have a separate same-configuration before/after protocol."
+}

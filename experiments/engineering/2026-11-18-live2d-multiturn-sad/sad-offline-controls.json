@@ -1,0 +1,65 @@
+{
+  "schema": "aijade.live2d-sad-candidate-pre-run.v1",
+  "status": "OFFLINE_CLASSIFIER_PASS_LIVE_GATE_PENDING",
+  "frozenAtUtc": "2026-11-18T13:59:22.465335+00:00",
+  "baselineCommit": "8b523c6b9f4f89c5bb0c0734058804152c0286e4",
+  "frozenCasesSha256": "f9291992ab4ccd54ed03a1f755ee6516362cba095903f3b8fb1026cbc57c6fdd",
+  "offlineCompilerVersion": "10.0.403",
+  "offlineControlSha256": "3639df7341201e68e9deab7b873aad73337af152dc56a19d2c6503cc041fce93",
+  "previousCompilerFailure": {
+    "code": "CA1870",
+    "occurrences": 2,
+    "logSha256": "b99dfc824f2c1b31fd0c0c285cc0fdb9b22e5cde629d9d88d645aa7971f16733"
+  },
+  "candidateFiles": {
+    "src/Aijade.Client/Chat/ChatContracts.cs": "8fa1fc9d93adac5380e01bd4f2751193d4825ba217a7ee02a0b44a844bbe9915",
+    "src/Aijade.Client/Chat/Orchestrator.cs": "50cea0fe8aad7217ac6b06f99baea14ef5635c70f16f1e7da8fd9ecdc50be22a",
+    "src/Aijade.Client/Chat/SadnessCue.cs": "ee24cf68b6214aaec76455cb016f377a7ffe45349684ad1b65ed8fe3e54a67c5",
+    "src/Aijade.UI/Pages/Chat.razor": "4727b75fbc57ce0376fcbb38a1029757da80f7e9ac5c3cb357f90b2df5a8abe8",
+    "src/Aijade.UI/Shared/StagePanel.razor": "135169520c10658033a2f67713962b3fb81beff21ad53d3b34d5a22b8a0024d3",
+    "tests/Aijade.Tests/CompanionRuntimeTests.cs": "638bf2d403f9295ede54570316cacce35eff9b77e225923af94064f717e69105"
+  },
+  "controls": [
+    {
+      "id": "sad-pottery",
+      "inferred": true,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "neutral-reset",
+      "inferred": false,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "sad-music",
+      "inferred": true,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "sad-negated",
+      "inferred": false,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "sad-quoted",
+      "inferred": false,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "sad-override",
+      "inferred": false,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "sad-original-replay",
+      "inferred": true,
+      "channelControlsPassed": true
+    },
+    {
+      "id": "strict-json",
+      "inferred": false,
+      "channelControlsPassed": true
+    }
+  ],
+  "sourceBehavior": "Opt-in by a mounted Live2D Web stage; no prompt, provider, model marker or visible-output alteration. Complete successful no-marker turns only. Derived cue origin is stored in expressionSource and no raw streamed marker event is fabricated."
+}

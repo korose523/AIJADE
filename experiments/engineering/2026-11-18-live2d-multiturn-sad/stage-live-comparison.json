@@ -1,0 +1,104 @@
+{
+  "schema": "aijade.live2d-canvas-owner-live-public.v1",
+  "status": "PASS",
+  "scope": "Real SPA navigation, stale previous-canvas call, and actual provider/voice smoke after repaired build.",
+  "frozenPlanSha256": "ca1c18d5da4b923ad72605dcb0d41907866ca5d87e5fa414f00c4bc0bf344286",
+  "harnessSha256": "a9185d7d6ebdf470df6c4b4c8070af0433fbc15a08de14d5ae7a9b7a8e847b6d",
+  "before": {
+    "kind": "owner-before",
+    "sourceCommit": "0c605203db091c671f4c739544835b3186f53c14",
+    "assemblySha256": "317c0708cb48fcdc34c49ea98146160b939e03367e72b356e24182f7679dad43",
+    "immutableGitSource": true,
+    "candidatePatchSha256": null,
+    "servedStageJsSha256": "56c3d14de315ea507c55efdf38c171edb7705b0df58e345e3f160f9585c2d921",
+    "browserServicesSourceSha256": "03be7f22bf009958f532cc45527d712435022387622a6b0acbc39ce106176763",
+    "rawReportSha256": "99bbd33704c55eccbf7c02fea8949ac1c375e3ef1e22bf84e5a92ea89781c59b",
+    "gatewayAccountingSha256": "a98930f8704e7a850ee5f273e4e0da0427e7f7a8955d2bb382f6fc17d9a7ed77",
+    "cleanupSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+    "casePlanSha256": "24fea0d063949cdad582d5b8a46888d239539fd059c41231486578fa6f1469f7",
+    "canvasOwner": {
+      "differentFormerAndCurrent": true,
+      "sameOwner": true,
+      "mountDelta": 0,
+      "releaseDelta": 1,
+      "frameDelta": 0,
+      "currentMouthChannel": null,
+      "currentContextLosses": 2,
+      "oldReleaseObserved": true,
+      "staleCallNoEffect": false,
+      "reproducedOldStaleDisposal": true
+    },
+    "gatewayModelAliasEvidenceSha256": "bcdadb3faf8593cb1c4b1160f56c3e05c138effdb1232bb8f2241907e4fb7696",
+    "voiceEvidenceSha256": "3b88dd981fc1445163ec80b448799c47a36bfa48c7a9541a341f816114a67dbf",
+    "servedAvatarIdentity": {
+      "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+      "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a"
+    },
+    "roles": [],
+    "strictJsonExactAndSilent": false,
+    "voicedTurns": 0,
+    "originalBrowserVerdict": "PASS",
+    "originalBrowserFailures": [],
+    "observationInterpretation": null,
+    "shortObservation": null
+  },
+  "after": {
+    "kind": "combined-sad",
+    "sourceCommit": "8b523c6b9f4f89c5bb0c0734058804152c0286e4",
+    "assemblySha256": "da4a859a5e81471453b8db249e67d3359a0e1a8b44180b31abe253e141c35888",
+    "immutableGitSource": false,
+    "candidatePatchSha256": "8d28e587a1b1f41cdc11f50ac86b4991668d3b94ada60e743613f47f08bb46b0",
+    "servedStageJsSha256": "087d5e667e44df64cc790fa76738c3d3ab9f03fc29f65ee1ec4e233dbdcda819",
+    "browserServicesSourceSha256": "c8c5282b13ac38a3444e73a5ebd43eaefae65f8ccd969753a00cec5170a1dcf2",
+    "rawReportSha256": "12ca4ef84b4f6bc11076ffc841ed5409ad6e183b73c6b09aebbea9cfdb988425",
+    "gatewayAccountingSha256": "1ce7645a6b69e735c88e522b196ab72ecb8a8392faefd04b8393c948273393ac",
+    "cleanupSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+    "casePlanSha256": "1294d823d4e4e7069bda7cd4fbdd50c487cf7f2eba1d709361a102ff37baacdb",
+    "canvasOwner": {
+      "differentFormerAndCurrent": true,
+      "sameOwner": true,
+      "mountDelta": 0,
+      "releaseDelta": 0,
+      "frameDelta": 35,
+      "currentMouthChannel": 0,
+      "currentContextLosses": 1,
+      "oldReleaseObserved": true,
+      "staleCallNoEffect": true,
+      "reproducedOldStaleDisposal": false
+    },
+    "gatewayModelAliasEvidenceSha256": "bcdadb3faf8593cb1c4b1160f56c3e05c138effdb1232bb8f2241907e4fb7696",
+    "voiceEvidenceSha256": "3b88dd981fc1445163ec80b448799c47a36bfa48c7a9541a341f816114a67dbf",
+    "servedAvatarIdentity": {
+      "adapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+      "profileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a"
+    },
+    "roles": [
+      {
+        "case": "sad-music",
+        "nativeExpression": "sad",
+        "expressionSource": "sad_fallback",
+        "waveAndMouth": true
+      },
+      {
+        "case": "neutral-reset",
+        "nativeExpression": "neutral",
+        "expressionSource": null,
+        "waveAndMouth": true
+      }
+    ],
+    "strictJsonExactAndSilent": true,
+    "voicedTurns": 2,
+    "originalBrowserVerdict": "FAIL",
+    "originalBrowserFailures": [
+      "stage continuity failed"
+    ],
+    "observationInterpretation": "The observer counted explicit old-stage cleanup across the SPA document. Independently evaluate loss deltas during the new stage interval.",
+    "shortObservation": {
+      "seconds": 30.031699999988078,
+      "frames": 901,
+      "neutralSamples": 4,
+      "peakRedRatio": 0.020289855072463767,
+      "webglLossesDuringWindow": 0
+    }
+  }
+}

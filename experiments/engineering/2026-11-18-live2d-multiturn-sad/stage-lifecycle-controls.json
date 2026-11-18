@@ -1,0 +1,71 @@
+{
+  "schema": "aijade.browser-stage-ownership-offline-controls.v1",
+  "status": "PASS",
+  "scope": "Exact AIJADE stage.js code, with only renderer import bindings substituted in a controlled Node DOM fixture. Native renderer/model/voice traffic is assessed separately.",
+  "upstreamReference": {
+    "repositoryUrl": "https://github.com/canyueY/live2d-renderer-plugin",
+    "commit": "0eeced6cf5fea30a331e68259bdd6c666ae0c6e3",
+    "designObserved": "Status and shutdown distinguish renderer ownership from dialogue generation.",
+    "sourceAdopted": false,
+    "runtimeDependencyAdded": false
+  },
+  "nodeVersion": "v24.22.1",
+  "testSourceSha256": "7fd144b69073957fe00aafa8cb4132be94902b6d54f97914f59678197260d2c3",
+  "parentStageSourceSha256": "56c3d14de315ea507c55efdf38c171edb7705b0df58e345e3f160f9585c2d921",
+  "candidateFiles": {
+    ".github/workflows/ci.yml": "b95dd64fdfd9fca5549eb1ecf1b32e800f02e288ca688278b8bebae4461d8fe8",
+    "src/Aijade.UI/Services/BrowserServices.cs": "c8c5282b13ac38a3444e73a5ebd43eaefae65f8ccd969753a00cec5170a1dcf2",
+    "src/Aijade.UI/wwwroot/stage.js": "087d5e667e44df64cc790fa76738c3d3ab9f03fc29f65ee1ec4e233dbdcda819",
+    "tests/Aijade.E2E/browser-stage-ownership.test.mjs": "7fd144b69073957fe00aafa8cb4132be94902b6d54f97914f59678197260d2c3"
+  },
+  "results": {
+    "baseline": {
+      "passed": 1,
+      "failed": 3,
+      "logSha256": "f75dd05211702a5f0e0aadc934736d91188242bf65f0627742d58d434b299b1e",
+      "outcomes": [
+        {
+          "name": "disposing an older mounted panel leaves the new current Live2D stage active",
+          "pass": false
+        },
+        {
+          "name": "an older disposal cannot cancel a newer pending mount and the late old renderer is released",
+          "pass": false
+        },
+        {
+          "name": "its own pending disposal cancels the stage and rejects a late renderer",
+          "pass": true
+        },
+        {
+          "name": "a mount whose canvas no longer exists leaves the running stage active",
+          "pass": false
+        }
+      ]
+    },
+    "candidate": {
+      "passed": 4,
+      "failed": 0,
+      "logSha256": "a95c8d8b883bb8516520b512311289c580547fd07a4277b7d0be301222b264ea",
+      "outcomes": [
+        {
+          "name": "disposing an older mounted panel leaves the new current Live2D stage active",
+          "pass": true
+        },
+        {
+          "name": "an older disposal cannot cancel a newer pending mount and the late old renderer is released",
+          "pass": true
+        },
+        {
+          "name": "its own pending disposal cancels the stage and rejects a late renderer",
+          "pass": true
+        },
+        {
+          "name": "a mount whose canvas no longer exists leaves the running stage active",
+          "pass": true
+        }
+      ]
+    }
+  },
+  "change": "A valid new mount supersedes the prior one. A delayed disposal may only unmount the canvas it owns. An absent canvas does not destroy an active stage. A stale resolved renderer is released once. A transient host that only fits an image never requests stage teardown.",
+  "asyncInteropBoundary": "A transient host loading the browser module when disposed awaits and releases that module reference, then no longer dispatches a mount. Disconnected JS interop keeps the app teardown semantics."
+}

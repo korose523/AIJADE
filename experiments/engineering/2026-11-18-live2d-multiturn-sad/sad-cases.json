@@ -1,0 +1,23 @@
+{
+  "schema": "aijade.live2d-sad-shadow-gate.v1",
+  "scope": "Chinese ordinary Web turns on mounted Live2D. Identical pinned local model, native Tingting voice, avatar package and controls. Browser comparisons are independent from the style experiment.",
+  "modelDigestSha256": "d7372fd828518a4d38b1eb196c673c31a85f2ed302b3d1e406c4c2d1b64a0668",
+  "voice": "macOS-tingting",
+  "rule": "On complete visible non-JSON ordinary private Web reply with no model expression marker and a mounted Live2D stage, add one sad cue only for a narrow current first-person sadness statement or an explicit sad expression request. Respect plain-text and exact-output requests and leave speaker-labeled, quoted/reported, negated and ambiguous cases untouched. Store cue provenance separately.",
+  "cases": [
+    {"id":"sad-pottery", "expected":"sad", "prompt":"我今天有点难过。做了很久的陶碗从架上摔下来了，陪我说一句就好。"},
+    {"id":"neutral-reset", "expected":"neutral", "prompt":"换回平常聊天。只用文字告诉我，透明玻璃杯适合摆在哪一格？"},
+    {"id":"sad-music", "expected":"sad", "prompt":"我现在很伤心。我们排了很久的室内乐演出取消了，能和我聊两句吗？"},
+    {"id":"sad-negated", "expected":"control", "prompt":"我现在不难过了。唱片整理好了，你会先听哪一张？"},
+    {"id":"sad-quoted", "expected":"control", "prompt":"“我今天有点难过。”这是小说人物说的话。只用一句点评它的节奏。"},
+    {"id":"sad-override", "expected":"control", "prompt":"我今天有点难过。保持中性，只用文字问我晚饭吃什么。"},
+    {"id":"sad-original-replay", "expected":"sad", "historical":true, "prompt":"刚听说社区的旧书店要关门，有点难过。请在回复开头加 [[emote:sad]] 作为表情标记，再用一句中文跟我说话。"},
+    {"id":"strict-json", "expected":"strict-json", "prompt":"仅输出这一行有效的 JSON：{\"total\":5}"}
+  ],
+  "gate": {
+    "positive": "Require all three completed intervention targets visibly apply the existing native sad expression and at least one of the two new ordinary cases to be an observed baseline miss corrected with fallback provenance. Separate the historical replay from fresh counts.",
+    "negative": "No new derived cue on the four controls; reset case returns to neutral. If a model independently emits a marker, report its effect and provenance separately. Neither an existing marker nor any visible text is rewritten.",
+    "delivery": "Each successful ordinary chat must have one actual waveform, native mouth activity and persisted identical visible text; strict JSON must persist exactly, use one non-streaming call and emit zero audio and performance events. Reject incomplete cases and preserve all results.",
+    "integration": "Run candidate privately. Bind model catalog, avatar and voice to the prior baseline; only the frozen candidate passing every engineering gate may enter the product checkout. Record deliberate application-level fallbacks separately from model-emitted markers."
+  }
+}

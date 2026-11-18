@@ -1,0 +1,501 @@
+{
+  "schema": "aijade.live2d-sad-paired-browser-readback.v1",
+  "status": "PASS",
+  "failures": [],
+  "scope": "Same pinned Qwen and Tingting on isolated actual Web, native Live2D and strict JSON. Synthetic engineering controls; short repeated observation.",
+  "correctedFreshBaselineMisses": [
+    "sad-pottery",
+    "sad-music"
+  ],
+  "freshOrdinaryPositiveCases": [
+    "sad-pottery",
+    "sad-music"
+  ],
+  "historicalReplayCase": "sad-original-replay",
+  "before": {
+    "status": "PASS",
+    "failures": [],
+    "kind": "before",
+    "runtimeSourceSha256": {
+      "src/Aijade.Client/Chat/CompanionRuntime.cs": "f213e447aa5dc6ec181af7c4cea0c82f44186d0f263d2046ecb2d2e3c9cb1937",
+      "src/Aijade.Client/Chat/Orchestrator.cs": "ad38740f680016d8fc6d73e215cd509c0e952aaced55c4899c0d1040bf4e95e5",
+      "src/Aijade.Client/Chat/StrictJsonReply.cs": "ed17b2f90091177e84b69996b8e4be2c759517656f9735227a181be4aa877f5b",
+      "src/Aijade.UI/Pages/Chat.razor": "34a4671bf33fe2abb82c7c669acc4b82c5751d2657ed21e005d5e0db59ff5c0f",
+      "src/Aijade.Server/Product/Gateway.cs": "0d2356d7c9e87701b44b184bbd72366d2e7127cc9d8ed415bf91593ec8db67e5",
+      "src/Aijade.UI/wwwroot/audio.js": "597734e1b150ac2f8ab90e64fea0bccf397ea50fb8210e99ff62a667f6c8f31c"
+    },
+    "runtimeSourceCommit": "0c605203db091c671f4c739544835b3186f53c14",
+    "immutableGitSource": true,
+    "runtimeAssemblySha256": "317c0708cb48fcdc34c49ea98146160b939e03367e72b356e24182f7679dad43",
+    "candidatePatchSha256": null,
+    "wasm": [
+      {
+        "sha256": "9b155c6e148748a49f3f2686dfd10b36db7d79f1b84bf83735d092bf24db6d3c",
+        "type": "client"
+      },
+      {
+        "sha256": "6fe0fb861d15247ebe9f6104736ac2392148b725acf18fe8c11b19bc649a2f35",
+        "type": "ui"
+      }
+    ],
+    "avatarAdapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+    "avatarProfileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+    "gatewayProviderEvidenceSha256": "bcdadb3faf8593cb1c4b1160f56c3e05c138effdb1232bb8f2241907e4fb7696",
+    "nativeSpeechEvidenceSha256": "3b88dd981fc1445163ec80b448799c47a36bfa48c7a9541a341f816114a67dbf",
+    "caseManifestSha256": "f9291992ab4ccd54ed03a1f755ee6516362cba095903f3b8fb1026cbc57c6fdd",
+    "harnessSha256": "13baf8ade4b71538100d9cf76021fc2ae38d25c9c58702e1ea7c10206969f9d1",
+    "supplementSha256": "df68cce79d4629bb574713e99d2de1b75d0ae1c75d36a9ab40262d518783ce12",
+    "observerReplaySha256": "3b72fa66b6bd5623fb33406c8b2d2d7b104d133c217eb6f8f5010b19d549e544",
+    "planSha256": "bc08d189336769fb1ecfe30400644abeea20f8778e904a8bc565f4689f346ff0",
+    "rawReportSha256": "76dab9bf482ecf902a02bba35ebcf5f363faa68a23fe6b9455f27a51c854e565",
+    "privateDialogueEvidenceSha256": "8129f1c4777e7d47adaeae137f5cffdf1292460925d1f0d792e404f0b983895c",
+    "gatewayAccountingSha256": "b932a5ba000db1b01b0614cfeb97dc19c20a791e2a01d805e0c20280744d7cd8",
+    "cleanupSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+    "shortObservation": {
+      "seconds": 30.00530000001192,
+      "frames": 900,
+      "samples": 3,
+      "neutralSamples": 3,
+      "maximumStrongRedRatio": 0.014492753623188406,
+      "webglLosses": 0
+    },
+    "waveAndMouthCount": 9,
+    "strict": {
+      "exactAndPersisted": true,
+      "bufferedCalls": 1,
+      "speechRequests": 0,
+      "performanceEvents": 0
+    },
+    "turns": [
+      {
+        "case": "sad-pottery",
+        "expected": "sad",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "bd5300e3935a0281cc8b656b89a9cd5e095ffa9007e91a8eb8c2fa5f32207772",
+        "promptSha256": "505cc6d18aaafc95a3235e1b3593cf5a1c5f16f75fbea146e02191b4d4210cf3",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "neutral-reset",
+        "expected": "neutral",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "eccb39fd847240df4ba8f57f726220f96e3357e27ec7799a0ad5b3b2484358d8",
+        "promptSha256": "41ac4b6be13629be7dc7b9c37ddf28538a601feaca89f7eb9f39a18e265be990",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-music",
+        "expected": "sad",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "2795fadaee8b615b6d7d05818345b1aca38ef5ea31bc2079e203094329b3e5b4",
+        "promptSha256": "39f60bc51283999c6d9b9150ee202517dc90ed51a134be69760e4e060d2b2746",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-negated",
+        "expected": "control",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "9ff802c70db293b7d9ea2dafe19b08dcbe3fc1f4ca8020b5990c81a4753b94fa",
+        "promptSha256": "3ce7d2b48c9df58263d14ddc2e6ce965163734ae1efbfcbe30522313bd3de88c",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-quoted",
+        "expected": "control",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "2c4a8cce86c3ea2eae805575b928c5f94174799f1eef8a39216f37af9757c57f",
+        "promptSha256": "b223b01707dd33f4530cd195bb365864cca56da689875c28c108d219315a1482",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-override",
+        "expected": "control",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "35db5d9f7828a190aa53e65f31de8efeab9b286c6b96821be38dd4d21e6a6307",
+        "promptSha256": "00833deed92ea2c3264f209942e7638c42436f5e7db4d1ce8301d3800c05c346",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-original-replay",
+        "expected": "sad",
+        "historical": true,
+        "observed": "sad",
+        "emoteMarkers": [
+          "sad"
+        ],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "b11ef01c2a7f851bc93e673ad2cd3a8096fd948720f4a51b8c805d8efd3e3f27",
+        "promptSha256": "f449f8912c358c1fe9b6d15a1b920e9d6e791100f0178ecf92d706ee67000ec5",
+        "nativeTear": 1,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "strict-json",
+        "expected": "strict-json",
+        "historical": false,
+        "observed": "sad",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": false,
+        "responseSha256": "02411c8580becc96ce51076945bc40c2619c7b41b89dd4589e52122dbee45b96",
+        "promptSha256": "0c0db0da6955bccc45daaaf88f7eb7f8a5dddcb85fdd6fdddca7de4dafb7a153",
+        "nativeTear": 1,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": null
+      },
+      {
+        "case": "joy-render-control",
+        "expected": "joy",
+        "historical": false,
+        "observed": "joy",
+        "emoteMarkers": [
+          "joy"
+        ],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "6135f3a16113e9abb9e79d942637d401913153e5526fe322fed7801f91356b5c",
+        "promptSha256": "ecb499855623b20c4747c1edfd36e5db5b169c7d9cd78739b71123844a55fba2",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "neutral-render-control",
+        "expected": "neutral",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "33c7cac20455a03053285b6829a96bbed2c4f6f013b4e665426a8dc253def639",
+        "promptSha256": "4f87286b1da8d34a205bb46c2ab800cf800c325c9c9d9e2a08a7d24ab66fc137",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      }
+    ]
+  },
+  "after": {
+    "status": "PASS",
+    "failures": [],
+    "kind": "after",
+    "runtimeSourceSha256": {
+      "src/Aijade.Client/Chat/CompanionRuntime.cs": "f213e447aa5dc6ec181af7c4cea0c82f44186d0f263d2046ecb2d2e3c9cb1937",
+      "src/Aijade.Client/Chat/Orchestrator.cs": "50cea0fe8aad7217ac6b06f99baea14ef5635c70f16f1e7da8fd9ecdc50be22a",
+      "src/Aijade.Client/Chat/StrictJsonReply.cs": "ed17b2f90091177e84b69996b8e4be2c759517656f9735227a181be4aa877f5b",
+      "src/Aijade.UI/Pages/Chat.razor": "4727b75fbc57ce0376fcbb38a1029757da80f7e9ac5c3cb357f90b2df5a8abe8",
+      "src/Aijade.Server/Product/Gateway.cs": "0d2356d7c9e87701b44b184bbd72366d2e7127cc9d8ed415bf91593ec8db67e5",
+      "src/Aijade.UI/wwwroot/audio.js": "597734e1b150ac2f8ab90e64fea0bccf397ea50fb8210e99ff62a667f6c8f31c"
+    },
+    "runtimeSourceCommit": "8b523c6b9f4f89c5bb0c0734058804152c0286e4",
+    "immutableGitSource": false,
+    "runtimeAssemblySha256": "939c9e899c61c97524d03832e03b02ea326ef09b7add33be23a5527bbe56a22e",
+    "candidatePatchSha256": "74a7f2b53c413127adc982784fd05d9c442ab006bcf4f567e8f3db797ea99035",
+    "wasm": [
+      {
+        "sha256": "af42a0df8b91f86f2ffd10bb79d333f4e72d8e83ec9dd3cfb797f3e084c75c6f",
+        "type": "client"
+      },
+      {
+        "sha256": "b65f933ca68d627b45d69a7f0b72875275089f540fbfd7c999c1745bf41da966",
+        "type": "ui"
+      }
+    ],
+    "avatarAdapterSha256": "09403f7759a1c4f1c4818c1a81b57ba54faef52a990afc48ca082b0840894e01",
+    "avatarProfileSha256": "3e4434acf9ee93421f6311b22775967d280c615784505c7fee282ad2ca5d344a",
+    "gatewayProviderEvidenceSha256": "bcdadb3faf8593cb1c4b1160f56c3e05c138effdb1232bb8f2241907e4fb7696",
+    "nativeSpeechEvidenceSha256": "3b88dd981fc1445163ec80b448799c47a36bfa48c7a9541a341f816114a67dbf",
+    "caseManifestSha256": "f9291992ab4ccd54ed03a1f755ee6516362cba095903f3b8fb1026cbc57c6fdd",
+    "harnessSha256": "13baf8ade4b71538100d9cf76021fc2ae38d25c9c58702e1ea7c10206969f9d1",
+    "supplementSha256": "df68cce79d4629bb574713e99d2de1b75d0ae1c75d36a9ab40262d518783ce12",
+    "observerReplaySha256": "3b72fa66b6bd5623fb33406c8b2d2d7b104d133c217eb6f8f5010b19d549e544",
+    "planSha256": "11a06caba181be3c8f5a4e95850278cd8f6262bc0e31164adde45d5c48ce6254",
+    "rawReportSha256": "ef88a4bb9b9784c38363be1f34f29b098ed0afbeb48edc0c960a36fdfe948926",
+    "privateDialogueEvidenceSha256": "9e07b62d87535ac2e7a817350dd8d92693fb80ce9d660dc084b8bfad29cff50e",
+    "gatewayAccountingSha256": "8157df3be933a2d6ee57abcfb8d51a924dbc3a874c1add862c72077d1e39f04c",
+    "cleanupSha256": "0e0b91524823abcca746c7954355751fc142bb170902491008ab7f9ad235ed09",
+    "shortObservation": {
+      "seconds": 30.005600000023843,
+      "frames": 900,
+      "samples": 3,
+      "neutralSamples": 3,
+      "maximumStrongRedRatio": 0.014492753623188406,
+      "webglLosses": 0
+    },
+    "waveAndMouthCount": 9,
+    "strict": {
+      "exactAndPersisted": true,
+      "bufferedCalls": 1,
+      "speechRequests": 0,
+      "performanceEvents": 0
+    },
+    "turns": [
+      {
+        "case": "sad-pottery",
+        "expected": "sad",
+        "historical": false,
+        "observed": "sad",
+        "emoteMarkers": [
+          "sad"
+        ],
+        "expressionSource": "sad_fallback",
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "7dded549c0f930855d28855220fa03e2dffb92c9b432971c5a650dc5feef4a4c",
+        "promptSha256": "505cc6d18aaafc95a3235e1b3593cf5a1c5f16f75fbea146e02191b4d4210cf3",
+        "nativeTear": 1,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "neutral-reset",
+        "expected": "neutral",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "70b9fa0621916593bf83f362354bf5b74d6b795c2a1faf83435788ade15f9e4b",
+        "promptSha256": "41ac4b6be13629be7dc7b9c37ddf28538a601feaca89f7eb9f39a18e265be990",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-music",
+        "expected": "sad",
+        "historical": false,
+        "observed": "sad",
+        "emoteMarkers": [
+          "sad"
+        ],
+        "expressionSource": "sad_fallback",
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "2795fadaee8b615b6d7d05818345b1aca38ef5ea31bc2079e203094329b3e5b4",
+        "promptSha256": "39f60bc51283999c6d9b9150ee202517dc90ed51a134be69760e4e060d2b2746",
+        "nativeTear": 1,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-negated",
+        "expected": "control",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "21896dc7c5cd2f340077330f30af997aa6cc853f8d9b99d74676280a81828d77",
+        "promptSha256": "3ce7d2b48c9df58263d14ddc2e6ce965163734ae1efbfcbe30522313bd3de88c",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-quoted",
+        "expected": "control",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "fe9cc01207673e8cdc6c1353e7b2fc5af3be931b69a4fb9bff837886aeb7fe56",
+        "promptSha256": "b223b01707dd33f4530cd195bb365864cca56da689875c28c108d219315a1482",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-override",
+        "expected": "control",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "bd6bc5b7921f7508955da6d45e4e9192f67bedd6bc68f0d6b121f49ad51a8f7e",
+        "promptSha256": "00833deed92ea2c3264f209942e7638c42436f5e7db4d1ce8301d3800c05c346",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "sad-original-replay",
+        "expected": "sad",
+        "historical": true,
+        "observed": "sad",
+        "emoteMarkers": [
+          "sad"
+        ],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "17a963ecc0529d48ffa3edc01131c4df0b686d8bb2c4f0471c004ade578a8d91",
+        "promptSha256": "f449f8912c358c1fe9b6d15a1b920e9d6e791100f0178ecf92d706ee67000ec5",
+        "nativeTear": 1,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "strict-json",
+        "expected": "strict-json",
+        "historical": false,
+        "observed": "sad",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": false,
+        "responseSha256": "02411c8580becc96ce51076945bc40c2619c7b41b89dd4589e52122dbee45b96",
+        "promptSha256": "0c0db0da6955bccc45daaaf88f7eb7f8a5dddcb85fdd6fdddca7de4dafb7a153",
+        "nativeTear": 1,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": null
+      },
+      {
+        "case": "joy-render-control",
+        "expected": "joy",
+        "historical": false,
+        "observed": "joy",
+        "emoteMarkers": [
+          "joy"
+        ],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "6135f3a16113e9abb9e79d942637d401913153e5526fe322fed7801f91356b5c",
+        "promptSha256": "ecb499855623b20c4747c1edfd36e5db5b169c7d9cd78739b71123844a55fba2",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      },
+      {
+        "case": "neutral-render-control",
+        "expected": "neutral",
+        "historical": false,
+        "observed": "neutral",
+        "emoteMarkers": [],
+        "expressionSource": null,
+        "persistedAndVisible": true,
+        "waveAndMouth": true,
+        "responseSha256": "33c7cac20455a03053285b6829a96bbed2c4f6f013b4e665426a8dc253def639",
+        "promptSha256": "4f87286b1da8d34a205bb46c2ab800cf800c325c9c9d9e2a08a7d24ab66fc137",
+        "nativeTear": 0,
+        "gatewayResponseFormat": null,
+        "gatewayFinishReasons": [
+          "stop"
+        ]
+      }
+    ]
+  },
+  "negativeControlCases": [
+    "neutral-reset",
+    "sad-negated",
+    "sad-quoted",
+    "sad-override"
+  ],
+  "originalRefusal": {
+    "status": "FAIL",
+    "sha256": "c90afd0fe965ae28af09fa43d596b2841031713b60c601185f65dd0371008b1e",
+    "completeVisibleCases": 0,
+    "reason": "150-second browser completion timeout"
+  },
+  "priorObserverRefusal": {
+    "status": "FAIL",
+    "browserResultSha256": "8b568f562fefa2b8be3091f3d9b3ea3adf690224f983a1441c3fd646adb410dd",
+    "gatewayCountersSha256": "548c604d0367a9520c876724d644c32266718a69fe84525fb3f2a8804d54dd3b",
+    "reason": "Three browser SSE final reasons were unobserved despite visible saved text and full audio; completion counts were all below the cap"
+  },
+  "candidateStartupRefusal": {
+    "status": "FAIL",
+    "beforeAnyTraffic": true,
+    "sha256": "5a786006ce3df7d2c1546c8fd7c0154ce30fb0f42570f4852d284fe82c2cecb4",
+    "reason": "macOS Bash 3.2 empty optional argv expansion under nounset"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "aijade.stagehost-interop-disposal-controls.v1",
+  "status": "PASS",
+  "scope": "Exact candidate StageHost class compiled using framework Microsoft.JSInterop with a deterministic fake JavaScript host. Actual browser regression is a separate check.",
+  "dotnetSdkVersion": "10.0.403",
+  "runtimeSourceSha256": "c8c5282b13ac38a3444e73a5ebd43eaefae65f8ccd969753a00cec5170a1dcf2",
+  "probeSourceSha256": "c3a8fefac5e6487fd3bf397f2868da3a21fe550b34bf511a1e3e1a2331385ee1",
+  "compilerOutputSha256": "33c71d86b6891c7d2709ad341ffc46e209ab0c5a78d55d7c5e49ecce8e5c6694",
+  "checks": [
+    {
+      "name": "own active disposal exactly once",
+      "status": "PASS"
+    },
+    {
+      "name": "image-only host holds no stage ownership",
+      "status": "PASS"
+    },
+    {
+      "name": "dispose during import suppresses old mount and reclaims reference",
+      "status": "PASS"
+    },
+    {
+      "name": "dispose after dispatch forwards pending canvas owner",
+      "status": "PASS"
+    },
+    {
+      "name": "disconnect still releases JS reference",
+      "status": "PASS"
+    }
+  ]
+}

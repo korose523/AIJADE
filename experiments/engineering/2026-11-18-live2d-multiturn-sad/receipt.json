@@ -1,0 +1,81 @@
+{
+  "schema": "aijade.dialogue-and-stage-engineering-public.v1",
+  "sourceCommit": "6172434b8edb9a435959060703f48e1b025e3df8",
+  "previousProductCommit": "8b523c6b9f4f89c5bb0c0734058804152c0286e4",
+  "upstreamReferenceCommit": "0eeced6cf5fea30a331e68259bdd6c666ae0c6e3",
+  "publicPayloadSha256": {
+    "README.md": "5975fc9432ad8264d7f27adb04482a04ecd234166a23aafaa1aa412dc16ca5f6",
+    "integrated-source-binding.json": "61f8d0d803d916c4d714369f6fc84d8746a921f2743b1538d029091e98a7a821",
+    "provider-admission.json": "bcdadb3faf8593cb1c4b1160f56c3e05c138effdb1232bb8f2241907e4fb7696",
+    "sad-browser-comparison.json": "53537edcbfb97646d6286a2fe57b4b703a67bc3a68a62af65c7d077e53b4e8d0",
+    "sad-cases.json": "f9291992ab4ccd54ed03a1f755ee6516362cba095903f3b8fb1026cbc57c6fdd",
+    "sad-offline-controls.json": "1541ce949199692f2ac97d215fd608d39139280fe34b29129b03b0282302c318",
+    "stage-interop-controls.json": "48fd99a146b7d47969fdc43767ecf65cd4ac12c63efab4b732086bb748d08405",
+    "stage-lifecycle-controls.json": "356b2847a67c1a1c508552fa26a571f404a8043c040e5a7f8184d9828e69a0b6",
+    "stage-live-comparison.json": "e5f6a268888ec40ffea23fb6d02e55dba0a7309a668d30ddf2d046909d3bede9",
+    "style-matched-observations.json": "70fc8caa2329ef691f7b6b263c54ce3616b58c4849cdbca2f46d050558f38b21",
+    "style-replay-protocol.json": "388d34699c417a299f0f9aef193250ba837912ea5aa0de39be1dfa4028e6fbf1",
+    "style-run-readback.json": "5f807ce79cd15e8c5514d2a0b0c53d39d4360a85b284bd534554055ad3c0074d",
+    "style-three-dispositions.json": "97d891a608ff5ee42ea662be957ea653b126128ff43d25e3e952350833406de4",
+    "upstream-reference.json": "41dadebb0d0676f9357011e173796096949df7e4e78ece1967e39f8d0d608d85",
+    "web-original-refusal.json": "366581462f5acbdfa3dfea2261c91d0c9eaf2d7012b29ada9cc8d6720ba236a0"
+  },
+  "gates": {
+    "style": "RETAIN_SHIPPED_PROMPT",
+    "sad": "ACCEPTED",
+    "stageOwnership": "ACCEPTED"
+  },
+  "metrics": {
+    "style": {
+      "completeMatchedPairs": 32,
+      "before": {
+        "openingRepeat": 5,
+        "fixedPatternTurns": 0,
+        "speakerActionRisk": 4,
+        "noAdviceViolation": 1,
+        "latestDetailLexicalMention": 27
+      },
+      "after": {
+        "openingRepeat": 7,
+        "fixedPatternTurns": 0,
+        "speakerActionRisk": 4,
+        "noAdviceViolation": 1,
+        "latestDetailLexicalMention": 21
+      }
+    },
+    "sad": {
+      "freshCorrected": 2,
+      "negativeControls": 4,
+      "voicedPerArm": 9
+    },
+    "stageOwnership": {
+      "nodeBeforePassed": 1,
+      "nodeCandidatePassed": 4,
+      "interopControlsPassed": 5,
+      "combinedShortSeconds": 30.031699999988078
+    }
+  },
+  "predecessorCi": {
+    "headSha": "8b523c6b9f4f89c5bb0c0734058804152c0286e4",
+    "conclusion": "success",
+    "url": "https://github.com/korose523/AIJADE/actions/runs/44316401055",
+    "successfulSteps": 67
+  },
+  "originalRejectedProbeSha256": "366581462f5acbdfa3dfea2261c91d0c9eaf2d7012b29ada9cc8d6720ba236a0",
+  "releaseTargeted": {
+    "passed": 43,
+    "failed": 0,
+    "testAssemblySha256": "379e2d2a02fbbb80dce759435edf9cd2199b60095ffdc3e27f562d2e180429be",
+    "logSha256": "c7b9d938135907e43ac4ced7644fb91242f08fb221cd04130f6697545cab4d37"
+  },
+  "privateProviderCleanupSha256": "03359421be6ea4190c2dc453b9815f0e43d3f64d9ee95b03ae66edaea460ef4b",
+  "manuscriptVerificationSha256": "fe1202c29bf6db2768fe7fa3391c489fbd78423bedb28fae7e74001b85249d88",
+  "scientificStates": {
+    "macQualification": "NOT_RUN",
+    "formalChapter7Heldout": "NOT_RUN",
+    "departmentQualification": "NOT_RUN",
+    "departmentRegeneration": "NOT_RUN",
+    "chapter7Table7_3": "NOT_RUN"
+  },
+  "formalStudyRuns": 0
+}
