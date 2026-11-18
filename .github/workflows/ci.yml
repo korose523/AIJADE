@@ -46,7 +46,7 @@ jobs:
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_launch_department_regeneration.py -v
       - name: Verify offline P2-R reporting on retained archives and simulated receipts
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_summarize_department_regeneration.py -v
-      - name: Verify P2-R exploratory oracle receipt intake and archived scoring
+      - name: Verify P2-R synthetic oracle transcript generation and archived scoring
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_rescore_department_oracle.py -v
       - name: Recompute P1 detection-stage and P3 scorer-policy archive comparisons
         run: |
@@ -59,6 +59,11 @@ jobs:
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_launch_known_repeats.py -v
       - name: Verify non-admitting Chapter 7 preflight checks
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_preflight_known_repeat_readback.py -v
+      - name: Rehearse Chapter 7 synthetic plan, build and repeat acceptance
+        run: |
+          scratch=$(mktemp -d "$GITHUB_WORKSPACE/.ch7-known-rehearsal.XXXXXX")
+          trap 'rmdir "$scratch" || true' EXIT
+          python3 -B experiments/ch7/rehearse_known_repeat_handoff.py --scratch "$scratch"
       - name: Verify offline Chapter 7 qualification and construction binding
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_known_repeat_acceptance.py -v
       - name: Verify offline Chapter 7 canonical build freeze

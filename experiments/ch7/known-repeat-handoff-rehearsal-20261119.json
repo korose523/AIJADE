@@ -1,0 +1,86 @@
+{
+  "schema": "aijade.ch7.known-repeat-handoff-rehearsal.v1",
+  "status": "OFFLINE_SYNTHETIC_HANDOFF_VERIFIED",
+  "launchMode": "OFFLINE_SYNTHETIC",
+  "rehearsalScriptSha256": "52a246140385d02492283f78638a13a4b48490dcfba83c9391c13319c4805150",
+  "fixture": {
+    "repository": "DISPOSABLE_NO_REMOTE",
+    "implementationCommit": "02cc89d6bf9c78d52f079fd37084f322202ce819",
+    "buildFreezeCommit": "d67a9e0a10d769c3540a9bb8172a1e73795ad7f3",
+    "planSha256": "4a11c18ee1decfa307ad903cf110430ab78c1a0f549fcdcd9d07e040262a575a",
+    "buildFreezeSha256": "e3fadc9e950134d9de17479448a5298712a914381631d30439ff8003dd6d4686",
+    "buildFileCount": 4,
+    "knownInputSha256": {
+      "runtime-manifest.json": "f4857931541c5d482e204ead617428c5ef250861add9fd7dc95304568ef5289e",
+      "scoring-manifest.json": "a3fe4b2bafe74291222fbc9ce1b3b86769b574747b9a49324085b831d1292f92",
+      "selection.json": "f252859a56df3a736bf6001f571c2f1c6dfbe6ea3398549125213ba8127de98d"
+    },
+    "evidenceFileCount": 50,
+    "evidenceInventorySha256": "d589833ebaa826905c28d1280bcd4e182aa4011103c67a3695f90e02e3f9214b",
+    "protectedSourceLineage": {
+      "parentCommit": "4aa3eaaca0664307171be799511c927cc4e1da1b",
+      "inheritedProtectedFiles": 331,
+      "inheritedKnownProgrammeFiles": 4,
+      "inheritedGitTreeSubsetSha256": "7ca18e6b59a96ace449ff9c20494d3731cc19ac21d95286e6928e8132d03d380",
+      "changes": [
+        "fixture decision",
+        "fixture execution plan"
+      ]
+    }
+  },
+  "complete": {
+    "repeats": 2,
+    "conditionsPerRepeat": 20,
+    "pairedConditionsCompared": 20,
+    "differingConditions": 0,
+    "deliveryStatus": "OFFLINE_DELIVERY_EVIDENCE_READY_FOR_REVIEW"
+  },
+  "controls": {
+    "changedReply": "private original differs: replySha256",
+    "changedDependency": "build binary/dependency bytes changed",
+    "changedAlignedDecision": "OFFLINE_DELIVERY_MATCHED_INPUTS_BUT_DIFFERENT_DECISIONS",
+    "differingAlignedConditions": 1,
+    "differingDecisionFields": [
+      "duplicateReuse",
+      "firstReuse"
+    ],
+    "stoppedFirstRepeat": "ValueError: block condition order was changed",
+    "stoppedBeforeSecond": true,
+    "stoppedPair": "two-repeat launch lacks a complete terminal receipt",
+    "formalAcceptance": "only an actual approved Mac launch is eligible"
+  },
+  "archivedKnownInputSha256": {
+    "runtime-manifest.json": "03cd928f12dda15abf08a01d13d564ebe1fba3e21cd5686a5b628dd8ed4b4d67",
+    "scoring-manifest.json": "f4b800a37063b2689cbbfb9fcc75e4747cd37ff36f742e9a571b67b1b6cfab1d",
+    "selection.json": "f252859a56df3a736bf6001f571c2f1c6dfbe6ea3398549125213ba8127de98d"
+  },
+  "onlyRevisionAndDependentRuntimeHashRebound": true,
+  "actualQualification": "NOT_RUN",
+  "actualHeldout40Pairs": "NOT_RUN",
+  "qualificationDetermined": false,
+  "formalAcceptancePublished": false,
+  "newQualificationRuns": 0,
+  "newHeldoutCases": 0,
+  "newHeldoutSeeds": 0,
+  "realModelRequests": 0,
+  "localFixtureReceiptInventorySha256": "382eeb43380c880b172bcd94f7415fde278c220181a80c1464e6362266f54525",
+  "protectedReadOnlyReference": {
+    "readbackReceiptSha256": "8561bff944c887fe8ea895bff92c1add2b8a68454e38d3b5c864fef63e2decec",
+    "sourceCommit": "4aa3eaaca0664307171be799511c927cc4e1da1b",
+    "sourceFreezeSha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+    "sourceFilesVerified": 331,
+    "historicalBuildManifestSha256": "82b9061639aad117c4b434514a58d504804765e04858c1846a24a5e740e5dfbe",
+    "historicalBuildTestOutputFiles": 576,
+    "historicalBuildBlazorFiles": 450,
+    "historicalBuildQualifiesAsApprovedFreeze": false,
+    "supervisorReviewSha256": "7be7b1542053f426ec2dd4c848e4e97d6dfc355dff9ccb1f4aedbaf9b3bc0242",
+    "supervisorQualificationReply": "PENDING",
+    "knownProgramSourceCountInProtectedCheckout": 1,
+    "knownProgramSourceCountInSeparateArchiveDeck": 4,
+    "protectedRevisionKnownInputSha256": {
+      "runtime-manifest.json": "40d2de6334398067b703e722b5d7dbb810fea62bd957000a2a56ecd2c3055057",
+      "scoring-manifest.json": "df2d6b82de29ae32b338ec98d43cfee0d6988ba6ae69e0d9b0e9613ff07760aa",
+      "selection.json": "f252859a56df3a736bf6001f571c2f1c6dfbe6ea3398549125213ba8127de98d"
+    }
+  }
+}

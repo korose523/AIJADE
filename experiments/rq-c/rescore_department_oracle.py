@@ -2,13 +2,10 @@
 """Interpret reviewed P2-R exploratory replay evidence.
 
 The manifest mode emits the exact input, phase, rule and program identities.
-Score consumes a separately reviewed JSON transcript with schema, binding,
-manifestSha256, reviewedEvaluatorReceiptSha256 and groups. Each group binds the
-captureFilesSha256 and supplies a programs list keyed by taskId and codeSha256.
-Every captured program records asRun, entry and entryAndTest results, each with
-outcome and failedCaseIndices. TIMEOUT also carries timedOutCaseIndex. A program
-subject to the historical host-facility disposition records only its identity
-and the corresponding skip status.
+Produce derives a transcript from independently pinned per-case observations
+and a typed evaluator receipt. Score re-derives the transcript from those same
+inputs before interpreting its outcomes. Synthetic evidence requires explicit
+synthetic mode in both stages.
 """
 
 import argparse
@@ -20,6 +17,7 @@ import re
 import sys
 
 from launch_department_regeneration import file_pin
+from department_oracle_evidence import SKIPPED, TRANSCRIPT_SCHEMA, VARIANTS, produce_transcript
 from oracle_audit import BENCH, BENCH_SHA256, DROPPED, NODE_REPLAY, TEST_AUDIT, clustered_mcnemar, diagnostics
 from prepare_department_regeneration import HERE, REPO, encoded, prepare, require, sha
 from regen_compare_v2 import SHA256, load_rows, read_inputs, validate_summary
@@ -29,9 +27,7 @@ from summarize_department_regeneration import (
 
 
 ORACLE_SOURCE_SHA256 = "d790d9ddaa8a7425d0b8bc945e97007dce8c96d94444be47ab0fbda08275a349"
-TRANSCRIPT_SCHEMA = "aijade.p2-r.department-oracle-replay-transcript.v1"
 REPORT_SCHEMA = "aijade.p2-r.department-exploratory-oracle-report.v1"
-VARIANTS = ("asRun", "entry", "entryAndTest")
 OUTCOMES = frozenset({"PASSED", "FAILED_CASES", "NO_CALLABLE", "SETUP_ERROR", "TIMEOUT"})
 HISTORICAL_BCA_ABSOLUTE_TOLERANCE = 1e-12
 HISTORICAL_CLUSTERED_P_RELATIVE_TOLERANCE = 1e-12
@@ -69,7 +65,7 @@ def rule_contract():
         "removedCaseArgs": DROPPED,
         "candidateIdentity": "task id and SHA-256 of exact UTF-8 extracted code",
         "outcomes": sorted(OUTCOMES),
-        "skippedStatus": "SKIPPED_ARCHIVE_HOST_FACILITY",
+        "skippedStatus": SKIPPED,
         "judgedTruth": "last recorded execution, or a successful replay under the applicable exploratory rule",
         "skillSuccess": "at least half of recorded calls succeeded, or replay passed under the applicable rule",
         "taskBootstrap": {"resamples": 10000, "seed": 0x2545F491},
@@ -304,15 +300,6 @@ def checked_outcome(row, indices):
     return state
 
 
-def decode_transcript(raw):
-    def unique(pairs):
-        value = dict(pairs)
-        require(len(pairs) == len(value), "transcript contains a duplicate object key")
-        return value
-
-    return json.loads(raw, object_pairs_hook=unique)
-
-
 def interpret_transcript(transcript, manifest, groups, contract):
     require(transcript["schema"] == TRANSCRIPT_SCHEMA and transcript["manifestSha256"] == sha(encoded(manifest))
             and transcript["binding"] == manifest["binding"] and set(transcript["groups"]) == set(groups),
@@ -334,7 +321,7 @@ def interpret_transcript(transcript, manifest, groups, contract):
             key = task, row["codeSha256"]
             require(key in programs and key not in replay, f"{group_id}: unknown or duplicated program")
             skipped = historical_skip(programs[key][0].identity[4])
-            require(row["status"] == ("SKIPPED_ARCHIVE_HOST_FACILITY" if skipped else "CAPTURED"),
+            require(row["status"] == (SKIPPED if skipped else "CAPTURED"),
                     f"{group_id}: replay skip does not match the historical disposition")
             common = {"taskId", "codeSha256", "status"}
             require(set(row) == (common if skipped else common | set(VARIANTS)),
@@ -370,19 +357,35 @@ def local_file(path, label):
     return absolute
 
 
+def pinned_bytes(path, pin, label):
+    source = local_file(path, label)
+    require(SHA256.fullmatch(pin) and source.is_file() and not source.is_symlink(),
+            f"file identity differs: {source.name}")
+    raw = source.read_bytes()
+    require(sha(raw) == pin, f"file identity differs: {source.name}")
+    return raw
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="action", required=True)
-    for action in ("archive-self-check", "manifest", "score"):
+    for action in ("archive-self-check", "manifest", "produce", "score"):
         command = commands.add_parser(action)
         command.add_argument("--out", type=Path, help="write a new report without overwriting an existing file")
         if action != "archive-self-check":
             command.add_argument("--regeneration-bundle", type=Path, required=True)
             command.add_argument("--phase-receipt-sha256", required=True)
+        if action in ("produce", "score"):
+            command.add_argument("--replay-manifest", type=Path, required=True)
+            command.add_argument("--replay-manifest-sha256", required=True)
+            command.add_argument("--observations", type=Path, required=True)
+            command.add_argument("--observations-sha256", required=True)
+            command.add_argument("--evaluator-receipt", type=Path, required=True)
+            command.add_argument("--evaluator-receipt-sha256", required=True)
+            command.add_argument("--evidence-mode", choices=("external", "synthetic"), default="external")
         if action == "score":
             command.add_argument("--replay-transcript", type=Path, required=True)
             command.add_argument("--replay-transcript-sha256", required=True)
-            command.add_argument("--evaluator-receipt", type=Path, required=True)
     args = parser.parse_args()
     try:
         worklist = prepare()
@@ -403,15 +406,29 @@ def main():
             if args.action == "manifest":
                 result["scope"] = "REPLAY_MANIFEST_ONLY"
             else:
-                transcript_path = local_file(args.replay_transcript, "replay transcript")
-                transcript = decode_transcript(file_pin(transcript_path, args.replay_transcript_sha256).read_bytes())
-                evaluator_path = local_file(args.evaluator_receipt, "evaluator receipt")
-                evaluator = file_pin(evaluator_path, transcript["reviewedEvaluatorReceiptSha256"])
-                require(evaluator.stat().st_size > 0, "reviewed evaluator receipt is empty")
-                regenerated = interpret_transcript(transcript, manifest, groups, contract)
-                result.update(scope="EXPLORATORY_REPLAY_TRANSCRIPT_SCORED", replayTranscriptSha256=args.replay_transcript_sha256,
-                              reviewedEvaluatorReceiptSha256=transcript["reviewedEvaluatorReceiptSha256"],
-                              retainedArchiveGroups=archive_readback(worklist, contract), groups=regenerated)
+                synthetic = args.evidence_mode == "synthetic"
+                expected_scope = "SYNTHETIC_FIXTURE" if synthetic else "OPERATOR_REVIEWED_EXTERNAL_REPLAY"
+                transcript = produce_transcript(
+                    dict(result, scope="REPLAY_MANIFEST_ONLY"),
+                    pinned_bytes(args.replay_manifest, args.replay_manifest_sha256, "replay manifest"),
+                    pinned_bytes(args.observations, args.observations_sha256, "observations"),
+                    pinned_bytes(args.evaluator_receipt, args.evaluator_receipt_sha256, "evaluator receipt"),
+                    expected_scope,
+                )
+                if args.action == "produce":
+                    result = transcript
+                else:
+                    raw = pinned_bytes(args.replay_transcript, args.replay_transcript_sha256, "replay transcript")
+                    require(raw == encoded(transcript), "reviewed transcript differs from the observed case results")
+                    regenerated = interpret_transcript(transcript, manifest, groups, contract)
+                    result.update(scope=("SYNTHETIC_REPLAY_TRANSCRIPT_SCORED" if synthetic
+                                         else "EXPLORATORY_REPLAY_TRANSCRIPT_SCORED"),
+                                  evidenceScope=transcript["evidenceScope"],
+                                  replayTranscriptSha256=args.replay_transcript_sha256,
+                                  observationsFileSha256=transcript["observationsFileSha256"],
+                                  reviewedEvaluatorReceiptSha256=transcript["reviewedEvaluatorReceiptSha256"],
+                                  reviewedEvaluatorIdentity=transcript["reviewedEvaluatorIdentity"],
+                                  retainedArchiveGroups=archive_readback(worklist, contract), groups=regenerated)
         payload = encoded(result)
         if args.out is not None:
             with local_file(args.out, "report output").open("xb") as target:

@@ -9,6 +9,7 @@ import sys
 from tempfile import TemporaryDirectory
 import unittest
 
+import department_oracle_evidence as evidence
 import launch_department_regeneration as launch
 import rescore_department_oracle as oracle
 import test_launch_department_regeneration as fixtures
@@ -19,6 +20,11 @@ from test_prepare_department_regeneration import COMMIT, START
 
 def outcome(status="PASSED", failed=(), **extra):
     return {"outcome": status, "failedCaseIndices": list(failed), **extra}
+
+
+def observed_cases(*cases):
+    return {"status": "CASE_RESULTS", "cases": [{"caseIndex": index, "result": result}
+                                              for index, result in cases]}
 
 
 def transcript_for(manifest):
@@ -152,78 +158,256 @@ class DepartmentOracleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "completed case prefix"):
             self.score()
         with self.assertRaisesRegex(ValueError, "duplicate object key"):
-            oracle.decode_transcript(b'{"x":1,"x":2}')
+            evidence.decode_evidence(b'{"x":1,"x":2}')
+        with self.assertRaisesRegex(ValueError, "non-finite JSON"):
+            evidence.decode_evidence(b'{"x":NaN}')
 
-    def test_manifest_and_score_cli_bind_a_simulated_completed_launcher(self):
+    def test_observed_case_results_distinguish_all_terminal_outcomes(self):
+        derive = evidence.derive_case_outcome
+        cases = [1, 3, 4]
+        self.assertEqual(outcome(), derive(observed_cases((1, "PASS"), (3, "PASS"), (4, "PASS")), cases))
+        self.assertEqual(outcome("FAILED_CASES", [1, 4]),
+                         derive(observed_cases((1, "FAIL"), (3, "PASS"), (4, "FAIL")), cases))
+        self.assertEqual(outcome("TIMEOUT", [1], timedOutCaseIndex=3),
+                         derive(observed_cases((1, "FAIL"), (3, "TIMEOUT")), cases))
+        for status in ("NO_CALLABLE", "SETUP_ERROR"):
+            self.assertEqual(outcome(status), derive({"status": status, "cases": []}, cases))
+            with self.assertRaisesRegex(ValueError, "cannot have case observations"):
+                derive({"status": status, "cases": [{"caseIndex": 1, "result": "FAIL"}]}, cases)
+
+    def test_observed_case_results_reject_partial_ambiguous_or_excluded_evidence(self):
+        for cases, message in (
+            (observed_cases(), "stopped before"),
+            (observed_cases((1, "PASS")), "stopped before"),
+            (observed_cases((1, "TIMEOUT"), (3, "PASS")), "timeout must be the final"),
+            (observed_cases((1, "PASS"), (2, "FAIL")), "exact retained order"),
+            (observed_cases((1, "PASS"), (1, "FAIL")), "exact retained order"),
+            (observed_cases((True, "FAIL")), "exact retained order"),
+            (observed_cases((1, "ERROR")), "unknown case observation result"),
+        ):
+            with self.subTest(cases=cases), self.assertRaisesRegex(ValueError, message):
+                evidence.derive_case_outcome(cases, [1, 3, 4])
+
+    def test_observed_programs_preserve_exclusions_and_independent_variants(self):
+        task = "str-to-camel"
+        digest, skip_digest = "a" * 64, "b" * 64
+        full = self.rule["tasks"][task]["caseIndices"]
+        retained = self.rule["tasks"][task]["entryAndTestCaseIndices"]
+        pinned = [
+            {"taskId": task, "codeSha256": digest, "historicalSkipApplies": False},
+            {"taskId": task, "codeSha256": skip_digest, "historicalSkipApplies": True},
+        ]
+        skipped = {"taskId": task, "codeSha256": skip_digest, "status": evidence.SKIPPED}
+        row = {"taskId": task, "codeSha256": digest, "status": "CAPTURED",
+               "asRun": {"status": "NO_CALLABLE", "cases": []},
+               "entry": observed_cases(*[(index, "FAIL" if index == self.removed else "PASS")
+                                         for index in full]),
+               "entryAndTest": observed_cases(*[(index, "PASS") for index in retained])}
+        actual = evidence.derive_programs([skipped, row], pinned, self.rule)
+        self.assertEqual([{"taskId": task, "codeSha256": digest, "status": "CAPTURED",
+                           "asRun": outcome("NO_CALLABLE"), "entry": outcome("FAILED_CASES", [self.removed]),
+                           "entryAndTest": outcome()}, skipped], actual)
+        independent = dict(row, entry=observed_cases(*[(index, "PASS") for index in full]),
+                           entryAndTest=observed_cases((retained[0], "TIMEOUT")))
+        observed = evidence.derive_programs([independent, skipped], pinned, self.rule)[0]
+        self.assertEqual(outcome(), observed["entry"])
+        self.assertEqual(outcome("TIMEOUT", timedOutCaseIndex=retained[0]), observed["entryAndTest"])
+        with self.assertRaisesRegex(ValueError, "exact retained order"):
+            evidence.derive_programs([dict(row, entryAndTest=observed_cases((self.removed, "FAIL"))), skipped],
+                                     pinned, self.rule)
+        with self.assertRaisesRegex(ValueError, "observed skip differs"):
+            evidence.derive_programs([row, dict(skipped, status="CAPTURED")], pinned, self.rule)
+        with self.assertRaisesRegex(ValueError, "missing or unexpected"):
+            evidence.derive_programs([row, dict(skipped, asRun=observed_cases())], pinned, self.rule)
+        with self.assertRaisesRegex(ValueError, "unknown or duplicate"):
+            evidence.derive_programs([dict(row, codeSha256="c" * 64), skipped], pinned, self.rule)
+        with self.assertRaisesRegex(ValueError, "unknown or duplicate"):
+            evidence.derive_programs([row, row], pinned, self.rule)
+        with self.assertRaisesRegex(ValueError, "population differs"):
+            evidence.derive_programs([row], pinned, self.rule)
+
+    def test_manifest_produce_and_score_cli_bind_a_simulated_completed_launcher(self):
         runtime = REPO / ".runtime"
         runtime.mkdir(exist_ok=True)
-        with TemporaryDirectory(prefix="p2-r-oracle-intake-controls-", dir=runtime) as temp:
-            root = Path(temp).resolve()
-            bundle = root / "regeneration"
-            instrument = fixtures.FixtureRuntime(self.worklist, {})
-            approval = {"sourceCommit": COMMIT, "ollamaUrl": "http://synthetic.invalid:11434",
-                        "ollamaVersion": fixtures.VERSION, "logHistorySince": launch.stamp(START),
-                        "notAfter": launch.stamp(fixtures.END), "host": fixtures.HOST,
-                        "build": {"rqcDll": "inert.dll", "files": {"inert.dll": "3" * 64}}}
-            tools = {name: root / name for name in ("dotnet", "rqcDll", "substrateDll")}
-            qualification = {
-                "sha256": "4" * 64,
-                "finalLogs": fixtures.capture_raw(START, START + timedelta(seconds=2),
-                                                 [("system", {"id": "historical", "at": launch.stamp(START + timedelta(seconds=1)),
-                                                              "record": "synthetic event"})]),
-            }
-            phase = launch.perform("regeneration", bundle, approval, "5" * 64, tools,
-                                   self.worklist, instrument, qualification)
-            self.assertEqual("REGENERATION_EVIDENCE_COMPLETE", phase["status"])
-            raw = (bundle / "phase-result.json").read_bytes()
-            pin = sha(raw)
-            manifest, bound_groups = oracle.accepted_population(bundle, pin, self.worklist, self.rule)
-            self.assertEqual(pin, manifest["binding"]["phaseReceiptSha256"])
-            self.assertEqual(COMMIT, manifest["binding"]["sourceCommit"])
-            self.assertEqual([69, 57, 49], [len(row["programs"]) for row in manifest["groups"].values()])
-            self.assertEqual([1519, 1602, 1500], [len(skills) for skills, _ in bound_groups.values()])
-            self.assertTrue(all(set(row) == {"taskId", "codeSha256", "historicalSkipApplies"}
-                                for group in manifest["groups"].values() for row in group["programs"]))
-            with self.assertRaisesRegex(ValueError, "file identity differs"):
-                oracle.accepted_population(bundle, "8" * 64, self.worklist, self.rule)
-            self.assertEqual(raw, (bundle / "phase-result.json").read_bytes())
+        with TemporaryDirectory(prefix="p2-r-oracle-intake-controls-", dir=runtime) as temporary:
+            self.check_synthetic_cli_flow(Path(temporary).resolve())
 
-            transcript = transcript_for(manifest)
-            evaluator = root / "synthetic-evaluator-receipt.json"
-            evaluator.write_bytes(encoded({"scope": "synthetic operator receipt control"}))
-            transcript["reviewedEvaluatorReceiptSha256"] = sha(evaluator.read_bytes())
-            for group, (_, programs) in bound_groups.items():
-                for (task, digest), states in programs.items():
-                    row = {"taskId": task, "codeSha256": digest, "status": "CAPTURED"}
-                    terminal = "PASSED" if states[0].last_execution_ok else "NO_CALLABLE"
-                    row.update((variant, outcome(terminal)) for variant in oracle.VARIANTS)
-                    transcript["groups"][group]["programs"].append(row)
-            retained = root / "synthetic-replay-transcript.json"
-            retained.write_bytes(encoded(transcript))
-            command = [sys.executable, "-B", str(Path(oracle.__file__)), "score", "--regeneration-bundle", str(bundle),
-                       "--phase-receipt-sha256", pin, "--replay-transcript", str(retained),
-                       "--replay-transcript-sha256", sha(retained.read_bytes()), "--evaluator-receipt", str(evaluator)]
-            process = subprocess.run(command, cwd=REPO, capture_output=True)
+    def check_synthetic_cli_flow(self, root):
+        bundle = root / "regeneration"
+        instrument = fixtures.FixtureRuntime(self.worklist, {})
+        approval = {"sourceCommit": COMMIT, "ollamaUrl": "http://synthetic.invalid:11434",
+                    "ollamaVersion": fixtures.VERSION, "logHistorySince": launch.stamp(START),
+                    "notAfter": launch.stamp(fixtures.END), "host": fixtures.HOST,
+                    "build": {"rqcDll": "inert.dll", "files": {"inert.dll": "3" * 64}}}
+        tools = {name: root / name for name in ("dotnet", "rqcDll", "substrateDll")}
+        qualification = {
+            "sha256": "4" * 64,
+            "finalLogs": fixtures.capture_raw(START, START + timedelta(seconds=2),
+                                             [("system", {"id": "historical", "at": launch.stamp(START + timedelta(seconds=1)),
+                                                          "record": "synthetic event"})]),
+        }
+        phase = launch.perform("regeneration", bundle, approval, "5" * 64, tools, self.worklist, instrument, qualification)
+        self.assertEqual("REGENERATION_EVIDENCE_COMPLETE", phase["status"])
+        raw = (bundle / "phase-result.json").read_bytes()
+        pin = sha(raw)
+        manifest, bound_groups = oracle.accepted_population(bundle, pin, self.worklist, self.rule)
+        self.assertEqual(pin, manifest["binding"]["phaseReceiptSha256"])
+        self.assertEqual(COMMIT, manifest["binding"]["sourceCommit"])
+        self.assertEqual([69, 57, 49], [len(row["programs"]) for row in manifest["groups"].values()])
+        self.assertEqual([1519, 1602, 1500], [len(skills) for skills, _ in bound_groups.values()])
+        self.assertTrue(all(set(row) == {"taskId", "codeSha256", "historicalSkipApplies"}
+                            for group in manifest["groups"].values() for row in group["programs"]))
+        with self.assertRaisesRegex(ValueError, "file identity differs"):
+            oracle.accepted_population(bundle, "8" * 64, self.worklist, self.rule)
+        self.assertEqual(raw, (bundle / "phase-result.json").read_bytes())
+
+        command = [sys.executable, "-B", str(Path(oracle.__file__))]
+        phase_args = ["--regeneration-bundle", str(bundle), "--phase-receipt-sha256", pin]
+
+        def invoke(action, arguments):
+            return subprocess.run([*command, action, *phase_args, *arguments], cwd=REPO, capture_output=True)
+
+        def write_report(action, arguments, artifact):
+            process = invoke(action, [*arguments, "--out", str(artifact)])
             self.assertEqual(0, process.returncode, process.stderr)
-            report = json.loads(process.stdout)
-            self.assertEqual("EXPLORATORY_REPLAY_TRANSCRIPT_SCORED", report["scope"])
-            self.assertEqual(0, report["candidateExecutionsByReport"])
-            self.assertEqual(0, report["formalRunsStartedByReport"])
-            self.assertEqual(sha(encoded(manifest)), report["manifestSha256"])
-            self.assertEqual(sha(evaluator.read_bytes()), report["reviewedEvaluatorReceiptSha256"])
-            self.assertEqual([69, 57, 49],
-                             [report["retainedArchiveGroups"][name]["programs"] for name in manifest["groups"]])
-            self.assertEqual([69, 57, 49],
-                             [report["groups"][name]["programs"] for name in manifest["groups"]])
-            for artifact in (retained, evaluator):
-                with self.subTest(pin=artifact.name):
-                    original = artifact.read_bytes()
-                    artifact.write_bytes(original + b"\n")
-                    rejected = subprocess.run(command, cwd=REPO, capture_output=True)
-                    self.assertEqual(2, rejected.returncode)
-                    self.assertIn(b"file identity differs", rejected.stderr)
-                    self.assertEqual(b"", rejected.stdout)
+            self.assertEqual(process.stdout, artifact.read_bytes())
+            return json.loads(process.stdout)
+
+        manifest_path = root / "synthetic-replay-manifest.json"
+        manifest_doc = write_report("manifest", [], manifest_path)
+        self.assertEqual(manifest, manifest_doc["manifest"])
+        manifest_hash = sha(manifest_path.read_bytes())
+        observed, groups = self.synthetic_observations(manifest_doc, manifest_hash, bound_groups)
+        observations = root / "synthetic-observations.json"
+        observations.write_bytes(encoded(observed))
+        observations_hash = sha(observations.read_bytes())
+        evaluator_body = {
+            "schema": evidence.EVALUATOR_SCHEMA, "evidenceScope": observed["evidenceScope"],
+            "binding": observed["binding"], "manifestSha256": observed["manifestSha256"],
+            "manifestFileSha256": manifest_hash, "observationsFileSha256": observations_hash,
+            "referenceReplayEngineSha256": self.rule["referenceReplayEngineSha256"], "groups": groups,
+            "evaluatorIdentity": {name: sha(f"synthetic evaluator {name}".encode()) for name in (
+                "artifactSha256", "runtimeSha256", "invocationContractSha256", "environmentSha256")},
+        }
+        evaluator = root / "synthetic-evaluator-receipt.json"
+        evaluator.write_bytes(encoded(evaluator_body))
+        input_args = ["--replay-manifest", str(manifest_path), "--replay-manifest-sha256", manifest_hash,
+                      "--observations", str(observations), "--observations-sha256", observations_hash,
+                      "--evaluator-receipt", str(evaluator), "--evaluator-receipt-sha256", sha(evaluator.read_bytes())]
+        mode_args = ["--evidence-mode", "synthetic"]
+        retained = root / "synthetic-replay-transcript.json"
+        transcript = write_report("produce", [*input_args, *mode_args], retained)
+        self.assertEqual(evidence.TRANSCRIPT_SCHEMA, transcript["schema"])
+        self.assertEqual("SYNTHETIC_FIXTURE", transcript["evidenceScope"])
+        transcript_args = ["--replay-transcript", str(retained), "--replay-transcript-sha256", sha(retained.read_bytes())]
+        scored = root / "synthetic-score-report.json"
+        report = write_report("score", [*input_args, *mode_args, *transcript_args], scored)
+        self.assertEqual("SYNTHETIC_REPLAY_TRANSCRIPT_SCORED", report["scope"])
+        self.assertEqual(0, report["candidateExecutionsByReport"])
+        self.assertEqual(0, report["formalRunsStartedByReport"])
+        self.assertEqual(sha(encoded(manifest)), report["manifestSha256"])
+        self.assertEqual(sha(evaluator.read_bytes()), report["reviewedEvaluatorReceiptSha256"])
+        self.assertEqual([69, 57, 49],
+                         [report["retainedArchiveGroups"][name]["programs"] for name in manifest["groups"]])
+        self.assertEqual([69, 57, 49], [report["groups"][name]["programs"] for name in manifest["groups"]])
+        outcomes = {outcome for group in report["groups"].values()
+                    for counts in group["outcomesByVariant"].values() for outcome in counts}
+        self.assertEqual(oracle.OUTCOMES, outcomes)
+        for name, item in transcript["groups"].items():
+            projected = next(row for row in item["programs"]
+                             if row["status"] == "CAPTURED" and row["entry"]["outcome"] == "TIMEOUT")
+            timed_case = self.rule["tasks"][projected["taskId"]]["caseIndices"][1]
+            self.assertEqual(outcome("TIMEOUT", timedOutCaseIndex=timed_case), projected["entry"])
+            self.assertEqual(outcome("NO_CALLABLE"), projected["asRun"])
+            self.assertEqual(outcome(), projected["entryAndTest"])
+            scored_group = report["groups"][name]
+            self.assertEqual(1, scored_group["outcomesByVariant"]["entry"]["TIMEOUT"])
+            tables = scored_group["labels"]
+            before = tables["asRun"]["diagnostics"]["confusion"]
+            self.assertEqual(before, tables["entry"]["diagnostics"]["confusion"])
+            after = tables["entryAndTest"]["diagnostics"]["confusion"]
+            self.assertGreater(before["fp"], after["fp"])
+            self.assertEqual(before["fp"] - after["fp"], after["tp"] - before["tp"])
+
+        group = next(iter(observed["groups"]))
+        changed = deepcopy(observed)
+        changed["groups"][group]["captureFilesSha256"]["trials.jsonl"] = "1" * 64
+        changed_raw = encoded(changed)
+        repinned = encoded(dict(evaluator_body, observationsFileSha256=sha(changed_raw)))
+        with self.assertRaisesRegex(ValueError, "observed capture hashes differ"):
+            evidence.produce_transcript(manifest_doc, manifest_path.read_bytes(), changed_raw, repinned,
+                                        observed["evidenceScope"])
+
+        def reject(label, action, arguments, message):
+            rejected = invoke(action, arguments)
+            self.assertEqual(2, rejected.returncode, rejected.stderr)
+            self.assertIn(message, rejected.stderr)
+            self.assertEqual(b"", rejected.stdout)
+            return {"control": label, "exitCode": rejected.returncode, "stderr": rejected.stderr.decode().strip()}
+
+        failures = [reject("synthetic-in-external-mode", "score", [*input_args, *transcript_args],
+                           b"evidence scope requires a matching explicit synthetic or external mode")]
+        for artifact in (manifest_path, observations, evaluator, retained):
+            with self.subTest(pin=artifact.name):
+                original = artifact.read_bytes()
+                artifact.write_bytes(original + b"\n")
+                try:
+                    failures.append(reject(f"changed-{artifact.stem}", "score", [*input_args, *mode_args, *transcript_args],
+                                           b"file identity differs"))
+                finally:
                     artifact.write_bytes(original)
+        forged = root / "synthetic-repinned-transcript.json"
+        forged.write_bytes(encoded(dict(transcript, observationsFileSha256="1" * 64)))
+        failures.append(reject("repinned-transcript-differs", "score",
+                               [*input_args, *mode_args, "--replay-transcript", str(forged),
+                                "--replay-transcript-sha256", sha(forged.read_bytes())],
+                               b"reviewed transcript differs from the observed case results"))
+        unbound = root / "synthetic-repinned-evaluator.json"
+        unbound.write_bytes(encoded(dict(evaluator_body, observationsFileSha256="1" * 64)))
+        failures.append(reject("repinned-unbound-receipt", "produce",
+                               [*input_args[:-4], *mode_args, "--evaluator-receipt", str(unbound),
+                                "--evaluator-receipt-sha256", sha(unbound.read_bytes())],
+                               b"evaluator receipt does not bind"))
+        (root / "synthetic-refusal-controls.json").write_bytes(encoded(failures))
+        return report
+
+    def synthetic_observations(self, manifest_doc, manifest_hash, bound_groups):
+        manifest = manifest_doc["manifest"]
+        observed = {"schema": evidence.OBSERVATIONS_SCHEMA, "evidenceScope": "SYNTHETIC_FIXTURE",
+                    "binding": manifest["binding"], "manifestSha256": manifest_doc["manifestSha256"],
+                    "manifestFileSha256": manifest_hash, "groups": {}}
+        groups = {}
+        for name, item in manifest["groups"].items():
+            programs = bound_groups[name][1]
+            rows = []
+            for record in item["programs"]:
+                task, digest = record["taskId"], record["codeSha256"]
+                row = {"taskId": task, "codeSha256": digest,
+                       "status": evidence.SKIPPED if record["historicalSkipApplies"] else "CAPTURED"}
+                if not record["historicalSkipApplies"]:
+                    for variant in evidence.VARIANTS:
+                        index_key = "entryAndTestCaseIndices" if variant == "entryAndTest" else "caseIndices"
+                        cases = self.rule["tasks"][task][index_key]
+                        row[variant] = (observed_cases(*[(index, "PASS") for index in cases])
+                                        if programs[task, digest][0].last_execution_ok
+                                        else {"status": "NO_CALLABLE", "cases": []})
+                rows.append(row)
+            # Script a timeout and a third-variant pass for a recorded verifier false pass.
+            changed = next(row for row in rows if row["status"] == "CAPTURED"
+                           and len(self.rule["tasks"][row["taskId"]]["caseIndices"]) >= 2
+                           and any(skill.identity[3] == "pass" and not skill.last_execution_ok
+                                   for skill in programs[row["taskId"], row["codeSha256"]]))
+            task = self.rule["tasks"][changed["taskId"]]
+            first, second = task["caseIndices"][:2]
+            changed["entry"] = observed_cases((first, "PASS"), (second, "TIMEOUT"))
+            changed["entryAndTest"] = observed_cases(*[(index, "PASS") for index in task["entryAndTestCaseIndices"]])
+            case_failure = next(row for row in rows if row is not changed and row["status"] == "CAPTURED")
+            kept = self.rule["tasks"][case_failure["taskId"]]["entryAndTestCaseIndices"]
+            case_failure["entry"] = {"status": "SETUP_ERROR", "cases": []}
+            case_failure["entryAndTest"] = observed_cases(*[(index, "FAIL") for index in kept])
+            observed["groups"][name] = {"captureFilesSha256": item["captureFilesSha256"], "programs": rows}
+            groups[name] = {"captureFilesSha256": item["captureFilesSha256"], "programCount": len(rows)}
+        return observed, groups
 
 
 if __name__ == "__main__":

@@ -47,6 +47,25 @@ copy of four Git objects. The future Q worktree must contain those files at
 their original relative paths. The retained engineering Release build identifies
 the protected revision and cannot supply the separately approved build for Q.
 
+## Synthetic rehearsal before the reply
+
+The rehearsal exercises the plan and build readers and the repeat delivery
+comparison. It checks the complete pair, a change to an aligned decision, an
+early stop and the formal gate's refusal of synthetic evidence.
+
+```sh
+python3 -B experiments/ch7/rehearse_known_repeat_handoff.py --scratch "$project_scratch" \
+  --protected-repo "$protected_checkout" --protected-readback "$readback_receipt"
+```
+
+Use a workspace-local scratch directory with hard-link support. The two
+optional inputs anchor the fixture decision and build to the protected source
+and bind the static readback. The same command without them runs the portable
+fixture used in CI. The [rehearsal receipt](../known-repeat-handoff-rehearsal-20261119.json)
+reports the original protected parent. An optional `--retain-evidence` directory
+keeps the three synthetic receipt trees and an inventory for offline review.
+Formal qualification remains `NOT_RUN`.
+
 ## After the reply
 
 1. Record the reply and prepare the approved implementation Q and build
