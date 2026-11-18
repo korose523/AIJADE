@@ -15,10 +15,11 @@ from finite_construction_binding import (
     decode, exact_int, full_commit, full_sha, qualified_backend, typed_equal,
     verify_binding,
 )
-from finite_runtime import PROJECT_ROOT, require, validate_build, validate_owned_registry, validate_repository_binding
+from finite_runtime import MAC_DATA_SUFFIXES, PROJECT_ROOT, require, safe_relative, validate_build, validate_owned_registry
 from finite_inputs import BANK
 from finite_validate import verify
-from known_repeat_acceptance import ACCEPTANCE, BUILD, EVIDENCE, FREEZE, MEASUREMENT_LAUNCHER, PREFIX, ancestor, git, raw
+from known_repeat_acceptance import (ACCEPTANCE, BUILD, EVIDENCE, FREEZE, MEASUREMENT_LAUNCHER, PREFIX,
+                                    ancestor, git, raw, tracked_files)
 from launch_known_repeats import (
     CONFIG_SCHEMA, LOCAL_PATHS, TOOL_PATHS, ChildStopped, closed, digest, encode,
     file_digest, local_path, read_file, utc, validate_runtime_settings, wait_child, write_receipt,
@@ -40,6 +41,43 @@ ERRORS = (OSError, ValueError, TypeError, KeyError, AttributeError, IndexError, 
           subprocess.SubprocessError, ParseError, KeyboardInterrupt, ChildStopped)
 
 
+def validate_successor_repository_binding(repo, implementation, publication, manifest_path, *, require_head=False):
+    """Bind the successor's separate input publication to unchanged Q executable bytes."""
+    q = full_commit(implementation)
+    d = full_commit(publication)
+    require(q != d and ancestor(repo, q, d), 'data publication must descend from the distinct approved Q')
+    if require_head:
+        require(git(repo, 'rev-parse', 'HEAD').decode().strip() == d and not git(repo, 'status', '--porcelain'),
+                'dirty execution checkout or different data HEAD')
+    path = safe_relative(manifest_path)
+    require(path.startswith(INPUT_PREFIX), 'the publication manifest belongs in the finite held-out directory')
+    manifest_body = raw(repo, d, path)
+    manifest = decode(manifest_body)
+    require(manifest['schema'] == 'aijade.ch7.mac-data-publication.v1' and manifest['implementationCommit'] == q,
+            'data publication belongs to a different implementation')
+    added = manifest['addedPaths']
+    require(type(added) is list and all(type(item) is str for item in added) and path in added,
+            'declared added path closure missing')
+    for item in added:
+        require(safe_relative(item).startswith((INPUT_PREFIX, PREFIX))
+                and Path(item).suffix.lower() in MAC_DATA_SUFFIXES, 'non-data or executable publication path: ' + item)
+    original = {name.casefold() for name in git(repo, 'ls-tree', '-rz', '--name-only', q).decode().split('\0') if name}
+    require(len({item.casefold() for item in added}) == len(added)
+            and not ({item.casefold() for item in added} & original), 'publication data path collision')
+    tree = {prefix + name: item for prefix in (INPUT_PREFIX, PREFIX)
+            for name, item in tracked_files(repo, d, prefix).items()}
+    require(all(tree.get(item) == ('100644', 'blob') for item in added),
+            'published inputs and evidence must be regular non-executable files')
+    changes = git(repo, 'diff', '--name-status', '--no-renames', '-z', q, d).decode().split('\0')
+    require(changes[-1] == '' and len(changes) % 2 == 1 and all(status == 'A' for status in changes[:-1:2])
+            and set(changes[1::2]) == set(added), 'publication must add exactly the declared data and preserve every Q blob')
+    if require_head:
+        require(read_file(repo, path) == manifest_body, 'working manifest differs from the published bytes')
+    return dict(implementationCommit=q, repositoryCommit=d, inputPublicationCommit=d,
+                dataPublicationManifestPath=path, dataPublicationManifestSha256=digest(manifest_body),
+                addedDataPaths=sorted(added))
+
+
 def preflight_inputs(repo, implementation, inputs, data_manifest, model_sha, plan, expected_plan_sha,
                      *, check_backend=None):
     """Verify Git publications, exact 40-pair derivation and the frozen measurement plan."""
@@ -52,8 +90,7 @@ def preflight_inputs(repo, implementation, inputs, data_manifest, model_sha, pla
     manifest_path = local_path(data_manifest, repo).relative_to(repo).as_posix()
     require(all(name.startswith(INPUT_PREFIX) for name in (inputs_path, plan_path, manifest_path)),
             'use the finite held-out publication directory')
-    publication = validate_repository_binding(repo, q, d, manifest_path, require_head=True,
-                                              additional_data_prefixes=(PREFIX,))
+    publication = validate_successor_repository_binding(repo, q, d, manifest_path, require_head=True)
 
     def published(name):
         require(name in publication['addedDataPaths'], 'missing from the data publication: ' + name)

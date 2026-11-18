@@ -78,9 +78,9 @@ def validate_placements(row,finite,key,phase):
 def heldout_audit_context(root, repo, identity, receipt, runtime):
     """Rebind the full finite dataflow audit to its successor launch and watchdog."""
     from finite_construction_binding import decode, known_repeat_required
-    from known_repeat_acceptance import BUILD, PREFIX, raw as public_bytes
-    from finite_runtime import validate_repository_binding
-    from launch_heldout_blocks import BLOCKS, LAUNCH_SCHEMA, PLAN_SCHEMA, PURPOSE, REAL, block_evidence, read_file
+    from known_repeat_acceptance import BUILD, raw as public_bytes
+    from launch_heldout_blocks import (BLOCKS, LAUNCH_SCHEMA, PLAN_SCHEMA, PURPOSE, REAL, block_evidence,
+                                       read_file, validate_successor_repository_binding)
     from launch_known_repeats import validate_runtime_settings
     from prepare_known_repeats import INPUT_NAMES
 
@@ -93,9 +93,8 @@ def heldout_audit_context(root, repo, identity, receipt, runtime):
             'successor block index or output directory changed')
     block_evidence(root, launch, index, {name: read_file(root, name) for name in INPUT_NAMES})
     repository_commit = identity['repositoryCommit']
-    binding = validate_repository_binding(repo, launch['implementationCommit'], repository_commit,
-                                          launch['dataPublicationManifestPath'],
-                                          additional_data_prefixes=(PREFIX,))
+    binding = validate_successor_repository_binding(repo, launch['implementationCommit'], repository_commit,
+                                                    launch['dataPublicationManifestPath'])
     require(all(identity.get(key) == receipt.get(key) == value for key, value in binding.items()),
             'successor input publication changed')
     plan = public_bytes(repo, repository_commit, launch['executionPlanPath'])

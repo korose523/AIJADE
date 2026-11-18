@@ -197,8 +197,7 @@ def changed_paths(repo,base,target):
     return [(fields[i].decode(),safe_relative(fields[i+1].decode())) for i in range(0,len(fields),2)]
 
 
-def validate_repository_binding(repo,implementation,repository=None,data_manifest_path=None,require_head=False,
-                                *,additional_data_prefixes=()):
+def validate_repository_binding(repo,implementation,repository=None,data_manifest_path=None,require_head=False):
     """Q owns every executable blob; I may only add exactly declared input/evidence files."""
     repo=Path(repo).resolve();q=commit_id(repo,implementation);i=commit_id(repo,repository or implementation)
     require(managed_run(['git','merge-base','--is-ancestor',q,i],cwd=repo,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL).returncode==0,'Q is not an ancestor of repository I')
@@ -219,7 +218,7 @@ def validate_repository_binding(repo,implementation,repository=None,data_manifes
     require(type(added) is list and all(type(p) is str for p in added)
             and len(added)==len(set(added)) and path in added,'declared added path closure missing or duplicated')
     for item in added:
-        safe_relative(item);require(item.startswith(MAC_DATA_PREFIXES + additional_data_prefixes),'non-data I path is prohibited')
+        safe_relative(item);require(item.startswith(MAC_DATA_PREFIXES),'non-data I path is prohibited')
         require(Path(item).suffix.lower() in MAC_DATA_SUFFIXES,'executable or unknown I file type is prohibited')
     q_names=git_bytes(repo,'ls-tree','-r','--name-only','-z',q).decode().split('\0')
     require(len({p.casefold() for p in added})==len(added) and not ({p.casefold() for p in added}&{p.casefold() for p in q_names if p}),'I path case collision')

@@ -112,14 +112,15 @@ def _main(args):
     assert psutil.__version__ == '7.2.2'
     assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',args.db_container)
     freeze_path=getattr(args,'build_freeze_path',BUILD_FREEZE_PATH)
-    extra_prefixes = ()
+    publication_path = getattr(args, 'data_publication_manifest', None)
     if heldout_watchdog is not None:
-        from known_repeat_acceptance import BUILD, PREFIX
+        from known_repeat_acceptance import BUILD
+        from launch_heldout_blocks import validate_successor_repository_binding
         assert freeze_path == BUILD, 'successor measurement requires its qualification build freeze'
-        extra_prefixes = (PREFIX,)
-    binding = (validate_repository_binding(repo, commit, repository_commit,
-               getattr(args, 'data_publication_manifest', None), require_head=True,
-               additional_data_prefixes=extra_prefixes) if mac or heldout_watchdog is not None else {})
+        binding = validate_successor_repository_binding(repo, commit, repository_commit, publication_path,
+                                                        require_head=True)
+    else:
+        binding = validate_repository_binding(repo, commit, repository_commit, publication_path, require_head=True) if mac else {}
     build = validate_build(args.assembly,args.build_manifest,commit,repo,args.build_freeze_commit,freeze_path,strict_publication=mac)
     policy=None;process_identity={}
     if mac:

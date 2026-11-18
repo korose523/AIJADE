@@ -77,8 +77,9 @@ Each child rechecks the tracked bytes, approved build, backend and prior
 verified evidence. The parent advances only after closure of the scheduled
 process and the original terminal, a full block audit, and matching receipts.
 Stops preserve the completed prefix and the attempted block's available raw
-evidence. The independent sequence scorer uses the four complete block
-directories. The launcher does not synthesize missing conditions.
+evidence. The independent scorer verifies each complete block. A study-level
+aggregate requires all 80 scheduled condition records. The historical sequence
+audit expects its archived receipt format.
 
 ## Reproduce the offline controls
 
