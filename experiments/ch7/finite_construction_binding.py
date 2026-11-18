@@ -21,6 +21,10 @@ BUILD = PREFIX+'frozen-build.json'
 ACCEPTANCE = PREFIX+'qualification-acceptance.json'
 FREEZE = PREFIX+'construction-freeze.json'
 SIDECAR = 'construction-binding.json'
+KNOWN_REPEAT_SOURCE = 'experiments/ch7/known_repeat_acceptance.py'
+KNOWN_REPEAT_DECISION = 'experiments/ch7/mac-known-repeats-qualification/decision.json'
+KNOWN_REPEAT_BINDING_SCHEMA = 'aijade.ch7.known-repeat-construction-binding.v1'
+KNOWN_REPEAT_FREEZE_SCHEMA = 'aijade.ch7.known-repeat-construction-freeze.v1'
 BACKEND_FIELDS = ('modelSha256','realGodotSha256','godotWrapperSha256','sandboxProfileSha256',
     'rendererSources','preparedRenderer','binaries','buildManifestSha256','benchSha256',
     'earlierSourceFreezeSha256','databaseContainer','explicitDockerPath')
@@ -122,6 +126,12 @@ def control_attempt_binding(controls,sequence_sha,block_sha):
 
 def public_bytes(repo,commit,path):
     return git_bytes(repo,'show',full_commit(commit)+':'+safe_relative(path))
+
+
+def known_repeat_required(repo,q):
+    """Recognize the successor in Q even if its decision file is missing."""
+    return bool(git_bytes(repo,'--no-replace-objects','ls-tree','--name-only',full_commit(q),
+                          '--',KNOWN_REPEAT_SOURCE,KNOWN_REPEAT_DECISION))
 
 
 def new_decision_required(repo,q):
@@ -259,6 +269,9 @@ def accepted_qualification(repo,q,commit,path,expected_sha):
 
 
 def verify_binding(repo,q,binding,model_sha=None):
+    if known_repeat_required(repo,q) or (type(binding) is dict and binding.get('schema')==KNOWN_REPEAT_BINDING_SCHEMA):
+        from known_repeat_acceptance import verify_binding as verify_known_repeats
+        return verify_known_repeats(repo,q,binding,model_sha)
     require(new_decision_required(repo,q),'prefix construction requires its qualified decision')
     require(type(binding) is dict and set(binding)=={'schema','executionDecision','implementationCommit',
         'acceptancePublicationCommit','acceptanceRepositoryPath','acceptanceSha256',
@@ -305,7 +318,8 @@ def load_construction_freeze(repo,q,inputs,model_sha=None):
     if path.exists() or path.is_symlink():
         require(not path.is_symlink() and path.is_file(),'construction binding must be a regular file')
         return verify_binding(repo,q,decode(path.read_bytes()),model_sha)
-    require(not new_decision_required(repo,q),'new decision is missing its published construction binding')
+    require(not known_repeat_required(repo,q) and not new_decision_required(repo,q),
+            'new decision is missing its published construction binding')
     return decode((Path(repo)/'experiments/ch7/finite-heldout/construction-freeze.json').read_bytes())
 
 
@@ -479,7 +493,7 @@ def current_backend_before_measurement(repo, args, build, model_sha):
 def load_measurement_construction_freeze(repo,q,inputs,model_sha,args,build):
     """Formal measurement needs current files, not only historical CF metadata."""
     freeze=load_construction_freeze(repo,q,inputs,model_sha)
-    if freeze.get('schema')=='aijade.ch7.prefix-construction-freeze.v1':
+    if freeze.get('schema') in ('aijade.ch7.prefix-construction-freeze.v1',KNOWN_REPEAT_FREEZE_SCHEMA):
         require(args is not None and type(build) is dict and model_sha is not None,
                 'actual complete backend preflight is mandatory before measurement')
         actual=current_backend_before_measurement(repo,args,build,model_sha)

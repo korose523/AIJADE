@@ -98,6 +98,8 @@ def _main(args):
     repository_commit = managed_check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
     commit = getattr(args,'implementation_commit',None) or repository_commit
     mac=args.execution_plan.name in MAC_PLANS
+    known_watchdog = getattr(args, '_known_repeat_watchdog', None)
+    assert known_watchdog is None or (not mac and not v3), 'known-repeat block cannot use a legacy launcher'
     assert mac or commit==repository_commit
     if mac:
         assert args.execution_plan.resolve()==repo/'experiments/plans'/args.execution_plan.name
@@ -121,9 +123,16 @@ def _main(args):
                   executionPlanSha256=sha(args.execution_plan),**process_identity) if mac else {}
     if mac:metadata['controllerProcess']=dict(pid=os.getpid(),createTime=psutil.Process().create_time())
     if v3:metadata.update(lifecycleJournalPath=str(lifecycle.path),lifecycleScopeId=lifecycle.scope_id)
+    if known_watchdog is not None:
+        metadata.update(knownRepeatLaunchSha256=args._known_repeat_launch_sha,
+                        knownRepeatIndex=args._known_repeat_index, operationalWatchdog=known_watchdog,
+                        buildFreezePath=freeze_path)
     runtime = json.loads(args.manifest.read_text())
     contract = json.loads(args.scoring.read_text())
     assert runtime['purpose'] in ['qualification_only','confirmed_finite_heldout']
+    if known_watchdog is not None:
+        assert runtime['purpose']=='qualification_only' and runtime['constructionFreezeCommit']==commit
+        assert len(runtime['cases'])==10 and all(len(case['input']['conditions'])==2 for case in runtime['cases'])
     assert runtime['protocolPlanSha256'] == sha(repo/'experiments/plans/2026-11-12-ch7-confirmed-finite-heldout.md')
     assert runtime['selectionSha256'] == sha(args.selection)
     assert contract['runtimeManifestSha256'] == sha(args.manifest)
@@ -229,6 +238,8 @@ def _main(args):
     reason = None
     status = 'RUNNING'
     monitor=None;owned_registry=None
+    if known_watchdog is not None:
+        owned_registry=OwnedRegistry([(os.getpid(),psutil.Process().create_time())])
     if mac:
         peaks['minAvailableBytes']=2**100
         own=[(metadata['controllerProcess']['pid'],metadata['controllerProcess']['createTime'])]
@@ -256,7 +267,10 @@ def _main(args):
                                              owned_registry, mac=mac, v3=v3)
         roots.append(proc)
         phases[name] = dict(startedAt=utc(), pid=proc.pid, exitCode=None)
-        if mac:phases[name]['createTime']=created
+        if known_watchdog is not None:
+            created=psutil.Process(proc.pid).create_time()
+            owned_registry.register(proc.pid,created)
+        if mac or known_watchdog is not None:phases[name]['createTime']=created
         write(output/'receipt.json',dict(status='RUNNING',codeCommit=commit,phases=phases,modelRequests=0))
         return proc
 
@@ -270,11 +284,15 @@ def _main(args):
             return
         self_process = psutil.Process()
         family = {(self_process.pid, self_process.create_time()): self_process}
-        for root in roots:
-            if root.poll() is not None:
-                continue
+        if known_watchdog is None:
+            sample_roots = [(root.pid,None) for root in roots if root.poll() is None]
+        else:
+            sample_roots = owned_registry.roots()
+        for pid,created in sample_roots:
             try:
-                parent = psutil.Process(root.pid)
+                parent = psutil.Process(pid)
+                if created is not None and parent.create_time()!=created:
+                    raise RuntimeError('known owned process identity changed during sampling')
                 for child in [parent] + parent.children(recursive=True):
                     family[(child.pid, child.create_time())] = child
             except psutil.Error as error:
@@ -292,20 +310,35 @@ def _main(args):
         peaks['rssBytes'] = max(peaks['rssBytes'], rss)
         peaks['swapIncreaseBytes'] = max(peaks['swapIncreaseBytes'], swap)
         peaks['minAvailableBytes'] = min(peaks['minAvailableBytes'], available)
-        telemetry.write(json.dumps(dict(utc=utc(), elapsedSeconds=now-started, rssBytes=rss,
-                                       availableBytes=available, swapIncreaseBytes=swap)) + '\n')
+        sample=dict(utc=utc(), elapsedSeconds=now-started, rssBytes=rss,
+                    availableBytes=available, swapIncreaseBytes=swap)
+        if known_watchdog is not None:
+            observation={'ownedProcesses':[dict(pid=pid,createTime=created) for pid,created in sorted(family)]}
+            owned_registry.remember(observation)
+            sample['processObservation']=observation
+        telemetry.write(json.dumps(sample) + '\n')
         telemetry.flush()
-        for name, crossed in [('rss', rss > 2*GIB), ('available', available < 3*GIB), ('swap', swap > GIB)]:
+        if known_watchdog is None:
+            limits = [('rss', rss > 2*GIB), ('available', available < 3*GIB), ('swap', swap > GIB)]
+            sustained_seconds = 30
+        else:
+            max_rss, min_available, max_swap = (known_watchdog[key] for key in
+                                                ('maxOwnedRssBytes', 'minAvailableBytes', 'maxSwapIncreaseBytes'))
+            limits = [('rss', max_rss is not None and rss > max_rss),
+                      ('available', min_available is not None and available < min_available),
+                      ('swap', max_swap is not None and swap > max_swap)]
+            sustained_seconds = known_watchdog['sustainedResourceSeconds']
+        for name, crossed in limits:
             if not crossed:
                 timers.pop(name, None)
             else:
                 timers.setdefault(name, now)
-                if now - timers[name] >= 30:
+                if now - timers[name] >= sustained_seconds:
                     raise RuntimeError(name + '_sustained_resource_stop')
         write(timer_file,timers)
-        if now - sequence_epoch > 4800:
+        if known_watchdog is None and now - sequence_epoch > 4800:
             raise RuntimeError('overall_wall_limit_stop')
-        if now - started > 1200:
+        if now - started > block_wall_seconds:
             raise RuntimeError('wall_limit_stop')
         time.sleep(1)
 
@@ -315,6 +348,9 @@ def _main(args):
         phases[name].update(exitCode=proc.returncode, endedAt=utc())
         if proc.returncode != 0:
             raise RuntimeError(name + '_nonzero_exit')
+
+    block_wall_seconds = 1200 if known_watchdog is None else known_watchdog['blockWallSeconds']
+    renderer_timeout = '400' if known_watchdog is None else str(known_watchdog['rendererTimeoutSeconds'])
 
     def interrupted(signum, frame):
         raise RuntimeError('owned_controller_signal_' + str(signum))
@@ -340,7 +376,7 @@ def _main(args):
             '--godot',str(args.godot),'--dotnet',str(args.dotnet),
             '--headless', '--out', str(output / 'client'), '--pmx', str(args.model), '--scale', '0.1',
             '--clip', str(output / 'preset/companion-rest.vmd'), '--pose-mode', 'pmx', '--preserve-signed-linear-weights',
-            '--behavior', str(output / 'preset/companion-plan.json'), '--behavior-live', str(port), '--timeout', '400'], source_copy)
+            '--behavior', str(output / 'preset/companion-plan.json'), '--behavior-live', str(port), '--timeout', renderer_timeout], source_copy)
         state = output / 'client/aijade-render-state.jsonl'
         context = None
         while context is None:
@@ -404,9 +440,17 @@ def _main(args):
                 metadata.update(lifecycleJournalBytes=len(journal),lifecycleJournalSha256=hashlib.sha256(journal).hexdigest())
             if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
                 status='STOPPED';reason=(reason+'; ' if reason else '')+'known owned descendant remains or identity unknown'
+        if known_watchdog is not None:
+            try:registry_final=owned_registry.final()
+            except (ValueError,psutil.Error) as error:
+                registry_final=dict(status='UNKNOWN_OWNED_IDENTITY_ABSENCE',error=str(error))
+            write(output/'owned-process-registry.json',registry_final)
+            metadata['ownedProcessRegistrySha256']=sha(output/'owned-process-registry.json')
+            if registry_final['status']!='ALL_NON_CONTROLLER_OWNED_IDENTITIES_ABSENT':
+                cleanup_errors.append('known owned descendant remains or identity unknown')
         if cleanup_errors:
             status='STOPPED';reason=(reason+'; ' if reason else '')+'; '.join(cleanup_errors)
-        if time.monotonic()-started>1200:
+        if time.monotonic()-started>block_wall_seconds:
             status='STOPPED';reason=(reason+'; ' if reason else '')+'block wall limit including cleanup'
         write(output/'database-cleanup.json', cleanup)
         state = dispositions(output,planned,flow_started='flow' in phases)

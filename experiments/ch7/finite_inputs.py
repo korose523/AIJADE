@@ -143,11 +143,15 @@ def construct(repo, freeze, model_sha, output,acceptance_path=None,acceptance_co
     require(not output.exists(), 'case construction is single use')
     require(subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True)=='', 'dirty construction checkout')
     require(subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()==freeze, 'construction freeze is not current source')
-    from finite_construction_binding import new_decision_required, verify_binding, decode, SIDECAR
-    if new_decision_required(repo,freeze):
+    from finite_construction_binding import known_repeat_required, new_decision_required, verify_binding, decode, SIDECAR
+    known_repeat = known_repeat_required(repo,freeze)
+    if known_repeat or new_decision_required(repo,freeze):
         require(all(value is None for value in (acceptance_path,acceptance_commit,acceptance_repository_path)),
-                'prefix-v4 uses one complete A/CF binding, not partial legacy acceptance arguments')
-        require(construction_binding_path is not None,'prefix-v4 needs public A and construction-freeze bindings')
+                'this decision requires one complete acceptance/freeze binding' if known_repeat
+                else 'prefix-v4 uses one complete A/CF binding, not partial legacy acceptance arguments')
+        require(construction_binding_path is not None,
+                'this decision requires published acceptance and construction freeze' if known_repeat
+                else 'prefix-v4 needs public A and construction-freeze bindings')
         original=Path(construction_binding_path);path=original.resolve()
         require(path.is_file() and not original.is_symlink() and path.is_relative_to(Path('/Volumes/Untitled/AIJADE')),
                 'construction binding must be a regular project-local file')

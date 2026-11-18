@@ -38,6 +38,12 @@ jobs:
           set -o pipefail
           mkdir -p .runtime/ch7-preparation
           python3 -B experiments/ch7/test_prepare_known_repeats.py .runtime/ch7-preparation | cmp - experiments/ch7/mac-known-repeats-preparation/offline-controls.json
+      - name: Verify offline P2-R launch and continuous log evidence
+        run: python3 -B -m unittest discover -s experiments/rq-c -p test_launch_department_regeneration.py -v
+      - name: Verify offline Chapter 7 two-repeat launcher
+        run: python3 -B -m unittest discover -s experiments/ch7 -p test_launch_known_repeats.py -v
+      - name: Verify offline Chapter 7 qualification and construction binding
+        run: python3 -B -m unittest discover -s experiments/ch7 -p test_known_repeat_acceptance.py -v
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
