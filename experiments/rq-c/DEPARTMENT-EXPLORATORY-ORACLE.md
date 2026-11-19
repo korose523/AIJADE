@@ -33,7 +33,30 @@ Use `CaseEventWriter` and `case_binding` in `department_oracle_capture.py` at th
 - Record `VARIANT_FINISH` with `CASE_RESULTS`, `NO_CALLABLE` or `SETUP_ERROR`. With a timeout, retain the preceding observations and close after the observed timeout case. An evaluator or recorder stop yields an incomplete capture. The importer requires the complete ordered case list or a prefix ending in an explicit timeout.
 - At session closure capture the ending identity with `CAPTURE_FINISH`. Both capture boundaries carry the manifest file digest and the corresponding evaluator, runtime, arguments, version and environment digests. The validator checks one session and a contiguous event sequence from opening through closure.
 
-The original archival Node audit emitted aggregate failures and did not retain the original timeout index or exact Node runtime version. Its source and rule identity are kept for comparison. This intake requires a separately approved evaluator with a per-case emitter integrated at its observation points. It verifies typed outcomes, timing records and evidence identity. An independent operator review is needed to establish the authenticity of the running process and its observations. These Node capture records describe the exploratory replay. The archived AIJADE substrate records describe the original Jint execution.
+The original archival Node audit emitted aggregate failures and did not retain the original timeout index or exact Node runtime version. Its source and rule identity are kept for comparison. The adapter attaches the writer to the original evaluator's entry, case comparison, failure, timeout and skip observations. The archived AIJADE substrate records describe the original Jint execution. The separately approved Node replay captures exploratory evidence with the operator's independent review of the running process and its observations.
+
+## Prepare the instrumented Node entry point
+
+The adapter generates an evaluator artifact from the exact pinned historical Node source. The evaluator continues to consume the original `tasks`, `pairs` and `dropped` fields and to write the same aggregate report to stdout. It sends case evidence to stderr. The adapter's `artifact` and `bridge` commands produce and verify files. An approved runner supplies stdin and records the process outcome.
+
+```bash
+python3 -B experiments/rq-c/department_oracle_adapter.py artifact \
+  --out "$P2_CASE_CAPTURE_DIR/evaluator.bin"
+```
+
+Prepare input from the accepted manifest by flattening its groups in sorted group order and preserving each group's manifest program order. Retain the existing candidate, task and rule payload, and add an `observationContext` object with `sessionId`, `evidenceScope` and `manifestFileSha256` identical to the invocation contract. Serialize the input with ASCII escapes, as the historical runner did. Retain the exact private input bytes and place their SHA-256 in `invocation.json` as `evaluatorInputSha256`. The evaluator hashes the bytes it receives on stdin before text conversion, and reports that digest together with its session, scope and manifest at both stream boundaries. Each variant start reports the actual case-list digest, retained case indices and timeout. These are checked even when a variant returns before the first case or stops at a timeout.
+
+Preserve the complete stderr stream as `evaluator-events.jsonl`, plus the actual process exit status and full legacy stdout for review. Send stdout and stderr to separate files or drain both streams concurrently. The closure event establishes the end of the recorded evaluator stream. The operator checks successful exit, complete stdout and the capture context before issuing the named review. An incomplete stream is refused and should be retained as run evidence.
+
+```bash
+python3 -B experiments/rq-c/department_oracle_adapter.py bridge \
+  --replay-manifest "$P2_ORACLE_MANIFEST" \
+  --replay-manifest-sha256 "$P2_REVIEWED_ORACLE_MANIFEST_FILE_SHA" \
+  --capture-directory "$P2_CASE_CAPTURE_DIR" \
+  --evaluator-events-sha256 "$P2_EVALUATOR_EVENTS_SHA"
+```
+
+The bridge writes `case-events.jsonl` after checking the input and complete evaluator stream. The independently reviewed runtime and evaluator files remain part of the capture. The capture, transcript and score commands re-derive the normalized events from `evaluator-events.jsonl` and expect an exact byte match. The instrumented evaluator requires the raw stream to be present.
 
 ## Record the runtime artifacts and review their identities
 
@@ -47,7 +70,7 @@ Place these files beneath an AIJADE-local capture directory.
 | `invocation.json` | `aijade.p2-r.department-oracle-invocation.v1` with `sessionId`, `evidenceScope`, `manifestFileSha256`, `referenceReplayEngineSha256`, `benchSha256` and the exact ordered `arguments` after the evaluator artifact. Record the actual use of the pinned runtime and evaluator in the operator review. |
 | `case-events.jsonl` | The complete session stream emitted as `aijade.p2-r.department-oracle-case-event.v1`. |
 
-Capture only the listed environment fields. Keep private arguments outside any published evidence. The operator confirms the observed evaluator and runtime artifacts, version, arguments and environment against the approved run identity, then issues `aijade.p2-r.department-oracle-capture-review.v1` independently of the evidence import. The review contains `evidenceScope`, the manifest's `binding`, `manifestFileSha256` and a `fileSha256` mapping covering all eight listed files. Its `attestation` contains `operatorId`, a UTC `reviewedAtUtc` at or after the session finish, and `decision` set to `ACCEPTED_CAPTURER_AND_EVIDENCE`. Use `OPERATOR_REVIEWED_EXTERNAL_REPLAY` for the scope after an approved run and supply the independently obtained SHA-256 of the operator review. The digest pins the named attestation as received. Authenticity is established by the independent review and its chain of custody.
+Capture only the listed environment fields. Keep private arguments outside any published evidence. The operator confirms the observed evaluator and runtime artifacts, version, arguments and environment against the approved run identity, then issues `aijade.p2-r.department-oracle-capture-review.v1` independently of the evidence import. The review contains `evidenceScope`, the manifest's `binding`, `manifestFileSha256` and a `fileSha256` mapping covering the eight listed files and the raw `evaluator-events.jsonl` for the instrumented evaluator. Its `attestation` contains `operatorId`, a UTC `reviewedAtUtc` at or after the session finish, and `decision` set to `ACCEPTED_CAPTURER_AND_EVIDENCE`. Use `OPERATOR_REVIEWED_EXTERNAL_REPLAY` for the scope after an approved run and supply the independently obtained SHA-256 of the operator review. The digest pins the named attestation as received. Authenticity is established by the independent review and its chain of custody.
 
 ## Verify, produce and score the capture
 

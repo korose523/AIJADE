@@ -22,6 +22,7 @@ ARTIFACTS = ("evaluator.bin", "node.bin")
 IDENTITY_FILES = ("invocation.json", "version-before.txt", "version-after.txt",
                   "environment-before.json", "environment-after.json")
 EVENTS_FILE = "case-events.jsonl"
+EVALUATOR_EVENTS_FILE = "evaluator-events.jsonl"
 CAPTURE_FILES = frozenset((*ARTIFACTS, *IDENTITY_FILES, EVENTS_FILE))
 
 
@@ -69,7 +70,7 @@ def reviewed_time(value):
     return datetime.fromisoformat(seconds + (separator + fraction.ljust(6, "0") if separator else "") + "+00:00")
 
 
-def check_identity(documents, manifest_sha, contract, scope):
+def check_identity(documents, manifest_sha, contract, scope, *, adapted=False):
     before = documents["version-before.txt"]
     require(before == documents["version-after.txt"], "runtime version changed during the capture")
     require(re.fullmatch(rb"v\d+\.\d+\.\d+(?:[-+][A-Za-z0-9][A-Za-z0-9.+-]{0,80})?\r?\n", before),
@@ -87,8 +88,12 @@ def check_identity(documents, manifest_sha, contract, scope):
                     for key in ("osRelease", "locale", "timeZone")),
             "runtime environment disagrees with the Node version or environment contract")
     invocation = decode_evidence(documents["invocation.json"])
-    require_fields(invocation, {"schema", "sessionId", "evidenceScope", "arguments", "manifestFileSha256",
-                                "referenceReplayEngineSha256", "benchSha256"}, "evaluator invocation")
+    fields = {"schema", "sessionId", "evidenceScope", "arguments", "manifestFileSha256",
+              "referenceReplayEngineSha256", "benchSha256"}
+    require_fields(invocation, fields | ({"evaluatorInputSha256"} if adapted else set()), "evaluator invocation")
+    if adapted:
+        require(isinstance(invocation["evaluatorInputSha256"], str) and SHA256.fullmatch(invocation["evaluatorInputSha256"]),
+                "evaluator input digest is invalid")
     require(invocation["evidenceScope"] == scope, "evaluator invocation scope differs")
     require(invocation["schema"] == INVOCATION_SCHEMA and invocation["manifestFileSha256"] == manifest_sha
             and invocation["referenceReplayEngineSha256"] == contract["referenceReplayEngineSha256"]
@@ -98,7 +103,7 @@ def check_identity(documents, manifest_sha, contract, scope):
             and all(isinstance(arg, str) and 0 < len(arg) <= 512 and arg.isprintable()
                     for arg in invocation["arguments"]),
             "evaluator invocation disagrees with the selected manifest, bench or reference implementation")
-    return environment, invocation["sessionId"]
+    return environment, invocation
 
 
 def verify_review(review, scope, manifest_sha, manifest_binding, actual_files):
@@ -107,7 +112,7 @@ def verify_review(review, scope, manifest_sha, manifest_binding, actual_files):
     require(review["schema"] == REVIEW_SCHEMA and review["evidenceScope"] == scope
             and review["binding"] == manifest_binding and review["manifestFileSha256"] == manifest_sha,
             "operator review scope, phase or manifest differs")
-    require_fields(review["fileSha256"], CAPTURE_FILES, "reviewed capture files")
+    require_fields(review["fileSha256"], set(actual_files), "reviewed capture files")
     require(review["fileSha256"] == actual_files, "capture files differ from the independent operator review")
     attestation = review["attestation"]
     require_fields(attestation, {"operatorId", "reviewedAtUtc", "decision"}, "operator attestation")
@@ -204,15 +209,10 @@ def normalize_events(raw, manifest, manifest_sha, files, contract, session_id, s
     return groups, start, finish
 
 
-def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope, phase_closed_at=None):
-    require(isinstance(scope, str) and scope in OBSERVATION_SCOPES, "unknown replay capture scope")
+def read_capture_files(directory, names):
     require(directory.is_dir(), "capture directory is missing")
-    require(manifest_raw == encoded(manifest_document), "reviewed manifest bytes differ from the selected phase")
-    manifest = manifest_document["manifest"]
-    contract = manifest_document["ruleContract"]
-    manifest_sha = sha(manifest_raw)
     hashes, documents = {}, {}
-    for name in sorted(CAPTURE_FILES):
+    for name in sorted(names):
         path = directory / name
         require(path.is_file() and path.resolve() == path, f"unredirected capture file is missing: {name}")
         with path.open("rb") as source:
@@ -225,8 +225,31 @@ def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope
             else:
                 documents[name] = source.read()
                 hashes[name] = sha(documents[name])
+    return hashes, documents
+
+
+def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope, phase_closed_at=None):
+    from department_oracle_adapter import REFERENCE_ENGINE_SHA256, bridge_events, instrumented_engine
+
+    require(isinstance(scope, str) and scope in OBSERVATION_SCOPES, "unknown replay capture scope")
+    require(manifest_raw == encoded(manifest_document), "reviewed manifest bytes differ from the selected phase")
+    manifest = manifest_document["manifest"]
+    contract = manifest_document["ruleContract"]
+    manifest_sha = sha(manifest_raw)
+    sidecar = directory / EVALUATOR_EVENTS_FILE
+    has_sidecar = sidecar.exists() or sidecar.is_symlink()
+    files = CAPTURE_FILES | {EVALUATOR_EVENTS_FILE} if has_sidecar else CAPTURE_FILES
+    hashes, documents = read_capture_files(directory, files)
+    is_instrumented = hashes["evaluator.bin"] == sha(instrumented_engine())
+    require(has_sidecar is is_instrumented, "instrumented evaluator and raw event stream must appear together")
     reviewed_at = verify_review(decode_evidence(operator_raw), scope, manifest_sha, manifest["binding"], hashes)
-    environment, session_id = check_identity(documents, manifest_sha, contract, scope)
+    environment, invocation = check_identity(documents, manifest_sha, contract, scope, adapted=has_sidecar)
+    session_id = invocation["sessionId"]
+    if has_sidecar:
+        require(contract["referenceReplayEngineSha256"] == REFERENCE_ENGINE_SHA256,
+                "manifest references a different evaluator")
+        normalized = bridge_events(documents[EVALUATOR_EVENTS_FILE], manifest, contract, hashes, invocation)
+        require(normalized == documents[EVENTS_FILE], "normalized capture differs from the evaluator event stream")
     groups, started_at, finished_at = normalize_events(documents[EVENTS_FILE], manifest, manifest_sha, hashes,
                                                        contract, session_id, scope)
     require(scope != "OPERATOR_REVIEWED_EXTERNAL_REPLAY" or phase_closed_at is not None,
@@ -244,11 +267,15 @@ def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope
                           for group, entry in groups.items()},
                "evaluatorIdentity": {key: value for key, value in capture_identity(hashes, "before").items()
                                      if key != "versionSha256"}}
+    provenance = {"reviewedOperatorAttestationSha256": sha(operator_raw),
+                  "caseEventFileSha256": hashes[EVENTS_FILE], "fileSha256": hashes,
+                  "runtimeVersion": environment["runtimeVersion"], "sessionId": session_id,
+                  "acceptedRegenerationClosedAtUtc": phase_closed_at,
+                  "captureStartedAtUtc": started_at.isoformat(), "captureFinishedAtUtc": finished_at.isoformat()}
+    if has_sidecar:
+        provenance["evaluatorEventsFileSha256"] = hashes[EVALUATOR_EVENTS_FILE]
+        provenance["evaluatorInputSha256"] = invocation["evaluatorInputSha256"]
     return {"schema": CAPTURE_SCHEMA, "evidenceScope": scope, "candidateExecutionsByReport": 0,
             "formalRunsStartedByReport": 0,
-            "provenance": {"reviewedOperatorAttestationSha256": sha(operator_raw),
-                           "caseEventFileSha256": hashes[EVENTS_FILE], "fileSha256": hashes,
-                           "runtimeVersion": environment["runtimeVersion"], "sessionId": session_id,
-                           "acceptedRegenerationClosedAtUtc": phase_closed_at,
-                           "captureStartedAtUtc": started_at.isoformat(), "captureFinishedAtUtc": finished_at.isoformat()},
+            "provenance": provenance,
             "observations": observations, "evaluatorReceipt": receipt}

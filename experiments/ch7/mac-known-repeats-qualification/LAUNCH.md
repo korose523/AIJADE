@@ -5,6 +5,18 @@ qualification reply is pending. Both repeats and Table 7.3 are `NOT_RUN`.
 The offline controls exercise the parent and terminal verification with
 explicitly synthetic child subprocesses.
 
+## Verified preapproval materials
+
+The November 19 preparation read back 331 protected files and all four
+archived programme sources at their tracked paths in an existing clean
+`4aa3eaa` staging checkout. The [preparation receipt](../mac-qualification-preapproval-materials-20261119.json)
+binds the reviewed plan, staged known-condition inputs and the retained
+engineering Release output inventory. The original sparse protected checkout
+was preserved. Keep the pending input kit and candidate build inventory
+outside the canonical publication paths. After the actual reply is bound to
+the approved plan and a successor Q is committed, build that exact revision
+before publishing B. The retained assembly identifies `4aa3eaa`.
+
 ## Freeze the approved execution
 
 Keep the supervisor's actual reply and the reviewed one-page qualification plan

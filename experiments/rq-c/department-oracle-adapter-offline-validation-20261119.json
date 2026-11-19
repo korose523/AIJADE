@@ -1,0 +1,166 @@
+{
+  "captureProvenance": {
+    "acceptedRegenerationClosedAtUtc": "2026-11-19T03:57:49.475768+00:00",
+    "captureFinishedAtUtc": "2026-11-19T03:58:50.732000+00:00",
+    "captureStartedAtUtc": "2026-11-19T03:58:50.386000+00:00",
+    "caseEventFileSha256": "a1bd612f659cd15ffe5c1719c89c4c5bd1567e6358272a51570e17bd738ca520",
+    "evaluatorEventsFileSha256": "08b8ca8c7381a4870acd6dd927b8cbbae516655bf414069c91f8c56a6a9eae3d",
+    "evaluatorInputSha256": "0f1e67ee6d8cbe2028e492eb8db28ffbf0ec9a47c14e62580cfd502e51a4a38a",
+    "fileSha256": {
+      "case-events.jsonl": "a1bd612f659cd15ffe5c1719c89c4c5bd1567e6358272a51570e17bd738ca520",
+      "environment-after.json": "f69a3dd3cb996275b2faa7fbfa1737aa5e403ba9a31e7c74701de8afcbb6ad55",
+      "environment-before.json": "f69a3dd3cb996275b2faa7fbfa1737aa5e403ba9a31e7c74701de8afcbb6ad55",
+      "evaluator-events.jsonl": "08b8ca8c7381a4870acd6dd927b8cbbae516655bf414069c91f8c56a6a9eae3d",
+      "evaluator.bin": "3c483ed069de54a4ef5591aeea45c00a22090dedd2d3080585a76316aab96b03",
+      "invocation.json": "2d67ed978a7e214de1a1bc8a6c86a45d66d712ad80d22de792c137ab99357808",
+      "node.bin": "8288454af1db13d1d230cc32cf3b1fe063dfdac2884aaa18bace16ee75b19ed9",
+      "version-after.txt": "249baf635bb43877fcb9422efa1a4904b702d0ddf14d3949b7cd0950d5229c81",
+      "version-before.txt": "249baf635bb43877fcb9422efa1a4904b702d0ddf14d3949b7cd0950d5229c81"
+    },
+    "reviewedOperatorAttestationSha256": "3ae07963eff1b82f3721eab00ba029388a426d478cf189bcd4ab5ceaae4f1750",
+    "runtimeVersion": "v24.22.1",
+    "sessionId": "b421a3e92e8daa41798d580f071abf8c9182a700f09b69b80e601f320849e01b"
+  },
+  "date": "2026-11-19",
+  "execution": {
+    "aggregateStdoutSha256": "5c315acaaf3a93fac51d5dfa29e4524f09972864e761c21769cc0496017482dd",
+    "approvedExternalRun": "NOT_RUN",
+    "archivedCandidateExecutions": 0,
+    "authoredCaseOutcomesPerReplay": 25,
+    "authoredPrograms": 6,
+    "capturedVariantsPerReplay": 15,
+    "formalDepartmentRegeneration": "NOT_RUN",
+    "legacyAndInstrumentedAggregationByteIdentical": true,
+    "modelRequests": 0,
+    "observedNodeVersion": "v24.22.1",
+    "realExitCodes": {
+      "instrumented": 0,
+      "legacy": 0
+    }
+  },
+  "fixtureGroups": {
+    "second-family": {
+      "historicalSkips": 1,
+      "outcomesByVariant": {
+        "asRun": {
+          "FAILED_CASES": 1
+        },
+        "entry": {
+          "FAILED_CASES": 1
+        },
+        "entryAndTest": {
+          "PASSED": 1
+        }
+      },
+      "programs": 2
+    },
+    "template-a": {
+      "historicalSkips": 0,
+      "outcomesByVariant": {
+        "asRun": {
+          "FAILED_CASES": 1,
+          "NO_CALLABLE": 1
+        },
+        "entry": {
+          "FAILED_CASES": 2
+        },
+        "entryAndTest": {
+          "FAILED_CASES": 1,
+          "PASSED": 1
+        }
+      },
+      "programs": 2
+    },
+    "template-b": {
+      "historicalSkips": 0,
+      "outcomesByVariant": {
+        "asRun": {
+          "SETUP_ERROR": 1,
+          "TIMEOUT": 1
+        },
+        "entry": {
+          "SETUP_ERROR": 1,
+          "TIMEOUT": 1
+        },
+        "entryAndTest": {
+          "SETUP_ERROR": 1,
+          "TIMEOUT": 1
+        }
+      },
+      "programs": 2
+    }
+  },
+  "historicalArchive": {
+    "archiveReadbackSha256": "9a0ffc8ca869758d3e754b40ad2c27744073874f9fc48cd1e983f798aa3cf24d",
+    "historicalAuditSha256": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+    "historicalReplayEngineSha256": "f30dc04f35c8c0590a764b07c526c5bc080629d7923bcc50f0f80a087423a3c1",
+    "historicalRuleContractSha256": "5bf1e6c6b21910e25ca6ac6f1f40d1cda0ed942b3f0775874f566c47379a7589",
+    "historicalSourceSha256": "d790d9ddaa8a7425d0b8bc945e97007dce8c96d94444be47ab0fbda08275a349",
+    "pythonVersion": "3.9.6",
+    "tablesReproduced": 9
+  },
+  "observedOriginalTimeoutCaseIndices": [
+    1,
+    1,
+    1
+  ],
+  "phaseBindingScope": "authored phase fixture for CLI capture, produce and score",
+  "rawCaseOutcomes": {
+    "FAIL": 6,
+    "PASS": 16,
+    "TIMEOUT": 3
+  },
+  "rawEventCount": 58,
+  "rawEventsByType": {
+    "CASE_RESULT": 25,
+    "PROGRAM_SKIP": 1,
+    "REPLAY_FINISH": 1,
+    "REPLAY_START": 1,
+    "VARIANT_FINISH": 15,
+    "VARIANT_START": 15
+  },
+  "refusalControls": [
+    "wrong case set and digest",
+    "wrong candidate digest and timeout",
+    "truncated evaluator stream",
+    "missing raw stream with the instrumented artifact",
+    "re-pinned changed normalized result",
+    "relabelled scope or changed session and observed input digest"
+  ],
+  "retainedFixtureFilesSha256": {
+    "authored-evaluator-input.json": "0f1e67ee6d8cbe2028e492eb8db28ffbf0ec9a47c14e62580cfd502e51a4a38a",
+    "instrumented-aggregate.json": "5c315acaaf3a93fac51d5dfa29e4524f09972864e761c21769cc0496017482dd",
+    "legacy-aggregate.json": "5c315acaaf3a93fac51d5dfa29e4524f09972864e761c21769cc0496017482dd",
+    "manifest.json": "85ea8d61014a392d8d3efd1fdbb7526c5e7182bd2415deab1a7489dc30b2e282",
+    "operator-review.json": "3ae07963eff1b82f3721eab00ba029388a426d478cf189bcd4ab5ceaae4f1750",
+    "phase-result.json": "f80693f09d41c48dee4d9fc80bad0d7f4ef74f7c96210f62f7bc73eaa64d458e",
+    "process-exits.json": "a1730c96dd08aac9a20412358d14aa14c4e7107170d2d48b8d58ef6d8ceb6d75",
+    "replay-transcript.json": "1c48a77febbea2a24bc5209c396f8539e21adf4983d85edc970579f19691edd3",
+    "score-report.json": "cb062c54c566245e5725b19bddf868101e8a2fdc3f043ec918b8fd913d8368c5",
+    "verified-capture.json": "6b2de50eedff94ea2850b5ce9f69ba4558a99f7ee68699a3269dd458f2111d27"
+  },
+  "schema": "aijade.p2-r.department-oracle-evaluator-adapter-validation.v1",
+  "scope": "ACTUAL_NODE_EVALUATOR_WITH_AUTHORED_BENIGN_SYNTHETIC_CASES",
+  "sourceFilesSha256": {
+    "experiments/rq-c/DEPARTMENT-EXPLORATORY-ORACLE.md": "c2f946d327de44dd4cd2a53c2d64500fb49358656030fa20f19c17e8bd5949ee",
+    "experiments/rq-c/department_oracle_adapter.py": "4de31fe2e7d0a7f8fe7887975451a7e4b7888574982a8b6ab5eae52de76f6d8e",
+    "experiments/rq-c/department_oracle_capture.py": "10c610b21e87f5248dbb276dd6cae28052e9fc1e5ddb353fb74cf4ba35ee3e0d",
+    "experiments/rq-c/test_department_oracle_adapter.py": "7c990aca657b4093ec32ecc0d36dd8421ce9232b472b02fa551c5909f056765f"
+  },
+  "status": "EVALUATOR_EVENT_ADAPTER_OFFLINE_VERIFIED",
+  "tests": {
+    "hookedEvaluator": {
+      "logSha256": "5c64d21a0ec9579b5698c6f65402163bd3db40f1ad82309476e74eb5db4554d7",
+      "passed": 6,
+      "pythonVersion": "3.12.14",
+      "seconds": 60.687
+    },
+    "previousCaptureCompatibility": {
+      "logSha256": "c136bd2d3c94660dfebdb0621017cdbe0ed76bd097fd9bf77236f4998f1ede72",
+      "passed": 12,
+      "pythonVersion": "3.9.6",
+      "seconds": 10.082
+    },
+    "retainedOfflineWorkflowLogSha256": "6f0eb70f5887f5ecf129b0f6e061f435a1f63126cd82313a45a172410a985a6d"
+  }
+}
