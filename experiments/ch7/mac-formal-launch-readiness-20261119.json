@@ -1,0 +1,126 @@
+{
+  "schema": "aijade.ch7.mac-formal-launch-readiness.v1",
+  "status": "APPROVAL_BINDING_NOT_VERIFIED",
+  "assessedOn": "2026-11-19",
+  "referenceProductCommit": "e8b42217b88b4944b5df883a406dcca6c28dcb98",
+  "comparisonBasis": {
+    "sourcePlanSha256": {
+      "supervisorReview": "7be7b1542053f426ec2dd4c848e4e97d6dfc355dff9ccb1f4aedbaf9b3bc0242",
+      "onePageQualificationPlan": "fc91f7ee56dd4878bc3d3715d97bd59e167060a5abca29a4a143f0d9b89771bb",
+      "heldoutPlan": "90b6cbc338dd4edb04b24e3ffaabd3f54bdcc1c8c251140489f90975e109fa7f"
+    },
+    "supervisorReviewItems": [
+      6,
+      7
+    ],
+    "qualificationReply": "PENDING",
+    "knownRepeatsPlanned": 2,
+    "orderedConditionsPerRepeat": 20,
+    "acceptanceCriteria": [
+      "casewise matching under the same condition",
+      "complete observations without timeout or runtime error"
+    ],
+    "heldoutDesignAfterQualification": {
+      "pairs": 40,
+      "conditionRows": 80,
+      "blocks": 4,
+      "pairsPerBlock": 10,
+      "normalPairs": 4,
+      "backend": "Godot"
+    }
+  },
+  "source": {
+    "checkoutCommit": "4aa3eaaca0664307171be799511c927cc4e1da1b",
+    "ancestorProtectedCommit": "4aa3eaaca0664307171be799511c927cc4e1da1b",
+    "sourceFreezeSha256": "aeed1c0a036e71a81196e75e059e1ed4a6688d01b311321d9b4668aa2e40d952",
+    "protectedGitFilesMatched": 331,
+    "protectedPhysicalFilesMatched": 331,
+    "protectedPhysicalMissing": [],
+    "programmeGitFilesMatched": 4,
+    "programmePhysicalFilesMatched": 1,
+    "programmePhysicalMissing": [
+      "experiments/rq-c/oracle-audit.json",
+      "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5/candidates.jsonl",
+      "experiments/rq-c/redo/rq-c-s42-ollama-t30-r5/trials.jsonl"
+    ],
+    "readerFilesSha256": {
+      "experiments/ch7/finite_inputs.py": "bcd65bcfac71c063a62965d2cac37afe2238f05f602abf2ca2c512e25ed55371",
+      "experiments/ch7/comparison_manifest.py": "104eb7aa715f01c59479f4cfad6b791e38da9a8690f0354e7222d707c5189a7e",
+      "experiments/ch7/prepare_known_repeats.py": "c9d10b82ea782436331f3d2889f30865d99742d4d340c14f97affc0356c54e02",
+      "experiments/ch7/compare_known_repeats.py": "0e5a2efd3b021cdf68d82b40c9cd450af348a8ebeb908daa5140a1e168d622c9",
+      "experiments/ch7/finite_runtime.py": "19767302ff1fa9843390fb435ad6f404a5178de86ca981347fbc0ee1010b78de",
+      "experiments/ch7/finite_construction_binding.py": "13591a90b4d01044983d9164eceb6f96188d88cdbbd557ee6f376f10da045d11",
+      "experiments/ch7/launch_known_repeats.py": "b14cae7eedb041c699e09eb2dbd4a2aed610830e45f90afdd3811415c38781e8",
+      "experiments/ch7/freeze_known_repeat_build.py": "6310d6c5bf3fa78db41bac30b5450baa71d90a370a05f1090d9641251024a03e",
+      "experiments/ch7/known_repeat_acceptance.py": "1a3625fa9e39f6faa4d81cb32e79f13bbda4a18b3bbb4b0f89124c8ec008b612",
+      "experiments/ch7/launch_heldout_blocks.py": "16df16b3670a99c9f7b82f5a256dd162731a84ba44db04fb705034ccbb2d8dc2"
+    },
+    "canonicalPathsAtCheckout": {
+      "experiments/ch7/mac-known-repeats-qualification/decision.json": false,
+      "experiments/ch7/mac-known-repeats-qualification/frozen-build.json": false,
+      "experiments/ch7/mac-known-repeats-qualification/qualification-acceptance.json": false,
+      "experiments/ch7/mac-known-repeats-qualification/construction-freeze.json": false
+    }
+  },
+  "existingComponents": {
+    "plannedHost": "Darwin",
+    "architecture": "x86_64",
+    "pythonVersion": "3.12.14",
+    "psutilVersion": "7.2.2",
+    "candidateToolSha256": {
+      "python": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+      "dotnet": "9a176efc73dc886b4c6a4af0992ffbe862e6143381e6d00f24858e9ffda6c212",
+      "docker": "edbd77a344595b0fca4441c84ac61588ecde7b1f5548b5a4365113274d422f95"
+    },
+    "candidateToolsBoundToApproval": false,
+    "godotVersion": "4.5.2",
+    "godotFilesMatched": 124,
+    "rendererDeclaredFilesMatched": 112,
+    "assetWrapperSandboxMatched": true,
+    "protectedEngineeringBuild": {
+      "status": "HISTORICAL_ENGINEERING_BUILD_READ_BACK",
+      "manifestSha256": "82b9061639aad117c4b434514a58d504804765e04858c1846a24a5e740e5dfbe",
+      "embeddedSourceRevision": "0.1.0+4aa3eaaca0664307171be799511c927cc4e1da1b",
+      "testOutputFiles": 576,
+      "blazorFrameworkFiles": 450,
+      "testAssemblySha256": "6068d14c1eca998fa96ee6a33440fff4332963740f400198dfdc36a045e2d902",
+      "qualifiesAsApprovedBuildFreeze": false
+    },
+    "database": {
+      "socket": "SOCKET_EXISTS_UNCONTACTED",
+      "testDatabaseUrl": "NOT_PROVISIONED_IN_AUDIT_SHELL",
+      "containerPortMapping": "NOT_QUERIED"
+    },
+    "runtimeAvailability": "NOT_QUERIED"
+  },
+  "bindingChecklist": {
+    "privateOriginalReply": "NOT_AVAILABLE_IN_BOUND_INPUTS",
+    "originalPlan": "BYTES_READ_BACK",
+    "approvedImplementationQ": "NOT_PUBLISHED_IN_CHECKED_LINEAGE",
+    "frozenExecutionPlanAtQ": "NOT_PUBLISHED_IN_CHECKED_LINEAGE",
+    "separatePreQualificationBuildFreezeB": "NOT_PUBLISHED_IN_CHECKED_LINEAGE",
+    "independentApprovalDigestAndLocalConfig": "NOT_AVAILABLE_IN_BOUND_INPUTS",
+    "materializedQualificationCheckoutProgrammes": "ONE_OF_FOUR_IN_CURRENT_PROTECTED_CHECKOUT",
+    "bothOriginalMacRepeatPackets": "NOT_RUN",
+    "separateMacAcceptanceA": "NOT_PUBLISHED_IN_CHECKED_LINEAGE",
+    "formalConstructionFreezeAfterAcceptance": "NOT_PUBLISHED_IN_CHECKED_LINEAGE"
+  },
+  "trace": {
+    "preflightScriptSha256": "44a4fc5fa153de1772b4343e677452b9d3ad543bdf221ed1d28ba3b49f2acf5f",
+    "protectedStaticReportSha256": "d6256e2a251acabdb4daa7e9b4289e21379749d3190534ff1692a9b1f90bfa3c",
+    "componentsReadbackSha256": "1c27a00891019b86a560c74f3452e76f5be650d4f237e782f0ecd0159060f887",
+    "archivedProtectedReadbackSha256": "8561bff944c887fe8ea895bff92c1add2b8a68454e38d3b5c864fef63e2decec",
+    "syntheticLauncherControlsPassed": 16,
+    "passivePreflightControlsPassed": 4
+  },
+  "qualificationResults": {
+    "formalMacQualification": "NOT_RUN",
+    "heldoutComparison": "NOT_RUN",
+    "table7_3": "NOT_RUN",
+    "newQualificationRuns": 0,
+    "newHeldoutPairs": 0,
+    "newHeldoutSeeds": 0,
+    "databaseQueries": 0,
+    "researchProcessesStarted": 0
+  }
+}

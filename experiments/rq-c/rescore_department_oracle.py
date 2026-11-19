@@ -16,8 +16,9 @@ from pathlib import Path
 import re
 import sys
 
-from launch_department_regeneration import file_pin
+from department_oracle_capture import read_capture
 from department_oracle_evidence import SKIPPED, TRANSCRIPT_SCHEMA, VARIANTS, produce_transcript
+from launch_department_regeneration import file_pin
 from oracle_audit import BENCH, BENCH_SHA256, DROPPED, NODE_REPLAY, TEST_AUDIT, clustered_mcnemar, diagnostics
 from prepare_department_regeneration import HERE, REPO, encoded, prepare, require, sha
 from regen_compare_v2 import SHA256, load_rows, read_inputs, validate_summary
@@ -366,22 +367,51 @@ def pinned_bytes(path, pin, label):
     return raw
 
 
+def reviewed_replay(args, manifest_document, phase_closed_at=None):
+    synthetic = args.evidence_mode == "synthetic"
+    scope = "SYNTHETIC_FIXTURE" if synthetic else "OPERATOR_REVIEWED_EXTERNAL_REPLAY"
+    manifest_raw = pinned_bytes(args.replay_manifest, args.replay_manifest_sha256, "replay manifest")
+    raw_capture = (args.capture_directory, args.operator_review, args.operator_review_sha256)
+    fixture_only = (args.observations, args.observations_sha256, args.evaluator_receipt, args.evaluator_receipt_sha256)
+    capture = None
+    if any(raw_capture):
+        require(all(raw_capture) and not any(fixture_only),
+                "supply the complete operator-reviewed capture inputs as one evidence route")
+        capture = read_capture(local_file(args.capture_directory, "capture directory"),
+                               pinned_bytes(args.operator_review, args.operator_review_sha256, "operator review"),
+                               manifest_document, manifest_raw, scope, phase_closed_at)
+        observations_raw = encoded(capture["observations"])
+        evaluator_raw = encoded(capture["evaluatorReceipt"])
+    else:
+        require(synthetic and args.action != "capture" and all(fixture_only),
+                "external replay requires the complete operator-reviewed case capture")
+        observations_raw = pinned_bytes(args.observations, args.observations_sha256, "observations")
+        evaluator_raw = pinned_bytes(args.evaluator_receipt, args.evaluator_receipt_sha256, "evaluator receipt")
+    transcript = produce_transcript(manifest_document, manifest_raw, observations_raw, evaluator_raw, scope)
+    if capture is not None:
+        transcript["captureProvenance"] = capture["provenance"]
+    return transcript, capture
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="action", required=True)
-    for action in ("archive-self-check", "manifest", "produce", "score"):
+    for action in ("archive-self-check", "manifest", "capture", "produce", "score"):
         command = commands.add_parser(action)
         command.add_argument("--out", type=Path, help="write a new report without overwriting an existing file")
         if action != "archive-self-check":
             command.add_argument("--regeneration-bundle", type=Path, required=True)
             command.add_argument("--phase-receipt-sha256", required=True)
-        if action in ("produce", "score"):
+        if action in ("capture", "produce", "score"):
             command.add_argument("--replay-manifest", type=Path, required=True)
             command.add_argument("--replay-manifest-sha256", required=True)
-            command.add_argument("--observations", type=Path, required=True)
-            command.add_argument("--observations-sha256", required=True)
-            command.add_argument("--evaluator-receipt", type=Path, required=True)
-            command.add_argument("--evaluator-receipt-sha256", required=True)
+            command.add_argument("--capture-directory", type=Path)
+            command.add_argument("--operator-review", type=Path)
+            command.add_argument("--operator-review-sha256")
+            command.add_argument("--observations", type=Path, help="direct synthetic fixtures only")
+            command.add_argument("--observations-sha256")
+            command.add_argument("--evaluator-receipt", type=Path, help="direct synthetic fixtures only")
+            command.add_argument("--evaluator-receipt-sha256")
             command.add_argument("--evidence-mode", choices=("external", "synthetic"), default="external")
         if action == "score":
             command.add_argument("--replay-transcript", type=Path, required=True)
@@ -407,15 +437,14 @@ def main():
                 result["scope"] = "REPLAY_MANIFEST_ONLY"
             else:
                 synthetic = args.evidence_mode == "synthetic"
-                expected_scope = "SYNTHETIC_FIXTURE" if synthetic else "OPERATOR_REVIEWED_EXTERNAL_REPLAY"
-                transcript = produce_transcript(
-                    dict(result, scope="REPLAY_MANIFEST_ONLY"),
-                    pinned_bytes(args.replay_manifest, args.replay_manifest_sha256, "replay manifest"),
-                    pinned_bytes(args.observations, args.observations_sha256, "observations"),
-                    pinned_bytes(args.evaluator_receipt, args.evaluator_receipt_sha256, "evaluator receipt"),
-                    expected_scope,
-                )
-                if args.action == "produce":
+                phase_closed_at = None
+                if args.capture_directory is not None:
+                    phase_raw = pinned_bytes(bundle / "phase-result.json", args.phase_receipt_sha256, "phase receipt")
+                    phase_closed_at = json.loads(phase_raw)["observationFinishedAt"]
+                transcript, capture = reviewed_replay(args, dict(result, scope="REPLAY_MANIFEST_ONLY"), phase_closed_at)
+                if args.action == "capture":
+                    result = capture
+                elif args.action == "produce":
                     result = transcript
                 else:
                     raw = pinned_bytes(args.replay_transcript, args.replay_transcript_sha256, "replay transcript")
@@ -429,6 +458,8 @@ def main():
                                   reviewedEvaluatorReceiptSha256=transcript["reviewedEvaluatorReceiptSha256"],
                                   reviewedEvaluatorIdentity=transcript["reviewedEvaluatorIdentity"],
                                   retainedArchiveGroups=archive_readback(worklist, contract), groups=regenerated)
+                    if capture is not None:
+                        result["captureProvenance"] = capture["provenance"]
         payload = encoded(result)
         if args.out is not None:
             with local_file(args.out, "report output").open("xb") as target:

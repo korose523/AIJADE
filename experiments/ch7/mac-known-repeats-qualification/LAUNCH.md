@@ -61,6 +61,31 @@ from the shell. The child checks that the approved container exposes the
 approved local port. Keep credentials out of the plan, approval and command
 arguments.
 
+## Check the exact binding offline
+
+The static preflight reads a clean checkout in the protected research lineage.
+It compares the 331 protected paths to their pinned Git blobs and physical
+bytes, and counts the materialized files for the four archived programme
+sources. The offline archive deck can supply original bytes for a future
+approved Q. Each programme source must be present at its tracked path in that
+checkout. When the approval bundle is available, pass the four private inputs
+together.
+
+```sh
+python3 -B experiments/ch7/audit_known_repeat_launch_preflight.py \
+  --checkout "$approved_q_checkout" --qualification-plan "$reviewed_plan" \
+  --approval "$approval" --expected-approval-sha256 "$approval_sha256" \
+  --original-reply "$private_reply" --config "$local_config"
+```
+
+Use the project's Python 3.11+ environment with psutil 7.2.2 for the bound
+check. Omitting the four private inputs gives a source and plan inventory with
+`APPROVAL_BINDING_NOT_VERIFIED`. `EXACT_APPROVAL_BINDING_READ_BACK` records the
+digest binding and validated static configuration. Docker connection,
+database port mapping, both repeats and acceptance each require separate
+evidence. The audit reads socket metadata and reports only the shape of the
+database URL from the current shell.
+
 ## Run only after the reply and freeze
 
 From the clean Q checkout with the project-local environment active:

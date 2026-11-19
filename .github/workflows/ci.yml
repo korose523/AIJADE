@@ -48,6 +48,8 @@ jobs:
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_summarize_department_regeneration.py -v
       - name: Verify P2-R synthetic oracle transcript generation and archived scoring
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_rescore_department_oracle.py -v
+      - name: Verify P2-R per-case evaluator capture and runtime evidence offline
+        run: python3 -B -m unittest discover -s experiments/rq-c -p test_department_oracle_capture.py -v
       - name: Recompute P1 detection-stage and P3 scorer-policy archive comparisons
         run: |
           set -o pipefail
@@ -64,6 +66,8 @@ jobs:
           scratch=$(mktemp -d "$GITHUB_WORKSPACE/.ch7-known-rehearsal.XXXXXX")
           trap 'rmdir "$scratch" || true' EXIT
           python3 -B experiments/ch7/rehearse_known_repeat_handoff.py --scratch "$scratch"
+      - name: Check Chapter 7 read-only launch checklist and approval binding
+        run: python3 -B -m unittest discover -s experiments/ch7 -p test_audit_known_repeat_launch_preflight.py -v
       - name: Verify offline Chapter 7 qualification and construction binding
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_known_repeat_acceptance.py -v
       - name: Verify offline Chapter 7 canonical build freeze
