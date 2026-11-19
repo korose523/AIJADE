@@ -346,7 +346,7 @@ class DepartmentOracleTests(unittest.TestCase):
             return {"control": label, "exitCode": rejected.returncode, "stderr": rejected.stderr.decode().strip()}
 
         failures = [reject("synthetic-in-external-mode", "score", [*input_args, *transcript_args],
-                           b"evidence scope requires a matching explicit synthetic or external mode")]
+                           b"external replay requires the complete operator-reviewed case capture")]
         for artifact in (manifest_path, observations, evaluator, retained):
             with self.subTest(pin=artifact.name):
                 original = artifact.read_bytes()
