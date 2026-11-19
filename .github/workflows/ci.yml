@@ -82,6 +82,10 @@ jobs:
         run: python3 -B -m unittest discover -s experiments/ch7 -p test_four_block_end_to_end.py -v
       - name: Verify offline P2-R read-only departmental log collector
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_collect_department_journal.py -v
+      - name: Verify offline P2-R WSL dependencies and Windows host log evidence
+        run: |
+          python3 -B -m unittest discover -s experiments/rq-c -p test_check_department_wsl.py -v
+          python3 -B -m unittest discover -s experiments/rq-c -p test_collect_department_windows.py -v
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
@@ -237,3 +241,52 @@ jobs:
       - name: Replay all lifecycle terminal evidence and twelve coherent archive corruptions
         run: |
           .runtime/finite-control-env/bin/python -B experiments/ch7/mac-lifecycle-2026-11-17/refusal_negative_controls.py --root experiments/ch7/mac-lifecycle-2026-11-17/packet --repo .runtime/ch7-mac-lifecycle-source --output .runtime/mac-lifecycle-refusal-controls
+  p2-r-windows-evidence:
+    runs-on: windows-latest
+    env:
+      GIT_CONFIG_COUNT: 2
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.longpaths
+      GIT_CONFIG_VALUE_1: 'true'
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12.14'
+      - name: Verify exact frozen P2-R worklist on native Windows
+        shell: powershell
+        run: |
+          $result = python -B experiments/rq-c/launch_department_regeneration.py plan
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $plan = ($result -join "`n") | ConvertFrom-Json
+          if ($plan.status -ne 'OFFLINE_COMMAND_PLAN' -or $plan.formalRunsStarted -ne 0 -or $plan.worklistSha256 -ne '04bf4f7f96b41b888ce22f81de4bf533b3d3edc53d38a0f3f6828785b898b91d') { throw 'The frozen P2-R worklist differs' }
+      - name: Verify the native Windows PowerShell helper and event interval
+        shell: powershell
+        run: |
+          $tokens = $null
+          $diagnostics = $null
+          $path = (Resolve-Path 'experiments/rq-c/collect_department_windows.ps1').Path
+          $null = [System.Management.Automation.Language.Parser]::ParseFile($path, [ref]$tokens, [ref]$diagnostics)
+          if ($diagnostics.Count -gt 0) { throw ($diagnostics -join "`n") }
+          $anchor = Get-WinEvent -LogName System -MaxEvents 1 -ErrorAction Stop
+          $since = $anchor.TimeCreated.ToUniversalTime().AddSeconds(-1).ToString('o')
+          $until = $anchor.TimeCreated.ToUniversalTime().AddSeconds(1).ToString('o')
+          $xpath = python -B -c "import sys; sys.path.insert(0, 'experiments/rq-c'); from collect_department_windows import iso, xpath_for; print(xpath_for(iso(sys.argv[1]), iso(sys.argv[2])))" $since $until
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $query = [System.Diagnostics.Eventing.Reader.EventLogQuery]::new('System', 'LogName', $xpath)
+          $reader = [System.Diagnostics.Eventing.Reader.EventLogReader]::new($query)
+          $found = $false
+          try {
+            while ($null -ne ($currentRecord = $reader.ReadEvent())) {
+              try {
+                if ($currentRecord.RecordId -eq $anchor.RecordId) { $found = $true; break }
+              } finally { $currentRecord.Dispose() }
+            }
+          } finally { $reader.Dispose(); $anchor.Dispose() }
+          if (-not $found) { throw 'The bounded interval did not include the runner event anchor' }
+      - name: Verify Windows log capture with authored event fixtures
+        run: python -B -m unittest discover -s experiments/rq-c -p test_collect_department_windows.py -v

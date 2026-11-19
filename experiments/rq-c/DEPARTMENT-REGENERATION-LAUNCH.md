@@ -50,6 +50,10 @@ The pre/post queries use the same source identities and relevance filters. The b
 
 For an allocation with Linux, a local system journal and an NVIDIA device, see the [AIJADE read-only journal collector](DEPARTMENT-JOURNAL-COLLECTOR.md) for the pinned configuration, access requirements and the limits of retained-journal evidence.
 
+For a reviewed allocation that uses WSL 2 with a Windows model host, the
+[Windows host guide](DEPARTMENT-WINDOWS-WSL.md) describes the separate
+host event collector and the WSL dependency check.
+
 ## Execute in the agreed window
 
 The following invocations consume actual reviewed evidence. Use a new private bundle path under the AIJADE workspace, outside the source checkout or below its ignored `.runtime`. Keep the frozen checkout clean, with the approved build material outside tracked source. Qualification acquires a checkout-local allocation lock, exports the baseline before loading any model, independently confirms each model is out of the assigned service's resident set, then retains the exact subprocess/log records and post export. The assigned GPU still needs operational isolation from other users. Model unloading is checked by `/api/ps` after the documented empty generate request with `keep_alive: 0`. [Ollama generate API](https://docs.ollama.com/api/generate) · [Ollama server response for unloading](https://github.com/ollama/ollama/blob/v0.4.0/server/routes.go)

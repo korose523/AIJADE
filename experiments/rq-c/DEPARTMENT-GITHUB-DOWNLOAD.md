@@ -17,6 +17,7 @@ cd "$AIJADE_WORKSPACE_ROOT"
 checkout="$PWD/department-source-$AIJADE_DOWNLOAD_COMMIT"
 test ! -e "$checkout"
 git init --quiet "$checkout"
+git -C "$checkout" config core.autocrlf false
 git -C "$checkout" remote add origin https://github.com/korose523/AIJADE.git
 git -C "$checkout" fetch --no-tags --depth=1 origin "$AIJADE_DOWNLOAD_COMMIT"
 git -C "$checkout" checkout --detach FETCH_HEAD
@@ -44,3 +45,5 @@ The plan checks those nine pinned files and three complete archived populations 
 After the supervisor's reply and host allocation, use the [launch and evidence guide](DEPARTMENT-REGENERATION-LAUNCH.md) to pin the exact Linux .NET SDK and runner build from the approved checkout. The runner projects are `tools/Aijade.Rqc/Aijade.Rqc.csproj` and `tools/Aijade.Substrate/Aijade.Substrate.csproj`. Record their full dependency directories and keep the approval receipt, logs and model material private.
 
 For a Linux NVIDIA host, review the [journal collector guide](DEPARTMENT-JOURNAL-COLLECTOR.md) and run its offline configuration check before the host evidence checks. Verify the actual service, NVIDIA device identity, log visibility and retention window under the assigned account. Use the documented qualification and regeneration entries only with the reviewed plan and their required evidence.
+
+For a proposed WSL 2 allocation with the model service on the Windows host, use the [WSL and Windows host guide](DEPARTMENT-WINDOWS-WSL.md) to check the Linux toolchain, Windows interop and the native event-log contract.

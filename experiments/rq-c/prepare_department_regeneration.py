@@ -102,7 +102,7 @@ def prepare():
             "model": model,
             "verifierTemplate": template,
             "historicalRun": {
-                "directory": str(directory.relative_to(REPO)),
+                "directory": directory.relative_to(REPO).as_posix(),
                 "fileSha256": dict(zip(INPUT_NAMES, hashes)),
                 "config": config,
                 "modelDigest": sample["modelDigest"],
@@ -120,7 +120,7 @@ def prepare():
     return {
         "schema": "aijade.p2-r.department-worklist.v1",
         "status": "OFFLINE_PREPARATION_ONLY",
-        "historicalPlan": {"path": str(PLAN.relative_to(REPO)), "sha256": PLAN_SHA},
+        "historicalPlan": {"path": PLAN.relative_to(REPO).as_posix(), "sha256": PLAN_SHA},
         "departmentPlanDraftSha256": DEPARTMENT_DRAFT_SHA,
         "collaborationStatus": "AWAITING_SUPERVISOR_REPLY_AND_DEPARTMENT_HOST",
         "groups": groups,
