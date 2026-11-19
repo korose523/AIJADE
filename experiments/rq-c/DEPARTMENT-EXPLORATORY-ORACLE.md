@@ -35,7 +35,45 @@ Use `CaseEventWriter` and `case_binding` in `department_oracle_capture.py` at th
 
 The original archival Node audit emitted aggregate failures and did not retain the original timeout index or exact Node runtime version. Its source and rule identity are kept for comparison. The adapter attaches the writer to the original evaluator's entry, case comparison, failure, timeout and skip observations. The archived AIJADE substrate records describe the original Jint execution. The separately approved Node replay captures exploratory evidence with the operator's independent review of the running process and its observations.
 
-## Prepare the instrumented Node entry point
+## Launch one approved department replay
+
+The accepted regeneration phase and exact replay manifest determine the program population. The launcher constructs evaluator stdin from those programs and the pinned bench. Its plan action renders the evidence identities for review.
+
+```bash
+p2_replay_input=(
+  --regeneration-bundle "$P2_REGENERATION_DIR"
+  --phase-receipt-sha256 "$P2_REVIEWED_REGENERATION_SHA"
+  --replay-manifest "$P2_ORACLE_MANIFEST"
+  --replay-manifest-sha256 "$P2_REVIEWED_ORACLE_MANIFEST_FILE_SHA"
+)
+python3 -B experiments/rq-c/launch_department_oracle_replay.py plan \
+  "${p2_replay_input[@]}" --session-id "$P2_REPLAY_SESSION_ID"
+```
+
+The operator's `aijade.p2-r.department-oracle-replay-approval.v1` record carries forward the supervisor reply and approved plan of the accepted regeneration. Verify the recipient's allocation and actual host, source checkout, evaluator artifact and exact Node binary and environment. The approved plan and reply remain the authority for any schedule amendment. The original P2-R plan places the new stages on or after 2 December 2026.
+
+| Field | Reviewed evidence |
+| --- | --- |
+| `schema`, `scope`, `evidenceScope` | The replay approval schema above, `P2-R-department-oracle-replay`, and `OPERATOR_REVIEWED_EXTERNAL_REPLAY`. |
+| `binding`, `regenerationApprovalSha256`, `evaluatorSha256` | Copy from the plan output tied to the accepted regeneration. |
+| `sessionId`, `manifestFileSha256`, `evaluatorInputSha256` | Copy from the plan's `invocation`. Choose a new session for each independently reviewed attempt. |
+| `sourceCommit`, `hostName`, `notBefore`, `notAfter` | Full clean replay checkout commit, actual host name and approved zoned times after regeneration closure. |
+| `node` | Resolved executable `path`, its `sha256`, and the independently checked environment object with the runtime environment schema below. The launcher fixes locale environment variables to `C` and timezone to `UTC` for the evaluator and probes. |
+| `supervisorReply`, `approvedPlan` | Receipt-local relative paths and digests. The reply includes the same reviewed sender and received time. The launcher checks the reply and plan digests against the approved regeneration record. |
+
+```bash
+python3 -B experiments/rq-c/launch_department_oracle_replay.py run \
+  "${p2_replay_input[@]}" \
+  --regeneration-approval "$P2_ACCEPTED_REGENERATION_APPROVAL" \
+  --approval "$P2_REPLAY_APPROVAL" --approval-sha256 "$P2_REPLAY_APPROVAL_SHA" \
+  --bundle "$P2_NEW_REPLAY_DIR"
+```
+
+Use a new private directory in the AIJADE workspace. The launcher accepts a single approved Node executable and its generated evaluator. It retains the exact input in `evaluator-input.json`, full stdout in `evaluator-stdout.json`, and raw stderr in `evaluator-events.jsonl`. The process receipt `process-receipt.json` records whether the process started, its return code and termination path, the execution interval, the approval digest, and hashes and sizes for all three streams. It keeps a refusal and partial streams when the process cannot complete. The launcher also retains the original operator replay approval as `execution-approval.json`.
+
+Success requires exit zero, stable runtime snapshots, evaluator closure inside the measured process and approved interval, and agreement between the entire stdout array and the case events. The readback checks every program and variant, including original arguments and reference values for reported failures. The accepted result writes normalized `case-events.jsonl`. The independent operator review pins all 13 files for formal scoring, including the execution approval, process receipt, private stdin, stdout and sidecar. Keep those files private. The analysis commands recheck the exit facts, exact byte hashes, output population and receipt linkage. A typed synthetic route remains available for offline controls.
+
+## Inspect the instrumented Node entry point offline
 
 The adapter generates an evaluator artifact from the exact pinned historical Node source. The evaluator continues to consume the original `tasks`, `pairs` and `dropped` fields and to write the same aggregate report to stdout. It sends case evidence to stderr. The adapter's `artifact` and `bridge` commands produce and verify files. An approved runner supplies stdin and records the process outcome.
 
@@ -56,7 +94,7 @@ python3 -B experiments/rq-c/department_oracle_adapter.py bridge \
   --evaluator-events-sha256 "$P2_EVALUATOR_EVENTS_SHA"
 ```
 
-The bridge writes `case-events.jsonl` after checking the input and complete evaluator stream. The independently reviewed runtime and evaluator files remain part of the capture. The capture, transcript and score commands re-derive the normalized events from `evaluator-events.jsonl` and expect an exact byte match. The instrumented evaluator requires the raw stream to be present.
+The bridge writes `case-events.jsonl` after checking the input and complete evaluator stream. Use the artifact and bridge commands for inspection and synthetic controls. The capture, transcript and score commands re-derive the normalized events from `evaluator-events.jsonl` and expect an exact byte match. An external replay also requires the complete launcher process evidence above.
 
 ## Record the runtime artifacts and review their identities
 
@@ -70,7 +108,7 @@ Place these files beneath an AIJADE-local capture directory.
 | `invocation.json` | `aijade.p2-r.department-oracle-invocation.v1` with `sessionId`, `evidenceScope`, `manifestFileSha256`, `referenceReplayEngineSha256`, `benchSha256` and the exact ordered `arguments` after the evaluator artifact. Record the actual use of the pinned runtime and evaluator in the operator review. |
 | `case-events.jsonl` | The complete session stream emitted as `aijade.p2-r.department-oracle-case-event.v1`. |
 
-Capture only the listed environment fields. Keep private arguments outside any published evidence. The operator confirms the observed evaluator and runtime artifacts, version, arguments and environment against the approved run identity, then issues `aijade.p2-r.department-oracle-capture-review.v1` independently of the evidence import. The review contains `evidenceScope`, the manifest's `binding`, `manifestFileSha256` and a `fileSha256` mapping covering the eight listed files and the raw `evaluator-events.jsonl` for the instrumented evaluator. Its `attestation` contains `operatorId`, a UTC `reviewedAtUtc` at or after the session finish, and `decision` set to `ACCEPTED_CAPTURER_AND_EVIDENCE`. Use `OPERATOR_REVIEWED_EXTERNAL_REPLAY` for the scope after an approved run and supply the independently obtained SHA-256 of the operator review. The digest pins the named attestation as received. Authenticity is established by the independent review and its chain of custody.
+Capture only the listed environment fields. Keep private arguments outside any published evidence. The operator confirms the observed evaluator and runtime artifacts, process outcome, version, arguments and environment against the approved run identity, then issues `aijade.p2-r.department-oracle-capture-review.v1` independently of the evidence import. The review contains `evidenceScope`, the manifest's `binding`, `manifestFileSha256` and the `fileSha256` mapping. Include all 13 files for an external process bundle. Its `attestation` contains `operatorId`, a UTC `reviewedAtUtc` at or after process completion, and `decision` set to `ACCEPTED_CAPTURER_AND_EVIDENCE`. Use `OPERATOR_REVIEWED_EXTERNAL_REPLAY` for the scope after an approved run and supply the independently obtained SHA-256 of the operator review. The digest pins the named attestation as received. Authenticity is established by the independent review and its chain of custody.
 
 ## Verify, produce and score the capture
 

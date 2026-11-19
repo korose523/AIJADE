@@ -1,0 +1,136 @@
+{
+  "archivedOrGeneratedCandidateExecutions": 0,
+  "date": "2026-11-19",
+  "failureEvidence": {
+    "actualNonzero": {
+      "exitCode": 7,
+      "filesSha256": {
+        "evaluator-events.jsonl": "998113782533259e61f5ee3ba673430f83c943cda57a7c9a8ae86ef60d8d644f",
+        "evaluator-stdout.json": "615ae2cf629d666c76776c73159a291fb431cb71b44a61bedfb60a08da46bbf8",
+        "process-receipt.json": "64284a0231929687d7a603cb12e8a389e79eb5b3af10c81edd4b15465a5425fb"
+      },
+      "processStarted": true,
+      "stderrBytes": 15,
+      "stdoutBytes": 15,
+      "termination": "EXITED"
+    },
+    "actualTimeout": {
+      "exitCode": -9,
+      "filesSha256": {
+        "evaluator-events.jsonl": "437caddd6b8ed9cf7a418dde1e7758f96f8029798299495b70cede7a04c77a92",
+        "evaluator-stdout.json": "cd8f1fa32dc29918c86b3a298566686d6087f285c4a80b347db6bafa8bebdaee",
+        "process-receipt.json": "1de18a44852aed1542c294a0269ab1b05cc450cd33e106324bfbf4b6317dc8e1"
+      },
+      "processStarted": true,
+      "stderrBytes": 15,
+      "stdoutBytes": 15,
+      "termination": "TIMEOUT"
+    },
+    "simulatedInterruption": {
+      "exitCode": -9,
+      "filesSha256": {
+        "evaluator-events.jsonl": "13d390832af46d6d6b3831322f57dfc9976797433e57219726c4e04ed45cdbc9",
+        "evaluator-stdout.json": "407bb3d1296104f7aa681c59891d768664d290edc5971d4ec949a9d1ad646673",
+        "process-receipt.json": "7f52ba2c4c26f509065f416dccc76abe714dbddd14878334aec312b4fe45b10f"
+      },
+      "processStarted": true,
+      "stderrBytes": 19,
+      "stdoutBytes": 19,
+      "termination": "INTERRUPTED"
+    }
+  },
+  "formalRegeneration": "NOT_RUN",
+  "formalReplay": "NOT_RUN",
+  "historicalArchive": {
+    "oracleAuditSha256": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+    "oracleSourceSha256": "d790d9ddaa8a7425d0b8bc945e97007dce8c96d94444be47ab0fbda08275a349",
+    "pythonVersion": "3.9.6",
+    "readbackSha256": "9a0ffc8ca869758d3e754b40ad2c27744073874f9fc48cd1e983f798aa3cf24d",
+    "ruleContractSha256": "5bf1e6c6b21910e25ca6ac6f1f40d1cda0ed942b3f0775874f566c47379a7589",
+    "tablesReproduced": 9
+  },
+  "liveModelRequests": 0,
+  "refusedReadbackControls": [
+    "nonzero exit with re-pinned receipt",
+    "process closure outside its observed event stream",
+    "truncated stdout with re-pinned hashes",
+    "stdout verdict inconsistent with event stream",
+    "stdout uses a different expected value for an original case",
+    "mismatched approved plan or assigned host"
+  ],
+  "retainedEvidenceFilesSha256": {
+    "manifest.json": "c1022de3cbea1dce3fe106a0364de4d490d564ea054bd110bc17591fc5b6d4c2",
+    "operator-review.json": "dc70d3662f70057caf454da46c6f9910a8f2bd5a59318b2c8fce08469c53b36b",
+    "retainedHarnessLog": "1a2b94db1d04d17415a35d35b99c0f680e6dc3d83594860e868b7af0640501db",
+    "score.json": "84792f253736e0fcf7b08a7af81626d73b85094dc4388265c4a061d6238cba23",
+    "transcript.json": "4996bbc8168567436397cc4017971ad0ac106481b0911cb825675e025a91b218",
+    "verified-capture.json": "c3607eb7f4d182fa5659e9982f99c278af4938b2219ee8cc35e1c5c0825755e0"
+  },
+  "schema": "aijade.p2-r.department-oracle-process-offline-validation.v1",
+  "scope": "SYNTHETIC_REGENERATION_AND_ACTUAL_NODE_ON_AUTHORED_FIXTURES",
+  "sourceFilesSha256": {
+    "experiments/rq-c/DEPARTMENT-EXPLORATORY-ORACLE.md": "a209e3613745b6de1d6248223e6b359e17032ffe27a6556460e25ab3262a0538",
+    "experiments/rq-c/DEPARTMENT-REGENERATION-LAUNCH.md": "2c74cad6a1898237bc40bc0b9d539bf6e68d06ef2312dd5c934a670b2ede2558",
+    "experiments/rq-c/department_oracle_capture.py": "454b528abac6b053736665b260cbb3086581e303d14cedd527dce26a39dc6687",
+    "experiments/rq-c/department_oracle_process.py": "ef64335ed1069fb36913a18400a695906d46eae1001523824c5aefae2a6cd7dd",
+    "experiments/rq-c/launch_department_oracle_replay.py": "e0573358e3074b4cb66f7e3f271a4a241bfb90f3445d0b58294430a564e9611b",
+    "experiments/rq-c/rescore_department_oracle.py": "3e22e6c0e6b998b6d79e3cd058cd1ea282490a8ff3f57e3fe3adfea1f3e75e68",
+    "experiments/rq-c/test_launch_department_oracle_replay.py": "b31995ff59fc4a867f77eac1d0c7e7212e3c57429c6d6a7b9a709915f8279a16"
+  },
+  "status": "AUTHORED_REGENERATION_TO_REPLAY_SCORE_VERIFIED",
+  "syntheticRegeneration": {
+    "admissionReadback": true,
+    "launches": 3,
+    "phaseReceiptSha256": "55f757626de7929721ff495314ff1ce64898f668a38d01098447d15ecd000122",
+    "rows": 12
+  },
+  "syntheticReplay": {
+    "caseOutcomes": {
+      "FAIL": 3,
+      "PASS": 13,
+      "TIMEOUT": 3
+    },
+    "evaluatorEvents": 39,
+    "evaluatorEventsByType": {
+      "CASE_RESULT": 19,
+      "REPLAY_FINISH": 1,
+      "REPLAY_START": 1,
+      "VARIANT_FINISH": 9,
+      "VARIANT_START": 9
+    },
+    "originalTimeoutIndices": [
+      1,
+      1,
+      1
+    ],
+    "processExitCode": 0,
+    "processStarted": true,
+    "processStreams": {
+      "evaluator-events.jsonl": {
+        "bytes": 11645,
+        "sha256": "7a53b6493e70602778c3411470095003bcca98b28632bd93d6c046b3e757dff5"
+      },
+      "evaluator-input.json": {
+        "bytes": 944,
+        "sha256": "fcc6568890a60562e81826315e77b042c7a888ec8c059c4963bf2cba059372a0"
+      },
+      "evaluator-stdout.json": {
+        "bytes": 676,
+        "sha256": "2ceb72288e5e50e5c72339b11a2a32f0c0e6787d7dda5a25e050e9278e4d9e03"
+      }
+    },
+    "retainedFiles": 13,
+    "runtimeVersion": "v24.22.1",
+    "stdoutReadback": {
+      "programs": 3,
+      "variants": 9
+    }
+  },
+  "tests": {
+    "initialSyntheticHarnessSetupFailureLogSha256": "c12ebd8be09ad83e4807b5e0b298caa5b1d7f9b3620235a7f614d9c3db69c2dd",
+    "logSha256": "e717bed27a3f8c8fb595be9cbbe733e56b3ee703cfa9f0af16a090923a61f0f2",
+    "passed": 8,
+    "pythonVersion": "3.12.14",
+    "seconds": 83.92
+  }
+}

@@ -9,6 +9,7 @@ from department_oracle_evidence import (
     EVALUATOR_SCHEMA, OBSERVATIONS_SCHEMA, OBSERVATION_SCOPES, SKIPPED, VARIANTS,
     decode_evidence, derive_programs, require_fields,
 )
+from department_oracle_process import PROCESS_FILES, verify_process
 from prepare_department_regeneration import encoded, instant, require, sha
 from regen_compare_v2 import SHA256
 
@@ -228,7 +229,8 @@ def read_capture_files(directory, names):
     return hashes, documents
 
 
-def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope, phase_closed_at=None):
+def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope, phase_closed_at=None,
+                 regeneration_approval_pin=None):
     from department_oracle_adapter import REFERENCE_ENGINE_SHA256, bridge_events, instrumented_engine
 
     require(isinstance(scope, str) and scope in OBSERVATION_SCOPES, "unknown replay capture scope")
@@ -239,6 +241,10 @@ def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope
     sidecar = directory / EVALUATOR_EVENTS_FILE
     has_sidecar = sidecar.exists() or sidecar.is_symlink()
     files = CAPTURE_FILES | {EVALUATOR_EVENTS_FILE} if has_sidecar else CAPTURE_FILES
+    has_process = any((directory / name).exists() or (directory / name).is_symlink() for name in PROCESS_FILES)
+    if has_process:
+        require(has_sidecar, "process evidence requires the instrumented evaluator's raw event stream")
+        files |= PROCESS_FILES
     hashes, documents = read_capture_files(directory, files)
     is_instrumented = hashes["evaluator.bin"] == sha(instrumented_engine())
     require(has_sidecar is is_instrumented, "instrumented evaluator and raw event stream must appear together")
@@ -275,6 +281,11 @@ def read_capture(directory, operator_raw, manifest_document, manifest_raw, scope
     if has_sidecar:
         provenance["evaluatorEventsFileSha256"] = hashes[EVALUATOR_EVENTS_FILE]
         provenance["evaluatorInputSha256"] = invocation["evaluatorInputSha256"]
+    require(has_process or scope != "OPERATOR_REVIEWED_EXTERNAL_REPLAY",
+            "external replay requires a successful process receipt and full raw streams")
+    if has_process:
+        provenance.update(verify_process(documents, hashes, manifest, contract, invocation, environment, groups,
+                                         started_at, finished_at, reviewed_at, phase_closed_at, regeneration_approval_pin))
     return {"schema": CAPTURE_SCHEMA, "evidenceScope": scope, "candidateExecutionsByReport": 0,
             "formalRunsStartedByReport": 0,
             "provenance": provenance,

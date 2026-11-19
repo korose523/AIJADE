@@ -72,4 +72,6 @@ python3 -B experiments/rq-c/launch_department_regeneration.py run regeneration \
 
 For separate allocation windows add `--qualification-approval "$P2_APPROVAL_FILE" --qualification-approval-sha256 "$P2_REVIEWED_APPROVAL_SHA"`. A phase with incomplete artifacts, divergence during qualification, missing error coverage or a new relevant error preserves its directory and cannot release regeneration. A completed regeneration can have scientific differences from the archive. The launcher records those differences for the subsequent paired analysis and exploratory re-tally.
 
+After regeneration is accepted, use its original approval and the complete phase receipt to prepare the [P2-R Node replay and process evidence](DEPARTMENT-EXPLORATORY-ORACLE.md). The replay carries forward the approved plan and reply and uses its own reviewed process identity and allocation window.
+
 The worklist and tests are offline preparation. The formal department phases and separate follow-on experiments await the actual reply and allocated host.

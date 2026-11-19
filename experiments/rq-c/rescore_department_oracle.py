@@ -367,7 +367,7 @@ def pinned_bytes(path, pin, label):
     return raw
 
 
-def reviewed_replay(args, manifest_document, phase_closed_at=None):
+def reviewed_replay(args, manifest_document, phase_closed_at=None, regeneration_approval_pin=None):
     synthetic = args.evidence_mode == "synthetic"
     scope = "SYNTHETIC_FIXTURE" if synthetic else "OPERATOR_REVIEWED_EXTERNAL_REPLAY"
     manifest_raw = pinned_bytes(args.replay_manifest, args.replay_manifest_sha256, "replay manifest")
@@ -379,7 +379,7 @@ def reviewed_replay(args, manifest_document, phase_closed_at=None):
                 "supply the complete operator-reviewed capture inputs as one evidence route")
         capture = read_capture(local_file(args.capture_directory, "capture directory"),
                                pinned_bytes(args.operator_review, args.operator_review_sha256, "operator review"),
-                               manifest_document, manifest_raw, scope, phase_closed_at)
+                               manifest_document, manifest_raw, scope, phase_closed_at, regeneration_approval_pin)
         observations_raw = encoded(capture["observations"])
         evaluator_raw = encoded(capture["evaluatorReceipt"])
     else:
@@ -391,6 +391,15 @@ def reviewed_replay(args, manifest_document, phase_closed_at=None):
     if capture is not None:
         transcript["captureProvenance"] = capture["provenance"]
     return transcript, capture
+
+
+def report_header(worklist, contract):
+    return {"schema": REPORT_SCHEMA, "ruleContract": contract, "ruleContractSha256": sha(encoded(contract)),
+            "retainedOracleAuditSha256": MODEL_PINS["oracle-audit.json"],
+            "historicalBcaAbsoluteTolerance": HISTORICAL_BCA_ABSOLUTE_TOLERANCE,
+            "historicalClusteredPRelativeTolerance": HISTORICAL_CLUSTERED_P_RELATIVE_TOLERANCE,
+            "worklistSha256": sha(encoded(worklist)), "formalRunsStartedByReport": 0,
+            "candidateExecutionsByReport": 0}
 
 
 def main():
@@ -420,12 +429,7 @@ def main():
     try:
         worklist = prepare()
         contract = rule_contract()
-        result = {"schema": REPORT_SCHEMA, "ruleContract": contract, "ruleContractSha256": sha(encoded(contract)),
-                  "retainedOracleAuditSha256": MODEL_PINS["oracle-audit.json"],
-                  "historicalBcaAbsoluteTolerance": HISTORICAL_BCA_ABSOLUTE_TOLERANCE,
-                  "historicalClusteredPRelativeTolerance": HISTORICAL_CLUSTERED_P_RELATIVE_TOLERANCE,
-                  "worklistSha256": sha(encoded(worklist)), "formalRunsStartedByReport": 0,
-                  "candidateExecutionsByReport": 0}
+        result = report_header(worklist, contract)
         if args.action == "archive-self-check":
             result.update(scope="RETAINED_EXPLORATORY_ARCHIVE_SELF_CHECK", groups=archive_readback(worklist, contract))
         else:
@@ -437,11 +441,14 @@ def main():
                 result["scope"] = "REPLAY_MANIFEST_ONLY"
             else:
                 synthetic = args.evidence_mode == "synthetic"
-                phase_closed_at = None
+                phase_closed_at, regeneration_approval_pin = None, None
                 if args.capture_directory is not None:
                     phase_raw = pinned_bytes(bundle / "phase-result.json", args.phase_receipt_sha256, "phase receipt")
-                    phase_closed_at = json.loads(phase_raw)["observationFinishedAt"]
-                transcript, capture = reviewed_replay(args, dict(result, scope="REPLAY_MANIFEST_ONLY"), phase_closed_at)
+                    phase = json.loads(phase_raw)
+                    phase_closed_at = phase["observationFinishedAt"]
+                    regeneration_approval_pin = phase.get("approvalSha256")
+                transcript, capture = reviewed_replay(args, dict(result, scope="REPLAY_MANIFEST_ONLY"),
+                                                      phase_closed_at, regeneration_approval_pin)
                 if args.action == "capture":
                     result = capture
                 elif args.action == "produce":
