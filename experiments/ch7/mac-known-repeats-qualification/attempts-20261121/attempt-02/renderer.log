@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-mac-qualification-20261121/attempt-02/repeat-1/renderer-source/scripts/run-native-mmd-scene.py", line 448, in <module>
+    if __name__ == '__main__': main()
+                               ^^^^^^
+  File "/Volumes/Untitled/AIJADE/.runtime/posix/runs/ch7-mac-qualification-20261121/attempt-02/repeat-1/renderer-source/scripts/run-native-mmd-scene.py", line 399, in main
+    version = subprocess.run([str(args.godot),'--headless','--version'],env=env,capture_output=True,text=True,check=True,timeout=15).stdout.strip()
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/subprocess.py", line 2116, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "/Users/mac/.local/share/uv/python/cpython-3.12.14-macos-x86_64-none/lib/python3.12/subprocess.py", line 1253, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['/Volumes/Untitled/AIJADE/.runtime/posix/build-artifacts/ch7-protected-release-20261118/source/experiments/ch7/godot_local.py', '--headless', '--version']' timed out after 15 seconds

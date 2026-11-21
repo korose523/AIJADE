@@ -1,0 +1,81 @@
+{
+  "schema": "aijade.ch7.finite-block-receipt.v1",
+  "status": "STOPPED",
+  "reason": "RuntimeError: unknown_owned_resource_observation: NoSuchProcess; owned cleanup or disposition unresolved",
+  "codeCommit": "4d4e6125d68ef3f08320b73d36b15dd61b68a9fd",
+  "finishedAt": "2026-11-21T05:29:29.922621+00:00",
+  "wallSeconds": 381.97771556599764,
+  "ownedCpuSeconds": 36.207080192,
+  "peak": {
+    "rssBytes": 252334080,
+    "swapIncreaseBytes": 0,
+    "minAvailableBytes": 5432401920
+  },
+  "phases": {
+    "flow": {
+      "startedAt": "2026-11-21T05:23:08.585125+00:00",
+      "pid": 12953,
+      "exitCode": 1,
+      "createTime": 1795238588.581111,
+      "endedAt": "2026-11-21T05:28:56.074565+00:00"
+    }
+  },
+  "plannedCases": 20,
+  "plannedPairs": 10,
+  "plannedSharedRenderedIntents": 10,
+  "registeredIntentCount": 0,
+  "completedCases": 0,
+  "inFlightCaseIds": [
+    "u_6f517fd12e4ada03/C1",
+    "u_6f517fd12e4ada03/C2",
+    "u_3262407f7b06f468/C2",
+    "u_3262407f7b06f468/C1",
+    "u_b655e4fdcca80f86/C2",
+    "u_b655e4fdcca80f86/C1",
+    "u_1b81d876de1008b4/C1",
+    "u_1b81d876de1008b4/C2",
+    "u_7c1fde769e93f69b/C2",
+    "u_7c1fde769e93f69b/C1",
+    "u_b731af9ded39a494/C1",
+    "u_b731af9ded39a494/C2",
+    "u_51f0799d11b47ca8/C1",
+    "u_51f0799d11b47ca8/C2",
+    "u_2d69e7fd46cf9c05/C2",
+    "u_2d69e7fd46cf9c05/C1"
+  ],
+  "unknownCaseIds": [],
+  "unattemptedCaseIds": [
+    "u_d13d4ca584242835/C1",
+    "u_d13d4ca584242835/C2",
+    "u_5b459708324f5e70/C2",
+    "u_5b459708324f5e70/C1"
+  ],
+  "dispositionErrors": [],
+  "logCloseErrors": [],
+  "heldOutCases": 0,
+  "purpose": "qualification_only",
+  "blockIndex": 0,
+  "initialSystemSwapUsedBytes": 34078720,
+  "sequenceEpochMonotonic": 18920.98097698,
+  "conditionsMeasured": [
+    "C1",
+    "C2"
+  ],
+  "semanticJudgments": "AI-assisted; no independent human review",
+  "formalHardwareQualification": false,
+  "modelRequests": 0,
+  "knownRepeatLaunchSha256": "1165f56ecef09267989616fa6601ae9def6fd1a22b4109960f4b82b43c298fd6",
+  "knownRepeatIndex": 1,
+  "operationalWatchdog": {
+    "blockWallSeconds": 1800,
+    "rendererTimeoutSeconds": 600,
+    "sustainedResourceSeconds": 60,
+    "parentAllowanceSeconds": 120,
+    "shutdownGraceSeconds": 30,
+    "maxOwnedRssBytes": null,
+    "minAvailableBytes": null,
+    "maxSwapIncreaseBytes": null
+  },
+  "buildFreezePath": "experiments/ch7/mac-known-repeats-qualification/frozen-build.json",
+  "ownedProcessRegistrySha256": "a87f9ffc3e5b61eb84924ccec334864eaeb5ae08b90fcb8a1d29aa373aa41150"
+}

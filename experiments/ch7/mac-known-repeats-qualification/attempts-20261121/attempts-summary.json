@@ -1,0 +1,59 @@
+{
+ "schema": "aijade.ch7.mac-qualification-attempts.v1",
+ "date": "2026-11-21",
+ "implementationCommit": "4d4e6125d68ef3f08320b73d36b15dd61b68a9fd",
+ "buildFreezeCommit": "fddbd2e31cf7453af12a761fdd9d4ba27f60eec2",
+ "approvalSha256": "7edc2c26bccfd2b3374b47cc76a71a2f2346bc3b3bfcb865b0dd90cd5cd10f94",
+ "attempts": [
+  {
+   "attempt": "attempt-01",
+   "status": "STOPPED_PRECONDITION",
+   "reason": "FileNotFoundError: [Errno 2] No such file or directory: '/Volumes/Untitled/AIJADE/.runtime/posix/build-artifacts/ch7-protected-release-20261118/source/experiments/p1/external-renderer/preset'",
+   "measurementStarted": false,
+   "completedCases": 0,
+   "modelRequests": 0,
+   "wallSeconds": null
+  },
+  {
+   "attempt": "attempt-02",
+   "status": "STOPPED",
+   "reason": "RuntimeError: owned_process_ended_before_registration; owned descendant remains or identity unknown; owned cleanup or disposition unresolved",
+   "measurementStarted": true,
+   "completedCases": 0,
+   "modelRequests": 0,
+   "wallSeconds": 255.60836376600128
+  },
+  {
+   "attempt": "attempt-03",
+   "status": "STOPPED",
+   "reason": "RuntimeError: owned_process_ended_before_registration; owned descendant remains or identity unknown; owned cleanup or disposition unresolved",
+   "measurementStarted": true,
+   "completedCases": 0,
+   "modelRequests": 0,
+   "wallSeconds": 344.08561957599886
+  },
+  {
+   "attempt": "attempt-04",
+   "status": "STOPPED",
+   "reason": "RuntimeError: unknown_owned_resource_observation: NoSuchProcess; owned cleanup or disposition unresolved",
+   "measurementStarted": true,
+   "completedCases": 0,
+   "modelRequests": 0,
+   "wallSeconds": 381.97771556599764
+  }
+ ],
+ "cause": {
+  "attempt-01": "sparse Q checkout lacked experiments/p1/external-renderer/preset (precondition, before measurement)",
+  "attempt-02": "renderer: Godot --headless --version via the wrapper exceeded the renderer script's fixed 15 s; Godot was on the NTFS drive",
+  "attempt-03": "same 15 s timeout with Godot on the APFS image; the same call takes 0.5-0.75 s outside the run",
+  "attempt-04": "after the one prospectively recorded deviation (renderer version timeout 15 s to 120 s, docs cdae41e): the flow test Run_finite_manifest_dataflow failed after 341 s with Npgsql \"Timeout during reading attempt\" against the local PostgreSQL container; the renderer never started"
+ },
+ "qualificationDetermined": false,
+ "heldoutCasesCreated": 0,
+ "deviation": {
+  "record": "docs 追加实验注册稿/第七章_Mac资格偏离记录_20261121.md (cdae41e, pushed before attempt-04)",
+  "approvalSha256Attempt04": "e3e5c5367f8650d38424843f13fcc71db4d69a9ea6db7a804cf61a86b41a25fa",
+  "approvalSha256Attempts01to03": "7edc2c26bccfd2b3374b47cc76a71a2f2346bc3b3bfcb865b0dd90cd5cd10f94"
+ },
+ "stopRule": "as recorded before attempt-04: no further apparatus changes; report all records to the supervisor"
+}

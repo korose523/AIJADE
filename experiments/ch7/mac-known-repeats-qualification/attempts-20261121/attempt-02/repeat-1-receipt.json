@@ -1,0 +1,87 @@
+{
+  "schema": "aijade.ch7.finite-block-receipt.v1",
+  "status": "STOPPED",
+  "reason": "RuntimeError: owned_process_ended_before_registration; owned descendant remains or identity unknown; owned cleanup or disposition unresolved",
+  "codeCommit": "4d4e6125d68ef3f08320b73d36b15dd61b68a9fd",
+  "finishedAt": "2026-11-21T04:55:03.624057+00:00",
+  "wallSeconds": 255.60836376600128,
+  "ownedCpuSeconds": 37.130401610999996,
+  "peak": {
+    "rssBytes": 307097600,
+    "swapIncreaseBytes": 0,
+    "minAvailableBytes": 5689151488
+  },
+  "phases": {
+    "flow": {
+      "startedAt": "2026-11-21T04:50:48.079587+00:00",
+      "pid": 11800,
+      "exitCode": -15,
+      "createTime": 1795236648.074474,
+      "endedAt": "2026-11-21T04:54:32.384043+00:00"
+    },
+    "renderer": {
+      "startedAt": "2026-11-21T04:54:15.694526+00:00",
+      "pid": 11821,
+      "exitCode": 1,
+      "createTime": 1795236855.68633,
+      "endedAt": "2026-11-21T04:54:32.384068+00:00"
+    }
+  },
+  "plannedCases": 20,
+  "plannedPairs": 10,
+  "plannedSharedRenderedIntents": 10,
+  "registeredIntentCount": 0,
+  "completedCases": 0,
+  "inFlightCaseIds": [
+    "u_6f517fd12e4ada03/C1",
+    "u_6f517fd12e4ada03/C2",
+    "u_3262407f7b06f468/C2",
+    "u_3262407f7b06f468/C1",
+    "u_b655e4fdcca80f86/C2",
+    "u_b655e4fdcca80f86/C1",
+    "u_1b81d876de1008b4/C1",
+    "u_1b81d876de1008b4/C2",
+    "u_7c1fde769e93f69b/C2",
+    "u_7c1fde769e93f69b/C1",
+    "u_b731af9ded39a494/C1",
+    "u_b731af9ded39a494/C2",
+    "u_51f0799d11b47ca8/C1",
+    "u_51f0799d11b47ca8/C2",
+    "u_2d69e7fd46cf9c05/C2",
+    "u_2d69e7fd46cf9c05/C1",
+    "u_d13d4ca584242835/C1",
+    "u_d13d4ca584242835/C2",
+    "u_5b459708324f5e70/C2",
+    "u_5b459708324f5e70/C1"
+  ],
+  "unknownCaseIds": [],
+  "unattemptedCaseIds": [],
+  "dispositionErrors": [],
+  "logCloseErrors": [],
+  "heldOutCases": 0,
+  "purpose": "qualification_only",
+  "blockIndex": 0,
+  "initialSystemSwapUsedBytes": 34078720,
+  "sequenceEpochMonotonic": 16981.093721463,
+  "conditionsMeasured": [
+    "C1",
+    "C2"
+  ],
+  "semanticJudgments": "AI-assisted; no independent human review",
+  "formalHardwareQualification": false,
+  "modelRequests": 0,
+  "knownRepeatLaunchSha256": "8dd8fad779e1021e901971147024290bd4156ca26c5ae89fb4c091bfcc1e6f56",
+  "knownRepeatIndex": 1,
+  "operationalWatchdog": {
+    "blockWallSeconds": 1800,
+    "rendererTimeoutSeconds": 600,
+    "sustainedResourceSeconds": 60,
+    "parentAllowanceSeconds": 120,
+    "shutdownGraceSeconds": 30,
+    "maxOwnedRssBytes": null,
+    "minAvailableBytes": null,
+    "maxSwapIncreaseBytes": null
+  },
+  "buildFreezePath": "experiments/ch7/mac-known-repeats-qualification/frozen-build.json",
+  "ownedProcessRegistrySha256": "0ae515792caf4e7a8d861897ccf705bf9afd1cefb5ac255d16f59bd9259f201f"
+}
