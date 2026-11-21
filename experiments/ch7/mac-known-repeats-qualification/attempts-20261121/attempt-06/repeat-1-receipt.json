@@ -1,0 +1,87 @@
+{
+  "schema": "aijade.ch7.finite-block-receipt.v1",
+  "status": "STOPPED",
+  "reason": "RuntimeError: flow_nonzero_exit",
+  "codeCommit": "1cd3f6f2a5399f14d30bf8e8690e6c8ef2c0a542",
+  "finishedAt": "2026-11-21T06:10:53.847569+00:00",
+  "wallSeconds": 282.23698598400006,
+  "ownedCpuSeconds": 91.966247736,
+  "peak": {
+    "rssBytes": 1286623232,
+    "swapIncreaseBytes": 0,
+    "minAvailableBytes": 5261590528
+  },
+  "phases": {
+    "flow": {
+      "startedAt": "2026-11-21T06:06:11.612567+00:00",
+      "pid": 15580,
+      "exitCode": 1,
+      "createTime": 1795241171.609095,
+      "endedAt": "2026-11-21T06:10:47.709699+00:00"
+    },
+    "renderer": {
+      "startedAt": "2026-11-21T06:07:39.791344+00:00",
+      "pid": 15585,
+      "exitCode": 0,
+      "createTime": 1795241259.714291,
+      "endedAt": "2026-11-21T06:10:46.637628+00:00"
+    }
+  },
+  "plannedCases": 20,
+  "plannedPairs": 10,
+  "plannedSharedRenderedIntents": 10,
+  "registeredIntentCount": 10,
+  "completedCases": 0,
+  "inFlightCaseIds": [
+    "u_6f517fd12e4ada03/C1",
+    "u_6f517fd12e4ada03/C2",
+    "u_3262407f7b06f468/C2",
+    "u_3262407f7b06f468/C1",
+    "u_b655e4fdcca80f86/C2",
+    "u_b655e4fdcca80f86/C1",
+    "u_1b81d876de1008b4/C1",
+    "u_1b81d876de1008b4/C2",
+    "u_7c1fde769e93f69b/C2",
+    "u_7c1fde769e93f69b/C1",
+    "u_b731af9ded39a494/C1",
+    "u_b731af9ded39a494/C2",
+    "u_51f0799d11b47ca8/C1",
+    "u_51f0799d11b47ca8/C2",
+    "u_2d69e7fd46cf9c05/C2",
+    "u_2d69e7fd46cf9c05/C1",
+    "u_d13d4ca584242835/C1",
+    "u_d13d4ca584242835/C2",
+    "u_5b459708324f5e70/C2",
+    "u_5b459708324f5e70/C1"
+  ],
+  "unknownCaseIds": [],
+  "unattemptedCaseIds": [],
+  "dispositionErrors": [],
+  "logCloseErrors": [],
+  "heldOutCases": 0,
+  "purpose": "qualification_only",
+  "blockIndex": 0,
+  "initialSystemSwapUsedBytes": 34078720,
+  "sequenceEpochMonotonic": 21502.49456731,
+  "conditionsMeasured": [
+    "C1",
+    "C2"
+  ],
+  "semanticJudgments": "AI-assisted; no independent human review",
+  "formalHardwareQualification": false,
+  "modelRequests": 0,
+  "knownRepeatLaunchSha256": "d38cc95382d625da2c95f4de1bd77a6c227835a8f4859a280bb9ef472e555f74",
+  "knownRepeatIndex": 1,
+  "operationalWatchdog": {
+    "blockWallSeconds": 1800,
+    "rendererTimeoutSeconds": 600,
+    "sustainedResourceSeconds": 60,
+    "parentAllowanceSeconds": 120,
+    "shutdownGraceSeconds": 30,
+    "maxOwnedRssBytes": null,
+    "minAvailableBytes": null,
+    "maxSwapIncreaseBytes": null
+  },
+  "buildFreezePath": "experiments/ch7/mac-known-repeats-qualification/frozen-build.json",
+  "ownedProcessRegistrySha256": "febb03206d6bd30a72d7ae449cb905e2ef477bfebe05f9a3b38b248f76e0cb2e"
+}
