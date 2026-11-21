@@ -1,0 +1,43 @@
+{
+ "schema": "aijade.ch7.mac-qualification-acceptance-reading.v1",
+ "date": "2026-11-21",
+ "implementationCommit": "1cd3f6f2a5399f14d30bf8e8690e6c8ef2c0a542",
+ "buildFreezeCommit": "e681e5097a1f55782e6adcb1c6821abc4afe297c",
+ "approvalSha256": "1959c6f722fd9e2c9dab1a460b4ebb443fff07d59db0e0fbc0ecff6239dc7b5e",
+ "approvedCriteria": [
+  "two runs of the same 20 known conditions with identical per-case verdicts",
+  "no case ending by timeout or error"
+ ],
+ "result": {
+  "criterion1_sameVerdicts": {
+   "comparableRows": 20,
+   "differences": 0,
+   "pairBlockers": 0,
+   "status": "OFFLINE_REPEAT_MATCH"
+  },
+  "criterion2_noTimeoutOrError": {
+   "repeat1": [
+    20,
+    20
+   ],
+   "repeat2": [
+    20,
+    20
+   ],
+   "unknownInFlightUnattemptedDispositionErrors": 0
+  },
+  "evidenceBinding": "READY_FOR_QUALIFICATION_ACCEPTANCE_REVIEW",
+  "reading": "both approved criteria met on attempt-07, after four prospectively recorded deviations and six stopped attempts"
+ },
+ "deviations": [
+  "renderer Godot version check 15 s -> 120 s",
+  "test database durability settings off",
+  "Godot wrapper no longer pre-creates the scene output directory",
+  "renderer consumes one intent per rendered frame"
+ ],
+ "priorStoppedAttempts": 6,
+ "deviationRecord": "AIJADE-papers 追加实验注册稿/第七章_Mac资格偏离记录_20261121.md",
+ "modelRequests": 0,
+ "heldoutCasesCreated": 0,
+ "note": "Reading by the author's assistant against the approved criteria; the supervisor has not yet reviewed it. Held-out cases are not constructed."
+}
