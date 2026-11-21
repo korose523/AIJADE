@@ -1,0 +1,22 @@
+{
+  "schema": "aijade.ch7.known-repeat-execution-plan.v1",
+  "purpose": "qualification_only",
+  "repeats": 2,
+  "conditionSlotsPerRepeat": 20,
+  "watchdog": {
+    "blockWallSeconds": 1800,
+    "rendererTimeoutSeconds": 600,
+    "sustainedResourceSeconds": 60,
+    "parentAllowanceSeconds": 120,
+    "shutdownGraceSeconds": 30,
+    "maxOwnedRssBytes": null,
+    "minAvailableBytes": null,
+    "maxSwapIncreaseBytes": null
+  },
+  "toolsSha256": {
+    "python": "8c07327d57b20efe7171a923158e2efbc3fa851675e710535ac1185c6311a2be",
+    "dotnet": "9a176efc73dc886b4c6a4af0992ffbe862e6143381e6d00f24858e9ffda6c212",
+    "docker": "edbd77a344595b0fca4441c84ac61588ecde7b1f5548b5a4365113274d422f95"
+  },
+  "databasePort": 55432
+}
