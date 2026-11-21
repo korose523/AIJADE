@@ -1,0 +1,114 @@
+{
+  "schema": "aijade.ch7.finite-scoring-manifest.v1",
+  "purpose": "confirmed_finite_heldout",
+  "constructionFreezeCommit": "1cd3f6f2a5399f14d30bf8e8690e6c8ef2c0a542",
+  "blockIndex": 2,
+  "runtimeManifestSha256": "fc67bf05f2feeb956b07ab0a38ebcbc9264414f4518872aca36af5c1a93bfbcd",
+  "selectionSha256": "bfb4a59397f07f02c31bc01f8194daa059c630362e3128290cf503298da053c2",
+  "conditions": [
+    {
+      "id": "C1",
+      "policy": "strong-local-v1"
+    },
+    {
+      "id": "C2",
+      "policy": "cross-module-v1"
+    }
+  ],
+  "windowRegistrySha256": "edaadb5fb69a2e00ca202136273546a79aeece346dfd4caa6096579ccb7f0681",
+  "cases": [
+    {
+      "caseId": "h_66d34db8745908a110760a32",
+      "class": "integrity",
+      "window": "claimed_receipt_stage",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "h_3deaea8a79beec303a43d6ab",
+      "class": "integrity",
+      "window": "post_promotion_authority_write",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "h_ae32a107414e6047bfcdd63b",
+      "class": "normal",
+      "window": "none",
+      "promotionOpportunity": 0,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 0,
+      "allowedReuses": 1
+    },
+    {
+      "caseId": "h_68b4ee2b15895b300ef4a5ef",
+      "class": "integrity",
+      "window": "revocation_before_round2",
+      "promotionOpportunity": 0,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "h_a6dbdf1ad3779348251cb344",
+      "class": "integrity",
+      "window": "execution_failed",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "h_b4d3bb95ae20180a8bee5ca2",
+      "class": "semantic_control",
+      "window": "wrong_allowed_act_in_round1",
+      "promotionOpportunity": 0,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 0,
+      "allowedReuses": 1
+    },
+    {
+      "caseId": "h_509450bd0139a5e855aabecf",
+      "class": "integrity",
+      "window": "execution_unknown",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "h_2210f348cd964dc715a6983c",
+      "class": "integrity",
+      "window": "duplicate_invocation_2",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 1,
+      "reuseOpportunity": 1,
+      "allowedReuses": 1
+    },
+    {
+      "caseId": "h_93636b75d97210db58fcb432",
+      "class": "integrity",
+      "window": "asset_admission",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    },
+    {
+      "caseId": "h_83afc0d1bebf879f7277484e",
+      "class": "integrity",
+      "window": "execution_receipt_intent",
+      "promotionOpportunity": 1,
+      "allowedSpecs": 0,
+      "reuseOpportunity": 1,
+      "allowedReuses": 0
+    }
+  ],
+  "scheduledInvalidPromotionOpportunitiesPerCondition": 7,
+  "scheduledInvalidReuseOpportunitiesPerCondition": 8,
+  "round2SemanticActCorrectness": "NOT_MEASURED"
+}

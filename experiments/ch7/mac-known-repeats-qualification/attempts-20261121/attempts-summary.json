@@ -49,35 +49,6 @@
    "completedCases": 0,
    "modelRequests": 0,
    "wallSeconds": 187.318132239001
-  },
-  {
-   "attempt": "attempt-06",
-   "status": "STOPPED",
-   "reason": "RuntimeError: flow_nonzero_exit",
-   "measurementStarted": true,
-   "completedCases": 0,
-   "modelRequests": 0,
-   "wallSeconds": 282.23698598400006
-  },
-  {
-   "attempt": "attempt-07",
-   "status": "COMPLETE_KNOWN_REPEAT_LAUNCH",
-   "repeats": [
-    {
-     "status": "COMPLETE_FINITE_BLOCK_OBSERVATIONS",
-     "completedCases": 20,
-     "plannedCases": 20,
-     "wallSeconds": 391.92547071100125,
-     "modelRequests": 0
-    },
-    {
-     "status": "COMPLETE_FINITE_BLOCK_OBSERVATIONS",
-     "completedCases": 20,
-     "plannedCases": 20,
-     "wallSeconds": 519.8362220169984,
-     "modelRequests": 0
-    }
-   ]
   }
  ],
  "cause": {
@@ -85,41 +56,15 @@
   "attempt-02": "renderer: Godot --headless --version via the wrapper exceeded the renderer script's fixed 15 s; Godot was on the NTFS drive",
   "attempt-03": "same 15 s timeout with Godot on the APFS image; the same call takes 0.5-0.75 s outside the run",
   "attempt-04": "after the one prospectively recorded deviation (renderer version timeout 15 s to 120 s, docs cdae41e): the flow test Run_finite_manifest_dataflow failed after 341 s with Npgsql \"Timeout during reading attempt\" against the local PostgreSQL container; the renderer never started",
-  "attempt-05": "after the second prospectively recorded deviation (test-database durability settings, docs 08b71b6/cf03b51): the flow reached the renderer and the Godot version check passed; the Godot scene then refused because MOSAIC_SCENE_OUT already existed (godot_local.py creates that directory on every call, including the version check), and the process observer stopped the run on NoSuchProcess",
-  "attempt-06": "after the third prospectively recorded deviation (Godot wrapper no longer pre-creates MOSAIC_SCENE_OUT; Q'' 1cd3f6f, B' e681e50, docs 5f52618): the renderer ran and exited 0, but the flow test failed: the render-receipt import marked every case unknown with reason two_intents_in_row (the renderer consumed the intents without writing an applied receipt between them; its log says the native diagnostic started and PMX/humanoid balance remain unaccepted)"
+  "attempt-05": "after the second prospectively recorded deviation (test-database durability settings, docs 08b71b6/cf03b51): the flow reached the renderer and the Godot version check passed; the Godot scene then refused because MOSAIC_SCENE_OUT already existed (godot_local.py creates that directory on every call, including the version check), and the process observer stopped the run on NoSuchProcess"
  },
- "qualificationDetermined": true,
+ "qualificationDetermined": false,
  "heldoutCasesCreated": 0,
  "deviation": {
   "record": "docs 追加实验注册稿/第七章_Mac资格偏离记录_20261121.md (cdae41e, pushed before attempt-04)",
   "approvalSha256Attempt04": "e3e5c5367f8650d38424843f13fcc71db4d69a9ea6db7a804cf61a86b41a25fa",
   "approvalSha256Attempts01to03": "7edc2c26bccfd2b3374b47cc76a71a2f2346bc3b3bfcb865b0dd90cd5cd10f94",
-  "second": "test database aijade-next-db: fsync, synchronous_commit, full_page_writes off; checkpoint_timeout 1800 s (ALTER SYSTEM; reversible)",
-  "third": "experiments/ch7/godot_local.py: engine log to AIJADE_GODOT_LOG_DIR, one file per call; MOSAIC_SCENE_OUT left to the scene",
-  "fourth": "renderer BehaviorDriver consumes one intent per rendered frame (prepared-renderer-v4; docs 8d98bff)"
+  "second": "test database aijade-next-db: fsync, synchronous_commit, full_page_writes off; checkpoint_timeout 1800 s (ALTER SYSTEM; reversible)"
  },
- "stopRule": "as recorded before attempt-04: no further apparatus changes; report all records to the supervisor",
- "implementationCommitAttempt06": "1cd3f6f2a5399f14d30bf8e8690e6c8ef2c0a542",
- "buildFreezeCommitAttempt06": "e681e50",
- "qualification": {
-  "criterion1_sameVerdicts": {
-   "comparableRows": 20,
-   "differences": 0,
-   "pairBlockers": 0,
-   "status": "OFFLINE_REPEAT_MATCH"
-  },
-  "criterion2_noTimeoutOrError": {
-   "repeat1": [
-    20,
-    20
-   ],
-   "repeat2": [
-    20,
-    20
-   ],
-   "unknownInFlightUnattemptedDispositionErrors": 0
-  },
-  "evidenceBinding": "READY_FOR_QUALIFICATION_ACCEPTANCE_REVIEW",
-  "reading": "both approved criteria met on attempt-07, after four prospectively recorded deviations and six stopped attempts"
- }
+ "stopRule": "as recorded before attempt-04: no further apparatus changes; report all records to the supervisor"
 }
