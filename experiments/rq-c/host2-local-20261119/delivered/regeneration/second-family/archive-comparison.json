@@ -1,0 +1,123 @@
+{
+  "complete": true,
+  "conditions": {
+    "sv0-ef0": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "code": "function solve(iso) {\n    const date = new Date(iso);\n    const utcDate = new Date(date.toUTCString());\n    const formattedDate = utcDate.toISOString().split('T')[0];\n    return formattedDate;\n}",
+          "execution": true,
+          "generation": "```js\nfunction solve(iso) {\n    const date = new Date(iso);\n    const utcDate = new Date(date.toUTCString());\n    const formattedDate = utcDate.toISOString().split('T')[0];\n    return formattedDate;\n}\n```"
+        },
+        "differs": [
+          "generation",
+          "code",
+          "execution"
+        ],
+        "regenerated": {
+          "code": "function solve(iso) {\n    const date = new Date(iso);\n    const utcDate = new Date(date.toUTCString());\n    const year = utcDate.getFullYear();\n    const month = String(utcDate.getMonth() + 1).padStart(2, '0');\n    const day = String(utcDate.getDate()).padStart(2, '0');\n    return `${year}-${month}-${day}`;\n}",
+          "execution": false,
+          "generation": "```js\nfunction solve(iso) {\n    const date = new Date(iso);\n    const utcDate = new Date(date.toUTCString());\n    const year = utcDate.getFullYear();\n    const month = String(utcDate.getMonth() + 1).padStart(2, '0');\n    const day = String(utcDate.getDate()).padStart(2, '0');\n    return `${year}-${month}-${day}`;\n}\n```"
+        },
+        "skill": "sv0-ef0-t0-r0-date-format-iso",
+        "step": 1
+      },
+      "identicalPrefixSteps": 1,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    },
+    "sv0-ef1": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}",
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```"
+        },
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "regenerated": {
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}",
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```"
+        },
+        "skill": "sv0-ef1-t0-r0-arr-sum",
+        "step": 0
+      },
+      "identicalPrefixSteps": 0,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    },
+    "sv1-ef0": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}",
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```"
+        },
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "regenerated": {
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}",
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```"
+        },
+        "skill": "sv1-ef0-t0-r0-arr-sum",
+        "step": 0
+      },
+      "identicalPrefixSteps": 0,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    },
+    "sv1-ef1": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}",
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```"
+        },
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "regenerated": {
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}",
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```"
+        },
+        "skill": "sv1-ef1-t0-r0-arr-sum",
+        "step": 0
+      },
+      "identicalPrefixSteps": 0,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    }
+  },
+  "identical": false,
+  "ollamaVersions": {
+    "archived": "0.40.0",
+    "regenerated": "0.40.16"
+  },
+  "population": {
+    "archivedTrials": 30,
+    "conditions": [
+      "sv0-ef0",
+      "sv0-ef1",
+      "sv1-ef0",
+      "sv1-ef1"
+    ],
+    "regeneratedTrials": 30,
+    "rounds": 5,
+    "tasksPerTrial": 12
+  },
+  "scope": "FULL_RUN",
+  "status": "DIFFERENT"
+}

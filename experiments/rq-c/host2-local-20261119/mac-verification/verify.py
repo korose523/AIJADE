@@ -4,7 +4,7 @@ Checks: manifest hashes; repeat passes differ only in durationMs; per-configurat
 per-task execution rates; oracle verdicts on byte-identical programs; self-verdicts on identical program hashes."""
 import collections, hashlib, json
 from pathlib import Path
-HERE = Path(__file__).resolve().parent; X = HERE.parent / 'release'; A = HERE.parents[1]  # experiments/rq-c
+HERE = Path(__file__).resolve().parent; X = HERE.parent / 'delivered'; A = HERE.parents[1]  # experiments/rq-c
 PAIRS = {'template-a': 'template-gpu/A', 'template-b': 'template-gpu/B', 'second-family': 'family-gpu'}
 L = lambda p: json.loads(Path(p).read_text(encoding='utf-8-sig'))
 rows = lambda p: [json.loads(l) for l in open(p, encoding='utf-8-sig')]

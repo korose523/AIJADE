@@ -1,0 +1,343 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 30,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "llama3.1:8b",
+    "rounds": 5,
+    "pCorrect": 0.5,
+    "tasks": 12,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "maxReplyTokens": 4096,
+    "numCtx": 4096
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "llama3.1:8b",
+    "temperature": 0,
+    "seed": 3759066737,
+    "ollamaVersion": "0.40.16",
+    "modelDigest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+    "abortedReplies": 0,
+    "lengthLimitedReplies": 0,
+    "nonConformingVerdicts": 7,
+    "warmUp": true
+  },
+  "analysisUnit": "skill",
+  "nSkills": 1514,
+  "nExecutions": 7200,
+  "fingerprint": "7cdf5c03",
+  "gitHash": "b6d44d5742eb98008f40df57ce1aba2ad1f623a2",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 395,
+      "precision": 0.9116666666666666,
+      "retiredRate": 0.08860759493670886,
+      "meanCallsPerSkill": 4.556962025316456
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9027777777777778,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 399,
+      "precision": 0.9116666666666666,
+      "retiredRate": 0.08771929824561403,
+      "meanCallsPerSkill": 4.511278195488722
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.9,
+        "lo": 0.8694444444444445,
+        "hi": 0.9305555555555556
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.9116666666666666,
+        "lo": 0.8889515140804327,
+        "hi": 0.9326028886241811
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.9027777777777778,
+        "lo": 0.8722222222222222,
+        "hi": 0.9333333333333333
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.9116666666666666,
+        "lo": 0.8889518413597733,
+        "hi": 0.9326032242929553
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 759,
+    "hallucinationRate": 0.9306930693069307,
+    "missRate": 0,
+    "agreement": 0.8761528326745718,
+    "falseDiscoveryRate": 0.125,
+    "falseOmissionRate": 0
+  },
+  "diffInDiff": {
+    "estimate": -0.002777777777777768,
+    "ci": {
+      "mean": -0.002777777777777768,
+      "lo": -0.05764273657740252,
+      "hi": 0.049769868833410606
+    },
+    "cellMeans": {
+      "a": 0.9,
+      "b": 0.9116666666666666,
+      "c": 0.9027777777777778,
+      "d": 0.9116666666666666
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 0.569217064714946,
+    "riskDifference": -0.06259795689896452,
+    "cramersV": 0.09056529900670714,
+    "cohensH": -0.1874695885716675,
+    "interactionLogOdds": {
+      "estimate": -0.003081666537408112,
+      "se": 0.049511994599977495,
+      "z": -0.06224080775387532,
+      "p": 0.9503710655796902
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 0.00042522924585413637,
+        "adjustedP": 0.0038270632126872275,
+        "reject": true
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 0.9107159229201508,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 0.9503710655796902,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 0.000015258789062500003,
+        "adjustedP": 0.00015258789062500003,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 0.02658119132241931,
+        "adjustedP": 0.13290595661209656,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 0.011346169921559655,
+        "adjustedP": 0.07942318945091759,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 0.019219467453400137,
+        "adjustedP": 0.11531680472040082,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 0.8201923730055894,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 0.007932505610000102,
+        "adjustedP": 0.06346004488000082,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": -0.003081666537408112,
+    "se": 0.049511994599977495,
+    "z": -0.06224080775387532,
+    "p": 0.9503710655796902
+  },
+  "chiSquare": {
+    "statistic": 12.417939103639842,
+    "p": 0.00042522924585413637,
+    "table": [
+      [
+        666,
+        128
+      ],
+      [
+        649,
+        71
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareSelfVerification": {
+    "statistic": 0.012574383675311619,
+    "p": 0.9107159229201508,
+    "table": [
+      [
+        658,
+        101
+      ],
+      [
+        657,
+        98
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 2.1242656233530806,
+    "p": 0.14498225579142177,
+    "table": [
+      [
+        3282,
+        318
+      ],
+      [
+        3245,
+        355
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 54,
+    "b": 17,
+    "c": 0,
+    "d": 649,
+    "nPairs": 720,
+    "chiSquare": 15.058823529411764,
+    "pChiSquare": 0.00010421194515808909,
+    "pExact": 0.000015258789062500003,
+    "p": 0.000015258789062500003,
+    "usedExact": true
+  },
+  "power": {
+    "minDetectableEffectAt80": 10.123537517916795,
+    "nSkillsPerCell": 379,
+    "powerAtDelta10pp": 0.7942247004851921,
+    "powerAtDelta5pp": 0.28098439139405035
+  },
+  "powerReference": [
+    {
+      "nPerCell": 240,
+      "minDetectableEffectAt80pp": 12.68,
+      "powerAtDelta10pp": 0.5999,
+      "powerAtDelta5pp": 0.1944
+    },
+    {
+      "nPerCell": 360,
+      "minDetectableEffectAt80pp": 10.38,
+      "powerAtDelta10pp": 0.7735,
+      "powerAtDelta5pp": 0.2693
+    }
+  ],
+  "preregistrationDeviation": [],
+  "degeneracy": {
+    "allCellsIdenticalPrecision": false,
+    "totalRegenerations": 74,
+    "totalRecoveries": 16,
+    "recoveredRate": 0.21621621621621623,
+    "manipulationReachable": true,
+    "note": "reachable: cells differ and 16/74 regenerations recovered with changed code (16 recovered in all)",
+    "totalRecoveriesWithChangedCode": 16
+  },
+  "loopDiagnostics": [
+    {
+      "condition": "sv0-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv0-ef1",
+      "loop": {
+        "regenerations": 35,
+        "regenerationsWithSignal": 35,
+        "recoveries": 8,
+        "recoveredRate": 0.22857142857142856
+      }
+    },
+    {
+      "condition": "sv1-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv1-ef1",
+      "loop": {
+        "regenerations": 39,
+        "regenerationsWithSignal": 39,
+        "recoveries": 8,
+        "recoveredRate": 0.20512820512820512
+      }
+    }
+  ]
+}

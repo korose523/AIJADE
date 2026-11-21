@@ -1,0 +1,193 @@
+diff --git a/docs/P2-R-WINDOWS-LOCAL-STATUS-20261119.md b/docs/P2-R-WINDOWS-LOCAL-STATUS-20261119.md
+new file mode 100644
+index 0000000..422c7d5
+--- /dev/null
++++ b/docs/P2-R-WINDOWS-LOCAL-STATUS-20261119.md
+@@ -0,0 +1,41 @@
++# P2-R local Windows preparation and execution status, 19 November 2026
++
++The operator requested execution on the current Windows computer. This request
++is recorded separately from the supervisor reply and departmental allocation
++required by the reviewed department protocol. The local machine has not acquired
++formal device qualification. No local output is automatically a replacement for
++any published or archived result.
++
++The source runner is frozen at Git b6d44d5742eb98008f40df57ce1aba2ad1f623a2.
++The Linux build uses .NET SDK 10.0.403. The WSL offline preflight passed with
++Node v22.23.5 and the canonical worklist digest. Both Rqc and Substrate built
++without warnings or errors. These are deployment observations, not evidence of
++model determinism or scientific agreement.
++
++A local collector development change permits exact, explicitly pinned historical
++retention witnesses predating the current boot. The current-host checks for all
++window events remain active. The change requires independent configuration review
++before use in a departmental phase. Private native XML and host identifiers remain
++in the local receipt directory, outside this document.
++
++The local run record must preserve the actual server version, model digests,
++individual fresh launches, model-unload evidence, pre/post host logs, repeat audit,
++positive controls, full regeneration comparisons, interruptions and all deviations.
++Regeneration must stop when repeat/control checks or log coverage fail. Device
++qualification, supervisor authorization and manuscript adoption remain separate.
++
++## Draft manuscript wording pending local execution
++
++English: A Windows-hosted WSL 2 environment was prepared and its offline dependency
++checks passed. Local execution was initiated under the operator's instruction on a
++machine without established device qualification. These engineering observations
++do not establish reproducibility of the archived model outputs. Scientific
++comparisons and any replacement of the archived results require complete run
++records and review of the recorded deviations.
++
++中文：已完成 Windows 宿主与 WSL 2 运行环境部署，离线依赖预检通过。本机运行依据操作者指令启动，但设备尚未取得正式资格。环境部署及工程运行不能证明归档模型输出可重复；科学比较及归档结果替换须依据完整运行记录，并审阅环境和执行方案的偏离。
++
++This wording is a draft addendum. The private Chinese/English manuscripts and
++thesis source are not present in this checkout; no PDF rebuild or insertion into
++the authoritative manuscripts is claimed. Human source verification and author
++approval remain pending.
+diff --git a/experiments/rq-c/DEPARTMENT-WINDOWS-WSL.md b/experiments/rq-c/DEPARTMENT-WINDOWS-WSL.md
+index 9081aad..8ceaee0 100644
+--- a/experiments/rq-c/DEPARTMENT-WINDOWS-WSL.md
++++ b/experiments/rq-c/DEPARTMENT-WINDOWS-WSL.md
+@@ -87,3 +87,25 @@ helper, verifies the event query interval on the hosted runner, and exercises au
+ Actual interop, event channel
+ visibility, runtime identity and an approved live phase remain separate
+ checks for the assigned machine.
++
++## Historical computer names in retained anchors
++
++A renamed Windows installation may retain its oldest System record under its
++previous computer name. The default collector rejects that witness. A reviewed
++configuration may optionally include `historicalAnchorSha256`, a mapping from
++`System` or `Application` to the SHA-256 of the exact retained anchor XML encoded
++as UTF-8. Preserve the original native export and verify that this historical
++record belongs to the current local log before approving the configuration.
++The pin is an explicit operator attestation, not proof of machine continuity.
++The pinned record must precede both the current Windows boot and query start.
++Both before and after witnesses must match it exactly. All queried window events
++still require the current host name. Rotation, record replacement or a pin change
++requires a new reviewed configuration; no event log should be cleared to make
++this check pass. Pins enter the query identity and configuration digest.
++
++For a local WSL deployment, use the effective Windows execution policy without
++policy overrides. A `RemoteSigned` policy may treat `\\wsl.localhost` as a
++remote origin; review the local UNC zone classification. Also verify WSLInterop
++registration and the Windows PowerShell 5.1 module search path. Test actual helper
++execution, as dependency probes do not read event logs. Local deployment and
++model runs on an unqualified machine do not acquire departmental qualification.
+diff --git a/experiments/rq-c/collect_department_windows.py b/experiments/rq-c/collect_department_windows.py
+index e4e3156..159c63c 100755
+--- a/experiments/rq-c/collect_department_windows.py
++++ b/experiments/rq-c/collect_department_windows.py
+@@ -35,8 +35,15 @@ def fields(value, names, label):
+ 
+ 
+ def config_from(raw):
+-    cfg = fields(decode(raw), "schema allocation powerShell powerShellSha256 nativeHelperSha256 nvidiaSmi "
+-                            "nvidiaSmiSha256 gpuUuid serviceNames applicationExecutables applicationProviders",
++    value = decode(raw)
++    need(type(value) is dict, "invalid Windows collector configuration")
++    pins = value.get("historicalAnchorSha256", {})
++    need(type(pins) is dict and set(pins) <= set(CHANNELS) and all(
++        type(item) is str and SHA256.fullmatch(item) for item in pins.values()),
++        "invalid historical retention-anchor pins")
++    cfg = fields(value, "schema allocation powerShell powerShellSha256 nativeHelperSha256 nvidiaSmi "
++                            "nvidiaSmiSha256 gpuUuid serviceNames applicationExecutables applicationProviders"
++                            + (" historicalAnchorSha256" if "historicalAnchorSha256" in value else ""),
+                  "Windows collector configuration")
+     need(cfg["schema"] == CONFIG, "unknown Windows collector configuration schema")
+     allocation = cfg["allocation"]
+@@ -154,12 +161,24 @@ def xpath_for(since, until):
+     return f"*[System[TimeCreated[@SystemTime >= '{fixed_time(since)}' and @SystemTime < '{fixed_time(until)}']]]"
+ 
+ 
+-def anchor(value, channel, computer, since):
++def anchor(value, channel, computer, since, boot=None, historical_sha=None):
+     fields(value, "oldestRecordId recordCount logFilePath logMode xml", "Windows retention anchor")
+     need(type(value["oldestRecordId"]) is int and type(value["recordCount"]) is int and value["recordCount"] > 0
+          and type(value["logFilePath"]) is str and value["logFilePath"].strip()
+          and value["logMode"] in ("Circular", "AutoBackup", "Retain"), "invalid Windows log retention metadata")
+-    _, _, record_id, _, when, _ = event_from(value["xml"], channel, computer)
++    # Only an independently pinned retention witness may predate a host rename.
++    # Window events always retain the strict current-host check below.
++    anchor_computer = computer
++    if historical_sha is not None:
++        need(sha(value["xml"].encode()) == historical_sha, "historical retention anchor differs from its pin")
++        need(type(value["xml"]) is str and "<!" not in value["xml"], "invalid Windows event XML")
++        parsed = ElementTree.fromstring(value["xml"])
++        anchor_computer = parsed.findtext("e:System/e:Computer", namespaces=NAMESPACE) or ""
++        need(bool(re.fullmatch(r"[a-zA-Z0-9._-]{1,253}", anchor_computer)), "invalid historical anchor computer")
++    _, _, record_id, _, when, _ = event_from(value["xml"], channel, anchor_computer)
++    if historical_sha is not None:
++        need(boot is not None and when < boot and when < since,
++             "historical retention anchor must precede the current boot and query")
+     need(record_id == value["oldestRecordId"] and when <= since, "Windows log has no readable start boundary")
+     return when
+ 
+@@ -183,8 +202,9 @@ def capture(native, cfg, since, until, config_sha, collector_sha, argv):
+         data = fields(channel_rows[channel], "xpath before events after", "Windows event channel export")
+         need(data["xpath"] == xpath_for(since, until), "native Windows XPath differs from the reviewed interval query")
+         before, after, records = data["before"], data["after"], data["events"]
+-        before_at = anchor(before, channel, computer, since)
+-        after_at = anchor(after, channel, computer, since)
++        historical_sha = cfg.get("historicalAnchorSha256", {}).get(channel)
++        before_at = anchor(before, channel, computer, since, boot, historical_sha)
++        after_at = anchor(after, channel, computer, since, boot, historical_sha)
+         start = max(start, before_at, after_at)
+         stable = ("oldestRecordId", "logFilePath", "logMode", "xml")
+         need(all(before[name] == after[name] for name in stable) and after["recordCount"] >= before["recordCount"],
+@@ -213,6 +233,8 @@ def capture(native, cfg, since, until, config_sha, collector_sha, argv):
+               "interval": "half-open UTC TimeCreated", "serviceNames": sorted(map(str.casefold, cfg["serviceNames"])),
+               "applicationExecutables": sorted(map(str.casefold, cfg["applicationExecutables"])),
+               "applicationProviders": sorted(map(str.casefold, cfg["applicationProviders"]))}
++    if "historicalAnchorSha256" in cfg:
++        common["historicalAnchorSha256"] = cfg["historicalAnchorSha256"]
+     sources = {}
+     for label in events:
+         scope = {**common, "source": label}
+diff --git a/experiments/rq-c/test_collect_department_windows.py b/experiments/rq-c/test_collect_department_windows.py
+index 8b7168a..20dcb6f 100644
+--- a/experiments/rq-c/test_collect_department_windows.py
++++ b/experiments/rq-c/test_collect_department_windows.py
+@@ -58,6 +58,41 @@ def capture(packet, until=END):
+ 
+ 
+ class WindowsCollectorTests(unittest.TestCase):
++    def test_historical_anchor_requires_exact_explicit_pin(self):
++        packet = native(END)
++        old = event("System", 1, -120, computer="OLD-NAME")
++        for side in ("before", "after"):
++            packet["channels"]["System"][side]["xml"] = old
++        with self.assertRaisesRegex(ValueError, "another computer"):
++            capture(packet)
++        cfg = dict(CFG, historicalAnchorSha256={"System": windows.sha(old.encode())})
++        def read(value, config=cfg):
++            return windows.capture(json.dumps(value).encode(), config, SINCE, END,
++                                   windows.sha(json.dumps(config).encode()), COLLECTOR_SHA, ["synthetic"])
++        result = read(packet)
++        self.assertEqual(cfg["historicalAnchorSha256"], result["sources"]["system"]["queryScope"]["historicalAnchorSha256"])
++        changed = copy.deepcopy(packet)
++        changed["channels"]["System"]["after"]["xml"] = old.replace("OLD-NAME", "OTHER-NAME")
++        with self.assertRaisesRegex(ValueError, "differs from its pin"):
++            read(changed)
++        bad = copy.deepcopy(packet)
++        bad["channels"]["System"]["events"] = [event("System", 99, 1, computer="OLD-NAME")]
++        with self.assertRaisesRegex(ValueError, "another computer"):
++            read(bad)
++        self.assertEqual(cfg, windows.config_from(json.dumps(cfg).encode()))
++
++    def test_historical_anchor_cannot_cover_current_boot_or_bad_channel(self):
++        packet = native(END)
++        raw = event("System", 1, -30, computer="OLD-NAME")
++        for side in ("before", "after"):
++            packet["channels"]["System"][side]["xml"] = raw
++        cfg = dict(CFG, historicalAnchorSha256={"System": windows.sha(raw.encode())})
++        with self.assertRaisesRegex(ValueError, "precede the current boot"):
++            windows.capture(json.dumps(packet).encode(), cfg, SINCE, END, CONFIG_SHA, COLLECTOR_SHA, [])
++        for pins in ({"Other": "a" * 64}, {"System": "bad"}, []):
++            with self.subTest(pins=pins), self.assertRaisesRegex(ValueError, "anchor pins"):
++                windows.config_from(json.dumps(dict(CFG, historicalAnchorSha256=pins)).encode())
++
+     def test_quiet_repeated_coverage_through_launcher_validator(self):
+         baseline = capture(native(CUTOFF), CUTOFF)
+         final = capture(native(END))

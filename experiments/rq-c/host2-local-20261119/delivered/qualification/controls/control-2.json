@@ -1,0 +1,105 @@
+{
+  "experiment": "determinism pre-check with a positive control (sampling deliberately opened)",
+  "model": "qwen2.5-coder:7b-instruct",
+  "digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+  "serverVersion": "0.40.16",
+  "fingerprint": "e6cd1042",
+  "verdict": "pass",
+  "discriminative": true,
+  "falsePositiveRisk": false,
+  "reason": "Deterministic and verified: 1 distinct output across 5 fixed-seed runs, on a substrate whose positive control diverged — so the match reflects real greedy decoding, not ignored sampling parameters.",
+  "check": {
+    "runs": 5,
+    "seedStrategy": "fixed",
+    "uniqueOutputs": 1,
+    "sampling": {
+      "temperature": 0,
+      "seed": 42,
+      "top_p": 1,
+      "top_k": 1,
+      "repeat_penalty": 1,
+      "num_ctx": 32768,
+      "num_predict": 2048,
+      "think": false
+    },
+    "perRun": [
+      {
+        "index": 0,
+        "seed": 42,
+        "hash": "31725e0b",
+        "chars": 527
+      },
+      {
+        "index": 1,
+        "seed": 42,
+        "hash": "31725e0b",
+        "chars": 527
+      },
+      {
+        "index": 2,
+        "seed": 42,
+        "hash": "31725e0b",
+        "chars": 527
+      },
+      {
+        "index": 3,
+        "seed": 42,
+        "hash": "31725e0b",
+        "chars": 527
+      },
+      {
+        "index": 4,
+        "seed": 42,
+        "hash": "31725e0b",
+        "chars": 527
+      }
+    ]
+  },
+  "control": {
+    "runs": 5,
+    "uniqueOutputs": 5,
+    "verdict": "divergent",
+    "sampling": {
+      "temperature": 1,
+      "seed": 42,
+      "top_p": 0.95,
+      "top_k": 40,
+      "repeat_penalty": 1,
+      "num_ctx": 32768,
+      "num_predict": 2048,
+      "think": false
+    },
+    "perRun": [
+      {
+        "index": 0,
+        "seed": 42,
+        "hash": "6e8dcc9f",
+        "chars": 575
+      },
+      {
+        "index": 1,
+        "seed": 7961,
+        "hash": "1990dcb8",
+        "chars": 598
+      },
+      {
+        "index": 2,
+        "seed": 15880,
+        "hash": "c0dedc80",
+        "chars": 572
+      },
+      {
+        "index": 3,
+        "seed": 23799,
+        "hash": "e0249d41",
+        "chars": 685
+      },
+      {
+        "index": 4,
+        "seed": 31718,
+        "hash": "649eac68",
+        "chars": 663
+      }
+    ]
+  }
+}

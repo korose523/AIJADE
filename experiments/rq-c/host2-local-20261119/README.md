@@ -15,8 +15,8 @@ The supervisor's review of 21 November accepts this run as a deviation record. I
 
 ## Contents
 
-- `release/`: the 75 files of the delivered release, byte for byte. `delivery-manifest.json` lists the other 74 with SHA-256 and size.
-  - `release/README.md` and `release/outcome.json` are the release's own statements, including its list of deviations.
+- `delivered/`: the 75 files of the delivered release, byte for byte. `delivery-manifest.json` lists the other 74 with SHA-256 and size.
+  - `delivered/README.md` and `delivered/outcome.json` are the release's own statements, including its list of deviations.
   - Private host logs, host identities and configuration stayed on the host and are not part of the release.
 - `mac-verification/verify.py`: a read-only check. It calls no model and runs no program.
 - `mac-verification/verification.json`: the output of that check, written on 20 November 2026.

@@ -1,0 +1,120 @@
+{
+  "complete": true,
+  "conditions": {
+    "sv0-ef0": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "code": "function solve(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}",
+          "generation": "```js\nfunction solve(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}\n```"
+        },
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "regenerated": {
+          "code": "function parseJson(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}",
+          "generation": "```js\nfunction parseJson(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}\n```"
+        },
+        "skill": "sv0-ef0-t1-r0-parse-json-safe",
+        "step": 63
+      },
+      "identicalPrefixSteps": 63,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    },
+    "sv0-ef1": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "code": "function solve(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}",
+          "generation": "```js\nfunction solve(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}\n```"
+        },
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "regenerated": {
+          "code": "function parseJson(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}",
+          "generation": "```js\nfunction parseJson(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}\n```"
+        },
+        "skill": "sv0-ef1-t1-r0-parse-json-safe",
+        "step": 63
+      },
+      "identicalPrefixSteps": 63,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    },
+    "sv1-ef0": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "verifierRationale": "PASS: The candidate solution correctly reverses the string for all provided test inputs.",
+          "verifierReply": "PASS: The candidate solution correctly reverses the string for all provided test inputs."
+        },
+        "differs": [
+          "verifierReply",
+          "verifierRationale"
+        ],
+        "regenerated": {
+          "verifierRationale": "PASS The candidate solution correctly reverses the input strings for all provided test cases.",
+          "verifierReply": "PASS The candidate solution correctly reverses the input strings for all provided test cases."
+        },
+        "skill": "sv1-ef0-t0-r0-str-reverse",
+        "step": 2
+      },
+      "identicalPrefixSteps": 2,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    },
+    "sv1-ef1": {
+      "archivedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "firstDivergence": {
+        "archived": {
+          "verifierRationale": "PASS: The candidate solution correctly reverses the string for all provided test inputs.",
+          "verifierReply": "PASS: The candidate solution correctly reverses the string for all provided test inputs."
+        },
+        "differs": [
+          "verifierReply",
+          "verifierRationale"
+        ],
+        "regenerated": {
+          "verifierRationale": "PASS The candidate solution correctly reverses the string for all provided test inputs.",
+          "verifierReply": "PASS The candidate solution correctly reverses the string for all provided test inputs."
+        },
+        "skill": "sv1-ef1-t0-r0-str-reverse",
+        "step": 2
+      },
+      "identicalPrefixSteps": 2,
+      "regeneratedSteps": 1800,
+      "sharedSteps": 1800
+    }
+  },
+  "identical": false,
+  "ollamaVersions": {
+    "archived": "0.40.0",
+    "regenerated": "0.40.16"
+  },
+  "population": {
+    "archivedTrials": 30,
+    "conditions": [
+      "sv0-ef0",
+      "sv0-ef1",
+      "sv1-ef0",
+      "sv1-ef1"
+    ],
+    "regeneratedTrials": 30,
+    "rounds": 5,
+    "tasksPerTrial": 12
+  },
+  "scope": "FULL_RUN",
+  "status": "DIFFERENT"
+}

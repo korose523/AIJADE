@@ -1,0 +1,343 @@
+{
+  "mode": "live",
+  "config": {
+    "trials": 30,
+    "seed": 42,
+    "backend": "ollama",
+    "model": "qwen2.5-coder:7b-instruct",
+    "rounds": 5,
+    "pCorrect": 0.5,
+    "tasks": 12,
+    "pruneThreshold": 0.5,
+    "pruneMinCalls": 3,
+    "domain": "executable",
+    "maxReplyTokens": 4096,
+    "numCtx": 4096
+  },
+  "sampling": {
+    "mode": "live",
+    "model": "qwen2.5-coder:7b-instruct",
+    "temperature": 0,
+    "seed": 3759066737,
+    "ollamaVersion": "0.40.16",
+    "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+    "abortedReplies": 0,
+    "lengthLimitedReplies": 0,
+    "nonConformingVerdicts": 0,
+    "warmUp": true
+  },
+  "analysisUnit": "skill",
+  "nSkills": 1613,
+  "nExecutions": 7200,
+  "fingerprint": "bc101508",
+  "gitHash": "b6d44d5742eb98008f40df57ce1aba2ad1f623a2",
+  "conditions": [
+    "sv0-ef0",
+    "sv0-ef1",
+    "sv1-ef0",
+    "sv1-ef1"
+  ],
+  "table": [
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": false,
+      "count": 360,
+      "precision": 0.9,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 5
+    },
+    {
+      "selfVerificationEnabled": false,
+      "envFeedbackEnabled": true,
+      "count": 396,
+      "precision": 0.9155555555555556,
+      "retiredRate": 0.09090909090909091,
+      "meanCallsPerSkill": 4.545454545454546
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": false,
+      "count": 412,
+      "precision": 0.8977777777777778,
+      "retiredRate": 0,
+      "meanCallsPerSkill": 4.368932038834951
+    },
+    {
+      "selfVerificationEnabled": true,
+      "envFeedbackEnabled": true,
+      "count": 445,
+      "precision": 0.9038888888888889,
+      "retiredRate": 0.07191011235955057,
+      "meanCallsPerSkill": 4.044943820224719
+    }
+  ],
+  "perCellCI": [
+    {
+      "sv": false,
+      "ef": false,
+      "ci": {
+        "mean": 0.9,
+        "lo": 0.8666666666666667,
+        "hi": 0.9305555555555556
+      }
+    },
+    {
+      "sv": false,
+      "ef": true,
+      "ci": {
+        "mean": 0.9155555555555556,
+        "lo": 0.8926357456308447,
+        "hi": 0.9365853658536586
+      }
+    },
+    {
+      "sv": true,
+      "ef": false,
+      "ci": {
+        "mean": 0.8977777777777778,
+        "lo": 0.8673451875029188,
+        "hi": 0.9259868649869666
+      }
+    },
+    {
+      "sv": true,
+      "ef": true,
+      "ci": {
+        "mean": 0.9038888888888889,
+        "lo": 0.8814027861154662,
+        "hi": 0.924650438592653
+      }
+    }
+  ],
+  "diagnostics": {
+    "n": 857,
+    "hallucinationRate": 0.6122448979591837,
+    "missRate": 0.09436619718309859,
+    "agreement": 0.8168028004667445,
+    "falseDiscoveryRate": 0.12278308321964529,
+    "falseOmissionRate": 0.5403225806451613
+  },
+  "diffInDiff": {
+    "estimate": -0.009444444444444478,
+    "ci": {
+      "mean": -0.009444444444444478,
+      "lo": -0.06324495075507905,
+      "hi": 0.042589993888481295
+    },
+    "cellMeans": {
+      "a": 0.9,
+      "b": 0.9155555555555556,
+      "c": 0.8977777777777778,
+      "d": 0.9038888888888889
+    }
+  },
+  "effectSizes": {
+    "oddsRatio": 0.6816568047337278,
+    "riskDifference": -0.04806146149723067,
+    "cramersV": 0.06560631458699913,
+    "cohensH": -0.13561180894606117,
+    "interactionLogOdds": {
+      "estimate": -0.010352414104990089,
+      "se": 0.04957338094461105,
+      "z": -0.20883010010063605,
+      "p": 0.8345808728658186
+    }
+  },
+  "multiplicity": {
+    "method": "holm",
+    "alpha": 0.05,
+    "adjusted": [
+      {
+        "label": "omnibus.envFeedbackAxis",
+        "p": 0.00841640473886406,
+        "adjustedP": 0.06733123791091249,
+        "reject": false
+      },
+      {
+        "label": "omnibus.selfVerificationAxis",
+        "p": 0.009794827089370886,
+        "adjustedP": 0.0685637896255962,
+        "reject": false
+      },
+      {
+        "label": "svXef.factorialInteraction",
+        "p": 0.8345808728658186,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "envFeedback.mcnemar",
+        "p": 0.0000019073486328125,
+        "adjustedP": 0.000019073486328125,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv0-ef1",
+        "p": 0.0682497171321973,
+        "adjustedP": 0.3907078319713111,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef0",
+        "p": 0.07069841071124461,
+        "adjustedP": 0.3907078319713111,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef0.vs.sv1-ef1",
+        "p": 0.00026619163673951847,
+        "adjustedP": 0.0023957247306556663,
+        "reject": true
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef0",
+        "p": 1,
+        "adjustedP": 1,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv0-ef1.vs.sv1-ef1",
+        "p": 0.07379904174808427,
+        "adjustedP": 0.3907078319713111,
+        "reject": false
+      },
+      {
+        "label": "pairwise.sv1-ef0.vs.sv1-ef1",
+        "p": 0.06511797199521852,
+        "adjustedP": 0.3907078319713111,
+        "reject": false
+      }
+    ]
+  },
+  "factorialInteraction": {
+    "estimate": -0.010352414104990089,
+    "se": 0.04957338094461105,
+    "z": -0.20883010010063605,
+    "p": 0.8345808728658186
+  },
+  "chiSquare": {
+    "statistic": 6.942656072579219,
+    "p": 0.00841640473886406,
+    "table": [
+      [
+        696,
+        145
+      ],
+      [
+        676,
+        96
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareSelfVerification": {
+    "statistic": 6.671835358192479,
+    "p": 0.009794827089370886,
+    "table": [
+      [
+        710,
+        147
+      ],
+      [
+        662,
+        94
+      ]
+    ],
+    "df": 1
+  },
+  "chiSquareExecutionLevel": {
+    "statistic": 2.3175695300952124,
+    "p": 0.12791976033493047,
+    "table": [
+      [
+        3275,
+        325
+      ],
+      [
+        3236,
+        364
+      ]
+    ],
+    "df": 1
+  },
+  "mcnemarEnvFeedback": {
+    "a": 48,
+    "b": 20,
+    "c": 0,
+    "d": 652,
+    "nPairs": 720,
+    "chiSquare": 18.05,
+    "pChiSquare": 0.00002151786437812018,
+    "pExact": 0.0000019073486328125,
+    "p": 0.0000019073486328125,
+    "usedExact": true
+  },
+  "power": {
+    "minDetectableEffectAt80": 9.820462744216085,
+    "nSkillsPerCell": 403,
+    "powerAtDelta10pp": 0.8180274018043789,
+    "powerAtDelta5pp": 0.29567008689429214
+  },
+  "powerReference": [
+    {
+      "nPerCell": 240,
+      "minDetectableEffectAt80pp": 12.68,
+      "powerAtDelta10pp": 0.5999,
+      "powerAtDelta5pp": 0.1944
+    },
+    {
+      "nPerCell": 360,
+      "minDetectableEffectAt80pp": 10.38,
+      "powerAtDelta10pp": 0.7735,
+      "powerAtDelta5pp": 0.2693
+    }
+  ],
+  "preregistrationDeviation": [],
+  "degeneracy": {
+    "allCellsIdenticalPrecision": false,
+    "totalRegenerations": 173,
+    "totalRecoveries": 76,
+    "recoveredRate": 0.4393063583815029,
+    "manipulationReachable": true,
+    "note": "reachable: cells differ and 76/173 regenerations recovered with changed code (76 recovered in all)",
+    "totalRecoveriesWithChangedCode": 76
+  },
+  "loopDiagnostics": [
+    {
+      "condition": "sv0-ef0",
+      "loop": {
+        "regenerations": 0,
+        "regenerationsWithSignal": 0,
+        "recoveries": 0,
+        "recoveredRate": null
+      }
+    },
+    {
+      "condition": "sv0-ef1",
+      "loop": {
+        "regenerations": 36,
+        "regenerationsWithSignal": 36,
+        "recoveries": 14,
+        "recoveredRate": 0.3888888888888889
+      }
+    },
+    {
+      "condition": "sv1-ef0",
+      "loop": {
+        "regenerations": 52,
+        "regenerationsWithSignal": 52,
+        "recoveries": 28,
+        "recoveredRate": 0.5384615384615384
+      }
+    },
+    {
+      "condition": "sv1-ef1",
+      "loop": {
+        "regenerations": 85,
+        "regenerationsWithSignal": 85,
+        "recoveries": 34,
+        "recoveredRate": 0.4
+      }
+    }
+  ]
+}
