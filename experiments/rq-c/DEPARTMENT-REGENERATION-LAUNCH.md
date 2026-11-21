@@ -79,3 +79,13 @@ For separate allocation windows add `--qualification-approval "$P2_APPROVAL_FILE
 After regeneration is accepted, use its original approval and the complete phase receipt to prepare the [P2-R Node replay and process evidence](DEPARTMENT-EXPLORATORY-ORACLE.md). The replay carries forward the approved plan and reply and uses its own reviewed process identity and allocation window.
 
 The worklist and tests are offline preparation. The supervisor's reply of 21 November 2026 approves group A from 2 December 2026; the formal department phases await the allocated host, and the separate follow-on experiments their own plans.
+
+## Two-layer report
+
+The approved plan reports each regenerated run in two layers. `regen_compare_v2.py` gives the first divergent step. For the rest of the generation layer (programs byte for byte identical to an archived program of the same task, and each task's execution pass rate) and for the judgment layer (whether the execution oracle and the verifier's majority self-verdict agree on programs that occur in both runs), run, for each group:
+
+```sh
+python3 -B experiments/rq-c/two_layer_report.py <archived run directory> <regenerated run directory> --out two-layer.json
+```
+
+It reads only `trials.jsonl` and `candidates.jsonl`, and runs no model and no program. On the host-2 deviation run it reproduces the oracle and self-verdict counts of `host2-local-20261119/mac-verification/verification.json`. False-pass rates, false-fail rates and task-clustered intervals are reported per run and are not pooled.
