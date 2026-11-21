@@ -78,4 +78,4 @@ For separate allocation windows add `--qualification-approval "$P2_APPROVAL_FILE
 
 After regeneration is accepted, use its original approval and the complete phase receipt to prepare the [P2-R Node replay and process evidence](DEPARTMENT-EXPLORATORY-ORACLE.md). The replay carries forward the approved plan and reply and uses its own reviewed process identity and allocation window.
 
-The worklist and tests are offline preparation. The formal department phases and separate follow-on experiments await the actual reply and allocated host.
+The worklist and tests are offline preparation. The supervisor's reply of 21 November 2026 approves group A from 2 December 2026; the formal department phases await the allocated host, and the separate follow-on experiments their own plans.

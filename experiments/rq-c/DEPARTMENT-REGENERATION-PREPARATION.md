@@ -1,6 +1,6 @@
 # P2-R department-server preparation
 
-The 18 November department-server plan is awaiting a supervisor reply, account access, GPU allocation and error-log visibility. The worklist is an offline derivative of that draft and the original public P2-R protocol. It verifies the nine pinned archive files and the three 7,200-row populations before emitting a command list. It does not contact the department server or start a process.
+The supervisor approved the department-server plan on 21 November 2026: group A (Ollama 0.40.0) runs from 2 December 2026 once the server is ready; whether to add group B (0.40.16), and what to do if 0.40.0 cannot be installed, is decided at the December meeting after the server's GPU and installable versions are known. Account access, GPU allocation and error-log visibility are still outstanding. The worklist is an offline derivative of that draft and the original public P2-R protocol. It verifies the nine pinned archive files and the three 7,200-row populations before emitting a command list. It does not contact the department server or start a process.
 
 ## Offline commands
 
