@@ -4,3 +4,6 @@ experiments/mac-preflight/**/engineering-receipts/ollama-load-excerpts.log -whit
 # Preserve original tokenizer diagnostics, metadata licenses and Go build output byte-for-byte.
 experiments/p2-a/tokenizer-capacity/**/records/** -whitespace
 experiments/p2-a/tokenizer-capacity/**/results/ollama-build-info.txt -whitespace
+
+# Keep the 19 November host-2 release byte for byte (CRLF, BOM), as its manifest hashes them.
+experiments/rq-c/host2-local-20261119/release/** -text -whitespace

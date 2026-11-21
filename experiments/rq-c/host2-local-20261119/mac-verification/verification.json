@@ -1,0 +1,255 @@
+{
+ "manifest": {
+  "listed": 74,
+  "mismatched": [],
+  "unlisted": [
+   "delivery-manifest.json"
+  ],
+  "exportedFiles": 75,
+  "sha256": "cde4c29777146cacad9f190910ef1123a058fc26d40af1e0fada3f564feb3cff"
+ },
+ "repeats": {
+  "template-a": {
+   "trialsPerPass": 1200,
+   "fieldsDifferingAcrossPasses": [
+    "durationMs"
+   ]
+  },
+  "template-b": {
+   "trialsPerPass": 1200,
+   "fieldsDifferingAcrossPasses": [
+    "durationMs"
+   ]
+  },
+  "second-family": {
+   "trialsPerPass": 1200,
+   "fieldsDifferingAcrossPasses": [
+    "durationMs"
+   ]
+  }
+ },
+ "regenerationVsArchive": {
+  "template-a": {
+   "archive": "experiments/rq-c/template-gpu/A",
+   "model": "qwen2.5-coder:7b-instruct",
+   "ollama": [
+    "0.40.0",
+    "0.40.16"
+   ],
+   "digestSame": true,
+   "nSkills": [
+    1602,
+    1613
+   ],
+   "precision": {
+    "sv0-ef0": [
+     0.9139,
+     0.9
+    ],
+    "sv0-ef1": [
+     0.9322,
+     0.9156
+    ],
+    "sv1-ef0": [
+     0.9144,
+     0.8978
+    ],
+    "sv1-ef1": [
+     0.9211,
+     0.9039
+    ]
+   },
+   "diagnostics": {
+    "n": [
+     852,
+     857
+    ],
+    "agreement": [
+     0.8380281690140845,
+     0.8168028004667445
+    ],
+    "falseDiscoveryRate": [
+     0.09668508287292818,
+     0.12278308321964529
+    ],
+    "falseOmissionRate": [
+     0.53125,
+     0.5403225806451613
+    ]
+   },
+   "tasksWithExecRateChangeOver3pts": {
+    "date-add-days": [
+     "115/120",
+     "0/120"
+    ]
+   },
+   "oracleOnIdenticalPrograms": {
+    "sameVerdict": 6925,
+    "conflicting": 0
+   },
+   "selfVerdictOnIdenticalPrograms": {
+    "programs": 51,
+    "sameMajority": 51
+   }
+  },
+  "template-b": {
+   "archive": "experiments/rq-c/template-gpu/B",
+   "model": "qwen2.5-coder:7b-instruct",
+   "ollama": [
+    "0.40.0",
+    "0.40.16"
+   ],
+   "digestSame": true,
+   "nSkills": [
+    1500,
+    1512
+   ],
+   "precision": {
+    "sv0-ef0": [
+     0.9167,
+     0.9
+    ],
+    "sv0-ef1": [
+     0.9322,
+     0.9156
+    ],
+    "sv1-ef0": [
+     0.9167,
+     0.9
+    ],
+    "sv1-ef1": [
+     0.9322,
+     0.9211
+    ]
+   },
+   "diagnostics": {
+    "n": [
+     750,
+     756
+    ],
+    "agreement": [
+     0.8986666666666666,
+     0.8822751322751323
+    ],
+    "falseDiscoveryRate": [
+     0.10133333333333333,
+     0.11772486772486772
+    ],
+    "falseOmissionRate": [
+     null,
+     null
+    ]
+   },
+   "tasksWithExecRateChangeOver3pts": {
+    "date-add-days": [
+     "120/120",
+     "10/120"
+    ]
+   },
+   "oracleOnIdenticalPrograms": {
+    "sameVerdict": 6850,
+    "conflicting": 0
+   },
+   "selfVerdictOnIdenticalPrograms": {
+    "programs": 46,
+    "sameMajority": 46
+   }
+  },
+  "second-family": {
+   "archive": "experiments/rq-c/family-gpu",
+   "model": "llama3.1:8b",
+   "ollama": [
+    "0.40.0",
+    "0.40.16"
+   ],
+   "digestSame": true,
+   "nSkills": [
+    1519,
+    1514
+   ],
+   "precision": {
+    "sv0-ef0": [
+     0.9222,
+     0.9
+    ],
+    "sv0-ef1": [
+     0.9361,
+     0.9117
+    ],
+    "sv1-ef0": [
+     0.9372,
+     0.9028
+    ],
+    "sv1-ef1": [
+     0.9217,
+     0.9117
+    ]
+   },
+   "diagnostics": {
+    "n": [
+     770,
+     759
+    ],
+    "agreement": [
+     0.9,
+     0.8761528326745718
+    ],
+    "falseDiscoveryRate": [
+     0.10160427807486631,
+     0.125
+    ],
+    "falseOmissionRate": [
+     0.045454545454545456,
+     0
+    ]
+   },
+   "tasksWithExecRateChangeOver3pts": {
+    "str-rot13": [
+     "55/180",
+     "0/180"
+    ],
+    "arr-intersection": [
+     "155/160",
+     "32/160"
+    ],
+    "parse-version": [
+     "13/40",
+     "40/40"
+    ],
+    "parse-csv-line": [
+     "8/80",
+     "0/80"
+    ]
+   },
+   "oracleOnIdenticalPrograms": {
+    "sameVerdict": 5922,
+    "conflicting": 0
+   },
+   "selfVerdictOnIdenticalPrograms": {
+    "programs": 34,
+    "sameMajority": 34
+   }
+  }
+ },
+ "outcome": {
+  "schema": "aijade.p2-r.local-public-outcome.v1",
+  "status": "LOCAL_RUN_COMPLETED_REVIEW_REQUIRED",
+  "startedAt": "2026-11-19T06:34:33.151033+00:00",
+  "finishedAt": "2026-11-19T07:42:18.323594+00:00",
+  "completedTasks": 20,
+  "totalPlannedTasks": 20,
+  "runnerCommit": "b6d44d5742eb98008f40df57ce1aba2ad1f623a2",
+  "collectorCommit": "4808479",
+  "formalDeviceQualified": false,
+  "departmentApprovalVerified": false,
+  "scientificAdoption": "PENDING_REVIEW",
+  "deviations": [
+   "Current Windows computer, no documented device qualification or department allocation",
+   "Operator explicitly requested immediate local execution without supervisor materials",
+   "Windows Ollama 0.40.16 rather than archived 0.40.0",
+   "Execution before original December schedule",
+   "Historical anchor handling uses independently recorded exact XML pin in local collector revision"
+  ],
+  "diagnostic": null
+ }
+}
