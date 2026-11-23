@@ -1,0 +1,33 @@
+--- a/clients/godot-scene/BehaviorDriver.cs
++++ b/clients/godot-scene/BehaviorDriver.cs
+@@ -88,8 +88,21 @@
+         double at=tick*TickMs;if(HandsFree is not null)Behavior.HandsFree=HandsFree();Behavior.Advance(at);
+         while(cursor<events.Length && events[cursor].Tick<=tick){var (t,e)=events[cursor++];consumed++;Consume(t,e);}
+         if(live is null||tick<1)return;// tick ≥ 1 keeps the replay plan's tick order exact
+-        foreach(var item in live.DrainItems())
++        foreach(var queued in live.DrainItems())liveBacklog.Enqueue(queued);
++        // One intent per rendered frame (21 November 2026, fourth recorded deviation): packets of a later trace wait until
++        // the previous intent's RenderStatePacket has been written, so a slow frame cannot merge several intents in one row.
++        string? trace=null;
++        while(liveBacklog.Count>0)
+         {
++            var item=liveBacklog.Peek();
++            if(item.Packet is not null)
++            {
++                var id=item.Packet.Header.TraceId;
++                if(trace is null && pendingPackets.Count>0)break;
++                if(trace is not null && id!=trace)break;
++                trace=id;
++            }
++            liveBacklog.Dequeue();
+             foreach(var e in item.Events)
+             {
+                 try{Consume(tick,e);}catch(ArgumentException){liveDropped++;continue;}// e.g. breathing rate out of range
+@@ -98,6 +111,7 @@
+             if(item.Packet is not null){pendingPackets.Add(item.Packet);packetsConsumed++;}
+         }
+     }
++    private readonly Queue<BehaviorLiveItem> liveBacklog=new();
+     // AIJADE renderer contract: after the overlay that first shows newly consumed packets, one RenderStatePacket row
+     // records what was consumed and what the frame actually applied (missing keys, unmapped fields, applied-params hash),
+     // stage behavior_overlay_pre_solve; with a log open (OpenLog) the row is on disk at once and the same frame's post-solve
