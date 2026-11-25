@@ -1,0 +1,139 @@
+{
+  "schema": "aijade.p2-r-comparison.v2",
+  "inputs": {
+    "archived": {
+      "trials.jsonl": "9b1617e0ce54573b8edc74f769c67aaeb610c20b1d790beaf503f43f67330ffa",
+      "candidates.jsonl": "fbddae351dc8f2539b4ed7e1d4eef52f61d6078805eefff226d738b45fb520c4",
+      "summary.json": "d7f916710039e8a533fcd55cd6c52189b8aa704b19140dfeb9427f0a709f91ac"
+    },
+    "regenerated": {
+      "trials.jsonl": "d4280cab626140ff68f06eca94d968c1073be4e3fbe18fce68a266f7212815ab",
+      "candidates.jsonl": "f48d3a953e9e63ce6929afb1a6285fac05ef0edb30827b675b25f023f41c018a",
+      "summary.json": "b8f197f96cfa02847af43a6503d41371fdb9b471adb3935b95af2c17990982fe"
+    }
+  },
+  "status": "DIFFERENT",
+  "scope": "FULL_RUN",
+  "complete": true,
+  "identical": false,
+  "population": {
+    "archivedTrials": 30,
+    "regeneratedTrials": 30,
+    "rounds": 5,
+    "tasksPerTrial": 12,
+    "conditions": [
+      "sv0-ef0",
+      "sv0-ef1",
+      "sv1-ef0",
+      "sv1-ef1"
+    ]
+  },
+  "ollamaVersions": {
+    "archived": "0.40.16",
+    "regenerated": "0.40.16"
+  },
+  "conditions": {
+    "sv0-ef0": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 70,
+      "firstDivergence": {
+        "step": 70,
+        "skill": "sv0-ef0-t1-r0-logic-valid-parentheses",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        }
+      }
+    },
+    "sv0-ef1": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 3,
+      "firstDivergence": {
+        "step": 3,
+        "skill": "sv0-ef1-t0-r0-logic-valid-parentheses",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        }
+      }
+    },
+    "sv1-ef0": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 3,
+      "firstDivergence": {
+        "step": 3,
+        "skill": "sv1-ef0-t0-r0-logic-valid-parentheses",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        }
+      }
+    },
+    "sv1-ef1": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 3,
+      "firstDivergence": {
+        "step": 3,
+        "skill": "sv1-ef1-t0-r0-logic-valid-parentheses",
+        "differs": [
+          "generation",
+          "code",
+          "verifierReply",
+          "verifierRationale"
+        ],
+        "archived": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}",
+          "verifierReply": "PASS The candidate solution correctly handles all the provided test cases, ensuring that the bracket string is balanced for various types of brackets including (), [], and {}.",
+          "verifierRationale": "PASS The candidate solution correctly handles all the provided test cases, ensuring that the bracket string is balanced for various types of brackets including (), [], and {}."
+        },
+        "regenerated": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}",
+          "verifierReply": "PASS The candidate solution correctly handles all the provided test cases, ensuring that the bracket string is balanced for the types of brackets ((), [], {}) supported.",
+          "verifierRationale": "PASS The candidate solution correctly handles all the provided test cases, ensuring that the bracket string is balanced for the types of brackets ((), [], {}) supported."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1076 @@
+{
+  "exploratoryOracleRetally": "NOT_RUN_BY_THIS_REPORT",
+  "formalRunsStartedByReport": 0,
+  "groups": {
+    "second-family": {
+      "alignment": {
+        "conditions": {
+          "sv0-ef0": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv0-ef0-t0-r0-arr-sum",
+              "step": 0
+            },
+            "identicalPrefixSteps": 0,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv0-ef1": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv0-ef1-t0-r0-date-format-iso",
+              "step": 1
+            },
+            "identicalPrefixSteps": 1,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv1-ef0": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code",
+                "verifierReply",
+                "verifierRationale"
+              ],
+              "skill": "sv1-ef0-t0-r0-date-format-iso",
+              "step": 1
+            },
+            "identicalPrefixSteps": 1,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv1-ef1": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code",
+                "verifierReply",
+                "verifierRationale"
+              ],
+              "skill": "sv1-ef1-t0-r0-date-format-iso",
+              "step": 1
+            },
+            "identicalPrefixSteps": 1,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          }
+        },
+        "status": "DIFFERENT"
+      },
+      "archiveReadbackMatches": true,
+      "archived": {
+        "cells": {
+          "sv0-ef0": {
+            "failure": 28,
+            "success": 332
+          },
+          "sv0-ef1": {
+            "failure": 43,
+            "success": 346
+          },
+          "sv1-ef0": {
+            "failure": 30,
+            "success": 340
+          },
+          "sv1-ef1": {
+            "failure": 67,
+            "success": 333
+          }
+        },
+        "diagnostics": {
+          "agreement": {
+            "denominator": 770,
+            "estimate": 0.9,
+            "numerator": 693,
+            "taskBootstrap95": [
+              0.8046398046398047,
+              0.9787835926449788
+            ],
+            "taskBootstrapBca95": [
+              0.7756939131103091,
+              0.9651064353515785
+            ],
+            "wilson95": [
+              0.876784279525715,
+              0.9192444069429078
+            ]
+          },
+          "confusion": {
+            "fn": 1,
+            "fp": 76,
+            "tn": 21,
+            "tp": 672
+          },
+          "falseDiscoveryRate": {
+            "denominator": 748,
+            "estimate": 0.10160427807486631,
+            "numerator": 76,
+            "taskBootstrap95": [
+              0.020080321285140562,
+              0.2035623409669211
+            ],
+            "taskBootstrapBca95": [
+              0.03329148303654831,
+              0.2347720067582395
+            ],
+            "wilson95": [
+              0.08194804796121437,
+              0.12533163446696707
+            ]
+          },
+          "falseOmissionRate": {
+            "denominator": 22,
+            "estimate": 0.045454545454545456,
+            "numerator": 1,
+            "taskBootstrap95": [
+              0.0,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              1.0
+            ],
+            "wilson95": [
+              0.00806942762126385,
+              0.21798045838657332
+            ]
+          },
+          "hallucinationRate": {
+            "denominator": 97,
+            "estimate": 0.7835051546391752,
+            "numerator": 76,
+            "taskBootstrap95": [
+              0.5588235294117647,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.5135135135135135,
+              1.0
+            ],
+            "wilson95": [
+              0.6915983782533729,
+              0.8538122161906773
+            ]
+          },
+          "missMinusHallucination": {
+            "estimate": -0.7820192705381351,
+            "shareOfResamplesAboveZero": 0.0,
+            "taskBootstrap95": [
+              -1.0,
+              -0.5580516331479105
+            ],
+            "taskBootstrapBca95": [
+              -0.9985486211901307,
+              -0.5120727399917036
+            ]
+          },
+          "missRate": {
+            "denominator": 673,
+            "estimate": 0.0014858841010401188,
+            "numerator": 1,
+            "taskBootstrap95": [
+              0.0,
+              0.004694835680751174
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.007780262727865766
+            ],
+            "wilson95": [
+              0.0002623432013077881,
+              0.008368125196523643
+            ]
+          },
+          "n": 770,
+          "tasks": 44,
+          "usableShare": 0.874025974025974
+        },
+        "distinctJudgedCandidates": {
+          "candidates": 56,
+          "falsePassTasks": 5,
+          "falsePasses": 12,
+          "unusable": 14,
+          "unusableTasks": 5
+        },
+        "executions": 7200,
+        "skills": 1519,
+        "tasks": 44
+      },
+      "archivedFilesSha256": {
+        "candidates.jsonl": "9f53d82b6e38ff5286fc62c062cc54579d7a6e8fa9a1b1232f84bea486ce4d61",
+        "summary.json": "f8af63325d4df62c12c0c5e44ac5c565bc5293f0ac75cbf6e49b9baf1e9554f0",
+        "trials.jsonl": "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121"
+      },
+      "regenerated": {
+        "cells": {
+          "sv0-ef0": {
+            "failure": 28,
+            "success": 332
+          },
+          "sv0-ef1": {
+            "failure": 50,
+            "success": 337
+          },
+          "sv1-ef0": {
+            "failure": 35,
+            "success": 343
+          },
+          "sv1-ef1": {
+            "failure": 67,
+            "success": 344
+          }
+        },
+        "diagnostics": {
+          "agreement": {
+            "denominator": 789,
+            "estimate": 0.8757921419518377,
+            "numerator": 691,
+            "taskBootstrap95": [
+              0.7698795180722892,
+              0.9697841726618706
+            ],
+            "taskBootstrapBca95": [
+              0.7450980392156863,
+              0.9548319807519945
+            ],
+            "wilson95": [
+              0.8509414875356769,
+              0.8970012359465855
+            ]
+          },
+          "confusion": {
+            "fn": 21,
+            "fp": 77,
+            "tn": 25,
+            "tp": 666
+          },
+          "falseDiscoveryRate": {
+            "denominator": 743,
+            "estimate": 0.10363391655450875,
+            "numerator": 77,
+            "taskBootstrap95": [
+              0.011111111111111112,
+              0.21842105263157896
+            ],
+            "taskBootstrapBca95": [
+              0.03112313937753721,
+              0.2536724226696419
+            ],
+            "wilson95": [
+              0.08371893586478907,
+              0.12762639982390575
+            ]
+          },
+          "falseOmissionRate": {
+            "denominator": 46,
+            "estimate": 0.45652173913043476,
+            "numerator": 21,
+            "taskBootstrap95": [
+              0.0,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              1.0
+            ],
+            "wilson95": [
+              0.32154733782284584,
+              0.5981981894019872
+            ]
+          },
+          "hallucinationRate": {
+            "denominator": 102,
+            "estimate": 0.7549019607843137,
+            "numerator": 77,
+            "taskBootstrap95": [
+              0.5,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.5,
+              1.0
+            ],
+            "wilson95": [
+              0.663182417362967,
+              0.8281184450721693
+            ]
+          },
+          "missMinusHallucination": {
+            "estimate": -0.7243342751947941,
+            "shareOfResamplesAboveZero": 0.0,
+            "taskBootstrap95": [
+              -1.0,
+              -0.5
+            ],
+            "taskBootstrapBca95": [
+              -1.0,
+              -0.4726918075422627
+            ]
+          },
+          "missRate": {
+            "denominator": 687,
+            "estimate": 0.03056768558951965,
+            "numerator": 21,
+            "taskBootstrap95": [
+              0.0,
+              0.09117221418234443
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.14510602955789248
+            ],
+            "wilson95": [
+              0.02007870715260034,
+              0.04627726820960233
+            ]
+          },
+          "n": 789,
+          "tasks": 44,
+          "usableShare": 0.870722433460076
+        },
+        "distinctJudgedCandidates": {
+          "candidates": 55,
+          "falsePassTasks": 4,
+          "falsePasses": 9,
+          "unusable": 14,
+          "unusableTasks": 4
+        },
+        "executions": 7200,
+        "skills": 1536,
+        "tasks": 44
+      },
+      "regeneratedFilesSha256": {
+        "candidates.jsonl": "4c454d2c3ef48346f3197f088a8b7f6ac978933025656902005201b11ce65e7c",
+        "summary.json": "4f062835a7afd62831b884b51e2556b517c1da455848eba198f6b3d1de90ffce",
+        "trials.jsonl": "5e0efc960a42ad196c61527b37e93ee813ef358be020c8bdc4b090003f7d9ab5"
+      }
+    },
+    "template-a": {
+      "alignment": {
+        "conditions": {
+          "sv0-ef0": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv0-ef0-t1-r0-parse-json-safe",
+              "step": 63
+            },
+            "identicalPrefixSteps": 63,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv0-ef1": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv0-ef1-t0-r0-logic-valid-parentheses",
+              "step": 3
+            },
+            "identicalPrefixSteps": 3,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv1-ef0": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv1-ef0-t0-r0-logic-valid-parentheses",
+              "step": 3
+            },
+            "identicalPrefixSteps": 3,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv1-ef1": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv1-ef1-t0-r0-logic-valid-parentheses",
+              "step": 3
+            },
+            "identicalPrefixSteps": 3,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          }
+        },
+        "status": "DIFFERENT"
+      },
+      "archiveReadbackMatches": true,
+      "archived": {
+        "cells": {
+          "sv0-ef0": {
+            "failure": 31,
+            "success": 329
+          },
+          "sv0-ef1": {
+            "failure": 46,
+            "success": 344
+          },
+          "sv1-ef0": {
+            "failure": 54,
+            "success": 358
+          },
+          "sv1-ef1": {
+            "failure": 76,
+            "success": 364
+          }
+        },
+        "diagnostics": {
+          "agreement": {
+            "denominator": 852,
+            "estimate": 0.8380281690140845,
+            "numerator": 714,
+            "taskBootstrap95": [
+              0.7138643067846607,
+              0.961439588688946
+            ],
+            "taskBootstrapBca95": [
+              0.6722641575333984,
+              0.9403973509933775
+            ],
+            "wilson95": [
+              0.8117811917082947,
+              0.861240656045726
+            ]
+          },
+          "confusion": {
+            "fn": 68,
+            "fp": 70,
+            "tn": 60,
+            "tp": 654
+          },
+          "falseDiscoveryRate": {
+            "denominator": 724,
+            "estimate": 0.09668508287292818,
+            "numerator": 70,
+            "taskBootstrap95": [
+              0.01749271137026239,
+              0.19558359621451105
+            ],
+            "taskBootstrapBca95": [
+              0.034214923997136,
+              0.2356725949314756
+            ],
+            "wilson95": [
+              0.07723861410118592,
+              0.12038884594177089
+            ]
+          },
+          "falseOmissionRate": {
+            "denominator": 128,
+            "estimate": 0.53125,
+            "numerator": 68,
+            "taskBootstrap95": [
+              0.0,
+              0.6666666666666666
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.6666666666666666
+            ],
+            "wilson95": [
+              0.44515370795994524,
+              0.6155252322729605
+            ]
+          },
+          "hallucinationRate": {
+            "denominator": 130,
+            "estimate": 0.5384615384615384,
+            "numerator": 70,
+            "taskBootstrap95": [
+              0.14893617021276595,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.07317073170731707,
+              0.9603960396039604
+            ],
+            "wilson95": [
+              0.4528937288666052,
+              0.6218215356568999
+            ]
+          },
+          "missMinusHallucination": {
+            "estimate": -0.4442787129767739,
+            "shareOfResamplesAboveZero": 0.037522513508104864,
+            "taskBootstrap95": [
+              -1.0,
+              0.04422587983406931
+            ],
+            "taskBootstrapBca95": [
+              -0.9396215380071083,
+              0.15195553888290173
+            ]
+          },
+          "missRate": {
+            "denominator": 722,
+            "estimate": 0.09418282548476455,
+            "numerator": 68,
+            "taskBootstrap95": [
+              0.0,
+              0.2532299741602067
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.3675299531798257
+            ],
+            "wilson95": [
+              0.07497356502007435,
+              0.1176875968924741
+            ]
+          },
+          "n": 852,
+          "tasks": 44,
+          "usableShare": 0.8474178403755869
+        },
+        "distinctJudgedCandidates": {
+          "candidates": 55,
+          "falsePassTasks": 5,
+          "falsePasses": 9,
+          "unusable": 13,
+          "unusableTasks": 7
+        },
+        "executions": 7200,
+        "skills": 1602,
+        "tasks": 44
+      },
+      "archivedFilesSha256": {
+        "candidates.jsonl": "928a99838f7b57696c2e7fe4731bc3b2890b16c2ed7ef9461d1ad3dae61d2ae3",
+        "summary.json": "15465c00d2ecb8427274baef4be559bf6ef27792ff2051c77159154e4cf6ef0e",
+        "trials.jsonl": "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436"
+      },
+      "regenerated": {
+        "cells": {
+          "sv0-ef0": {
+            "failure": 36,
+            "success": 324
+          },
+          "sv0-ef1": {
+            "failure": 58,
+            "success": 338
+          },
+          "sv1-ef0": {
+            "failure": 60,
+            "success": 352
+          },
+          "sv1-ef1": {
+            "failure": 86,
+            "success": 358
+          }
+        },
+        "diagnostics": {
+          "agreement": {
+            "denominator": 856,
+            "estimate": 0.8154205607476636,
+            "numerator": 698,
+            "taskBootstrap95": [
+              0.6902654867256637,
+              0.9429928741092637
+            ],
+            "taskBootstrapBca95": [
+              0.6510521675125022,
+              0.9217056851794553
+            ],
+            "wilson95": [
+              0.7880419878737244,
+              0.8399807649958928
+            ]
+          },
+          "confusion": {
+            "fn": 68,
+            "fp": 90,
+            "tn": 56,
+            "tp": 642
+          },
+          "falseDiscoveryRate": {
+            "denominator": 732,
+            "estimate": 0.12295081967213115,
+            "numerator": 90,
+            "taskBootstrap95": [
+              0.03501945525291829,
+              0.22897800776196636
+            ],
+            "taskBootstrapBca95": [
+              0.04864864864864865,
+              0.26495726495726496
+            ],
+            "wilson95": [
+              0.10111119557617543,
+              0.14872721270722034
+            ]
+          },
+          "falseOmissionRate": {
+            "denominator": 124,
+            "estimate": 0.5483870967741935,
+            "numerator": 68,
+            "taskBootstrap95": [
+              0.0,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              1.0
+            ],
+            "wilson95": [
+              0.46065500744902865,
+              0.6332112555825186
+            ]
+          },
+          "hallucinationRate": {
+            "denominator": 146,
+            "estimate": 0.6164383561643836,
+            "numerator": 90,
+            "taskBootstrap95": [
+              0.2289156626506024,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              0.10588235294117647,
+              1.0
+            ],
+            "wilson95": [
+              0.5355396075942365,
+              0.6913668858928943
+            ]
+          },
+          "missMinusHallucination": {
+            "estimate": -0.5206637082770597,
+            "shareOfResamplesAboveZero": 0.020304060812162433,
+            "taskBootstrap95": [
+              -1.0,
+              -0.02140242185299915
+            ],
+            "taskBootstrapBca95": [
+              -0.9878419452887538,
+              0.13054636836181288
+            ]
+          },
+          "missRate": {
+            "denominator": 710,
+            "estimate": 0.09577464788732394,
+            "numerator": 68,
+            "taskBootstrap95": [
+              0.0,
+              0.25824175824175827
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.37438183059800684
+            ],
+            "wilson95": [
+              0.07625270114345487,
+              0.11964718263706972
+            ]
+          },
+          "n": 856,
+          "tasks": 44,
+          "usableShare": 0.8294392523364486
+        },
+        "distinctJudgedCandidates": {
+          "candidates": 54,
+          "falsePassTasks": 6,
+          "falsePasses": 11,
+          "unusable": 14,
+          "unusableTasks": 8
+        },
+        "executions": 7200,
+        "skills": 1612,
+        "tasks": 44
+      },
+      "regeneratedFilesSha256": {
+        "candidates.jsonl": "71520f57173aa867f893a4552c1e2f38a3b4c10ca172c53508e4665b5bbff307",
+        "summary.json": "b59589c629088a4f24ee377879584243e3cc8f92eaf7017d41249e9cf853575f",
+        "trials.jsonl": "f76ec915ef767b4ed42ee1d08f79d2ccc35b531313ec91b05466863775c46619"
+      }
+    },
+    "template-b": {
+      "alignment": {
+        "conditions": {
+          "sv0-ef0": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv0-ef0-t1-r0-parse-json-safe",
+              "step": 63
+            },
+            "identicalPrefixSteps": 63,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv0-ef1": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "generation",
+                "code"
+              ],
+              "skill": "sv0-ef1-t0-r0-logic-valid-parentheses",
+              "step": 3
+            },
+            "identicalPrefixSteps": 3,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv1-ef0": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "verifierReply",
+                "verifierRationale"
+              ],
+              "skill": "sv1-ef0-t0-r0-str-reverse",
+              "step": 2
+            },
+            "identicalPrefixSteps": 2,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          },
+          "sv1-ef1": {
+            "archivedSteps": 1800,
+            "expectedArchivedSteps": 1800,
+            "expectedRegeneratedSteps": 1800,
+            "firstDivergence": {
+              "differs": [
+                "verifierReply",
+                "verifierRationale"
+              ],
+              "skill": "sv1-ef1-t0-r0-str-reverse",
+              "step": 2
+            },
+            "identicalPrefixSteps": 2,
+            "regeneratedSteps": 1800,
+            "sharedSteps": 1800
+          }
+        },
+        "status": "DIFFERENT"
+      },
+      "archiveReadbackMatches": true,
+      "archived": {
+        "cells": {
+          "sv0-ef0": {
+            "failure": 30,
+            "success": 330
+          },
+          "sv0-ef1": {
+            "failure": 46,
+            "success": 344
+          },
+          "sv1-ef0": {
+            "failure": 30,
+            "success": 330
+          },
+          "sv1-ef1": {
+            "failure": 46,
+            "success": 344
+          }
+        },
+        "diagnostics": {
+          "agreement": {
+            "denominator": 750,
+            "estimate": 0.8986666666666666,
+            "numerator": 674,
+            "taskBootstrap95": [
+              0.7990196078431373,
+              0.9792746113989638
+            ],
+            "taskBootstrapBca95": [
+              0.7670185395005331,
+              0.9647131260762615
+            ],
+            "wilson95": [
+              0.8749976632856967,
+              0.9182725833992073
+            ]
+          },
+          "confusion": {
+            "fn": 0,
+            "fp": 76,
+            "tn": 0,
+            "tp": 674
+          },
+          "falseDiscoveryRate": {
+            "denominator": 750,
+            "estimate": 0.10133333333333333,
+            "numerator": 76,
+            "taskBootstrap95": [
+              0.02072538860103627,
+              0.20098039215686275
+            ],
+            "taskBootstrapBca95": [
+              0.0352868739237385,
+              0.23298146049946458
+            ],
+            "wilson95": [
+              0.08172741660079268,
+              0.12500233671430325
+            ]
+          },
+          "falseOmissionRate": {
+            "denominator": 0,
+            "estimate": null,
+            "numerator": 0
+          },
+          "hallucinationRate": {
+            "denominator": 76,
+            "estimate": 1.0,
+            "numerator": 76,
+            "taskBootstrap95": [
+              1.0,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              1.0,
+              1.0
+            ],
+            "wilson95": [
+              0.9518864149348628,
+              1.0000000000000002
+            ]
+          },
+          "missMinusHallucination": {
+            "estimate": -1.0,
+            "shareOfResamplesAboveZero": 0.0,
+            "taskBootstrap95": [
+              -1.0,
+              -1.0
+            ],
+            "taskBootstrapBca95": [
+              -1.0,
+              -1.0
+            ]
+          },
+          "missRate": {
+            "denominator": 674,
+            "estimate": 0.0,
+            "numerator": 0,
+            "taskBootstrap95": [
+              0.0,
+              0.0
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.0
+            ],
+            "wilson95": [
+              4.336808689942018e-19,
+              0.00566719366410175
+            ]
+          },
+          "n": 750,
+          "tasks": 44,
+          "usableShare": 0.8986666666666666
+        },
+        "distinctJudgedCandidates": {
+          "candidates": 49,
+          "falsePassTasks": 5,
+          "falsePasses": 8,
+          "unusable": 8,
+          "unusableTasks": 5
+        },
+        "executions": 7200,
+        "skills": 1500,
+        "tasks": 44
+      },
+      "archivedFilesSha256": {
+        "candidates.jsonl": "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2",
+        "summary.json": "474fe98434ff6d24111829bc80df83825192616e57cd8f9f01f341f62e5cd894",
+        "trials.jsonl": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0"
+      },
+      "regenerated": {
+        "cells": {
+          "sv0-ef0": {
+            "failure": 36,
+            "success": 324
+          },
+          "sv0-ef1": {
+            "failure": 58,
+            "success": 338
+          },
+          "sv1-ef0": {
+            "failure": 36,
+            "success": 324
+          },
+          "sv1-ef1": {
+            "failure": 55,
+            "success": 341
+          }
+        },
+        "diagnostics": {
+          "agreement": {
+            "denominator": 756,
+            "estimate": 0.8796296296296297,
+            "numerator": 665,
+            "taskBootstrap95": [
+              0.7762326169405815,
+              0.9645203679369251
+            ],
+            "taskBootstrapBca95": [
+              0.748701305922801,
+              0.9529782489702482
+            ],
+            "wilson95": [
+              0.8544944747768649,
+              0.9009262690331296
+            ]
+          },
+          "confusion": {
+            "fn": 0,
+            "fp": 91,
+            "tn": 0,
+            "tp": 665
+          },
+          "falseDiscoveryRate": {
+            "denominator": 756,
+            "estimate": 0.12037037037037036,
+            "numerator": 91,
+            "taskBootstrap95": [
+              0.035479632063074903,
+              0.22376738305941846
+            ],
+            "taskBootstrapBca95": [
+              0.047021751029751896,
+              0.25129869407720007
+            ],
+            "wilson95": [
+              0.0990737309668705,
+              0.1455055252231351
+            ]
+          },
+          "falseOmissionRate": {
+            "denominator": 0,
+            "estimate": null,
+            "numerator": 0
+          },
+          "hallucinationRate": {
+            "denominator": 91,
+            "estimate": 1.0,
+            "numerator": 91,
+            "taskBootstrap95": [
+              1.0,
+              1.0
+            ],
+            "taskBootstrapBca95": [
+              1.0,
+              1.0
+            ],
+            "wilson95": [
+              0.9594959960711198,
+              1.0
+            ]
+          },
+          "missMinusHallucination": {
+            "estimate": -1.0,
+            "shareOfResamplesAboveZero": 0.0,
+            "taskBootstrap95": [
+              -1.0,
+              -1.0
+            ],
+            "taskBootstrapBca95": [
+              -1.0,
+              -1.0
+            ]
+          },
+          "missRate": {
+            "denominator": 665,
+            "estimate": 0.0,
+            "numerator": 0,
+            "taskBootstrap95": [
+              0.0,
+              0.0
+            ],
+            "taskBootstrapBca95": [
+              0.0,
+              0.0
+            ],
+            "wilson95": [
+              4.336808689942018e-19,
+              0.00574345200949028
+            ]
+          },
+          "n": 756,
+          "tasks": 44,
+          "usableShare": 0.8796296296296297
+        },
+        "distinctJudgedCandidates": {
+          "candidates": 51,
+          "falsePassTasks": 6,
+          "falsePasses": 10,
+          "unusable": 10,
+          "unusableTasks": 6
+        },
+        "executions": 7200,
+        "skills": 1512,
+        "tasks": 44
+      },
+      "regeneratedFilesSha256": {
+        "candidates.jsonl": "f48d3a953e9e63ce6929afb1a6285fac05ef0edb30827b675b25f023f41c018a",
+        "summary.json": "b8f197f96cfa02847af43a6503d41371fdb9b471adb3935b95af2c17990982fe",
+        "trials.jsonl": "d4280cab626140ff68f06eca94d968c1073be4e3fbe18fce68a266f7212815ab"
+      }
+    }
+  },
+  "method": {
+    "analysisUnit": "skill, after all recorded calls",
+    "bootstrap": "10,000 resamples clustered by task, existing diagnostics algorithm and seed",
+    "candidateUnit": "first judged skill for each task and exact code",
+    "cellUsability": "at least half of recorded calls succeeded",
+    "verifierTruth": "final recorded execution, among judged skills"
+  },
+  "referenceAnalysisSha256": {
+    "oracle-audit.json": "615f08d8fc849c3acfbbf7c6662efc5a08e3733d074032de2c8282315e9fffae",
+    "p2-models.json": "9af0afb92933ce53fcd311328724393822a3b878d2986fb9cc4626726fd7ae21"
+  },
+  "regenerationPhaseReceiptSha256": "8c76e54e6f2e86fa4b7000e0e82fb1965fb84dcb46d1e087d11609abc3069c64",
+  "regenerationSourceCommit": "fddf9a1b860d9c27b5360258bdcbf346efe904a3",
+  "schema": "aijade.p2-r.department-paired-statistics.v1",
+  "scope": "RECORDED_REGENERATION_COMPARISON",
+  "worklistSha256": "04bf4f7f96b41b888ce22f81de4bf533b3d3edc53d38a0f3f6828785b898b91d"
+}

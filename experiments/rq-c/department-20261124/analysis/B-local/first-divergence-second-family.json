@@ -1,0 +1,133 @@
+{
+  "schema": "aijade.p2-r-comparison.v2",
+  "inputs": {
+    "archived": {
+      "trials.jsonl": "cb5ed2d6d9d50b2833b5ca07315afd112fd77258e45f4466614948292703a4a4",
+      "candidates.jsonl": "09286c72042df0f9272ee3d0800acf916be3072e0cc49ffb6a72bf2b11ad018a",
+      "summary.json": "3bed3f3fc79ef21e98eabd7c9b0e3d2295fc0c04d0d9162e0f2293b53be0b340"
+    },
+    "regenerated": {
+      "trials.jsonl": "5e0efc960a42ad196c61527b37e93ee813ef358be020c8bdc4b090003f7d9ab5",
+      "candidates.jsonl": "4c454d2c3ef48346f3197f088a8b7f6ac978933025656902005201b11ce65e7c",
+      "summary.json": "4f062835a7afd62831b884b51e2556b517c1da455848eba198f6b3d1de90ffce"
+    }
+  },
+  "status": "DIFFERENT",
+  "scope": "FULL_RUN",
+  "complete": true,
+  "identical": false,
+  "population": {
+    "archivedTrials": 30,
+    "regeneratedTrials": 30,
+    "rounds": 5,
+    "tasksPerTrial": 12,
+    "conditions": [
+      "sv0-ef0",
+      "sv0-ef1",
+      "sv1-ef0",
+      "sv1-ef1"
+    ]
+  },
+  "ollamaVersions": {
+    "archived": "0.40.16",
+    "regenerated": "0.40.16"
+  },
+  "conditions": {
+    "sv0-ef0": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 0,
+      "firstDivergence": {
+        "step": 0,
+        "skill": "sv0-ef0-t0-r0-arr-sum",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        }
+      }
+    },
+    "sv0-ef1": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 0,
+      "firstDivergence": {
+        "step": 0,
+        "skill": "sv0-ef1-t0-r0-arr-sum",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        }
+      }
+    },
+    "sv1-ef0": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 0,
+      "firstDivergence": {
+        "step": 0,
+        "skill": "sv1-ef0-t0-r0-arr-sum",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        }
+      }
+    },
+    "sv1-ef1": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 0,
+      "firstDivergence": {
+        "step": 0,
+        "skill": "sv1-ef1-t0-r0-arr-sum",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n  return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}\n```",
+          "code": "function solve(nums) {\n    return nums.length === 0 ? 0 : nums.reduce((a, b) => a + b, 0);\n}"
+        }
+      }
+    }
+  }
+}

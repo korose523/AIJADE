@@ -1,0 +1,133 @@
+{
+  "schema": "aijade.p2-r-comparison.v2",
+  "inputs": {
+    "archived": {
+      "trials.jsonl": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0",
+      "candidates.jsonl": "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2",
+      "summary.json": "474fe98434ff6d24111829bc80df83825192616e57cd8f9f01f341f62e5cd894"
+    },
+    "regenerated": {
+      "trials.jsonl": "d4280cab626140ff68f06eca94d968c1073be4e3fbe18fce68a266f7212815ab",
+      "candidates.jsonl": "f48d3a953e9e63ce6929afb1a6285fac05ef0edb30827b675b25f023f41c018a",
+      "summary.json": "b8f197f96cfa02847af43a6503d41371fdb9b471adb3935b95af2c17990982fe"
+    }
+  },
+  "status": "DIFFERENT",
+  "scope": "FULL_RUN",
+  "complete": true,
+  "identical": false,
+  "population": {
+    "archivedTrials": 30,
+    "regeneratedTrials": 30,
+    "rounds": 5,
+    "tasksPerTrial": 12,
+    "conditions": [
+      "sv0-ef0",
+      "sv0-ef1",
+      "sv1-ef0",
+      "sv1-ef1"
+    ]
+  },
+  "ollamaVersions": {
+    "archived": "0.40.0",
+    "regenerated": "0.40.16"
+  },
+  "conditions": {
+    "sv0-ef0": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 63,
+      "firstDivergence": {
+        "step": 63,
+        "skill": "sv0-ef0-t1-r0-parse-json-safe",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction solve(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}\n```",
+          "code": "function solve(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction parseJson(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}\n```",
+          "code": "function parseJson(s) {\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    return null;\n  }\n}"
+        }
+      }
+    },
+    "sv0-ef1": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 3,
+      "firstDivergence": {
+        "step": 3,
+        "skill": "sv0-ef1-t0-r0-logic-valid-parentheses",
+        "differs": [
+          "generation",
+          "code"
+        ],
+        "archived": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) return false;\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        },
+        "regenerated": {
+          "generation": "```js\nfunction isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}\n```",
+          "code": "function isValidParens(s) {\n  const stack = [];\n  const mapping = { ')': '(', '}': '{', ']': '[' };\n  for (let char of s) {\n    if (mapping[char]) {\n      const topElement = stack.length === 0 ? '#' : stack.pop();\n      if (mapping[char] !== topElement) {\n        return false;\n      }\n    } else {\n      stack.push(char);\n    }\n  }\n  return stack.length === 0;\n}"
+        }
+      }
+    },
+    "sv1-ef0": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 2,
+      "firstDivergence": {
+        "step": 2,
+        "skill": "sv1-ef0-t0-r0-str-reverse",
+        "differs": [
+          "verifierReply",
+          "verifierRationale"
+        ],
+        "archived": {
+          "verifierReply": "PASS: The candidate solution correctly reverses the string for all provided test inputs.",
+          "verifierRationale": "PASS: The candidate solution correctly reverses the string for all provided test inputs."
+        },
+        "regenerated": {
+          "verifierReply": "PASS The candidate solution correctly reverses the input strings for all provided test cases.",
+          "verifierRationale": "PASS The candidate solution correctly reverses the input strings for all provided test cases."
+        }
+      }
+    },
+    "sv1-ef1": {
+      "archivedSteps": 1800,
+      "regeneratedSteps": 1800,
+      "expectedArchivedSteps": 1800,
+      "expectedRegeneratedSteps": 1800,
+      "sharedSteps": 1800,
+      "identicalPrefixSteps": 2,
+      "firstDivergence": {
+        "step": 2,
+        "skill": "sv1-ef1-t0-r0-str-reverse",
+        "differs": [
+          "verifierReply",
+          "verifierRationale"
+        ],
+        "archived": {
+          "verifierReply": "PASS: The candidate solution correctly reverses the string for all provided test inputs.",
+          "verifierRationale": "PASS: The candidate solution correctly reverses the string for all provided test inputs."
+        },
+        "regenerated": {
+          "verifierReply": "PASS The candidate solution correctly reverses the string for all provided test inputs.",
+          "verifierRationale": "PASS The candidate solution correctly reverses the string for all provided test inputs."
+        }
+      }
+    }
+  }
+}
