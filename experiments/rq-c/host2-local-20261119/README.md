@@ -11,7 +11,7 @@ The P2-R worklist was run from 06:34 to 07:42 UTC on 19 November 2026 on host 2,
   - two open-sampling controls;
   - one full regeneration for each group (template A, template B, second family).
 
-The supervisor's review of 21 November accepts this run as a deviation record. It will be used only as one row of the "same service version, different device" comparison once the department server's results exist. P2's main results come from the department server.
+The supervisor's review of 21 November accepts this run as a deviation record. It will be used only as one row of the "same service version, different device" comparison once the department server's results exist. P2's main results come from the department server. (Added 26 November 2026: the department runs took place on 24 November 2026, with deviations; see [`../department-20261124/README.md`](../department-20261124/README.md).)
 
 ## Contents
 
@@ -27,7 +27,7 @@ The supervisor's review of 21 November accepts this run as a deviation record. I
 - **Repeats:** across the five qualification passes of each group, trial records differ only in `durationMs`.
 - **Oracle and verifier:** for regenerated programs whose code matches an archived program byte for byte, the execution verdict matches without exception (6,925, 6,850 and 5,922 executions). The verifier's majority verdict also matches for every program hash present in both runs (51, 46 and 34 programs).
 - **Generated programs:** the regenerated programs differ from the archived ones on a few tasks in every group.
-- **Consequence:** false-discovery rates are higher than in the archive in all three groups, by 0.017–0.026.
+- **Consequence:** false-discovery rates are higher than in the archive in all three groups, by 0.017–0.026 (note of 26 November 2026: exact differences 0.016 to 0.026; 0.017 is the difference of the rounded rates).
 
 It cannot yet be determined whether the change in the generated programs comes from the service version or from something else. Agreement across repeats on host 2 does not show whether its CPU faults affected the archived or the new outputs.
 

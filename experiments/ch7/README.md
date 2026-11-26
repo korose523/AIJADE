@@ -6,7 +6,53 @@ proposal admission and promotion. It is hosted by `tests/Aijade.Tests`, not
 registered in the companion server. It does not make the product an automatic
 learning system.
 
-## Current status: confirmed scope, instrument controls, refused admission
+## Current status: Mac qualification met and 40-pair held-out comparison complete (21 November 2026)
+
+The supervisor approved the two-criterion Mac qualification and the 40-pair
+plan on 21 November 2026. The criteria are that two runs of the 20 known
+conditions give every case the same verdict and that no case ends by a
+timeout or an error. The qualification met both on its seventh attempt that
+day. The six earlier attempts stopped before any case completed, and four
+deviations were each recorded and pushed before the attempt that used them.
+The earlier admission refusals described below stay as recorded. The
+qualification of 21 November is judged by the two approved criteria and does
+not relabel those refusals. The 40-pair comparison ran the same day. Its
+first launch stopped in block 2. The complete second launch, an unchanged
+rerun recorded beforehand as a fifth deviation, supplies the 80 condition
+records of Table 7.3. Both launches used the time limits of the
+qualification's execution plan (1,800 s per block, 600 s for the renderer, no
+resource thresholds) in place of the frozen plan's 1,200 s block limit,
+4,800 s overall limit, memory and swap stops and 120-second unloaded admission
+window; the launch record stated these limits before the first launch without
+calling them a deviation, and no admission-window record is retained. Neither
+experiment made a model request.
+
+The 40 pairs are 32 integrity pairs (four new variants of each of the eight
+integrity families of the development cases), four normal pairs and four pairs
+whose identifiers are correct but whose content is wrong. Under C1, 12 of 28 scheduled windows had a
+wrong durable promotion and 8 of 32 had a wrong reuse in round 2. Under C2
+both counts are 0. The 8 wrong reuses are cases that C1 wrongly promoted in
+round 1: 8 of its 12 wrong promotions carried into reuse, and the other 4 left
+the authority absent. The second-round difference is therefore carried over
+from the first round, and no case was stopped in round 2 by C2 alone. Both
+arms accepted the four normal pairs, and neither arm stopped the four pairs
+whose content is wrong. This is a comparison of paths on 40 constructed pairs
+and not an estimate for real use.
+
+The supervisor accepted the qualification and the comparison on 23 November
+2026, the qualification on condition that the renderer change of the fourth
+deviation is public. That change was published the same day in `f620d32`. As
+of 26 November 2026 the records are on branch
+`research/ch7-mac-qualification-20261121` only (`cb7033f`, `99807a5`,
+`f620d32`), under `mac-known-repeats-qualification/` and
+`finite-heldout/mac-heldout-20261121/`. The per-case paths are in
+`finite-heldout/mac-heldout-20261121/case-paths.md`.
+
+The sections below describe earlier stages and keep their wording. Where they
+call the driver unqualified, the comparison unrun or Table 7.3 `NOT_RUN`, they
+describe the state before 21 November 2026.
+
+## Status before 21 November 2026: confirmed scope, instrument controls, refused admission
 
 The author has [confirmed the proposed scope](heldout-scope-confirmation-20261112.json):
 40 pairs, 80 condition rows, four blocks of ten and Godot. This user report resolves

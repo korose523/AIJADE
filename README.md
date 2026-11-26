@@ -41,6 +41,32 @@ revocation; C2 adds the cross-record joins and shared transaction. All twenty
 case/arm records, fixed denominators and both audit/regression corrections are
 retained. These are designed development contrasts, without held-out inference.
 
+The held-out comparison followed on 21 November 2026. The Mac qualification
+met both approved criteria on its seventh attempt, after four recorded
+deviations, and the 40-pair comparison completed on its second launch, after
+a fifth. Both launches used the time limits of the qualification's execution
+plan (1,800 s per block, 600 s for the renderer, no resource thresholds) in
+place of the frozen plan's block and overall limits, memory and swap stops and
+120-second unloaded admission window; the launch record stated these limits
+before the first launch without calling them a deviation. Under C1, 12 of 28
+scheduled windows had a wrong durable promotion
+and 8 of 32 had a wrong reuse in round 2; under C2 both counts were 0. The 8
+wrong reuses are cases that C1 wrongly promoted in round 1, and no case was
+stopped in round 2 by C2 alone. The supervisor accepted both results on 23
+November 2026, the qualification on condition that the renderer change is
+public; that change was published in `f620d32`. The result concerns these 40
+constructed pairs and is not a population estimate.
+
+As of 26 November 2026 the records of these Chapter 7 runs and of the P2-R
+regenerations (re-runs of three archived model runs, see "Reproducing the
+measurements") are not on `main`. Those of Chapter 7 are on
+`research/ch7-mac-qualification-20261121` (`cb7033f`, `99807a5`, `f620d32`).
+The P2-R records of host 2 (19 November 2026, a deviation record) and of the
+department computer (24 November 2026, with deviations; their use awaits the
+supervisor's decision) are on `live2d-chat-stability-20261118`, under
+`experiments/rq-c/host2-local-20261119/` and
+`experiments/rq-c/department-20261124/`.
+
 ## Runtime composition
 
 The [architecture guide](docs/ARCHITECTURE.md) records the checked DeepSeek Harness, superagent, Comma and companion-plugin
@@ -125,8 +151,13 @@ lists each file with the driver that regenerates it. Three studies use this code
 - **Re-running the model runs.** They use Ollama with `qwen2.5-coder:7b-instruct` (weights `dae161e27b0e…`),
   `qwen2.5-coder:1.5b` and `llama3.1:8b` (`46e0c10c039e…`) at temperature 0 with a fixed seed; each run's summary records
   the model digest and the server version, and the scripts in `experiments/rq-c/` (`run-redo.sh`, `run-family-gpu.sh`,
-  `run-template.sh`) give the exact flags. Greedy decoding on other hardware changes individual generations, so a re-run
-  reproduces the estimates within their uncertainty rather than the trajectory step by step.
+  `run-template.sh`) give the exact flags. A re-run does not reproduce the trajectory step by step: in every
+  regeneration made so far, some generated programs differ from those of the archived run. Three archived runs (the
+  second-family control and the two prompt-template runs) were regenerated on host 2 under a newer service version on
+  19 November 2026 (a deviation record) and on a department computer on 24 November 2026 (group A under the archived
+  service version and the exploratory group B under the newer one, with deviations). Whether the department runs can be
+  used is for the supervisor to decide, and no number from these regenerations enters the P2 manuscript or Chapter 5 of
+  the dissertation.
 
 ## The companion elsewhere
 
@@ -189,8 +220,11 @@ The [relocated runtime archive](experiments/ch7/relocated-runtime-2026-11-16/REA
 retains project-local dependency restoration, complete Mac regressions, the
 before-window binary freeze and one refused known-input admission. Its memory
 and swap conditions passed; the frozen Ollama process-name condition did not.
-The full finite driver and confirmed held-out comparison remain unqualified and
-NOT_RUN. The archive verifier is offline and cannot launch or retry a study.
+In that archive the full finite driver is unqualified and the confirmed
+held-out comparison is NOT_RUN. The Mac qualification under the two criteria
+that the supervisor approved and the 40-pair comparison were completed later,
+on 21 November 2026 (see "Project scope" above). The archive verifier is
+offline and cannot launch or retry a study.
 
 ## Licence
 
@@ -200,9 +234,9 @@ MIT, © 2026 Zexiao Weng. Third-party components are listed in [THIRD-PARTY-NOTI
 
 The [17 November lifecycle archive](experiments/ch7/mac-lifecycle-2026-11-17/README.md) adds typed persistent controllers, parent-held identity gates for finite children, actual parent waits, scoped discovered-descendant ledgers and fixed monotonic phase scheduling. The sole actual window stops during settling:294 raw process-predicate PASS records,293 streaming-validated records and300 required; the final capture completes after the fixed600-second deadline. Admission never starts and all20 known conditions remain unattempted. Earlier UNKNOWN rows and refusals are retained.
 
-Complete offline replay and twelve effective, coherently manifested archive-corruption controls validate the terminal evidence. They do not qualify the full backend, the current independent companion product or the confirmed40-pair held-out comparison. Table7.3 remains NOT_RUN; no fresh seed or replacement window is generated. Product main preserves its later independent companion implementation and materializes exact research Q separately for historical verification.
+Complete offline replay and twelve effective, coherently manifested archive-corruption controls validate the terminal evidence. They do not qualify the full backend, the current independent companion product or the confirmed 40-pair held-out comparison. On 17 November 2026 Table 7.3 was NOT_RUN, and the lifecycle attempt of that day generated no fresh seed or replacement window. Product main preserves its later independent companion implementation and materializes exact research Q separately for historical verification.
 
 
 ## Native READY engineering refusal (E6)
 
-The E6 attempt retained 168 settling records: 167 PASS and one UNKNOWN. Its final complete service was 2.245 seconds against the fixed 2-second ceiling, and the after-listener whole call was 0.581 seconds against 0.5; no nested controller was reached. See the [Native READY evidence and boundaries](experiments/ch7/native-ready-2026-11-18/README.md) and the [fixed S6 research archive and code](https://github.com/korose523/AIJADE/tree/5b741633150b636ed9747e0638fd4792297bc0bc). Backend qualification, seed construction and the confirmed 40-pair comparison remain unexecuted; current product main does not inherit research qualification.
+The E6 attempt retained 168 settling records: 167 PASS and one UNKNOWN. Its final complete service was 2.245 seconds against the fixed 2-second ceiling, and the after-listener whole call was 0.581 seconds against 0.5; no nested controller was reached. See the [Native READY evidence and boundaries](experiments/ch7/native-ready-2026-11-18/README.md) and the [fixed S6 research archive and code](https://github.com/korose523/AIJADE/tree/5b741633150b636ed9747e0638fd4792297bc0bc). At the date of that archive (18 November 2026), backend qualification, seed construction and the confirmed 40-pair comparison were unexecuted. The Mac qualification under the two criteria that the supervisor approved, the construction of the held-out cases and the 40-pair comparison followed on 21 November 2026, on branch `research/ch7-mac-qualification-20261121`. Current product main does not inherit research qualification.

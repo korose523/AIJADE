@@ -1,0 +1,1027 @@
+{
+  "candidateProgramsExecuted": 0,
+  "definitions": {
+    "consecutiveOccurrences": "The stability rule. Each occurrence of a request after its first forms a pair with the occurrence before it. firstToSecond holds the pairs of the first and second occurrence, fromSecondOn the pairs of later occurrences. A pair has an intervening request when, between its two occurrences, the same layer sent a different request for the same task (for the verifier: the same task with different code). changes counts the pairs whose two texts differ, and changesFromSecondOn lists those of fromSecondOn.",
+    "exploratory": "true for a run named with --exploratory. The flag changes no count.",
+    "firstDiffers": "The text of the first call of a request sent at least twice is not its usual later text (firstReplyDiffers for the verifier, firstOutputDiffers for the generator).",
+    "firstReplyDiffersAndVerdictDiffers": "Among the requests counted under firstReplyDiffers: the verdict of the first call is not the verdict of the usual later reply.",
+    "generationCall": "A step that is not a reuse. Its output is the recorded generation text.",
+    "generationRequest": "A task prompt (kind \"plain\") is identified by the task. An informed retry (kind \"informed\": an attempt after the first that carries environment feedback or a critique) is identified by the task, by whether environment feedback was given, by the critique (the rationale of the previous verifier call for the task in the same cell and trial) and by the previous code of the task in the same cell and trial. The environment-feedback text is not stored; it is taken to follow from the task and the previous code. The recorded attempt number and feedback flags must follow from the earlier steps; otherwise the run is refused. The generation counts are given for all requests and, under taskPrompts and informedRetries, for each kind.",
+    "inertRun": "The inert control sends one task prompt per task and returns that text for every later attempt. Only the first generation call of each task is a request; the verifier is called as in every other run.",
+    "laterCallsThatDiffer": "Calls from the second on, out of laterCalls, whose text is not the usual later text.",
+    "pairs": "For two runs with the same recorded request settings (model and its digest, verifier template, temperature, sampling seed, context size, reply limit, verdict fallback, request policy and public task bank): the steps at which both runs called the verifier. sameTaskAndCode counts the pairs with the same task and the same code at that step, how many of them differ in verdict and in reply text, and the programs whose verdict differs, with the verdicts of all calls on the program in each run. When either run may have cut its replies (storedReplies.textDifferencesAreALowerBound), the reply texts of a pair are compared over their first 280 UTF-16 units, which both runs store, and the count is a lower bound (textDifferencesAreALowerBound). Pairs with different code at the same step are counted apart. verifierCallInOneRunOnly counts the steps at which only one of the two runs called the verifier. Runs with different request settings are not paired.",
+    "program": "A task together with the SHA-256 of the UTF-8 bytes of the recorded code.",
+    "readOnly": "candidateProgramsExecuted and modelRequests are always 0. The tool starts no model, uses no network and executes no recorded program. Programs and replies are hashed and compared as text.",
+    "reply": "The stored verifier reply: selfReply when present, otherwise selfRationale, which holds the first 280 UTF-16 units of the reply. A run that stores no selfReply and has replies of exactly 280 units may have cut them; text differences in such a run are a lower bound (storedReplies.textDifferencesAreALowerBound).",
+    "resumedRun": "A resumed run replayed the first generations and verifier replies from the record of the interrupted run instead of requesting them (summary.json, resumed.replayedGenerations and resumed.replayedVerifications; they lie in the steps before resumed.replayedSteps). Replayed calls are left out of every item. staticRelabelling is null when verifier replies were replayed.",
+    "scope": "Every count belongs to one run or to one pair of runs. Counts of different runs are never added.",
+    "sentAtLeastTwice": "The requests with two or more calls in the run. All first-and-later counts are taken over these requests.",
+    "skill": "All steps with one skill identifier: the step that created the skill and the steps that reused it. A reused skill keeps the verdict it received when it was created.",
+    "staticRelabelling": "The skill-level confusion matrix of the self-verification cells. Truth is the last recorded execution of the skill, as in summarize_department_regeneration.py: in this item a skill is usable when that execution succeeded. tp: passed and usable; fp: passed and not usable; fn: rejected and usable; tn: rejected and not usable. observed uses the recorded verdict of each skill. allFirstCall gives every skill the verdict of the first verifier call on its program in the run. allLaterCall gives every skill the most frequent verdict among the later calls on its program (of two equally frequent verdicts the one that occurs first), or the only verdict when the program was verified once. The skills themselves stay as recorded: the regenerations that another verdict would have caused are not modelled. falsePassRate is fp / (fp + tn) and falseRejectRate is fn / (fn + tp).",
+    "step": "One line of trials.jsonl together with the line of candidates.jsonl at the same index. The two files must agree on the step number, the skill, the reuse flag and the execution outcome; otherwise the run is refused.",
+    "usable": "For a program: true when every recorded execution of it in the run succeeded, false when every one failed, null when both occur. Executions are read from the records.",
+    "usualLaterText": "For a request sent at least twice: the most frequent text among its calls from the second on. Of several equally frequent texts the one that occurs first.",
+    "variedRequests": "The requests sent at least twice that received more than one text. Their number is withMoreThanOneReply for the verifier and withMoreThanOneOutput for the generator. In the pattern each distinct text has a letter in order of first appearance (a to z, then ?).",
+    "verdict": "The verdict recorded for a step (pass or fail). The tool does not read verdicts from reply texts.",
+    "verdictChanges": "The verifier requests sent at least twice that received more than one verdict. Their number is withMoreThanOneVerdict. Each is listed with its task, the first eight hexadecimal digits of the code SHA-256, whether the program is usable, the steps of its calls and the verdicts in call order (P pass, F fail).",
+    "verifierCall": "A step that is not a reuse, in a self-verification cell (sv1-ef0 or sv1-ef1), with a recorded verdict. The runner calls the verifier once, when a skill is created.",
+    "verifierRequest": "The program of a verifier call. Under the template, model and options of one run the verifier prompt is built from the task and the code alone. The request text itself is not stored."
+  },
+  "inputs": {
+    "A/second-family": {
+      "directory": "rq-c-s42-ollama-t30-r5",
+      "private": true,
+      "role": "run",
+      "settings": {
+        "maxReplyTokens": 4096,
+        "model": "llama3.1:8b",
+        "modelDigest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+        "numCtx": 4096,
+        "ollamaVersion": "0.40.0",
+        "publicBankManifestSha256": null,
+        "requestPolicySha256": null,
+        "samplingSeed": 3759066737,
+        "temperature": 0,
+        "verdictFallback": false,
+        "verifyTemplate": "A",
+        "warmUp": true
+      },
+      "sha256": {
+        "candidates.jsonl": "a375d56c1b84c4dd8afc63f509dc2105bcefa6e66f25bdfb52af16bdf4cf2499",
+        "summary.json": "8825878548125b80f109fd98768791769339bfd640de49db834d70ae005693c2",
+        "trials.jsonl": "0b9a9f29d7adc1c8a8614f2bf5355ac60324420781f905121f862a1d0a95a583"
+      }
+    },
+    "A/template-a": {
+      "directory": "rq-c-s42-ollama-t30-r5",
+      "private": true,
+      "role": "run",
+      "settings": {
+        "maxReplyTokens": 4096,
+        "model": "qwen2.5-coder:7b-instruct",
+        "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "numCtx": 4096,
+        "ollamaVersion": "0.40.0",
+        "publicBankManifestSha256": null,
+        "requestPolicySha256": null,
+        "samplingSeed": 3759066737,
+        "temperature": 0,
+        "verdictFallback": false,
+        "verifyTemplate": "A",
+        "warmUp": true
+      },
+      "sha256": {
+        "candidates.jsonl": "58eed577f4fb5dd73a25a48bb23a11720c2eeabe6b928ea28bb890b42a314d75",
+        "summary.json": "2d294f3c96fbd949b2213a661e8cda1c2cf15d55db43f91c2349d669dc68eac4",
+        "trials.jsonl": "cb1645a89fd22aa93025516ba4ba4e8e4478d55d70a5d7c453900e2450f94db4"
+      }
+    },
+    "A/template-b": {
+      "directory": "rq-c-s42-ollama-t30-r5",
+      "private": true,
+      "role": "run",
+      "settings": {
+        "maxReplyTokens": 4096,
+        "model": "qwen2.5-coder:7b-instruct",
+        "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "numCtx": 4096,
+        "ollamaVersion": "0.40.0",
+        "publicBankManifestSha256": null,
+        "requestPolicySha256": null,
+        "samplingSeed": 3759066737,
+        "temperature": 0,
+        "verdictFallback": false,
+        "verifyTemplate": "B",
+        "warmUp": true
+      },
+      "sha256": {
+        "candidates.jsonl": "3e5a2ee05127e0502fe555d2f869d744189fc8be91d5a12fbe9595b809eb9ae3",
+        "summary.json": "7c841acc7510a3acbb0cfff696745f4fb825f9e7de559ebb6cf7f96200424e19",
+        "trials.jsonl": "0d6ed92c04b97258585b6452350a40d019bf69caed1660841841489907183da9"
+      }
+    },
+    "archive/second-family": {
+      "directory": "experiments/rq-c/family-gpu/rq-c-s42-ollama-t30-r5",
+      "private": false,
+      "role": "reference",
+      "settings": {
+        "maxReplyTokens": 4096,
+        "model": "llama3.1:8b",
+        "modelDigest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+        "numCtx": 4096,
+        "ollamaVersion": "0.40.0",
+        "publicBankManifestSha256": null,
+        "requestPolicySha256": null,
+        "samplingSeed": 3759066737,
+        "temperature": 0,
+        "verdictFallback": false,
+        "verifyTemplate": "A",
+        "warmUp": true
+      },
+      "sha256": {
+        "candidates.jsonl": "9f53d82b6e38ff5286fc62c062cc54579d7a6e8fa9a1b1232f84bea486ce4d61",
+        "summary.json": "f8af63325d4df62c12c0c5e44ac5c565bc5293f0ac75cbf6e49b9baf1e9554f0",
+        "trials.jsonl": "56e40a5e54d6a3bbe2884d25bf5e6049d2dd4ecb5c338a177764d709766b4121"
+      }
+    },
+    "archive/template-a": {
+      "directory": "experiments/rq-c/template-gpu/A/rq-c-s42-ollama-t30-r5",
+      "private": false,
+      "role": "reference",
+      "settings": {
+        "maxReplyTokens": 4096,
+        "model": "qwen2.5-coder:7b-instruct",
+        "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "numCtx": 4096,
+        "ollamaVersion": "0.40.0",
+        "publicBankManifestSha256": null,
+        "requestPolicySha256": null,
+        "samplingSeed": 3759066737,
+        "temperature": 0,
+        "verdictFallback": false,
+        "verifyTemplate": "A",
+        "warmUp": true
+      },
+      "sha256": {
+        "candidates.jsonl": "928a99838f7b57696c2e7fe4731bc3b2890b16c2ed7ef9461d1ad3dae61d2ae3",
+        "summary.json": "15465c00d2ecb8427274baef4be559bf6ef27792ff2051c77159154e4cf6ef0e",
+        "trials.jsonl": "73dfd090ff3410f1a24e62ff75ab69b0bab90a01fbedfe502ad285f7b6b18436"
+      }
+    },
+    "archive/template-b": {
+      "directory": "experiments/rq-c/template-gpu/B/rq-c-s42-ollama-t30-r5",
+      "private": false,
+      "role": "reference",
+      "settings": {
+        "maxReplyTokens": 4096,
+        "model": "qwen2.5-coder:7b-instruct",
+        "modelDigest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+        "numCtx": 4096,
+        "ollamaVersion": "0.40.0",
+        "publicBankManifestSha256": null,
+        "requestPolicySha256": null,
+        "samplingSeed": 3759066737,
+        "temperature": 0,
+        "verdictFallback": false,
+        "verifyTemplate": "B",
+        "warmUp": true
+      },
+      "sha256": {
+        "candidates.jsonl": "fd4b5408eb2592a9322728e23b51ad669f82bbdcdc8d7b5365636a3ef9439be2",
+        "summary.json": "474fe98434ff6d24111829bc80df83825192616e57cd8f9f01f341f62e5cd894",
+        "trials.jsonl": "fc76a3cc69ed351108052c68772902a03b936aa728c28542a0de3ad74c7b07c0"
+      }
+    }
+  },
+  "modelRequests": 0,
+  "notes": [
+    "Computed on 26 November 2026 from the retained run records. Department group A: the regeneration of the second attempt of 24 November 2026 on the department computer. The run took place eight days before its approved start of 2 December 2026. Its use awaits the supervisor's decision.",
+    "Groups A and B are reported in separate files and are never pooled. Group B is exploratory.",
+    "No number of this file enters Chapter 5 or the P2 manuscript.",
+    "The run records of group A are private inputs. They are named here by file name and SHA-256 only."
+  ],
+  "pairs": {
+    "archive/second-family -> A/second-family": {
+      "differentCodeAtTheSameStep": {
+        "pairs": 163,
+        "verdictDiffers": 3
+      },
+      "differentTaskAtTheSameStep": 0,
+      "first": "archive/second-family",
+      "sameTaskAndCode": {
+        "pairs": 603,
+        "programsWithADifferentVerdict": [
+          {
+            "codeSha256Prefix": "2b0f633e",
+            "first": {
+              "calls": 1,
+              "usable": false,
+              "verdicts": "P"
+            },
+            "pairs": 1,
+            "second": {
+              "calls": 1,
+              "usable": false,
+              "verdicts": "F"
+            },
+            "task": "parse-csv-line",
+            "verdictDiffers": 1
+          }
+        ],
+        "replyTextDiffers": 216,
+        "verdictDiffers": 1
+      },
+      "second": "A/second-family",
+      "stepsWithAVerifierCallInBothRuns": 766,
+      "textDifferencesAreALowerBound": false,
+      "verifierCallInOneRunOnly": {
+        "first": 4,
+        "second": 10
+      }
+    },
+    "archive/template-a -> A/template-a": {
+      "differentCodeAtTheSameStep": {
+        "pairs": 88,
+        "verdictDiffers": 2
+      },
+      "differentTaskAtTheSameStep": 0,
+      "first": "archive/template-a",
+      "sameTaskAndCode": {
+        "pairs": 762,
+        "programsWithADifferentVerdict": [
+          {
+            "codeSha256Prefix": "51effba9",
+            "first": {
+              "calls": 9,
+              "usable": false,
+              "verdicts": "PPPPPPPPP"
+            },
+            "pairs": 9,
+            "second": {
+              "calls": 18,
+              "usable": false,
+              "verdicts": "FFFFFFFFFFFFFFFFFF"
+            },
+            "task": "parse-query-string",
+            "verdictDiffers": 9
+          }
+        ],
+        "replyTextDiffers": 35,
+        "verdictDiffers": 9
+      },
+      "second": "A/template-a",
+      "stepsWithAVerifierCallInBothRuns": 850,
+      "textDifferencesAreALowerBound": false,
+      "verifierCallInOneRunOnly": {
+        "first": 2,
+        "second": 15
+      }
+    },
+    "archive/template-b -> A/template-b": {
+      "differentCodeAtTheSameStep": {
+        "pairs": 56,
+        "verdictDiffers": 0
+      },
+      "differentTaskAtTheSameStep": 0,
+      "first": "archive/template-b",
+      "sameTaskAndCode": {
+        "pairs": 694,
+        "programsWithADifferentVerdict": [],
+        "replyTextDiffers": 134,
+        "verdictDiffers": 0
+      },
+      "second": "A/template-b",
+      "stepsWithAVerifierCallInBothRuns": 750,
+      "textDifferencesAreALowerBound": false,
+      "verifierCallInOneRunOnly": {
+        "first": 0,
+        "second": 6
+      }
+    }
+  },
+  "runs": {
+    "A/second-family": {
+      "exploratory": false,
+      "generation": {
+        "calls": 1531,
+        "consecutiveOccurrences": {
+          "changesFromSecondOn": [],
+          "firstToSecond": {
+            "withInterveningRequest": {
+              "changes": 3,
+              "pairs": 13
+            },
+            "withoutInterveningRequest": {
+              "changes": 8,
+              "pairs": 44
+            }
+          },
+          "fromSecondOn": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 135
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 1277
+            }
+          }
+        },
+        "firstOutputDiffers": 11,
+        "informedRetries": {
+          "calls": 91,
+          "firstOutputDiffers": 3,
+          "requests": 18,
+          "sentAtLeastTwice": 13,
+          "withMoreThanOneOutput": 3
+        },
+        "laterCalls": 1469,
+        "laterCallsThatDiffer": 0,
+        "requests": 62,
+        "sentAtLeastTwice": 57,
+        "taskPrompts": {
+          "calls": 1440,
+          "firstOutputDiffers": 8,
+          "requests": 44,
+          "sentAtLeastTwice": 44,
+          "withMoreThanOneOutput": 8
+        },
+        "variedRequests": [
+          {
+            "calls": 28,
+            "firstStep": 0,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "arr-sum"
+          },
+          {
+            "calls": 44,
+            "firstStep": 4,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "logic-pangram"
+          },
+          {
+            "calls": 44,
+            "firstStep": 7,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "arr-sum-evens"
+          },
+          {
+            "calls": 32,
+            "firstStep": 61,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "math-factorial"
+          },
+          {
+            "calls": 52,
+            "firstStep": 130,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "math-is-prime"
+          },
+          {
+            "calls": 32,
+            "firstStep": 184,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "str-unique-chars"
+          },
+          {
+            "calls": 32,
+            "firstStep": 668,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "math-average"
+          },
+          {
+            "calls": 16,
+            "firstStep": 1146,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbb",
+            "task": "str-to-camel"
+          },
+          {
+            "calls": 9,
+            "firstStep": 1842,
+            "kind": "informed",
+            "outputs": "abbbbbbbb",
+            "task": "math-round-to"
+          },
+          {
+            "calls": 9,
+            "firstStep": 5595,
+            "kind": "informed",
+            "outputs": "abbbbbbbb",
+            "task": "str-rot13"
+          },
+          {
+            "calls": 2,
+            "firstStep": 5919,
+            "kind": "informed",
+            "outputs": "ab",
+            "task": "parse-csv-line"
+          }
+        ],
+        "withMoreThanOneOutput": 11
+      },
+      "inert": false,
+      "resumed": null,
+      "skills": 1531,
+      "staticRelabelling": {
+        "allFirstCall": {
+          "confusion": {
+            "fn": 22,
+            "fp": 95,
+            "tn": 22,
+            "tp": 637
+          },
+          "falsePassRate": {
+            "denominator": 117,
+            "estimate": 0.811965811965812,
+            "numerator": 95
+          },
+          "falseRejectRate": {
+            "denominator": 659,
+            "estimate": 0.03338391502276176,
+            "numerator": 22
+          }
+        },
+        "allLaterCall": {
+          "confusion": {
+            "fn": 0,
+            "fp": 95,
+            "tn": 22,
+            "tp": 659
+          },
+          "falsePassRate": {
+            "denominator": 117,
+            "estimate": 0.811965811965812,
+            "numerator": 95
+          },
+          "falseRejectRate": {
+            "denominator": 659,
+            "estimate": 0.0,
+            "numerator": 0
+          }
+        },
+        "observed": {
+          "confusion": {
+            "fn": 1,
+            "fp": 95,
+            "tn": 22,
+            "tp": 658
+          },
+          "falsePassRate": {
+            "denominator": 117,
+            "estimate": 0.811965811965812,
+            "numerator": 95
+          },
+          "falseRejectRate": {
+            "denominator": 659,
+            "estimate": 0.0015174506828528073,
+            "numerator": 1
+          }
+        },
+        "skills": 776
+      },
+      "steps": 7200,
+      "storedReplies": {
+        "atTheLimitWithoutFullText": 0,
+        "textDifferencesAreALowerBound": false,
+        "withFullText": 19
+      },
+      "verification": {
+        "calls": 776,
+        "consecutiveOccurrences": {
+          "changesFromSecondOn": [
+            {
+              "codeSha256Prefix": "3a203c01",
+              "interveningRequest": true,
+              "step": 6610,
+              "task": "parse-csv-line"
+            }
+          ],
+          "firstToSecond": {
+            "withInterveningRequest": {
+              "changes": 3,
+              "pairs": 9
+            },
+            "withoutInterveningRequest": {
+              "changes": 10,
+              "pairs": 42
+            }
+          },
+          "fromSecondOn": {
+            "withInterveningRequest": {
+              "changes": 1,
+              "pairs": 72
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 594
+            }
+          }
+        },
+        "firstReplyDiffers": 13,
+        "firstReplyDiffersAndVerdictDiffers": 1,
+        "laterCalls": 717,
+        "laterCallsThatDiffer": 2,
+        "requests": 59,
+        "sentAtLeastTwice": 51,
+        "variedRequests": [
+          {
+            "calls": 18,
+            "codeSha256Prefix": "27479e94",
+            "firstStep": 3603,
+            "replies": "abbbbbbbbbbbbbbbbb",
+            "task": "logic-valid-parentheses"
+          },
+          {
+            "calls": 22,
+            "codeSha256Prefix": "db5d25bc",
+            "firstStep": 3608,
+            "replies": "abbbbbbbbbbbbbbbbbbbbb",
+            "task": "math-fib"
+          },
+          {
+            "calls": 10,
+            "codeSha256Prefix": "62db51ca",
+            "firstStep": 3660,
+            "replies": "abbbbbbbbb",
+            "task": "obj-get-nested"
+          },
+          {
+            "calls": 18,
+            "codeSha256Prefix": "bfcfd010",
+            "firstStep": 3728,
+            "replies": "abbbbbbbbbbbbbbbbb",
+            "task": "math-gcd"
+          },
+          {
+            "calls": 18,
+            "codeSha256Prefix": "300aea91",
+            "firstStep": 3729,
+            "replies": "abbbbbbbbbbbbbbbbb",
+            "task": "parse-query-string"
+          },
+          {
+            "calls": 8,
+            "codeSha256Prefix": "cf27e6ee",
+            "firstStep": 3731,
+            "replies": "abbbbbbb",
+            "task": "obj-pick"
+          },
+          {
+            "calls": 18,
+            "codeSha256Prefix": "eaf2aa46",
+            "firstStep": 3783,
+            "replies": "abbbbbbbbbbbbbbbbb",
+            "task": "str-rot13"
+          },
+          {
+            "calls": 16,
+            "codeSha256Prefix": "abc47dbb",
+            "firstStep": 3786,
+            "replies": "abbbbbbbbbbbbbbb",
+            "task": "arr-chunk"
+          },
+          {
+            "calls": 8,
+            "codeSha256Prefix": "b1791cff",
+            "firstStep": 3858,
+            "replies": "abbbbbbb",
+            "task": "str-rot13"
+          },
+          {
+            "calls": 20,
+            "codeSha256Prefix": "0e882462",
+            "firstStep": 3900,
+            "replies": "abbbbbbbbbbbbbbbbbbb",
+            "task": "logic-fizzbuzz"
+          },
+          {
+            "calls": 8,
+            "codeSha256Prefix": "9fe84bce",
+            "firstStep": 3962,
+            "replies": "abbbbbbb",
+            "task": "str-is-palindrome"
+          },
+          {
+            "calls": 12,
+            "codeSha256Prefix": "d5a129aa",
+            "firstStep": 4024,
+            "replies": "abbbbbbbbbbb",
+            "task": "date-add-days"
+          },
+          {
+            "calls": 8,
+            "codeSha256Prefix": "3a203c01",
+            "firstStep": 4083,
+            "replies": "abbbbbcc",
+            "task": "parse-csv-line"
+          }
+        ],
+        "verdictChanges": [
+          {
+            "codeSha256Prefix": "db5d25bc",
+            "steps": [
+              3608,
+              3664,
+              3785,
+              3963,
+              4029,
+              4085,
+              4386,
+              4508,
+              4806,
+              4870,
+              4930,
+              5408,
+              5464,
+              5585,
+              5763,
+              5829,
+              5885,
+              6186,
+              6308,
+              6606,
+              6670,
+              6730
+            ],
+            "task": "math-fib",
+            "usable": true,
+            "verdicts": "FPPPPPPPPPPPPPPPPPPPPP"
+          }
+        ],
+        "withMoreThanOneReply": 13,
+        "withMoreThanOneVerdict": 1
+      }
+    },
+    "A/template-a": {
+      "exploratory": false,
+      "generation": {
+        "calls": 1621,
+        "consecutiveOccurrences": {
+          "changesFromSecondOn": [],
+          "firstToSecond": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 22
+            },
+            "withoutInterveningRequest": {
+              "changes": 1,
+              "pairs": 44
+            }
+          },
+          "fromSecondOn": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 235
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 1252
+            }
+          }
+        },
+        "firstOutputDiffers": 1,
+        "informedRetries": {
+          "calls": 181,
+          "firstOutputDiffers": 0,
+          "requests": 24,
+          "sentAtLeastTwice": 22,
+          "withMoreThanOneOutput": 0
+        },
+        "laterCalls": 1553,
+        "laterCallsThatDiffer": 0,
+        "requests": 68,
+        "sentAtLeastTwice": 66,
+        "taskPrompts": {
+          "calls": 1440,
+          "firstOutputDiffers": 1,
+          "requests": 44,
+          "sentAtLeastTwice": 44,
+          "withMoreThanOneOutput": 1
+        },
+        "variedRequests": [
+          {
+            "calls": 16,
+            "firstStep": 483,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbb",
+            "task": "parse-csv-line"
+          }
+        ],
+        "withMoreThanOneOutput": 1
+      },
+      "inert": false,
+      "resumed": null,
+      "skills": 1621,
+      "staticRelabelling": {
+        "allFirstCall": {
+          "confusion": {
+            "fn": 68,
+            "fp": 81,
+            "tn": 74,
+            "tp": 642
+          },
+          "falsePassRate": {
+            "denominator": 155,
+            "estimate": 0.5225806451612903,
+            "numerator": 81
+          },
+          "falseRejectRate": {
+            "denominator": 710,
+            "estimate": 0.09577464788732394,
+            "numerator": 68
+          }
+        },
+        "allLaterCall": {
+          "confusion": {
+            "fn": 68,
+            "fp": 81,
+            "tn": 74,
+            "tp": 642
+          },
+          "falsePassRate": {
+            "denominator": 155,
+            "estimate": 0.5225806451612903,
+            "numerator": 81
+          },
+          "falseRejectRate": {
+            "denominator": 710,
+            "estimate": 0.09577464788732394,
+            "numerator": 68
+          }
+        },
+        "observed": {
+          "confusion": {
+            "fn": 68,
+            "fp": 81,
+            "tn": 74,
+            "tp": 642
+          },
+          "falsePassRate": {
+            "denominator": 155,
+            "estimate": 0.5225806451612903,
+            "numerator": 81
+          },
+          "falseRejectRate": {
+            "denominator": 710,
+            "estimate": 0.09577464788732394,
+            "numerator": 68
+          }
+        },
+        "skills": 865
+      },
+      "steps": 7200,
+      "storedReplies": {
+        "atTheLimitWithoutFullText": 0,
+        "textDifferencesAreALowerBound": false,
+        "withFullText": 0
+      },
+      "verification": {
+        "calls": 865,
+        "consecutiveOccurrences": {
+          "changesFromSecondOn": [
+            {
+              "codeSha256Prefix": "bea4e1d2",
+              "interveningRequest": true,
+              "step": 5589,
+              "task": "arr-flatten"
+            }
+          ],
+          "firstToSecond": {
+            "withInterveningRequest": {
+              "changes": 1,
+              "pairs": 13
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 42
+            }
+          },
+          "fromSecondOn": {
+            "withInterveningRequest": {
+              "changes": 1,
+              "pairs": 166
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 589
+            }
+          }
+        },
+        "firstReplyDiffers": 1,
+        "firstReplyDiffersAndVerdictDiffers": 0,
+        "laterCalls": 810,
+        "laterCallsThatDiffer": 9,
+        "requests": 55,
+        "sentAtLeastTwice": 55,
+        "variedRequests": [
+          {
+            "calls": 40,
+            "codeSha256Prefix": "bea4e1d2",
+            "firstStep": 3668,
+            "replies": "abbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaa",
+            "task": "arr-flatten"
+          }
+        ],
+        "verdictChanges": [],
+        "withMoreThanOneReply": 1,
+        "withMoreThanOneVerdict": 0
+      }
+    },
+    "A/template-b": {
+      "exploratory": false,
+      "generation": {
+        "calls": 1512,
+        "consecutiveOccurrences": {
+          "changesFromSecondOn": [],
+          "firstToSecond": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 12
+            },
+            "withoutInterveningRequest": {
+              "changes": 1,
+              "pairs": 44
+            }
+          },
+          "fromSecondOn": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 114
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 1286
+            }
+          }
+        },
+        "firstOutputDiffers": 1,
+        "informedRetries": {
+          "calls": 72,
+          "firstOutputDiffers": 0,
+          "requests": 12,
+          "sentAtLeastTwice": 12,
+          "withMoreThanOneOutput": 0
+        },
+        "laterCalls": 1456,
+        "laterCallsThatDiffer": 0,
+        "requests": 56,
+        "sentAtLeastTwice": 56,
+        "taskPrompts": {
+          "calls": 1440,
+          "firstOutputDiffers": 1,
+          "requests": 44,
+          "sentAtLeastTwice": 44,
+          "withMoreThanOneOutput": 1
+        },
+        "variedRequests": [
+          {
+            "calls": 16,
+            "firstStep": 483,
+            "kind": "plain",
+            "outputs": "abbbbbbbbbbbbbbb",
+            "task": "parse-csv-line"
+          }
+        ],
+        "withMoreThanOneOutput": 1
+      },
+      "inert": false,
+      "resumed": null,
+      "skills": 1512,
+      "staticRelabelling": {
+        "allFirstCall": {
+          "confusion": {
+            "fn": 0,
+            "fp": 88,
+            "tn": 0,
+            "tp": 668
+          },
+          "falsePassRate": {
+            "denominator": 88,
+            "estimate": 1.0,
+            "numerator": 88
+          },
+          "falseRejectRate": {
+            "denominator": 668,
+            "estimate": 0.0,
+            "numerator": 0
+          }
+        },
+        "allLaterCall": {
+          "confusion": {
+            "fn": 0,
+            "fp": 88,
+            "tn": 0,
+            "tp": 668
+          },
+          "falsePassRate": {
+            "denominator": 88,
+            "estimate": 1.0,
+            "numerator": 88
+          },
+          "falseRejectRate": {
+            "denominator": 668,
+            "estimate": 0.0,
+            "numerator": 0
+          }
+        },
+        "observed": {
+          "confusion": {
+            "fn": 0,
+            "fp": 88,
+            "tn": 0,
+            "tp": 668
+          },
+          "falsePassRate": {
+            "denominator": 88,
+            "estimate": 1.0,
+            "numerator": 88
+          },
+          "falseRejectRate": {
+            "denominator": 668,
+            "estimate": 0.0,
+            "numerator": 0
+          }
+        },
+        "skills": 756
+      },
+      "steps": 7200,
+      "storedReplies": {
+        "atTheLimitWithoutFullText": 0,
+        "textDifferencesAreALowerBound": false,
+        "withFullText": 38
+      },
+      "verification": {
+        "calls": 756,
+        "consecutiveOccurrences": {
+          "changesFromSecondOn": [],
+          "firstToSecond": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 6
+            },
+            "withoutInterveningRequest": {
+              "changes": 6,
+              "pairs": 44
+            }
+          },
+          "fromSecondOn": {
+            "withInterveningRequest": {
+              "changes": 0,
+              "pairs": 54
+            },
+            "withoutInterveningRequest": {
+              "changes": 0,
+              "pairs": 602
+            }
+          }
+        },
+        "firstReplyDiffers": 6,
+        "firstReplyDiffersAndVerdictDiffers": 0,
+        "laterCalls": 706,
+        "laterCallsThatDiffer": 0,
+        "requests": 50,
+        "sentAtLeastTwice": 50,
+        "variedRequests": [
+          {
+            "calls": 22,
+            "codeSha256Prefix": "efdf6ef6",
+            "firstStep": 3608,
+            "replies": "abbbbbbbbbbbbbbbbbbbbb",
+            "task": "math-fib"
+          },
+          {
+            "calls": 20,
+            "codeSha256Prefix": "cb9295e1",
+            "firstStep": 3662,
+            "replies": "abbbbbbbbbbbbbbbbbbb",
+            "task": "date-is-leap-year"
+          },
+          {
+            "calls": 10,
+            "codeSha256Prefix": "c882a947",
+            "firstStep": 3724,
+            "replies": "abbbbbbbbb",
+            "task": "logic-roman-to-int"
+          },
+          {
+            "calls": 8,
+            "codeSha256Prefix": "99689f78",
+            "firstStep": 3731,
+            "replies": "abbbbbbb",
+            "task": "obj-pick"
+          },
+          {
+            "calls": 24,
+            "codeSha256Prefix": "7174a6e5",
+            "firstStep": 3905,
+            "replies": "abbbbbbbbbbbbbbbbbbbbbbb",
+            "task": "str-truncate"
+          },
+          {
+            "calls": 4,
+            "codeSha256Prefix": "921af903",
+            "firstStep": 4030,
+            "replies": "abbb",
+            "task": "parse-version"
+          }
+        ],
+        "verdictChanges": [],
+        "withMoreThanOneReply": 6,
+        "withMoreThanOneVerdict": 0
+      }
+    }
+  },
+  "schema": "aijade.p2-r.first-occurrence.v1",
+  "tool": {
+    "file": "experiments/rq-c/first_occurrence_report.py",
+    "sha256": "2ce1021adb84952df00e966be375f7987084e3d6fd068d02293830aaf0bfcb2c"
+  }
+}

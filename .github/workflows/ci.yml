@@ -48,6 +48,8 @@ jobs:
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_summarize_department_regeneration.py -v
       - name: Verify the two-layer P2-R report (generation, judgment) on synthetic records and the host-2 run
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_two_layer_report.py -v
+      - name: Verify the first-occurrence report on synthetic records and the public archived runs
+        run: python3 -B -m unittest discover -s experiments/rq-c -p test_first_occurrence_report.py -v
       - name: Verify P2-R synthetic oracle transcript generation and archived scoring
         run: python3 -B -m unittest discover -s experiments/rq-c -p test_rescore_department_oracle.py -v
       - name: Verify P2-R per-case evaluator capture and runtime evidence offline

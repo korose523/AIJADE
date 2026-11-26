@@ -1,8 +1,19 @@
 # Chapter 7 four-block execution
 
-Table 7.3 remains `NOT_RUN`. The planned study has 40 pairs and 80 condition
-records across four ordered blocks. The Mac qualification requires the
-supervisor's reply to the one-page plan. Start the held-out construction only
+This runbook was written before the runs. On 21 November 2026 the supervisor
+approved the one-page qualification plan and the 40-pair plan. The Mac
+qualification met both approved criteria on its seventh attempt that day,
+after four recorded deviations. The 40 pairs (80 condition records in four
+ordered blocks) completed on the second launch, after a fifth recorded
+deviation, and dissertation Table 7.3 reports that launch. The supervisor
+accepted both on 23 November 2026, the qualification on condition that the
+renderer change is public (published in `f620d32`). The records are on branch
+`research/ch7-mac-qualification-20261121` (`cb7033f`, `99807a5`, `f620d32`).
+
+The steps below are kept as written. The record written before the held-out
+cases were built names this runbook as the procedure of the comparison. The
+copy on the research branch adds one paragraph and one flag to the build
+step; the other steps are the same. Start the held-out construction only
 after the two known-condition repeats have passed and their actual raw
 deliveries have been accepted. Keep every earlier refusal with its receipt.
 

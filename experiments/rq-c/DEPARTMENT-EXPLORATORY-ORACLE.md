@@ -50,7 +50,7 @@ python3 -B experiments/rq-c/launch_department_oracle_replay.py plan \
   "${p2_replay_input[@]}" --session-id "$P2_REPLAY_SESSION_ID"
 ```
 
-The operator's `aijade.p2-r.department-oracle-replay-approval.v1` record carries forward the supervisor reply and approved plan of the accepted regeneration. Verify the recipient's allocation and actual host, source checkout, evaluator artifact and exact Node binary and environment. The approved plan and reply remain the authority for any schedule amendment. The original P2-R plan places the new stages on or after 2 December 2026.
+The operator's `aijade.p2-r.department-oracle-replay-approval.v1` record carries forward the supervisor reply and approved plan of the accepted regeneration. Verify the recipient's allocation and actual host, source checkout, evaluator artifact and exact Node binary and environment. The approved plan and reply remain the authority for any schedule amendment. The original P2-R plan places the new stages on or after 2 December 2026. Regenerations of group A (eight days before its approved start) and of the exploratory group B (before the supervisor had decided on it) ran on 24 November 2026, with deviations; see [`department-20261124/README.md`](department-20261124/README.md). Their use awaits the supervisor's decision. No replay has been run on them. A replay needs its own execution approval, and the `run` action below checks the original approval receipts of the second attempts, which are still on the department computer.
 
 | Field | Reviewed evidence |
 | --- | --- |

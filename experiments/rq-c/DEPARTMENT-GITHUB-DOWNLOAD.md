@@ -2,6 +2,8 @@
 
 P2-R uses a dedicated, clean Git checkout of [korose523/AIJADE](https://github.com/korose523/AIJADE). Use the full commit SHA from the AIJADE delivery record for offline preparation. The formal approval must identify the exact source commit used later. The Chapter 7 Mac qualification and its build are separate from this department workflow.
 
+The department runs of 24 November 2026 did not run from a commit on GitHub alone. Their source was `589bc0f` plus three commits made on the department computer (`9f67b1b`, `204af3a`, `fddf9a1`) that are not public yet; see [`department-20261124/README.md`](department-20261124/README.md).
+
 ## Download the exact source
 
 In a POSIX shell, set `AIJADE_WORKSPACE_ROOT` to your dedicated, existing AIJADE workspace and `AIJADE_DOWNLOAD_COMMIT` to the full 40-character commit SHA. The workspace will contain the checkout and a separate directory for private records. On the Mac use `/Volumes/Untitled/AIJADE/`. Allow room for the checkout and its retained inputs.
