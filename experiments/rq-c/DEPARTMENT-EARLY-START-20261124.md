@@ -4,6 +4,8 @@ Prospective record, written on 23 November 2026 (Asia/Seoul) before any departme
 
 **Outcome (added 26 November 2026).** The runs took place on 24 November 2026. They did not follow this record in every respect: three code changes were made on site (a pinned log anchor and a local helper path in the collector, and a discarded warm-up request in the open-sampling control), the analyses were first computed on the department computer, and the preconditions that a later retry record set for the second attempts were not all met. The list under "Out of scope" places the exploratory re-tally among the analyses that run read-only on the Mac; the re-tally needs the Node replay named in the same list, which executes the recorded programs under its own approval. The outcome and the full list of deviations are in [`department-20261124/README.md`](department-20261124/README.md). The text below is unchanged.
 
+**Decision (added 27 November 2026).** The supervisor decided on the use of the runs on 27 November 2026; see [`department-20261124/README.md`](department-20261124/README.md), section "Decision of 27 November 2026".
+
 ## Basis
 
 - **Supervisor's review of 21 November 2026.**

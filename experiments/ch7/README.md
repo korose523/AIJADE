@@ -24,8 +24,10 @@ qualification's execution plan (1,800 s per block, 600 s for the renderer, no
 resource thresholds) in place of the frozen plan's 1,200 s block limit,
 4,800 s overall limit, memory and swap stops and 120-second unloaded admission
 window; the launch record stated these limits before the first launch without
-calling them a deviation, and no admission-window record is retained. Neither
-experiment made a model request.
+calling them a deviation, and no admission-window record is retained. The
+supervisor's review of 27 November 2026 numbers this use of the qualification's
+limits without an admission window as the sixth deviation. Neither experiment
+made a model request.
 
 The 40 pairs are 32 integrity pairs (four new variants of each of the eight
 integrity families of the development cases), four normal pairs and four pairs
@@ -39,10 +41,51 @@ arms accepted the four normal pairs, and neither arm stopped the four pairs
 whose content is wrong. This is a comparison of paths on 40 constructed pairs
 and not an estimate for real use.
 
+The four blocks of the second launch took 348 s, 339 s, 357 s and 368 s from
+start to finish, about 24 minutes in all (`results/heldout-02/receipt.json`
+under `finite-heldout/mac-heldout-20261121/` on the branch named below), inside
+the frozen plan's 1,200 s per block and 4,800 s overall. A read-only check on 27 November 2026 compared
+the owned-process telemetry of each block with the frozen plan's resource
+stop conditions: owned RSS above 2 GiB, available memory below 3 GiB or swap growth
+above 1 GiB, each for 30 s. The telemetry files are not published; the run
+receipts list those of the five verified blocks with their SHA-256, and the
+checked files match. No sample of the second launch crossed any of the three
+thresholds (owned RSS at most 1.28 GiB, available memory at least 5.5 GiB,
+swap growth 0), and no sample of the first launch's two blocks did (swap growth
+at most 0.554 GiB). As far as the telemetry can show, none of these resource
+stop conditions was reached; the first launch stopped in block 2 on a failed
+observation of an owned process, not on a resource threshold. In the second launch the median interval between
+samples is about 1.1 s and the longest gap 10.7 s, shorter than the 30 s of the
+stop rule. The telemetry has two limits. First, in the second launch each
+series begins when the block's research process starts, 55 to 87 s after the
+block's recorded start, and ends 8 to 21 s before its recorded end, so it
+covers 73 to 82 per cent of each block; the spans before and after are not
+observed. In the first launch the two series begin 64.5 and 80.3 s after their
+block's recorded start and end 36.4 and 25.5 s before its recorded end (77 and
+79 per cent covered, longest gap 13.6 s); the file of the stopped block 2 is not
+bound by any receipt. Second, swap growth is measured from each block's own
+start (when its research process starts), not from one baseline kept across the
+blocks as the frozen plan requires. Each block receipt records the swap in use
+at that point (34,078,720 and 595,329,024 bytes at the two blocks of the first
+launch, 595,329,024 bytes at all four of the second), and growth is recorded as
+zero whenever the swap in use is at or below that value, so growth from the
+first block's start can still be bounded: 0 in every sample of the second
+launch and at most 0.554 GiB in the first launch. The swap in use before the
+first block's research process started is not recorded.
+
+Block 1 of the first launch completed and was verified (10 pairs, 20 condition
+records) but has not been scored. The review of 27 November 2026 asks that it
+be scored with the frozen scorer and reported in one sentence in Section 7.3 as
+a supplementary observation; Table 7.3 stays the four blocks of the second
+launch. The scoring is to run under a dated record that the first author
+confirms and pushes before the scorer runs. As of 27 November 2026 that record has not been confirmed or
+pushed, and no score exists.
+
 The supervisor accepted the qualification and the comparison on 23 November
 2026, the qualification on condition that the renderer change of the fourth
-deviation is public. That change was published the same day in `f620d32`. As
-of 26 November 2026 the records are on branch
+deviation is public. That change was published the same day in `f620d32`. The
+review of 27 November 2026 keeps that approval. As
+of 27 November 2026 the records are on branch
 `research/ch7-mac-qualification-20261121` only (`cb7033f`, `99807a5`,
 `f620d32`), under `mac-known-repeats-qualification/` and
 `finite-heldout/mac-heldout-20261121/`. The per-case paths are in

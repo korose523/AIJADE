@@ -83,13 +83,13 @@ Missing access, changed anchors, incomplete retention or mismatched identity
 block acceptance. Keep real event XML and the approval bundle private.
 
 On both machines where this route has been used (host 2 on 19 November 2026
-and the department computer on 24 November 2026), the oldest record retained
+and the department server on 24 November 2026), the oldest record retained
 in the event logs named another computer, and the collector at the tracked
 commit refuses such a record. The runs on both machines used a patch that pins the record by
 its SHA-256 and is not part of the tracked collector. The patch is kept with
 the host-2 release (`host2-local-20261119/delivered/windows-retention-fix.patch`);
 see [`department-20261124/README.md`](department-20261124/README.md) for its
-use on the department computer.
+use on the department server.
 
 The Windows CI job checks the frozen worklist, parses the native PowerShell
 helper, verifies the event query interval on the hosted runner, and exercises authored event fixtures.

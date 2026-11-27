@@ -2,7 +2,7 @@
 
 The launcher stages one phase per new output directory. Qualification covers five fresh launches in each of the three archived configurations, followed by the two open-sampling controls. Regeneration uses three separate output directories and compares each complete run with its pinned archive. The runner uses the original task, sampling and comparison settings from the [retained worklist](DEPARTMENT-REGENERATION-PREPARATION.md).
 
-Use the [department GitHub download guide](DEPARTMENT-GITHUB-DOWNLOAD.md) to fetch the fixed source commit and check the archived inputs on the department computer.
+Use the [department GitHub download guide](DEPARTMENT-GITHUB-DOWNLOAD.md) to fetch the fixed source commit and check the archived inputs on the department server.
 
 ## Offline review
 
@@ -78,7 +78,7 @@ For separate allocation windows add `--qualification-approval "$P2_APPROVAL_FILE
 
 After regeneration is accepted, use its original approval and the complete phase receipt to prepare the [P2-R Node replay and process evidence](DEPARTMENT-EXPLORATORY-ORACLE.md). The replay carries forward the approved plan and reply and uses its own reviewed process identity and allocation window.
 
-The worklist and tests are offline preparation. The supervisor's reply of 21 November 2026 approves group A from 2 December 2026; the separate follow-on experiments await their own plans. Early runs of groups A and B took place on 24 November 2026, with deviations; see [`department-20261124/README.md`](department-20261124/README.md). Their use awaits the supervisor's decision.
+The worklist and tests are offline preparation. The supervisor's reply of 21 November 2026 approved group A from 2 December 2026; the separate follow-on experiments await their own plans. Early runs of groups A and B took place on 24 November 2026, with deviations; see [`department-20261124/README.md`](department-20261124/README.md). On 27 November 2026 the supervisor decided that the computer used is the department server, that group B stays exploratory and that P2-R is not rerun. Group A is used once three steps are done: the source commits and records left on site are retrieved and checked and the three commits are published; the exploratory re-scoring is applied to groups A and B under a prospective record that the first author confirms and pushes before it runs; and the deviations and remaining weaknesses are written into Section 5.10.3 and Appendix B of the dissertation (that file, section "Decision of 27 November 2026"). The control standard for the next run on that server is fixed, sent to the supervisor and pushed before the run.
 
 ## Two-layer report
 

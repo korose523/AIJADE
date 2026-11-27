@@ -48,22 +48,27 @@ a fifth. Both launches used the time limits of the qualification's execution
 plan (1,800 s per block, 600 s for the renderer, no resource thresholds) in
 place of the frozen plan's block and overall limits, memory and swap stops and
 120-second unloaded admission window; the launch record stated these limits
-before the first launch without calling them a deviation. Under C1, 12 of 28
+before the first launch without calling them a deviation, and the supervisor's
+review of 27 November 2026 numbers this as the sixth deviation. Under C1, 12 of 28
 scheduled windows had a wrong durable promotion
 and 8 of 32 had a wrong reuse in round 2; under C2 both counts were 0. The 8
 wrong reuses are cases that C1 wrongly promoted in round 1, and no case was
 stopped in round 2 by C2 alone. The supervisor accepted both results on 23
 November 2026, the qualification on condition that the renderer change is
-public; that change was published in `f620d32`. The result concerns these 40
+public; that change was published in `f620d32`, and the review of 27 November
+2026 keeps the approval of both results. The result concerns these 40
 constructed pairs and is not a population estimate.
 
-As of 26 November 2026 the records of these Chapter 7 runs and of the P2-R
+As of 27 November 2026 the records of these Chapter 7 runs and of the P2-R
 regenerations (re-runs of three archived model runs, see "Reproducing the
 measurements") are not on `main`. Those of Chapter 7 are on
 `research/ch7-mac-qualification-20261121` (`cb7033f`, `99807a5`, `f620d32`).
 The P2-R records of host 2 (19 November 2026, a deviation record) and of the
-department computer (24 November 2026, with deviations; their use awaits the
-supervisor's decision) are on `live2d-chat-stability-20261118`, under
+department server (24 November 2026, with deviations; on 27 November 2026 the
+supervisor decided to use group A once three steps are done, to keep group B
+exploratory and not to rerun P2-R; see "Decision of 27 November 2026" in
+[its README](experiments/rq-c/department-20261124/README.md#decision-of-27-november-2026))
+are on `live2d-chat-stability-20261118`, under
 `experiments/rq-c/host2-local-20261119/` and
 `experiments/rq-c/department-20261124/`.
 
@@ -154,10 +159,11 @@ lists each file with the driver that regenerates it. Three studies use this code
   `run-template.sh`) give the exact flags. A re-run does not reproduce the trajectory step by step: in every
   regeneration made so far, some generated programs differ from those of the archived run. Three archived runs (the
   second-family control and the two prompt-template runs) were regenerated on host 2 under a newer service version on
-  19 November 2026 (a deviation record) and on a department computer on 24 November 2026 (group A under the archived
-  service version and the exploratory group B under the newer one, with deviations). Whether the department runs can be
-  used is for the supervisor to decide, and no number from these regenerations enters the P2 manuscript or Chapter 5 of
-  the dissertation.
+  19 November 2026 (a deviation record) and on the department server on 24 November 2026 (group A under the archived
+  service version and the exploratory group B under the newer one, with deviations). On 27 November 2026 the supervisor
+  decided to use group A after the source commits and records left on site are retrieved and checked, the commits are
+  published and both groups are re-scored; until then no number from these regenerations enters the P2 manuscript or
+  Chapter 5 of the dissertation, and group B never enters P2.
 
 ## The companion elsewhere
 

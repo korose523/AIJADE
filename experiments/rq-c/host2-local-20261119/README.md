@@ -11,7 +11,7 @@ The P2-R worklist was run from 06:34 to 07:42 UTC on 19 November 2026 on host 2,
   - two open-sampling controls;
   - one full regeneration for each group (template A, template B, second family).
 
-The supervisor's review of 21 November accepts this run as a deviation record. It will be used only as one row of the "same service version, different device" comparison once the department server's results exist. P2's main results come from the department server. (Added 26 November 2026: the department runs took place on 24 November 2026, with deviations; see [`../department-20261124/README.md`](../department-20261124/README.md).)
+The supervisor's review of 21 November accepts this run as a deviation record. It will be used only as one row of the "same service version, different device" comparison once the department server's results exist. P2's main results come from the department server. (Added 26 November 2026: the department runs took place on 24 November 2026, with deviations; see [`../department-20261124/README.md`](../department-20261124/README.md).) (Added 27 November 2026: the supervisor's review of that day decided that the computer used on 24 November 2026 is the department server; see [`../department-20261124/README.md`](../department-20261124/README.md), section "Decision of 27 November 2026". The wording it gives for the P2 declarations says that this regeneration of 19 November is not used for results.)
 
 ## Contents
 

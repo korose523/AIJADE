@@ -4,6 +4,11 @@ Qualification awaits the supervisor’s reply. The implemented acceptance reader
 prepares and verifies file identities. The offline controls use synthetic
 records. No real qualification was issued and no held-out case was constructed.
 
+(Added 27 November 2026: the supervisor approved the two-criterion qualification
+standard on 21 November 2026 and accepted the qualification on 23 November 2026,
+on a condition met the same day; the review of 27 November 2026 keeps both. See
+[`../README.md`](../README.md). The paragraph above keeps the state of 18 November 2026.)
+
 ## Freeze and run after the reply
 
 Use the successor prefix `experiments/ch7/mac-known-repeats-qualification/`.

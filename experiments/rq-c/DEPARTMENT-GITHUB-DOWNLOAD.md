@@ -1,8 +1,8 @@
-# P2-R GitHub download for the department computer
+# P2-R GitHub download for the department server
 
 P2-R uses a dedicated, clean Git checkout of [korose523/AIJADE](https://github.com/korose523/AIJADE). Use the full commit SHA from the AIJADE delivery record for offline preparation. The formal approval must identify the exact source commit used later. The Chapter 7 Mac qualification and its build are separate from this department workflow.
 
-The department runs of 24 November 2026 did not run from a commit on GitHub alone. Their source was `589bc0f` plus three commits made on the department computer (`9f67b1b`, `204af3a`, `fddf9a1`) that are not public yet; see [`department-20261124/README.md`](department-20261124/README.md).
+The department runs of 24 November 2026 did not run from a commit on GitHub alone. Their source was `589bc0f` plus three commits made on the department server (`9f67b1b`, `204af3a`, `fddf9a1`) that are not public yet; see [`department-20261124/README.md`](department-20261124/README.md).
 
 ## Download the exact source
 

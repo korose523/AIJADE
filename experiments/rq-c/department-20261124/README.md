@@ -1,18 +1,68 @@
-# P2-R on the department computer, 24 November 2026: status and read-only checks
+# P2-R on the department server, 24 November 2026: status, decision and read-only checks
 
 Written 25 November 2026 (`bbf60bd`). Revised 26 November 2026 after a second read-only check. The revision corrects the
 unit of the verifier counts and several statements of the first version, completes the list of deviations and adds the
 addendum at the end. Neither check started a model or executed a candidate program. Times are Asia/Seoul (KST).
+Revised again on 27 November 2026: the next section records the supervisor's decision of that day, the body text calls
+the computer the department server except in the dated addendum of 26 November, which keeps its wording, and weaknesses
+that the review names are added to deviations 3 and 4.
 
 The prospective record is [`DEPARTMENT-EARLY-START-20261124.md`](../DEPARTMENT-EARLY-START-20261124.md) (589bc0f).
-Group A used Ollama 0.40.0, group B (exploratory) 0.40.16. The groups are reported separately and never pooled. No
-number enters Chapter 5 or the P2 manuscript; whether the runs can be used is for the supervisor to decide. The runs
-were made on a Windows computer of the department that is allocated to the author. Whether it counts as the department
-server of the approved plan is also for the supervisor.
+Group A used Ollama 0.40.0, group B (exploratory) 0.40.16. The groups are reported separately and never pooled. The
+runs were made on the department server, a shared department computer running Windows. No number of either group
+enters Chapter 5 or the P2 manuscript before the three steps of the decision below are done, and no number of group B
+enters the P2 manuscript at any time.
 
 The on-site records cited below (the log-anchor record `0eb1787`, the retry record `1b945b0`) and the records of the two
-checks are in the private papers repository. The check records were drafted by Claude and await the author's sign-off.
-This revision follows the record of the second check, which prevails over the older records.
+checks are in the private papers repository. The check records were drafted by Claude and await the author's sign-off;
+the supervisor's review of 27 November 2026 asks the first author to sign them and the two on-site records, to send
+them again by 30 November 2026 and to state separately, as far as known, when the warm-up was actually approved. This
+revision follows the record of the second check, which prevails over the older records.
+
+## Decision of 27 November 2026
+
+The supervisor's review of 27 November 2026 decided how these runs are used.
+
+- **The computer.** The computer used on 24 November 2026 is the department server of the approved plan.
+- **Dates.** The supervisor does not hold the early start against the runs, because the review of 21 November 2026
+  had let the experiments go ahead. The early start stays a fact in the list of deviations (item 1).
+- **Group A** (Ollama 0.40.0, the archived service version) will be used as the P2-R group-A result after the three
+  steps that the review lists in its section 1, point 1:
+  1. The three source commits made on site (`9f67b1b`, `204af3a`, `fddf9a1`), the two approval receipts and the
+     private directory of the second attempts, and the Ollama service logs are retrieved from the department server and
+     checked as section 8 of the second check record lists; the three commits are then published. The review sets
+     30 November 2026 for the retrieval.
+  2. The exploratory re-scoring of the plan (see "Not done") is applied to groups A and B under a prospective record
+     that the first author confirms and pushes before it runs. Its results are kept apart from the error rates computed
+     from the recorded verdicts.
+  3. The nine deviations listed in the first author's report of 26 November 2026 to the supervisor and the weaknesses
+     named in the review are written into Section 5.10.3 and Appendix B of the dissertation. As of 27 November 2026
+     this revision is in progress.
+
+  Until all three steps are done, no number of group A or group B enters Chapter 5 or the P2 manuscript.
+- **Grounds for using group A.** The first attempt of A failed on a criterion that the approved plan does not contain
+  (five fixed-seed requests of the Llama control had to return the same output, a criterion the tool added; for this
+  positive control the plan asks only that the open-sampling arm diverge) and on one GPU error event inside its
+  observation window. The second attempt had no new error event inside its recorded windows and passed, and its
+  qualification outputs equal those of the first attempt in all 15 starts, so the changes made after the failure did
+  not change what the runner generated. The weaknesses that remain are to be stated in full; they are listed under
+  "The four attempts" and "Deviations" below.
+- **P2-R is not rerun.**
+- **Group B** (Ollama 0.40.16) stays an exploratory record. Later it is reported only as one exploratory cell: never
+  pooled or added with group A, never in a conclusion sentence, and not in P2. Next to that cell it is stated that the
+  21 false rejections of its second-family run come from the later replies to one program (math-fib), not from 21
+  independent errors.
+- **The next run on the department server** (P2-A and later). Its control standard is fixed, sent to the supervisor and
+  pushed before the run:
+  - no warm-up that discards the first reply; instead, after each unload and reload of the model the same request
+    sequence is repeated five times, and the replies at the same position, the first call included, are checked for
+    identity; open sampling must diverge;
+  - a first call that differs from the later ones is not a defect of the device but part of what is measured, so the
+    main run records every verifier call and reports first and later calls separately;
+  - whether a failed qualification stops the run or switches to repeated regeneration with the variation measured is
+    written down before the run;
+  - the usage time is agreed with the department member in charge, no other task uses the GPU during the run, and the
+    run takes place on a day when the exclusivity check can pass.
 
 ## The four attempts
 
@@ -31,7 +81,8 @@ This revision follows the record of the second check, which prevails over the ol
   `REGENERATION_EVIDENCE_COMPLETE`. On the Mac, `--audit-bundle` gives `CAPTURED_REPEATS_MATCH` for both, every file
   bound by the four phase receipts matches, and the files in `analysis/` were reproduced from the archives. These
   statuses mean that the evidence is complete. They are not an accepted qualification: both audits record
-  `formalQualificationDetermined` as false, the runs carry the deviations below, and acceptance is for the supervisor.
+  `formalQualificationDetermined` as false and the runs carry the deviations below. The supervisor's decision on their
+  use is the section above.
   The log captures of these attempts, which begin at 13:35 (A) and 15:52 (B), hold no GPU error event and no WHEA
   record.
 
@@ -103,24 +154,27 @@ the public runs is [`../first-occurrence-archive.json`](../first-occurrence-arch
    of B's first attempt. Its first 200 steps took 480 s against about 36 s in the other four template-b starts. Two of
    its generation requests returned the output of their first occurrence a second time, which accounts for its 10
    differing steps; both were answered at least seven minutes before the first of the two GPU error events of that
-   window (see the addendum).
+   window (see the addendum). The plan says that when determinism cannot be reproduced the supervisor decides, before
+   the main run, whether to switch to repeated regeneration with the variation measured; the supervisor was not asked
+   before the second attempts.
 4. **Retry preconditions.** The retry record required a passing exclusivity check, a paused co-tenant (the other project
-   on the computer) whose status check returned `CLEAR`, and a model service on a separate port. There is no passing
-   receipt and no retained co-tenant status, and the default port was used. The only retained receipt of the exclusivity
-   check is a FAIL at 13:51. The check looks back 24 hours, and two WHEA 17 records (10:10 and 10:27) and three GPU
-   error events (11:33, 13:29 and 13:30) made a pass impossible that day. Both WHEA records precede the first attempts
-   and lie outside every observation window; the second, 18 seconds after the boot, names an NVIDIA device. All four
-   attempts ran in one boot session, and group A's second attempt began about 35 minutes after the last GPU error event.
-   The retry record was pushed at 14:04:35, about one minute before group A's second qualification began, and it is
-   marked a draft. It gives 14:05 for the author's approval of the warm-up and 14:10 for a probe, but its text was saved
-   at 14:04:18 and already reports the probe, so 14:10 is not the real time of the probe. The real time of the approval,
-   and whether it preceded the source change saved at 14:02:41, cannot be established from the retained files.
-5. **Operator confirmation.** The deployment kit (the scripts taken to the department computer) asks the operator to
+   on the computer) whose status check returned `CLEAR`, and a model service on a separate port (11500). There is no
+   passing receipt and no retained co-tenant status, and the service ran on the default port 11434. According to the
+   on-site notes, the other project was using the same GPU during the first attempts. The only retained receipt of the
+   exclusivity check is a FAIL at 13:51. The check looks back 24 hours, and two WHEA 17 records (10:10 and 10:27) and
+   three GPU error events (11:33, 13:29 and 13:30) made a pass impossible that day. Both WHEA records precede the first
+   attempts and lie outside every observation window; the second, 18 seconds after the boot, names an NVIDIA device. All
+   four attempts ran in one boot session, and group A's second attempt began about 35 minutes after the last GPU error
+   event. The retry record was pushed at 14:04:35, about one minute before group A's second qualification began, and it
+   is marked a draft. It gives 14:05 for the author's approval of the warm-up and 14:10 for a probe, but its text was
+   saved at 14:04:18 and already reports the probe, so 14:10 is not the real time of the probe. The real time of the
+   approval, and whether it preceded the source change saved at 14:02:41, cannot be established from the retained files.
+5. **Operator confirmation.** The deployment kit (the scripts taken to the department server) asks the operator to
    retype the SHA-256 of the qualification receipt before regeneration starts. A wrapper typed it for B, and a
    continuation script skipped the step for A. The launcher's own checks of the qualification receipt ran in both
    groups.
 6. **Source and evidence.** Source commits `9f67b1b` (pinned anchor), `204af3a` (local helper path) and `fddf9a1`
-   (warm-up) and the approval receipts of the second attempts are still on the department computer. **The full source of
+   (warm-up) and the approval receipts of the second attempts are still on the department server. **The full source of
    the run is therefore not public yet.** The commits are to be retrieved, checked and then published. The private
    archive made after the first attempts holds build output and the evidence of those attempts, and no source. The
    runner DLL is one file in all four attempts (SHA-256 a0048ccf…), modified at 10:35 on 24 November, before the three
@@ -135,7 +189,7 @@ the public runs is [`../first-occurrence-archive.json`](../first-occurrence-arch
    According to the on-site notes, a firewall rule was added, two existing block rules were
    disabled and the PowerShell execution policy was changed for the run, and all were restored at the end. Only the
    notes show that they were restored.
-8. **Analyses.** The two-layer reports, first divergences and summaries were first computed on the department computer
+8. **Analyses.** The two-layer reports, first divergences and summaries were first computed on the department server
    on 24 November, in part while group B's second attempt was running. The prospective record placed the analyses later,
    on the Mac. The scripts read result files and call no model. The Mac checks recomputed the files from the archives
    with the same result.
@@ -145,17 +199,18 @@ the public runs is [`../first-occurrence-archive.json`](../first-occurrence-arch
    model store; and the stopping of the other project on the computer. No check output is retained for the last two. The
    third model of the first attempts (`qwen2.5-coder:1.5b`, see above) is in none of the model-unload logs of the second
    attempts (eighteen in each group). How each service was started is still to be established from the service logs,
-   which are on the department computer.
+   which are on the department server.
 
 ## Not done
 
-The exploratory re-scoring of the plan has not been applied to A or to B, and no re-scored number exists. It is not a
-read-only analysis: the historical rule replays every distinct recorded program in Node under three label sets, so it
-executes candidate programs and needs its own execution approval
+As of 27 November 2026 the exploratory re-scoring of the plan has not been applied to A or to B, and no re-scored number
+exists. It is not a read-only analysis: the historical rule replays every distinct recorded program in Node under three
+label sets, so it executes candidate programs and needs its own execution approval
 ([`DEPARTMENT-EXPLORATORY-ORACLE.md`](../DEPARTMENT-EXPLORATORY-ORACLE.md)). The replay launcher also checks the
-approval receipts of the second attempts, which are still on the department computer. The prospective record calls this
-re-scoring the exploratory re-tally and lists it among the read-only analyses on the Mac; this paragraph replaces that
-wording.
+approval receipts of the second attempts, which are still on the department server. It runs under step 2 of the
+decision above. The prospective record of 23 November calls this re-scoring the exploratory re-tally and lists it among
+the read-only analyses on the Mac; this paragraph replaces that wording. The retrieval of step 1 of the decision has not
+been done either.
 
 ## What the run exposed about the tooling
 
@@ -168,7 +223,8 @@ three on-site commits are not in the repository yet. A review of 26 November fou
   receipts of the exclusivity check, the service start and the co-tenant pause are optional.
 - Evidence not captured (next kit, repository): approvals, on-site commits, the build commit, both arms of the control.
 - Preconditions and gates (plan text first, with the supervisor's agreement): the anchor rule refuses both Windows hosts
-  used so far, the 24-hour rule could not be met that day, and the control is stricter than the plan.
+  used so far, the 24-hour rule could not be met that day, and the control is stricter than the plan. The decision of
+  27 November sets the control standard of the next run (see above).
 
 ## Raw archives
 
